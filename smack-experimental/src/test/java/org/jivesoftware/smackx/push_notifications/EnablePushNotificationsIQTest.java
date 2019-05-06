@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.push_notifications;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.push_notifications.element.EnablePushNotificationsIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class EnablePushNotificationsIQTest {
@@ -43,7 +44,7 @@ public class EnablePushNotificationsIQTest {
         EnablePushNotificationsIQ enablePushNotificationsIQ = new EnablePushNotificationsIQ(
                 JidCreate.from("push-5.client.example"), "yxs32uqsflafdk3iuqo");
         enablePushNotificationsIQ.setStanzaId("x42");
-        Assert.assertEquals(exampleEnableIQ, enablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(exampleEnableIQ, enablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -55,7 +56,7 @@ public class EnablePushNotificationsIQTest {
                 JidCreate.from("push-5.client.example"), "yxs32uqsflafdk3iuqo", publishOptions);
         enablePushNotificationsIQ.setStanzaId("x42");
 
-        Assert.assertEquals(exampleEnableIQWithPublishOptions, enablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(exampleEnableIQWithPublishOptions, enablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

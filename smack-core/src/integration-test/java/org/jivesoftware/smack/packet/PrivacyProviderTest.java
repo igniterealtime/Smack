@@ -16,9 +16,9 @@ package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.provider.PrivacyProvider;
 import org.jivesoftware.smack.test.SmackTestCase;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParserFactory;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import java.io.StringReader;
 

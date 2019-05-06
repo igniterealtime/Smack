@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.sid.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smackx.sid.element.StanzaIdElement;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 
 public class StanzaIdProvider extends ExtensionElementProvider<StanzaIdElement> {
 

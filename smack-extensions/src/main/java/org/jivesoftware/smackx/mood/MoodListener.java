@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.mood;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.mood.element.MoodElement;
 
 import org.jxmpp.jid.BareJid;

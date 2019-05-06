@@ -25,9 +25,8 @@ import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * Stanza extension for {@link org.jivesoftware.smackx.workgroup.agent.TransferRequest}.
@@ -175,7 +174,7 @@ public class RoomTransfer implements ExtensionElement {
             while (!done) {
                 parser.next();
                 String elementName = parser.getName();
-                if (parser.getEventType() == XmlPullParser.START_TAG) {
+                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT) {
                     if ("session".equals(elementName)) {
                         invitation.sessionID = parser.getAttributeValue("", "id");
                     }
@@ -192,7 +191,7 @@ public class RoomTransfer implements ExtensionElement {
                         invitation.room = parser.nextText();
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.END_TAG && ELEMENT_NAME.equals(elementName)) {
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && ELEMENT_NAME.equals(elementName)) {
                     done = true;
                 }
             }

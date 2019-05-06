@@ -24,21 +24,19 @@ import static org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.Jing
 import static org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate.ATTR_PORT;
 import static org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate.ATTR_PRIORITY;
 import static org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate.ATTR_TYPE;
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo.JingleS5BCandidateTransportInfo;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for JingleSocks5BytestreamTransport elements.
@@ -62,10 +60,10 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
 
         JingleS5BTransportCandidate.Builder cb;
         outerloop: while (true) {
-            int tag = parser.nextTag();
+            XmlPullParser.TagEvent tag = parser.nextTag();
             String name = parser.getName();
             switch (tag) {
-                case START_TAG: {
+                case START_ELEMENT: {
                     switch (name) {
 
                         case JingleS5BTransportCandidate.ELEMENT:
@@ -110,12 +108,13 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
                 }
                 break;
 
-                case END_TAG: {
+                case END_ELEMENT: {
                     switch (name) {
                         case JingleContentTransport.ELEMENT:
                             break outerloop;
                     }
                 }
+                    break;
             }
         }
         return builder.build();

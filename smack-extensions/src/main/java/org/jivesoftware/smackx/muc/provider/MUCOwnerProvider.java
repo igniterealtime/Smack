@@ -23,11 +23,10 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muc.packet.MUCOwner;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The MUCOwnerProvider parses MUCOwner packets. (@see MUCOwner)
@@ -41,8 +40,8 @@ public class MUCOwnerProvider extends IQProvider<MUCOwner> {
         MUCOwner mucOwner = new MUCOwner();
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("item")) {
                     mucOwner.addItem(MUCParserUtils.parseItem(parser));
                 }
@@ -54,7 +53,7 @@ public class MUCOwnerProvider extends IQProvider<MUCOwner> {
                     PacketParserUtils.addExtensionElement(mucOwner, parser, xmlEnvironment);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("query")) {
                     done = true;
                 }

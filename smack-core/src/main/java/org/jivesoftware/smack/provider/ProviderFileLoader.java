@@ -26,9 +26,8 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 /**
  * Loads the {@link IQProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation
@@ -54,12 +53,10 @@ public class ProviderFileLoader implements ProviderLoader {
     public ProviderFileLoader(InputStream providerStream, ClassLoader classLoader) {
         // Load processing providers.
         try (InputStream is = providerStream) {
-            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(is, "UTF-8");
-            int eventType = parser.getEventType();
+            XmlPullParser parser = PacketParserUtils.getParserFor(is);
+            XmlPullParser.Event eventType = parser.getEventType();
             do {
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     final String typeName = parser.getName();
 
                     try {
@@ -134,7 +131,7 @@ public class ProviderFileLoader implements ProviderLoader {
                 }
                 eventType = parser.next();
             }
-            while (eventType != XmlPullParser.END_DOCUMENT);
+            while (eventType != XmlPullParser.Event.END_DOCUMENT);
         }
         catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Unknown error occurred while parsing provider file", e);

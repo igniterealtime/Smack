@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
 
@@ -23,8 +25,7 @@ import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PagingTest extends MamTest {
 
@@ -44,9 +45,9 @@ public class PagingTest extends MamTest {
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.addExtension(rsmSet);
 
-        Assert.assertEquals(mamQueryIQ.getDataForm(), dataForm);
-        Assert.assertEquals(mamQueryIQ.getDataForm().getFields().get(0).getValues().get(0).toString(), "urn:xmpp:mam:1");
-        Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), pagingStanza);
+        assertEquals(mamQueryIQ.getDataForm(), dataForm);
+        assertEquals(mamQueryIQ.getDataForm().getFields().get(0).getValues().get(0).toString(), "urn:xmpp:mam:1");
+        assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), pagingStanza);
     }
 
 }

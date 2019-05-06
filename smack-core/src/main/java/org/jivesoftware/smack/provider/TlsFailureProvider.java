@@ -19,7 +19,7 @@ package org.jivesoftware.smack.provider;
 import org.jivesoftware.smack.packet.TlsProceed;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 public final class TlsFailureProvider extends NonzaProvider<TlsProceed> {
 

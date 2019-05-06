@@ -57,10 +57,10 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.parts.Resourcepart;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPConnection {
 
@@ -310,10 +310,10 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
         // Skip the enclosing stream open what is guaranteed to be there.
         parser.next();
 
-        int event = parser.getEventType();
+        XmlPullParser.Event event = parser.getEventType();
         outerloop: while (true) {
             switch (event) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 final String name = parser.getName();
                 // Note that we don't handle "stream" here as it's done in the splitter.
                 switch (name) {
@@ -353,8 +353,9 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
                     break;
                 }
                 break;
-            case XmlPullParser.END_DOCUMENT:
+            case END_DOCUMENT:
                 break outerloop;
+            default: // fall out
             }
             event = parser.next();
         }

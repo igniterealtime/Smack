@@ -19,16 +19,18 @@ package org.jivesoftware.smackx.reference;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+
 import org.jivesoftware.smackx.reference.element.ReferenceElement;
 import org.jivesoftware.smackx.reference.provider.ReferenceProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ReferenceTest extends SmackTestSuite {
 
@@ -76,24 +78,28 @@ public class ReferenceTest extends SmackTestSuite {
         assertXMLEqual(xml, parsed.toXML().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void beginGreaterEndIllegalTest() throws URISyntaxException {
-        new ReferenceElement(100, 10, ReferenceElement.Type.mention, null, new URI("xmpp:test@test.test"));
+        assertThrows(IllegalArgumentException.class, () ->
+        new ReferenceElement(100, 10, ReferenceElement.Type.mention, null, new URI("xmpp:test@test.test")));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void beginSmallerZeroTest() throws URISyntaxException {
-        new ReferenceElement(-1, 12, ReferenceElement.Type.data, null, new URI("xmpp:test@test.test"));
+        assertThrows(IllegalArgumentException.class, () ->
+        new ReferenceElement(-1, 12, ReferenceElement.Type.data, null, new URI("xmpp:test@test.test")));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void endSmallerZeroTest() throws URISyntaxException {
-        new ReferenceElement(12, -2, ReferenceElement.Type.mention, null, new URI("xmpp:test@test.test"));
+        assertThrows(IllegalArgumentException.class, () ->
+        new ReferenceElement(12, -2, ReferenceElement.Type.mention, null, new URI("xmpp:test@test.test")));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void typeArgumentNullTest() throws URISyntaxException {
-        new ReferenceElement(1, 2, null, null, new URI("xmpp:test@test.test"));
+        assertThrows(NullPointerException.class, () ->
+        new ReferenceElement(1, 2, null, null, new URI("xmpp:test@test.test")));
     }
 
     /*

@@ -24,15 +24,14 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.Item.ItemNamespace;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses an <b>item</b> element as is defined in both the {@link PubSubNamespace#basic} and
@@ -51,9 +50,9 @@ public class ItemProvider extends ExtensionElementProvider<Item>  {
         String xmlns = parser.getNamespace();
         ItemNamespace itemNamespace = ItemNamespace.fromXmlns(xmlns);
 
-        int tag = parser.next();
+        XmlPullParser.Event tag = parser.next();
 
-        if (tag == XmlPullParser.END_TAG)  {
+        if (tag == XmlPullParser.Event.END_ELEMENT)  {
             return new Item(itemNamespace, id, node);
         }
         else {

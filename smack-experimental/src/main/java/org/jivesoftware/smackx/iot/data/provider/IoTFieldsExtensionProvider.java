@@ -28,6 +28,8 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iot.data.element.IoTDataField;
 import org.jivesoftware.smackx.iot.data.element.IoTFieldsExtension;
@@ -37,8 +39,6 @@ import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFieldsExtension> {
 
@@ -50,10 +50,10 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
         boolean done = ParserUtils.getBooleanAttribute(parser, "done", false);
         List<NodeElement> nodes = new ArrayList<>();
         outerloop: while (true) {
-            final int eventType = parser.next();
+            final XmlPullParser.Event eventType = parser.next();
             final String name = parser.getName();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 switch (name) {
                 case NodeElement.ELEMENT:
                     NodeElement node = parseNode(parser);
@@ -61,10 +61,13 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }
@@ -76,10 +79,10 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
         final NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         List<TimestampElement> timestampElements = new ArrayList<>();
         outerloop: while (true) {
-            final int eventType = parser.next();
+            final XmlPullParser.Event eventType = parser.next();
             final String name = parser.getName();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 switch (name){
                 case TimestampElement.ELEMENT:
                     TimestampElement timestampElement = parseTimestampElement(parser);
@@ -87,10 +90,13 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }
@@ -108,10 +114,10 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
         }
         List<IoTDataField> fields = new ArrayList<>();
         outerloop: while (true) {
-            final int eventType = parser.next();
+            final XmlPullParser.Event eventType = parser.next();
             final String name = parser.getName();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 IoTDataField field = null;
                 final String fieldName = parser.getAttributeValue(null, "name");
                 final String fieldValue = parser.getAttributeValue(null, "value");
@@ -134,10 +140,13 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
                     fields.add(field);
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

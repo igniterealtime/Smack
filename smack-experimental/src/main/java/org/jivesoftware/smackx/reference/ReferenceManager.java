@@ -23,6 +23,7 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 public final class ReferenceManager extends Manager {

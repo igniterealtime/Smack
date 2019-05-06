@@ -16,17 +16,21 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.mam.provider.MamFinIQProvider;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import org.junit.jupiter.api.Test;
 
 public class MamFinProviderTest extends MamTest {
 
@@ -39,13 +43,13 @@ public class MamFinProviderTest extends MamTest {
         XmlPullParser parser = PacketParserUtils.getParserFor(exmapleMamFinXml);
         MamFinIQ mamFinIQ = new MamFinIQProvider().parse(parser);
 
-        Assert.assertFalse(mamFinIQ.isComplete());
-        Assert.assertTrue(mamFinIQ.isStable());
-        Assert.assertNull(mamFinIQ.getQueryId());
+        assertFalse(mamFinIQ.isComplete());
+        assertTrue(mamFinIQ.isStable());
+        assertNull(mamFinIQ.getQueryId());
 
         RSMSet rsmSet = mamFinIQ.getRSMSet();
-        Assert.assertEquals(rsmSet.getAfter(), "09af3-cc343-b409f");
-        Assert.assertEquals(rsmSet.getMax(), 10);
+        assertEquals(rsmSet.getAfter(), "09af3-cc343-b409f");
+        assertEquals(rsmSet.getMax(), 10);
     }
 
     @Test
@@ -64,13 +68,13 @@ public class MamFinProviderTest extends MamTest {
         IQ iq = PacketParserUtils.parseStanza(IQ_LIMITED_RESULTS_EXAMPLE);
 
         MamFinIQ mamFinIQ = (MamFinIQ) iq;
-        Assert.assertEquals(mamFinIQ.getType(), Type.result);
+        assertEquals(mamFinIQ.getType(), Type.result);
 
-        Assert.assertTrue(mamFinIQ.isComplete());
-        Assert.assertEquals(mamFinIQ.getRSMSet().getCount(), 16);
-        Assert.assertEquals(mamFinIQ.getRSMSet().getFirst(), "23452-4534-1");
-        Assert.assertEquals(mamFinIQ.getRSMSet().getFirstIndex(), 0);
-        Assert.assertEquals(mamFinIQ.getRSMSet().getLast(), "390-2342-22");
+        assertTrue(mamFinIQ.isComplete());
+        assertEquals(mamFinIQ.getRSMSet().getCount(), 16);
+        assertEquals(mamFinIQ.getRSMSet().getFirst(), "23452-4534-1");
+        assertEquals(mamFinIQ.getRSMSet().getFirstIndex(), 0);
+        assertEquals(mamFinIQ.getRSMSet().getLast(), "390-2342-22");
     }
 
 }

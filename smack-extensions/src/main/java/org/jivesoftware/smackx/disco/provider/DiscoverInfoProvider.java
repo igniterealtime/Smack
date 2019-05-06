@@ -23,11 +23,10 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
 * The DiscoverInfoProvider parses Service Discovery information packets.
@@ -48,8 +47,8 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
         String lang = "";
         discoverInfo.setNode(parser.getAttributeValue("", "node"));
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 final String name = parser.getName();
                 final String namespace = parser.getNamespace();
                 if (namespace.equals(DiscoverInfo.NAMESPACE)) {
@@ -71,7 +70,7 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
                 else {
                     PacketParserUtils.addExtensionElement(discoverInfo, parser, xmlEnvironment);
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("identity")) {
                     // Create a new identity and add it to the discovered info.
                     identity = new DiscoverInfo.Identity(category, type, identityName, lang);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet, 2018 Florian Schmaus
+ * Copyright 2014 Anno van Vliet, 2018-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,22 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 /**
  * Data validation test.
@@ -132,8 +136,9 @@ public class DataValidationTest {
             DataValidationProvider.parse(parser);
     }
 
-    @Test
-    public void testNamespacePrefix() throws Exception {
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testNamespacePrefix(SmackTestUtil.XmlPullParserKind parserKind) throws Exception {
         String formFieldUsingNamespacePrefix =
                 "<x xmlns='jabber:x:data'" +
                 "   xmlns:xdv='http://jabber.org/protocol/xdata-validate'" +
@@ -155,7 +160,7 @@ public class DataValidationTest {
                 "  </field>" +
                 "</x>";
 
-        DataForm dataForm = TestUtils.parseExtensionElement(formFieldUsingNamespacePrefix);
+        DataForm dataForm = SmackTestUtil.parse(formFieldUsingNamespacePrefix, DataFormProvider.class, parserKind);
 
         assertEquals("Sample Form", dataForm.getTitle());
 

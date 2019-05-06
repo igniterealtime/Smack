@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -23,8 +25,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetInfoIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightInfoTest {
@@ -46,7 +47,7 @@ public class MUCLightInfoTest {
         MUCLightGetInfoIQ mucLightGetInfoIQWithVersion = new MUCLightGetInfoIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetInfoIQWithVersion.setStanzaId("getinfo1");
-        Assert.assertEquals(mucLightGetInfoIQWithVersion.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), exampleWithVersion);
+        assertEquals(mucLightGetInfoIQWithVersion.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), exampleWithVersion);
     }
 
     @Test
@@ -54,21 +55,21 @@ public class MUCLightInfoTest {
         MUCLightGetInfoIQ mucLightGetInfoIQWithoutVersion = new MUCLightGetInfoIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), null);
         mucLightGetInfoIQWithoutVersion.setStanzaId("getinfo1");
-        Assert.assertEquals(mucLightGetInfoIQWithoutVersion.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), exampleWithoutVersion);
+        assertEquals(mucLightGetInfoIQWithoutVersion.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), exampleWithoutVersion);
     }
 
     @Test
     public void checkMUCLightInfoResult() throws Exception {
         IQ iqInfoResult = PacketParserUtils.parseStanza(exampleInfoResult);
         MUCLightInfoIQ mucLightInfoResponseIQ = (MUCLightInfoIQ) iqInfoResult;
-        Assert.assertEquals(mucLightInfoResponseIQ.getVersion(), "123456");
-        Assert.assertEquals(mucLightInfoResponseIQ.getConfiguration().getRoomName(), "test");
-        Assert.assertEquals(mucLightInfoResponseIQ.getOccupants().size(), 3);
-        Assert.assertEquals(mucLightInfoResponseIQ.getOccupants().get(JidCreate.from("john@test.com")),
+        assertEquals(mucLightInfoResponseIQ.getVersion(), "123456");
+        assertEquals(mucLightInfoResponseIQ.getConfiguration().getRoomName(), "test");
+        assertEquals(mucLightInfoResponseIQ.getOccupants().size(), 3);
+        assertEquals(mucLightInfoResponseIQ.getOccupants().get(JidCreate.from("john@test.com")),
                 MUCLightAffiliation.owner);
-        Assert.assertEquals(mucLightInfoResponseIQ.getOccupants().get(JidCreate.from("charlie@test.com")),
+        assertEquals(mucLightInfoResponseIQ.getOccupants().get(JidCreate.from("charlie@test.com")),
                 MUCLightAffiliation.member);
-        Assert.assertEquals(mucLightInfoResponseIQ.getOccupants().get(JidCreate.from("pep@test.com")),
+        assertEquals(mucLightInfoResponseIQ.getOccupants().get(JidCreate.from("pep@test.com")),
                 MUCLightAffiliation.member);
     }
 

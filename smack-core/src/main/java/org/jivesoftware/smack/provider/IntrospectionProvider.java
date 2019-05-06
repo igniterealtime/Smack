@@ -24,8 +24,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class IntrospectionProvider{
 
@@ -81,9 +81,9 @@ public class IntrospectionProvider{
         ParserUtils.assertAtStartTag(parser);
         Object object = objectClass.getConstructor().newInstance();
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String name = parser.getName();
                 String stringValue = parser.nextText();
                 Class<?> propertyType = object.getClass().getMethod(
@@ -97,10 +97,13 @@ public class IntrospectionProvider{
                                 propertyType).invoke(object, value);
                 break;
 
-            case  XmlPullParser.END_TAG:
+            case  END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

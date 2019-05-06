@@ -37,6 +37,8 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpManager;
@@ -51,11 +53,10 @@ import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
 import org.bouncycastle.openpgp.PGPException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class OXInstantMessagingManagerTest extends SmackTestSuite {
 

@@ -27,8 +27,8 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public final class FailureProvider extends NonzaProvider<Failure> {
 
@@ -46,9 +46,9 @@ public final class FailureProvider extends NonzaProvider<Failure> {
         XmlEnvironment failureXmlEnvironment = XmlEnvironment.from(parser, xmlEnvironment);
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (namespace) {
@@ -72,11 +72,12 @@ public final class FailureProvider extends NonzaProvider<Failure> {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
                 break;
+            default: // fall out
             }
         }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus.
+ * Copyright 2015-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * The parser for {@link StandardExtensionElement}s.
@@ -47,7 +47,7 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
         String name = parser.getName();
         String namespace = parser.getNamespace();
         StandardExtensionElement.Builder builder = StandardExtensionElement.builder(name, namespace);
-        final int namespaceCount = parser.getNamespaceCount(initialDepth);
+        final int namespaceCount = parser.getNamespaceCount();
         final int attributeCount = parser.getAttributeCount();
         final Map<String, String> attributes = new LinkedHashMap<>(namespaceCount + attributeCount);
         for (int i = 0; i < namespaceCount; i++) {
@@ -77,18 +77,21 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
         builder.addAttributes(attributes);
 
         outerloop: while (true) {
-            int event = parser.next();
+            XmlPullParser.Event event = parser.next();
             switch (event) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 builder.addElement(parse(parser, parser.getDepth(), xmlEnvironment));
                 break;
-            case XmlPullParser.TEXT:
+            case TEXT_CHARACTERS:
                 builder.setText(parser.getText());
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (initialDepth == parser.getDepth()) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

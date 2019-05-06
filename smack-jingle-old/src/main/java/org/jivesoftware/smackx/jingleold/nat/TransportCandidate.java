@@ -31,6 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 
 import org.jxmpp.jid.Jid;

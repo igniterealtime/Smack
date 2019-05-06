@@ -27,11 +27,11 @@ public MyExtension parse(XmlPullParser parser, int initialDepth) {
   outerloop: while(true) {
     // Make sure to have already parse all attributes of the outermost element,
     // i.e. 'attrFoo' of 'myExtension' in this example. Then advance the parser
-    int event = parser.next();
+    XmlPullParser.Event event = parser.next();
 
     // Use switch/case of int instead of a if/else-if cascade
     switch (event) {
-    case XmlPullParser.START_TAG:
+    case START_ELEMENT:
       // Determine the name of the element which start tag we are seeing
       String name = parser.getName();
       // We can use switch/case of Strings since Java7, make use of its advantages
@@ -52,11 +52,14 @@ public MyExtension parse(XmlPullParser parser, int initialDepth) {
         break;
       }
       break;
-    case XmlPullParser.END_TAG:
+    case END_ELEMENT:
       // The abort condition with the break labeled loop statement
       if (parser.getDepth() == initialDepth) {
         break outerloop;
       }
+      break;
+    default:
+      // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
       break;
     }
   }

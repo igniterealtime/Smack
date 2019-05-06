@@ -20,13 +20,13 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.push_notifications.element.PushNotificationsElements.RemoteDisablingExtension;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Push Notifications Remote Disabling Provider class.
@@ -43,8 +43,8 @@ public class RemoteDisablingProvider extends ExtensionElementProvider<RemoteDisa
         String node = parser.getAttributeValue("", "node");
 
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("affiliation")) {
                     userJid = JidCreate.from(parser.getAttributeValue("", "jid"));
 
@@ -53,7 +53,7 @@ public class RemoteDisablingProvider extends ExtensionElementProvider<RemoteDisa
                         return null;
                     }
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }

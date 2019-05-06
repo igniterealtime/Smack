@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.PacketExtension;
 import org.jivesoftware.smack.provider.PacketExtensionProvider;
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 /**
  *
@@ -35,7 +35,7 @@ public class CarExtensionProvider extends PacketExtensionProvider
 
 		for (int i=0; i<2; i++)
 		{
-			while (parser.next() != XmlPullParser.START_TAG);
+			while (parser.next() != START_ELEMENT);
 
 			if (parser.getName().equals("paint"))
 			{
@@ -46,7 +46,7 @@ public class CarExtensionProvider extends PacketExtensionProvider
 				numTires = Integer.parseInt(parser.getAttributeValue(0));
 			}
 		}
-		while (parser.next() != XmlPullParser.END_TAG);
+		while (parser.next() != END_ELEMENT);
 		return new CarExtension(color, numTires);
 	}
 

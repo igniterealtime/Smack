@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.sid.element;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 
 public class OriginIdElement extends StableAndUniqueIdElement {

@@ -23,13 +23,13 @@ import java.util.ArrayList;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
 
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -58,8 +58,8 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
 		String name = "";
 		ArrayList<String> groupsName = new ArrayList<>();
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("item")) {
                 	// Reset this variable since they are optional for each item
 					groupsName = new ArrayList<>();
@@ -70,7 +70,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
                 if (parser.getName().equals("group")) {
 					groupsName.add(parser.nextText());
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("item")) {
 					// Create packet.
 					remoteRosterEntry = new RemoteRosterEntry(jid, name, groupsName.toArray(new String[groupsName.size()]));

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Observable;
 
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.callback.SecretKeyPassphraseCallback;
 import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;

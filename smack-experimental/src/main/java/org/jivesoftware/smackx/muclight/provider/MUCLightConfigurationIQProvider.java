@@ -21,12 +21,11 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MUC Light configuration IQ provider class.
@@ -44,9 +43,9 @@ public class MUCLightConfigurationIQProvider extends IQProvider<MUCLightConfigur
         HashMap<String, String> customConfigs = null;
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
 
                 if (parser.getName().equals("version")) {
                     version = parser.nextText();
@@ -61,7 +60,7 @@ public class MUCLightConfigurationIQProvider extends IQProvider<MUCLightConfigur
                     customConfigs.put(parser.getName(), parser.nextText());
                 }
 
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }

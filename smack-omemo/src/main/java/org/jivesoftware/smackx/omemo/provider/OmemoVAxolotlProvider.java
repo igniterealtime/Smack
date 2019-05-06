@@ -18,8 +18,6 @@ package org.jivesoftware.smackx.omemo.provider;
 
 import static org.jivesoftware.smackx.omemo.element.OmemoElement.ATTR_PAYLOAD;
 import static org.jivesoftware.smackx.omemo.element.OmemoElement.NAME_ENCRYPTED;
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,13 +25,13 @@ import java.util.ArrayList;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.omemo.element.OmemoElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement;
 import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Smack ExtensionProvider that parses incoming OMEMO Message element into OmemoMessageElement objects.
@@ -51,10 +49,10 @@ public class OmemoVAxolotlProvider extends ExtensionElementProvider<OmemoElement
         byte[] payload = null;
 
         while (inEncrypted) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             String name = parser.getName();
             switch (tag) {
-                case START_TAG:
+                case START_ELEMENT:
                     switch (name) {
                         case OmemoHeaderElement.NAME_HEADER:
                             for (int i = 0; i < parser.getAttributeCount(); i++) {
@@ -83,10 +81,13 @@ public class OmemoVAxolotlProvider extends ExtensionElementProvider<OmemoElement
                             break;
                     }
                     break;
-                case END_TAG:
+                case END_ELEMENT:
                     if (name.equals(NAME_ENCRYPTED)) {
                         inEncrypted = false;
                     }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                     break;
             }
         }

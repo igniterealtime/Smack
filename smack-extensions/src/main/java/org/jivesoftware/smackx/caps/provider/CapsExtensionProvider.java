@@ -20,19 +20,18 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtension> {
 
     @Override
     public CapsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String hash, version, node;
-        if (parser.getEventType() == XmlPullParser.START_TAG
+        if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT
                 && parser.getName().equalsIgnoreCase(EntityCapsManager.ELEMENT)) {
             hash = parser.getAttributeValue(null, "hash");
             version = parser.getAttributeValue(null, "ver");
@@ -44,7 +43,7 @@ public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtensio
 
         parser.next();
 
-        if (!(parser.getEventType() == XmlPullParser.END_TAG
+        if (!(parser.getEventType() == XmlPullParser.Event.END_ELEMENT
                 && parser.getName().equalsIgnoreCase(EntityCapsManager.ELEMENT))) {
             // TODO: Should be SmackParsingException.
             throw new IOException("Malformed nested Caps element");

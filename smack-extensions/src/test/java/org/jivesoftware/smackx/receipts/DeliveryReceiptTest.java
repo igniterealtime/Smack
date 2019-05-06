@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
@@ -38,7 +39,6 @@ import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
 
 public class DeliveryReceiptTest extends InitExtensions {
 

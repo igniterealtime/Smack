@@ -22,12 +22,11 @@ import java.util.ArrayList;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
@@ -45,8 +44,8 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         Privacy privacy = new Privacy();
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 // CHECKSTYLE:OFF
                 if (parser.getName().equals("active")) {
                     String activeName = parser.getAttributeValue("", "name");
@@ -69,7 +68,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
                     parseList(parser, privacy);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("query")) {
                     done = true;
                 }
@@ -85,15 +84,15 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         String listName = parser.getAttributeValue("", "name");
         ArrayList<PrivacyItem> items = new ArrayList<>();
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("item")) {
                     // CHECKSTYLE:OFF
                     items.add(parseItem(parser));
                     // CHECKSTYLE:ON
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("list")) {
                     done = true;
                 }
@@ -152,9 +151,9 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         final int initialDepth = parser.getDepth();
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String name = parser.getName();
                 switch (name) {
                 case "iq":
@@ -171,10 +170,14 @@ public class PrivacyProvider extends IQProvider<Privacy> {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
         }
     }

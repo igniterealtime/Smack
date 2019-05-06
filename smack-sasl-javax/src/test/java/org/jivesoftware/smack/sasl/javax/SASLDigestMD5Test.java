@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.DigestMd5SaslTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class SASLDigestMD5Test extends DigestMd5SaslTest {

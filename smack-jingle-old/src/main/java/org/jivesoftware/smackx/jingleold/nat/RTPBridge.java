@@ -34,12 +34,11 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * RTPBridge IQ Stanza used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
@@ -335,7 +334,7 @@ public class RTPBridge extends IQ {
 
             boolean done = false;
 
-            int eventType;
+            XmlPullParser.Event eventType;
             String elementName;
 
             if (!parser.getNamespace().equals(RTPBridge.NAMESPACE))
@@ -354,7 +353,7 @@ public class RTPBridge extends IQ {
                 eventType = parser.next();
                 elementName = parser.getName();
 
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if (elementName.equals("candidate")) {
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
                             if (parser.getAttributeName(i).equals("ip"))
@@ -376,7 +375,7 @@ public class RTPBridge extends IQ {
                         }
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals(RTPBridge.ELEMENT_NAME)) {
                         done = true;
                     }

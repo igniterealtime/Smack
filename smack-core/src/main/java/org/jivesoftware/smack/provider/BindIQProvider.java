@@ -20,12 +20,12 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class BindIQProvider extends IQProvider<Bind> {
 
@@ -34,9 +34,9 @@ public class BindIQProvider extends IQProvider<Bind> {
         String name;
         Bind bind = null;
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 name = parser.getName();
                 switch (name) {
                 case "resource":
@@ -49,10 +49,13 @@ public class BindIQProvider extends IQProvider<Bind> {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

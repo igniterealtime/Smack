@@ -22,11 +22,10 @@ import java.util.Date;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public abstract class AbstractDelayInformationProvider extends ExtensionElementProvider<DelayInformation> {
 
@@ -36,23 +35,19 @@ public abstract class AbstractDelayInformationProvider extends ExtensionElementP
                     IOException, SmackTextParseException {
         String stampString = (parser.getAttributeValue("", "stamp"));
         String from = parser.getAttributeValue("", "from");
-        String reason = null;
-        if (!parser.isEmptyElementTag()) {
-            int event = parser.next();
-            switch (event) {
-            case XmlPullParser.TEXT:
-                reason = parser.getText();
-                parser.next();
-                break;
-            case XmlPullParser.END_TAG:
-                reason = "";
-                break;
-            default:
-                // TODO: Should be SmackParseException.
-                throw new IOException("Unexpected event: " + event);
-            }
-        } else {
+        final String reason;
+        XmlPullParser.Event event = parser.next();
+        switch (event) {
+        case TEXT_CHARACTERS:
+            reason = parser.getText();
             parser.next();
+            break;
+        case END_ELEMENT:
+            reason = null;
+            break;
+        default:
+            // TODO: Should be SmackParseException.
+            throw new IOException("Unexpected event: " + event);
         }
 
         Date stamp = parseDate(stampString);

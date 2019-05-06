@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.blocking;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StreamOpen;
@@ -23,7 +25,6 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -43,20 +44,20 @@ public class GetBlockingListTest {
         BlockListIQ getBlockListIQ = new BlockListIQ(null);
         getBlockListIQ.setType(Type.get);
         getBlockListIQ.setStanzaId("blocklist1");
-        Assert.assertEquals(getBlockingListIQExample, getBlockListIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(getBlockingListIQExample, getBlockListIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void checkBlockListIQ() throws Exception {
         IQ iq = PacketParserUtils.parseStanza(blockListIQExample);
         BlockListIQ blockListIQ = (BlockListIQ) iq;
-        Assert.assertEquals(2, blockListIQ.getBlockedJids().size());
-        Assert.assertEquals(JidCreate.from("romeo@montague.net"), blockListIQ.getBlockedJids().get(0));
-        Assert.assertEquals(JidCreate.from("iago@shakespeare.lit"), blockListIQ.getBlockedJids().get(1));
+        assertEquals(2, blockListIQ.getBlockedJids().size());
+        assertEquals(JidCreate.from("romeo@montague.net"), blockListIQ.getBlockedJids().get(0));
+        assertEquals(JidCreate.from("iago@shakespeare.lit"), blockListIQ.getBlockedJids().get(1));
 
         IQ iq2 = PacketParserUtils.parseStanza(emptyBlockListIQExample);
         BlockListIQ emptyBlockListIQ = (BlockListIQ) iq2;
-        Assert.assertEquals(0, emptyBlockListIQ.getBlockedJids().size());
+        assertEquals(0, emptyBlockListIQ.getBlockedJids().size());
     }
 
 }

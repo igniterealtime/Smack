@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.ox_im;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;

@@ -18,16 +18,14 @@
 package org.jivesoftware.smackx.workgroup.ext.macros;
 
 import java.io.IOException;
-import java.io.StringReader;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * Macros iq is responsible for handling global and personal macros in the a Live Assistant
@@ -108,15 +106,15 @@ public class Macros extends IQ {
 
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if (parser.getName().equals("model")) {
                         String macros = parser.nextText();
                         MacroGroup group = parseMacroGroups(macros);
                         macroGroup.setRootGroup(group);
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals(ELEMENT_NAME)) {
                         done = true;
                     }
@@ -130,8 +128,8 @@ public class Macros extends IQ {
             Macro macro = new Macro();
              boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if (parser.getName().equals("title")) {
                         parser.next();
                         macro.setTitle(parser.getText());
@@ -146,7 +144,7 @@ public class Macros extends IQ {
                         macro.setType(Integer.valueOf(parser.nextText()).intValue());
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals("macro")) {
                         done = true;
                     }
@@ -160,8 +158,8 @@ public class Macros extends IQ {
 
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if (parser.getName().equals("macrogroup")) {
                         group.addMacroGroup(parseMacroGroup(parser));
                     }
@@ -172,7 +170,7 @@ public class Macros extends IQ {
                         group.addMacro(parseMacro(parser));
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals("macrogroup")) {
                         done = true;
                     }
@@ -183,12 +181,12 @@ public class Macros extends IQ {
 
         public MacroGroup parseMacroGroups(String macros) throws XmlPullParserException, IOException {
             MacroGroup group = null;
-            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-            parser.setInput(new StringReader(macros));
-            int eventType = parser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
+            XmlPullParser parser = PacketParserUtils.getParserFor(macros);
+
+            XmlPullParser.Event eventType = parser.getEventType();
+            while (eventType != XmlPullParser.Event.END_DOCUMENT) {
                 eventType = parser.next();
-                 if (eventType == XmlPullParser.START_TAG) {
+                 if (eventType == XmlPullParser.Event.START_ELEMENT) {
                         if (parser.getName().equals("macrogroup")) {
                             group = parseMacroGroup(parser);
                         }

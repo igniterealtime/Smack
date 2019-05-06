@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Properties;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
@@ -28,7 +29,6 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Test for the OpenIQProvider class.

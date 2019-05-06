@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.message_markup.provider;
 
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,14 +25,14 @@ import java.util.Set;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.message_markup.element.BlockQuoteElement;
 import org.jivesoftware.smackx.message_markup.element.CodeBlockElement;
 import org.jivesoftware.smackx.message_markup.element.ListElement;
 import org.jivesoftware.smackx.message_markup.element.MarkupElement;
 import org.jivesoftware.smackx.message_markup.element.SpanElement;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class MarkupElementProvider extends ExtensionElementProvider<MarkupElement> {
 
@@ -51,11 +48,11 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
         List<ListElement.ListEntryElement> lis = new ArrayList<>();
 
         while (true) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             String name = parser.getName();
             int start, end;
             switch (tag) {
-                case START_TAG:
+                case START_ELEMENT:
                     switch (name) {
                         case BlockQuoteElement.ELEMENT:
                             start = ParserUtils.getIntegerAttributeOrThrow(parser, BlockQuoteElement.ATTR_START,
@@ -109,7 +106,7 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                     }
                     break;
 
-                case END_TAG:
+                case END_ELEMENT:
                     switch (name) {
                         case SpanElement.ELEMENT:
                             markup.addSpan(spanStart, spanEnd, spanStyles);
@@ -134,7 +131,11 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                         case MarkupElement.ELEMENT:
                             return markup.build();
                     }
+                    break;
 
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
             }
         }
     }

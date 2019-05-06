@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.mood.provider;
 
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,12 +24,12 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.mood.Mood;
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 import org.jivesoftware.smackx.mood.element.MoodElement;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class MoodProvider extends ExtensionElementProvider<MoodElement> {
 
@@ -47,12 +44,12 @@ public class MoodProvider extends ExtensionElementProvider<MoodElement> {
         MoodConcretisation concretisation = null;
 
         outerloop: while (true) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             String name = parser.getName();
             String namespace = parser.getNamespace();
 
             switch (tag) {
-                case START_TAG:
+                case START_ELEMENT:
                     if (MoodElement.ELEM_TEXT.equals(name)) {
                         text = parser.nextText();
                         continue outerloop;
@@ -76,12 +73,17 @@ public class MoodProvider extends ExtensionElementProvider<MoodElement> {
                         throw new XmlPullParserException("Unknown mood value: " + name + " encountered.");
                     }
 
-                case END_TAG:
+                case END_ELEMENT:
                     if (MoodElement.ELEMENT.equals(name)) {
                         MoodElement.MoodSubjectElement subjectElement = (mood == null && concretisation == null) ?
                                 null : new MoodElement.MoodSubjectElement(mood, concretisation);
                         return new MoodElement(subjectElement, text);
                     }
+                    break;
+
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
             }
         }
     }

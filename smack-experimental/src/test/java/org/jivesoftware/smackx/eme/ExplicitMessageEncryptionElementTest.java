@@ -26,9 +26,10 @@ import java.util.List;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
 

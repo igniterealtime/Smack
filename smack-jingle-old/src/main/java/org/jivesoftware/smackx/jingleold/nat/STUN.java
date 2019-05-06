@@ -30,13 +30,12 @@ import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * STUN IQ Stanza used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
@@ -123,7 +122,7 @@ public class STUN extends SimpleIQ {
 
             boolean done = false;
 
-            int eventType;
+            XmlPullParser.Event eventType;
             String elementName;
 
             if (!parser.getNamespace().equals(NAMESPACE))
@@ -136,7 +135,7 @@ public class STUN extends SimpleIQ {
                 eventType = parser.next();
                 elementName = parser.getName();
 
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if (elementName.equals("server")) {
                         String host = null;
                         String port = null;
@@ -159,7 +158,7 @@ public class STUN extends SimpleIQ {
                             iq.setPublicIp(host);
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals(ELEMENT_NAME)) {
                         done = true;
                     }

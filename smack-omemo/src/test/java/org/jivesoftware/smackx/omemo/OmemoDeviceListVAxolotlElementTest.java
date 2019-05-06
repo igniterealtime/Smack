@@ -23,12 +23,12 @@ import java.util.HashSet;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.provider.OmemoDeviceListVAxolotlProvider;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Test serialization and parsing of DeviceListElement.

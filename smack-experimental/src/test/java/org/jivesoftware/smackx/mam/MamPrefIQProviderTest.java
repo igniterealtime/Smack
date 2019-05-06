@@ -16,18 +16,20 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.provider.MamPrefsIQProvider;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
 
 public class MamPrefIQProviderTest extends MamTest {
 
@@ -52,20 +54,20 @@ public class MamPrefIQProviderTest extends MamTest {
         XmlPullParser parser1 = PacketParserUtils.getParserFor(exampleMamPrefsIQ1);
         MamPrefsIQ mamPrefIQ1 = new MamPrefsIQProvider().parse(parser1);
 
-        Assert.assertEquals(IQ.Type.set, mamPrefIQ1.getType());
-        Assert.assertEquals(mamPrefIQ1.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
-        Assert.assertEquals(mamPrefIQ1.getNeverJids().get(0).toString(), "montague@montague.lit");
+        assertEquals(IQ.Type.set, mamPrefIQ1.getType());
+        assertEquals(mamPrefIQ1.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
+        assertEquals(mamPrefIQ1.getNeverJids().get(0).toString(), "montague@montague.lit");
 
         XmlPullParser parser2 = PacketParserUtils.getParserFor(exampleMamPrefsIQ2);
         MamPrefsIQ mamPrefIQ2 = new MamPrefsIQProvider().parse(parser2);
-        Assert.assertEquals(IQ.Type.set, mamPrefIQ2.getType());
-        Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
-        Assert.assertEquals(mamPrefIQ2.getAlwaysJids().get(1).toString(), "montague@montague.lit");
-        Assert.assertTrue(mamPrefIQ2.getNeverJids().isEmpty());
+        assertEquals(IQ.Type.set, mamPrefIQ2.getType());
+        assertEquals(mamPrefIQ2.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
+        assertEquals(mamPrefIQ2.getAlwaysJids().get(1).toString(), "montague@montague.lit");
+        assertTrue(mamPrefIQ2.getNeverJids().isEmpty());
 
         XmlPullParser parser3 = PacketParserUtils.getParserFor(exampleMamPrefsIQ3);
         MamPrefsIQ mamPrefIQ3 = new MamPrefsIQProvider().parse(parser3);
-        Assert.assertEquals(IQ.Type.set, mamPrefIQ3.getType());
+        assertEquals(IQ.Type.set, mamPrefIQ3.getType());
     }
 
     @Test
@@ -77,10 +79,10 @@ public class MamPrefIQProviderTest extends MamTest {
         List<Jid> alwaysJids = mamPrefsIQ.getAlwaysJids();
         List<Jid> neverJids = mamPrefsIQ.getNeverJids();
 
-        Assert.assertEquals(alwaysJids.size(), 1);
-        Assert.assertEquals(neverJids.size(), 2);
-        Assert.assertEquals(alwaysJids.get(0).toString(), "romeo@montague.lit");
-        Assert.assertEquals(neverJids.get(1).toString(), "montague@montague.lit");
+        assertEquals(alwaysJids.size(), 1);
+        assertEquals(neverJids.size(), 2);
+        assertEquals(alwaysJids.get(0).toString(), "romeo@montague.lit");
+        assertEquals(neverJids.get(1).toString(), "montague@montague.lit");
     }
 
 }

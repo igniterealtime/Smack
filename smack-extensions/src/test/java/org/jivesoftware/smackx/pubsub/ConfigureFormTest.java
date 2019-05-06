@@ -36,7 +36,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -77,7 +76,7 @@ public class ConfigureFormTest extends InitExtensions {
             fail();
         }
         catch (XMPPErrorException e) {
-            Assert.assertEquals(StanzaError.Type.AUTH, e.getStanzaError().getType());
+            assertEquals(StanzaError.Type.AUTH, e.getStanzaError().getType());
         }
     }
 

@@ -27,12 +27,11 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class JivePropertiesExtensionProvider extends ExtensionElementProvider<JivePropertiesExtension> {
 
@@ -58,8 +57,8 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
                     IOException {
         Map<String, Object> properties = new HashMap<>();
         while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("property")) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getName().equals("property")) {
                 // Parse a property
                 boolean done = false;
                 String name = null;
@@ -68,7 +67,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
                 Object value = null;
                 while (!done) {
                     eventType = parser.next();
-                    if (eventType == XmlPullParser.START_TAG) {
+                    if (eventType == XmlPullParser.Event.START_ELEMENT) {
                         String elementName = parser.getName();
                         if (elementName.equals("name")) {
                             name = parser.nextText();
@@ -78,7 +77,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
                             valueText = parser.nextText();
                         }
                     }
-                    else if (eventType == XmlPullParser.END_TAG) {
+                    else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                         if (parser.getName().equals("property")) {
                             if ("integer".equals(type)) {
                                 value = Integer.valueOf(valueText);
@@ -124,7 +123,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
                     }
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(JivePropertiesExtension.ELEMENT)) {
                     break;
                 }

@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.hints.element.StoreHint;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;

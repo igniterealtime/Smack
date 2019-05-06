@@ -25,9 +25,8 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * Represents a request to get some or all the offline messages of a user. This class can also
@@ -205,8 +204,8 @@ public class OfflineMessageRequest extends IQ {
             OfflineMessageRequest request = new OfflineMessageRequest();
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if (parser.getName().equals("item")) {
                         request.addItem(parseItem(parser));
                     }
@@ -216,7 +215,7 @@ public class OfflineMessageRequest extends IQ {
                     else if (parser.getName().equals("fetch")) {
                         request.setFetch(true);
                     }
-                } else if (eventType == XmlPullParser.END_TAG) {
+                } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals("offline")) {
                         done = true;
                     }
@@ -233,8 +232,8 @@ public class OfflineMessageRequest extends IQ {
             item.setAction(parser.getAttributeValue("", "action"));
             item.setJid(parser.getAttributeValue("", "jid"));
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.END_TAG) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals("item")) {
                         done = true;
                     }

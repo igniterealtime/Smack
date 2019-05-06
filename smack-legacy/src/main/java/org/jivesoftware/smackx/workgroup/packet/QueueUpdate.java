@@ -22,9 +22,8 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * An IQ stanza that encapsulates both types of workgroup queue
@@ -106,21 +105,21 @@ public class QueueUpdate implements ExtensionElement {
             while (!done) {
                 parser.next();
                 String elementName = parser.getName();
-                if (parser.getEventType() == XmlPullParser.START_TAG && "position".equals(elementName)) {
+                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "position".equals(elementName)) {
                     try {
                         position = Integer.parseInt(parser.nextText());
                     }
                     catch (NumberFormatException nfe) {
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.START_TAG && "time".equals(elementName)) {
+                else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "time".equals(elementName)) {
                     try {
                         timeRemaining = Integer.parseInt(parser.nextText());
                     }
                     catch (NumberFormatException nfe) {
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.END_TAG && "queue-status".equals(elementName)) {
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "queue-status".equals(elementName)) {
                     done = true;
                 }
             }

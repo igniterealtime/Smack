@@ -21,14 +21,13 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.amp.AMPDeliverCondition;
 import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 
 public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension> {
@@ -67,8 +66,8 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
 
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals(AMPExtension.Rule.ELEMENT)) {
                     String actionString = parser.getAttributeValue(null, AMPExtension.Action.ATTRIBUTE_NAME);
                     String conditionName = parser.getAttributeValue(null, AMPExtension.Condition.ATTRIBUTE_NAME);
@@ -91,7 +90,7 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
                         ampExtension.addRule(rule);
                     }
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(AMPExtension.ELEMENT)) {
                     done = true;
                 }

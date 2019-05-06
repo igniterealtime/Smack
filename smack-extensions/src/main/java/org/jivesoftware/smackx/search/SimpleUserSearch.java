@@ -21,12 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * SimpleUserSearch is used to support the non-dataform type of XEP 55. This provides
@@ -109,16 +108,16 @@ class SimpleUserSearch extends IQ {
                 fields.add(field);
             }
 
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("item")) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getName().equals("item")) {
                 fields = new ArrayList<>();
             }
-            else if (eventType == XmlPullParser.END_TAG && parser.getName().equals("item")) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT && parser.getName().equals("item")) {
                 ReportedData.Row row = new ReportedData.Row(fields);
                 data.addRow(row);
             }
-            else if (eventType == XmlPullParser.START_TAG) {
+            else if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 String name = parser.getName();
                 String value = parser.nextText();
 
@@ -141,7 +140,7 @@ class SimpleUserSearch extends IQ {
                     data.addColumn(column);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("query")) {
                     done = true;
                 }

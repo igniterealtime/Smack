@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -25,8 +27,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetAffiliationsIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -46,7 +47,7 @@ public class MUCLightGetAffiliationsTest {
         MUCLightGetAffiliationsIQ mucLightGetAffiliationsIQ = new MUCLightGetAffiliationsIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetAffiliationsIQ.setStanzaId("getmembers");
-        Assert.assertEquals(getAffiliationsIQExample, mucLightGetAffiliationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(getAffiliationsIQExample, mucLightGetAffiliationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -54,13 +55,13 @@ public class MUCLightGetAffiliationsTest {
         IQ iqInfoResult = PacketParserUtils.parseStanza(getAffiliationsResponseExample);
         MUCLightAffiliationsIQ mucLightAffiliationsIQ = (MUCLightAffiliationsIQ) iqInfoResult;
 
-        Assert.assertEquals("123456", mucLightAffiliationsIQ.getVersion());
+        assertEquals("123456", mucLightAffiliationsIQ.getVersion());
 
         HashMap<Jid, MUCLightAffiliation> affiliations = mucLightAffiliationsIQ.getAffiliations();
-        Assert.assertEquals(3, affiliations.size());
-        Assert.assertEquals(MUCLightAffiliation.owner, affiliations.get(JidCreate.from("user1@shakespeare.lit")));
-        Assert.assertEquals(MUCLightAffiliation.member, affiliations.get(JidCreate.from("user2@shakespeare.lit")));
-        Assert.assertEquals(MUCLightAffiliation.member, affiliations.get(JidCreate.from("user3@shakespeare.lit")));
+        assertEquals(3, affiliations.size());
+        assertEquals(MUCLightAffiliation.owner, affiliations.get(JidCreate.from("user1@shakespeare.lit")));
+        assertEquals(MUCLightAffiliation.member, affiliations.get(JidCreate.from("user2@shakespeare.lit")));
+        assertEquals(MUCLightAffiliation.member, affiliations.get(JidCreate.from("user3@shakespeare.lit")));
     }
 
 }

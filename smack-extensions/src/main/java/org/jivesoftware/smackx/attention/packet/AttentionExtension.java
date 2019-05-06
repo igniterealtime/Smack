@@ -19,8 +19,7 @@ package org.jivesoftware.smackx.attention.packet;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 /**
  * A PacketExtension that implements XEP-0224: Attention

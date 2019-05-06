@@ -18,11 +18,14 @@ package org.jivesoftware.smackx.message_markup;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.message_markup.element.BlockQuoteElement;
 import org.jivesoftware.smackx.message_markup.element.CodeBlockElement;
 import org.jivesoftware.smackx.message_markup.element.ListElement;
@@ -30,8 +33,7 @@ import org.jivesoftware.smackx.message_markup.element.MarkupElement;
 import org.jivesoftware.smackx.message_markup.element.SpanElement;
 import org.jivesoftware.smackx.message_markup.provider.MarkupElementProvider;
 
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import org.junit.jupiter.api.Test;
 
 public class MessageMarkupTest extends SmackTestSuite {
 
@@ -107,16 +109,18 @@ public class MessageMarkupTest extends SmackTestSuite {
         assertEquals(SpanElement.SpanStyle.deleted, spanElement.getStyles().iterator().next());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void wrongStartEndTest() {
-        MarkupElement.getBuilder().setEmphasis(12, 10);
+        assertThrows(IllegalArgumentException.class, () ->
+        MarkupElement.getBuilder().setEmphasis(12, 10));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void overlappingSpansTest() {
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setEmphasis(0, 10);
-        m.setDeleted(5, 15);
+        assertThrows(IllegalArgumentException.class, () ->
+        m.setDeleted(5, 15));
     }
 
     @Test
@@ -172,10 +176,11 @@ public class MessageMarkupTest extends SmackTestSuite {
         assertEquals(47, list.getEntries().get(1).getStart());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void listWrongSecondEntryTest() {
         MarkupElement.Builder m = MarkupElement.getBuilder();
-        m.beginList().addEntry(0,1).addEntry(3,4);
+        assertThrows(IllegalArgumentException.class, () ->
+        m.beginList().addEntry(0,1).addEntry(3,4));
     }
 
     @Test

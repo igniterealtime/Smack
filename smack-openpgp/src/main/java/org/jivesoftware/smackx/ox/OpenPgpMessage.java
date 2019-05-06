@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.ox.element.CryptElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
@@ -28,7 +30,6 @@ import org.jivesoftware.smackx.ox.element.SigncryptElement;
 import org.jivesoftware.smackx.ox.provider.OpenPgpContentElementProvider;
 
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * This class embodies a decrypted and/or verified {@link OpenPgpElement}.

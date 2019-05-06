@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,10 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The XHTMLExtensionProvider parses XHTML packets.
@@ -40,13 +39,13 @@ public class XHTMLExtensionProvider extends ExtensionElementProvider<XHTMLExtens
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
 
         while (true) {
-            int eventType = parser.getEventType();
+            XmlPullParser.Event eventType = parser.getEventType();
             String name = parser.getName();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (name.equals(Message.BODY)) {
                     xhtmlExtension.addBody(PacketParserUtils.parseElement(parser));
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
                     return xhtmlExtension;
                 }

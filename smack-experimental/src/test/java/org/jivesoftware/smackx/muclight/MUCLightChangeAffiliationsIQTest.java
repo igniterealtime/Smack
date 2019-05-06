@@ -16,14 +16,15 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightChangeAffiliationsIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -46,13 +47,13 @@ public class MUCLightChangeAffiliationsIQTest {
                 JidCreate.from("coven@muclight.shakespeare.lit"), affiliations);
         mucLightChangeAffiliationsIQ.setStanzaId("member1");
 
-        Assert.assertEquals(mucLightChangeAffiliationsIQ.getTo(), "coven@muclight.shakespeare.lit");
-        Assert.assertEquals(mucLightChangeAffiliationsIQ.getType(), IQ.Type.set);
+        assertEquals(mucLightChangeAffiliationsIQ.getTo(), "coven@muclight.shakespeare.lit");
+        assertEquals(mucLightChangeAffiliationsIQ.getType(), IQ.Type.set);
 
         HashMap<Jid, MUCLightAffiliation> iqAffiliations = mucLightChangeAffiliationsIQ.getAffiliations();
-        Assert.assertEquals(iqAffiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
-        Assert.assertEquals(iqAffiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
-        Assert.assertEquals(iqAffiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
+        assertEquals(iqAffiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
+        assertEquals(iqAffiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
+        assertEquals(iqAffiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
     }
 
 }

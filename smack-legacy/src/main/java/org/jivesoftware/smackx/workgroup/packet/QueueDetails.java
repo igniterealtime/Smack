@@ -31,11 +31,10 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Queue details stanza extension, which contains details about the users
@@ -153,11 +152,11 @@ public final class QueueDetails implements ExtensionElement {
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
 
-            int eventType = parser.getEventType();
-            while (eventType != XmlPullParser.END_TAG &&
+            XmlPullParser.Event eventType = parser.getEventType();
+            while (eventType != XmlPullParser.Event.END_ELEMENT &&
                     "notify-queue-details".equals(parser.getName())) {
                 eventType = parser.next();
-                while ((eventType == XmlPullParser.START_TAG) && "user".equals(parser.getName())) {
+                while ((eventType == XmlPullParser.Event.START_ELEMENT) && "user".equals(parser.getName())) {
                     String uid;
                     int position = -1;
                     int time = -1;
@@ -170,7 +169,7 @@ public final class QueueDetails implements ExtensionElement {
                     }
 
                     eventType = parser.next();
-                    while (eventType != XmlPullParser.END_TAG
+                    while (eventType != XmlPullParser.Event.END_ELEMENT
                                 || !"user".equals(parser.getName())) {
                         if ("position".equals(parser.getName())) {
                             position = Integer.parseInt(parser.nextText());
@@ -197,7 +196,7 @@ public final class QueueDetails implements ExtensionElement {
 
                         eventType = parser.next();
 
-                        if (eventType != XmlPullParser.END_TAG) {
+                        if (eventType != XmlPullParser.Event.END_ELEMENT) {
                             // throw exception
                         }
                     }

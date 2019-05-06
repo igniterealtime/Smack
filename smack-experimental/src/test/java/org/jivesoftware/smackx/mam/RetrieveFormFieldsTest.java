@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.mam;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.StreamOpen;
 
@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RetrieveFormFieldsTest extends MamTest {
 

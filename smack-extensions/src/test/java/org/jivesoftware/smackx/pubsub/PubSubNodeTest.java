@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
@@ -40,7 +41,6 @@ import org.jivesoftware.util.Protocol;
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
 
 public class PubSubNodeTest extends SmackTestSuite {
 

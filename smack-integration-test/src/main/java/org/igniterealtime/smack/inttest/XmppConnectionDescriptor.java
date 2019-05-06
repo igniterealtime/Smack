@@ -71,7 +71,12 @@ public class XmppConnectionDescriptor<C extends AbstractXMPPConnection, CC exten
         sinttestConfiguration.configurationApplier.applyConfigurationTo(connectionConfigurationBuilder);
         ConnectionConfiguration connectionConfiguration = connectionConfigurationBuilder.build();
         CC concreteConnectionConfiguration = connectionConfigurationClass.cast(connectionConfiguration);
-        return connectionConstructor.newInstance(concreteConnectionConfiguration);
+
+        C connection = connectionConstructor.newInstance(concreteConnectionConfiguration);
+
+        connection.setReplyTimeout(sinttestConfiguration.replyTimeout);
+
+        return connection;
     }
 
     @SuppressWarnings("unchecked")

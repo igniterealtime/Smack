@@ -16,17 +16,18 @@
  */
 package org.jivesoftware.smackx.chat_markers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.MarkableExtension;
 import org.jivesoftware.smackx.chat_markers.provider.MarkableProvider;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
 
 public class MarkableExtensionTest {
 
@@ -42,18 +43,18 @@ public class MarkableExtensionTest {
         message.setStanzaId("message-1");
         message.setBody("My lord, dispatch; read o'er these articles.");
         message.addExtension(ChatMarkersElements.MarkableExtension.INSTANCE);
-        Assert.assertEquals(markableMessageStanza, message.toXML().toString());
+        assertEquals(markableMessageStanza, message.toXML().toString());
     }
 
     @Test
     public void checkMarkableProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(markableExtension);
         MarkableExtension markableExtension1 = new MarkableProvider().parse(parser);
-        Assert.assertEquals(markableExtension, markableExtension1.toXML().toString());
+        assertEquals(markableExtension, markableExtension1.toXML().toString());
 
         Message message = PacketParserUtils.parseStanza(markableMessageStanza);
         MarkableExtension markableExtension2 = MarkableExtension.from(message);
-        Assert.assertEquals(markableExtension, markableExtension2.toXML().toString());
+        assertEquals(markableExtension, markableExtension2.toXML().toString());
     }
 
 }

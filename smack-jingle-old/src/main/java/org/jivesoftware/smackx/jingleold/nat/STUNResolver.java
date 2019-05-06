@@ -28,15 +28,15 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jingleold.JingleSession;
 
 import de.javawi.jstun.test.BindingLifetimeTest;
 import de.javawi.jstun.test.DiscoveryInfo;
 import de.javawi.jstun.test.DiscoveryTest;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Transport resolver using the JSTUN library, to discover public IP and use it as a candidate.
@@ -141,13 +141,11 @@ public class STUNResolver extends TransportResolver {
         int serverPort;
 
         try {
-            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-            parser.setInput(stunConfigStream, "UTF-8");
+            XmlPullParser parser = PacketParserUtils.getParserFor(stunConfigStream);
 
-            int eventType = parser.getEventType();
+            XmlPullParser.Event eventType = parser.getEventType();
             do {
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
 
                     // Parse a STUN server definition
                     if (parser.getName().equals("stunServer")) {
@@ -181,7 +179,7 @@ public class STUNResolver extends TransportResolver {
                 eventType = parser.next();
 
             }
-            while (eventType != XmlPullParser.END_DOCUMENT);
+            while (eventType != XmlPullParser.Event.END_DOCUMENT);
 
         }
         catch (XmlPullParserException e) {

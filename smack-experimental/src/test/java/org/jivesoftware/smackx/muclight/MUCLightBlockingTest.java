@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -25,8 +27,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -62,7 +63,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setStanzaId("getblock1");
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
 
-        Assert.assertEquals(getBlockingListIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(getBlockingListIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -70,12 +71,12 @@ public class MUCLightBlockingTest {
         IQ iqInfoResult = PacketParserUtils.parseStanza(getBlockingListIQResponse);
         MUCLightBlockingIQ mucLightBlockingIQ = (MUCLightBlockingIQ) iqInfoResult;
 
-        Assert.assertEquals(2, mucLightBlockingIQ.getRooms().size());
-        Assert.assertEquals(1, mucLightBlockingIQ.getUsers().size());
-        Assert.assertEquals(false, mucLightBlockingIQ.getRooms().get(JidCreate.from("coven@muclight.shakespeare.lit")));
-        Assert.assertEquals(false,
+        assertEquals(2, mucLightBlockingIQ.getRooms().size());
+        assertEquals(1, mucLightBlockingIQ.getUsers().size());
+        assertEquals(false, mucLightBlockingIQ.getRooms().get(JidCreate.from("coven@muclight.shakespeare.lit")));
+        assertEquals(false,
                 mucLightBlockingIQ.getRooms().get(JidCreate.from("sarasa@muclight.shakespeare.lit")));
-        Assert.assertEquals(false, mucLightBlockingIQ.getUsers().get(JidCreate.from("hag77@shakespeare.lit")));
+        assertEquals(false, mucLightBlockingIQ.getUsers().get(JidCreate.from("hag77@shakespeare.lit")));
     }
 
     @Test
@@ -89,7 +90,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block1");
 
-        Assert.assertEquals(blockingRoomsIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(blockingRoomsIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -103,7 +104,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block2");
 
-        Assert.assertEquals(blockingUsersIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(blockingUsersIQExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -119,7 +120,7 @@ public class MUCLightBlockingTest {
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("unblock1");
 
-        Assert.assertEquals(unblockingUsersAndRoomsExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(unblockingUsersAndRoomsExample, mucLightBlockingIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

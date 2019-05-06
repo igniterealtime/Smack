@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,19 @@
  */
 package org.jivesoftware.smackx.eme.provider;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.jivesoftware.smack.test.util.TestUtils;
+import java.io.IOException;
+
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol;
 
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class ExplicitMessageEncryptionProviderTest {
 
@@ -34,15 +39,19 @@ public class ExplicitMessageEncryptionProviderTest {
     private static final String UNKNOWN_EME_ELEMENT = "<encryption xmlns='urn:xmpp:eme:0' namespace='" + UNKNOWN_NAMESPACE
                     + "' name='" + UNKNOWN_NAME + "'/>";
 
-    @Test
-    public void testParseOxEmeElement() throws Exception {
-        ExplicitMessageEncryptionElement eme = TestUtils.parseExtensionElement(OX_EME_ELEMENT);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseOxEmeElement(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        ExplicitMessageEncryptionElement eme = SmackTestUtil.parse(OX_EME_ELEMENT, ExplicitMessageEncryptionProvider.class, parserKind);
         assertEquals(ExplicitMessageEncryptionProtocol.openpgpV0, eme.getProtocol());
     }
 
-    @Test
-    public void testParseUnknownEmeElement() throws Exception {
-        ExplicitMessageEncryptionElement eme = TestUtils.parseExtensionElement(UNKNOWN_EME_ELEMENT);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseUnknownEmeElement(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        ExplicitMessageEncryptionElement eme = SmackTestUtil.parse(UNKNOWN_EME_ELEMENT, ExplicitMessageEncryptionProvider.class, parserKind);
         assertEquals(UNKNOWN_NAMESPACE, eme.getEncryptionNamespace());
         assertEquals(UNKNOWN_NAME, eme.getName());
     }

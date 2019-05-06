@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.message_correct;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public class MessageCorrectExtensionTest {
@@ -42,11 +43,11 @@ public class MessageCorrectExtensionTest {
         Message initialMessage = PacketParserUtils.parseStanza(initialMessageXml);
         MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(idInitialMessage);
 
-        Assert.assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml.toString());
+        assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml.toString());
 
         initialMessage.addExtension(messageCorrectExtension);
 
-        Assert.assertEquals(initialMessage.toXML().toString(), expectedXml.toString());
+        assertEquals(initialMessage.toXML().toString(), expectedXml.toString());
     }
 
 }

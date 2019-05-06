@@ -21,12 +21,12 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.pubsub.Affiliation;
 import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 
 import org.jxmpp.jid.BareJid;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Parses the affiliation element out of the reply stanza from the server

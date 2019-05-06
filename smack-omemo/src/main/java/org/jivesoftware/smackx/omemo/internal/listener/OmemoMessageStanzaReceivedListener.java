@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.omemo.internal.listener;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.omemo.OmemoManager;
 
 public interface OmemoMessageStanzaReceivedListener {

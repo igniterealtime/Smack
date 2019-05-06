@@ -25,12 +25,13 @@ import java.util.Date;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.last_interaction.element.IdleElement;
 import org.jivesoftware.smackx.last_interaction.provider.IdleProvider;
 
 import org.junit.Test;
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
 
 public class IdleTest extends SmackTestSuite {
 

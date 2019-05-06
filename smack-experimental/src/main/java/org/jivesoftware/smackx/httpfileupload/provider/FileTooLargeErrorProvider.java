@@ -20,12 +20,11 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError_V0_2;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for File Too Large error extension.
@@ -41,10 +40,10 @@ public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooL
         Long maxFileSize = null;
 
         outerloop: while (true) {
-            int event = parser.next();
+            XmlPullParser.Event event = parser.next();
 
             switch (event) {
-                case XmlPullParser.START_TAG:
+                case START_ELEMENT:
                     String name = parser.getName();
                     switch (name) {
                         case "max-file-size":
@@ -52,10 +51,13 @@ public class FileTooLargeErrorProvider extends ExtensionElementProvider<FileTooL
                             break;
                     }
                     break;
-                case XmlPullParser.END_TAG:
+                case END_ELEMENT:
                     if (parser.getDepth() == initialDepth) {
                         break outerloop;
                     }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                     break;
             }
         }

@@ -20,14 +20,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.SmackXmlParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
+// TODO: Remove this class and replace it with SmackTestUtil.
 public final class TestUtils {
     private TestUtils() {
     }
@@ -52,12 +49,12 @@ public final class TestUtils {
         return getParser(new StringReader(string), startTag);
     }
 
-    public static XmlPullParser getParser(Reader reader, String startTag) {
+    private static XmlPullParser getParser(Reader reader, String startTag) {
         XmlPullParser parser;
         try {
-            parser = PacketParserUtils.newXmppParser(reader);
+            parser = SmackXmlParser.newXmlParser(reader);
             if (startTag == null) {
-                while (parser.getEventType() != XmlPullParser.START_TAG) {
+                while (parser.getEventType() != XmlPullParser.Event.START_ELEMENT) {
                     parser.next();
                 }
                 return parser;
@@ -65,7 +62,7 @@ public final class TestUtils {
             boolean found = false;
 
             while (!found) {
-                if ((parser.next() == XmlPullParser.START_TAG) && parser.getName().equals(startTag))
+                if ((parser.next() == XmlPullParser.Event.START_ELEMENT) && parser.getName().equals(startTag))
                     found = true;
             }
 
@@ -79,17 +76,4 @@ public final class TestUtils {
         return parser;
     }
 
-    public static <EE extends ExtensionElement> EE parseExtensionElement(String elementString)
-                    throws Exception {
-        return parseExtensionElement(getParser(elementString), null);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <EE extends ExtensionElement> EE parseExtensionElement(XmlPullParser parser, XmlEnvironment outerXmlEnvironment)
-                    throws Exception {
-        ParserUtils.assertAtStartTag(parser);
-        final String elementName = parser.getName();
-        final String namespace = parser.getNamespace();
-        return (EE) PacketParserUtils.parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment);
-    }
 }

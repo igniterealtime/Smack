@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.ox.store.filebased;
 import java.io.File;
 
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 

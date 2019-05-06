@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -25,8 +28,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetConfigsIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightGetConfigsTest {
@@ -49,7 +51,7 @@ public class MUCLightGetConfigsTest {
         MUCLightGetConfigsIQ mucLightGetConfigsIQ = new MUCLightGetConfigsIQ(
                 JidCreate.from("coven@muclight.shakespeare.lit"), "abcdefg");
         mucLightGetConfigsIQ.setStanzaId("config0");
-        Assert.assertEquals(getConfigsIQExample, mucLightGetConfigsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(getConfigsIQExample, mucLightGetConfigsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -57,10 +59,10 @@ public class MUCLightGetConfigsTest {
         IQ iqInfoResult = PacketParserUtils.parseStanza(getConfigsResponseExample);
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) iqInfoResult;
 
-        Assert.assertEquals("123456", mucLightConfigurationIQ.getVersion());
-        Assert.assertEquals("A Dark Cave", mucLightConfigurationIQ.getConfiguration().getRoomName());
-        Assert.assertEquals("A subject", mucLightConfigurationIQ.getConfiguration().getSubject());
-        Assert.assertNull(mucLightConfigurationIQ.getConfiguration().getCustomConfigs());
+        assertEquals("123456", mucLightConfigurationIQ.getVersion());
+        assertEquals("A Dark Cave", mucLightConfigurationIQ.getConfiguration().getRoomName());
+        assertEquals("A subject", mucLightConfigurationIQ.getConfiguration().getSubject());
+        assertNull(mucLightConfigurationIQ.getConfiguration().getCustomConfigs());
     }
 
     @Test
@@ -68,13 +70,13 @@ public class MUCLightGetConfigsTest {
         IQ iqInfoResult = PacketParserUtils.parseStanza(getConfigsResponseExampleWithCustomConfigs);
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) iqInfoResult;
 
-        Assert.assertEquals("123456", mucLightConfigurationIQ.getVersion());
-        Assert.assertEquals("A Dark Cave", mucLightConfigurationIQ.getConfiguration().getRoomName());
-        Assert.assertNull(mucLightConfigurationIQ.getConfiguration().getSubject());
+        assertEquals("123456", mucLightConfigurationIQ.getVersion());
+        assertEquals("A Dark Cave", mucLightConfigurationIQ.getConfiguration().getRoomName());
+        assertNull(mucLightConfigurationIQ.getConfiguration().getSubject());
 
         HashMap<String, String> customConfigs = mucLightConfigurationIQ.getConfiguration().getCustomConfigs();
-        Assert.assertEquals("blue", customConfigs.get("color"));
-        Assert.assertEquals("20", customConfigs.get("size"));
+        assertEquals("blue", customConfigs.get("color"));
+        assertEquals("20", customConfigs.get("size"));
     }
 
 }

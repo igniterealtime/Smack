@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.ox.provider;
 
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 import java.io.IOException;
 import java.util.Date;
 
@@ -26,11 +23,12 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public final class PublicKeysListElementProvider extends ExtensionElementProvider<PublicKeysListElement> {
 
@@ -43,12 +41,12 @@ public final class PublicKeysListElementProvider extends ExtensionElementProvide
 
         while (true) {
 
-            int tag = parser.nextTag();
-            String name = parser.getName();
+            XmlPullParser.TagEvent tag = parser.nextTag();
+            String name;
 
             switch (tag) {
-                case START_TAG:
-
+                case START_ELEMENT:
+                    name = parser.getName();
                     if (PublicKeysListElement.PubkeyMetadataElement.ELEMENT.equals(name)) {
                         String finger = parser.getAttributeValue(null,
                                 PublicKeysListElement.PubkeyMetadataElement.ATTR_V4_FINGERPRINT);
@@ -60,11 +58,16 @@ public final class PublicKeysListElementProvider extends ExtensionElementProvide
                     }
                     break;
 
-                case END_TAG:
-
+                case END_ELEMENT:
+                    name = parser.getName();
                     if (name.equals(PublicKeysListElement.ELEMENT)) {
                         return builder.build();
                     }
+                    break;
+
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
             }
         }
     }

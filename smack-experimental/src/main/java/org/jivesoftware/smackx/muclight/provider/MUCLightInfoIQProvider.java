@@ -21,6 +21,8 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
@@ -28,8 +30,6 @@ import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MUC Light info IQ provider class.
@@ -48,9 +48,9 @@ public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
         HashMap<Jid, MUCLightAffiliation> occupants = new HashMap<>();
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
 
                 if (parser.getName().equals("version")) {
                     version = parser.nextText();
@@ -62,7 +62,7 @@ public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
                     outerloop2: while (true) {
                         eventType = parser.next();
 
-                        if (eventType == XmlPullParser.START_TAG) {
+                        if (eventType == XmlPullParser.Event.START_ELEMENT) {
                             if (parser.getName().equals("roomname")) {
                                 roomName = parser.nextText();
                             } else if (parser.getName().equals("subject")) {
@@ -74,7 +74,7 @@ public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
                                 customConfigs.put(parser.getName(), parser.nextText());
                             }
 
-                        } else if (eventType == XmlPullParser.END_TAG) {
+                        } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                             if (parser.getDepth() == depth) {
                                 break outerloop2;
                             }
@@ -86,7 +86,7 @@ public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
                     occupants = iterateOccupants(parser);
                 }
 
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
@@ -101,14 +101,14 @@ public class MUCLightInfoIQProvider extends IQProvider<MUCLightInfoIQ> {
         int depth = parser.getDepth();
 
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("user")) {
                     MUCLightAffiliation affiliation = MUCLightAffiliation
                             .fromString(parser.getAttributeValue("", "affiliation"));
                     occupants.put(JidCreate.from(parser.nextText()), affiliation);
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == depth) {
                     break outerloop;
                 }

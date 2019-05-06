@@ -19,15 +19,15 @@ package org.jivesoftware.smackx.xdatalayout.provider;
 import java.io.IOException;
 import java.util.List;
 
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.DataFormLayoutElement;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Reportedref;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Section;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Extension Provider for Page layout of forms.
@@ -52,9 +52,9 @@ public class DataLayoutProvider {
     private static void parseLayout(List<DataFormLayoutElement> layout, XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 switch (parser.getName()) {
                 case Text.ELEMENT:
                     layout.add(new Text(parser.nextText()));
@@ -72,10 +72,13 @@ public class DataLayoutProvider {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }
@@ -85,8 +88,8 @@ public class DataLayoutProvider {
         final int initialDepth = parser.getDepth();
         Fieldref fieldref = new Fieldref(parser.getAttributeValue("", "var"));
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.END_TAG && parser.getDepth() == initialDepth) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth) {
                 break outerloop;
             }
         }

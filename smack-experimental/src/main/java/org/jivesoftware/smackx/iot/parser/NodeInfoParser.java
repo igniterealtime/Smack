@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.iot.parser;
 
 import static org.jivesoftware.smack.util.StringUtils.isNullOrEmpty;
 
-import org.jivesoftware.smackx.iot.element.NodeInfo;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public class NodeInfoParser {
 

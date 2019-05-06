@@ -23,9 +23,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class WorkgroupProperties extends IQ {
 
@@ -103,19 +102,19 @@ public class WorkgroupProperties extends IQ {
 
 
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "authRequired".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "authRequired".equals(parser.getName())) {
                     // CHECKSTYLE:OFF
                     props.setAuthRequired(Boolean.valueOf(parser.nextText()).booleanValue());
                     // CHECKSTYLE:ON
                 }
-                else if (eventType == XmlPullParser.START_TAG && "email".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "email".equals(parser.getName())) {
                     props.setEmail(parser.nextText());
                 }
-                else if (eventType == XmlPullParser.START_TAG && "name".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "name".equals(parser.getName())) {
                     props.setFullName(parser.nextText());
                 }
-                else if (eventType == XmlPullParser.END_TAG && "workgroup-properties".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT && "workgroup-properties".equals(parser.getName())) {
                     done = true;
                 }
             }

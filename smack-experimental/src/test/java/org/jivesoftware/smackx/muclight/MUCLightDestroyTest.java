@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightDestroyIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class MUCLightDestroyTest {
@@ -33,7 +34,7 @@ public class MUCLightDestroyTest {
     public void checkDestroyMUCLightStanza() throws Exception {
         MUCLightDestroyIQ mucLightDestroyIQ = new MUCLightDestroyIQ(JidCreate.from("coven@muclight.shakespeare.lit"));
         mucLightDestroyIQ.setStanzaId("destroy1");
-        Assert.assertEquals(mucLightDestroyIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), stanza);
+        assertEquals(mucLightDestroyIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), stanza);
     }
 
 }

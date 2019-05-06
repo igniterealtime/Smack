@@ -25,15 +25,14 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommand.Action;
 import org.jivesoftware.smackx.commands.AdHocCommandNote;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The AdHocCommandDataProvider parses AdHocCommandData packets.
@@ -48,7 +47,7 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
         AdHocCommandData adHocCommandData = new AdHocCommandData();
         DataFormProvider dataFormProvider = new DataFormProvider();
 
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName;
         String namespace;
         adHocCommandData.setSessionID(parser.getAttributeValue("", "sessionid"));
@@ -81,7 +80,7 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
             eventType = parser.next();
             elementName = parser.getName();
             namespace = parser.getNamespace();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("actions")) {
                     String execute = parser.getAttributeValue("", "execute");
                     if (execute != null) {
@@ -117,7 +116,7 @@ public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
                     adHocCommandData.setError(error);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("command")) {
                     done = true;
                 }

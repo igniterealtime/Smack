@@ -18,10 +18,9 @@ package org.jivesoftware.smackx.iqregister.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iqregister.packet.Registration;
-
-import org.xmlpull.v1.XmlPullParser;
 
 public class RegistrationStreamFeatureProvider extends ExtensionElementProvider<Registration.Feature> {
 

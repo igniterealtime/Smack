@@ -22,6 +22,7 @@ import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertNull;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
 import org.junit.Test;

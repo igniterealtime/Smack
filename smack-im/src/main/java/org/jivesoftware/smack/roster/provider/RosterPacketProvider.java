@@ -23,11 +23,11 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class RosterPacketProvider extends IQProvider<RosterPacket> {
 
@@ -40,9 +40,9 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
         roster.setVersion(version);
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String startTag = parser.getName();
                 switch (startTag) {
                 case "item":
@@ -51,7 +51,7 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 String endTag = parser.getName();
                 switch (endTag) {
                 case IQ.QUERY_ELEMENT:
@@ -59,6 +59,10 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                         break outerloop;
                     }
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
         }
         return roster;
@@ -85,9 +89,9 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
         item.setApproved(approved);
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String name = parser.getName();
                 switch (name) {
                 case RosterPacket.Item.GROUP:
@@ -98,10 +102,13 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

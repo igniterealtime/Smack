@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.blocking;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,6 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -47,15 +48,15 @@ public class BlockContactsIQTest {
         BlockContactsIQ blockContactIQ = new BlockContactsIQ(jids);
         blockContactIQ.setStanzaId("block1");
 
-        Assert.assertEquals(blockContactIQExample, blockContactIQ.toXML().toString());
+        assertEquals(blockContactIQExample, blockContactIQ.toXML().toString());
     }
 
     @Test
     public void checkBlockContactPushIQ() throws Exception {
         IQ iq = PacketParserUtils.parseStanza(blockContactPushIQExample);
         BlockContactsIQ blockContactIQ = (BlockContactsIQ) iq;
-        Assert.assertEquals(JidCreate.from("romeo@montague.net"), blockContactIQ.getJids().get(0));
-        Assert.assertEquals(JidCreate.from("pepe@montague.net"), blockContactIQ.getJids().get(1));
+        assertEquals(JidCreate.from("romeo@montague.net"), blockContactIQ.getJids().get(0));
+        assertEquals(JidCreate.from("pepe@montague.net"), blockContactIQ.getJids().get(1));
     }
 
 }

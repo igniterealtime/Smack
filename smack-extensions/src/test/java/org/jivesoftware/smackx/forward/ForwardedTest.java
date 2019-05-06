@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 import java.util.Properties;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
@@ -31,7 +32,6 @@ import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 public class ForwardedTest {
 
@@ -62,7 +62,7 @@ public class ForwardedTest {
         assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedStanza().getFrom()));
 
         // check end of tag
-        assertEquals(XmlPullParser.END_TAG, parser.getEventType());
+        assertEquals(XmlPullParser.Event.END_ELEMENT, parser.getEventType());
         assertEquals("forwarded", parser.getName());
     }
 
@@ -90,7 +90,7 @@ public class ForwardedTest {
         assertThat("romeo@montague.com", equalsCharSequence(fwd.getForwardedStanza().getFrom()));
 
         // check end of tag
-        assertEquals(XmlPullParser.END_TAG, parser.getEventType());
+        assertEquals(XmlPullParser.Event.END_ELEMENT, parser.getEventType());
         assertEquals("forwarded", parser.getName());
     }
 

@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.blocking;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +28,6 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.UnblockContactsIQ;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -54,29 +56,29 @@ public class UnblockContactsIQTest {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(jids);
         unblockContactIQ.setStanzaId("unblock1");
 
-        Assert.assertEquals(unblockContactIQExample, unblockContactIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(unblockContactIQExample, unblockContactIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void checkUnblockContactPushIQ() throws Exception {
         IQ iq = PacketParserUtils.parseStanza(unblockContactPushIQExample);
         UnblockContactsIQ unblockContactIQ = (UnblockContactsIQ) iq;
-        Assert.assertEquals(JidCreate.from("romeo@montague.net"), unblockContactIQ.getJids().get(0));
-        Assert.assertEquals(JidCreate.from("pepe@montague.net"), unblockContactIQ.getJids().get(1));
+        assertEquals(JidCreate.from("romeo@montague.net"), unblockContactIQ.getJids().get(0));
+        assertEquals(JidCreate.from("pepe@montague.net"), unblockContactIQ.getJids().get(1));
     }
 
     @Test
     public void checkUnblockAllIQStanza() throws Exception {
         UnblockContactsIQ unblockAllIQ = new UnblockContactsIQ(null);
         unblockAllIQ.setStanzaId("unblock2");
-        Assert.assertEquals(unblockAllIQExample, unblockAllIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(unblockAllIQExample, unblockAllIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void checkUnblockAllPushIQ() throws Exception {
         IQ iq = PacketParserUtils.parseStanza(unblockAllPushIQExample);
         UnblockContactsIQ unblockAllIQ = (UnblockContactsIQ) iq;
-        Assert.assertNull(unblockAllIQ.getJids());
+        assertNull(unblockAllIQ.getJids());
     }
 
 }

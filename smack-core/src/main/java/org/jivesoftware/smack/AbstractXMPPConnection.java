@@ -121,6 +121,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -130,8 +132,6 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 import org.minidns.dnsname.DnsName;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 
 /**
@@ -1614,9 +1614,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         streamFeatures.clear();
         final int initialDepth = parser.getDepth();
         while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG && parser.getDepth() == initialDepth + 1) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getDepth() == initialDepth + 1) {
                 FullyQualifiedElement streamFeature = null;
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
@@ -1647,7 +1647,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     addStreamFeature(streamFeature);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG && parser.getDepth() == initialDepth) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth) {
                 break;
             }
         }

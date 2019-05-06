@@ -25,6 +25,8 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.si.packet.StreamInitiation.File;
@@ -32,8 +34,6 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The StreamInitiationProvider parses StreamInitiation packets.
@@ -66,14 +66,13 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
         DataForm form = null;
         DataFormProvider dataFormProvider = new DataFormProvider();
 
-        int eventType;
         String elementName;
         String namespace;
         while (!done) {
-            eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             elementName = parser.getName();
             namespace = parser.getNamespace();
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (elementName.equals("file")) {
                     name = parser.getAttributeValue("", "name");
                     size = parser.getAttributeValue("", "size");
@@ -87,7 +86,7 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
                         && namespace.equals("jabber:x:data")) {
                     form = dataFormProvider.parse(parser);
                 }
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (elementName.equals("si")) {
                     done = true;
                 } else if (elementName.equals("file")) {

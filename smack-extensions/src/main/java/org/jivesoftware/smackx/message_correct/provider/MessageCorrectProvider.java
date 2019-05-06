@@ -18,10 +18,9 @@ package org.jivesoftware.smackx.message_correct.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
-
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * A ExtensionElementProvider for the MessageCorrectExtension. As

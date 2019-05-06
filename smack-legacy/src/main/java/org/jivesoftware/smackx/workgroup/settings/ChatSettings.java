@@ -26,9 +26,8 @@ import java.util.List;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class ChatSettings extends IQ {
 
@@ -128,7 +127,7 @@ public class ChatSettings extends IQ {
 
         @Override
         public ChatSettings parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
+            if (parser.getEventType() != XmlPullParser.Event.START_ELEMENT) {
                 throw new IllegalStateException("Parser not in proper position, or bad XML.");
             }
 
@@ -136,12 +135,12 @@ public class ChatSettings extends IQ {
 
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "chat-setting".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "chat-setting".equals(parser.getName())) {
                     chatSettings.addSetting(parseChatSetting(parser));
 
                 }
-                else if (eventType == XmlPullParser.END_TAG && ELEMENT_NAME.equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT && ELEMENT_NAME.equals(parser.getName())) {
                     done = true;
                 }
             }
@@ -156,17 +155,17 @@ public class ChatSettings extends IQ {
             int type = 0;
 
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "key".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "key".equals(parser.getName())) {
                     key = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.START_TAG && "value".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "value".equals(parser.getName())) {
                     value = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.START_TAG && "type".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "type".equals(parser.getName())) {
                     type = Integer.parseInt(parser.nextText());
                 }
-                else if (eventType == XmlPullParser.END_TAG && "chat-setting".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT && "chat-setting".equals(parser.getName())) {
                     done = true;
                 }
             }

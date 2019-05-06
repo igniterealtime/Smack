@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.Message;
@@ -23,8 +25,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.AffiliationsChangeExtension;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -55,10 +56,10 @@ public class MUCLightAffiliationsChangeExtensionTest {
                 .from(changeAffiliationsMessage);
 
         HashMap<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
-        Assert.assertEquals(affiliations.size(), 3);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
+        assertEquals(affiliations.size(), 3);
+        assertEquals(affiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
+        assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
+        assertEquals(affiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
     }
 
     @Test
@@ -68,11 +69,11 @@ public class MUCLightAffiliationsChangeExtensionTest {
                 .from(changeAffiliationsMessage);
 
         HashMap<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
-        Assert.assertEquals(affiliations.size(), 2);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
+        assertEquals(affiliations.size(), 2);
+        assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
+        assertEquals(affiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
 
-        Assert.assertEquals(affiliationsChangeExtension.getVersion(), "qwerty");
+        assertEquals(affiliationsChangeExtension.getVersion(), "qwerty");
     }
 
     @Test
@@ -83,12 +84,12 @@ public class MUCLightAffiliationsChangeExtensionTest {
                 .from(changeAffiliationsMessage);
 
         HashMap<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
-        Assert.assertEquals(affiliations.size(), 2);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
-        Assert.assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
+        assertEquals(affiliations.size(), 2);
+        assertEquals(affiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
+        assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
 
-        Assert.assertEquals(affiliationsChangeExtension.getPrevVersion(), "njiokm");
-        Assert.assertEquals(affiliationsChangeExtension.getVersion(), "qwerty");
+        assertEquals(affiliationsChangeExtension.getPrevVersion(), "njiokm");
+        assertEquals(affiliationsChangeExtension.getVersion(), "qwerty");
     }
 
 }

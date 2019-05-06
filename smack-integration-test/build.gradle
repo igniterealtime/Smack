@@ -22,6 +22,7 @@ dependencies {
 	// junit:junit:4.12, which we currently need in sinttest, since it
 	// (ab)uses @Before from org.junit
 	compile "org.junit.vintage:junit-vintage-engine:$junitVersion"
+	compile 'junit:junit:4.12'
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 }
 

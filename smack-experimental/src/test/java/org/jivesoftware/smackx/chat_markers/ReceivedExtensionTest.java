@@ -16,18 +16,19 @@
  */
 package org.jivesoftware.smackx.chat_markers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.ReceivedExtension;
 import org.jivesoftware.smackx.chat_markers.provider.ReceivedProvider;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
 
 public class ReceivedExtensionTest {
 
@@ -41,18 +42,18 @@ public class ReceivedExtensionTest {
         Message message = new Message(JidCreate.from("northumberland@shakespeare.lit/westminster"));
         message.setStanzaId("message-2");
         message.addExtension(new ChatMarkersElements.ReceivedExtension("message-1"));
-        Assert.assertEquals(receivedMessageStanza, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(receivedMessageStanza, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void checkReceivedProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(receivedExtension);
         ReceivedExtension receivedExtension1 = new ReceivedProvider().parse(parser);
-        Assert.assertEquals("message-1", receivedExtension1.getId());
+        assertEquals("message-1", receivedExtension1.getId());
 
         Message message = PacketParserUtils.parseStanza(receivedMessageStanza);
         ReceivedExtension receivedExtension2 = ReceivedExtension.from(message);
-        Assert.assertEquals("message-1", receivedExtension2.getId());
+        assertEquals("message-1", receivedExtension2.getId());
     }
 
 }

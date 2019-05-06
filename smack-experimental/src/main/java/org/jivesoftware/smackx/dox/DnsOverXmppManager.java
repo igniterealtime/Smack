@@ -33,6 +33,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.packet.StanzaError.Type;
 import org.jivesoftware.smack.util.RandomUtil;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.dox.element.DnsIq;
 

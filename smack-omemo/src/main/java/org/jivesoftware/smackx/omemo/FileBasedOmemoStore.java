@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.stringencoder.BareJidEncoder;
+
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.chat_markers.filter;
 
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
+
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 
 /**

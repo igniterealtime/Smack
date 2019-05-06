@@ -44,10 +44,10 @@ import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
 import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 
 public final class SmackInitialization {
@@ -141,12 +141,10 @@ public final class SmackInitialization {
 
     public static void processConfigFile(InputStream cfgFileStream,
                     Collection<Exception> exceptions, ClassLoader classLoader) throws Exception {
-        XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-        parser.setInput(cfgFileStream, "UTF-8");
-        int eventType = parser.getEventType();
+        XmlPullParser parser = PacketParserUtils.getParserFor(cfgFileStream);
+        XmlPullParser.Event eventType = parser.getEventType();
         do {
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("startupClasses")) {
                     parseClassesToLoad(parser, false, exceptions, classLoader);
                 }
@@ -156,7 +154,7 @@ public final class SmackInitialization {
             }
             eventType = parser.next();
         }
-        while (eventType != XmlPullParser.END_DOCUMENT);
+        while (eventType != XmlPullParser.Event.END_DOCUMENT);
         CloseableUtil.maybeClose(cfgFileStream, LOGGER);
     }
 
@@ -164,12 +162,10 @@ public final class SmackInitialization {
                     Collection<Exception> exceptions, ClassLoader classLoader)
                     throws Exception {
         final String startName = parser.getName();
-        int eventType;
-        String name;
+        XmlPullParser.Event eventType;
         outerloop: do {
             eventType = parser.next();
-            name = parser.getName();
-            if (eventType == XmlPullParser.START_TAG && "className".equals(name)) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT && "className".equals(parser.getName())) {
                 String classToLoad = parser.nextText();
                 if (SmackConfiguration.isDisabledSmackClass(classToLoad)) {
                     continue outerloop;
@@ -188,7 +184,7 @@ public final class SmackInitialization {
                 }
             }
         }
-        while (!(eventType == XmlPullParser.END_TAG && startName.equals(name)));
+        while (!(eventType == XmlPullParser.Event.END_ELEMENT && startName.equals(parser.getName())));
     }
 
     private static void loadSmackClass(String className, boolean optional, ClassLoader classLoader) throws Exception {

@@ -20,7 +20,6 @@ package org.jivesoftware.smack.bosh;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
-import java.io.StringReader;
 import java.io.Writer;
 import java.util.Map;
 import java.util.logging.Level;
@@ -44,6 +43,7 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.igniterealtime.jbosh.AbstractBody;
 import org.igniterealtime.jbosh.BOSHClient;
@@ -56,11 +56,8 @@ import org.igniterealtime.jbosh.BOSHException;
 import org.igniterealtime.jbosh.BOSHMessageEvent;
 import org.igniterealtime.jbosh.BodyQName;
 import org.igniterealtime.jbosh.ComposableBody;
-
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Creates a connection to an XMPP server via HTTP binding.
@@ -479,14 +476,13 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     if (streamId == null) {
                         streamId = body.getAttribute(BodyQName.create(XMPPBOSHConnection.BOSH_URI, "authid"));
                     }
-                    final XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
-                    parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
-                    parser.setInput(new StringReader(body.toXML()));
-                    int eventType = parser.getEventType();
+                    final XmlPullParser parser = PacketParserUtils.getParserFor(body.toXML());
+
+                    XmlPullParser.Event eventType = parser.getEventType();
                     do {
                         eventType = parser.next();
                         switch (eventType) {
-                        case XmlPullParser.START_TAG:
+                        case START_ELEMENT:
                             String name = parser.getName();
                             switch (name) {
                             case Message.ELEMENT:
@@ -528,9 +524,12 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                 }
                             }
                             break;
+                        default:
+                            // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                            break;
                         }
                     }
-                    while (eventType != XmlPullParser.END_DOCUMENT);
+                    while (eventType != XmlPullParser.Event.END_DOCUMENT);
                 }
                 catch (Exception e) {
                     if (isConnected()) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Paul Schaub
+ * Copyright © 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.element;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.hashes.element.HashElement;
 
 /**
@@ -29,14 +30,14 @@ public class Range implements NamedElement {
     public static final String ATTR_OFFSET = "offset";
     public static final String ATTR_LENGTH = "length";
 
-    private final int offset, length;
+    private final Integer offset, length;
     private final HashElement hash;
 
     /**
      * Create a Range element with default values.
      */
     public Range() {
-        this(0, -1, null);
+        this(null, null, null);
     }
 
     /**
@@ -44,7 +45,7 @@ public class Range implements NamedElement {
      * @param length length of the transmitted data in bytes.
      */
     public Range(int length) {
-        this(0, length, null);
+        this(null, length, null);
     }
 
     /**
@@ -62,7 +63,7 @@ public class Range implements NamedElement {
      * @param length number of bytes that shall be transferred.
      * @param hash hash of the bytes in the specified range.
      */
-    public Range(int offset, int length, HashElement hash) {
+    public Range(Integer offset, Integer length, HashElement hash) {
         this.offset = offset;
         this.length = length;
         this.hash = hash;
@@ -102,10 +103,11 @@ public class Range implements NamedElement {
     public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb =  new XmlStringBuilder(this);
 
-        if (offset > 0) {
+        // TODO: (Introduce and) use XmlStringBuilder.optXmlAttribute(name, Number).
+        if (offset != null) {
             sb.attribute(ATTR_OFFSET, offset);
         }
-        if (length > 0) {
+        if (length != null) {
             sb.attribute(ATTR_LENGTH, length);
         }
 

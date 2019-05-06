@@ -29,9 +29,8 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.Enabled;
 import org.jivesoftware.smack.sm.packet.StreamManagement.Failed;
 import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.util.ParserUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class ParseStreamManagement {
 
@@ -53,9 +52,9 @@ public class ParseStreamManagement {
         List<StanzaErrorTextElement> textElements = new ArrayList<>(4);
         outerloop:
         while (true) {
-            int event = parser.next();
+            XmlPullParser.Event event = parser.next();
             switch (event) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 name = parser.getName();
                 String namespace = parser.getNamespace();
                 if (StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE.equals(namespace)) {
@@ -69,11 +68,14 @@ public class ParseStreamManagement {
                     }
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 name = parser.getName();
                 if (Failed.ELEMENT.equals(name)) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

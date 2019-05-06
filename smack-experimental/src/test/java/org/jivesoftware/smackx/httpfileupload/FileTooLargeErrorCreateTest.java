@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class FileTooLargeErrorCreateTest {
     private static final String fileTooLargeErrorExtensionExample
@@ -31,8 +32,8 @@ public class FileTooLargeErrorCreateTest {
     public void checkFileTooLargeErrorExtensionCreation() {
         FileTooLargeError fileTooLargeError = new FileTooLargeError(20000);
 
-        Assert.assertEquals(20000, fileTooLargeError.getMaxFileSize());
-        Assert.assertEquals(fileTooLargeErrorExtensionExample, fileTooLargeError.toXML().toString());
+        assertEquals(20000, fileTooLargeError.getMaxFileSize());
+        assertEquals(fileTooLargeErrorExtensionExample, fileTooLargeError.toXML().toString());
 
     }
 

@@ -16,13 +16,15 @@
  */
 package org.jivesoftware.smackx.muclight;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationsChangeExtension;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MUCLightConfigurationsChangeExtensionTest {
 
@@ -46,12 +48,12 @@ public class MUCLightConfigurationsChangeExtensionTest {
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
-        Assert.assertEquals("asdfghj000", configurationsChangeExtension.getPrevVersion());
-        Assert.assertEquals("asdfghj", configurationsChangeExtension.getVersion());
-        Assert.assertEquals("To be or not to be?", configurationsChangeExtension.getSubject());
-        Assert.assertNull(configurationsChangeExtension.getRoomName());
-        Assert.assertNull(configurationsChangeExtension.getCustomConfigs());
-        Assert.assertEquals(messageWithSubjectChangeExample, configurationsMessage.toXML().toString());
+        assertEquals("asdfghj000", configurationsChangeExtension.getPrevVersion());
+        assertEquals("asdfghj", configurationsChangeExtension.getVersion());
+        assertEquals("To be or not to be?", configurationsChangeExtension.getSubject());
+        assertNull(configurationsChangeExtension.getRoomName());
+        assertNull(configurationsChangeExtension.getCustomConfigs());
+        assertEquals(messageWithSubjectChangeExample, configurationsMessage.toXML().toString());
     }
 
     @Test
@@ -60,12 +62,12 @@ public class MUCLightConfigurationsChangeExtensionTest {
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
-        Assert.assertEquals("zaqwsx", configurationsChangeExtension.getPrevVersion());
-        Assert.assertEquals("zxcvbnm", configurationsChangeExtension.getVersion());
-        Assert.assertEquals("A Darker Cave", configurationsChangeExtension.getRoomName());
-        Assert.assertNull(configurationsChangeExtension.getSubject());
-        Assert.assertNull(configurationsChangeExtension.getCustomConfigs());
-        Assert.assertEquals(messageWithRoomNameChangeExample, configurationsMessage.toXML().toString());
+        assertEquals("zaqwsx", configurationsChangeExtension.getPrevVersion());
+        assertEquals("zxcvbnm", configurationsChangeExtension.getVersion());
+        assertEquals("A Darker Cave", configurationsChangeExtension.getRoomName());
+        assertNull(configurationsChangeExtension.getSubject());
+        assertNull(configurationsChangeExtension.getCustomConfigs());
+        assertEquals(messageWithRoomNameChangeExample, configurationsMessage.toXML().toString());
     }
 
     @Test
@@ -74,12 +76,12 @@ public class MUCLightConfigurationsChangeExtensionTest {
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
-        Assert.assertEquals("zaqwsx", configurationsChangeExtension.getPrevVersion());
-        Assert.assertEquals("zxcvbnm", configurationsChangeExtension.getVersion());
-        Assert.assertEquals("A Darker Cave", configurationsChangeExtension.getRoomName());
-        Assert.assertNull(configurationsChangeExtension.getSubject());
-        Assert.assertEquals("blue", configurationsChangeExtension.getCustomConfigs().get("color"));
-        Assert.assertEquals(messageWithConfigsChangeExample, configurationsMessage.toXML().toString());
+        assertEquals("zaqwsx", configurationsChangeExtension.getPrevVersion());
+        assertEquals("zxcvbnm", configurationsChangeExtension.getVersion());
+        assertEquals("A Darker Cave", configurationsChangeExtension.getRoomName());
+        assertNull(configurationsChangeExtension.getSubject());
+        assertEquals("blue", configurationsChangeExtension.getCustomConfigs().get("color"));
+        assertEquals(messageWithConfigsChangeExample, configurationsMessage.toXML().toString());
     }
 
 }

@@ -21,11 +21,10 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xevent.packet.MessageEvent;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -49,8 +48,8 @@ public class MessageEventProvider extends ExtensionElementProvider<MessageEvent>
         MessageEvent messageEvent = new MessageEvent();
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("id"))
                     messageEvent.setStanzaId(parser.nextText());
                 if (parser.getName().equals(MessageEvent.COMPOSING))
@@ -61,7 +60,7 @@ public class MessageEventProvider extends ExtensionElementProvider<MessageEvent>
                     messageEvent.setDisplayed(true);
                 if (parser.getName().equals(MessageEvent.OFFLINE))
                     messageEvent.setOffline(true);
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("x")) {
                     done = true;
                 }

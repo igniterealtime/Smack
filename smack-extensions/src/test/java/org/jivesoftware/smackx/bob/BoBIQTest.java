@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.bob;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -24,7 +26,6 @@ import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -46,7 +47,7 @@ public class BoBIQTest extends SmackTestSuite {
         createdBoBIQ.setTo(JidCreate.from("ladymacbeth@shakespeare.lit/castle"));
         createdBoBIQ.setType(Type.get);
 
-        Assert.assertEquals(sampleBoBIQRequest, createdBoBIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(sampleBoBIQRequest, createdBoBIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -61,12 +62,12 @@ public class BoBIQTest extends SmackTestSuite {
         createdBoBIQ.setTo(JidCreate.from("doctor@shakespeare.lit/pda"));
         createdBoBIQ.setType(Type.result);
 
-        Assert.assertEquals(bobIQ.getBoBHash().getHash(), createdBoBIQ.getBoBHash().getHash());
-        Assert.assertEquals(bobIQ.getBoBHash().getHashType(), createdBoBIQ.getBoBHash().getHashType());
-        Assert.assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
-        Assert.assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
-        Assert.assertEquals(bobIQ.getBoBData().getContentBase64Encoded(), createdBoBIQ.getBoBData().getContentBase64Encoded());
-        Assert.assertEquals(bobIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), createdBoBIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(bobIQ.getBoBHash().getHash(), createdBoBIQ.getBoBHash().getHash());
+        assertEquals(bobIQ.getBoBHash().getHashType(), createdBoBIQ.getBoBHash().getHashType());
+        assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
+        assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
+        assertEquals(bobIQ.getBoBData().getContentBase64Encoded(), createdBoBIQ.getBoBData().getContentBase64Encoded());
+        assertEquals(bobIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), createdBoBIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

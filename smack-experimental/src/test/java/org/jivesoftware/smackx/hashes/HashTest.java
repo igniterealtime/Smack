@@ -21,7 +21,7 @@ import static junit.framework.TestCase.assertEquals;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test HashManager functionality.

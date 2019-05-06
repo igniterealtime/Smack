@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
@@ -33,8 +35,6 @@ import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
 import org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Unit tests for DataForm reading and parsing.
@@ -143,9 +143,8 @@ public class DataLayoutTest {
     public void testLayoutFromFile() throws Exception {
         DataFormProvider pr = new DataFormProvider();
 
-        XmlPullParser parser = PacketParserUtils.newXmppParser();
-        parser.setInput(new InputStreamReader(this.getClass().getResourceAsStream(TEST_INPUT_1), "UTF-8"));
-        parser.next();
+        InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getResourceAsStream(TEST_INPUT_1), "UTF-8");
+        XmlPullParser parser = PacketParserUtils.getParserFor(inputStreamReader);
 
         DataForm form = pr.parse(parser);
         assertNotNull(form);

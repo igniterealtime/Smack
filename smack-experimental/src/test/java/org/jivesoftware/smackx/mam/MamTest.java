@@ -25,16 +25,16 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 
 public class MamTest extends InitExtensions {
 
-    protected XMPPConnection connection;
-    protected String queryId;
-    protected MamManager mamManager;
+    protected static XMPPConnection connection;
+    protected static String queryId;
+    protected static MamManager mamManager;
 
-    @Before
-    public void setup() {
+    @BeforeAll
+    public static void setup() {
         // mock connection
         connection = new DummyConnection();
 

@@ -21,9 +21,9 @@ import static org.junit.Assert.assertTrue;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 public class ProviderManagerTest {
 

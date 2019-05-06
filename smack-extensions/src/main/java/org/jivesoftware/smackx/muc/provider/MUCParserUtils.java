@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.muc.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muc.MUCAffiliation;
 import org.jivesoftware.smackx.muc.MUCRole;
@@ -28,8 +30,6 @@ import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class MUCParserUtils {
     public static MUCItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -42,9 +42,9 @@ public class MUCParserUtils {
         Resourcepart actorNick = null;
         String reason = null;
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String name = parser.getName();
                 switch (name) {
                 case "actor":
@@ -62,10 +62,13 @@ public class MUCParserUtils {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }
@@ -77,9 +80,9 @@ public class MUCParserUtils {
         final EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
         String reason = null;
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 final String name = parser.getName();
                 switch (name) {
                 case "reason":
@@ -87,10 +90,13 @@ public class MUCParserUtils {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (initialDepth == parser.getDepth()) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

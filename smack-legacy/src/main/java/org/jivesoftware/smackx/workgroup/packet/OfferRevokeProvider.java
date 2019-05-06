@@ -23,10 +23,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * An IQProvider class which has savvy about the offer-revoke tag.<br>
@@ -46,20 +46,20 @@ public class OfferRevokeProvider extends IQProvider<IQ> {
         boolean done = false;
 
         while (!done) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if ((eventType == XmlPullParser.START_TAG) && parser.getName().equals("reason")) {
+            if ((eventType == XmlPullParser.Event.START_ELEMENT) && parser.getName().equals("reason")) {
                 reason = parser.nextText();
             }
-            else if ((eventType == XmlPullParser.START_TAG)
+            else if ((eventType == XmlPullParser.Event.START_ELEMENT)
                          && parser.getName().equals(SessionID.ELEMENT_NAME)) {
                 sessionID = parser.getAttributeValue("", "id");
             }
-            else if ((eventType == XmlPullParser.START_TAG)
+            else if ((eventType == XmlPullParser.Event.START_ELEMENT)
                          && parser.getName().equals(UserID.ELEMENT_NAME)) {
                 userID = ParserUtils.getJidAttribute(parser, "id");
             }
-            else if ((eventType == XmlPullParser.END_TAG) && parser.getName().equals(
+            else if ((eventType == XmlPullParser.Event.END_ELEMENT) && parser.getName().equals(
                     "offer-revoke")) {
                 done = true;
             }

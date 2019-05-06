@@ -26,10 +26,10 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.ParserUtils;
-import org.jivesoftware.smackx.reference.element.ReferenceElement;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smackx.reference.element.ReferenceElement;
 
 public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement> {
 
@@ -53,8 +53,8 @@ public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement
         }
         ExtensionElement child = null;
         outerloop: while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
                 ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(elementName, namespace);
@@ -62,7 +62,7 @@ public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement
                     child = provider.parse(parser);
                 }
             }
-            if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 break outerloop;
             }
         }

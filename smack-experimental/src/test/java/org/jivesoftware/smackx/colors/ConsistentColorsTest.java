@@ -23,7 +23,7 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.colors.ConsistentColor.Deficiency;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ConsistentColorsTest extends SmackTestSuite {
 

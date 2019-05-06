@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Vyacheslav Blinov, 2017-2018 Florian Schmaus
+ * Copyright 2014 Vyacheslav Blinov, 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,9 @@
  */
 package org.jivesoftware.smack.sm.provider;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,11 +28,11 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaErrorTextElement;
 import org.jivesoftware.smack.sm.packet.StreamManagement;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.junit.jupiter.api.Test;
 
 public class ParseStreamManagementTest {
     private static final Properties outputProperties = initOutputProperties();
@@ -58,11 +55,11 @@ public class ParseStreamManagementTest {
         StreamManagement.Enabled enabledPacket = ParseStreamManagement.enabled(
                 PacketParserUtils.getParserFor(enabledStanza));
 
-        assertThat(enabledPacket, is(notNullValue()));
-        assertThat(enabledPacket.getId(), equalTo(stanzaID));
-        assertThat(enabledPacket.getLocation(), equalTo(location));
-        assertThat(enabledPacket.isResumeSet(), equalTo(resume));
-        assertThat(enabledPacket.getMaxResumptionTime(), equalTo(max));
+        assertNotNull(enabledPacket);
+        assertEquals(enabledPacket.getId(), stanzaID);
+        assertEquals(location, enabledPacket.getLocation());
+        assertEquals(resume, enabledPacket.isResumeSet());
+        assertEquals(max, enabledPacket.getMaxResumptionTime());
     }
 
 
@@ -84,7 +81,7 @@ public class ParseStreamManagementTest {
         StreamManagement.Failed failedPacket = ParseStreamManagement.failed(
                 PacketParserUtils.getParserFor(failedStanza));
 
-        assertThat(failedPacket, is(notNullValue()));
+        assertNotNull(failedPacket);
         assertTrue(failedPacket.getStanzaErrorCondition() == null);
     }
 
@@ -100,7 +97,7 @@ public class ParseStreamManagementTest {
         StreamManagement.Failed failedPacket = ParseStreamManagement.failed(
                 PacketParserUtils.getParserFor(failedStanza));
 
-        assertThat(failedPacket, is(notNullValue()));
+        assertNotNull(failedPacket);
         assertTrue(failedPacket.getStanzaErrorCondition() == errorCondition);
     }
 
@@ -142,9 +139,9 @@ public class ParseStreamManagementTest {
         StreamManagement.Resumed resumedPacket = ParseStreamManagement.resumed(
                 PacketParserUtils.getParserFor(resumedStanza));
 
-        assertThat(resumedPacket, is(notNullValue()));
-        assertThat(resumedPacket.getHandledCount(), equalTo(handledPackets));
-        assertThat(resumedPacket.getPrevId(), equalTo(previousID));
+        assertNotNull(resumedPacket);
+        assertEquals(handledPackets, resumedPacket.getHandledCount());
+        assertEquals(previousID, resumedPacket.getPrevId());
     }
 
     @Test
@@ -159,8 +156,8 @@ public class ParseStreamManagementTest {
         StreamManagement.AckAnswer acknowledgementPacket = ParseStreamManagement.ackAnswer(
                 PacketParserUtils.getParserFor(ackStanza));
 
-        assertThat(acknowledgementPacket, is(notNullValue()));
-        assertThat(acknowledgementPacket.getHandledCount(), equalTo(handledPackets));
+        assertNotNull(acknowledgementPacket);
+        assertEquals(handledPackets, acknowledgementPacket.getHandledCount());
     }
 
     private static Properties initOutputProperties() {

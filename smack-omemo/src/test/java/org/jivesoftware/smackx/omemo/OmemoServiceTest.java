@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
 import org.junit.Test;

@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.ox.provider;
 
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
@@ -35,6 +32,9 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.ox.element.CryptElement;
 import org.jivesoftware.smackx.ox.element.EncryptedOpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
@@ -43,8 +43,6 @@ import org.jivesoftware.smackx.ox.element.SigncryptElement;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Abstract {@link ExtensionElementProvider} implementation for the also abstract {@link OpenPgpContentElement}.
@@ -90,10 +88,10 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
         List<ExtensionElement> payload = new LinkedList<>();
 
         outerloop: while (true) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             String name = parser.getName();
             switch (tag) {
-                case START_TAG:
+                case START_ELEMENT:
                     switch (name) {
 
                         case OpenPgpContentElement.ELEM_TIME:
@@ -112,12 +110,11 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
 
                         case OpenPgpContentElement.ELEM_PAYLOAD:
                             innerloop: while (true) {
-                                int ptag = parser.next();
+                                XmlPullParser.Event ptag = parser.next();
                                 String pname = parser.getName();
                                 String pns = parser.getNamespace();
                                 switch (ptag) {
-
-                                    case START_TAG:
+                                    case START_ELEMENT:
                                         ExtensionElementProvider<ExtensionElement> provider =
                                                 ProviderManager.getExtensionProvider(pname, pns);
                                         if (provider == null) {
@@ -127,21 +124,29 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
                                         payload.add(provider.parse(parser));
                                         break;
 
-                                    case END_TAG:
+                                    case END_ELEMENT:
                                         break innerloop;
+
+                                    default:
+                                        // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                                        break;
                                 }
                             }
                             break;
                     }
                     break;
 
-                case END_TAG:
+                case END_ELEMENT:
                     switch (name) {
                         case CryptElement.ELEMENT:
                         case SigncryptElement.ELEMENT:
                         case SignElement.ELEMENT:
                             break outerloop;
                     }
+                    break;
+
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                     break;
             }
         }

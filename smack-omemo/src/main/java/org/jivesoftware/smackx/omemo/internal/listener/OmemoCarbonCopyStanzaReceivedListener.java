@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.omemo.internal.listener;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.omemo.OmemoManager;
 

@@ -26,12 +26,13 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 import org.jivesoftware.smackx.sid.provider.OriginIdProvider;
 import org.jivesoftware.smackx.sid.provider.StanzaIdProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StableUniqueStanzaIdTest extends SmackTestSuite {
 

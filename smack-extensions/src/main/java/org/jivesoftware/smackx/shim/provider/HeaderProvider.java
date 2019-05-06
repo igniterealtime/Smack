@@ -20,11 +20,10 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.shim.packet.Header;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Parses the header element as defined in <a href="http://xmpp.org/extensions/xep-0131">Stanza Headers and Internet Metadata (SHIM)</a>.
@@ -39,11 +38,11 @@ public class HeaderProvider extends ExtensionElementProvider<Header> {
 
         parser.next();
 
-        if (parser.getEventType() == XmlPullParser.TEXT) {
+        if (parser.getEventType() == XmlPullParser.Event.TEXT_CHARACTERS) {
             value = parser.getText();
         }
 
-        while (parser.getEventType() != XmlPullParser.END_TAG) {
+        while (parser.getEventType() != XmlPullParser.Event.END_ELEMENT) {
             parser.next();
         }
 

@@ -23,14 +23,13 @@ import java.util.List;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iot.discovery.element.IoTRegister;
 import org.jivesoftware.smackx.iot.discovery.element.Tag;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class IoTRegisterProvider extends IQProvider<IoTRegister> {
 
@@ -40,8 +39,8 @@ public class IoTRegisterProvider extends IQProvider<IoTRegister> {
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         List<Tag> tags = new ArrayList<>();
         while (parser.getDepth() != initialDepth) {
-            int event = parser.next();
-            if (event != XmlPullParser.START_TAG) {
+            XmlPullParser.Event event = parser.next();
+            if (event != XmlPullParser.Event.START_ELEMENT) {
                 continue;
             }
             final String element = parser.getName();

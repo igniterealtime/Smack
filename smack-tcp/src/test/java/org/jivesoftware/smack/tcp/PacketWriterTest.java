@@ -16,24 +16,31 @@
  */
 package org.jivesoftware.smack.tcp;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class PacketWriterTest {
+
+    private static final Reader DUMMY_READER = new StringReader("");
+
     private volatile boolean shutdown;
     private volatile boolean prematureUnblocked;
 
@@ -47,10 +54,22 @@ public class PacketWriterTest {
      * @throws BrokenBarrierException
      * @throws NotConnectedException
      * @throws XmppStringprepException
+     * @throws SecurityException
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     * @throws IllegalArgumentException
      */
     @Test
-    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException, XmppStringprepException {
+    public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException, XmppStringprepException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         XMPPTCPConnection connection = new XMPPTCPConnection("user", "pass", "example.org");
+
+        // Get the protected "Reader reader" field from AbstractXMPPConnection and set it to a dummy Reader,
+        // as otherwise it will be null when we perform the writer threads init() which will make the StAX parser
+        // to throw an exception.
+        Field readerField = AbstractXMPPConnection.class.getDeclaredField("reader");
+        readerField.setAccessible(true);
+        readerField.set(connection, DUMMY_READER);
+
         final PacketWriter pw = connection.packetWriter;
         BlockingStringWriter blockingStringWriter = new BlockingStringWriter();
         connection.setWriter(blockingStringWriter);
@@ -85,6 +104,7 @@ public class PacketWriterTest {
                 }
                 catch (BrokenBarrierException | InterruptedException e) {
                     unexpectedThreadExceptionReference.set(e);
+
                 }
 
                 try {
@@ -126,7 +146,7 @@ public class PacketWriterTest {
                 fail("Unexpected thread exception: " + unexpectedThreadException);
             }
 
-            assertNotNull("Did not encounter expected exception on sendStreamElement()", expectedThreadExceptionReference.get());
+            assertNotNull(expectedThreadExceptionReference.get(), "Did not encounter expected exception on sendStreamElement()");
         }
         finally {
             blockingStringWriter.unblock();

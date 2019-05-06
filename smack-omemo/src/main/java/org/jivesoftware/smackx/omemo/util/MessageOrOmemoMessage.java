@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo.util;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 
 public class MessageOrOmemoMessage {

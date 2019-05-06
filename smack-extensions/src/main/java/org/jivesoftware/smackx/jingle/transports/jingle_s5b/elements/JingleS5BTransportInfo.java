@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 
 /**

@@ -24,6 +24,8 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jingleold.JingleActionEnum;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
@@ -33,8 +35,6 @@ import org.jivesoftware.smackx.jingleold.packet.JingleDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * The JingleProvider parses Jingle packets.
@@ -66,7 +66,7 @@ public class JingleProvider extends IQProvider<Jingle> {
         JingleTransportProvider jtpIce = new JingleTransportProvider.Ice();
         ExtensionElementProvider<?> jmipAudio = new JingleContentInfoProvider.Audio();
 
-        int eventType;
+        XmlPullParser.Event eventType;
         String elementName;
         String namespace;
 
@@ -87,7 +87,7 @@ public class JingleProvider extends IQProvider<Jingle> {
             elementName = parser.getName();
             namespace = parser.getNamespace();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
 
                 // Parse some well know subelements, depending on the namespaces
                 // and element names...
@@ -119,7 +119,7 @@ public class JingleProvider extends IQProvider<Jingle> {
                             + elementName + "\" in Jingle packet.");
                 }
 
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(Jingle.getElementName())) {
                     done = true;
                 }

@@ -31,6 +31,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.hints.element.StoreHint;
@@ -48,7 +50,6 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Entry point of Smacks API for XEP-0374: OpenPGP for XMPP: Instant Messaging.

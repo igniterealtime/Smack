@@ -27,8 +27,8 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  *
@@ -97,14 +97,14 @@ public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> ext
         }
 
         List<ExtensionElement> extensions = new ArrayList<>();
-        int event;
+        XmlPullParser.Event event;
         do {
             event = parser.next();
 
-            if (event == XmlPullParser.START_TAG)
+            if (event == XmlPullParser.Event.START_ELEMENT)
                 PacketParserUtils.addExtensionElement(extensions, parser, xmlEnvironment);
         }
-        while (!(event == XmlPullParser.END_TAG && parser.getDepth() == initialDepth));
+        while (!(event == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth));
 
         return createReturnExtension(name, namespace, attMap, extensions);
     }

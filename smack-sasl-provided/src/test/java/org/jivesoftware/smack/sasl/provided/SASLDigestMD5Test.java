@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.sasl.DigestMd5SaslTest;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class SASLDigestMD5Test extends DigestMd5SaslTest {

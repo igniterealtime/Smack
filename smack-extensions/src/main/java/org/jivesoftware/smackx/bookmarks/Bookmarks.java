@@ -22,14 +22,14 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Bookmarks is used for storing and retrieving URLS and Conference rooms.
@@ -224,19 +224,19 @@ public class Bookmarks implements PrivateData {
 
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "url".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "url".equals(parser.getName())) {
                     final BookmarkedURL urlStorage = getURLStorage(parser);
                     if (urlStorage != null) {
                         storage.addBookmarkedURL(urlStorage);
                     }
                 }
-                else if (eventType == XmlPullParser.START_TAG &&
+                else if (eventType == XmlPullParser.Event.START_ELEMENT &&
                         "conference".equals(parser.getName())) {
                     final BookmarkedConference conference = getConferenceStorage(parser);
                     storage.addBookmarkedConference(conference);
                 }
-                else if (eventType == XmlPullParser.END_TAG && "storage".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT && "storage".equals(parser.getName())) {
                     done = true;
                 }
             }
@@ -255,12 +255,12 @@ public class Bookmarks implements PrivateData {
         BookmarkedURL urlStore = new BookmarkedURL(url, name, rss);
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT
                         && "shared_bookmark".equals(parser.getName())) {
                     urlStore.setShared(true);
             }
-            else if (eventType == XmlPullParser.END_TAG && "url".equals(parser.getName())) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT && "url".equals(parser.getName())) {
                 done = true;
             }
         }
@@ -279,19 +279,19 @@ public class Bookmarks implements PrivateData {
         // Check for nickname
         boolean done = false;
         while (!done) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG && "nick".equals(parser.getName())) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT && "nick".equals(parser.getName())) {
                 String nickString = parser.nextText();
                 conf.setNickname(Resourcepart.from(nickString));
             }
-            else if (eventType == XmlPullParser.START_TAG && "password".equals(parser.getName())) {
+            else if (eventType == XmlPullParser.Event.START_ELEMENT && "password".equals(parser.getName())) {
                 conf.setPassword(parser.nextText());
             }
-            else if (eventType == XmlPullParser.START_TAG
+            else if (eventType == XmlPullParser.Event.START_ELEMENT
                         && "shared_bookmark".equals(parser.getName())) {
                     conf.setShared(true);
             }
-            else if (eventType == XmlPullParser.END_TAG && "conference".equals(parser.getName())) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT && "conference".equals(parser.getName())) {
                 done = true;
             }
         }

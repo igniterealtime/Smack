@@ -22,12 +22,12 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
 * The DiscoverInfoProvider parses Service Discovery items packets.
@@ -48,16 +48,16 @@ public class DiscoverItemsProvider extends IQProvider<DiscoverItems> {
         String node = "";
         discoverItems.setNode(parser.getAttributeValue("", "node"));
         while (!done) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG && "item".equals(parser.getName())) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT && "item".equals(parser.getName())) {
                 // Initialize the variables from the parsed XML
                 jid = ParserUtils.getJidAttribute(parser);
                 name = parser.getAttributeValue("", "name");
                 node = parser.getAttributeValue("", "node");
                 action = parser.getAttributeValue("", "action");
             }
-            else if (eventType == XmlPullParser.END_TAG && "item".equals(parser.getName())) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT && "item".equals(parser.getName())) {
                 // Create a new Item and add it to DiscoverItems.
                 item = new DiscoverItems.Item(jid);
                 item.setName(name);
@@ -65,7 +65,7 @@ public class DiscoverItemsProvider extends IQProvider<DiscoverItems> {
                 item.setAction(action);
                 discoverItems.addItem(item);
             }
-            else if (eventType == XmlPullParser.END_TAG && "query".equals(parser.getName())) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT && "query".equals(parser.getName())) {
                 done = true;
             }
         }

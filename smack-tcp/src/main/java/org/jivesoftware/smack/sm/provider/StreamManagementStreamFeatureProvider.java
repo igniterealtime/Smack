@@ -19,8 +19,7 @@ package org.jivesoftware.smack.sm.provider;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
-
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 public class StreamManagementStreamFeatureProvider extends ExtensionElementProvider<StreamManagementFeature> {
 

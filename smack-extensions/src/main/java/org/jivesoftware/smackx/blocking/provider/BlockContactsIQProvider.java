@@ -23,12 +23,12 @@ import java.util.List;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Block contact IQ provider class.
@@ -44,23 +44,24 @@ public class BlockContactsIQProvider extends IQProvider<BlockContactsIQ> {
         List<Jid> jids = new ArrayList<>();
 
         outerloop: while (true) {
-            int eventType = parser.next();
-
+            XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
-
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 if (parser.getName().equals("item")) {
                     Jid jid = ParserUtils.getJidAttribute(parser);
                     jids.add(jid);
                 }
                 break;
 
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
                 break;
 
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
         }
 

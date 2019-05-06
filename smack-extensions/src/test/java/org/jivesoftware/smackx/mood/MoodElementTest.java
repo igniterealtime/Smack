@@ -23,12 +23,13 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.mood.provider.MoodProvider;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class MoodElementTest extends SmackTestSuite {
 

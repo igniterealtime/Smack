@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
@@ -32,8 +34,7 @@ import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class QueryArchiveTest extends MamTest {
@@ -56,7 +57,7 @@ public class QueryArchiveTest extends MamTest {
         MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
-        Assert.assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamSimpleQueryIQ);
+        assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamSimpleQueryIQ);
     }
 
     @Test
@@ -82,18 +83,18 @@ public class QueryArchiveTest extends MamTest {
         message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
 
         // FIXME: The order of assertEquals is reversed, fix it by switching it.
-        Assert.assertEquals(message.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamQueryResultExample);
+        assertEquals(message.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamQueryResultExample);
 
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 
-        Assert.assertEquals(mamResultExtension.getId(), "34482-21985-73620");
-        Assert.assertEquals(mamResultExtension.getForwarded().getDelayInformation().getStamp(), date);
+        assertEquals(mamResultExtension.getId(), "34482-21985-73620");
+        assertEquals(mamResultExtension.getForwarded().getDelayInformation().getStamp(), date);
 
         Message resultMessage = (Message) mamResultExtension.getForwarded().getForwardedStanza();
-        Assert.assertEquals(resultMessage.getFrom(), JidCreate.from("coven@chat.shakespeare.lit/firstwitch"));
-        Assert.assertEquals(resultMessage.getStanzaId(), "162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2");
-        Assert.assertEquals(resultMessage.getType(), Type.chat);
-        Assert.assertEquals(resultMessage.getBody(), "Thrice the brinded cat hath mew.");
+        assertEquals(resultMessage.getFrom(), JidCreate.from("coven@chat.shakespeare.lit/firstwitch"));
+        assertEquals(resultMessage.getStanzaId(), "162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2");
+        assertEquals(resultMessage.getType(), Type.chat);
+        assertEquals(resultMessage.getBody(), "Thrice the brinded cat hath mew.");
     }
 
 }

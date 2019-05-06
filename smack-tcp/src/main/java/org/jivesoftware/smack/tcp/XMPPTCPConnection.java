@@ -117,12 +117,13 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.xml.SmackXmlParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Creates a socket connection to an XMPP server. This is the default connection
@@ -851,7 +852,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     void openStream() throws SmackException, InterruptedException, XmlPullParserException {
         sendStreamOpen();
-        packetReader.parser = PacketParserUtils.newXmppParser(reader);
+        packetReader.parser = SmackXmlParser.newXmlParser(reader);
     }
 
     protected class PacketReader {
@@ -898,10 +899,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             try {
                 openStream();
                 initialStreamOpenSend = true;
-                int eventType = parser.getEventType();
+                XmlPullParser.Event eventType = parser.getEventType();
                 while (!done) {
                     switch (eventType) {
-                    case XmlPullParser.START_TAG:
+                    case START_ELEMENT:
                         final String name = parser.getName();
                         switch (name) {
                         case Message.ELEMENT:
@@ -1069,7 +1070,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                              break;
                         }
                         break;
-                    case XmlPullParser.END_TAG:
+                    case END_ELEMENT:
                         final String endTagName = parser.getName();
                         if ("stream".equals(endTagName)) {
                             if (!parser.getNamespace().equals("http://etherx.jabber.org/streams")) {
@@ -1105,11 +1106,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                         }
                         break;
-                    case XmlPullParser.END_DOCUMENT:
+                    case END_DOCUMENT:
                         // END_DOCUMENT only happens in an error case, as otherwise we would see a
                         // closing stream element before.
                         throw new SmackException.SmackMessageException(
                                         "Parser got END_DOCUMENT event. This could happen e.g. if the server closed the connection without sending a closing stream element");
+                    default:
+                        // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                        break;
                     }
                     eventType = parser.next();
                 }

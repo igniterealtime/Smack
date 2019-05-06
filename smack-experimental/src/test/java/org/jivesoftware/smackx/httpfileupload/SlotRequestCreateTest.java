@@ -17,13 +17,14 @@
 package org.jivesoftware.smackx.httpfileupload;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;
 import org.xml.sax.SAXException;
 
@@ -46,9 +47,9 @@ public class SlotRequestCreateTest {
     public void checkSlotRequestCreation() throws SAXException, IOException {
         SlotRequest slotRequest = new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_juliet.png", 23456, "image/jpeg");
 
-        Assert.assertEquals("my_juliet.png", slotRequest.getFilename());
-        Assert.assertEquals(23456, slotRequest.getSize());
-        Assert.assertEquals("image/jpeg", slotRequest.getContentType());
+        assertEquals("my_juliet.png", slotRequest.getFilename());
+        assertEquals(23456, slotRequest.getSize());
+        assertEquals("image/jpeg", slotRequest.getContentType());
 
         assertXMLEqual(testRequest, slotRequest.getChildElementXML().toString());
     }
@@ -57,20 +58,22 @@ public class SlotRequestCreateTest {
     public void checkSlotRequestCreationWithoutContentType() throws SAXException, IOException {
         SlotRequest slotRequest = new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_romeo.png", 52523);
 
-        Assert.assertEquals("my_romeo.png", slotRequest.getFilename());
-        Assert.assertEquals(52523, slotRequest.getSize());
-        Assert.assertEquals(null, slotRequest.getContentType());
+        assertEquals("my_romeo.png", slotRequest.getFilename());
+        assertEquals(52523, slotRequest.getSize());
+        assertEquals(null, slotRequest.getContentType());
 
         assertXMLEqual(testRequestWithoutContentType, slotRequest.getChildElementXML().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkSlotRequestCreationNegativeSize() {
-        new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_juliet.png", -23456, "image/jpeg");
+        assertThrows(IllegalArgumentException.class, () ->
+        new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_juliet.png", -23456, "image/jpeg"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void checkSlotRequestCreationZeroSize() {
-        new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_juliet.png", 0, "image/jpeg");
+        assertThrows(IllegalArgumentException.class, () ->
+        new SlotRequest(JidTestUtil.DOMAIN_BARE_JID_1, "my_juliet.png", 0, "image/jpeg"));
     }
 }

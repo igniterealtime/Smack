@@ -16,18 +16,15 @@
  */
 package org.jivesoftware.smackx.spoiler.provider;
 
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.TEXT;
-
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
-import org.jivesoftware.smackx.spoiler.element.SpoilerElement;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smackx.spoiler.element.SpoilerElement;
 
 public class SpoilerProvider extends ExtensionElementProvider<SpoilerElement> {
 
@@ -39,13 +36,16 @@ public class SpoilerProvider extends ExtensionElementProvider<SpoilerElement> {
         String hint = null;
 
         outerloop: while (true) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             switch (tag) {
-                case TEXT:
+                case TEXT_CHARACTERS:
                     hint = parser.getText();
                     break;
-                case END_TAG:
+                case END_ELEMENT:
                     break outerloop;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
             }
         }
         return new SpoilerElement(lang, hint);

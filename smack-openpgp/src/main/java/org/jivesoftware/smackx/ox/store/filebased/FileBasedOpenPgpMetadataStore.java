@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
+
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpMetadataStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpMetadataStore;
 import org.jivesoftware.smackx.ox.util.Util;

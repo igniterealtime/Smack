@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.workgroup.MetaData;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smackx.workgroup.MetaData;
 
 /**
  * Utility class for meta-data parsing and writing.
@@ -46,18 +46,18 @@ public class MetaDataUtils {
      * @throws IOException            if an error occurs while parsing the XML.
      */
     public static Map<String, List<String>> parseMetaData(XmlPullParser parser) throws XmlPullParserException, IOException {
-        int eventType = parser.getEventType();
+        XmlPullParser.Event eventType = parser.getEventType();
 
         // If correctly positioned on an opening meta-data tag, parse meta-data.
-        if ((eventType == XmlPullParser.START_TAG)
+        if ((eventType == XmlPullParser.Event.START_ELEMENT)
                 && parser.getName().equals(MetaData.ELEMENT_NAME)
                 && parser.getNamespace().equals(MetaData.NAMESPACE)) {
             Map<String, List<String>> metaData = new Hashtable<>();
 
-            eventType = parser.nextTag();
+            eventType = parser.next();
 
             // Keep parsing until we've gotten to end of meta-data.
-            while ((eventType != XmlPullParser.END_TAG)
+            while ((eventType != XmlPullParser.Event.END_ELEMENT)
                     || !parser.getName().equals(MetaData.ELEMENT_NAME)) {
                 String name = parser.getAttributeValue(0);
                 String value = parser.nextText();
@@ -72,7 +72,7 @@ public class MetaDataUtils {
                     metaData.put(name, values);
                 }
 
-                eventType = parser.nextTag();
+                eventType = parser.next();
             }
 
             return metaData;

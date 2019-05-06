@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.push_notifications;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.push_notifications.element.DisablePushNotificationsIQ;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class DisablePushNotificationsIQTest {
@@ -38,7 +39,7 @@ public class DisablePushNotificationsIQTest {
         DisablePushNotificationsIQ disablePushNotificationsIQ = new DisablePushNotificationsIQ(
                 JidCreate.from("push-5.client.example"));
         disablePushNotificationsIQ.setStanzaId("x97");
-        Assert.assertEquals(disableAllNotificationsIQExample, disablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(disableAllNotificationsIQExample, disablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -46,7 +47,7 @@ public class DisablePushNotificationsIQTest {
         DisablePushNotificationsIQ disablePushNotificationsIQ = new DisablePushNotificationsIQ(
                 JidCreate.from("push-5.client.example"), "yxs32uqsflafdk3iuqo");
         disablePushNotificationsIQ.setStanzaId("x97");
-        Assert.assertEquals(disableNodeNotificationsIQExample, disablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(disableNodeNotificationsIQExample, disablePushNotificationsIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

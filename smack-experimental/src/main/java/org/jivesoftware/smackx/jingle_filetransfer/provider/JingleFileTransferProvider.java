@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,16 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.provider;
 
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
@@ -34,8 +35,6 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for JingleContentDescriptionFileTransfer elements.
@@ -46,20 +45,18 @@ public class JingleFileTransferProvider
     @Override
     public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
-        boolean inRange = false;
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
-        HashElement inRangeHash = null;
 
-        int offset = 0;
-        int length = -1;
 
+        String elementName;
         while (true) {
 
-            int tag = parser.nextTag();
-            String elem = parser.getName();
+            XmlPullParser.TagEvent tag = parser.nextTag();
 
-            if (tag == START_TAG) {
-                switch (elem) {
+            switch (tag) {
+            case START_ELEMENT:
+                elementName = parser.getName();
+                switch (elementName) {
                     case JingleFileTransferChild.ELEM_DATE:
                     try {
                         builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
@@ -85,36 +82,20 @@ public class JingleFileTransferProvider
                         break;
 
                     case Range.ELEMENT:
-                        inRange = true;
-                        String offsetString = parser.getAttributeValue(null, Range.ATTR_OFFSET);
-                        String lengthString = parser.getAttributeValue(null, Range.ATTR_LENGTH);
-                        offset = (offsetString != null ? Integer.parseInt(offsetString) : 0);
-                        length = (lengthString != null ? Integer.parseInt(lengthString) : -1);
+                        Range range = parseRangeElement(parser);
+                        builder.setRange(range);
 
-                        if (parser.isEmptyElementTag()) {
-                            inRange = false;
-                            builder.setRange(new Range(offset, length));
-                        }
                         break;
 
                     case HashElement.ELEMENT:
-                        if (inRange) {
-                            inRangeHash = new HashElementProvider().parse(parser);
-                        } else {
-                            builder.setHash(new HashElementProvider().parse(parser));
-                        }
+                        HashElement hashElement = HashElementProvider.INSTANCE.parse(parser);
+                        builder.setHash(hashElement);
                         break;
                 }
-
-            } else if (tag == END_TAG) {
-                switch (elem) {
-
-                    case Range.ELEMENT:
-                        inRange = false;
-                        builder.setRange(new Range(offset, length, inRangeHash));
-                        inRangeHash = null;
-                        break;
-
+                break;
+            case END_ELEMENT:
+                elementName = parser.getName();
+                switch (elementName) {
                     case JingleFileTransferChild.ELEMENT:
                         payloads.add(builder.build());
                         builder = JingleFileTransferChild.getBuilder();
@@ -123,7 +104,42 @@ public class JingleFileTransferProvider
                     case JingleFileTransfer.ELEMENT:
                         return new JingleFileTransfer(payloads);
                 }
+                break;
             }
         }
     }
+
+    public static Range parseRangeElement(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
+        final int initialDepth = parser.getDepth();
+        final Integer offset = ParserUtils.getIntegerAttribute(parser, Range.ATTR_OFFSET);
+        final Integer length = ParserUtils.getIntegerAttribute(parser, Range.ATTR_LENGTH);
+
+        HashElement hashElement = null;
+        outerloop: while (true) {
+            String element;
+            XmlPullParser.Event event = parser.next();
+            switch (event) {
+            case START_ELEMENT:
+                element = parser.getName();
+                switch (element) {
+                case HashElement.ELEMENT:
+                    hashElement = HashElementProvider.INSTANCE.parse(parser);
+                    break;
+                }
+                break;
+            case END_ELEMENT:
+                element = parser.getName();
+                if (element.equals(Range.ELEMENT) && parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
+            }
+        }
+
+        return new Range(offset, length, hashElement);
+    }
+
 }

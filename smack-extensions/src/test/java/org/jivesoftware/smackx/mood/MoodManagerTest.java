@@ -23,6 +23,7 @@ import static junit.framework.TestCase.assertTrue;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.mood.element.MoodElement;
 
 import org.junit.Test;

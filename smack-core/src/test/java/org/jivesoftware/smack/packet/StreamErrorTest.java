@@ -18,19 +18,25 @@ package org.jivesoftware.smack.packet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+
+import java.io.IOException;
 
 import org.jivesoftware.smack.packet.StreamError.Condition;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class StreamErrorTest {
 
-    @Test
-    public void testParsingOfSimpleStreamError() {
-        StreamError error = null;
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParsingOfSimpleStreamError(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final String xml =
                 // Usually the stream:stream element has more attributes (to, version, ...)
                 // We omit those, since they are not relevant for testing
@@ -39,19 +45,17 @@ public class StreamErrorTest {
                 "<conflict xmlns='urn:ietf:params:xml:ns:xmpp-streams' /> +" +
                 "</stream:error>" +
                 "</stream:stream>";
-        try {
-            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
-            error = PacketParserUtils.parseStreamError(parser);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
+        XmlPullParser parser = SmackTestUtil.getParserFor(xml, "error", parserKind);
+        StreamError error = PacketParserUtils.parseStreamError(parser);
+
         assertNotNull(error);
         assertEquals(Condition.conflict, error.getCondition());
     }
 
-    @Test
-    public void testParsingOfStreamErrorWithText() {
-        StreamError error = null;
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParsingOfStreamErrorWithText(SmackTestUtil.XmlPullParserKind parserKind) throws XmlPullParserException, IOException, SmackParsingException {
         final String xml =
                 // Usually the stream:stream element has more attributes (to, version, ...)
                 // We omit those, since they are not relevant for testing
@@ -63,20 +67,19 @@ public class StreamErrorTest {
                 "</text>" +
                 "</stream:error>" +
                 "</stream:stream>";
-        try {
-            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
-            error = PacketParserUtils.parseStreamError(parser);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
+        XmlPullParser parser = SmackTestUtil.getParserFor(xml, "error", parserKind);
+        StreamError error = PacketParserUtils.parseStreamError(parser);
+
         assertNotNull(error);
         assertEquals(Condition.conflict, error.getCondition());
         assertEquals("Replaced by new connection", error.getDescriptiveText());
     }
 
-    @Test
-    public void testParsingOfStreamErrorWithTextAndOptionalElement() {
-        StreamError error = null;
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParsingOfStreamErrorWithTextAndOptionalElement(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final String xml =
                 // Usually the stream:stream element has more attributes (to, version, ...)
                 // We omit those, since they are not relevant for testing
@@ -91,12 +94,10 @@ public class StreamErrorTest {
                 "</appSpecificElement>" +
                 "</stream:error>" +
                 "</stream:stream>";
-        try {
-            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
-            error = PacketParserUtils.parseStreamError(parser);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
+        XmlPullParser parser = SmackTestUtil.getParserFor(xml, "error", parserKind);
+        StreamError error = PacketParserUtils.parseStreamError(parser);
+
         assertNotNull(error);
         assertEquals(Condition.conflict, error.getCondition());
         assertEquals("Replaced by new connection", error.getDescriptiveText());
@@ -104,21 +105,20 @@ public class StreamErrorTest {
         assertNotNull(appSpecificElement);
     }
 
-    @Test
-    public void testStreamErrorXmlNotWellFormed() {
-        StreamError error = null;
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testStreamErrorXmlNotWellFormed(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final String xml =
                 // Usually the stream:stream element has more attributes (to, version, ...)
                 // We omit those, since they are not relevant for testing
                 "<stream:stream from='im.example.com' id='++TR84Sm6A3hnt3Q065SnAbbk3Y=' xmlns:stream='http://etherx.jabber.org/streams'>" +
                         "<stream:error><xml-not-well-formed xmlns='urn:ietf:params:xml:ns:xmpp-streams'/></stream:error>" +
                         "</stream:stream>";
-        try {
-            XmlPullParser parser = PacketParserUtils.getParserFor(xml, "error");
-            error = PacketParserUtils.parseStreamError(parser);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
+
+        XmlPullParser parser = SmackTestUtil.getParserFor(xml, "error", parserKind);
+        StreamError error = PacketParserUtils.parseStreamError(parser);
+
         assertNotNull(error);
         assertEquals(Condition.not_well_formed, error.getCondition());
     }

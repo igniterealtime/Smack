@@ -17,10 +17,10 @@
 package org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport;
-
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Parse JingleByteStreamTransport elements.

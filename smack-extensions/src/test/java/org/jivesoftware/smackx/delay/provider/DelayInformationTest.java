@@ -32,6 +32,8 @@ import javax.xml.parsers.FactoryConfigurationError;
 
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
@@ -40,8 +42,6 @@ import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class DelayInformationTest extends InitExtensions {
 
@@ -76,7 +76,7 @@ public class DelayInformationTest extends InitExtensions {
         assertEquals(date, delayInfo.getStamp());
         assertEquals("Offline Storage", delayInfo.getReason());
 
-        assertEquals(XmlPullParser.END_TAG, parser.getEventType());
+        assertEquals(XmlPullParser.Event.END_ELEMENT, parser.getEventType());
         assertEquals("x", parser.getName());
 
         control = XMLBuilder.create("x")
@@ -92,7 +92,7 @@ public class DelayInformationTest extends InitExtensions {
         assertEquals(date, delayInfo.getStamp());
         assertNull(delayInfo.getReason());
 
-        assertEquals(XmlPullParser.END_TAG, parser.getEventType());
+        assertEquals(XmlPullParser.Event.END_ELEMENT, parser.getEventType());
         assertEquals("x", parser.getName());
 
     }

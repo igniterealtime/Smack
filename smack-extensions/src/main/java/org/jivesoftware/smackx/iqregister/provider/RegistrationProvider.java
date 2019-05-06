@@ -28,11 +28,10 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqregister.packet.Registration;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class RegistrationProvider extends IQProvider<Registration> {
 
@@ -43,15 +42,15 @@ public class RegistrationProvider extends IQProvider<Registration> {
         List<ExtensionElement> packetExtensions = new LinkedList<>();
         outerloop:
         while (true) {
-            int eventType = parser.next();
-            if (eventType == XmlPullParser.START_TAG) {
+            XmlPullParser.Event eventType = parser.next();
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 // Any element that's in the jabber:iq:register namespace,
                 // attempt to parse it if it's in the form <name>value</name>.
                 if (parser.getNamespace().equals(Registration.NAMESPACE)) {
                     String name = parser.getName();
                     String value = "";
 
-                    if (parser.next() == XmlPullParser.TEXT) {
+                    if (parser.next() == XmlPullParser.Event.TEXT_CHARACTERS) {
                         value = parser.getText();
                     }
                     // Ignore instructions, but anything else should be added to the map.
@@ -67,7 +66,7 @@ public class RegistrationProvider extends IQProvider<Registration> {
                     PacketParserUtils.addExtensionElement(packetExtensions, parser, xmlEnvironment);
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(IQ.QUERY_ELEMENT)) {
                     break outerloop;
                 }

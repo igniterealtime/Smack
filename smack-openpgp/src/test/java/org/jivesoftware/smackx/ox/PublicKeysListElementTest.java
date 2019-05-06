@@ -23,14 +23,15 @@ import java.util.Date;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 import org.jivesoftware.smackx.ox.provider.PublicKeysListElementProvider;
 
 import org.bouncycastle.openpgp.PGPException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.xmlpull.v1.XmlPullParser;
 
 public class PublicKeysListElementTest extends SmackTestSuite {
 

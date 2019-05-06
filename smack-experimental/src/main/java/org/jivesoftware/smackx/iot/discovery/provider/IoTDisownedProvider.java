@@ -18,12 +18,11 @@ package org.jivesoftware.smackx.iot.discovery.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.discovery.element.IoTDisowned;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
-
-import org.xmlpull.v1.XmlPullParser;
 
 public class IoTDisownedProvider extends IQProvider<IoTDisowned> {
 

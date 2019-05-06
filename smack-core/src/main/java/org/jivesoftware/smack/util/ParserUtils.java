@@ -29,6 +29,8 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -38,8 +40,6 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppDateTime;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class ParserUtils {
 
@@ -49,7 +49,7 @@ public class ParserUtils {
     public static final String JID = "jid";
 
     public static void assertAtStartTag(XmlPullParser parser) throws XmlPullParserException {
-        assert (parser.getEventType() == XmlPullParser.START_TAG);
+        assert (parser.getEventType() == XmlPullParser.Event.START_ELEMENT);
     }
 
     public static void assertAtStartTag(XmlPullParser parser, String name) throws XmlPullParserException {
@@ -58,13 +58,13 @@ public class ParserUtils {
     }
 
     public static void assertAtEndTag(XmlPullParser parser) throws XmlPullParserException {
-        assert (parser.getEventType() == XmlPullParser.END_TAG);
+        assert (parser.getEventType() == XmlPullParser.Event.END_ELEMENT);
     }
 
     public static void forwardToEndTagOfDepth(XmlPullParser parser, int depth)
                     throws XmlPullParserException, IOException {
-        int event = parser.getEventType();
-        while (!(event == XmlPullParser.END_TAG && parser.getDepth() == depth)) {
+        XmlPullParser.Event event = parser.getEventType();
+        while (!(event == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == depth)) {
             event = parser.next();
         }
     }

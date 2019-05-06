@@ -19,10 +19,11 @@ package org.jivesoftware.smackx.ox;
 import static junit.framework.TestCase.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 
 import org.bouncycastle.openpgp.PGPException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 
 public class PubSubDelegateTest extends SmackTestSuite {

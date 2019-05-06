@@ -31,6 +31,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
@@ -38,8 +40,6 @@ import org.jivesoftware.smackx.iqprivate.packet.PrivateDataIQ;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 
 import org.jxmpp.util.XmppStringUtils;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Manages private data, which is a mechanism to allow users to store arbitrary XML
@@ -241,8 +241,8 @@ public final class PrivateDataManager extends Manager {
             PrivateData privateData = null;
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     String elementName = parser.getName();
                     String namespace = parser.getNamespace();
                     // See if any objects are registered to handle this private data type.
@@ -256,23 +256,20 @@ public final class PrivateDataManager extends Manager {
                         DefaultPrivateData data = new DefaultPrivateData(elementName, namespace);
                         boolean finished = false;
                         while (!finished) {
-                            int event = parser.next();
-                            if (event == XmlPullParser.START_TAG) {
+                            XmlPullParser.Event event = parser.next();
+                            if (event == XmlPullParser.Event.START_ELEMENT) {
                                 String name = parser.getName();
-                                // If an empty element, set the value with the empty string.
-                                if (parser.isEmptyElementTag()) {
+                                event = parser.next();
+                                if (event == XmlPullParser.Event.TEXT_CHARACTERS) {
+                                    String value = parser.getText();
+                                    data.setValue(name, value);
+                                }
+                                else if (event == XmlPullParser.Event.END_ELEMENT) {
+                                    // If an empty element, set the value with the empty string.
                                     data.setValue(name,"");
                                 }
-                                // Otherwise, get the the element text.
-                                else {
-                                    event = parser.next();
-                                    if (event == XmlPullParser.TEXT) {
-                                        String value = parser.getText();
-                                        data.setValue(name, value);
-                                    }
-                                }
                             }
-                            else if (event == XmlPullParser.END_TAG) {
+                            else if (event == XmlPullParser.Event.END_ELEMENT) {
                                 if (parser.getName().equals(elementName)) {
                                     finished = true;
                                 }
@@ -281,7 +278,7 @@ public final class PrivateDataManager extends Manager {
                         privateData = data;
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals("query")) {
                         done = true;
                     }

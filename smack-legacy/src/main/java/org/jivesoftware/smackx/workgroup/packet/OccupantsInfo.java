@@ -31,9 +31,8 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.IQProvider;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * Stanza used for requesting information about occupants of a room or for retrieving information
@@ -143,11 +142,11 @@ public class OccupantsInfo extends IQ {
 
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG &&
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT &&
                         "occupant".equals(parser.getName())) {
                     occupantsInfo.occupants.add(parseOccupantInfo(parser));
-                } else if (eventType == XmlPullParser.END_TAG &&
+                } else if (eventType == XmlPullParser.Event.END_ELEMENT &&
                         ELEMENT_NAME.equals(parser.getName())) {
                     done = true;
                 }
@@ -162,13 +161,13 @@ public class OccupantsInfo extends IQ {
             String nickname = null;
             Date joined = null;
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "jid".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "jid".equals(parser.getName())) {
                     jid = parser.nextText();
-                } else if (eventType == XmlPullParser.START_TAG &&
+                } else if (eventType == XmlPullParser.Event.START_ELEMENT &&
                         "nickname".equals(parser.getName())) {
                     nickname = parser.nextText();
-                } else if (eventType == XmlPullParser.START_TAG &&
+                } else if (eventType == XmlPullParser.Event.START_ELEMENT &&
                         "joined".equals(parser.getName())) {
                         synchronized (UTC_FORMAT) {
                         try {
@@ -177,7 +176,7 @@ public class OccupantsInfo extends IQ {
                             throw new SmackParsingException.SmackTextParseException(e);
                         }
                         }
-                } else if (eventType == XmlPullParser.END_TAG &&
+                } else if (eventType == XmlPullParser.Event.END_ELEMENT &&
                         "occupant".equals(parser.getName())) {
                     done = true;
                 }

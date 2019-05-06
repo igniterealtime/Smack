@@ -21,6 +21,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.ox.callback.SecretKeyPassphraseCallback;
 import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
@@ -199,18 +201,20 @@ public class OpenPgpStoreTest extends SmackTestSuite {
         openPgpStoreInstance1.deleteSecretKeyRing(alice, fingerprint);
     }
 
-    @Test(expected = MissingUserIdOnKeyException.class)
+    @Test
     public void t04_key_wrongBareJidOnSecretKeyImportTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException {
         PGPSecretKeyRing secretKeys = openPgpStoreInstance1.generateKeyRing(alice).getSecretKeys();
 
-        openPgpStoreInstance1.importSecretKey(bob, secretKeys);
+        assertThrows(MissingUserIdOnKeyException.class, () ->
+        openPgpStoreInstance1.importSecretKey(bob, secretKeys));
     }
 
-    @Test(expected = MissingUserIdOnKeyException.class)
+    @Test
     public void t05_key_wrongBareJidOnPublicKeyImportTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException {
         PGPPublicKeyRing publicKeys = openPgpStoreInstance1.generateKeyRing(alice).getPublicKeys();
 
-        openPgpStoreInstance1.importPublicKey(bob, publicKeys);
+        assertThrows(MissingUserIdOnKeyException.class, () ->
+        openPgpStoreInstance1.importPublicKey(bob, publicKeys));
     }
 
     @Test

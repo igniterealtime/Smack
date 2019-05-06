@@ -16,20 +16,21 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.provider.MamResultProvider;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import org.junit.jupiter.api.Test;
 
 public class MamResultProviderTest {
 
@@ -51,20 +52,20 @@ public class MamResultProviderTest {
         XmlPullParser parser = PacketParserUtils.getParserFor(exampleMamResultXml);
         MamResultExtension mamResultExtension = new MamResultProvider().parse(parser);
 
-        Assert.assertEquals(mamResultExtension.getQueryId(), "f27");
-        Assert.assertEquals(mamResultExtension.getId(), "28482-98726-73623");
+        assertEquals(mamResultExtension.getQueryId(), "f27");
+        assertEquals(mamResultExtension.getId(), "28482-98726-73623");
 
         GregorianCalendar calendar = new GregorianCalendar(2010, 7 - 1, 10, 23, 8, 25);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = calendar.getTime();
 
         Forwarded forwarded = mamResultExtension.getForwarded();
-        Assert.assertEquals(forwarded.getDelayInformation().getStamp(), date);
+        assertEquals(forwarded.getDelayInformation().getStamp(), date);
 
         Message message = (Message) forwarded.getForwardedStanza();
-        Assert.assertEquals(message.getFrom().toString(), "romeo@montague.lit/orchard");
-        Assert.assertEquals(message.getTo().toString(), "juliet@capulet.lit/balcony");
-        Assert.assertEquals(message.getBody(),
+        assertEquals(message.getFrom().toString(), "romeo@montague.lit/orchard");
+        assertEquals(message.getTo().toString(), "juliet@capulet.lit/balcony");
+        assertEquals(message.getBody(),
                 "Call me but love, and I'll be new baptized; Henceforth I never will be Romeo.");
     }
 
@@ -73,20 +74,20 @@ public class MamResultProviderTest {
         Message message = PacketParserUtils.parseStanza(exampleResultMessage);
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 
-        Assert.assertEquals(mamResultExtension.getQueryId(), "f27");
-        Assert.assertEquals(mamResultExtension.getId(), "28482-98726-73623");
+        assertEquals(mamResultExtension.getQueryId(), "f27");
+        assertEquals(mamResultExtension.getId(), "28482-98726-73623");
 
         GregorianCalendar calendar = new GregorianCalendar(2010, 7 - 1, 10, 23, 8, 25);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = calendar.getTime();
 
         Forwarded forwarded = mamResultExtension.getForwarded();
-        Assert.assertEquals(forwarded.getDelayInformation().getStamp(), date);
+        assertEquals(forwarded.getDelayInformation().getStamp(), date);
 
         Message forwardedMessage = (Message) forwarded.getForwardedStanza();
-        Assert.assertEquals(forwardedMessage.getFrom().toString(), "witch@shakespeare.lit");
-        Assert.assertEquals(forwardedMessage.getTo().toString(), "macbeth@shakespeare.lit");
-        Assert.assertEquals(forwardedMessage.getBody(), "Hail to thee");
+        assertEquals(forwardedMessage.getFrom().toString(), "witch@shakespeare.lit");
+        assertEquals(forwardedMessage.getTo().toString(), "macbeth@shakespeare.lit");
+        assertEquals(forwardedMessage.getBody(), "Hail to thee");
     }
 
 }

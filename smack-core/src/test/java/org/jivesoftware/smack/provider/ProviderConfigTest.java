@@ -22,10 +22,10 @@ import java.util.Collection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.FileUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 public class ProviderConfigTest {
 

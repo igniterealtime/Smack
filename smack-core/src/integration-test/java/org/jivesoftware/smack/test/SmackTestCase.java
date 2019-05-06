@@ -32,8 +32,8 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.TCPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.ConnectionUtils;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserFactory;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 /**
  * Base class for all the test cases which provides a pre-configured execution context. This
@@ -414,9 +414,9 @@ public abstract class SmackTestCase extends TestCase {
             XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
             parser.setInput(systemStream, "UTF-8");
-            int eventType = parser.getEventType();
+            XmlPullParser.Event eventType = parser.getEventType();
             do {
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == START_ELEMENT) {
                     if (parser.getName().equals("host")) {
                         host = parser.nextText();
                     }
@@ -459,7 +459,7 @@ public abstract class SmackTestCase extends TestCase {
                 }
                 eventType = parser.next();
             }
-            while (eventType != XmlPullParser.END_DOCUMENT);
+            while (eventType != END_DOCUMENT);
             parsedOK = true;
         }
         catch (Exception e) {

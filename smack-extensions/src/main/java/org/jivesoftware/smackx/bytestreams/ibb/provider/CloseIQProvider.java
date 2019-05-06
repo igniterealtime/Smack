@@ -18,10 +18,9 @@ package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
-
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * Parses a close In-Band Bytestream packet.

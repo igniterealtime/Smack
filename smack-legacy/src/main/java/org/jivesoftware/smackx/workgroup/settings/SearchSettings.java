@@ -22,9 +22,8 @@ import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class SearchSettings extends SimpleIQ {
     private String forumsLocation;
@@ -87,14 +86,14 @@ public class SearchSettings extends SimpleIQ {
             String forums = null;
 
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "forums".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "forums".equals(parser.getName())) {
                     forums = parser.nextText();
                 }
-                else if ((eventType == XmlPullParser.START_TAG) && "kb".equals(parser.getName())) {
+                else if ((eventType == XmlPullParser.Event.START_ELEMENT) && "kb".equals(parser.getName())) {
                     kb = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.END_TAG && "search-settings".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT && "search-settings".equals(parser.getName())) {
                     done = true;
                 }
             }

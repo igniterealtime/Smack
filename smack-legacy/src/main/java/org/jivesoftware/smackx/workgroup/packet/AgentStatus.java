@@ -30,10 +30,10 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.EntityBareJid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Agent status packet.
@@ -245,9 +245,9 @@ public class AgentStatus implements ExtensionElement {
 
             boolean done = false;
             while (!done) {
-                int eventType = parser.next();
+                XmlPullParser.Event eventType = parser.next();
 
-                if (eventType == XmlPullParser.START_TAG) {
+                if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if ("chat".equals(parser.getName())) {
                         agentStatus.currentChats.add(parseChatInfo(parser));
                     }
@@ -255,7 +255,7 @@ public class AgentStatus implements ExtensionElement {
                         agentStatus.maxChats = Integer.parseInt(parser.nextText());
                     }
                 }
-                else if (eventType == XmlPullParser.END_TAG &&
+                else if (eventType == XmlPullParser.Event.END_ELEMENT &&
                     ELEMENT_NAME.equals(parser.getName())) {
                     done = true;
                 }

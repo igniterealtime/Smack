@@ -91,6 +91,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.UTF8;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
@@ -102,8 +104,6 @@ import org.jxmpp.xml.splitter.XmlPrettyPrinter;
 import org.jxmpp.xml.splitter.XmlPrinter;
 import org.jxmpp.xml.splitter.XmppElementCallback;
 import org.jxmpp.xml.splitter.XmppXmlSplitter;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Represents and manages a client connection to an XMPP server via TCP.

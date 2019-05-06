@@ -20,14 +20,13 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jingleold.nat.ICECandidate;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportCandidate;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Provider for a Jingle transport element.
@@ -59,10 +58,10 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
         JingleTransport trans = getInstance();
 
         while (!done) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
             String name = parser.getName();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (name.equals(JingleTransportCandidate.NODENAME)) {
                     JingleTransportCandidate jtc = parseCandidate(parser);
                     if (jtc != null) trans.addCandidate(jtc);
@@ -72,7 +71,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
                     throw new IOException("Unknown tag \"" + name + "\" in transport element.");
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (name.equals(JingleTransport.NODENAME)) {
                     done = true;
                 }

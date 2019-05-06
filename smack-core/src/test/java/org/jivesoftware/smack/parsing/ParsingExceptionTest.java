@@ -27,11 +27,11 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 public class ParsingExceptionTest {
 
@@ -39,6 +39,7 @@ public class ParsingExceptionTest {
     "<extension2 xmlns='namespace'>" +
         "<bar node='testNode'>" +
             "<i id='testid1'>" +
+              "text content" +
             "</i>" +
         "</bar>" +
      "</extension2>";
@@ -57,8 +58,7 @@ public class ParsingExceptionTest {
     public void consumeUnparsedInput() throws Exception {
         final String MESSAGE_EXCEPTION_ELEMENT =
                         "<" + ThrowException.ELEMENT + " xmlns='" + ThrowException.NAMESPACE + "'>" +
-                            "<nothingInHere>" +
-                            "</nothingInHere>" +
+                            "<nothingInHere/>" +
                         "</" + ThrowException.ELEMENT + ">";
         XmlPullParser parser = TestUtils.getMessageParser(
                 "<message from='user@server.example' to='francisco@denmark.lit' id='foo'>" +

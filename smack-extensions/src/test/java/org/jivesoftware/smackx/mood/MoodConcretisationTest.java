@@ -24,13 +24,14 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.mood.provider.MoodProvider;
 import org.jivesoftware.smackx.mood.provider.SimpleMoodConcretisationProvider;
 
 import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
 
 /**
  * This test checks, if extending XEP-0107: User Mood using custom mood concretisations works.

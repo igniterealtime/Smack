@@ -16,18 +16,19 @@
  */
 package org.jivesoftware.smackx.chat_markers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements;
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.AcknowledgedExtension;
 import org.jivesoftware.smackx.chat_markers.provider.AcknowledgedProvider;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
 
 public class AcknowledgedExtensionTest {
 
@@ -41,18 +42,18 @@ public class AcknowledgedExtensionTest {
         Message message = new Message(JidCreate.from("northumberland@shakespeare.lit/westminster"));
         message.setStanzaId("message-2");
         message.addExtension(new ChatMarkersElements.AcknowledgedExtension("message-1"));
-        Assert.assertEquals(acknowledgedMessageStanza, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(acknowledgedMessageStanza, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void checkDisplayedProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(acknowledgedExtension);
         AcknowledgedExtension acknowledgedExtension1 = new AcknowledgedProvider().parse(parser);
-        Assert.assertEquals("message-1", acknowledgedExtension1.getId());
+        assertEquals("message-1", acknowledgedExtension1.getId());
 
         Message message = PacketParserUtils.parseStanza(acknowledgedMessageStanza);
         AcknowledgedExtension acknowledgedExtension2 = AcknowledgedExtension.from(message);
-        Assert.assertEquals("message-1", acknowledgedExtension2.getId());
+        assertEquals("message-1", acknowledgedExtension2.getId());
     }
 
 }

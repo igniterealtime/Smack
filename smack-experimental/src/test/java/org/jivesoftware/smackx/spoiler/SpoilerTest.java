@@ -20,17 +20,19 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertTrue;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.spoiler.element.SpoilerElement;
 import org.jivesoftware.smackx.spoiler.provider.SpoilerProvider;
 
-import org.junit.Test;
-import org.xmlpull.v1.XmlPullParser;
+import org.junit.jupiter.api.Test;
 
 public class SpoilerTest extends SmackTestSuite {
 
@@ -114,15 +116,15 @@ public class SpoilerTest extends SmackTestSuite {
         assertEquals(spoilerText, spoilers.get("de"));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void spoilerCheckArgumentsNullTest() {
-        @SuppressWarnings("unused")
-        SpoilerElement spoilerElement = new SpoilerElement("de", null);
+        assertThrows(IllegalArgumentException.class, () ->
+        new SpoilerElement("de", null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void spoilerCheckArgumentsEmptyTest() {
-        @SuppressWarnings("unused")
-        SpoilerElement spoilerElement = new SpoilerElement("de", "");
+        assertThrows(IllegalArgumentException.class, () ->
+        new SpoilerElement("de", ""));
     }
 }

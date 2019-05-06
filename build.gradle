@@ -24,6 +24,7 @@ apply from: 'version.gradle'
 
 allprojects {
 	apply plugin: 'java'
+	apply plugin: 'java-library'
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	apply plugin: 'jacoco'
@@ -80,6 +81,8 @@ allprojects {
 			':smack-omemo',
 			':smack-omemo-signal',
 			':smack-openpgp',
+			':smack-xmlparser',
+			':smack-xmlparser-xpp3',
 		].collect{ project(it) }
 		androidBootClasspathProjects = [
 			':smack-android',
@@ -97,13 +100,37 @@ allprojects {
 			':smack-omemo-signal',
 			':smack-omemo-signal-integration-test',
 		].collect{ project(it) }
+		// When this list is empty, then move the according javadoc
+		// tool Werror option into the global configure section.
+		nonStrictJavadocProjects = [
+			':smack-bosh',
+			':smack-core',
+			':smack-experimental',
+			':smack-extensions',
+			':smack-im',
+			':smack-integration-test',
+			':smack-jingle-old',
+			':smack-legacy',
+			':smack-omemo',
+			':smack-tcp',
+		].collect{ project(it) }
 		// Lazily evaluate the Android bootClasspath and offline
 		// Javadoc using a closure, so that targets which do not
 		// require it are still able to succeed without an Android
 		// SDK.
 		androidBootClasspath = { getAndroidRuntimeJar() }
 		androidJavadocOffline = { getAndroidJavadocOffline() }
-		junitVersion = '5.2.0'
+		junit4Projects = [
+			':smack-core',
+			':smack-extensions',
+			':smack-im',
+			':smack-integration-test',
+			':smack-omemo',
+			':smack-omemo-signal',
+			':smack-openpgp',
+		].collect { project(it) }
+		junitVersion = '5.4.2'
+		powerMockVersion = '1.7.3'
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = JavaVersion.VERSION_1_8
@@ -114,6 +141,12 @@ allprojects {
 	}
 
 	test {
+		useJUnitPlatform()
+
+		// Enable once the tests are fixed that sometimes break if
+		// they are executed in parallel (.e.g Socks5)
+		// maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+
 		// Enable full stacktraces of failed tests. Especially handy
 		// for environments like Travis.
 		testLogging {
@@ -232,6 +265,10 @@ allprojects {
 	}
 
 	dependencies {
+		testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+		testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
 		errorprone 'com.google.errorprone:error_prone_core:2.3.2'
 		errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
 	}
@@ -239,6 +276,15 @@ allprojects {
 	// Make all project's 'test' target depend on javadoc, so that
 	// javadoc is also linted.
 	test { dependsOn javadoc }
+}
+
+configure (junit4Projects) {
+	dependencies {
+		testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
+		testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
+		testImplementation "org.powermock:powermock-module-junit4-rule:$powerMockVersion"
+		testImplementation "org.powermock:powermock-api-mockito2:$powerMockVersion"
+	}
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
@@ -530,6 +576,15 @@ subprojects*.jar {
    manifest {
        from sharedManifest
    }
+}
+
+configure(subprojects - nonStrictJavadocProjects) {
+	tasks.withType(Javadoc) {
+		// Abort on javadoc warnings.
+		// See JDK-8200363 (https://bugs.openjdk.java.net/browse/JDK-8200363)
+		// for information about the -Xwerror option.
+		options.addStringOption('Xwerror', '-quiet')
+	}
 }
 
 configure(subprojects - gplLicensedProjects) {

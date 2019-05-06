@@ -21,13 +21,12 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MAM Result Provider class.
@@ -46,20 +45,23 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
         String id = parser.getAttributeValue("", "id");
 
         outerloop: while (true) {
-            final int eventType = parser.next();
+            final XmlPullParser.Event eventType = parser.next();
             final String name = parser.getName();
             switch (eventType) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 switch (name) {
                 case Forwarded.ELEMENT:
                     forwarded = ForwardedProvider.INSTANCE.parse(parser);
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }

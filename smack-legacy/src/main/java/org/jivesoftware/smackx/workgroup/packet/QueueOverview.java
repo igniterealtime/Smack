@@ -27,11 +27,10 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.workgroup.agent.WorkgroupQueue;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class QueueOverview implements ExtensionElement {
 
@@ -130,12 +129,12 @@ public class QueueOverview implements ExtensionElement {
         public QueueOverview parse(XmlPullParser parser,
                         int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                         IOException, SmackTextParseException {
-            int eventType = parser.getEventType();
+            XmlPullParser.Event eventType = parser.getEventType();
             QueueOverview queueOverview = new QueueOverview();
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
             eventType = parser.next();
-            while (eventType != XmlPullParser.END_TAG
+            while (eventType != XmlPullParser.Event.END_ELEMENT
                          || !ELEMENT_NAME.equals(parser.getName())) {
                 if ("count".equals(parser.getName())) {
                     queueOverview.setUserCount(Integer.parseInt(parser.nextText()));
@@ -156,12 +155,12 @@ public class QueueOverview implements ExtensionElement {
 
                 eventType = parser.next();
 
-                if (eventType != XmlPullParser.END_TAG) {
+                if (eventType != XmlPullParser.Event.END_ELEMENT) {
                     // throw exception
                 }
             }
 
-            if (eventType != XmlPullParser.END_TAG) {
+            if (eventType != XmlPullParser.Event.END_ELEMENT) {
                 // throw exception
             }
 

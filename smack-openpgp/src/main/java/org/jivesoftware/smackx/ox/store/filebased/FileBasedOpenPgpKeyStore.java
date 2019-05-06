@@ -26,6 +26,7 @@ import java.util.Map;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.ox.store.abstr.AbstractOpenPgpKeyStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpKeyStore;
 

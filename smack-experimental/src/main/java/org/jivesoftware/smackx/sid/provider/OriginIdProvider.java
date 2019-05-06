@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.sid.provider;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smackx.sid.element.OriginIdElement;
+import org.jivesoftware.smack.xml.XmlPullParser;
 
-import org.xmlpull.v1.XmlPullParser;
+import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
 public class OriginIdProvider extends ExtensionElementProvider<OriginIdElement> {
 

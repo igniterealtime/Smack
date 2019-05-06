@@ -19,8 +19,6 @@ package org.jivesoftware.smackx.omemo.provider;
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.DEVICE;
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.ID;
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.LIST;
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -28,11 +26,10 @@ import java.util.Set;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Smack ExtensionProvider that parses OMEMO device list element into OmemoDeviceListElement objects.
@@ -46,10 +43,10 @@ public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<Om
         Set<Integer> deviceListIds = new HashSet<>();
         boolean stop = false;
         while (!stop) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             String name = parser.getName();
             switch (tag) {
-                case START_TAG:
+                case START_ELEMENT:
                     if (name.equals(DEVICE)) {
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
                             if (parser.getAttributeName(i).equals(ID)) {
@@ -59,10 +56,13 @@ public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<Om
                         }
                     }
                     break;
-                case END_TAG:
+                case END_ELEMENT:
                     if (name.equals(LIST)) {
                         stop = true;
                     }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                     break;
             }
         }

@@ -28,6 +28,8 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.agent.InvitationRequest;
@@ -37,8 +39,6 @@ import org.jivesoftware.smackx.workgroup.agent.UserRequest;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
 import org.jxmpp.jid.Jid;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * An IQProvider for agent offer requests.
@@ -53,14 +53,14 @@ public class OfferRequestProvider extends IQProvider<IQ> {
 
     @Override
     public OfferRequestPacket parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        int eventType = parser.getEventType();
+        XmlPullParser.Event eventType = parser.getEventType();
         String sessionID = null;
         int timeout = -1;
         OfferContent content = null;
         boolean done = false;
         Map<String, List<String>> metaData = new HashMap<>();
 
-        if (eventType != XmlPullParser.START_TAG) {
+        if (eventType != XmlPullParser.Event.START_ELEMENT) {
             // throw exception
         }
 
@@ -71,7 +71,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
         while (!done) {
             eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 String elemName = parser.getName();
 
                 if ("timeout".equals(elemName)) {
@@ -101,7 +101,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
                     content = new TransferRequest(transfer.getInviter(), transfer.getRoom(), transfer.getReason());
                 }
             }
-            else if (eventType == XmlPullParser.END_TAG) {
+            else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if ("offer".equals(parser.getName())) {
                     done = true;
                 }

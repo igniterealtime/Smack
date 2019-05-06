@@ -21,14 +21,14 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.AffiliationsChangeExtension;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * MUC Light Affiliations Change Provider class.
@@ -45,9 +45,9 @@ public class MUCLightAffiliationsChangeProvider extends ExtensionElementProvider
         String version = null;
 
         outerloop: while (true) {
-            int eventType = parser.next();
+            XmlPullParser.Event eventType = parser.next();
 
-            if (eventType == XmlPullParser.START_TAG) {
+            if (eventType == XmlPullParser.Event.START_ELEMENT) {
 
                 if (parser.getName().equals("prev-version")) {
                     prevVersion = parser.nextText();
@@ -64,7 +64,7 @@ public class MUCLightAffiliationsChangeProvider extends ExtensionElementProvider
                     affiliations.put(jid, mucLightAffiliation);
                 }
 
-            } else if (eventType == XmlPullParser.END_TAG) {
+            } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }

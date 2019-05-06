@@ -23,9 +23,8 @@ import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class OfflineSettings extends SimpleIQ {
     private String redirectURL;
@@ -118,20 +117,20 @@ public class OfflineSettings extends SimpleIQ {
             String emailAddress = null;
 
             while (!done) {
-                int eventType = parser.next();
-                if (eventType == XmlPullParser.START_TAG && "redirectPage".equals(parser.getName())) {
+                XmlPullParser.Event eventType = parser.next();
+                if (eventType == XmlPullParser.Event.START_ELEMENT && "redirectPage".equals(parser.getName())) {
                     redirectPage = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.START_TAG && "subject".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "subject".equals(parser.getName())) {
                     subject = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.START_TAG && "offlineText".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "offlineText".equals(parser.getName())) {
                     offlineText = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.START_TAG && "emailAddress".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.START_ELEMENT && "emailAddress".equals(parser.getName())) {
                     emailAddress = parser.nextText();
                 }
-                else if (eventType == XmlPullParser.END_TAG && "offline-settings".equals(parser.getName())) {
+                else if (eventType == XmlPullParser.Event.END_ELEMENT && "offline-settings".equals(parser.getName())) {
                     done = true;
                 }
             }

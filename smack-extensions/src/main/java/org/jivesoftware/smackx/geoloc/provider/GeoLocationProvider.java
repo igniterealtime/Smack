@@ -23,11 +23,10 @@ import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseExcept
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
 
@@ -38,9 +37,9 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
         GeoLocation.Builder builder = GeoLocation.builder();
 
         outerloop: while (true) {
-            int event = parser.next();
+            XmlPullParser.Event event = parser.next();
             switch (event) {
-            case XmlPullParser.START_TAG:
+            case START_ELEMENT:
                 String name = parser.getName();
                 switch (name) {
                 case "accuracy":
@@ -117,10 +116,14 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
                     break;
                 }
                 break;
-            case XmlPullParser.END_TAG:
+            case END_ELEMENT:
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
         }
 

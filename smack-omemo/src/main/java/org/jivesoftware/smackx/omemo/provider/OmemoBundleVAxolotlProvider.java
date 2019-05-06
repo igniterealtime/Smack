@@ -24,19 +24,16 @@ import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEY_P
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_ID;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_PUB;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_SIG;
-import static org.xmlpull.v1.XmlPullParser.END_TAG;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects.
@@ -56,13 +53,14 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
         HashMap<Integer, String> preKeys = new HashMap<>();
 
         while (!stop) {
-            int tag = parser.next();
+            XmlPullParser.Event tag = parser.next();
             String name = parser.getName();
             switch (tag) {
-                case START_TAG:
+                case START_ELEMENT:
+                    final int attributeCount = parser.getAttributeCount();
                     // <signedPreKeyPublic>
                     if (name.equals(SIGNED_PRE_KEY_PUB)) {
-                        for (int i = 0; i < parser.getAttributeCount(); i++) {
+                        for (int i = 0; i < attributeCount; i++) {
                             if (parser.getAttributeName(i).equals(SIGNED_PRE_KEY_ID)) {
                                 int id = Integer.parseInt(parser.getAttributeValue(i));
                                 signedPreKey = parser.nextText();
@@ -84,7 +82,7 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                     }
                     // <preKeyPublic preKeyId='424242'>
                     else if (inPreKeys && name.equals(PRE_KEY_PUB)) {
-                        for (int i = 0; i < parser.getAttributeCount(); i++) {
+                        for (int i = 0; i < attributeCount; i++) {
                             if (parser.getAttributeName(i).equals(PRE_KEY_ID)) {
                                 preKeys.put(Integer.parseInt(parser.getAttributeValue(i)),
                                         parser.nextText());
@@ -92,10 +90,13 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                         }
                     }
                     break;
-                case END_TAG:
+                case END_ELEMENT:
                     if (name.equals(BUNDLE)) {
                         stop = true;
                     }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                     break;
             }
         }

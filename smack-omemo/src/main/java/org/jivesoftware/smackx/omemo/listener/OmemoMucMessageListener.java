@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.omemo.listener;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.OmemoMessage;
 
