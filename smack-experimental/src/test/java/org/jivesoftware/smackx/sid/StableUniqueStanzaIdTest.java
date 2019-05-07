@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.sid;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -42,7 +42,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         StanzaIdElement element = new StanzaIdElement("de305d54-75b4-431b-adb2-eb6b9e546013", "alice@wonderland.lit");
         assertEquals("de305d54-75b4-431b-adb2-eb6b9e546013", element.getId());
         assertEquals("alice@wonderland.lit", element.getBy());
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXmlSimilar(xml, element.toXML().toString());
 
         StanzaIdElement parsed = StanzaIdProvider.INSTANCE.parse(TestUtils.getParser(xml));
         assertEquals(element.getId(), parsed.getId());
@@ -54,7 +54,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         String xml = "<origin-id xmlns='urn:xmpp:sid:0' id='de305d54-75b4-431b-adb2-eb6b9e546013' />";
         OriginIdElement element = new OriginIdElement("de305d54-75b4-431b-adb2-eb6b9e546013");
         assertEquals("de305d54-75b4-431b-adb2-eb6b9e546013", element.getId());
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXmlSimilar(xml, element.toXML().toString());
 
         OriginIdElement parsed = OriginIdProvider.INSTANCE.parse(TestUtils.getParser(xml));
         assertEquals(element.getId(), parsed.getId());

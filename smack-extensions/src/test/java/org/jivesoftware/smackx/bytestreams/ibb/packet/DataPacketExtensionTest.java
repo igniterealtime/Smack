@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -96,7 +96,7 @@ public class DataPacketExtensionTest extends InitExtensions {
             .asString(outputProperties);
 
         DataPacketExtension data = new DataPacketExtension("i781hf64", 0, "DATA");
-        assertXMLEqual(control, data.toXML().toString());
+        assertXmlSimilar(control, data.toXML().toString());
     }
 
 }

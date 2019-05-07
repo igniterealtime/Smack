@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLNotEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlNotSimilar;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -46,7 +46,6 @@ import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.test.util.XmlUnitUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -91,7 +90,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getBodyLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getBody(defaultLanguage));
         assertNull(message.getBody(otherLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has non-default language, body has no language
         control = XMLBuilder.create("message")
@@ -111,7 +110,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getBodyLanguages().isEmpty());
         assertEquals(otherLanguage, message.getBody(otherLanguage));
         assertNull(message.getBody(defaultLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has no language, body has no language
         control = XMLBuilder.create("message")
@@ -130,7 +129,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getBodyLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getBody(null));
         assertNull(message.getBody(otherLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has no language, body has default language
         control = XMLBuilder.create("message")
@@ -151,7 +150,7 @@ public class PacketParserUtilsTest {
         assertEquals(defaultLanguage, message.getBody(defaultLanguage));
         assertNull(message.getBody(otherLanguage));
 
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has no language, body has non-default language
         control = XMLBuilder.create("message")
@@ -172,7 +171,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getBodyLanguages().contains(otherLanguage));
         assertEquals(otherLanguage, message.getBody(otherLanguage));
         assertNull(message.getBody(defaultLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has default language, body has non-default language
         control = XMLBuilder.create("message")
@@ -194,7 +193,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getBodyLanguages().contains(otherLanguage));
         assertEquals(otherLanguage, message.getBody(otherLanguage));
         assertNull(message.getBody(defaultLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has non-default language, body has default language
         control = XMLBuilder.create("message")
@@ -216,7 +215,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getBodyLanguages().contains(defaultLanguage));
         assertEquals(defaultLanguage, message.getBody(defaultLanguage));
         assertNull(message.getBody(otherLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
     }
 
@@ -245,7 +244,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertNull(message.getSubject(otherLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has non-default language, subject has no language
         control = XMLBuilder.create("message")
@@ -264,7 +263,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().isEmpty());
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has no language, subject has no language
         control = XMLBuilder.create("message")
@@ -282,7 +281,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getSubject(null));
         assertNull(message.getSubject(otherLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has no language, subject has default language
         control = XMLBuilder.create("message")
@@ -301,7 +300,7 @@ public class PacketParserUtilsTest {
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertNull(message.getSubject(otherLanguage));
 
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has no language, subject has non-default language
         control = XMLBuilder.create("message")
@@ -321,7 +320,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has default language, subject has non-default language
         control = XMLBuilder.create("message")
@@ -342,7 +341,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has non-default language, subject has default language
         control = XMLBuilder.create("message")
@@ -363,7 +362,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(defaultLanguage));
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertNull(message.getSubject(otherLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
     }
 
@@ -399,7 +398,7 @@ public class PacketParserUtilsTest {
         assertEquals(2, message.getBodies().size());
         assertEquals(1, message.getBodyLanguages().size());
         assertTrue(message.getBodyLanguages().contains(otherLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
 
         // message has non-default language, first body no language, second body default language
         control = XMLBuilder.create("message")
@@ -425,7 +424,7 @@ public class PacketParserUtilsTest {
         assertEquals(2, message.getBodies().size());
         assertEquals(1, message.getBodyLanguages().size());
         assertTrue(message.getBodyLanguages().contains(defaultLanguage));
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
     }
 
     // TODO: Re-enable once we throw an exception on duplicate body elements.
@@ -458,7 +457,7 @@ public class PacketParserUtilsTest {
         assertEquals(defaultLanguage, message.getBody(defaultLanguage));
         assertEquals(1, message.getBodies().size());
         assertEquals(0, message.getBodyLanguages().size());
-        assertXMLNotEqual(control, message.toXML().toString());
+        assertXmlNotSimilar(control, message.toXML().toString());
     }
 
     @Ignore
@@ -516,7 +515,7 @@ public class PacketParserUtilsTest {
         assertEquals(otherLanguage, message.getBody(otherLanguage));
         assertEquals(2, message.getBodies().size());
         assertEquals(1, message.getBodyLanguages().size());
-        assertXMLEqual(control, message.toXML().toString());
+        assertXmlSimilar(control, message.toXML().toString());
     }
 
     @Test
@@ -550,7 +549,7 @@ public class PacketParserUtilsTest {
         assertEquals(2, message.getSubjects().size());
         assertEquals(1, message.getSubjectLanguages().size());
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has default language, first subject no language, second subject default language
         control = XMLBuilder.create("message")
@@ -574,7 +573,7 @@ public class PacketParserUtilsTest {
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertEquals(1, message.getSubjects().size());
         assertEquals(0, message.getSubjectLanguages().size());
-        assertXMLNotEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlNotSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has non-default language, first subject no language, second subject default language
         control = XMLBuilder.create("message")
@@ -599,7 +598,7 @@ public class PacketParserUtilsTest {
         assertEquals(2, message.getSubjects().size());
         assertEquals(1, message.getSubjectLanguages().size());
         assertTrue(message.getSubjectLanguages().contains(defaultLanguage));
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         /*
         // message has no language, first subject no language, second subject default language
@@ -647,7 +646,7 @@ public class PacketParserUtilsTest {
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertEquals(2, message.getSubjects().size());
         assertEquals(1, message.getSubjectLanguages().size());
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         // message has no language, first subject no language, second subject no language
         control = XMLBuilder.create("message")
@@ -777,7 +776,7 @@ public class PacketParserUtilsTest {
             .asString(outputProperties);
 
         Stanza message = PacketParserUtils.parseStanza(control);
-        XmlUnitUtils.assertSimilar(control, message.toXML());
+        assertXmlSimilar(control, message.toXML());
     }
 
     @Test
@@ -787,7 +786,7 @@ public class PacketParserUtilsTest {
 
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
-    	assertXMLEqual(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+    	assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         // CHECKSTYLE:ON
     }
 
@@ -798,7 +797,7 @@ public class PacketParserUtilsTest {
 
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
-    	assertXMLEqual(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+    	assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     	assertEquals(Presence.Type.unsubscribed, presence.getType());
         // CHECKSTYLE:ON
     }
@@ -813,7 +812,7 @@ public class PacketParserUtilsTest {
     			+ "</presence>";
 
     	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
-    	assertXMLEqual(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+    	assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     	assertEquals(Presence.Type.unsubscribed, presence.getType());
     	assertEquals("dnd", presence.getMode().name());
     	assertEquals("en", presence.getLanguage());
@@ -844,7 +843,7 @@ public class PacketParserUtilsTest {
         // @formatter:on
         XmlPullParser parser = TestUtils.getParser(stanza, "outer");
         CharSequence result = PacketParserUtils.parseElement(parser, true);
-        assertXMLEqual(stanza, result.toString());
+        assertXmlSimilar(stanza, result.toString());
     }
 
     @Test
@@ -857,7 +856,7 @@ public class PacketParserUtilsTest {
         // @formatter:on
         XmlPullParser parser = TestUtils.getParser(saslFailureString, SASLFailure.ELEMENT);
         SASLFailure saslFailure = PacketParserUtils.parseSASLFailure(parser);
-        assertXMLEqual(saslFailureString, saslFailure.toString());
+        assertXmlSimilar(saslFailureString, saslFailure.toString());
     }
 
     @Test
@@ -879,7 +878,7 @@ public class PacketParserUtilsTest {
         // @formatter:on
         XmlPullParser parser = TestUtils.getParser(saslFailureString, SASLFailure.ELEMENT);
         SASLFailure saslFailure = PacketParserUtils.parseSASLFailure(parser);
-        XmlUnitUtils.assertSimilar(saslFailureString, saslFailure.toXML(StreamOpen.CLIENT_NAMESPACE));
+        assertXmlSimilar(saslFailureString, saslFailure.toXML(StreamOpen.CLIENT_NAMESPACE));
     }
 
     @SuppressWarnings("ReferenceEquality")
@@ -923,7 +922,7 @@ public class PacketParserUtilsTest {
                 .element("internal-server-error", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).up()
                 .element("text", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).t(text).up()
                 .asString();
-        XmlUnitUtils.assertSimilar(errorXml, error.toXML(StreamOpen.CLIENT_NAMESPACE));
+        assertXmlSimilar(errorXml, error.toXML(StreamOpen.CLIENT_NAMESPACE));
     }
 
     @Test

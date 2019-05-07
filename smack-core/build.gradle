@@ -14,7 +14,15 @@ dependencies {
 	testCompile project(':smack-xmlparser-xpp3')
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 	testCompile "org.xmlunit:xmlunit-core:$xmlUnitVersion"
-	testCompile "org.xmlunit:xmlunit-legacy:$xmlUnitVersion"
+	// Explictily add assertj-core which is a dependency of
+	// xmlunit-assertj, but gradle fails to resolves it with:
+	// Execution failed for task ':smack-core:compileTestJava'.
+	// > Could not resolve all files for configuration ':smack-core:testCompileClasspath'.
+	//    > Could not find org.assertj:assertj-core:.
+	//		 Required by:
+	//			 project :smack-core > org.xmlunit:xmlunit-assertj:2.6.2
+	testCompile "org.assertj:assertj-core:3.11.1"
+	testCompile "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 }
 

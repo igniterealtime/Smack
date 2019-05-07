@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2018 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,36 @@
  */
 package org.jivesoftware.smack.test.util;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import java.io.StringReader;
 
-import java.io.IOException;
+import javax.xml.transform.stream.StreamSource;
 
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
-import org.xml.sax.SAXException;
+import org.xmlunit.assertj.CompareAssert;
+import org.xmlunit.assertj.XmlAssert;
+import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.ElementSelectors;
+import org.xmlunit.input.NormalizedSource;
 
+// TODO: Rename this class to XmlAssertUtil
 public class XmlUnitUtils {
 
-    // TOOD: Remove this method.
-    public static void assertSimilar(CharSequence expected, CharSequence actual) throws SAXException, IOException {
-        assertXmlSimilar(expected, actual);
+    public static void assertXmlNotSimilar(CharSequence xmlOne, CharSequence xmlTwo) {
+        normalizedCompare(xmlOne, xmlTwo).areNotSimilar();
     }
 
-    public static void assertXmlSimilar(CharSequence expected, CharSequence actual) throws SAXException, IOException {
-        Diff diff = new Diff(expected.toString(), actual.toString());
-        diff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
-        assertXMLEqual(diff, true);
+    public static void assertXmlSimilar(CharSequence expected, CharSequence actual) {
+        normalizedCompare(expected, actual).areSimilar();
+    }
+
+    private static CompareAssert normalizedCompare(CharSequence expectedCharSequence, CharSequence actualCharSequence) {
+        String expectedString = expectedCharSequence.toString();
+        String actualString = actualCharSequence.toString();
+
+        NormalizedSource expected = new NormalizedSource(new StreamSource(new StringReader(expectedString)));
+        NormalizedSource actual = new NormalizedSource(new StreamSource(new StringReader(actualString)));
+        return XmlAssert.assertThat(expected).and(actual)
+                        .ignoreChildNodesOrder()
+                        .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndAllAttributes, ElementSelectors.byNameAndText))
+                        .normalizeWhitespace();
     }
 }

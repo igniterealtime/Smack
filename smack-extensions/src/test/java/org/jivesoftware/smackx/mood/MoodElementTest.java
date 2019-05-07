@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.mood;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNull;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
@@ -42,7 +42,7 @@ public class MoodElementTest extends SmackTestSuite {
                 "</mood>";
         MoodElement moodElement = new MoodElement(new MoodElement.MoodSubjectElement(Mood.happy, null), "Yay, the mood spec has been approved!");
 
-        assertXMLEqual(xml, moodElement.toXML().toString());
+        assertXmlSimilar(xml, moodElement.toXML().toString());
         assertFalse(moodElement.hasConcretisation());
         assertEquals(Mood.happy, moodElement.getMood());
 

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.reference;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,7 +43,7 @@ public class ReferenceTest extends SmackTestSuite {
                         "uri='xmpp:juliet@capulet.lit' />";
         URI uri = new URI("xmpp:juliet@capulet.lit");
         ReferenceElement element = new ReferenceElement(72, 78, ReferenceElement.Type.mention, null, uri);
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXmlSimilar(xml, element.toXML().toString());
         assertEquals(72, (int) element.getBegin());
         assertEquals(78, (int) element.getEnd());
         assertEquals(ReferenceElement.Type.mention, element.getType());
@@ -51,7 +51,7 @@ public class ReferenceTest extends SmackTestSuite {
         assertEquals(uri, element.getUri());
 
         ReferenceElement parsed = ReferenceProvider.TEST_PROVIDER.parse(TestUtils.getParser(xml));
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXmlSimilar(xml, parsed.toXML().toString());
     }
 
     /**
@@ -66,7 +66,7 @@ public class ReferenceTest extends SmackTestSuite {
                 "uri='xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be' />";
         URI uri = new URI("xmpp:fdp.shakespeare.lit?;node=fdp/submitted/stan.isode.net/accidentreport;item=ndina872be");
         ReferenceElement element = new ReferenceElement(null, null, ReferenceElement.Type.data, null, uri);
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXmlSimilar(xml, element.toXML().toString());
 
         assertNull(element.getBegin());
         assertNull(element.getEnd());
@@ -75,7 +75,7 @@ public class ReferenceTest extends SmackTestSuite {
         assertEquals(uri, element.getUri());
 
         ReferenceElement parsed = ReferenceProvider.TEST_PROVIDER.parse(TestUtils.getParser(xml));
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXmlSimilar(xml, parsed.toXML().toString());
     }
 
     @Test

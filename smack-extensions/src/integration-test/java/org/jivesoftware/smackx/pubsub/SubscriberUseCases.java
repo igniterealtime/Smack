@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -206,19 +206,19 @@ public class SubscriberUseCases extends SingleUserTestCase
 
 		PayloadItem<SimplePayload> testItem = idMap.get("6-" + curTime);
 		assertNotNull(testItem);
-		assertXMLEqual("<a xmlns='pubsub:test'/>", testItem.getPayload().toXML());
+		assertXmlSimilar("<a xmlns='pubsub:test'/>", testItem.getPayload().toXML());
 
 		testItem = idMap.get("7-" + curTime);
 		assertNotNull(testItem);
-		assertXMLEqual("<a xmlns='pubsub:test' href=\'/up/here\'/>", testItem.getPayload().toXML());
+		assertXmlSimilar("<a xmlns='pubsub:test' href=\'/up/here\'/>", testItem.getPayload().toXML());
 
 		testItem = idMap.get("8-" + curTime);
 		assertNotNull(testItem);
-		assertXMLEqual("<entity xmlns='pubsub:test'>text<inner>a</inner></entity>", testItem.getPayload().toXML());
+		assertXmlSimilar("<entity xmlns='pubsub:test'>text<inner>a</inner></entity>", testItem.getPayload().toXML());
 
 		testItem = idMap.get("9-" + curTime);
 		assertNotNull(testItem);
-		assertXMLEqual("<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>", testItem.getPayload().toXML());
+		assertXmlSimilar("<entity xmlns='pubsub:test'><inner><text>b</text></inner></entity>", testItem.getPayload().toXML());
 	}
 
 	public void testGetSpecifiedItems() throws Exception
@@ -239,11 +239,11 @@ public class SubscriberUseCases extends SingleUserTestCase
 		List<PayloadItem<SimplePayload>> items = node.getItems(ids);
 		assertEquals(3, items.size());
 		assertEquals("1", items.get(0).getId());
-		assertXMLEqual("<a xmlns='pubsub:test' href='1'/>", items.get(0).getPayload().toXML());
+		assertXmlSimilar("<a xmlns='pubsub:test' href='1'/>", items.get(0).getPayload().toXML());
 		assertEquals( "3", items.get(1).getId());
-		assertXMLEqual("<a xmlns='pubsub:test' href='3'/>", items.get(1).getPayload().toXML());
+		assertXmlSimilar("<a xmlns='pubsub:test' href='3'/>", items.get(1).getPayload().toXML());
 		assertEquals("4", items.get(2).getId());
-		assertXMLEqual("<a xmlns='pubsub:test' href='4'/>", items.get(2).getPayload().toXML());
+		assertXmlSimilar("<a xmlns='pubsub:test' href='4'/>", items.get(2).getPayload().toXML());
 	}
 
 	public void testGetLastNItems() throws XMPPException

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -44,6 +44,6 @@ public class SlotCreateTest {
         assertEquals(new URL("https://download.montague.tld/4a771ac1-f0b2-4a4a-9700-f2a26fa2bb67/my_juliet.png"),
                 slot.getGetUrl());
 
-        assertXMLEqual(testSlot, slot.getChildElementXML().toString());
+        assertXmlSimilar(testSlot, slot.getChildElementXML().toString());
     }
 }

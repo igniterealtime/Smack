@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.httpfileupload;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -51,7 +51,7 @@ public class SlotRequestCreateTest {
         assertEquals(23456, slotRequest.getSize());
         assertEquals("image/jpeg", slotRequest.getContentType());
 
-        assertXMLEqual(testRequest, slotRequest.getChildElementXML().toString());
+        assertXmlSimilar(testRequest, slotRequest.getChildElementXML().toString());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class SlotRequestCreateTest {
         assertEquals(52523, slotRequest.getSize());
         assertEquals(null, slotRequest.getContentType());
 
-        assertXMLEqual(testRequestWithoutContentType, slotRequest.getChildElementXML().toString());
+        assertXmlSimilar(testRequestWithoutContentType, slotRequest.getChildElementXML().toString());
     }
 
     @Test

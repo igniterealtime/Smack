@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.ox;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
 
         OpenPgpElement element = new OpenPgpElement("BASE64_OPENPGP_MESSAGE");
 
-        assertXMLEqual(expected, element.toXML().toString());
+        assertXmlSimilar(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         OpenPgpElement parsed = OpenPgpElementProvider.TEST_INSTANCE.parse(parser);
@@ -104,7 +104,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         payload.add(new Message.Body("en", "Hello World!"));
         SignElement element = new SignElement(recipients, testDate, payload);
 
-        assertXMLEqual(expected, element.toXML().toString());
+        assertXmlSimilar(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         SignElement parsed = (SignElement) OpenPgpContentElementProvider.parseOpenPgpContentElement(parser);
@@ -134,7 +134,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
                 testDate,
                 payload);
 
-        assertXMLEqual(expected, element.toXML().toString());
+        assertXmlSimilar(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         CryptElement parsed = (CryptElement) OpenPgpContentElementProvider.parseOpenPgpContentElement(parser);
@@ -164,7 +164,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
                 "f0rm1l4n4-mT8y33j!Y%fRSrcd^ZE4Q7VDt1L%WEgR!kv",
                 testDate, payload);
 
-        assertXMLEqual(expected, element.toXML().toString());
+        assertXmlSimilar(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         SigncryptElement parsed = (SigncryptElement) OpenPgpContentElementProvider.parseOpenPgpContentElement(parser);

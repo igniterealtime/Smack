@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.mood;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -61,11 +61,11 @@ public class MoodConcretisationTest extends SmackTestSuite {
                         new EcstaticMoodConcretisation()),
                 "Yay, the mood spec has been approved!");
 
-        assertXMLEqual(xml, element.toXML().toString());
+        assertXmlSimilar(xml, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MoodElement parsed = MoodProvider.INSTANCE.parse(parser);
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXmlSimilar(xml, parsed.toXML().toString());
 
         assertTrue(parsed.hasConcretisation());
         assertTrue(parsed.hasText());

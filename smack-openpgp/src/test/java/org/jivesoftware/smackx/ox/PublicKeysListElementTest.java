@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.ox;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import java.util.Date;
 
@@ -63,7 +63,7 @@ public class PublicKeysListElementTest extends SmackTestSuite {
                 .addMetadata(child2)
                 .build();
 
-        assertXMLEqual(expected, element.toXML().toString());
+        assertXmlSimilar(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         PublicKeysListElement parsed = PublicKeysListElementProvider.TEST_INSTANCE.parse(parser);

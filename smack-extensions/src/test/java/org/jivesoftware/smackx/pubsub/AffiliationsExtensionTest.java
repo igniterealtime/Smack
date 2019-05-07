@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class AffiliationsExtensionTest {
 
         CharSequence xml = affiliationsExtension.toXML();
 
-        assertXMLEqual("<affiliations node='testNode'><affiliation xmlns='http://jabber.org/protocol/pubsub#owner' jid='one@exampleone.org' affiliation='member'/></affiliations>",
+        assertXmlSimilar("<affiliations node='testNode'><affiliation xmlns='http://jabber.org/protocol/pubsub#owner' jid='one@exampleone.org' affiliation='member'/></affiliations>",
                         xml.toString());
     }
 

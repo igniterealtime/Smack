@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Properties;
@@ -81,7 +81,7 @@ public class CloseTest extends InitExtensions {
         close.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         close.setStanzaId("us71g45j");
 
-        assertXMLEqual(control, close.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, close.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.packet;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -43,7 +43,7 @@ public class PresenceTest {
         Presence presenceTypeInConstructor = new Presence(type);
         presenceTypeInConstructor.setStanzaId(null);
         assertEquals(type, presenceTypeInConstructor.getType());
-        assertXMLEqual(control, presenceTypeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presenceTypeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         controlBuilder = new StringBuilder();
         controlBuilder.append("<presence")
@@ -56,7 +56,7 @@ public class PresenceTest {
         Presence presenceTypeSet = getNewPresence();
         presenceTypeSet.setType(type2);
         assertEquals(type2, presenceTypeSet.getType());
-        assertXMLEqual(control, presenceTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presenceTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test(expected = NullPointerException.class)
@@ -90,7 +90,7 @@ public class PresenceTest {
         presence.setStatus(status);
 
         assertEquals(status, presence.getStatus());
-        assertXMLEqual(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -109,7 +109,7 @@ public class PresenceTest {
         presence.setPriority(priority);
 
         assertEquals(priority, presence.getPriority());
-        assertXMLEqual(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -142,7 +142,7 @@ public class PresenceTest {
                 mode1);
         presenceModeInConstructor.setStanzaId(null);
         assertEquals(mode1, presenceModeInConstructor.getMode());
-        assertXMLEqual(control, presenceModeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presenceModeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         controlBuilder = new StringBuilder();
         controlBuilder.append("<presence>")
@@ -155,7 +155,7 @@ public class PresenceTest {
         Presence presenceModeSet = getNewPresence();
         presenceModeSet.setMode(mode2);
         assertEquals(mode2, presenceModeSet.getMode());
-        assertXMLEqual(control, presenceModeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presenceModeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class PresenceTest {
         Presence presence = getNewPresence();
         presence.setLanguage(lang);
 
-        assertXMLEqual(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     private static Presence getNewPresence() {

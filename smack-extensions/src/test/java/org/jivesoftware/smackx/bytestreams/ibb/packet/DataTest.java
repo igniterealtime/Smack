@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
@@ -78,7 +78,7 @@ public class DataTest extends InitExtensions {
         data.setTo(JidCreate.from("juliet@capulet.lit/balcony"));
         data.setStanzaId("kr91n475");
 
-        assertXMLEqual(control, data.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, data.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }

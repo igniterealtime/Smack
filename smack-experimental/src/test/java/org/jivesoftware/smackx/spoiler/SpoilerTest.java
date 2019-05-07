@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.spoiler;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,11 +48,11 @@ public class SpoilerTest extends SmackTestSuite {
         assertNull(empty.getHint());
         assertNull(empty.getLanguage());
 
-        assertXMLEqual(xml, empty.toXML().toString());
+        assertXmlSimilar(xml, empty.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         SpoilerElement parsed = SpoilerProvider.INSTANCE.parse(parser);
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXmlSimilar(xml, parsed.toXML().toString());
     }
 
     @Test
@@ -67,12 +67,12 @@ public class SpoilerTest extends SmackTestSuite {
         assertEquals("Love story end", withHint.getHint());
         assertNull(withHint.getLanguage());
 
-        assertXMLEqual(xml, withHint.toXML().toString());
+        assertXmlSimilar(xml, withHint.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         SpoilerElement parsed = SpoilerProvider.INSTANCE.parse(parser);
 
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXmlSimilar(xml, parsed.toXML().toString());
     }
 
     @Test
@@ -87,13 +87,13 @@ public class SpoilerTest extends SmackTestSuite {
         assertEquals("Der Kuchen ist eine Lüge!", i18nHint.getHint());
         assertEquals("de", i18nHint.getLanguage());
 
-        assertXMLEqual(xml, i18nHint.toXML().toString());
+        assertXmlSimilar(xml, i18nHint.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         SpoilerElement parsed = SpoilerProvider.INSTANCE.parse(parser);
         assertEquals(i18nHint.getLanguage(), parsed.getLanguage());
 
-        assertXMLEqual(xml, parsed.toXML().toString());
+        assertXmlSimilar(xml, parsed.toXML().toString());
     }
 
     @Test

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.message_markup;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -47,7 +47,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setEmphasis(9, 15);
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);
@@ -71,7 +71,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setCode(9, 15);
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);
@@ -95,7 +95,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setDeleted(9, 15);
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);
@@ -131,7 +131,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setCodeBlock(23, 48);
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);
@@ -161,7 +161,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 .addEntry(61, 69)
                 .addEntry(69, 89)
                 .endList();
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);
@@ -191,7 +191,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setBlockQuote(9 ,32);
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);
@@ -213,7 +213,7 @@ public class MessageMarkupTest extends SmackTestSuite {
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m.setBlockQuote(0, 57);
         m.setBlockQuote(11, 34);
-        assertXMLEqual(xml, m.build().toXML().toString());
+        assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
         MarkupElement parsed = new MarkupElementProvider().parse(parser);

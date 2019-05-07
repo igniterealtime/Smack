@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.last_interaction;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import java.util.Date;
 
@@ -45,7 +45,7 @@ public class IdleTest extends SmackTestSuite {
         assertEquals(date, parsed.getSince());
 
         IdleElement element = new IdleElement(date);
-        assertXMLEqual("<idle xmlns='urn:xmpp:idle:1' since='1969-07-21T02:56:15.000+00:00'/>", element.toXML().toString());
+        assertXmlSimilar("<idle xmlns='urn:xmpp:idle:1' since='1969-07-21T02:56:15.000+00:00'/>", element.toXML().toString());
     }
 
     @Test

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.compress.packet;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ public class FailureTest {
 
         final String expectedXml = "<failure xmlns='http://jabber.org/protocol/compress'><processing-failed/></failure>";
 
-        assertXMLEqual(expectedXml, xml.toString());
+        assertXmlSimilar(expectedXml, xml.toString());
     }
 
     @Test
@@ -53,6 +53,6 @@ public class FailureTest {
                         + "</error>"
                         + "</failure>";
 
-        assertXMLEqual(expectedXml, xml.toString());
+        assertXmlSimilar(expectedXml, xml.toString());
     }
 }

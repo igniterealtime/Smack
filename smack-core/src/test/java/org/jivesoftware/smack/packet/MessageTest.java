@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.packet;
 
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.jivesoftware.smack.test.util.XmlUnitUtils;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -49,7 +47,7 @@ public class MessageTest {
         Message messageTypeInConstructor = new Message(null, Message.Type.chat);
         messageTypeInConstructor.setStanzaId(null);
         assertEquals(type, messageTypeInConstructor.getType());
-        assertXMLEqual(control, messageTypeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, messageTypeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         controlBuilder = new StringBuilder();
         controlBuilder.append("<message")
@@ -62,7 +60,7 @@ public class MessageTest {
         Message messageTypeSet = getNewMessage();
         messageTypeSet.setType(type2);
         assertEquals(type2, messageTypeSet.getType());
-        assertXMLEqual(control, messageTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, messageTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test(expected = NullPointerException.class)
@@ -87,7 +85,7 @@ public class MessageTest {
         message.setSubject(messageSubject);
 
         assertEquals(messageSubject, message.getSubject());
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -106,7 +104,7 @@ public class MessageTest {
         message.setBody(messageBody);
 
         assertEquals(messageBody, message.getBody());
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -139,7 +137,7 @@ public class MessageTest {
         message.addBody(null, messageBody1);
         message.addBody(lang2, messageBody2);
         message.addBody(lang3, messageBody3);
-        XmlUnitUtils.assertSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE));
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE));
 
         Collection<String> languages = message.getBodyLanguages();
         List<String> controlLanguages = new ArrayList<>();
@@ -183,7 +181,7 @@ public class MessageTest {
         message.setThread(messageThread);
 
         assertEquals(messageThread, message.getThread());
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
@@ -201,7 +199,7 @@ public class MessageTest {
         Message message = getNewMessage();
         message.setLanguage(lang);
 
-        assertXMLEqual(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     private static Message getNewMessage() {

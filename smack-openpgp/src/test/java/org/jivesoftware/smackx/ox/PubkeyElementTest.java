@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.ox;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
-import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -49,7 +49,7 @@ public class PubkeyElementTest extends SmackTestSuite {
         byte[] key = "BASE64_OPENPGP_PUBLIC_KEY".getBytes(Charset.forName("UTF-8"));
         PubkeyElement element = new PubkeyElement(new PubkeyElement.PubkeyDataElement(key), date);
 
-        assertXMLEqual(expected, element.toXML().toString());
+        assertXmlSimilar(expected, element.toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(expected);
         PubkeyElement parsed = PubkeyElementProvider.TEST_INSTANCE.parse(parser);
