@@ -113,31 +113,28 @@ public class MacroGroup {
     }
 
     public String toXML() {
-        // CHECKSTYLE:OFF
-    	StringBuilder buf = new StringBuilder();
-    	buf.append("<macrogroup>");
-    	buf.append("<title>" +  getTitle() + "</title>");
-    	buf.append("<macros>");
-    	for (Macro macro : getMacros())
-		{
-    		buf.append("<macro>");
-    		buf.append("<title>" + macro.getTitle() + "</title>");
-    		buf.append("<type>" + macro.getType() + "</type>");
-    		buf.append("<description>" + macro.getDescription() + "</description>");
-    		buf.append("<response>" + macro.getResponse() + "</response>");
-    		buf.append("</macro>");
-		}
-    	buf.append("</macros>");
+        StringBuilder buf = new StringBuilder();
+        buf.append("<macrogroup>");
+        buf.append("<title>" +  getTitle() + "</title>");
+        buf.append("<macros>");
+        for (Macro macro : getMacros()) {
+            buf.append("<macro>");
+            buf.append("<title>" + macro.getTitle() + "</title>");
+            buf.append("<type>" + macro.getType() + "</type>");
+            buf.append("<description>" + macro.getDescription() + "</description>");
+            buf.append("<response>" + macro.getResponse() + "</response>");
+            buf.append("</macro>");
+        }
+        buf.append("</macros>");
 
-    	if (getMacroGroups().size() > 0) {
-    		buf.append("<macroGroups>");
-    		for (MacroGroup groups : getMacroGroups()) {
-    			buf.append(groups.toXML());
-    		}
-    		buf.append("</macroGroups>");
-    	}
-    	buf.append("</macrogroup>");
-    	return buf.toString();
-        // CHECKSTYLE:ON
+        if (getMacroGroups().size() > 0) {
+            buf.append("<macroGroups>");
+            for (MacroGroup groups : getMacroGroups()) {
+                buf.append(groups.toXML());
+            }
+            buf.append("</macroGroups>");
+        }
+        buf.append("</macrogroup>");
+        return buf.toString();
     }
 }

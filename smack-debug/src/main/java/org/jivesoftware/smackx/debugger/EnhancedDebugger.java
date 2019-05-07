@@ -257,11 +257,9 @@ public class EnhancedDebugger extends SmackDebugger {
                 new DefaultTableModel(
                         new Object[] {"Hide", "Timestamp", "", "", "Message", "Id", "Type", "To", "From"},
                         0) {
-                    // CHECKSTYLE:OFF
-        			private static final long serialVersionUID = 8136121224474217264L;
-					@Override
+                    private static final long serialVersionUID = 8136121224474217264L;
+                    @Override
                     public boolean isCellEditable(int rowIndex, int mColIndex) {
-                    // CHECKSTYLE:ON
                         return false;
                     }
 
@@ -689,11 +687,9 @@ public class EnhancedDebugger extends SmackDebugger {
                 new DefaultTableModel(new Object[][] { {"IQ", 0, 0}, {"Message", 0, 0},
                         {"Presence", 0, 0}, {"Other", 0, 0}, {"Total", 0, 0}},
                         new Object[] {"Type", "Received", "Sent"}) {
-                    // CHECKSTYLE:OFF
-        			private static final long serialVersionUID = -6793886085109589269L;
-					@Override
+                    private static final long serialVersionUID = -6793886085109589269L;
+                    @Override
                     public boolean isCellEditable(int rowIndex, int mColIndex) {
-                    // CHECKSTYLE:ON
                         return false;
                     }
                 };

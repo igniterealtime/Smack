@@ -131,10 +131,8 @@ public class PrivacyItem {
      * @return the allow communication status.
      */
     public boolean isAllow() {
-    // CHECKSTYLE:OFF
-		return allow;
-	}
-    // CHECKSTYLE:ON
+        return allow;
+    }
 
     /**
      * Returns whether the receiver allow or deny incoming IQ stanzas or not.
@@ -142,10 +140,8 @@ public class PrivacyItem {
      * @return the iq filtering status.
      */
     public boolean isFilterIQ() {
-    // CHECKSTYLE:OFF
-		return filterIQ;
-	}
-    // CHECKSTYLE:ON
+        return filterIQ;
+    }
 
     /**
      * Sets whether the receiver allows or denies incoming IQ stanzas or not.
@@ -153,11 +149,8 @@ public class PrivacyItem {
      * @param filterIQ indicates if the receiver allows or denies incoming IQ stanzas.
      */
     public void setFilterIQ(boolean filterIQ) {
-    // CHECKSTYLE:OFF
-
-		this.filterIQ = filterIQ;
-	}
-    // CHECKSTYLE:ON
+        this.filterIQ = filterIQ;
+    }
 
     /**
      * Returns whether the receiver allows or denies incoming messages or not.
@@ -165,10 +158,8 @@ public class PrivacyItem {
      * @return the message filtering status.
      */
     public boolean isFilterMessage() {
-        // CHECKSTYLE:OFF
-		return filterMessage;
-	}
-    // CHECKSTYLE:ON
+        return filterMessage;
+    }
 
     /**
      * Sets wheather the receiver allows or denies incoming messages or not.
@@ -176,10 +167,8 @@ public class PrivacyItem {
      * @param filterMessage indicates if the receiver allows or denies incoming messages or not.
      */
     public void setFilterMessage(boolean filterMessage) {
-        // CHECKSTYLE:OFF
-		this.filterMessage = filterMessage;
-	}
-    // CHECKSTYLE:ON
+        this.filterMessage = filterMessage;
+    }
 
     /**
      * Returns whether the receiver allows or denies incoming presence or not.
@@ -187,10 +176,8 @@ public class PrivacyItem {
      * @return the iq filtering incoming presence status.
      */
     public boolean isFilterPresenceIn() {
-        // CHECKSTYLE:OFF
-		return filterPresenceIn;
-	}
-    // CHECKSTYLE:ON
+        return filterPresenceIn;
+    }
 
     /**
      * Sets whether the receiver allows or denies incoming presence or not.
@@ -198,10 +185,8 @@ public class PrivacyItem {
      * @param filterPresenceIn indicates if the receiver allows or denies filtering incoming presence.
      */
     public void setFilterPresenceIn(boolean filterPresenceIn) {
-        // CHECKSTYLE:OFF
-		this.filterPresenceIn = filterPresenceIn;
-	}
-    // CHECKSTYLE:ON
+        this.filterPresenceIn = filterPresenceIn;
+    }
 
     /**
      * Returns whether the receiver allows or denies incoming presence or not.
@@ -209,10 +194,8 @@ public class PrivacyItem {
      * @return the iq filtering incoming presence status.
      */
     public boolean isFilterPresenceOut() {
-        // CHECKSTYLE:OFF
-		return filterPresenceOut;
-	}
-    // CHECKSTYLE:ON
+        return filterPresenceOut;
+    }
 
     /**
      * Sets whether the receiver allows or denies outgoing presence or not.
@@ -220,10 +203,8 @@ public class PrivacyItem {
      * @param filterPresenceOut indicates if the receiver allows or denies filtering outgoing presence
      */
     public void setFilterPresenceOut(boolean filterPresenceOut) {
-        // CHECKSTYLE:OFF
-		this.filterPresenceOut = filterPresenceOut;
-	}
-    // CHECKSTYLE:ON
+        this.filterPresenceOut = filterPresenceOut;
+    }
 
     /**
      * Returns the order where the receiver is processed. List items are processed in
@@ -235,10 +216,8 @@ public class PrivacyItem {
      * @return the order number.
      */
     public long getOrder() {
-        // CHECKSTYLE:OFF
-		return order;
-	}
-    // CHECKSTYLE:ON
+        return order;
+    }
 
     /**
      * Returns the type hold the kind of communication it will allow or block.
@@ -248,9 +227,7 @@ public class PrivacyItem {
      */
     public Type getType() {
         return type;
-    // CHECKSTYLE:OFF
-	}
-    // CHECKSTYLE:ON
+    }
 
     /**
      * Returns the element identifier to apply the action.
@@ -265,9 +242,7 @@ public class PrivacyItem {
      */
     public String getValue() {
         return value;
-        // CHECKSTYLE:OFF
-	}
-    // CHECKSTYLE:ON
+    }
 
     /**
      * Returns whether the receiver allows or denies every kind of communication.
@@ -278,23 +253,22 @@ public class PrivacyItem {
      * @return the all communications status.
      */
     public boolean isFilterEverything() {
-        // CHECKSTYLE:OFF
-		return !(this.isFilterIQ() || this.isFilterMessage() || this.isFilterPresenceIn()
-				|| this.isFilterPresenceOut());
-	}
+        return !(this.isFilterIQ() || this.isFilterMessage() || this.isFilterPresenceIn()
+                || this.isFilterPresenceOut());
+    }
 
-	/**
-	 * Answer an xml representation of the receiver according to the RFC 3921.
-	 *
-	 * @return the text xml representation.
+    /**
+     * Answer an xml representation of the receiver according to the RFC 3921.
+     *
+     * @return the text xml representation.
      */
     public String toXML() {
         StringBuilder buf = new StringBuilder();
         buf.append("<item");
         if (this.isAllow()) {
-        	buf.append(" action=\"allow\"");
+            buf.append(" action=\"allow\"");
         } else {
-        	buf.append(" action=\"deny\"");
+            buf.append(" action=\"deny\"");
         }
         buf.append(" order=\"").append(getOrder()).append('"');
         if (getType() != null) {
@@ -304,24 +278,23 @@ public class PrivacyItem {
             buf.append(" value=\"").append(getValue()).append('"');
         }
         if (isFilterEverything()) {
-        	buf.append("/>");
+            buf.append("/>");
         } else {
-        	buf.append('>');
-        	if (this.isFilterIQ()) {
-            	buf.append("<iq/>");
+            buf.append('>');
+            if (this.isFilterIQ()) {
+                buf.append("<iq/>");
             }
-        	if (this.isFilterMessage()) {
-            	buf.append("<message/>");
+            if (this.isFilterMessage()) {
+                buf.append("<message/>");
             }
-        	if (this.isFilterPresenceIn()) {
-            	buf.append("<presence-in/>");
+            if (this.isFilterPresenceIn()) {
+                buf.append("<presence-in/>");
             }
-        	if (this.isFilterPresenceOut()) {
-            	buf.append("<presence-out/>");
+            if (this.isFilterPresenceOut()) {
+                buf.append("<presence-out/>");
             }
-        	buf.append("</item>");
+            buf.append("</item>");
         }
-        // CHECKSTYLE:ON
         return buf.toString();
     }
 

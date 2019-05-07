@@ -781,44 +781,38 @@ public class PacketParserUtilsTest {
 
     @Test
     public void validateSimplePresence() throws Exception {
-        // CHECKSTYLE:OFF
-    	String stanza = "<presence from='juliet@example.com/balcony' to='romeo@example.net'/>";
+        String stanza = "<presence from='juliet@example.com/balcony' to='romeo@example.net'/>";
 
-    	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
-    	assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
-        // CHECKSTYLE:ON
+        assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test
     public void validatePresenceProbe() throws Exception {
-        // CHECKSTYLE:OFF
-    	String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
+        String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
 
-    	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
-    	assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
-    	assertEquals(Presence.Type.unsubscribed, presence.getType());
-        // CHECKSTYLE:ON
+        assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(Presence.Type.unsubscribed, presence.getType());
     }
 
     @Test
     public void validatePresenceOptionalElements() throws Exception {
-        // CHECKSTYLE:OFF
-    	String stanza = "<presence xml:lang='en' type='unsubscribed'>"
-    			+ "<show>dnd</show>"
-    			+ "<status>Wooing Juliet</status>"
-    			+ "<priority>1</priority>"
-    			+ "</presence>";
+        String stanza = "<presence xml:lang='en' type='unsubscribed'>"
+                + "<show>dnd</show>"
+                + "<status>Wooing Juliet</status>"
+                + "<priority>1</priority>"
+                + "</presence>";
 
-    	Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
-    	assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
-    	assertEquals(Presence.Type.unsubscribed, presence.getType());
-    	assertEquals("dnd", presence.getMode().name());
-    	assertEquals("en", presence.getLanguage());
-    	assertEquals("Wooing Juliet", presence.getStatus());
-    	assertEquals(1, presence.getPriority());
-        // CHECKSTYLE:ON
+        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertEquals(Presence.Type.unsubscribed, presence.getType());
+        assertEquals("dnd", presence.getMode().name());
+        assertEquals("en", presence.getLanguage());
+        assertEquals("Wooing Juliet", presence.getStatus());
+        assertEquals(1, presence.getPriority());
     }
 
 //    @Test

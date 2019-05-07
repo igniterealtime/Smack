@@ -40,10 +40,8 @@
 		<property name="message" value="Line containing only whitespace character(s)"/>
 	</module>
 	<module name="RegexpSingleline">
-		<!-- We use {2,} instead of + here to address the typical case where a file was written
-		   with tabs but javadoc is causing '\t *' -->
-		<property name="format" value="^\t+ {2,}"/>
-		<property name="message" value="Line containing space(s) after tab(s)"/>
+		<property name="format" value="\t+"/>
+		<property name="message" value="Line containing tab character(s)"/>
 	</module>
 	<module name="RegexpSingleline">
 		<!--

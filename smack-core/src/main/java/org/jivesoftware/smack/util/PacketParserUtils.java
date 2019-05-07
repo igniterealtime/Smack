@@ -440,9 +440,7 @@ public class PacketParserUtils {
 
         String language = ParserUtils.getXmlLang(parser);
         if (language != null && !"".equals(language.trim())) {
-        // CHECKSTYLE:OFF
-        	presence.setLanguage(language);
-        // CHECKSTYLE:ON
+            presence.setLanguage(language);
         }
 
         // Parse sub-elements
