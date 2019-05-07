@@ -327,6 +327,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
+    public XmlStringBuilder optAttribute(String name, Number number) {
+        if (number != null) {
+            attribute(name, number.toString());
+        }
+        return this;
+    }
+
     /**
      * Add the given attribute if {@code value => 0}.
      *

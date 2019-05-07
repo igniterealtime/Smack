@@ -103,13 +103,8 @@ public class Range implements NamedElement {
     public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb =  new XmlStringBuilder(this);
 
-        // TODO: (Introduce and) use XmlStringBuilder.optXmlAttribute(name, Number).
-        if (offset != null) {
-            sb.attribute(ATTR_OFFSET, offset);
-        }
-        if (length != null) {
-            sb.attribute(ATTR_LENGTH, length);
-        }
+        sb.optAttribute(ATTR_OFFSET, offset);
+        sb.optAttribute(ATTR_LENGTH, length);
 
         if (hash != null) {
             sb.rightAngleBracket();
