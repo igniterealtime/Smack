@@ -33,6 +33,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
+import org.jivesoftware.smack.util.ExceptionUtil;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -138,12 +139,14 @@ public class PacketWriterTest {
             if (prematureUnblocked) {
                 String failureMessage = "Should not unblock before the thread got shutdown.";
                 if (unexpectedThreadException != null) {
-                    failureMessage += " Unexpected thread exception thrown: " + unexpectedThreadException;
+                    String stacktrace = ExceptionUtil.getStackTrace(unexpectedThreadException);
+                    failureMessage += " Unexpected thread exception thrown: " + unexpectedThreadException + "\n" + stacktrace;
                 }
                 fail(failureMessage);
             }
             else if (unexpectedThreadException != null) {
-                fail("Unexpected thread exception: " + unexpectedThreadException);
+                String stacktrace = ExceptionUtil.getStackTrace(unexpectedThreadException);
+                fail("Unexpected thread exception: " + unexpectedThreadException + "\n" + stacktrace);
             }
 
             assertNotNull(expectedThreadExceptionReference.get(), "Did not encounter expected exception on sendStreamElement()");
