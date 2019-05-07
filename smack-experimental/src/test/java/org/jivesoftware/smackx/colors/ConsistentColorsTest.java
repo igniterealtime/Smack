@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.colors;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 

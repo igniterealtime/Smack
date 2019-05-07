@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.reference;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.net.URI;

@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.spoiler;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 

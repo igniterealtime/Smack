@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.message_markup;
 
-import static junit.framework.TestCase.assertEquals;
 import static org.custommonkey.xmlunit.XMLAssert.assertXMLEqual;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
