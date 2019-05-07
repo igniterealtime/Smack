@@ -108,7 +108,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
 
     private static boolean match(String name, KerberosPrincipal peerPrincipal) {
         // TODO
-        LOGGER.warning("KerberosPrincipal validation not implemented yet. Can not verify " + name);
+        LOGGER.warning("KerberosPrincipal '" + peerPrincipal + "' validation not implemented yet. Can not verify " + name);
         return false;
     }
 

@@ -53,7 +53,7 @@ public class MoodElementTest extends SmackTestSuite {
 
     @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentsTest() {
-        MoodElement element = new MoodElement(null, "Text alone is not allowed.");
+        new MoodElement(null, "Text alone is not allowed.");
     }
 
     @Test
@@ -78,6 +78,6 @@ public class MoodElementTest extends SmackTestSuite {
                     "<unknown/>" +
                 "</mood>";
         XmlPullParser parser = TestUtils.getParser(xml);
-        MoodElement element = MoodProvider.INSTANCE.parse(parser);
+        MoodProvider.INSTANCE.parse(parser);
     }
 }

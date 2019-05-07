@@ -80,7 +80,7 @@ public class UntrustedOmemoIdentityException extends Exception {
     }
 
     @Override
-    public String toString() {
+    public String getMessage() {
         if (trustedKey != null) {
             return "Untrusted OMEMO Identity encountered:\n" +
                     "Fingerprint of trusted key:\n" + trustedKey.blocksOf8Chars() + "\n" +

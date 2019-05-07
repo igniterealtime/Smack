@@ -15,7 +15,7 @@ buildscript {
 
 plugins {
     id 'ru.vyarus.animalsniffer' version '1.4.6'
-	id 'net.ltgt.errorprone' version '0.6'
+	id 'net.ltgt.errorprone' version '0.8'
 }
 
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -203,21 +203,25 @@ allprojects {
 			'-Xlint:-options',
 			'-Werror',
 		]
-		options.errorprone.errorproneArgs = [
-			// Disable errorprone checks
-			'-Xep:TypeParameterUnusedInFormals:OFF',
-			// Disable errorpone StringSplitter check, as it
-			// recommends using Splitter from Guava, which we don't
-			// have (nor want to use in Smack).
-			'-Xep:StringSplitter:OFF',
-			'-Xep:JdkObsolete:OFF',
-			// Disabled because sinttest re-uses BeforeClass from junit.
-			// TODO: change sinttest so that it has it's own
-			// BeforeClass and re-enable this check.
-			'-Xep:JUnit4ClassAnnotationNonStatic:OFF',
-			// Disabled but should be re-enabled at some point
-			//'-Xep:InconsistentCapitalization:OFF',
-		]
+		options.errorprone {
+			error("UnusedVariable", "UnusedMethod")
+			errorproneArgs = [
+				// Disable errorprone checks
+				'-Xep:TypeParameterUnusedInFormals:OFF',
+				// Disable errorpone StringSplitter check, as it
+				// recommends using Splitter from Guava, which we don't
+				// have (nor want to use in Smack).
+				'-Xep:StringSplitter:OFF',
+				'-Xep:JdkObsolete:OFF',
+				// Disabled because sinttest re-uses BeforeClass from junit.
+				// TODO: change sinttest so that it has it's own
+				// BeforeClass and re-enable this check.
+				'-Xep:JUnit4ClassAnnotationNonStatic:OFF',
+				// Disabled but should be re-enabled at some point
+				//'-Xep:InconsistentCapitalization:OFF',
+				'-Xep:MixedMutabilityReturnType:OFF',
+			]
+		}
 	}
 
 	tasks.withType(ScalaCompile) {
@@ -269,7 +273,7 @@ allprojects {
 		testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
 		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 
-		errorprone 'com.google.errorprone:error_prone_core:2.3.2'
+		errorprone 'com.google.errorprone:error_prone_core:2.3.3'
 		errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
 	}
 

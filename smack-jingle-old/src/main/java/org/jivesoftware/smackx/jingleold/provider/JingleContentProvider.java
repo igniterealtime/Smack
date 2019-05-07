@@ -34,7 +34,6 @@ public class JingleContentProvider extends ExtensionElementProvider<JingleConten
      */
     @Override
     public JingleContent parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
-        String elementName = parser.getName();
         String creator = parser.getAttributeValue("", JingleContent.CREATOR);
         String name = parser.getAttributeValue("", JingleContent.NAME);
 

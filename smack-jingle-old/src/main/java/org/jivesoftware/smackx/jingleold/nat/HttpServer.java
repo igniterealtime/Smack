@@ -32,6 +32,7 @@ import org.jivesoftware.smack.util.StringUtils;
 /**
  * A very Simple HTTP Server.
  */
+@SuppressWarnings("UnusedVariable")
 public class HttpServer {
 
     private static final Logger LOGGER = Logger.getLogger(HttpServer.class.getName());

@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
-import java.util.logging.Logger;
-
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -33,8 +31,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * TransportCandidate for Jingle Socks5Bytestream transports.
  */
 public final class JingleS5BTransportCandidate extends JingleContentTransportCandidate {
-
-    private static final Logger LOGGER = Logger.getLogger(JingleS5BTransportCandidate.class.getName());
 
     public static final String ATTR_CID = "cid";
     public static final String ATTR_HOST = "host";

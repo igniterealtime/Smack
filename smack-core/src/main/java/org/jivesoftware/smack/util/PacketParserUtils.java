@@ -368,6 +368,7 @@ public class PacketParserUtils {
         return xml;
     }
 
+    @SuppressWarnings("UnusedVariable")
     private static CharSequence parseContentDepthWithRoundtrip(XmlPullParser parser, int depth, boolean fullNamespaces)
                     throws XmlPullParserException, IOException {
         XmlStringBuilder sb = new XmlStringBuilder();

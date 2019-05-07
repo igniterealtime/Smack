@@ -17,8 +17,6 @@
 package org.jivesoftware.smackx.jingleold.mediaimpl;
 
 import java.awt.Frame;
-import java.awt.TextArea;
-import java.awt.Toolkit;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -30,6 +28,7 @@ import javax.media.format.AudioFormat;
 import com.sun.media.ExclusiveUse;
 import com.sun.media.util.Registry;
 
+@SuppressWarnings("UnusedVariable")
 public class JMFInit extends Frame implements Runnable {
 
     private static final long serialVersionUID = 6476412003260641680L;
@@ -276,24 +275,6 @@ public class JMFInit extends Frame implements Runnable {
 
     private void message(String mesg) {
         LOGGER.fine(mesg);
-    }
-
-    private void createGUI() {
-        TextArea textBox = new TextArea(5, 50);
-        add("Center", textBox);
-        textBox.setEditable(false);
-        addNotify();
-        pack();
-
-        int scrWidth = (int) Toolkit.getDefaultToolkit().getScreenSize()
-                .getWidth();
-        int scrHeight = (int) Toolkit.getDefaultToolkit().getScreenSize()
-                .getHeight();
-
-        setLocation((scrWidth - getWidth()) / 2, (scrHeight - getHeight()) / 2);
-
-        setVisible(visible);
-
     }
 
     public static void start(boolean visible) {

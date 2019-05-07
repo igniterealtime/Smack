@@ -31,6 +31,7 @@ import java.util.logging.Logger;
  * It Creates a TCP Socket That Connects to another TCP Socket Listener and forwards every packets received to an UDP Listener.
  * And forwards every packets received in UDP Socket, to the TCP Server
  */
+@SuppressWarnings("UnusedVariable")
 public class TcpUdpBridgeClient {
 
     private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeClient.class.getName());

@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 import org.jivesoftware.smackx.jingleold.nat.ICECandidate.Type;
 
+@SuppressWarnings("UnusedVariable")
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
     private static final Logger LOGGER = Logger.getLogger(ICETransportManager.class.getName());
 

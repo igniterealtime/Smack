@@ -69,7 +69,6 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
      * obtain a new instance and {@link #build} to build the configuration.
      */
     public static final class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
-        private boolean compressionEnabled = false;
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
         private Builder() {

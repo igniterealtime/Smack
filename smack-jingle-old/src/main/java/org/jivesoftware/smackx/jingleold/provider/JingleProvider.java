@@ -53,7 +53,7 @@ public class JingleProvider extends IQProvider<Jingle> {
     public Jingle parse(XmlPullParser parser, int intialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {
 
         Jingle jingle = new Jingle();
-        String sid = "";
+        String sid;
         JingleActionEnum action;
         Jid initiator, responder;
         boolean done = false;

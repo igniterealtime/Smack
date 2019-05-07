@@ -45,6 +45,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleError;
  *
  * @author Thiago Camargo
  */
+@SuppressWarnings("UnusedVariable")
 public class MediaNegotiator extends JingleNegotiator {
 
     private static final Logger LOGGER = Logger.getLogger(MediaNegotiator.class.getName());

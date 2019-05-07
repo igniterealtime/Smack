@@ -219,6 +219,7 @@ public final class ICECandidate extends TransportCandidate implements Comparable
      *
      * ICE Candidate can check connectivity using UDP echo Test.
      */
+    @SuppressWarnings("UnusedVariable")
     @Override
     public void check(final List<TransportCandidate> localCandidates) {
         // TODO candidate is being checked trigger

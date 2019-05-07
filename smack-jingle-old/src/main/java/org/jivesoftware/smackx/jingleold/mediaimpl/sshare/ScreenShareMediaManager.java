@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
  *
  * @author Thiago Camargo
  */
-
+@SuppressWarnings("UnusedVariable")
 public class ScreenShareMediaManager extends JingleMediaManager {
 
     public static final String MEDIA_NAME = "ScreenShare";

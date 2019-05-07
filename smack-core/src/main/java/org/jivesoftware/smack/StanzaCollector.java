@@ -329,6 +329,21 @@ public class StanzaCollector implements AutoCloseable {
         return resultQueue.size();
     }
 
+    private String stringCache;
+
+    @Override
+    public String toString() {
+        if (stringCache == null) {
+            StringBuilder sb = new StringBuilder(128);
+            sb.append("Stanza Collector filter='").append(packetFilter).append('\'');
+            if (request != null) {
+                sb.append(" request='").append(request).append('\'');
+            }
+            stringCache = sb.toString();
+        }
+        return stringCache;
+    }
+
     synchronized void notifyConnectionError(Exception exception) {
         connectionException = exception;
         notifyAll();

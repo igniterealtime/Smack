@@ -350,6 +350,7 @@ public abstract class TransportCandidate {
      *
      * Subclasses should provide better methods if they can...
      */
+    @SuppressWarnings("UnusedVariable")
     public void check(final List<TransportCandidate> localCandidates) {
         // TODO candidate is being checked trigger
         // candidatesChecking.add(cand);
@@ -669,6 +670,7 @@ public abstract class TransportCandidate {
 
         }
 
+        @SuppressWarnings("UnusedVariable")
         @Override
         public void run() {
             try {

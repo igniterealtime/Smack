@@ -95,7 +95,6 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
         bobOpenPgp.setOpenPgpProvider(bobProvider);
 
         OXInstantMessagingManager aliceOxim = OXInstantMessagingManager.getInstanceFor(aliceCon);
-        OXInstantMessagingManager bobOxim = OXInstantMessagingManager.getInstanceFor(bobCon);
 
         OpenPgpSelf aliceSelf = aliceOpenPgp.getOpenPgpSelf();
         OpenPgpSelf bobSelf = bobOpenPgp.getOpenPgpSelf();

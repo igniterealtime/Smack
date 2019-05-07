@@ -51,6 +51,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportC
  *
  * @author Alvaro Saurin
  */
+@SuppressWarnings("UnusedVariable")
 public abstract class TransportNegotiator extends JingleNegotiator {
 
     private static final Logger LOGGER = Logger.getLogger(TransportNegotiator.class.getName());

@@ -32,6 +32,7 @@ import org.jivesoftware.smackx.jingleold.media.PayloadType;
  *
  * @author Thiago Camargo
  */
+@SuppressWarnings("UnusedVariable")
 public class BridgedTransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
 
     XMPPConnection xmppConnection;

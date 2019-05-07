@@ -1611,11 +1611,9 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
 
         @Override
         protected TransitionIntoResult transitionInto(WalkStateGraphContext walkStateGraphContext) {
-            boolean streamCloseIssued = false;
-
             closingStreamReceived.init();
 
-            streamCloseIssued = outgoingElementsQueue.offerAndShutdown(StreamClose.INSTANCE);
+            boolean streamCloseIssued = outgoingElementsQueue.offerAndShutdown(StreamClose.INSTANCE);
 
             afterOutgoingElementsQueueModified();
 

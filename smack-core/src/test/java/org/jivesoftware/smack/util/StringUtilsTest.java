@@ -31,11 +31,9 @@ import org.junit.Test;
 public class StringUtilsTest  {
     @Test
     public void testEscapeForXml() {
-        String input = null;
-
         assertNull(StringUtils.escapeForXml(null));
 
-        input = "<b>";
+        String input = "<b>";
         assertCharSequenceEquals("&lt;b&gt;", StringUtils.escapeForXml(input));
 
         input = "\"";

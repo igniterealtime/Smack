@@ -40,6 +40,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
  *  @author Jeff Williams
  *  @see JingleSessionState
  */
+@SuppressWarnings("UnusedVariable")
 public class JingleSessionStateUnknown extends JingleSessionState {
     private static final Logger LOGGER = Logger.getLogger(JingleSessionStateUnknown.class.getName());
 

@@ -56,7 +56,6 @@ import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
@@ -476,14 +475,6 @@ public final class MamManager extends Manager {
         return formField;
     }
 
-    private static void addWithJid(Jid withJid, DataForm dataForm) {
-        if (withJid == null) {
-            return;
-        }
-        FormField formField = getWithFormField(withJid);
-        dataForm.addField(formField);
-    }
-
     public MamQuery queryMostRecentPage(Jid jid, int max) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, NotLoggedInException, InterruptedException {
         MamQueryArgs mamQueryArgs = MamQueryArgs.builder()
@@ -564,6 +555,7 @@ public final class MamManager extends Manager {
      *
      */
     @Deprecated
+    @SuppressWarnings("UnusedVariable")
     public static final class MamQueryResult {
         public final List<Forwarded> forwardedMessages;
         public final MamFinIQ mamFin;
@@ -697,30 +689,6 @@ public final class MamManager extends Manager {
 
         public MamFinIQ getMamFinIq() {
             return mamFin;
-        }
-    }
-
-    private void ensureMamQueryResultMatchesThisManager(MamQueryResult mamQueryResult) {
-        EntityFullJid localAddress = connection().getUser();
-        EntityBareJid localBareAddress = null;
-        if (localAddress != null) {
-            localBareAddress = localAddress.asEntityBareJid();
-        }
-        boolean isLocalUserArchive = archiveAddress == null || archiveAddress.equals(localBareAddress);
-
-        Jid finIqFrom = mamQueryResult.mamFin.getFrom();
-
-        if (finIqFrom != null) {
-            if (finIqFrom.equals(archiveAddress) || (isLocalUserArchive && finIqFrom.equals(localBareAddress))) {
-                return;
-            }
-            throw new IllegalArgumentException("The given MamQueryResult is from the MAM archive '" + finIqFrom
-                            + "' whereas this MamManager is responsible for '" + archiveAddress + '\'');
-        }
-        else if (!isLocalUserArchive) {
-            throw new IllegalArgumentException(
-                            "The given MamQueryResult is from the local entity (user) MAM archive, whereas this MamManager is responsible for '"
-                                            + archiveAddress + '\'');
         }
     }
 

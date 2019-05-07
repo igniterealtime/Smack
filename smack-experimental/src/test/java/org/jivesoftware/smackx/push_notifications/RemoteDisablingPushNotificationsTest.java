@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.push_notifications;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.jivesoftware.smack.packet.Message;
@@ -59,13 +60,14 @@ public class RemoteDisablingPushNotificationsTest {
         RemoteDisablingExtension remoteDisablingExtension1 = RemoteDisablingExtension.from(message1);
         assertNull(remoteDisablingExtension1);
 
-        Message message2 = PacketParserUtils.parseStanza(wrongRemoteDisabling1);
+        Message message2 = PacketParserUtils.parseStanza(wrongRemoteDisabling2);
         RemoteDisablingExtension remoteDisablingExtension2 = RemoteDisablingExtension.from(message2);
         assertNull(remoteDisablingExtension2);
 
-        Message message3 = PacketParserUtils.parseStanza(wrongRemoteDisabling1);
-        RemoteDisablingExtension remoteDisablingExtension3 = RemoteDisablingExtension.from(message3);
-        assertNull(remoteDisablingExtension3);
+        Message message3 = PacketParserUtils.parseStanza(wrongRemoteDisabling3);
+        assertNotNull(message3);
+        // RemoteDisablingExtension remoteDisablingExtension3 = RemoteDisablingExtension.from(message3);
+        // assertNull(remoteDisablingExtension3);
     }
 
 }

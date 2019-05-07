@@ -70,8 +70,6 @@ public class InBandBytestreamSessionTest extends InitExtensions {
     // mocked XMPP connection
     private XMPPConnection connection;
 
-    private InBandBytestreamManager byteStreamManager;
-
     private Open initBytestream;
 
     private Verification<Data, IQ> incrementingSequence;
@@ -90,9 +88,6 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
         // create mocked XMPP connection
         connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
-
-        // initialize InBandBytestreamManager to get the InitiationListener
-        byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         // create a In-Band Bytestream open packet
         initBytestream = new Open(sessionID, blockSize);
@@ -512,7 +507,7 @@ public class InBandBytestreamSessionTest extends InitExtensions {
         }
 
         byte[] bytes = new byte[3 * blockSize];
-        int read = 0;
+        int read;
         read = inputStream.read(bytes, 0, blockSize);
         assertEquals(blockSize, read);
         read = inputStream.read(bytes, 10, blockSize);

@@ -27,6 +27,7 @@ import java.util.logging.Logger;
  * at present and could be much improved by picking the nodes to reduce more carefully
  * (i.e. not completely at random) when I get the time.
  */
+@SuppressWarnings("UnusedVariable")
 public class OctTreeQuantizer implements Quantizer {
 
     private static final Logger LOGGER = Logger.getLogger(OctTreeQuantizer.class.getName());

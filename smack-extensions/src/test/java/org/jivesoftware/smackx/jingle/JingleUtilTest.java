@@ -46,6 +46,7 @@ public class JingleUtilTest extends SmackTestSuite {
         jutil = new JingleUtil(connection);
     }
 
+    @SuppressWarnings("UnusedVariable")
     @Test
     public void sessionInitiateTest() throws XmppStringprepException {
         FullJid romeo = connection.getUser().asFullJidOrThrow();

@@ -97,7 +97,7 @@ public class OmemoExceptionsTest {
         ArrayList<CryptoFailedException> el = new ArrayList<>();
         try {
             MultipleCryptoFailedException m2 = MultipleCryptoFailedException.from(el);
-            fail("MultipleCryptoFailedException must not allow empty list.");
+            fail("MultipleCryptoFailedException must not allow empty list, but returned: " + m2);
         } catch (IllegalArgumentException e) {
             // Expected
         }

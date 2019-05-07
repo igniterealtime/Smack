@@ -19,7 +19,6 @@ package org.jivesoftware.smack.util.dns.minidns;
 import java.security.KeyManagementException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
-import java.util.logging.Logger;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
@@ -33,7 +32,6 @@ import org.minidns.dane.DaneVerifier;
 import org.minidns.dane.ExpectingTrustManager;
 
 public class MiniDnsDaneVerifier implements SmackDaneVerifier {
-    private static final Logger LOGGER = Logger.getLogger(MiniDnsDaneVerifier.class.getName());
 
     private static final DaneVerifier VERIFIER = new DaneVerifier();
 

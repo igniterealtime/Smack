@@ -36,6 +36,7 @@ import java.util.logging.Logger;
  *
  * @author Thiago Rocha Camargo
  */
+@SuppressWarnings("UnusedVariable")
 public class ImageTransmitter implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(ImageTransmitter.class.getName());

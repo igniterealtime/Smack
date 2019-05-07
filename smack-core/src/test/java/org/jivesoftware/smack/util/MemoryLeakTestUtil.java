@@ -51,6 +51,7 @@ public class MemoryLeakTestUtil {
 
     private static final Logger LOGGER = Logger.getLogger(MemoryLeakTestUtil.class.getName());
 
+    @SuppressWarnings("UnusedVariable")
     public static <M extends Manager> void noResourceLeakTest(Function<DummyConnection, M> managerSupplier)
             throws XmppStringprepException, IllegalArgumentException, InterruptedException {
         final int numConnections = 10;
@@ -119,6 +120,7 @@ public class MemoryLeakTestUtil {
         assertNull(reference);
     }
 
+    @SuppressWarnings("UnusedVariable")
     private static void triggerGarbageCollection() {
         Object object = new Object();
         WeakReference<Object> weakReference = new WeakReference<>(object);

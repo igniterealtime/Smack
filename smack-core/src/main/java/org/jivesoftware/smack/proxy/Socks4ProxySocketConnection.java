@@ -73,7 +73,6 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
     of all zero bits.
     */
 
-            index = 0;
             buf[index++] = 4;
             buf[index++] = 1;
 

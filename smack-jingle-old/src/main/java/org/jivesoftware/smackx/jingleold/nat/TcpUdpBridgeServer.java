@@ -33,6 +33,7 @@ import java.util.logging.Logger;
  * It Creates a TCP Socket Listeners for Connections and forwards every packets received to an UDP Listener.
  * And forwards every packets received in UDP Socket, to the TCP Client
  */
+@SuppressWarnings("UnusedVariable")
 public class TcpUdpBridgeServer {
 
     private static final Logger LOGGER = Logger.getLogger(TcpUdpBridgeServer.class.getName());

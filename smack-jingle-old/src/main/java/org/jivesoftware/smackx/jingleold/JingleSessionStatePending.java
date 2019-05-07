@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.jingleold.packet.Jingle;
  *  @author Jeff Williams
  *  @see JingleSessionState
  */
-
+@SuppressWarnings("UnusedVariable")
 public class JingleSessionStatePending extends JingleSessionState {
     private static final Logger LOGGER = Logger.getLogger(JingleSessionStatePending.class.getName());
 

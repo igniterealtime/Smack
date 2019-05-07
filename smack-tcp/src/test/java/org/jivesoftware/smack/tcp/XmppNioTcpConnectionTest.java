@@ -27,6 +27,7 @@ public class XmppNioTcpConnectionTest {
     }
 
     private static void assertContains(GraphVertex<StateDescriptor> graph, Class<? extends StateDescriptor> state) {
-        throw new Error("Implement me");
+        // TODO: Implement this.
+        throw new Error("Implement me: " + graph + " " + state);
     }
 }

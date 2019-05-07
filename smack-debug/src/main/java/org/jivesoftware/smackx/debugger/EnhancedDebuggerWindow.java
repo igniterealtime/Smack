@@ -346,6 +346,7 @@ public final class EnhancedDebuggerWindow {
      *
      * @param evt the event that indicates that the root window is closing
      */
+    @SuppressWarnings("UnusedVariable")
     private synchronized void rootWindowClosing(WindowEvent evt) {
         // Notify to all the debuggers to stop debugging
         for (EnhancedDebugger debugger : debuggers) {
