@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
@@ -29,6 +31,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5Exception.NoSocks5StreamHostsProvided;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
@@ -197,15 +201,19 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @return the socket to send/receive data
      * @throws InterruptedException if the current thread was interrupted while waiting
      * @throws XMPPErrorException
-     * @throws SmackException
+     * @throws NotConnectedException
+     * @throws CouldNotConnectToAnyProvidedSocks5Host
+     * @throws NoSocks5StreamHostsProvided
      */
     @Override
-    public Socks5BytestreamSession accept() throws InterruptedException, XMPPErrorException, SmackException {
+    public Socks5BytestreamSession accept() throws InterruptedException, XMPPErrorException,
+                    CouldNotConnectToAnyProvidedSocks5Host, NotConnectedException, NoSocks5StreamHostsProvided {
         Collection<StreamHost> streamHosts = this.bytestreamRequest.getStreamHosts();
 
+        Map<StreamHost, Exception> streamHostsExceptions = new HashMap<>();
         // throw exceptions if request contains no stream hosts
         if (streamHosts.size() == 0) {
-            cancelRequest();
+            cancelRequest(streamHostsExceptions);
         }
 
         StreamHost selectedHost = null;
@@ -245,6 +253,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
             }
             catch (TimeoutException | IOException | SmackException | XMPPException e) {
+                streamHostsExceptions.put(streamHost, e);
                 incrementConnectionFailures(address);
             }
 
@@ -252,7 +261,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
         // throw exception if connecting to all SOCKS5 proxies failed
         if (selectedHost == null || socket == null) {
-            cancelRequest();
+            cancelRequest(streamHostsExceptions);
         }
 
         // send used-host confirmation
@@ -277,16 +286,38 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     /**
      * Cancels the SOCKS5 Bytestream request by sending an error to the initiator and building a
      * XMPP exception.
-     * @throws XMPPErrorException
+     *
+     * @param streamHosts the stream hosts.
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws CouldNotConnectToAnyProvidedSocks5Host as expected result.
+     * @throws NoSocks5StreamHostsProvided
      */
-    private void cancelRequest() throws XMPPErrorException, NotConnectedException, InterruptedException {
-        String errorMessage = "Could not establish socket with any provided host";
+    private void cancelRequest(Map<StreamHost, Exception> streamHostsExceptions)
+                    throws NotConnectedException, InterruptedException, CouldNotConnectToAnyProvidedSocks5Host, NoSocks5StreamHostsProvided {
+        final Socks5Exception.NoSocks5StreamHostsProvided noHostsProvidedException;
+        final Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host couldNotConnectException;
+        final String errorMessage;
+
+        if (streamHostsExceptions.isEmpty()) {
+            noHostsProvidedException = new Socks5Exception.NoSocks5StreamHostsProvided();
+            couldNotConnectException = null;
+            errorMessage = noHostsProvidedException.getMessage();
+        } else {
+            noHostsProvidedException = null;
+            couldNotConnectException = Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host.construct(streamHostsExceptions);
+            errorMessage = couldNotConnectException.getMessage();
+        }
+
         StanzaError.Builder error = StanzaError.from(StanzaError.Condition.item_not_found, errorMessage);
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);
         this.manager.getConnection().sendStanza(errorIQ);
-        throw new XMPPErrorException(errorIQ, error.build());
+
+        if (noHostsProvidedException != null) {
+            throw noHostsProvidedException;
+        } else {
+            throw couldNotConnectException;
+        }
     }
 
     /**

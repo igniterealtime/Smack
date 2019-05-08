@@ -20,7 +20,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +30,6 @@ import java.net.Socket;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
@@ -90,9 +89,7 @@ public class Socks5ByteStreamRequestTest {
      */
     @Test
     public void shouldFailIfRequestHasNoStreamHosts() throws Exception {
-
-        try {
-
+        assertThrows(Socks5Exception.NoSocks5StreamHostsProvided.class, () -> {
             // build SOCKS5 Bytestream initialization request with no SOCKS5 proxies
             Bytestream bytestreamInitialization = Socks5PacketUtils.createBytestreamInitiation(
                             initiatorJID, targetJID, sessionID);
@@ -106,12 +103,7 @@ public class Socks5ByteStreamRequestTest {
 
             // accept the stream (this is the call that is tested here)
             byteStreamRequest.accept();
-
-            fail("exception should be thrown");
-        }
-        catch (XMPPErrorException e) {
-            assertTrue(e.getStanzaError().getDescriptiveText("en").contains("Could not establish socket with any provided host"));
-        }
+        });
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
@@ -132,9 +124,7 @@ public class Socks5ByteStreamRequestTest {
      */
     @Test
     public void shouldFailIfRequestHasInvalidStreamHosts() throws Exception {
-
-        try {
-
+        assertThrows(Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host.class, () -> {
             // build SOCKS5 Bytestream initialization request
             Bytestream bytestreamInitialization = Socks5PacketUtils.createBytestreamInitiation(
                             initiatorJID, targetJID, sessionID);
@@ -150,12 +140,7 @@ public class Socks5ByteStreamRequestTest {
 
             // accept the stream (this is the call that is tested here)
             byteStreamRequest.accept();
-
-            fail("exception should be thrown");
-        }
-        catch (XMPPErrorException e) {
-            assertTrue(e.getStanzaError().getDescriptiveText("en").contains("Could not establish socket with any provided host"));
-        }
+        });
 
         // verify targets response
         assertEquals(1, protocol.getRequests().size());
@@ -186,7 +171,7 @@ public class Socks5ByteStreamRequestTest {
 
         // try to connect several times
         for (int i = 0; i < 2; i++) {
-            try {
+            assertThrows(Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host.class, () -> {
                 // build SOCKS5 Bytestream request with the bytestream initialization
                 Socks5BytestreamRequest byteStreamRequest = new Socks5BytestreamRequest(
                                 byteStreamManager, bytestreamInitialization);
@@ -197,13 +182,7 @@ public class Socks5ByteStreamRequestTest {
 
                 // accept the stream (this is the call that is tested here)
                 byteStreamRequest.accept();
-
-                fail("exception should be thrown");
-            }
-            catch (XMPPErrorException e) {
-                assertTrue(e.getStanzaError().getDescriptiveText("en").contains(
-                                "Could not establish socket with any provided host"));
-            }
+            });
 
             // verify targets response
             assertEquals(1, protocol.getRequests().size());
@@ -278,7 +257,7 @@ public class Socks5ByteStreamRequestTest {
 
         // try to connect several times
         for (int i = 0; i < 10; i++) {
-            try {
+            assertThrows(Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host.class, () -> {
                 // build SOCKS5 Bytestream request with the bytestream initialization
                 Socks5BytestreamRequest byteStreamRequest = new Socks5BytestreamRequest(
                                 byteStreamManager, bytestreamInitialization);
@@ -289,13 +268,7 @@ public class Socks5ByteStreamRequestTest {
 
                 // accept the stream (this is the call that is tested here)
                 byteStreamRequest.accept();
-
-                fail("exception should be thrown");
-            }
-            catch (XMPPErrorException e) {
-                assertTrue(e.getStanzaError().getDescriptiveText("en").contains(
-                                "Could not establish socket with any provided host"));
-            }
+            });
 
             // verify targets response
             assertEquals(1, protocol.getRequests().size());

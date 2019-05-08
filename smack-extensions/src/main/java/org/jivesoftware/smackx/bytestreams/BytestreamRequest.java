@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.bytestreams;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.Socks5BytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5Exception.CouldNotConnectToAnyProvidedSocks5Host;
+import org.jivesoftware.smackx.bytestreams.socks5.Socks5Exception.NoSocks5StreamHostsProvided;
 
 import org.jxmpp.jid.Jid;
 
@@ -57,10 +57,12 @@ public interface BytestreamRequest {
      * @throws XMPPErrorException if an error occurred while accepting the bytestream request
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
-     * @throws NoResponseException
-     * @throws SmackException
+     * @throws NotConnectedException
+     * @throws CouldNotConnectToAnyProvidedSocks5Host
+     * @throws NoSocks5StreamHostsProvided
      */
-    BytestreamSession accept() throws InterruptedException, XMPPErrorException, SmackException;
+    BytestreamSession accept() throws InterruptedException, XMPPErrorException, CouldNotConnectToAnyProvidedSocks5Host,
+                    NotConnectedException, NoSocks5StreamHostsProvided;
 
     /**
      * Rejects the bytestream request by sending a reject error to the initiator.
