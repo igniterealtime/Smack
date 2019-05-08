@@ -569,13 +569,6 @@ configure(integrationTestProjects + project(':smack-repl')) {
 project(':smack-omemo').clirr.enabled = false
 project(':smack-omemo-signal').clirr.enabled = false
 
-configure(
-	[ ':smack-omemo',
-	  ':smack-omemo-signal',
-	  ':smack-omemo-signal-integration-test',
-	].collect{ project(it) }) {
-}
-
 subprojects*.jar {
    manifest {
        from sharedManifest
