@@ -18,11 +18,11 @@ package org.jivesoftware.smackx.omemo;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.omemo.element.OmemoElement_VAxolotl;
@@ -40,11 +40,11 @@ public class OmemoVAxolotlElementTest extends SmackTestSuite {
 
     @Test
     public void serializationTest() throws Exception {
-        byte[] payload = "This is payload.".getBytes(StringUtils.UTF8);
+        byte[] payload = "This is payload.".getBytes(StandardCharsets.UTF_8);
         int keyId1 = 8;
         int keyId2 = 33333;
-        byte[] keyData1 = "KEYDATA".getBytes(StringUtils.UTF8);
-        byte[] keyData2 = "DATAKEY".getBytes(StringUtils.UTF8);
+        byte[] keyData1 = "KEYDATA".getBytes(StandardCharsets.UTF_8);
+        byte[] keyData2 = "DATAKEY".getBytes(StandardCharsets.UTF_8);
         int sid = 12131415;
         byte[] iv = OmemoMessageBuilder.generateIv();
 

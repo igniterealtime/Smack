@@ -18,11 +18,12 @@ package org.jivesoftware.smackx.bob;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.charset.StandardCharsets;
+
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 
@@ -55,7 +56,7 @@ public class BoBIQTest extends SmackTestSuite {
         BoBIQ bobIQ = PacketParserUtils.parseStanza(sampleBoBIQResponse);
 
         BoBHash bobHash = new BoBHash("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
-        BoBData bobData = new BoBData("image/png", "sarasade2354j2".getBytes(StringUtils.UTF8), 86400);
+        BoBData bobData = new BoBData("image/png", "sarasade2354j2".getBytes(StandardCharsets.UTF_8), 86400);
 
         BoBIQ createdBoBIQ = new BoBIQ(bobHash, bobData);
         createdBoBIQ.setStanzaId("sarasa");

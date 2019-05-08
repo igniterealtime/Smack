@@ -23,11 +23,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A very Simple HTTP Server.
@@ -88,7 +87,7 @@ public class HttpServer {
             this.socket = socket;
             this.input = socket.getInputStream();
             this.output = socket.getOutputStream();
-            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StringUtils.UTF8));
+            this.br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
         }
 
         @Override
@@ -122,16 +121,16 @@ public class HttpServer {
                             + entityBody.length() + CRLF;
                     contentTypeLine = "text/html";
 
-                    output.write(statusLine.getBytes(StringUtils.UTF8));
+                    output.write(statusLine.getBytes(StandardCharsets.UTF_8));
 
-                    output.write(serverLine.getBytes(StringUtils.UTF8));
+                    output.write(serverLine.getBytes(StandardCharsets.UTF_8));
 
-                    output.write(contentTypeLine.getBytes(StringUtils.UTF8));
-                    output.write(contentLengthLine.getBytes(StringUtils.UTF8));
+                    output.write(contentTypeLine.getBytes(StandardCharsets.UTF_8));
+                    output.write(contentLengthLine.getBytes(StandardCharsets.UTF_8));
 
-                    output.write(CRLF.getBytes(StringUtils.UTF8));
+                    output.write(CRLF.getBytes(StandardCharsets.UTF_8));
 
-                    output.write(entityBody.getBytes(StringUtils.UTF8));
+                    output.write(entityBody.getBytes(StandardCharsets.UTF_8));
 
                 }
             }

@@ -25,10 +25,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.NetworkUtil;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
@@ -238,7 +238,7 @@ public class Socks5ClientTest {
         // reply with full SOCKS5 message with an error code (01 = general SOCKS server
         // failure)
         out.write(new byte[] { (byte) 0x05, (byte) 0x01, (byte) 0x00, (byte) 0x03 });
-        byte[] address = digest.getBytes(StringUtils.UTF8);
+        byte[] address = digest.getBytes(StandardCharsets.UTF_8);
         out.write(address.length);
         out.write(address);
         out.write(new byte[] { (byte) 0x00, (byte) 0x00 });
@@ -297,7 +297,7 @@ public class Socks5ClientTest {
         out.write(new byte[] { (byte) 0x05, (byte) 0x00 });
         out.flush();
 
-        byte[] address = digest.getBytes(StringUtils.UTF8);
+        byte[] address = digest.getBytes(StandardCharsets.UTF_8);
 
         assertEquals((byte) 0x05, (byte) in.read()); // version
         assertEquals((byte) 0x01, (byte) in.read()); // connect request

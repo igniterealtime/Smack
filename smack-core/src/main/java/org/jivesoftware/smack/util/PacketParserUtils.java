@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -71,12 +71,7 @@ public class PacketParserUtils {
     }
 
     public static XmlPullParser getParserFor(InputStream inputStream) throws XmlPullParserException {
-        InputStreamReader inputStreamReader;
-        try {
-            inputStreamReader = new InputStreamReader(inputStream, StringUtils.UTF8);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         return SmackXmlParser.newXmlParser(inputStreamReader);
     }
 

@@ -30,6 +30,7 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -90,7 +91,7 @@ public final class FileUtils {
     public static boolean addLines(String uriString, Set<String> set) throws MalformedURLException, IOException {
         URI uri = URI.create(uriString);
         InputStream is = getStreamForUri(uri, null);
-        InputStreamReader sr = new InputStreamReader(is, StringUtils.UTF8);
+        InputStreamReader sr = new InputStreamReader(is, StandardCharsets.UTF_8);
         BufferedReader br = new BufferedReader(sr);
         try {
             String line;

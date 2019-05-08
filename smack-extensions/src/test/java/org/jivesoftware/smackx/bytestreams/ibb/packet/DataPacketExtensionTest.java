@@ -20,10 +20,8 @@ import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.InitExtensions;
 
@@ -71,13 +69,13 @@ public class DataPacketExtensionTest extends InitExtensions {
     }
 
     @Test
-    public void shouldReturnNullIfDataIsInvalid() throws UnsupportedEncodingException {
+    public void shouldReturnNullIfDataIsInvalid() {
         // pad character is not at end of data
         DataPacketExtension data = new DataPacketExtension("sessionID", 0, "BBBB=CCC");
         assertNull(data.getDecodedData());
 
         // invalid Base64 character
-        data = new DataPacketExtension("sessionID", 0, new String(new byte[] { 123 }, StringUtils.UTF8));
+        data = new DataPacketExtension("sessionID", 0, new String(new byte[] { 123 }, StandardCharsets.UTF_8));
         assertNull(data.getDecodedData());
     }
 

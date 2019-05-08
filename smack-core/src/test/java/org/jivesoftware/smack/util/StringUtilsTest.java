@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Test;
 
@@ -72,15 +72,15 @@ public class StringUtilsTest  {
     }
 
     @Test
-    public void testEncodeHex() throws UnsupportedEncodingException {
+    public void testEncodeHex() {
         String input = "";
         String output = "";
-        assertEquals(new String(StringUtils.encodeHex(input.getBytes(StringUtils.UTF8))),
+        assertEquals(new String(StringUtils.encodeHex(input.getBytes(StandardCharsets.UTF_8))),
                 output);
 
         input = "foo bar 123";
         output = "666f6f2062617220313233";
-        assertEquals(new String(StringUtils.encodeHex(input.getBytes(StringUtils.UTF8))),
+        assertEquals(new String(StringUtils.encodeHex(input.getBytes(StandardCharsets.UTF_8))),
                 output);
     }
 

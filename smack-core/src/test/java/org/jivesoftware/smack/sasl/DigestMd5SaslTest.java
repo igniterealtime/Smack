@@ -19,7 +19,7 @@ package org.jivesoftware.smack.sasl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,14 +39,14 @@ public class DigestMd5SaslTest extends AbstractSaslTest {
         super(saslMechanism);
     }
 
-    protected void runTest(boolean useAuthzid) throws SmackException, InterruptedException, XmppStringprepException, UnsupportedEncodingException {
+    protected void runTest(boolean useAuthzid) throws SmackException, InterruptedException, XmppStringprepException {
         EntityBareJid authzid = null;
         if (useAuthzid) {
             authzid = JidCreate.entityBareFrom("shazbat@xmpp.org");
         }
         saslMechanism.authenticate("florian", "irrelevant", JidCreate.domainBareFrom("xmpp.org"), "secret", authzid, null);
         byte[] response = saslMechanism.evaluateChallenge(challengeBytes);
-        String responseString = new String(response, StringUtils.UTF8);
+        String responseString = new String(response, StandardCharsets.UTF_8);
         String[] responseParts = responseString.split(",");
         Map<String, String> responsePairs = new HashMap<String, String>();
         for (String part : responseParts) {

@@ -24,6 +24,7 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -39,7 +40,6 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.util.CloseableUtil;
-import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * The Socks5Proxy class represents a local SOCKS5 proxy server. It can be enabled/disabled by
@@ -468,7 +468,7 @@ public final class Socks5Proxy {
             byte[] connectionRequest = Socks5Utils.receiveSocks5Message(in);
 
             // extract digest
-            String responseDigest = new String(connectionRequest, 5, connectionRequest[4], StringUtils.UTF8);
+            String responseDigest = new String(connectionRequest, 5, connectionRequest[4], StandardCharsets.UTF_8);
 
             // return error if digest is not allowed
             if (!Socks5Proxy.this.allowedConnections.contains(responseDigest)) {

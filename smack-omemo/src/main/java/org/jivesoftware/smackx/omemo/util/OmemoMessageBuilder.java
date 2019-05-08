@@ -21,6 +21,7 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -36,8 +37,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.omemo.OmemoRatchet;
 import org.jivesoftware.smackx.omemo.OmemoService;
@@ -96,7 +95,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws InvalidKeyException
      * @throws NoSuchAlgorithmException
      * @throws IllegalBlockSizeException
-     * @throws UnsupportedEncodingException
      * @throws InvalidAlgorithmParameterException
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
@@ -107,7 +105,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
                                String message)
             throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException,
             IllegalBlockSizeException,
-            UnsupportedEncodingException, InvalidAlgorithmParameterException {
+            InvalidAlgorithmParameterException {
         this.userDevice = userDevice;
         this.trustCallback = callback;
         this.ratchet = ratchet;
@@ -152,11 +150,12 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException
      * @throws InvalidKeyException
-     * @throws UnsupportedEncodingException
      * @throws BadPaddingException
      * @throws IllegalBlockSizeException
      */
-    private void setMessage(String message) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, UnsupportedEncodingException, BadPaddingException, IllegalBlockSizeException {
+    private void setMessage(String message)
+                    throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+                    InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         if (message == null) {
             return;
         }
@@ -170,7 +169,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         byte[] body;
         byte[] ciphertext;
 
-        body = message.getBytes(StringUtils.UTF8);
+        body = message.getBytes(StandardCharsets.UTF_8);
         ciphertext = cipher.doFinal(body);
 
         byte[] clearKeyWithAuthTag = new byte[messageKey.length + 16];

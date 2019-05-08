@@ -705,15 +705,7 @@ def getGitCommit() {
 }
 
 def getAndroidRuntimeJar() {
-	// We set a different Android API level compared to
-	// smackMinAndroidSdk here. The runtime jar retrieved via this
-	// method is, compared to earlier Smack versions, not used to
-	// check for Android API compatibility. Instead it is used to for
-	// the eclipse classpath, for javadoc and when compiling the pure
-	// Android subprojects of Smack. Currently we require level 16
-	// here, because of the @TargetApi annotation found in
-	// AndroidUsingLinkProperties of minidns-android21.
-	def androidApiLevel = 16
+	def androidApiLevel = ext.smackMinAndroidSdk
 	def androidHome = getAndroidHome()
 	def androidJar = new File("$androidHome/platforms/android-${androidApiLevel}/android.jar")
 	if (androidJar.isFile()) {

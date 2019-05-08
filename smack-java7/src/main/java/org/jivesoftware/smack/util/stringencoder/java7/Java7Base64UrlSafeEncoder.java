@@ -16,10 +16,9 @@
  */
 package org.jivesoftware.smack.util.stringencoder.java7;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
 
@@ -52,25 +51,14 @@ public final class Java7Base64UrlSafeEncoder implements StringEncoder<String> {
 
     @Override
     public String encode(String s) {
-        byte[] bytes;
-        try {
-            bytes = s.getBytes(StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
         return encoder.encodeToString(bytes);
     }
 
     @Override
     public String decode(String s) {
         byte[] bytes = decoder.decode(s);
-        try {
-            return new String(bytes, StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
 }

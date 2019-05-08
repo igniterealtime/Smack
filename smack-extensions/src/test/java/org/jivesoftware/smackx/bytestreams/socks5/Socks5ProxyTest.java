@@ -29,12 +29,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.junit.After;
 import org.junit.Test;
@@ -281,7 +280,7 @@ public class Socks5ProxyTest {
         proxy.start();
 
         assertTrue(proxy.isRunning());
-        String digest = new String(new byte[] { (byte) 0xAA }, StringUtils.UTF8);
+        String digest = new String(new byte[] { (byte) 0xAA }, StandardCharsets.UTF_8);
 
         // add digest to allow connection
         proxy.addTransfer(digest);

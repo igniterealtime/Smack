@@ -21,10 +21,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.CloseableUtil;
-import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * Socket factory for Socks5 proxy.
@@ -133,11 +133,11 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                     index = 0;
                     buf[index++] = 1;
                     buf[index++] = (byte) user.length();
-                    byte[] userBytes = user.getBytes(StringUtils.UTF8);
+                    byte[] userBytes = user.getBytes(StandardCharsets.UTF_8);
                     System.arraycopy(userBytes, 0, buf, index,
                         user.length());
                     index += user.length();
-                    byte[] passwordBytes = passwd.getBytes(StringUtils.UTF8);
+                    byte[] passwordBytes = passwd.getBytes(StandardCharsets.UTF_8);
                     buf[index++] = (byte) passwordBytes.length;
                     System.arraycopy(passwordBytes, 0, buf, index,
                         passwd.length());
@@ -204,7 +204,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
             buf[index++] = 1;       // CONNECT
             buf[index++] = 0;
 
-            byte[] hostb = host.getBytes(StringUtils.UTF8);
+            byte[] hostb = host.getBytes(StandardCharsets.UTF_8);
             int len = hostb.length;
             buf[index++] = 3;      // DOMAINNAME
             buf[index++] = (byte) len;

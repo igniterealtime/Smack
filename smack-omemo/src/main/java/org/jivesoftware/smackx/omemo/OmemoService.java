@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.omemo;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -309,7 +308,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         try {
             builder = new OmemoMessageBuilder<>(userDevice, gullibleTrustCallback, getOmemoRatchet(manager),
                     messageKey, iv, null);
-        } catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | BadPaddingException | UnsupportedEncodingException | IllegalBlockSizeException e) {
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchPaddingException | BadPaddingException | IllegalBlockSizeException e) {
             throw new CryptoFailedException(e);
         }
 
@@ -371,7 +370,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         try {
             builder = new OmemoMessageBuilder<>(
                     userDevice, manager.getTrustCallback(), getOmemoRatchet(managerGuard.get()), messageKey, iv, message);
-        } catch (UnsupportedEncodingException | BadPaddingException | IllegalBlockSizeException |
+        } catch (BadPaddingException | IllegalBlockSizeException |
                 NoSuchPaddingException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException e) {
             throw new CryptoFailedException(e);
         }

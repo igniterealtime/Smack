@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2018 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
  */
 package org.jivesoftware.smack.util.stringencoder.android;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
 import android.util.Base64;
@@ -39,21 +38,13 @@ public final class AndroidBase64UrlSafeEncoder implements StringEncoder<String> 
 
     @Override
     public String encode(String string) {
-        try {
-            return Base64.encodeToString(string.getBytes(StringUtils.UTF8), BASE64_ENCODER_FLAGS);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 not supported", e);
-        }
+        return Base64.encodeToString(string.getBytes(StandardCharsets.UTF_8), BASE64_ENCODER_FLAGS);
     }
 
     @Override
     public String decode(String string) {
         byte[] bytes = Base64.decode(string, BASE64_ENCODER_FLAGS);
-        try {
-            return new String(bytes, StringUtils.UTF8);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 not supported", e);
-        }
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
 }

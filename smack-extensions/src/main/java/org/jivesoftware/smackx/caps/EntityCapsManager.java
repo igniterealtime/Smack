@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2014 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.caps;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
@@ -749,13 +749,7 @@ public final class EntityCapsManager extends Manager {
         // encoded using Base64 as specified in Section 4 of RFC 4648
         // (note: the Base64 output MUST NOT include whitespace and MUST set
         // padding bits to zero).
-        byte[] bytes;
-        try {
-            bytes = sb.toString().getBytes(StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8);
         byte[] digest;
         synchronized (md) {
             digest = md.digest(bytes);

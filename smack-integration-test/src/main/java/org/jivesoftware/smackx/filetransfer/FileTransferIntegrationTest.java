@@ -20,7 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import org.jivesoftware.smack.SmackException;
@@ -48,12 +48,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
     private static final byte[] dataToSend;
 
     static {
-        try {
-            dataToSend = StringUtils.insecureRandomString(1024 * 4 * 5).getBytes(StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        dataToSend = StringUtils.insecureRandomString(1024 * 4 * 5).getBytes(StandardCharsets.UTF_8);
     }
 
     @SmackIntegrationTest

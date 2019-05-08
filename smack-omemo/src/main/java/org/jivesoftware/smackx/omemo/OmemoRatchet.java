@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -24,8 +24,6 @@ import java.util.logging.Logger;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
-
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
@@ -169,10 +167,9 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         byte[] encryptedBody = payloadAndAuthTag(element, cipherAndAuthTag.getAuthTag());
 
         try {
-            String plaintext = new String(cipherAndAuthTag.getCipher().doFinal(encryptedBody), StringUtils.UTF8);
+            String plaintext = new String(cipherAndAuthTag.getCipher().doFinal(encryptedBody), StandardCharsets.UTF_8);
             return plaintext;
-
-        } catch (UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {
+        } catch (IllegalBlockSizeException | BadPaddingException e) {
             throw new CryptoFailedException("decryptMessageElement could not decipher message body: "
                     + e.getMessage());
         }

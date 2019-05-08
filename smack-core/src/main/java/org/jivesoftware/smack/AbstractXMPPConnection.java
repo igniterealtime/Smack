@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -2044,7 +2045,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 try {
                     Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
                     String pkcs11Config = "name = SmartCard\nlibrary = " + config.getPKCS11Library();
-                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StringUtils.UTF8));
+                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
                     Provider p = (Provider) c.newInstance(config);
                     Security.addProvider(p);
                     ks = KeyStore.getInstance("PKCS11",p);

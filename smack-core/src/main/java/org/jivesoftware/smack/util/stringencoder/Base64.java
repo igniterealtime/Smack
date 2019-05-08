@@ -16,10 +16,9 @@
  */
 package org.jivesoftware.smack.util.stringencoder;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import org.jivesoftware.smack.util.Objects;
-import org.jivesoftware.smack.util.StringUtils;
 
 public class Base64 {
 
@@ -31,11 +30,7 @@ public class Base64 {
     }
 
     public static final String encode(String string) {
-        try {
-            return encodeToString(string.getBytes(StringUtils.UTF8));
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 not supported", e);
-        }
+        return encodeToString(string.getBytes(StandardCharsets.UTF_8));
     }
 
     public static final String encodeToString(byte[] input) {
@@ -56,11 +51,7 @@ public class Base64 {
 
     public static final String decodeToString(String string) {
         byte[] bytes = decode(string);
-        try {
-            return new String(bytes, StringUtils.UTF8);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 not supported", e);
-        }
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
     // TODO: We really should not mask the IllegalArgumentException. But some unit test depend on this behavior, like
@@ -74,12 +65,7 @@ public class Base64 {
     }
 
     public static final byte[] decode(byte[] input) {
-        String string;
-        try {
-            string = new String(input, StringUtils.USASCII);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        String string = new String(input, StandardCharsets.US_ASCII);
         return decode(string);
     }
 

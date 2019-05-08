@@ -20,6 +20,7 @@ package org.jivesoftware.smack;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,7 +46,6 @@ import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -69,7 +69,7 @@ public final class SmackInitialization {
         String smackVersion;
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForClasspathFile("org.jivesoftware.smack/version", null), StringUtils.UTF8));
+            reader = new BufferedReader(new InputStreamReader(FileUtils.getStreamForClasspathFile("org.jivesoftware.smack/version", null), StandardCharsets.UTF_8));
             smackVersion = reader.readLine();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Could not determine Smack version", e);

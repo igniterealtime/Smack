@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.util;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
@@ -29,7 +29,23 @@ public class StringUtils {
 
     public static final String MD5 = "MD5";
     public static final String SHA1 = "SHA-1";
+
+    /**
+     * Deprecated, do not use.
+     *
+     * @deprecated use StandardCharsets.UTF_8 instead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public static final String UTF8 = "UTF-8";
+
+    /**
+     * Deprecated, do not use.
+     *
+     * @deprecated use StandardCharsets.US_ASCII instead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public static final String USASCII = "US-ASCII";
 
     public static final String QUOTE_ENCODE = "&quot;";
@@ -244,12 +260,7 @@ public class StringUtils {
     }
 
     public static byte[] toUtf8Bytes(String string) {
-        try {
-            return string.getBytes(StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 encoding not supported by platform", e);
-        }
+        return string.getBytes(StandardCharsets.UTF_8);
     }
 
     /**

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.sasl.provided;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import javax.security.auth.callback.CallbackHandler;
 
@@ -103,13 +103,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         if (challenge.length == 0) {
             throw new SmackSaslException("Initial challenge has zero length");
         }
-        String challengeString;
-        try {
-            challengeString = new String(challenge, StringUtils.UTF8);
-        }
-        catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
+        String challengeString = new String(challenge, StandardCharsets.UTF_8);
         String[] challengeParts = challengeString.split(",");
         byte[] response = null;
         switch (state) {

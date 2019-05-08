@@ -22,8 +22,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
-import org.jivesoftware.smack.util.StringUtils;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Socket factory for socks4 proxy.
@@ -86,7 +85,7 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
             }
 
             if (user != null) {
-                byte[] userBytes = user.getBytes(StringUtils.UTF8);
+                byte[] userBytes = user.getBytes(StandardCharsets.UTF_8);
                 System.arraycopy(userBytes, 0, buf, index, user.length());
                 index += user.length();
             }

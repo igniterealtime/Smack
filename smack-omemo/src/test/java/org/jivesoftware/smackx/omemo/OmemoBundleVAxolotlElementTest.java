@@ -19,12 +19,12 @@ package org.jivesoftware.smackx.omemo;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -41,12 +41,12 @@ public class OmemoBundleVAxolotlElementTest extends SmackTestSuite {
     @Test
     public void serializationTest() throws Exception {
         int signedPreKeyId = 420;
-        String signedPreKeyB64 = Base64.encodeToString("SignedPreKey".getBytes(StringUtils.UTF8));
-        String signedPreKeySigB64 = Base64.encodeToString("SignedPreKeySignature".getBytes(StringUtils.UTF8));
-        String identityKeyB64 = Base64.encodeToString("IdentityKey".getBytes(StringUtils.UTF8));
+        String signedPreKeyB64 = Base64.encodeToString("SignedPreKey".getBytes(StandardCharsets.UTF_8));
+        String signedPreKeySigB64 = Base64.encodeToString("SignedPreKeySignature".getBytes(StandardCharsets.UTF_8));
+        String identityKeyB64 = Base64.encodeToString("IdentityKey".getBytes(StandardCharsets.UTF_8));
         int preKeyId1 = 220, preKeyId2 = 284;
-        String preKey1B64 = Base64.encodeToString("FirstPreKey".getBytes(StringUtils.UTF8)),
-                preKey2B64 = Base64.encodeToString("SecondPreKey".getBytes(StringUtils.UTF8));
+        String preKey1B64 = Base64.encodeToString("FirstPreKey".getBytes(StandardCharsets.UTF_8)),
+                preKey2B64 = Base64.encodeToString("SecondPreKey".getBytes(StandardCharsets.UTF_8));
         HashMap<Integer, String> preKeysB64 = new HashMap<>();
         preKeysB64.put(preKeyId1, preKey1B64);
         preKeysB64.put(preKeyId2, preKey2B64);
@@ -80,11 +80,11 @@ public class OmemoBundleVAxolotlElementTest extends SmackTestSuite {
         String actual = bundle.toXML().toString();
         assertEquals("Bundles XML must match.", expected, actual);
 
-        byte[] signedPreKey = "SignedPreKey".getBytes(StringUtils.UTF8);
-        byte[] signedPreKeySig = "SignedPreKeySignature".getBytes(StringUtils.UTF8);
-        byte[] identityKey = "IdentityKey".getBytes(StringUtils.UTF8);
-        byte[] firstPreKey = "FirstPreKey".getBytes(StringUtils.UTF8);
-        byte[] secondPreKey = "SecondPreKey".getBytes(StringUtils.UTF8);
+        byte[] signedPreKey = "SignedPreKey".getBytes(StandardCharsets.UTF_8);
+        byte[] signedPreKeySig = "SignedPreKeySignature".getBytes(StandardCharsets.UTF_8);
+        byte[] identityKey = "IdentityKey".getBytes(StandardCharsets.UTF_8);
+        byte[] firstPreKey = "FirstPreKey".getBytes(StandardCharsets.UTF_8);
+        byte[] secondPreKey = "SecondPreKey".getBytes(StandardCharsets.UTF_8);
 
         OmemoBundleElement_VAxolotl parsed = new OmemoBundleVAxolotlProvider().parse(TestUtils.getParser(actual));
 
