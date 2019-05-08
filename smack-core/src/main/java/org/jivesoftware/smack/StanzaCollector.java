@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * @see XMPPConnection#createStanzaCollector(StanzaFilter)
  * @author Matt Tucker
  */
-public class StanzaCollector implements AutoCloseable {
+public final class StanzaCollector implements AutoCloseable {
 
     private final StanzaFilter packetFilter;
 
@@ -69,7 +69,7 @@ public class StanzaCollector implements AutoCloseable {
      * @param connection the connection the collector is tied to.
      * @param configuration the configuration used to construct this collector
      */
-    protected StanzaCollector(XMPPConnection connection, Configuration configuration) {
+    StanzaCollector(XMPPConnection connection, Configuration configuration) {
         this.connection = connection;
         this.packetFilter = configuration.packetFilter;
         this.resultQueue = new ArrayDeque<>(configuration.size);

@@ -30,7 +30,7 @@ public class StanzaCollectorTest {
 
     @Test
     public void verifyRollover() throws InterruptedException {
-        TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), 5);
+        StanzaCollector collector = createTestStanzaCollector(null, new OKEverything(), 5);
 
         for (int i = 0; i < 6; i++) {
             Stanza testPacket = new TestPacket(i);
@@ -70,7 +70,7 @@ public class StanzaCollectorTest {
     @Test
     public void verifyThreadSafety() throws InterruptedException {
         final int insertCount = 500;
-        final TestStanzaCollector collector = new TestStanzaCollector(null, new OKEverything(), insertCount);
+        final StanzaCollector collector = createTestStanzaCollector(null, new OKEverything(), insertCount);
 
         final AtomicInteger consumer1Dequeued = new AtomicInteger();
         final AtomicInteger consumer2Dequeued = new AtomicInteger();
@@ -170,10 +170,8 @@ public class StanzaCollectorTest {
 
     }
 
-    static class TestStanzaCollector extends StanzaCollector {
-        protected TestStanzaCollector(XMPPConnection conection, StanzaFilter packetFilter, int size) {
-            super(conection, StanzaCollector.newConfiguration().setStanzaFilter(packetFilter).setSize(size));
-        }
+    private static StanzaCollector createTestStanzaCollector(XMPPConnection connection, StanzaFilter packetFilter, int size) {
+        return new StanzaCollector(connection, StanzaCollector.newConfiguration().setStanzaFilter(packetFilter).setSize(size));
     }
 
     static class TestPacket extends Stanza {
