@@ -130,7 +130,7 @@ allprojects {
 			':smack-openpgp',
 		].collect { project(it) }
 		junitVersion = '5.4.2'
-		powerMockVersion = '1.7.3'
+		powerMockVersion = '2.0.2'
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = JavaVersion.VERSION_1_8
