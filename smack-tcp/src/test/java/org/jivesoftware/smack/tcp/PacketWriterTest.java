@@ -99,11 +99,11 @@ public class PacketWriterTest {
                         prematureUnblocked = true;
                     }
                 }
-                catch (SmackException.NotConnectedException e) {
+                catch (InterruptedException | SmackException.NotConnectedException e) {
                     // This is the exception we expect.
                     expectedThreadExceptionReference.set(e);
                 }
-                catch (BrokenBarrierException | InterruptedException e) {
+                catch (BrokenBarrierException e) {
                     unexpectedThreadExceptionReference.set(e);
 
                 }
