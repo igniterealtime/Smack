@@ -39,10 +39,7 @@
 		<property name="format" value="^\s+$"/>
 		<property name="message" value="Line containing only whitespace character(s)"/>
 	</module>
-	<module name="RegexpSingleline">
-		<property name="format" value="\t+"/>
-		<property name="message" value="Line containing tab character(s)"/>
-	</module>
+	<module name="FileTabCharacter"/>
 	<module name="RegexpSingleline">
 		<!--
 			Explaining the following Regex
