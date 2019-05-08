@@ -104,7 +104,7 @@ public class MemoryLeakTestUtil {
     }
 
     private static void assertReferencesQueueSize(ReferenceQueue<?> referenceQueue, int expectedSize) throws IllegalArgumentException, InterruptedException {
-        final int timeout = 60000;
+        final int timeout = 120000;
         for (int itemsRemoved = 0; itemsRemoved < expectedSize; ++itemsRemoved) {
             Reference<?> reference = referenceQueue.remove(timeout);
             assertNotNull("No reference found after " + timeout + "ms", reference);
