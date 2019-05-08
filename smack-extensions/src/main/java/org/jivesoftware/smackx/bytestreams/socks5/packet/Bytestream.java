@@ -337,6 +337,11 @@ public class Bytestream extends IQ {
             xml.closeEmptyElement();
             return xml;
         }
+
+        @Override
+        public String toString() {
+            return "SOCKS5 Stream Host: " + jid + "[" + address + ":" + port + "]";
+        }
     }
 
     /**
