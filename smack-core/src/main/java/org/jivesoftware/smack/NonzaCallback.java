@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,18 @@ package org.jivesoftware.smack;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.FailedNonzaException;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.util.XmppElementUtil;
 
-import org.jxmpp.util.XmppStringUtils;
-
 public class NonzaCallback {
 
     protected final AbstractXMPPConnection connection;
-    protected final Map<String, GenericElementListener<? extends Nonza>> filterAndListeners;
+    protected final Map<QName, GenericElementListener<? extends Nonza>> filterAndListeners;
 
     private NonzaCallback(Builder builder) {
         this.connection = builder.connection;
@@ -39,7 +39,7 @@ public class NonzaCallback {
     }
 
     void onNonzaReceived(Nonza nonza) {
-        String key = XmppStringUtils.generateKey(nonza.getElementName(), nonza.getNamespace());
+        QName key = nonza.getQName();
         GenericElementListener<? extends Nonza> nonzaListener = filterAndListeners.get(key);
 
         nonzaListener.processElement(nonza);
@@ -47,8 +47,8 @@ public class NonzaCallback {
 
     public void cancel() {
         synchronized (connection.nonzaCallbacks) {
-            for (Map.Entry<String, GenericElementListener<? extends Nonza>> entry : filterAndListeners.entrySet()) {
-                String filterKey = entry.getKey();
+            for (Map.Entry<QName, GenericElementListener<? extends Nonza>> entry : filterAndListeners.entrySet()) {
+                QName filterKey = entry.getKey();
                 NonzaCallback installedCallback = connection.nonzaCallbacks.get(filterKey);
                 if (equals(installedCallback)) {
                     connection.nonzaCallbacks.remove(filterKey);
@@ -63,7 +63,7 @@ public class NonzaCallback {
         }
 
         synchronized (connection.nonzaCallbacks) {
-            for (String key : filterAndListeners.keySet()) {
+            for (QName key : filterAndListeners.keySet()) {
                 connection.nonzaCallbacks.put(key, this);
             }
         }
@@ -78,8 +78,8 @@ public class NonzaCallback {
                         Builder builder) {
             super(builder);
 
-            final String successNonzaKey = XmppElementUtil.getKeyFor(successNonzaClass);
-            final String failedNonzaKey = XmppElementUtil.getKeyFor(failedNonzaClass);
+            final QName successNonzaKey = XmppElementUtil.getQNameFor(successNonzaClass);
+            final QName failedNonzaKey = XmppElementUtil.getQNameFor(failedNonzaClass);
 
             final GenericElementListener<SN> successListener = new GenericElementListener<SN>(successNonzaClass) {
                 @Override
@@ -139,14 +139,14 @@ public class NonzaCallback {
     public static final class Builder {
         private final AbstractXMPPConnection connection;
 
-        private Map<String, GenericElementListener<? extends Nonza>> filterAndListeners = new HashMap<>();
+        private Map<QName, GenericElementListener<? extends Nonza>> filterAndListeners = new HashMap<>();
 
         Builder(AbstractXMPPConnection connection) {
             this.connection = connection;
         }
 
         public <N extends Nonza> Builder listenFor(Class<? extends N> nonza, GenericElementListener<? extends N> nonzaListener) {
-            String key = XmppElementUtil.getKeyFor(nonza);
+            QName key = XmppElementUtil.getQNameFor(nonza);
             filterAndListeners.put(key, nonzaListener);
             return this;
         }

@@ -65,6 +65,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
@@ -234,7 +235,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private XmlEnvironment incomingStreamXmlEnvironment;
 
-    final Map<String, NonzaCallback> nonzaCallbacks = new HashMap<>();
+    final Map<QName, NonzaCallback> nonzaCallbacks = new HashMap<>();
 
     protected final Lock connectionLock = new ReentrantLock();
 
@@ -1214,7 +1215,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected final void parseAndProcessNonza(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         final String element = parser.getName();
         final String namespace = parser.getNamespace();
-        final String key = XmppStringUtils.generateKey(element, namespace);
+        final QName key = new QName(namespace, element);
 
         NonzaProvider<? extends Nonza> nonzaProvider = ProviderManager.getNonzaProvider(key);
         if (nonzaProvider == null) {

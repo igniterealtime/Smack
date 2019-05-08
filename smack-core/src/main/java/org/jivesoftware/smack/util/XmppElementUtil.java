@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smack.util;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import javax.xml.namespace.QName;
 
-import org.jxmpp.util.XmppStringUtils;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
 
 public class XmppElementUtil {
 
-    public static String getKeyFor(Class<? extends FullyQualifiedElement> fullyQualifiedElement) {
+    public static QName getQNameFor(Class<? extends FullyQualifiedElement> fullyQualifiedElement) {
         String element, namespace;
         try {
             element = (String) fullyQualifiedElement.getField("ELEMENT").get(null);
@@ -32,14 +32,7 @@ public class XmppElementUtil {
             throw new IllegalArgumentException(e);
         }
 
-        String key = XmppStringUtils.generateKey(element, namespace);
-        return key;
+        return new QName(namespace, element);
     }
 
-    public static String getKeyFor(FullyQualifiedElement fullyQualifiedElement) {
-        String element = fullyQualifiedElement.getElementName();
-        String namespace = fullyQualifiedElement.getNamespace();
-        String key = XmppStringUtils.generateKey(element, namespace);
-        return key;
-    }
 }
