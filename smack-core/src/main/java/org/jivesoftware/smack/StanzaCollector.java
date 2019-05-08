@@ -99,18 +99,6 @@ public final class StanzaCollector implements AutoCloseable {
     }
 
     /**
-     * Returns the stanza filter associated with this stanza collector. The packet
-     * filter is used to determine what packets are queued as results.
-     *
-     * @return the stanza filter.
-     * @deprecated use {@link #getStanzaFilter()} instead.
-     */
-    @Deprecated
-    public StanzaFilter getPacketFilter() {
-        return getStanzaFilter();
-    }
-
-    /**
      * Returns the stanza filter associated with this stanza collector. The stanza
      * filter is used to determine what stanzas are queued as results.
      *
@@ -393,19 +381,6 @@ public final class StanzaCollector implements AutoCloseable {
         private Stanza request;
 
         private Configuration() {
-        }
-
-        /**
-         * Set the stanza filter used by this collector. If <code>null</code>, then all packets will
-         * get collected by this collector.
-         *
-         * @param packetFilter
-         * @return a reference to this configuration.
-         * @deprecated use {@link #setStanzaFilter(StanzaFilter)} instead.
-         */
-        @Deprecated
-        public Configuration setPacketFilter(StanzaFilter packetFilter) {
-            return setStanzaFilter(packetFilter);
         }
 
         /**
