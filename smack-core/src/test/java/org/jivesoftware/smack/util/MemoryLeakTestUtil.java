@@ -132,6 +132,8 @@ public class MemoryLeakTestUtil {
                 throw new AssertionError("No observed gargabe collection after " + gcCalls + " calls of System.gc()");
             }
             System.gc();
+            // TODO: Would a Thread.yield() here improve the chances of a full GC? It appears that on some systems we
+            // observe a partial GC here.
             gcCalls++;
         } while (weakReference.get() != null);
 
