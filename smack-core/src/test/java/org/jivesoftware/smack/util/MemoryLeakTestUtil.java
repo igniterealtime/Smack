@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.ref.PhantomReference;
 import java.lang.ref.Reference;
@@ -105,9 +105,26 @@ public class MemoryLeakTestUtil {
 
     private static void assertReferencesQueueSize(ReferenceQueue<?> referenceQueue, int expectedSize) throws IllegalArgumentException, InterruptedException {
         final int timeout = 120000;
+        final int maxAttempts = 3;
         for (int itemsRemoved = 0; itemsRemoved < expectedSize; ++itemsRemoved) {
-            Reference<?> reference = referenceQueue.remove(timeout);
-            assertNotNull("No reference found after " + timeout + "ms", reference);
+            int attempt = 0;
+            Reference<?> reference = null;
+            do {
+                reference = referenceQueue.remove(timeout);
+                if (reference != null) {
+                    break;
+                }
+
+                attempt++;
+                String message = "No reference to a gc'ed object found after " + timeout + "ms in the " + attempt
+                                + ". attempt.";
+                if (attempt >= maxAttempts) {
+                    fail(message);
+                }
+
+                LOGGER.warning(message);
+                triggerGarbageCollection();
+            } while (true);
             reference.clear();
         }
 
