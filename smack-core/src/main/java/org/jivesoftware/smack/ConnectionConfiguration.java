@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
@@ -46,6 +48,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.minidns.dnsname.DnsName;
+import org.minidns.dnsname.InvalidDnsNameException;
 import org.minidns.util.InetAddressUtil;
 
 /**
@@ -81,12 +84,16 @@ public abstract class ConnectionConfiguration {
         SmackConfiguration.getVersion();
     }
 
+    private static final Logger LOGGER = Logger.getLogger(ConnectionConfiguration.class.getName());
+
     /**
      * The XMPP domain of the XMPP Service. Usually servers use the same service name as the name
      * of the server. However, there are some servers like google where host would be
      * talk.google.com and the serviceName would be gmail.com.
      */
     protected final DomainBareJid xmppServiceDomain;
+
+    protected final DnsName xmppServiceDomainDnsName;
 
     protected final InetAddress hostAddress;
     protected final DnsName host;
@@ -162,6 +169,19 @@ public abstract class ConnectionConfiguration {
         if (xmppServiceDomain == null) {
             throw new IllegalArgumentException("Must define the XMPP domain");
         }
+
+        DnsName xmppServiceDomainDnsName;
+        try {
+            xmppServiceDomainDnsName = DnsName.from(xmppServiceDomain);
+        } catch (InvalidDnsNameException e) {
+            LOGGER.log(Level.INFO,
+                            "Could not transform XMPP service domain '" + xmppServiceDomain
+                          + "' to a DNS name. TLS X.509 certificate validiation may not be possible.",
+                            e);
+            xmppServiceDomainDnsName = null;
+        }
+        this.xmppServiceDomainDnsName = xmppServiceDomainDnsName;
+
         hostAddress = builder.hostAddress;
         host = builder.host;
         port = builder.port;
@@ -223,6 +243,17 @@ public abstract class ConnectionConfiguration {
      */
     public DomainBareJid getXMPPServiceDomain() {
         return xmppServiceDomain;
+    }
+
+    /**
+     * Returns the XMPP service domain as DNS name if possible. Note that since not every XMPP address domainpart is a
+     * valid DNS name, this method may return <code>null</code>.
+     *
+     * @return the XMPP service domain as DNS name or <code>null</code>.
+     * @since 4.3.4
+     */
+    public DnsName getXmppServiceDomainAsDnsNameIfPossible() {
+        return xmppServiceDomainDnsName;
     }
 
     /**

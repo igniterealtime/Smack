@@ -124,6 +124,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
+import org.minidns.dnsname.DnsName;
 
 /**
  * Creates a socket connection to an XMPP server. This is the default connection
@@ -710,8 +711,31 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         final HostnameVerifier verifier = getConfiguration().getHostnameVerifier();
         if (verifier == null) {
                 throw new IllegalStateException("No HostnameVerifier set. Use connectionConfiguration.setHostnameVerifier() to configure.");
-        } else if (!verifier.verify(getXMPPServiceDomain().toString(), sslSocket.getSession())) {
-            throw new CertificateException("Hostname verification of certificate failed. Certificate does not authenticate " + getXMPPServiceDomain());
+        }
+
+        final String verifierHostname;
+        {
+            DnsName xmppServiceDomainDnsName = getConfiguration().getXmppServiceDomainAsDnsNameIfPossible();
+            // Try to convert the XMPP service domain, which potentially includes Unicode characters, into ASCII
+            // Compatible Encoding (ACE) to match RFC3280 dNSname IA5String constraint.
+            // See also: https://bugzilla.mozilla.org/show_bug.cgi?id=280839#c1
+            if (xmppServiceDomainDnsName != null) {
+                verifierHostname = xmppServiceDomainDnsName.ace;
+            }
+            else {
+                LOGGER.log(Level.WARNING, "XMPP service domain name '" + getXMPPServiceDomain()
+                                + "' can not be represented as DNS name. TLS X.509 certificate validiation may fail.");
+                verifierHostname = getXMPPServiceDomain().toString();
+            }
+        }
+
+        final boolean verificationSuccessful;
+        // Verify the TLS session.
+        verificationSuccessful = verifier.verify(verifierHostname, sslSocket.getSession());
+        if (!verificationSuccessful) {
+            throw new CertificateException(
+                            "Hostname verification of certificate failed. Certificate does not authenticate "
+                                            + getXMPPServiceDomain());
         }
 
         // Set that TLS was successful

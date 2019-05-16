@@ -105,7 +105,7 @@ public class XHTMLText {
     private XHTMLText appendOpenBodyTag(String style, String lang) {
         text.halfOpenElement(Message.BODY);
         text.xmlnsAttribute(NAMESPACE);
-        text.optElement(STYLE, style);
+        text.optAttribute(STYLE, style);
         text.xmllangAttribute(lang);
         text.rightAngleBracket();
         return this;

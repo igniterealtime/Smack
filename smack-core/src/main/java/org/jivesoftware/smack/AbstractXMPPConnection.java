@@ -338,6 +338,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             Thread thread = new Thread(runnable);
             thread.setName("Smack Cached Executor");
             thread.setDaemon(true);
+            thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                @Override
+                public void uncaughtException(Thread t, Throwable e) {
+                    LOGGER.log(Level.WARNING, t + " encountered uncaught exception", e);
+                }
+            });
             return thread;
         }
     });
