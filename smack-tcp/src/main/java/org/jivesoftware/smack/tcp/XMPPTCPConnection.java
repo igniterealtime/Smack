@@ -879,7 +879,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 verifierHostname = getXMPPServiceDomain().toString();
             }
         }
-        if (!verifier.verify(verifierHostname, sslSocket.getSession())) {
+
+        final boolean verificationSuccessful;
+        // Verify the TLS session.
+        verificationSuccessful = verifier.verify(verifierHostname, sslSocket.getSession());
+        if (!verificationSuccessful) {
             throw new CertificateException(
                             "Hostname verification of certificate failed. Certificate does not authenticate "
                                             + getXMPPServiceDomain());
