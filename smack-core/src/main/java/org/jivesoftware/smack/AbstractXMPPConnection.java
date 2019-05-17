@@ -2055,10 +2055,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
                     Provider p = (Provider) c.newInstance(config);
                     Security.addProvider(p);
-                    ks = KeyStore.getInstance("PKCS11",p);
-                    pcb = new PasswordCallback("PKCS11 Password: ",false);
+                    ks = KeyStore.getInstance("PKCS11", p);
+                    pcb = new PasswordCallback("PKCS11 Password: ", false);
                     callbackHandler.handle(new Callback[] {pcb});
-                    ks.load(null,pcb.getPassword());
+                    ks.load(null, pcb.getPassword());
                 }
                 catch (Exception e) {
                     LOGGER.log(Level.WARNING, "Exception", e);
@@ -2066,8 +2066,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
             }
             else if ("Apple".equals(keyStoreType)) {
-                ks = KeyStore.getInstance("KeychainStore","Apple");
-                ks.load(null,null);
+                ks = KeyStore.getInstance("KeychainStore", "Apple");
+                ks.load(null, null);
                 // pcb = new PasswordCallback("Apple Keychain",false);
                 // pcb.setPassword(null);
             }

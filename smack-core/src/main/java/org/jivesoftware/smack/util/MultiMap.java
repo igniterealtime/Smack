@@ -33,7 +33,7 @@ import java.util.Set;
  * @param <K> the type of the keys the map uses.
  * @param <V> the type of the values the map uses.
  */
-public class MultiMap<K,V> {
+public class MultiMap<K, V> {
 
     /**
      * The constant value {@value}.

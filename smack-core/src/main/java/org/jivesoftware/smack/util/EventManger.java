@@ -34,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EventManger<K, R, E extends Exception> {
 
-    private final Map<K,Reference<R>> events = new ConcurrentHashMap<>();
+    private final Map<K, Reference<R>> events = new ConcurrentHashMap<>();
 
     /**
      * Perform an action and wait for an event.

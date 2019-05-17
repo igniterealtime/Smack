@@ -357,7 +357,7 @@ public final class VCard extends IQ {
     /**
      * Set the avatar for the VCard by specifying the url to the image.
      *
-     * @param avatarURL the url to the image(png,jpeg,gif,bmp)
+     * @param avatarURL the url to the image(png, jpeg, gif, bmp)
      */
     public void setAvatar(URL avatarURL) {
         byte[] bytes = new byte[0];

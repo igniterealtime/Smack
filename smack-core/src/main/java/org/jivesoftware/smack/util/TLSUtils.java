@@ -64,7 +64,7 @@ public class TLSUtils {
      *
      * @return the given builder
      */
-    public static <B extends ConnectionConfiguration.Builder<B,?>> B setTLSOnly(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1 });
         return builder;
     }
@@ -84,7 +84,7 @@ public class TLSUtils {
      *
      * @return the given builder
      */
-    public static <B extends ConnectionConfiguration.Builder<B,?>> B setSSLv3AndTLSOnly(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setSSLv3AndTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1, PROTO_SSL3 });
         return builder;
     }
@@ -103,7 +103,7 @@ public class TLSUtils {
      * @throws KeyManagementException
      * @return the given builder.
      */
-    public static <B extends ConnectionConfiguration.Builder<B,?>> B acceptAllCertificates(B builder) throws NoSuchAlgorithmException, KeyManagementException {
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B acceptAllCertificates(B builder) throws NoSuchAlgorithmException, KeyManagementException {
         SSLContext context = SSLContext.getInstance(TLS);
         context.init(null, new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
         builder.setCustomSSLContext(context);
@@ -130,7 +130,7 @@ public class TLSUtils {
      * @param <B> Type of the ConnectionConfiguration builder.
      * @return the given builder.
      */
-    public static <B extends ConnectionConfiguration.Builder<B,?>> B disableHostnameVerificationForTlsCertificates(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B disableHostnameVerificationForTlsCertificates(B builder) {
         builder.setHostnameVerifier(DOES_NOT_VERIFY_VERIFIER);
         return builder;
     }

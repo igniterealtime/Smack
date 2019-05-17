@@ -78,7 +78,7 @@ public class Form {
     /**
      * Creates a new Form of a given type from scratch.
      *
-     * @param type the form's type (e.g. form, submit,cancel,result).
+     * @param type the form's type (e.g. form, submit, cancel, result).
      */
     public Form(DataForm.Type type) {
         this.dataForm = new DataForm(type);

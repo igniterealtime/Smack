@@ -54,7 +54,7 @@ public class AudioMediaSession extends JingleMediaSession {
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, String locator, JingleSession jingleSession) {
-        super(payloadType, remote, local, locator == null ? "dsound://" : locator,jingleSession);
+        super(payloadType, remote, local, locator == null ? "dsound://" : locator, jingleSession);
         initialize();
     }
 
@@ -85,7 +85,7 @@ public class AudioMediaSession extends JingleMediaSession {
             remotePort = this.getRemote().getPort();
         }
 
-        audioChannel = new AudioChannel(new MediaLocator(this.getMediaLocator()), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()),this);
+        audioChannel = new AudioChannel(new MediaLocator(this.getMediaLocator()), localIp, ip, localPort, remotePort, AudioFormatUtils.getAudioFormat(this.getPayloadType()), this);
     }
 
     /**

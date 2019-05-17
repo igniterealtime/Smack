@@ -180,7 +180,7 @@ public class MessageMarkupTest extends SmackTestSuite {
     public void listWrongSecondEntryTest() {
         MarkupElement.Builder m = MarkupElement.getBuilder();
         assertThrows(IllegalArgumentException.class, () ->
-        m.beginList().addEntry(0,1).addEntry(3,4));
+        m.beginList().addEntry(0, 1).addEntry(3, 4));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                     "<bquote start='9' end='32'/>" +
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
-        m.setBlockQuote(9 ,32);
+        m.setBlockQuote(9, 32);
         assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);

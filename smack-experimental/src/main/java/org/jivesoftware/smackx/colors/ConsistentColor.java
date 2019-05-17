@@ -87,11 +87,11 @@ public class ConsistentColor {
     }
 
     /**
-     * Convert an angle in the CbCr plane to values cb,cr in the YCbCr color space.
+     * Convert an angle in the CbCr plane to values cb, cr in the YCbCr color space.
      * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-cbcr">§5.3: CbCr generation</a>
      *
      * @param angle angel in CbCr plane.
-     * @return value pair cb,cr
+     * @return value pair cb, cr
      */
     private static double[] angleToCbCr(double angle) {
         double cb = Math.cos(angle);
@@ -113,11 +113,11 @@ public class ConsistentColor {
     }
 
     /**
-     * Convert a value pair cb,cr in the YCbCr color space to RGB.
+     * Convert a value pair cb, cr in the YCbCr color space to RGB.
      * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-rgb">§5.4: CbCr to RGB</a>
      *
      * @param cbcr value pair from the YCbCr color space
-     * @return RGB value triple (R,G,B in [0,1])
+     * @return RGB value triple (R, G, B in [0,1])
      */
     private static float[] CbCrToRGB(double[] cbcr, double y) {
         double cb = cbcr[0];

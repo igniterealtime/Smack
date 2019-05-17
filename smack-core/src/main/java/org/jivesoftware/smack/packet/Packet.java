@@ -150,7 +150,7 @@ public interface Packet extends TopLevelStreamElement {
     /**
      * Returns the first extension of this stanza that has the given namespace.
      * <p>
-     * When possible, use {@link #getExtension(String,String)} instead.
+     * When possible, use {@link #getExtension(String, String)} instead.
      * </p>
      *
      * @param namespace the namespace of the extension that is desired.

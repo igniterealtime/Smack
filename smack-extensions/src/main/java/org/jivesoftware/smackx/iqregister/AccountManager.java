@@ -307,7 +307,7 @@ public final class AccountManager extends Manager {
         }
         Map<String, String> map = new HashMap<>();
         map.put("username",  connection().getUser().getLocalpart().toString());
-        map.put("password",newPassword);
+        map.put("password", newPassword);
         Registration reg = new Registration(map);
         reg.setType(IQ.Type.set);
         reg.setTo(connection().getXMPPServiceDomain());

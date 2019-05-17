@@ -98,7 +98,7 @@ public final class OmemoManager extends Manager {
     private static final Integer UNKNOWN_DEVICE_ID = -1;
     final Object LOCK = new Object();
 
-    private static final WeakHashMap<XMPPConnection, TreeMap<Integer,OmemoManager>> INSTANCES = new WeakHashMap<>();
+    private static final WeakHashMap<XMPPConnection, TreeMap<Integer, OmemoManager>> INSTANCES = new WeakHashMap<>();
     private final OmemoService<?, ?, ?, ?, ?, ?, ?, ?, ?> service;
 
     private final HashSet<OmemoMessageListener> omemoMessageListeners = new HashSet<>();
@@ -157,7 +157,7 @@ public final class OmemoManager extends Manager {
             throw new IllegalArgumentException("DeviceId MUST NOT be null and MUST be greater than 0.");
         }
 
-        TreeMap<Integer,OmemoManager> managersOfConnection = INSTANCES.get(connection);
+        TreeMap<Integer, OmemoManager> managersOfConnection = INSTANCES.get(connection);
         if (managersOfConnection == null) {
             managersOfConnection = new TreeMap<>();
             INSTANCES.put(connection, managersOfConnection);
@@ -938,7 +938,7 @@ public final class OmemoManager extends Manager {
      *
      * @return omemoService
      */
-    OmemoService<?,?,?,?,?,?,?,?,?> getOmemoService() {
+    OmemoService<?, ?, ?, ?, ?, ?, ?, ?, ?> getOmemoService() {
         throwIfNoServiceSet();
         return service;
     }

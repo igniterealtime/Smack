@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.util;
 
-public interface CallbackRecipient<V,E> {
+public interface CallbackRecipient<V, E> {
 
     CallbackRecipient<V, E> onSuccess(SuccessCallback<V> successCallback);
 

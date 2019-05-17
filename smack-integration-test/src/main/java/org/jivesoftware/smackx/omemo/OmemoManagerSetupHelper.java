@@ -125,7 +125,7 @@ public class OmemoManagerSetupHelper {
     }
 
     public static void cleanUpPubSub(OmemoManager omemoManager) {
-        PubSubManager pm = PubSubManager.getInstanceFor(omemoManager.getConnection(),omemoManager.getOwnJid());
+        PubSubManager pm = PubSubManager.getInstanceFor(omemoManager.getConnection(), omemoManager.getOwnJid());
         try {
             omemoManager.requestDeviceListUpdateFor(omemoManager.getOwnJid());
         } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | PubSubException.NotALeafNodeException | XMPPException.XMPPErrorException e) {

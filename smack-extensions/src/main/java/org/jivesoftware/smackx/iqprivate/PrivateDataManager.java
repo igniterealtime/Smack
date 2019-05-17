@@ -266,7 +266,7 @@ public final class PrivateDataManager extends Manager {
                                 }
                                 else if (event == XmlPullParser.Event.END_ELEMENT) {
                                     // If an empty element, set the value with the empty string.
-                                    data.setValue(name,"");
+                                    data.setValue(name, "");
                                 }
                             }
                             else if (event == XmlPullParser.Event.END_ELEMENT) {

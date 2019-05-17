@@ -64,7 +64,7 @@ public class DataValidationProvider {
                                     );
                     break;
                 case RegexValidateElement.METHOD:
-                    dataValidation = new RegexValidateElement(dataType,parser.nextText());
+                    dataValidation = new RegexValidateElement(dataType, parser.nextText());
                     break;
                 case ListRange.ELEMENT:
                     Long min = ParserUtils.getLongAttribute(parser, "min");

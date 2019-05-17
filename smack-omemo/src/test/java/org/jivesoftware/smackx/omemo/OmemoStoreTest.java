@@ -269,8 +269,8 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
 
     @Test
     public void loadStoreCachedDeviceList() throws IOException {
-        Integer[] active = new Integer[] {1,5,999,10};
-        Integer[] inactive = new Integer[] {6,7,8};
+        Integer[] active = new Integer[] {1, 5, 999, 10};
+        Integer[] inactive = new Integer[] {6, 7, 8};
         OmemoCachedDeviceList before = new OmemoCachedDeviceList(
                 new HashSet<>(Arrays.asList(active)),
                 new HashSet<>(Arrays.asList(inactive)));

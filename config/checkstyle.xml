@@ -142,6 +142,7 @@
 										 , LITERAL_DO
 										 , LITERAL_FOR
 										 , DO_WHILE
+										 , COMMA
 										 "/>
 		</module>
 		<module name="WhitespaceAround">

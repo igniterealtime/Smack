@@ -89,7 +89,7 @@ public class DataValidationHelperTest {
     public void testCheckConsistencyFormFieldRangeValidateElement() {
         FormField field = new FormField("var");
         field.setType(FormField.Type.text_multi);
-        RangeValidateElement element = new RangeValidateElement("xs:integer",null, "99");
+        RangeValidateElement element = new RangeValidateElement("xs:integer", null,  "99");
         try {
             element.checkConsistency(field);
             fail("No correct check on consistency");

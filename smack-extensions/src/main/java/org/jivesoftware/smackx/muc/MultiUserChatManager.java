@@ -477,7 +477,7 @@ public final class MultiUserChatManager extends Manager {
 
     /**
      * Set a callback invoked by this manager when automatic join on reconnect failed. If failedCallback is not
-     * <code>null</code>,then automatic rejoin get also enabled.
+     * <code>null</code>, then automatic rejoin get also enabled.
      *
      * @param failedCallback the callback.
      */

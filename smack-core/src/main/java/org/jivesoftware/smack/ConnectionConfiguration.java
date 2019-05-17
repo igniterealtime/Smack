@@ -156,7 +156,7 @@ public abstract class ConnectionConfiguration {
 
     private final boolean compressionEnabled;
 
-    protected ConnectionConfiguration(Builder<?,?> builder) {
+    protected ConnectionConfiguration(Builder<?, ?> builder) {
         authzid = builder.authzid;
         username = builder.username;
         password = builder.password;

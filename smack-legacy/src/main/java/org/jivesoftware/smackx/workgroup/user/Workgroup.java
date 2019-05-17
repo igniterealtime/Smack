@@ -390,7 +390,7 @@ public class Workgroup {
      * @throws SmackException
      * @throws InterruptedException
      */
-    public void joinQueue(Map<String,Object> metadata, Jid userID) throws XMPPException, SmackException, InterruptedException {
+    public void joinQueue(Map<String, Object> metadata, Jid userID) throws XMPPException, SmackException, InterruptedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);

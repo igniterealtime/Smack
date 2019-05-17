@@ -52,7 +52,7 @@ public class DefaultExtensionElement implements ExtensionElement {
 
     private String elementName;
     private String namespace;
-    private Map<String,String> map;
+    private Map<String, String> map;
 
     /**
      * Creates a new generic stanza extension.
@@ -107,7 +107,7 @@ public class DefaultExtensionElement implements ExtensionElement {
         if (map == null) {
             return Collections.emptySet();
         }
-        return Collections.unmodifiableSet(new HashMap<String,String>(map).keySet());
+        return Collections.unmodifiableSet(new HashMap<String, String>(map).keySet());
     }
 
     /**
@@ -131,7 +131,7 @@ public class DefaultExtensionElement implements ExtensionElement {
      */
     public synchronized void setValue(String name, String value) {
         if (map == null) {
-            map = new HashMap<String,String>();
+            map = new HashMap<String, String>();
         }
         map.put(name, value);
     }

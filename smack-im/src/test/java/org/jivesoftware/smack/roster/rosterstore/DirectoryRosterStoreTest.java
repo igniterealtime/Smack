@@ -118,7 +118,7 @@ public class DirectoryRosterStoreTest {
         item2.setSubscriptionPending(true);
         item2.setItemType(ItemType.none);
         item2.setApproved(true);
-        store.addEntry(item2,version2);
+        store.addEntry(item2, version2);
         assertEquals("Updating entry sets version correctly", version2, store.getRosterVersion());
         storedItem = store.getEntry(userName);
         assertNotNull("Added entry not found", storedItem);

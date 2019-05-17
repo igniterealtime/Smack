@@ -126,7 +126,7 @@ public class DataFormTest {
         FormField field = new FormField("testField1");
         df.addField(field);
 
-        ValidateElement dv = new RangeValidateElement("xs:integer","1111", "9999");
+        ValidateElement dv = new RangeValidateElement("xs:integer", "1111", "9999");
         field.setValidateElement(dv);
 
         assertNotNull(df.toXML());
