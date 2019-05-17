@@ -14,7 +14,7 @@ buildscript {
 }
 
 plugins {
-    id 'ru.vyarus.animalsniffer' version '1.4.6'
+    id 'ru.vyarus.animalsniffer' version '1.5.0'
 	id 'net.ltgt.errorprone' version '0.8'
 }
 
