@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ import java.util.logging.Logger;
 
 public class CloseableUtil {
 
+    public static void maybeClose(Closeable closable) {
+        maybeClose(closable, null);
+    }
+
     public static void maybeClose(Closeable closable, Logger logger) {
         if (closable == null) {
             return;
@@ -31,7 +35,9 @@ public class CloseableUtil {
         try {
             closable.close();
         } catch (IOException e) {
-            logger.log(Level.WARNING, "Could not close " + closable, e);
+            if (logger != null) {
+                logger.log(Level.WARNING, "Could not close " + closable, e);
+            }
         }
     }
 }
