@@ -238,7 +238,7 @@ public final class Socks5Proxy {
                 this.serverThread.join();
             }
             catch (InterruptedException e) {
-                // do nothing
+                LOGGER.log(Level.WARNING, "SOCKS5 server thread termination was interrupted", e);
             }
         }
         this.serverThread = null;
