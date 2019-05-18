@@ -230,12 +230,7 @@ public final class Socks5Proxy {
             return;
         }
 
-        try {
-            this.serverSocket.close();
-        }
-        catch (IOException e) {
-            // do nothing
-        }
+        CloseableUtil.maybeClose(this.serverSocket, LOGGER);
 
         if (this.serverThread != null && this.serverThread.isAlive()) {
             try {
