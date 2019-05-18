@@ -243,7 +243,6 @@ public final class Socks5Proxy {
         }
         this.serverThread = null;
         this.serverSocket = null;
-
     }
 
     /**
