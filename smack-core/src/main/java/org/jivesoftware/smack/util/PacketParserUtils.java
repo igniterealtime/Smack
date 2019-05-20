@@ -55,6 +55,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.Jid;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Utility class that helps to parse packets. Any parsing packets method that must be shared
@@ -89,7 +90,7 @@ public class PacketParserUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <S extends Stanza> S parseStanza(String stanza) throws Exception {
+    public static <S extends Stanza> S parseStanza(String stanza) throws XmlPullParserException, SmackParsingException, IOException {
         return (S) parseStanza(getParserFor(stanza), null);
     }
 
@@ -101,9 +102,11 @@ public class PacketParserUtils {
      * @param parser
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return a stanza which is either a Message, IQ or Presence.
-     * @throws Exception
+     * @throws XmlPullParserException
+     * @throws SmackParsingException
+     * @throws IOException
      */
-    public static Stanza parseStanza(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws Exception {
+    public static Stanza parseStanza(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, SmackParsingException, IOException {
         ParserUtils.assertAtStartTag(parser);
         final String name = parser.getName();
         switch (name) {
@@ -508,9 +511,12 @@ public class PacketParserUtils {
      * @param parser the XML parser, positioned at the start of an IQ packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return an IQ object.
-     * @throws Exception
+     * @throws XmlPullParserException
+     * @throws XmppStringprepException
+     * @throws IOException
+     * @throws SmackParsingException
      */
-    public static IQ parseIQ(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws Exception {
+    public static IQ parseIQ(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, XmppStringprepException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         XmlEnvironment iqXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
