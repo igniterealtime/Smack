@@ -237,5 +237,10 @@ public class DiscoverItems extends IQ {
             xml.closeEmptyElement();
             return xml;
         }
+
+        @Override
+        public String toString() {
+            return toXML().toString();
+        }
     }
 }
