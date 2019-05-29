@@ -1117,6 +1117,8 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
             // session resumption may would need or at least benefit from B. Variant A would also be required if the
             // String is used for certificate verification. And it appears at least likely that TLS session resumption
             // would not be hurt by using variant A. Therefore we currently use variant A.
+            // TODO: Should we use the ACE representation of the XMPP service domain? Compare with f60e4055ec529f0b8160acedf13275592ab10a4b
+            // If yes, then we should probably introduce getXmppServiceDomainAceEncodedIfPossible().
             engine = smackTlsContext.sslContext.createSSLEngine(config.getXMPPServiceDomain().toString(), remoteAddress.getPort());
             engine.setUseClientMode(true);
 
