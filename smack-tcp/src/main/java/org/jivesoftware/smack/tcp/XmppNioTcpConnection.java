@@ -1116,7 +1116,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
             // remote hostname information, in which case peerHost needs to be specified." that A should be used. TLS
             // session resumption may would need or at least benefit from B. Variant A would also be required if the
             // String is used for certificate verification. And it appears at least likely that TLS session resumption
-            // would not be hurt by using variant A. Therfore we currently use variant A.
+            // would not be hurt by using variant A. Therefore we currently use variant A.
             engine = smackTlsContext.sslContext.createSSLEngine(config.getXMPPServiceDomain().toString(), remoteAddress.getPort());
             engine.setUseClientMode(true);
 
