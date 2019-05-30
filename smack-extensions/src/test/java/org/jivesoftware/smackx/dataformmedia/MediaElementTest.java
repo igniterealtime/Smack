@@ -46,9 +46,9 @@ public class MediaElementTest {
 
         List<URINode> uriNodeList = new ArrayList<URINode>();
 
-        URINode urinode1 = new URINode(MediaType.audio_xwav, uri1);
-        URINode urinode2 = new URINode(MediaType.audio_ogg, "codecs=speex", uri2);
-        URINode urinode3 = new URINode(MediaType.audio_mpeg, uri3);
+        URINode urinode1 = new URINode("audio/x-wav", uri1);
+        URINode urinode2 = new URINode("audio/ogg", "codecs=speex", uri2);
+        URINode urinode3 = new URINode("audio/mpeg", uri3);
 
         uriNodeList.add(urinode1);
         uriNodeList.add(urinode2);
@@ -73,8 +73,8 @@ public class MediaElementTest {
            URI uri1 = new URI("http://www.victim.com/challenges/ocr.jpeg?F3A6292C");
            URI uri2 = new URI("cid:sha1+f24030b8d91d233bac14777be5ab531ca3b9f102@bob.xmpp.org");
 
-           URINode urinode1 = new URINode(MediaType.image_jpeg, uri1);
-           URINode urinode2 = new URINode(MediaType.image_jpeg, uri2);
+           URINode urinode1 = new URINode("image/jpeg", uri1);
+           URINode urinode2 = new URINode("image/jpeg", uri2);
 
            List<URINode> uriNodeList = new ArrayList<URINode>();
            uriNodeList.add(urinode1);

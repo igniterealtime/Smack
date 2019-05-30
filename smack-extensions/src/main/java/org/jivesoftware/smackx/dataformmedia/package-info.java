@@ -16,6 +16,6 @@
  */
 
 /**
- * Smacks implementation of XEP-0221 : Data Forms Media Element.
+ * Smacks implementation for <a href="https://xmpp.org/extensions/xep-0221.html"> XEP-0221 : Data Forms Media Element.</a>
  */
 package org.jivesoftware.smackx.dataformmedia;
