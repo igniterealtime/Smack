@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015 Florian Schmaus
+ * Copyright © 2015 Florian Schmaus, 2019 Aditya Borikar.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,21 @@ public class NumberUtil {
             throw new IllegalArgumentException("unsigned 32-bit integers can't be negative");
         }
         if (value > ((1L << 32) - 1)) {
-            throw new IllegalArgumentException("unsigned 32-bit integers can't be greater then 2^32 - 1");
+            throw new IllegalArgumentException("unsigned 32-bit integers can't be greater than 2^32 - 1");
+        }
+    }
+
+    /**
+     * Checks if the given int is within the range of an unsigned 16-bit integer, the XML type "xs:unsignedShort".
+     *
+     * @param value
+     */
+    public static void checkIfInUShort16Range(int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("unsigned 16-bit integers can't be negative");
+        }
+        if (value > ((1 << 16) - 1)) {
+            throw new IllegalArgumentException("unsigned 16-bit integers can't be greater than 2^16 - 1");
         }
     }
 }
