@@ -56,6 +56,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -148,6 +149,8 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
 
     /* flag to enable/disable prioritization of last working proxy */
     private boolean proxyPrioritizationEnabled = true;
+
+    private boolean annouceLocalStreamHost = true;
 
     /*
      * list containing session IDs of SOCKS5 Bytestream initialization packets that should be
@@ -376,6 +379,30 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     }
 
     /**
+     * Returns if the bytestream manager will announce the local stream host(s), i.e. the local SOCKS5 proxy.
+     * <p>
+     * Local stream hosts will be announced if this option is enabled and at least one is running.
+     * </p>
+     *
+     * @return <code>true</code> if
+     * @since 4.4.0
+     */
+    public boolean isAnnouncingLocalStreamHostEnabled() {
+        return annouceLocalStreamHost;
+    }
+
+    /**
+     * Set whether or not the bytestream manager will annouce the local stream host(s), i.e. the local SOCKS5 proxy.
+     *
+     * @param announceLocalStreamHost
+     * @see #isAnnouncingLocalStreamHostEnabled()
+     * @since 4.4.0
+     */
+    public void setAnnounceLocalStreamHost(boolean announceLocalStreamHost) {
+        this.annouceLocalStreamHost = announceLocalStreamHost;
+    }
+
+    /**
      * Establishes a SOCKS5 Bytestream with the given user and returns the Socket to send/receive
      * data to/from the user.
      * <p>
@@ -592,10 +619,12 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         XMPPConnection connection = connection();
         List<StreamHost> streamHosts = new ArrayList<>();
 
-        // add local proxy on first position if exists
-        List<StreamHost> localProxies = getLocalStreamHost();
-        if (localProxies != null) {
-            streamHosts.addAll(localProxies);
+        if (annouceLocalStreamHost) {
+            // add local proxy on first position if exists
+            List<StreamHost> localProxies = getLocalStreamHost();
+            if (localProxies != null) {
+                streamHosts.addAll(localProxies);
+            }
         }
 
         // query SOCKS5 proxies for network settings
@@ -636,34 +665,33 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      *         is not running
      */
     public List<StreamHost> getLocalStreamHost() {
-        XMPPConnection connection = connection();
-        // get local proxy singleton
-        Socks5Proxy socks5Server = Socks5Proxy.getSocks5Proxy();
-
-        if (!socks5Server.isRunning()) {
-            // server is not running
-            return null;
-        }
-        List<String> addresses = socks5Server.getLocalAddresses();
-        if (addresses.isEmpty()) {
-            // local address could not be determined
-            return null;
-        }
-        final int port = socks5Server.getPort();
-
         List<StreamHost> streamHosts = new ArrayList<>();
-        outerloop: for (String address : addresses) {
-            // Prevent loopback addresses from appearing as streamhost
-            final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1", "::1" };
-            for (String loopbackAddress : loopbackAddresses) {
-                // Use 'startsWith' here since IPv6 addresses may have scope ID,
-                // ie. the part after the '%' sign.
-                if (address.startsWith(loopbackAddress)) {
-                    continue outerloop;
-                }
+
+        XMPPConnection connection = connection();
+        EntityFullJid myJid = connection.getUser();
+
+        for (Socks5Proxy socks5Server : Socks5Proxy.getRunningProxies()) {
+            List<String> addresses = socks5Server.getLocalAddresses();
+            if (addresses.isEmpty()) {
+                // local address could not be determined
+                return null;
             }
-            streamHosts.add(new StreamHost(connection.getUser(), address, port));
+            final int port = socks5Server.getPort();
+
+            outerloop: for (String address : addresses) {
+                // Prevent loopback addresses from appearing as streamhost
+                final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1", "::1" };
+                for (String loopbackAddress : loopbackAddresses) {
+                    // Use 'startsWith' here since IPv6 addresses may have scope ID,
+                    // ie. the part after the '%' sign.
+                    if (address.startsWith(loopbackAddress)) {
+                        continue outerloop;
+                    }
+                }
+                streamHosts.add(new StreamHost(myJid, address, port));
+            }
         }
+
         return streamHosts;
     }
 

@@ -36,6 +36,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.SmackMessageException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CloseableUtil;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
@@ -111,27 +112,14 @@ public class Socks5Client {
             }
 
         });
-        Thread executor = new Thread(futureTask);
-        executor.start();
+        Async.go(futureTask, "SOCKS5 client connecting to " + streamHost);
 
         // get connection to initiator with timeout
         try {
             return futureTask.get(timeout, TimeUnit.MILLISECONDS);
         }
         catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause != null) {
-                // case exceptions to comply with method signature
-                if (cause instanceof IOException) {
-                    throw (IOException) cause;
-                }
-                if (cause instanceof SmackMessageException) {
-                    throw (SmackMessageException) cause;
-                }
-            }
-
-            // throw generic Smack exception if unexpected exception was thrown
-            throw new IllegalStateException("Error while connecting to SOCKS5 proxy", e);
+            throw new IOException("ExecutionException while SOCKS5 client attempting to connect to " + streamHost, e);
         }
 
     }

@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,6 +74,8 @@ import org.jivesoftware.smack.util.CloseableUtil;
 public final class Socks5Proxy {
     private static final Logger LOGGER = Logger.getLogger(Socks5Proxy.class.getName());
 
+    private static final List<Socks5Proxy> RUNNING_PROXIES = new CopyOnWriteArrayList<>();
+
     /* SOCKS5 proxy singleton */
     private static Socks5Proxy socks5Server;
 
@@ -104,7 +107,7 @@ public final class Socks5Proxy {
     /**
      * Private constructor.
      */
-    private Socks5Proxy() {
+    Socks5Proxy() {
         this.serverProcess = new Socks5ServerProcess();
 
         Enumeration<NetworkInterface> networkInterfaces;
@@ -188,9 +191,9 @@ public final class Socks5Proxy {
     /**
      * Starts the local SOCKS5 proxy server. If it is already running, this method does nothing.
      */
-    public synchronized void start() {
+    public synchronized ServerSocket start() {
         if (isRunning()) {
-            return;
+            return this.serverSocket;
         }
         try {
             if (getLocalSocks5ProxyPort() < 0) {
@@ -213,6 +216,8 @@ public final class Socks5Proxy {
                 this.serverThread = new Thread(this.serverProcess);
                 this.serverThread.setName("Smack Local SOCKS5 Proxy [" + this.serverSocket + ']');
                 this.serverThread.setDaemon(true);
+
+                RUNNING_PROXIES.add(this);
                 this.serverThread.start();
             }
         }
@@ -220,6 +225,8 @@ public final class Socks5Proxy {
             // couldn't setup server
             LOGGER.log(Level.SEVERE, "couldn't setup local SOCKS5 proxy on port " + getLocalSocks5ProxyPort(), e);
         }
+
+        return this.serverSocket;
     }
 
     /**
@@ -229,6 +236,8 @@ public final class Socks5Proxy {
         if (!isRunning()) {
             return;
         }
+
+        RUNNING_PROXIES.remove(this);
 
         CloseableUtil.maybeClose(this.serverSocket, LOGGER);
 
@@ -483,4 +492,17 @@ public final class Socks5Proxy {
 
     }
 
+    public static Socket getSocketForDigest(String digest) {
+        for (Socks5Proxy socks5Proxy : RUNNING_PROXIES) {
+            Socket socket = socks5Proxy.getSocket(digest);
+            if (socket != null) {
+                return socket;
+            }
+        }
+        return null;
+    }
+
+    static List<Socks5Proxy> getRunningProxies() {
+        return RUNNING_PROXIES;
+    }
 }

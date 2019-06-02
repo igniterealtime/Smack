@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ public class NetworkUtil {
 
     private static final Logger LOGGER = Logger.getLogger(NetworkUtil.class.getName());
 
-    public static ServerSocket getSocketOnLoopback() {
+    public static ServerSocket getSocketOnLoopback() throws IOException {
         final InetAddress loopbackAddress = InetAddress.getLoopbackAddress();
         final int portMin = 1024;
         final int portMax = (1 << 16) - 1;
@@ -40,13 +40,12 @@ public class NetworkUtil {
                 break;
             } catch (BindException e) {
                 LOGGER.log(Level.FINEST, "Could not bind port " + port + ", trying next", e);
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
             }
         }
 
         if (serverSocket == null) {
-            throw new IllegalStateException();
+            throw new IOException("Could not bind any port between " + portMin + " and " + portMax
+                            + " on loopback address" + loopbackAddress);
         }
 
         return serverSocket;

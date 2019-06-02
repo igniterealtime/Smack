@@ -79,8 +79,7 @@ public class Socks5ClientForInitiator extends Socks5Client {
 
         // check if stream host is the local SOCKS5 proxy
         if (this.streamHost.getJID().equals(this.connection.get().getUser())) {
-            Socks5Proxy socks5Server = Socks5Proxy.getSocks5Proxy();
-            socket = socks5Server.getSocket(this.digest);
+            socket = Socks5Proxy.getSocketForDigest(this.digest);
             if (socket == null) {
                 throw new SmackException.SmackMessageException("target is not connected to SOCKS5 proxy");
             }

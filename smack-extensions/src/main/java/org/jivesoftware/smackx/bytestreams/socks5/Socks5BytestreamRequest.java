@@ -57,12 +57,14 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     private static final Cache<String, Integer> ADDRESS_BLACKLIST = new ExpirationCache<String, Integer>(
                     BLACKLIST_MAX_SIZE, BLACKLIST_LIFETIME);
 
+    private static int DEFAULT_CONNECTION_FAILURE_THRESHOLD = 2;
+
     /*
      * The number of connection failures it takes for a particular SOCKS5 proxy to be blacklisted.
      * When a proxy is blacklisted no more connection attempts will be made to it for a period of 2
      * hours.
      */
-    private static int CONNECTION_FAILURE_THRESHOLD = 2;
+    private int connectionFailureThreshold = DEFAULT_CONNECTION_FAILURE_THRESHOLD;
 
     /* the bytestream initialization request */
     private Bytestream bytestreamRequest;
@@ -77,6 +79,28 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
     private int minimumConnectTimeout = 2000;
 
     /**
+     * Returns the default connection failure threshold.
+     *
+     * @return the default connection failure threshold.
+     * @see #setConnectFailureThreshold(int)
+     * @since 4.4.0
+     */
+    public static int getDefaultConnectFailureThreshold() {
+        return DEFAULT_CONNECTION_FAILURE_THRESHOLD;
+    }
+
+    /**
+     * Sets the default connection failure threshold.
+     *
+     * @param defaultConnectFailureThreshold the default connection failure threshold.
+     * @see #setConnectFailureThreshold(int)
+     * @since 4.4.0
+     */
+    public static void setDefaultConnectFailureThreshold(int defaultConnectFailureThreshold) {
+        DEFAULT_CONNECTION_FAILURE_THRESHOLD = defaultConnectFailureThreshold;
+    }
+
+    /**
      * Returns the number of connection failures it takes for a particular SOCKS5 proxy to be
      * blacklisted. When a proxy is blacklisted no more connection attempts will be made to it for a
      * period of 2 hours. Default is 2.
@@ -84,8 +108,8 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @return the number of connection failures it takes for a particular SOCKS5 proxy to be
      *         blacklisted
      */
-    public static int getConnectFailureThreshold() {
-        return CONNECTION_FAILURE_THRESHOLD;
+    public int getConnectFailureThreshold() {
+        return connectionFailureThreshold;
     }
 
     /**
@@ -98,8 +122,8 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * @param connectFailureThreshold the number of connection failures it takes for a particular
      *        SOCKS5 proxy to be blacklisted
      */
-    public static void setConnectFailureThreshold(int connectFailureThreshold) {
-        CONNECTION_FAILURE_THRESHOLD = connectFailureThreshold;
+    public void setConnectFailureThreshold(int connectFailureThreshold) {
+        connectionFailureThreshold = connectFailureThreshold;
     }
 
     /**
@@ -234,7 +258,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
             // check to see if this address has been blacklisted
             int failures = getConnectionFailures(address);
-            if (CONNECTION_FAILURE_THRESHOLD > 0 && failures >= CONNECTION_FAILURE_THRESHOLD) {
+            if (connectionFailureThreshold > 0 && failures >= connectionFailureThreshold) {
                 continue;
             }
 

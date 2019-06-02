@@ -31,6 +31,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.util.CloseableUtil;
+import org.jivesoftware.smack.util.NetworkUtil;
 
 /**
  * Simple SOCKS5 proxy for testing purposes. It is almost the same as the Socks5Proxy class but the
@@ -38,11 +40,8 @@ import org.jivesoftware.smack.SmackException;
  *
  * @author Henning Staib
  */
-public final class Socks5TestProxy {
+public final class Socks5TestProxy implements AutoCloseable {
     private static final Logger LOGGER = Logger.getLogger(Socks5TestProxy.class.getName());
-
-    /* SOCKS5 proxy singleton */
-    private static Socks5TestProxy socks5Server;
 
     /* reusable implementation of a SOCKS5 proxy server process */
     private Socks5ServerProcess serverProcess;
@@ -51,64 +50,22 @@ public final class Socks5TestProxy {
     private Thread serverThread;
 
     /* server socket to accept SOCKS5 connections */
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
 
     /* assigns a connection to a digest */
     private final Map<String, Socket> connectionMap = new ConcurrentHashMap<String, Socket>();
 
-    /* port of the test proxy */
-    private int port = 7777;
-
     private boolean startupComplete;
 
-    /**
-     * Private constructor.
-     */
-    private Socks5TestProxy(int port) {
+    Socks5TestProxy() throws IOException {
+        this(NetworkUtil.getSocketOnLoopback());
+    }
+
+    Socks5TestProxy(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
         this.serverProcess = new Socks5ServerProcess();
-        this.port = port;
-    }
-
-    /**
-     * Returns the local SOCKS5 proxy server.
-     *
-     * @param port of the test proxy
-     * @return the local SOCKS5 proxy server
-     */
-    public static synchronized Socks5TestProxy getProxy(int port) {
-        if (socks5Server == null) {
-            socks5Server = new Socks5TestProxy(port);
-            socks5Server.start();
-        }
-        return socks5Server;
-    }
-
-    /**
-     * Stops the test proxy.
-     */
-    public static synchronized void stopProxy() {
-        if (socks5Server != null) {
-            socks5Server.stop();
-            socks5Server = null;
-        }
-    }
-
-    /**
-     * Starts the local SOCKS5 proxy server. If it is already running, this method does nothing.
-     */
-    public synchronized void start() {
-        if (isRunning()) {
-            return;
-        }
-        try {
-            this.serverSocket = new ServerSocket(this.port);
-            this.serverThread = new Thread(this.serverProcess);
-            this.serverThread.start();
-        }
-        catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "exception", e);
-            // do nothing
-        }
+        this.serverThread = new Thread(this.serverProcess);
+        this.serverThread.start();
     }
 
     /**
@@ -138,8 +95,6 @@ public final class Socks5TestProxy {
             }
         }
         this.serverThread = null;
-        this.serverSocket = null;
-
     }
 
     /**
@@ -173,16 +128,15 @@ public final class Socks5TestProxy {
      *
      * @param digest identifying the connection
      * @return socket or null if there is no socket for the given digest
+     * @throws InterruptedException
      */
-    @SuppressWarnings("WaitNotInLoop")
-    public Socket getSocket(String digest) {
+    public Socket getSocket(String digest) throws InterruptedException {
         synchronized (this) {
-            if (!startupComplete) {
-                try {
-                    wait(5000);
-                } catch (InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "exception", e);
-                }
+            long now = System.currentTimeMillis();
+            final long deadline = now + 5000;
+            while (!startupComplete && now < deadline) {
+                wait(deadline - now);
+                now = System.currentTimeMillis();
             }
         }
         if (!startupComplete) {
@@ -197,7 +151,7 @@ public final class Socks5TestProxy {
      * @return true if the local SOCKS5 proxy server is running, otherwise false
      */
     public boolean isRunning() {
-        return this.serverSocket != null;
+        return !this.serverSocket.isClosed();
     }
 
     /**
@@ -213,7 +167,7 @@ public final class Socks5TestProxy {
                 Socket socket = null;
 
                 try {
-
+                    // TODO: Add !serverSocket.isClosed() into the while condition and remove the following lines.
                     if (Socks5TestProxy.this.serverSocket.isClosed()
                                     || Thread.currentThread().isInterrupted()) {
                         return;
@@ -227,20 +181,16 @@ public final class Socks5TestProxy {
 
                     synchronized (this) {
                         startupComplete = true;
-                        notify();
+                        notifyAll();
                     }
                 }
                 catch (SocketException e) {
                     /* do nothing */
+                    LOGGER.log(Level.FINE, "Socket exception in Socks5TestProxy " + this, e);
                 }
                 catch (Exception e) {
-                    try {
-                        LOGGER.log(Level.SEVERE, "exception", e);
-                        socket.close();
-                    }
-                    catch (IOException e1) {
-                        /* Do Nothing */
-                    }
+                    LOGGER.log(Level.SEVERE, "exception", e);
+                    CloseableUtil.maybeClose(socket, LOGGER);
                 }
             }
 
@@ -307,6 +257,11 @@ public final class Socks5TestProxy {
             Socks5TestProxy.this.connectionMap.put(responseDigest, socket);
         }
 
+    }
+
+    @Override
+    public void close() {
+        stop();
     }
 
 }
