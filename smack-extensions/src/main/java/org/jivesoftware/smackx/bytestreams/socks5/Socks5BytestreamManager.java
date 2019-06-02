@@ -490,12 +490,10 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
                 streamHosts.remove(selectedStreamHost);
                 streamHosts.add(0, selectedStreamHost);
             }
-
         }
 
         Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
         try {
-
             // add transfer digest to local proxy to make transfer valid
             socks5Proxy.addTransfer(digest);
 
@@ -527,17 +525,14 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
             // negotiation successful, return the output stream
             return new Socks5BytestreamSession(socket, usedStreamHost.getJID().equals(
                             connection.getUser()));
-
         }
         catch (TimeoutException e) {
             throw new IOException("Timeout while connecting to SOCKS5 proxy", e);
         }
         finally {
-
             // remove transfer digest if output stream is returned or an exception
             // occurred
             socks5Proxy.removeTransfer(digest);
-
         }
     }
 
