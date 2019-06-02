@@ -530,7 +530,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
 
         }
         catch (TimeoutException e) {
-            throw new IOException("Timeout while connecting to SOCKS5 proxy");
+            throw new IOException("Timeout while connecting to SOCKS5 proxy", e);
         }
         finally {
 
