@@ -23,7 +23,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -323,13 +322,16 @@ public class ParserUtils {
         return parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
     }
 
+    /**
+     * Get the QName of the current element.
+     *
+     * @param parser the parser.
+     * @return the Qname.
+     * @deprecated use {@link XmlPullParser#getQName()} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5
     public static QName getQName(XmlPullParser parser) {
-        String elementName = parser.getName();
-        String prefix = parser.getPrefix();
-        if (prefix == null) {
-            prefix = XMLConstants.DEFAULT_NS_PREFIX;
-        }
-        String namespace = parser.getNamespace();
-        return new QName(namespace, elementName, prefix);
+        return parser.getQName();
     }
 }
