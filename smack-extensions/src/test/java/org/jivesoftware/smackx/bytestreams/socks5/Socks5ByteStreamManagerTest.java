@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -140,20 +141,17 @@ public class Socks5ByteStreamManagerTest {
         final XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
 
-        try {
+        FeatureNotSupportedException e = assertThrows(FeatureNotSupportedException.class, () -> {
             // build empty discover info as reply if targets features are queried
             DiscoverInfo discoverInfo = new DiscoverInfo();
             protocol.addResponse(discoverInfo);
 
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID);
+        });
 
-            fail("exception should be thrown");
-        }
-        catch (FeatureNotSupportedException e) {
-            assertTrue(e.getFeature().equals("SOCKS5 Bytestream"));
-            assertTrue(e.getJid().equals(targetJID));
-        }
+        assertTrue(e.getFeature().equals("SOCKS5 Bytestream"));
+        assertTrue(e.getJid().equals(targetJID));
     }
 
     /**
@@ -196,16 +194,15 @@ public class Socks5ByteStreamManagerTest {
         protocol.addResponse(discoverItems, Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
-        try {
+        SmackException e = assertThrows(SmackException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
 
             fail("exception should be thrown");
-        }
-        catch (SmackException e) {
-            protocol.verifyAll();
-            assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
-        }
+        });
+
+        protocol.verifyAll();
+        assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
     }
 
     /**
@@ -261,16 +258,13 @@ public class Socks5ByteStreamManagerTest {
         protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
-        try {
+        SmackException e = assertThrows(SmackException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
+        });
 
-            fail("exception should be thrown");
-        }
-        catch (SmackException e) {
-            protocol.verifyAll();
-            assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
-        }
+        protocol.verifyAll();
+        assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
     }
 
     /**
@@ -325,16 +319,15 @@ public class Socks5ByteStreamManagerTest {
         protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
-        try {
+        SmackException e = assertThrows(SmackException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
 
             fail("exception should be thrown");
-        }
-        catch (SmackException e) {
-            protocol.verifyAll();
-            assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
-        }
+        });
+
+        protocol.verifyAll();
+        assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
 
         /* retry to establish SOCKS5 Bytestream */
 
@@ -344,20 +337,16 @@ public class Socks5ByteStreamManagerTest {
         protocol.addResponse(discoverItems, Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
-        try {
+        e = assertThrows(SmackException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
-
-            fail("exception should be thrown");
-        }
-        catch (SmackException e) {
-            /*
-             * #verifyAll() tests if the number of requests and responses corresponds and should
-             * fail if the invalid proxy is queried again
-             */
-            protocol.verifyAll();
-            assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
-        }
+        });
+        /*
+         * #verifyAll() tests if the number of requests and responses corresponds and should
+         * fail if the invalid proxy is queried again
+         */
+        protocol.verifyAll();
+        assertTrue(e.getMessage().contains("no SOCKS5 proxies available"));
     }
 
     /**
@@ -431,16 +420,13 @@ public class Socks5ByteStreamManagerTest {
         protocol.addResponse(rejectPacket, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET);
 
-        try {
+        XMPPErrorException e = assertThrows(XMPPErrorException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
+        });
 
-            fail("exception should be thrown");
-        }
-        catch (XMPPErrorException e) {
-            protocol.verifyAll();
-            assertEquals(rejectPacket.getError(), e.getStanzaError());
-        }
+        protocol.verifyAll();
+        assertEquals(rejectPacket.getError(), e.getStanzaError());
     }
 
     /**
@@ -516,16 +502,13 @@ public class Socks5ByteStreamManagerTest {
         protocol.addResponse(streamHostUsedPacket, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET);
 
-        try {
+        SmackException e = assertThrows(SmackException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
+        });
 
-            fail("exception should be thrown");
-        }
-        catch (SmackException e) {
-            protocol.verifyAll();
-            assertTrue(e.getMessage().contains("Remote user responded with unknown host"));
-        }
+        protocol.verifyAll();
+        assertTrue(e.getMessage().contains("Remote user responded with unknown host"));
     }
 
     /**
@@ -609,18 +592,15 @@ public class Socks5ByteStreamManagerTest {
 
         }, Verification.correspondingSenderReceiver, Verification.requestTypeSET);
 
-        try {
+        IOException e = assertThrows(IOException.class, () -> {
             // start SOCKS5 Bytestream
             byteStreamManager.establishSession(targetJID, sessionID);
+        });
 
-            fail("exception should be thrown");
-        }
-        catch (IOException e) {
-            // initiator can't connect to proxy because it is not running
-            protocol.verifyAll();
-            Throwable actualCause = e.getCause().getCause();
-            assertEquals(ConnectException.class, actualCause.getClass());
-        }
+        // initiator can't connect to proxy because it is not running
+        protocol.verifyAll();
+        Throwable actualCause = e.getCause().getCause();
+        assertEquals(ConnectException.class, actualCause.getClass());
     }
 
     /**
