@@ -99,7 +99,7 @@ public class PrivacyItem {
      * @param order the order of this privacy item
      */
     public PrivacyItem(Type type, String value, boolean allow, long order) {
-        NumberUtil.checkIfInUInt32Range(order);
+        NumberUtil.requireUInt32(order);
         this.type = type;
         this.value = value;
         this.allow = allow;

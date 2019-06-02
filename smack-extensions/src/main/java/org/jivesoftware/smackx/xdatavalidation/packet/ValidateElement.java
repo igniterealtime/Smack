@@ -333,10 +333,10 @@ public abstract class ValidateElement implements ExtensionElement {
          */
         public ListRange(Long min, Long max) {
             if (min != null) {
-                NumberUtil.checkIfInUInt32Range(min);
+                NumberUtil.requireUInt32(min);
             }
             if (max != null) {
-                NumberUtil.checkIfInUInt32Range(max);
+                NumberUtil.requireUInt32(max);
             }
             if (max == null && min == null) {
                 throw new IllegalArgumentException("Either min or max must be given");
