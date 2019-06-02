@@ -143,9 +143,7 @@ allprojects {
 	test {
 		useJUnitPlatform()
 
-		// Enable once the tests are fixed that sometimes break if
-		// they are executed in parallel (.e.g Socks5)
-		// maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+		maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
 
 		// Enable full stacktraces of failed tests. Especially handy
 		// for environments like Travis.
