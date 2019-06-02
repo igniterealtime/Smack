@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.util;
 
+import java.io.IOException;
+import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
@@ -264,13 +266,9 @@ public class StringUtils {
     }
 
     /**
-     * Array of numbers and letters of mixed case. Numbers appear in the list
-     * twice so that there is a more equal chance that a number will be picked.
-     * We can use the array to get a random number or letter by picking a random
-     * array index.
+     * 24 upper case characters from the latin alphabet and numbers without '0' and 'O'.
      */
-    private static final char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz" +
-                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+    private static final char[] UNAMBIGUOUS_NUMBERS_AND_LETTER = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ".toCharArray();
 
     /**
      * Returns a random String of numbers and letters (lower and upper case)
@@ -289,6 +287,74 @@ public class StringUtils {
         return randomString(length, RandomUtil.RANDOM.get());
     }
 
+    public static String secureOnlineAttackSafeRandomString() {
+        // 34^10 = 2.06e15 possible combinations. Which is enough to protect against online brute force attacks.
+        // See also https://www.grc.com/haystack.htm
+        final int REQUIRED_LENGTH = 10;
+
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+    }
+
+    public static String secureUniqueRandomString() {
+        // 34^13 = 8.11e19 possible combinations, which is > 2^64.
+        final int REQUIRED_LENGTH = 13;
+
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+    }
+
+    /**
+     * Generate a secure random string with is human readable. The resulting string consists of 24 upper case characters
+     * from the Latin alphabet and numbers without '0' and 'O', grouped into 4-characters chunks, e.g.
+     * "TWNK-KD5Y-MT3T-E1GS-DRDB-KVTW". The characters are randomly selected by a cryptographically secure pseudorandom
+     * number generator (CSPRNG).
+     * <p>
+     * The string can be used a backup "code" for secrets, and is in fact the same as the one backup code specified in
+     * XEP-0373 and the one used by the <a href="https://github.com/open-keychain/open-keychain/wiki/Backups">Backup
+     * Format v2 of OpenKeychain</a>.
+     * </p>
+     *
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#backup-encryption"> XEP-0373 §5.4 Encrypting the Secret
+     *      Key Backup</a>
+     * @return a human readable secure random string.
+     */
+    public static String secureOfflineAttackSafeRandomString() {
+        // 34^24 = 2^122.10 possible combinations. Which is enough to protect against offline brute force attacks.
+        // See also https://www.grc.com/haystack.htm
+        final int REQUIRED_LENGTH = 24;
+
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+    }
+
+    private static final int RANDOM_STRING_CHUNK_SIZE = 4;
+
+    private static String randomString(Random random, char[] alphabet, int numRandomChars) {
+        // The buffer most hold the size of the requested number of random chars and the chunk separators ('-').
+        int bufferSize = numRandomChars + ((numRandomChars - 1) / RANDOM_STRING_CHUNK_SIZE);
+        CharBuffer charBuffer = CharBuffer.allocate(bufferSize);
+
+        try {
+            randomString(charBuffer, random, alphabet, numRandomChars);
+        } catch (IOException e) {
+            // This should never happen if we calcuate the buffer size correctly.
+            throw new AssertionError(e);
+        }
+
+        return charBuffer.flip().toString();
+    }
+
+    private static void randomString(Appendable appendable, Random random, char[] alphabet, int numRandomChars)
+                    throws IOException {
+        for (int randomCharNum = 1; randomCharNum <= numRandomChars; randomCharNum++) {
+            int randomIndex = random.nextInt(alphabet.length);
+            char randomChar = alphabet[randomIndex];
+            appendable.append(randomChar);
+
+            if (randomCharNum % RANDOM_STRING_CHUNK_SIZE == 0 && randomCharNum < numRandomChars) {
+                appendable.append('-');
+            }
+        }
+    }
+
     public static String randomString(final int length) {
         return randomString(length, RandomUtil.SECURE_RANDOM.get());
     }
@@ -298,22 +364,12 @@ public class StringUtils {
             return "";
         }
 
-        byte[] randomBytes = new byte[length];
-        random.nextBytes(randomBytes);
         char[] randomChars = new char[length];
         for (int i = 0; i < length; i++) {
-            randomChars[i] = getPrintableChar(randomBytes[i]);
+            int index = random.nextInt(UNAMBIGUOUS_NUMBERS_AND_LETTER.length);
+            randomChars[i] = UNAMBIGUOUS_NUMBERS_AND_LETTER[index];
         }
         return new String(randomChars);
-    }
-
-    private static char getPrintableChar(byte indexByte) {
-        assert (numbersAndLetters.length < Byte.MAX_VALUE * 2);
-
-        // Convert indexByte as it where an unsigned byte by promoting it to int
-        // and masking it with 0xff. Yields results from 0 - 254.
-        int index = indexByte & 0xff;
-        return numbersAndLetters[index % numbersAndLetters.length];
     }
 
     /**

@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +43,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.BytestreamManager;
@@ -113,9 +113,6 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
 
     /* prefix used to generate session IDs */
     private static final String SESSION_ID_PREFIX = "js5_";
-
-    /* random generator to create session IDs */
-    private static final Random randomGenerator = new Random();
 
     /* stores one Socks5BytestreamManager for each XMPP connection */
     private static final Map<XMPPConnection, Socks5BytestreamManager> managers = new WeakHashMap<>();
@@ -759,7 +756,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     private static String getNextSessionID() {
         StringBuilder buffer = new StringBuilder();
         buffer.append(SESSION_ID_PREFIX);
-        buffer.append(randomGenerator.nextInt(Integer.MAX_VALUE) + randomGenerator.nextInt(Integer.MAX_VALUE));
+        buffer.append(StringUtils.secureOnlineAttackSafeRandomString());
         return buffer.toString();
     }
 

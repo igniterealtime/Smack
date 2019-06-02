@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017-2018 Florian Schmaus, 2016-2017 Fernando Ramirez
+ * Copyright © 2017-2019 Florian Schmaus, 2016-2017 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -456,7 +455,7 @@ public final class MamManager extends Manager {
 
     public MamQuery queryArchive(MamQueryArgs mamQueryArgs) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, NotLoggedInException, InterruptedException {
-        String queryId = UUID.randomUUID().toString();
+        String queryId = StringUtils.secureUniqueRandomString();
         String node = mamQueryArgs.node;
         DataForm dataForm = mamQueryArgs.getDataForm();
 
@@ -515,7 +514,7 @@ public final class MamManager extends Manager {
     public List<FormField> retrieveFormFields(String node)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
             InterruptedException, NotLoggedInException {
-        String queryId = UUID.randomUUID().toString();
+        String queryId = StringUtils.secureUniqueRandomString();
         MamQueryIQ mamQueryIq = new MamQueryIQ(queryId, node, null);
         mamQueryIq.setTo(archiveAddress);
 
@@ -601,7 +600,8 @@ public final class MamManager extends Manager {
 
         private List<Message> page(RSMSet requestRsmSet) throws NoResponseException, XMPPErrorException,
                         NotConnectedException, NotLoggedInException, InterruptedException {
-            MamQueryIQ mamQueryIQ = new MamQueryIQ(UUID.randomUUID().toString(), node, form);
+            String queryId = StringUtils.secureUniqueRandomString();
+            MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, node, form);
             mamQueryIQ.setType(IQ.Type.set);
             mamQueryIQ.setTo(archiveAddress);
             mamQueryIQ.addExtension(requestRsmSet);

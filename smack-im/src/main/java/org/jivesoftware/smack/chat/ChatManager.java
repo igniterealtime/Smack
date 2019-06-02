@@ -20,7 +20,6 @@ package org.jivesoftware.smack.chat;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -42,6 +41,7 @@ import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
@@ -407,7 +407,7 @@ public final class ChatManager extends Manager{
      * @return the next id.
      */
     private static String nextID() {
-        return UUID.randomUUID().toString();
+        return StringUtils.secureUniqueRandomString();
     }
 
     public static void setDefaultMatchMode(MatchMode mode) {

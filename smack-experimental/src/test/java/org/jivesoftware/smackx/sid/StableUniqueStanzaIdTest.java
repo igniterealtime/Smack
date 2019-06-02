@@ -65,7 +65,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
         OriginIdElement element = new OriginIdElement();
         assertNotNull(element);
         assertEquals(StableUniqueStanzaIdManager.NAMESPACE, element.getNamespace());
-        assertEquals(36, element.getId().length());
+        assertEquals(16, element.getId().length());
     }
 
     @Test

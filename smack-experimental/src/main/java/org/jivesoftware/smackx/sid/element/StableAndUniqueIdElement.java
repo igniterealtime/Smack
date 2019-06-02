@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.sid.element;
 
-import java.util.UUID;
-
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -28,7 +26,7 @@ public abstract class StableAndUniqueIdElement implements ExtensionElement {
     private final String id;
 
     public StableAndUniqueIdElement() {
-        this.id = UUID.randomUUID().toString();
+        this.id = StringUtils.secureUniqueRandomString();
     }
 
     public String getId() {

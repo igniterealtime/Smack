@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.ox.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.Set;
 
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.ox.crypto.OpenPgpProvider;
@@ -52,26 +52,7 @@ public class SecretKeyBackupHelper {
      * @return backup code
      */
     public static String generateBackupPassword() {
-        final String alphabet = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
-        final int len = alphabet.length();
-        SecureRandom random = new SecureRandom();
-        StringBuilder code = new StringBuilder(29);
-
-        // 6 blocks
-        for (int i = 0; i < 6; i++) {
-
-            // of 4 chars
-            for (int j = 0; j < 4; j++) {
-                char c = alphabet.charAt(random.nextInt(len));
-                code.append(c);
-            }
-
-            // dash after every block except the last one
-            if (i != 5) {
-                code.append('-');
-            }
-        }
-        return code.toString();
+        return StringUtils.secureOfflineAttackSafeRandomString();
     }
 
     /**
