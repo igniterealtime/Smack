@@ -20,10 +20,13 @@ package org.jivesoftware.smackx.commands;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -126,15 +129,6 @@ public final class AdHocCommandManager extends Manager {
 
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
-    /**
-     * Thread that reaps stale sessions.
-     */
-    // FIXME The session sweeping is horrible implemented. The thread will never stop running. A different approach must
-    // be implemented. For example one that does stop reaping sessions and the thread if there are no more, and restarts
-    // the reaping process on demand. Or for every command a scheduled task should be created that removes the session
-    // if it's timed out. See SMACK-624.
-    private Thread sessionsSweeper;
-
     private AdHocCommandManager(XMPPConnection connection) {
         super(connection);
         this.serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
@@ -186,8 +180,6 @@ public final class AdHocCommandManager extends Manager {
                 }
             }
         });
-
-        sessionsSweeper = null;
     }
 
     /**
@@ -380,49 +372,8 @@ public final class AdHocCommandManager extends Manager {
                     // available for the next call
                     response.setStatus(Status.executing);
                     executingCommands.put(sessionId, command);
-                    // See if the session reaping thread is started. If not, start it.
-                    if (sessionsSweeper == null) {
-                        sessionsSweeper = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                while (true) {
-                                    for (String sessionId : executingCommands.keySet()) {
-                                        LocalCommand command = executingCommands.get(sessionId);
-                                        // Since the command could be removed in the meanwhile
-                                        // of getting the key and getting the value - by a
-                                        // processed packet. We must check if it still in the
-                                        // map.
-                                        if (command != null) {
-                                            long creationStamp = command.getCreationDate();
-                                            // Check if the Session data has expired (default is
-                                            // 10 minutes)
-                                            // To remove it from the session list it waits for
-                                            // the double of the of time out time. This is to
-                                            // let
-                                            // the requester know why his execution request is
-                                            // not accepted. If the session is removed just
-                                            // after the time out, then whe the user request to
-                                            // continue the execution he will received an
-                                            // invalid session error and not a time out error.
-                                            if (System.currentTimeMillis() - creationStamp > SESSION_TIMEOUT * 1000 * 2) {
-                                                // Remove the expired session
-                                                executingCommands.remove(sessionId);
-                                            }
-                                        }
-                                    }
-                                    try {
-                                        Thread.sleep(1000);
-                                    }
-                                    catch (InterruptedException ie) {
-                                        // Ignore.
-                                    }
-                                }
-                            }
-
-                        });
-                        sessionsSweeper.setDaemon(true);
-                        sessionsSweeper.start();
-                    }
+                    // See if the session sweeper thread is scheduled. If not, start it.
+                    maybeWindUpSessionSweeper();
                 }
 
                 // Sends the response packet
@@ -556,6 +507,47 @@ public final class AdHocCommandManager extends Manager {
                 }
             }
         }
+    }
+
+    private boolean sessionSweeperScheduled;
+
+    private final Runnable sessionSweeper = () -> {
+        final long currentTime = System.currentTimeMillis();
+        synchronized (this) {
+            for (Iterator<Entry<String, LocalCommand>> it = executingCommands.entrySet().iterator(); it.hasNext();) {
+                Entry<String, LocalCommand> entry = it.next();
+                LocalCommand command = entry.getValue();
+
+                long creationStamp = command.getCreationDate();
+                // Check if the Session data has expired (default is 10 minutes)
+                // To remove it from the session list it waits for the double of
+                // the of time out time. This is to let
+                // the requester know why his execution request is
+                // not accepted. If the session is removed just
+                // after the time out, then once the user requests to
+                // continue the execution he will received an
+                // invalid session error and not a time out error.
+                if (currentTime - creationStamp > SESSION_TIMEOUT * 1000 * 2) {
+                    // Remove the expired session
+                    it.remove();
+                }
+            }
+
+            sessionSweeperScheduled = false;
+        }
+
+        if (!executingCommands.isEmpty()) {
+            maybeWindUpSessionSweeper();
+        }
+    };
+
+    private synchronized void maybeWindUpSessionSweeper() {
+        if (sessionSweeperScheduled) {
+            return;
+        }
+
+        sessionSweeperScheduled = true;
+        schedule(sessionSweeper, 10, TimeUnit.SECONDS);
     }
 
     /**
