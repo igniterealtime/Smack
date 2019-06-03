@@ -149,9 +149,7 @@ public class SmackReactor {
         long releaseTimeEpoch = System.currentTimeMillis() + unit.toMillis(delay);
         Date releaseTimeDate = new Date(releaseTimeEpoch);
         ScheduledAction scheduledAction = new ScheduledAction(runnable, releaseTimeDate, this);
-        synchronized (scheduledActions) {
-            scheduledActions.add(scheduledAction);
-        }
+        scheduledActions.add(scheduledAction);
         return scheduledAction;
     }
 
