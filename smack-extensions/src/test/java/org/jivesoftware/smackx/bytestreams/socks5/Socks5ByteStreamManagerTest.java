@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
@@ -776,16 +778,24 @@ public class Socks5ByteStreamManagerTest {
             streamHostUsedPacket.setSessionID(sessionID);
             streamHostUsedPacket.setUsedHost(initiatorJID); // local proxy used
 
+            final String secondStreamHostIp = "192.0.0.1";
             // return used stream host info as response to the bytestream initiation
             protocol.addResponse(streamHostUsedPacket, new Verification<Bytestream, Bytestream>() {
                 @Override
                 public void verify(Bytestream request, Bytestream response) {
                     assertEquals(response.getSessionID(), request.getSessionID());
-                    StreamHost streamHost1 = request.getStreamHosts().get(0);
+
+                    List<StreamHost> streamHosts = request.getStreamHosts();
+
+                    StreamHost streamHost1 = streamHosts.get(0);
                     assertEquals(response.getUsedHost().getJID(), streamHost1.getJID());
-                    StreamHost streamHost2 = request.getStreamHosts().get(request.getStreamHosts().size() - 1);
+
+                    // Get the last stream host. Note that there may be multiple, but since this unit test added
+                    // secondStreamHostIp as last, it should also be the last entry since the API contract assures that
+                    // the order is preserved.
+                    StreamHost streamHost2 = streamHosts.get(streamHosts.size() - 1);
                     assertEquals(response.getUsedHost().getJID(), streamHost2.getJID());
-                    assertEquals("localAddress", streamHost2.getAddress());
+                    assertEquals(secondStreamHostIp, streamHost2.getAddress().toString());
                 }
             }, Verification.correspondingSenderReceiver, Verification.requestTypeSET);
 
@@ -798,10 +808,10 @@ public class Socks5ByteStreamManagerTest {
                             socks5Proxy.getLocalAddresses().get(0),
                             socks5Proxy.getPort());
             Socks5Client socks5Client = new Socks5Client(streamHost, digest);
-            InputStream inputStream = socks5Client.getSocket(2000).getInputStream();
+            InputStream inputStream = socks5Client.getSocket(10000).getInputStream();
 
             // add another network address before establishing SOCKS5 Bytestream
-            socks5Proxy.addLocalAddress("localAddress");
+            socks5Proxy.addLocalAddress(InetAddress.getByName(secondStreamHostIp));
 
             // finally call the method that should be tested
             OutputStream outputStream = byteStreamManager.establishSession(targetJID, sessionID).getOutputStream();
@@ -816,9 +826,9 @@ public class Socks5ByteStreamManagerTest {
             assertArrayEquals(data, result);
 
             protocol.verifyAll();
-            } finally {
-                socks5Proxy.stop();
-            }
+        } finally {
+            socks5Proxy.stop();
+        }
     }
 
     /**

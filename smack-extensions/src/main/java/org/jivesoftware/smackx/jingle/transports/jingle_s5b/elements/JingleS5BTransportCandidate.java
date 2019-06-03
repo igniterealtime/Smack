@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
+import org.jivesoftware.smack.util.InternetAddress;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -40,14 +41,17 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
     public static final String ATTR_TYPE = "type";
 
     private final String cid;
-    private final String host;
+    private final InternetAddress host;
     private final Jid jid;
     private final int port;
     private final int priority;
     private final Type type;
 
-    public JingleS5BTransportCandidate(String candidateId, String host, Jid jid, int port, int priority, Type type) {
+    public JingleS5BTransportCandidate(String candidateId, String hostString, Jid jid, int port, int priority, Type type) {
+        this(candidateId, InternetAddress.from(hostString), jid, port, priority, type);
+    }
 
+    public JingleS5BTransportCandidate(String candidateId, InternetAddress host, Jid jid, int port, int priority, Type type) {
         Objects.requireNonNull(candidateId);
         Objects.requireNonNull(host);
         Objects.requireNonNull(jid);
@@ -102,7 +106,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
         return cid;
     }
 
-    public String getHost() {
+    public InternetAddress getHost() {
         return host;
     }
 
@@ -149,7 +153,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
 
     public static final class Builder {
         private String cid;
-        private String host;
+        private InternetAddress host;
         private Jid jid;
         private int port = -1;
         private int priority = -1;
@@ -163,7 +167,12 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
             return this;
         }
 
-        public Builder setHost(String host) {
+        public Builder setHost(String host)  {
+            InternetAddress inetAddress = InternetAddress.from(host);
+            return setHost(inetAddress);
+        }
+
+        public Builder setHost(InternetAddress host) {
             this.host = host;
             return this;
         }

@@ -224,10 +224,8 @@ public class InitiationListenerTest {
      *
      * @throws Exception should not happen
      */
-    @SuppressWarnings("UnusedVariable")
     @Test
     public void shouldInvokeAllRequestsListenerIfUserListenerExists() throws Exception {
-
         // add listener for all request
         Socks5BytestreamListener allRequestsListener = mock(Socks5BytestreamListener.class);
         byteStreamManager.addIncomingBytestreamListener(allRequestsListener);
@@ -241,15 +239,11 @@ public class InitiationListenerTest {
         initiationListener.handleIQRequest(initBytestream);
 
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
-
         // assert all requests listener is called
-        byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
         verify(allRequestsListener, timeout(TIMEOUT)).incomingBytestreamRequest(byteStreamRequest.capture());
 
         // assert user request listener is not called
         verify(userRequestsListener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
-
-
     }
 
     /**

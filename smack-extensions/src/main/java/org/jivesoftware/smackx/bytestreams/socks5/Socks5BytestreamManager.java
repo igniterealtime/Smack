@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.socks5;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -663,22 +664,16 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         EntityFullJid myJid = connection.getUser();
 
         for (Socks5Proxy socks5Server : Socks5Proxy.getRunningProxies()) {
-            List<String> addresses = socks5Server.getLocalAddresses();
+            List<InetAddress> addresses = socks5Server.getLocalAddresses();
             if (addresses.isEmpty()) {
-                // local address could not be determined
-                return null;
+                continue;
             }
-            final int port = socks5Server.getPort();
 
-            outerloop: for (String address : addresses) {
+            final int port = socks5Server.getPort();
+            for (InetAddress address : addresses) {
                 // Prevent loopback addresses from appearing as streamhost
-                final String[] loopbackAddresses = { "127.0.0.1", "0:0:0:0:0:0:0:1", "::1" };
-                for (String loopbackAddress : loopbackAddresses) {
-                    // Use 'startsWith' here since IPv6 addresses may have scope ID,
-                    // ie. the part after the '%' sign.
-                    if (address.startsWith(loopbackAddress)) {
-                        continue outerloop;
-                    }
+                if (address.isLoopbackAddress()) {
+                    continue;
                 }
                 streamHosts.add(new StreamHost(myJid, address, port));
             }

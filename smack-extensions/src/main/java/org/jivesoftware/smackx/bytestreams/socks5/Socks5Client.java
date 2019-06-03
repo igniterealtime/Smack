@@ -93,7 +93,7 @@ public class Socks5Client {
 
                 // initialize socket
                 Socket socket = new Socket();
-                SocketAddress socketAddress = new InetSocketAddress(streamHost.getAddress(),
+                SocketAddress socketAddress = new InetSocketAddress(streamHost.getAddress().asInetAddress(),
                                 streamHost.getPort());
                 socket.connect(socketAddress);
 
