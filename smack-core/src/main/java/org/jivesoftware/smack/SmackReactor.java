@@ -150,6 +150,7 @@ public class SmackReactor {
         Date releaseTimeDate = new Date(releaseTimeEpoch);
         ScheduledAction scheduledAction = new ScheduledAction(runnable, releaseTimeDate, this);
         scheduledActions.add(scheduledAction);
+        selector.wakeup();
         return scheduledAction;
     }
 
