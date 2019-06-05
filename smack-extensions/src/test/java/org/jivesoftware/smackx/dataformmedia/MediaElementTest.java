@@ -23,6 +23,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm.Type;
+
 import org.junit.Test;
 
 public class MediaElementTest {
@@ -88,5 +91,39 @@ public class MediaElementTest {
     public void atLeastOneUriTest() {
         List<URINode> uriNodeList = new ArrayList<URINode>();
         new MediaElement(uriNodeList);
+    }
+
+    @Test
+    public void compatibilityWithDataForm() throws URISyntaxException {
+         String xml =  "<x xmlns='jabber:x:data' type='form'>" +
+                 "<field var='ocr'>" +
+                 "<media xmlns='urn:xmpp:media-element'" +
+                 " height='80'" +
+                 " width='290'>" +
+                 "<uri type='image/jpeg'>" +
+                 "http://www.victim.com/challenges/ocr.jpeg?F3A6292C" +
+                 "</uri>" +
+                 "<uri type='image/jpeg'>" +
+                 "cid:sha1+f24030b8d91d233bac14777be5ab531ca3b9f102@bob.xmpp.org" +
+                 "</uri>" +
+                 "</media>" +
+                 "</field>" +
+                 "</x>";
+
+        URI uri1 = new URI("http://www.victim.com/challenges/ocr.jpeg?F3A6292C");
+        URI uri2 = new URI("cid:sha1+f24030b8d91d233bac14777be5ab531ca3b9f102@bob.xmpp.org");
+
+        URINode urinode1 = new URINode("image/jpeg", uri1);
+        URINode urinode2 = new URINode("image/jpeg", uri2);
+
+        List<URINode> uriNodeList = new ArrayList<URINode>();
+        uriNodeList.add(urinode1);
+        uriNodeList.add(urinode2);
+
+        MediaElement mediaElement = new MediaElement(uriNodeList, 80, 290);
+
+        DataForm dataForm = new DataForm(Type.form);
+        dataForm.insertMediaElement(mediaElement);
+        assertXmlSimilar(xml, dataForm.toXML());
     }
 }

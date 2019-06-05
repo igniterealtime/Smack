@@ -27,7 +27,7 @@ import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
+import org.jivesoftware.smackx.dataformmedia.MediaElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 
 import org.jxmpp.util.XmppDateTime;
@@ -149,6 +149,7 @@ public class FormField implements NamedElement {
     private final List<Option> options = new ArrayList<>();
     private final List<CharSequence> values = new ArrayList<>();
     private ValidateElement validateElement;
+    private List<MediaElement> medias = new ArrayList<>();
 
     /**
      * Creates a new FormField with the variable name that uniquely identifies the field
@@ -452,6 +453,10 @@ public class FormField implements NamedElement {
         for (Option option : getOptions()) {
             buf.append(option.toXML());
         }
+        // Loop through all the mediaElements and append them to the string buffer
+        for (MediaElement mediaElement : getMedias()) {
+            buf.append(mediaElement.toXML());
+        }
         buf.optElement(validateElement);
         buf.closeElement(this);
         return buf;
@@ -474,6 +479,19 @@ public class FormField implements NamedElement {
     @Override
     public int hashCode() {
         return toXML().toString().hashCode();
+    }
+
+    /**
+     * Adds {@link MediaElement} to formField.
+     * This method is to support implementation of XEP-0221:Data Form Media Element.
+     * @param mediaElement
+     */
+    public void addMediaElementInForm(MediaElement mediaElement) {
+        medias.add(mediaElement);
+    }
+
+    private List<MediaElement> getMedias() {
+        return medias;
     }
 
     /**

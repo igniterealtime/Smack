@@ -29,7 +29,7 @@ import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
+import org.jivesoftware.smackx.dataformmedia.MediaElement;
 import org.jivesoftware.smackx.xdata.FormField;
 
 /**
@@ -338,6 +338,17 @@ public class DataForm implements ExtensionElement {
         }
         buf.closeElement(this);
         return buf;
+    }
+
+    /**
+     * Adds FormField containing {@link MediaElement} to DataForm.
+     * This method is to support implementation of XEP-0221:Data Form Media Element.
+     * @param mediaElement
+     */
+    public void insertMediaElement(MediaElement mediaElement) {
+        FormField formField = new FormField("ocr");
+        formField.addMediaElementInForm(mediaElement);
+        fields.put("media", formField);
     }
 
     /**
