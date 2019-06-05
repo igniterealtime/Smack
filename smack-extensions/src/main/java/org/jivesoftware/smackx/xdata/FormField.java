@@ -255,7 +255,7 @@ public class FormField implements NamedElement {
     }
 
     /**
-     * Returns the first value of this form fold or {@code null}.
+     * Returns the first value of this form field or {@code null}.
      *
      * @return the first value or {@code null}
      * @since 4.3
