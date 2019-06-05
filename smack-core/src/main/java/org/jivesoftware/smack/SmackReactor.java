@@ -208,7 +208,8 @@ public class SmackReactor {
 
             long selectWait;
             if (nextScheduledAction == null) {
-                // There is no next scheduled action, wait indefinitely in select().
+                // There is no next scheduled action, wait indefinitely in select() or until another thread invokes
+                // selector.wakeup().
                 selectWait = 0;
             } else {
                 selectWait = nextScheduledAction.getTimeToDueMillis();
