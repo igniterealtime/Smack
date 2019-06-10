@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.PacketUtil;
@@ -31,7 +33,6 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza in older versions of Smack (i.e. &lt; 4.1).
@@ -56,7 +57,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
-    private final MultiMap<String, ExtensionElement> packetExtensions = new MultiMap<>();
+    private final MultiMap<QName, ExtensionElement> extensionElements = new MultiMap<>();
 
     private String id = null;
     private Jid to;
@@ -306,9 +307,9 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return a list of all extension elements of this stanza.
      */
     public List<ExtensionElement> getExtensions() {
-        synchronized (packetExtensions) {
+        synchronized (extensionElements) {
             // No need to create a new list, values() will already create a new one for us
-            return packetExtensions.values();
+            return extensionElements.values();
         }
     }
 
@@ -326,8 +327,8 @@ public abstract class Stanza implements TopLevelStreamElement {
     public List<ExtensionElement> getExtensions(String elementName, String namespace) {
         requireNotNullNorEmpty(elementName, "elementName must not be null nor empty");
         requireNotNullNorEmpty(namespace, "namespace must not be null nor empty");
-        String key = XmppStringUtils.generateKey(elementName, namespace);
-        return packetExtensions.getAll(key);
+        QName key = new QName(namespace, elementName);
+        return extensionElements.getAll(key);
     }
 
     /**
@@ -359,10 +360,10 @@ public abstract class Stanza implements TopLevelStreamElement {
         if (namespace == null) {
             return null;
         }
-        String key = XmppStringUtils.generateKey(elementName, namespace);
+        QName key = new QName(namespace, elementName);
         ExtensionElement packetExtension;
-        synchronized (packetExtensions) {
-            packetExtension = packetExtensions.getFirst(key);
+        synchronized (extensionElements) {
+            packetExtension = extensionElements.getFirst(key);
         }
         if (packetExtension == null) {
             return null;
@@ -377,9 +378,9 @@ public abstract class Stanza implements TopLevelStreamElement {
      */
     public void addExtension(ExtensionElement extension) {
         if (extension == null) return;
-        String key = XmppStringUtils.generateKey(extension.getElementName(), extension.getNamespace());
-        synchronized (packetExtensions) {
-            packetExtensions.put(key, extension);
+        QName key = extension.getQName();
+        synchronized (extensionElements) {
+            extensionElements.put(key, extension);
         }
     }
 
@@ -393,7 +394,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      */
     public ExtensionElement overrideExtension(ExtensionElement extension) {
         if (extension == null) return null;
-        synchronized (packetExtensions) {
+        synchronized (extensionElements) {
             // Note that we need to use removeExtension(String, String) here. If would use
             // removeExtension(ExtensionElement) then we would remove based on the equality of ExtensionElement, which
             // is not what we want in this case.
@@ -429,9 +430,9 @@ public abstract class Stanza implements TopLevelStreamElement {
         if (elementName == null) {
             return hasExtension(namespace);
         }
-        String key = XmppStringUtils.generateKey(elementName, namespace);
-        synchronized (packetExtensions) {
-            return packetExtensions.containsKey(key);
+        QName key = new QName(namespace, elementName);
+        synchronized (extensionElements) {
+            return extensionElements.containsKey(key);
         }
     }
 
@@ -442,8 +443,8 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return true if a stanza extension exists, false otherwise.
      */
     public boolean hasExtension(String namespace) {
-        synchronized (packetExtensions) {
-            for (ExtensionElement packetExtension : packetExtensions.values()) {
+        synchronized (extensionElements) {
+            for (ExtensionElement packetExtension : extensionElements.values()) {
                 if (packetExtension.getNamespace().equals(namespace)) {
                     return true;
                 }
@@ -460,9 +461,9 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return the removed stanza extension or null.
      */
     public ExtensionElement removeExtension(String elementName, String namespace) {
-        String key = XmppStringUtils.generateKey(elementName, namespace);
-        synchronized (packetExtensions) {
-            return packetExtensions.remove(key);
+        QName key = new QName(namespace, elementName);
+        synchronized (extensionElements) {
+            return extensionElements.remove(key);
         }
     }
 
@@ -473,9 +474,9 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @return the removed stanza extension or null.
      */
     public ExtensionElement removeExtension(ExtensionElement extension)  {
-        String key = XmppStringUtils.generateKey(extension.getElementName(), extension.getNamespace());
-        synchronized (packetExtensions) {
-            List<ExtensionElement> list = packetExtensions.getAll(key);
+        QName key = extension.getQName();
+        synchronized (extensionElements) {
+            List<ExtensionElement> list = extensionElements.getAll(key);
             boolean removed = list.remove(extension);
             if (removed) {
                 return extension;

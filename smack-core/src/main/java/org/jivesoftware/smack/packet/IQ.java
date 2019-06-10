@@ -20,6 +20,8 @@ package org.jivesoftware.smack.packet;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -46,6 +48,7 @@ public abstract class IQ extends Stanza {
     public static final String IQ_ELEMENT = "iq";
     public static final String QUERY_ELEMENT = "query";
 
+    private final QName childElementQName;
     private final String childElementName;
     private final String childElementNamespace;
 
@@ -56,6 +59,7 @@ public abstract class IQ extends Stanza {
         type = iq.getType();
         this.childElementName = iq.childElementName;
         this.childElementNamespace = iq.childElementNamespace;
+        this.childElementQName = iq.childElementQName;
     }
 
     protected IQ(String childElementName) {
@@ -65,6 +69,11 @@ public abstract class IQ extends Stanza {
     protected IQ(String childElementName, String childElementNamespace) {
         this.childElementName = childElementName;
         this.childElementNamespace = childElementNamespace;
+        if (childElementName == null) {
+            childElementQName = null;
+        } else {
+            childElementQName = new QName(childElementNamespace, childElementName);
+        }
     }
 
     /**
@@ -113,6 +122,10 @@ public abstract class IQ extends Stanza {
      */
     public boolean isResponseIQ() {
         return !isRequestIQ();
+    }
+
+    public final QName getChildElementQName() {
+        return childElementQName;
     }
 
     public final String getChildElementName() {

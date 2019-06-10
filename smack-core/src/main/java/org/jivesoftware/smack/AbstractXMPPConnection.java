@@ -239,7 +239,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected final Lock connectionLock = new ReentrantLock();
 
-    protected final Map<String, FullyQualifiedElement> streamFeatures = new HashMap<>();
+    protected final Map<QName, FullyQualifiedElement> streamFeatures = new HashMap<>();
 
     /**
      * The full JID of the authenticated user, as returned by the resource binding response of the server.
@@ -389,8 +389,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected Exception currentConnectionException;
 
-    private final Map<String, IQRequestHandler> setIqRequestHandler = new HashMap<>();
-    private final Map<String, IQRequestHandler> getIqRequestHandler = new HashMap<>();
+    private final Map<QName, IQRequestHandler> setIqRequestHandler = new HashMap<>();
+    private final Map<QName, IQRequestHandler> getIqRequestHandler = new HashMap<>();
 
     /**
      * Create a new XMPPConnection to an XMPP server.
@@ -1303,7 +1303,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             final IQ iq = (IQ) packet;
             if (iq.isRequestIQ()) {
                 final IQ iqRequest = iq;
-                final String key = XmppStringUtils.generateKey(iq.getChildElementName(), iq.getChildElementNamespace());
+                final QName key = iqRequest.getChildElementQName();
                 IQRequestHandler iqRequestHandler;
                 final IQ.Type type = iq.getType();
                 switch (type) {
@@ -1694,7 +1694,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @SuppressWarnings("unchecked")
     @Override
     public <F extends FullyQualifiedElement> F getFeature(String element, String namespace) {
-        return (F) streamFeatures.get(XmppStringUtils.generateKey(element, namespace));
+        QName qname = new QName(namespace, element);
+        return (F) streamFeatures.get(qname);
     }
 
     @Override
@@ -1703,7 +1704,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected void addStreamFeature(FullyQualifiedElement feature) {
-        String key = XmppStringUtils.generateKey(feature.getElementName(), feature.getNamespace());
+        QName key = feature.getQName();
         streamFeatures.put(key, feature);
     }
 
@@ -1812,7 +1813,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public IQRequestHandler registerIQRequestHandler(final IQRequestHandler iqRequestHandler) {
-        final String key = XmppStringUtils.generateKey(iqRequestHandler.getElement(), iqRequestHandler.getNamespace());
+        final QName key = iqRequestHandler.getQName();
         switch (iqRequestHandler.getType()) {
         case set:
             synchronized (setIqRequestHandler) {
@@ -1835,7 +1836,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public IQRequestHandler unregisterIQRequestHandler(String element, String namespace, IQ.Type type) {
-        final String key = XmppStringUtils.generateKey(element, namespace);
+        final QName key = new QName(namespace, element);
         switch (type) {
         case set:
             synchronized (setIqRequestHandler) {

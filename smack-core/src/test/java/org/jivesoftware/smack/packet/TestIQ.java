@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.jivesoftware.smack.packet;
 public class TestIQ extends SimpleIQ {
 
     public TestIQ() {
-        this(null, null);
+        this("https://igniterealtime.org/projects/smack", "test-iq");
     }
 
     public TestIQ(String element, String namespace) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smack.iqrequest;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -50,4 +52,8 @@ public interface IQRequestHandler {
     String getElement();
 
     String getNamespace();
+
+    default QName getQName() {
+        return new QName(getNamespace(), getElement());
+    }
 }

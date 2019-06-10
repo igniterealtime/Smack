@@ -18,9 +18,11 @@
 package org.jivesoftware.smackx.iqprivate;
 
 import java.io.IOException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -38,8 +40,6 @@ import org.jivesoftware.smackx.iqprivate.packet.DefaultPrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateDataIQ;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
-
-import org.jxmpp.util.XmppStringUtils;
 
 /**
  * Manages private data, which is a mechanism to allow users to store arbitrary XML
@@ -77,7 +77,7 @@ public final class PrivateDataManager extends Manager {
     /**
      * Map of provider instances.
      */
-    private static final Map<String, PrivateDataProvider> privateDataProviders = new Hashtable<>();
+    private static final Map<QName, PrivateDataProvider> privateDataProviders = new HashMap<>();
 
     /**
      * Returns the private data provider registered to the specified XML element name and namespace.
@@ -102,7 +102,7 @@ public final class PrivateDataManager extends Manager {
      * @return the PrivateData provider.
      */
     public static PrivateDataProvider getPrivateDataProvider(String elementName, String namespace) {
-        String key = XmppStringUtils.generateKey(elementName, namespace);
+        QName key = new QName(namespace, elementName);
         return privateDataProviders.get(key);
     }
 
@@ -116,7 +116,7 @@ public final class PrivateDataManager extends Manager {
      */
     public static void addPrivateDataProvider(String elementName, String namespace,
             PrivateDataProvider provider) {
-        String key = XmppStringUtils.generateKey(elementName, namespace);
+        QName key = new QName(namespace, elementName);
         privateDataProviders.put(key, provider);
     }
 
@@ -127,7 +127,7 @@ public final class PrivateDataManager extends Manager {
      * @param namespace The XML namespace.
      */
     public static void removePrivateDataProvider(String elementName, String namespace) {
-        String key = XmppStringUtils.generateKey(elementName, namespace);
+        QName key = new QName(namespace, elementName);
         privateDataProviders.remove(key);
     }
 
