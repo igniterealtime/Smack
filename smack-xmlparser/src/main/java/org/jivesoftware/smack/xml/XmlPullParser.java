@@ -123,6 +123,10 @@ public interface XmlPullParser {
 
     String getAttributeValue(String namespace, String name);
 
+    default String getAttributeValue(String name) {
+        return getAttributeValue(null, name);
+    }
+
     Event getEventType() throws XmlPullParserException;
 
     Event next() throws IOException, XmlPullParserException;
