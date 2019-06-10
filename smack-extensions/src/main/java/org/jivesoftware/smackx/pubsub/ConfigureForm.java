@@ -665,8 +665,10 @@ public class ConfigureForm extends Form {
         String fieldName = nodeField.getFieldName();
 
         if (getField(fieldName) == null) {
-            FormField field = new FormField(fieldName);
-            field.setType(type);
+            FormField field = FormField.builder()
+                            .setVariable(fieldName)
+                            .setType(type)
+                            .build();
             addField(field);
         }
     }

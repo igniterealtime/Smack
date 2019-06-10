@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2018 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,5 +48,11 @@ public class CollectionUtil {
 
     public interface Predicate<T> {
         boolean test(T t);
+    }
+
+    public static <T> ArrayList<T> newListWith(Collection<? extends T> collection) {
+        ArrayList<T> arrayList = new ArrayList<>(collection.size());
+        arrayList.addAll(collection);
+        return arrayList;
     }
 }

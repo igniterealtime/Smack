@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -295,7 +296,7 @@ public final class MamManager extends Manager {
         public static final class Builder {
             private String node;
 
-            private final Map<String, FormField> formFields = new HashMap<>(8);
+            private final Map<String, FormField> formFields = new LinkedHashMap<>(8);
 
             private int maxResults = -1;
 
@@ -329,8 +330,9 @@ public final class MamManager extends Manager {
                     return this;
                 }
 
-                FormField formField = new FormField(FORM_FIELD_START);
-                formField.addValue(start);
+                FormField formField = FormField.builder(FORM_FIELD_START)
+                                .addValue(start)
+                                .build();
                 formFields.put(formField.getVariable(), formField);
 
                 FormField endFormField = formFields.get(FORM_FIELD_END);
@@ -356,8 +358,9 @@ public final class MamManager extends Manager {
                     return this;
                 }
 
-                FormField formField = new FormField(FORM_FIELD_END);
-                formField.addValue(end);
+                FormField formField = FormField.builder(FORM_FIELD_END)
+                    .addValue(end)
+                    .build();
                 formFields.put(formField.getVariable(), formField);
 
                 FormField startFormField = formFields.get(FORM_FIELD_START);
@@ -469,9 +472,9 @@ public final class MamManager extends Manager {
     }
 
     private static FormField getWithFormField(Jid withJid) {
-        FormField formField = new FormField(FORM_FIELD_WITH);
-        formField.addValue(withJid.toString());
-        return formField;
+        return FormField.builder(FORM_FIELD_WITH)
+                        .addValue(withJid.toString())
+                        .build();
     }
 
     public MamQuery queryMostRecentPage(Jid jid, int max) throws NoResponseException, XMPPErrorException,
@@ -711,9 +714,7 @@ public final class MamManager extends Manager {
     }
 
     private static DataForm getNewMamForm() {
-        FormField field = new FormField(FormField.FORM_TYPE);
-        field.setType(FormField.Type.hidden);
-        field.addValue(MamElements.NAMESPACE);
+        FormField field = FormField.hiddenFormType(MamElements.NAMESPACE);
         DataForm form = new DataForm(DataForm.Type.submit);
         form.addField(field);
         return form;

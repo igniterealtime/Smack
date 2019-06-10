@@ -273,6 +273,15 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
+    public <E extends Enum<?>> XmlStringBuilder attribute(String name, E value, E implicitDefault) {
+        if (value == null || value == implicitDefault) {
+            return this;
+        }
+
+        attribute(name, value.toString());
+        return this;
+    }
+
     public XmlStringBuilder attribute(String name, int value) {
         assert name != null;
         return attribute(name, String.valueOf(value));

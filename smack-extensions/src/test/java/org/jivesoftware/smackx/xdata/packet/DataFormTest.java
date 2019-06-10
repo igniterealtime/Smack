@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -41,9 +42,9 @@ import org.junit.Test;
  * @author Anno van Vliet
  *
  */
-public class DataFormTest {
-    private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'></field></x>";
-    private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'></field><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
+public class DataFormTest extends SmackTestSuite {
+    private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'/></x>";
+    private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'/><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
     private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
 
     private static final DataFormProvider pr = new DataFormProvider();
@@ -54,7 +55,7 @@ public class DataFormTest {
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
-        FormField field = new FormField("testField1");
+        FormField field = FormField.builder("testField1").build();
         df.addField(field);
 
         assertNotNull(df.toXML());
@@ -81,7 +82,7 @@ public class DataFormTest {
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
-        FormField field = new FormField("testField1");
+        FormField field = FormField.builder("testField1").build();
         df.addField(field);
 
         DataLayout layout = new DataLayout("Label");
@@ -123,11 +124,12 @@ public class DataFormTest {
         DataForm df = new DataForm(DataForm.Type.submit);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
-        FormField field = new FormField("testField1");
-        df.addField(field);
+        FormField.Builder fieldBuilder = FormField.builder("testField1");
 
         ValidateElement dv = new RangeValidateElement("xs:integer", "1111", "9999");
-        field.setValidateElement(dv);
+        fieldBuilder.addFormFieldChildElement(dv);
+
+        df.addField(fieldBuilder.build());
 
         assertNotNull(df.toXML());
         String output = df.toXML().toString();
@@ -140,7 +142,7 @@ public class DataFormTest {
         assertNotNull(df);
         assertNotNull(df.getFields());
         assertEquals(1 , df.getFields().size());
-        Element element = df.getFields().get(0).getValidateElement();
+        Element element = ValidateElement.from(df.getFields().get(0));
         assertNotNull(element);
         dv = (ValidateElement) element;
 

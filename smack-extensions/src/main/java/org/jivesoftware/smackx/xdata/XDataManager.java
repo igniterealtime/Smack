@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2015 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,11 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.xdata.provider.DescriptionProvider;
+import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProviderManager;
+import org.jivesoftware.smackx.xdata.provider.OptionProvider;
+import org.jivesoftware.smackx.xdata.provider.RequiredProvider;
+import org.jivesoftware.smackx.xdata.provider.ValueProvider;
 
 import org.jxmpp.jid.Jid;
 
@@ -40,6 +45,13 @@ public final class XDataManager extends Manager {
     public static final String NAMESPACE = DataForm.NAMESPACE;
 
     static {
+        FormFieldChildElementProviderManager.addFormFieldChildElementProvider(
+                        new DescriptionProvider(),
+                        new OptionProvider(),
+                        new RequiredProvider(),
+                        new ValueProvider()
+        );
+
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {

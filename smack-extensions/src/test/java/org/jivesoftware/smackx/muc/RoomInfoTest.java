@@ -42,17 +42,17 @@ public class RoomInfoTest {
     public void validateRoomWithForm() {
         DataForm dataForm = new DataForm(DataForm.Type.result);
 
-        FormField desc = new FormField("muc#roominfo_description");
+        FormField.Builder desc = FormField.builder("muc#roominfo_description");
         desc.addValue("The place for all good witches!");
-        dataForm.addField(desc);
+        dataForm.addField(desc.build());
 
-        FormField subject = new FormField("muc#roominfo_subject");
+        FormField.Builder subject = FormField.builder("muc#roominfo_subject");
         subject.addValue("Spells");
-        dataForm.addField(subject);
+        dataForm.addField(subject.build());
 
-        FormField occupants = new FormField("muc#roominfo_occupants");
+        FormField.Builder occupants = FormField.builder("muc#roominfo_occupants");
         occupants.addValue("3");
-        dataForm.addField(occupants);
+        dataForm.addField(occupants.build());
 
         DiscoverInfo discoInfo = new DiscoverInfo();
         discoInfo.addExtension(dataForm);

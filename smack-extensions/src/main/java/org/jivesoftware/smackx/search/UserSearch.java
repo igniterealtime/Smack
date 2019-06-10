@@ -175,7 +175,7 @@ public class UserSearch extends SimpleIQ {
 
             if (eventType == XmlPullParser.Event.START_ELEMENT && !parser.getNamespace().equals("jabber:x:data")) {
                 String name = parser.getName();
-                FormField field = new FormField(name);
+                FormField.Builder field = FormField.builder(name);
 
                 // Handle hard coded values.
                 if (name.equals("first")) {
@@ -192,7 +192,7 @@ public class UserSearch extends SimpleIQ {
                 }
 
                 field.setType(FormField.Type.text_single);
-                dataForm.addField(field);
+                dataForm.addField(field.build());
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals("query")) {

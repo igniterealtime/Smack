@@ -18,6 +18,7 @@ package org.jivesoftware.smack.test.util;
 
 import java.util.Base64;
 
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
 
 /**
@@ -27,6 +28,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
 public class SmackTestSuite {
 
     static {
+        SmackConfiguration.getVersion();
         org.jivesoftware.smack.util.stringencoder.Base64.setEncoder(new Encoder() {
 
             @Override

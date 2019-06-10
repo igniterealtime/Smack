@@ -19,12 +19,13 @@ package org.jivesoftware.smackx.xdatavalidation.provider;
  import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
-import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.FormField;
@@ -35,7 +36,7 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValid
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -44,7 +45,7 @@ import org.junit.jupiter.params.provider.EnumSource;
  * @author Anno van Vliet
  *
  */
-public class DataValidationTest {
+public class DataValidationTest extends SmackTestSuite {
     private static final String TEST_INPUT_MIN = "<validate xmlns='http://jabber.org/protocol/xdata-validate'></validate>";
     private static final String TEST_OUTPUT_MIN = "<validate xmlns='http://jabber.org/protocol/xdata-validate'><basic/></validate>";
     private static final String TEST_OUTPUT_RANGE = "<validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:string'><range min='min-val' max='max-val'/><list-range min='111' max='999'/></validate>";
@@ -52,42 +53,50 @@ public class DataValidationTest {
     private static final String TEST_OUTPUT_FAIL = "<validate xmlns='http://jabber.org/protocol/xdata-validate'><list-range min='1-1-1' max='999'/></validate>";
 
     @Test
-    public void testMin() throws XmlPullParserException, IOException {
-
+    public void testBasic() {
         ValidateElement dv = new BasicValidateElement(null);
 
         assertNotNull(dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_MIN, output);
+    }
 
-        XmlPullParser parser = getParser(TEST_INPUT_MIN);
-
-        dv = DataValidationProvider.parse(parser);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testMin(SmackTestUtil.XmlPullParserKind parserKind) throws XmlPullParserException, IOException, SmackParsingException {
+        ValidateElement dv = SmackTestUtil.parse(TEST_INPUT_MIN, DataValidationProvider.class, parserKind);
 
         assertNotNull(dv);
         assertEquals("xs:string", dv.getDatatype());
         assertTrue(dv instanceof BasicValidateElement);
 
         assertNotNull(dv.toXML());
-        output = dv.toXML().toString();
+        String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_MIN, output);
     }
 
     @Test
-    public void testRange() throws XmlPullParserException, IOException {
-
+    public void testRangeToXml() {
         ValidateElement dv = new RangeValidateElement("xs:string", "min-val", "max-val");
-
         ListRange listRange = new ListRange(111L, 999L);
         dv.setListRange(listRange);
 
         assertNotNull(dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_RANGE, output);
+    }
 
-        XmlPullParser parser = getParser(output);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testRange(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        ValidateElement dv = new RangeValidateElement("xs:string", "min-val", "max-val");
+        ListRange listRange = new ListRange(111L, 999L);
+        dv.setListRange(listRange);
 
-        dv = DataValidationProvider.parse(parser);
+        String xml = dv.toXML().toString();
+
+        dv = SmackTestUtil.parse(xml, DataValidationProvider.class, parserKind);
 
         assertNotNull(dv);
         assertEquals("xs:string", dv.getDatatype());
@@ -99,24 +108,27 @@ public class DataValidationTest {
         assertEquals(Long.valueOf(111), rdv.getListRange().getMin());
         assertEquals(999, rdv.getListRange().getMax().intValue());
 
-
         assertNotNull(dv.toXML());
-        output = dv.toXML().toString();
-        assertEquals(TEST_OUTPUT_RANGE, output);
+        xml = dv.toXML().toString();
+        assertEquals(TEST_OUTPUT_RANGE, xml);
     }
 
     @Test
-    public void testRange2() throws XmlPullParserException, IOException {
-
+    public void testRange2ToXml() {
         ValidateElement dv = new RangeValidateElement(null, null, null);
 
         assertNotNull(dv.toXML());
         String output = dv.toXML().toString();
         assertEquals(TEST_OUTPUT_RANGE2, output);
+    }
 
-        XmlPullParser parser = getParser(output);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testRange2(SmackTestUtil.XmlPullParserKind parserKind) throws XmlPullParserException, IOException, SmackParsingException {
+        ValidateElement dv = new RangeValidateElement(null, null, null);
+        String xml = dv.toXML().toString();
 
-        dv = DataValidationProvider.parse(parser);
+        dv = SmackTestUtil.parse(xml, DataValidationProvider.class, parserKind);
 
         assertNotNull(dv);
         assertEquals("xs:string", dv.getDatatype());
@@ -126,14 +138,15 @@ public class DataValidationTest {
         assertEquals(null, rdv.getMax());
 
         assertNotNull(rdv.toXML());
-        output = rdv.toXML().toString();
-        assertEquals(TEST_OUTPUT_RANGE2, output);
+        xml = rdv.toXML().toString();
+        assertEquals(TEST_OUTPUT_RANGE2, xml);
     }
 
-    @Test(expected = NumberFormatException.class)
-    public void testRangeFailure() throws IOException, XmlPullParserException {
-            XmlPullParser parser = getParser(TEST_OUTPUT_FAIL);
-            DataValidationProvider.parse(parser);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testRangeFailure(SmackTestUtil.XmlPullParserKind parserKind) throws IOException, XmlPullParserException {
+        assertThrows(NumberFormatException.class,
+                        () -> SmackTestUtil.parse(TEST_OUTPUT_FAIL, DataValidationProvider.class, parserKind));
     }
 
     @ParameterizedTest
@@ -168,18 +181,8 @@ public class DataValidationTest {
         assertEquals("Event Name", nameField.getLabel());
 
         FormField dataStartField = dataForm.getField("date/start");
-        ValidateElement dataStartValidateElement = dataStartField.getValidateElement();
+        ValidateElement dataStartValidateElement = ValidateElement.from(dataStartField);
         assertEquals("xs:date", dataStartValidateElement.getDatatype());
         assertTrue(dataStartValidateElement instanceof BasicValidateElement);
-    }
-
-    /**
-     * @param output
-     * @return
-     * @throws XmlPullParserException
-     * @throws IOException
-     */
-    private static XmlPullParser getParser(String output) throws XmlPullParserException, IOException {
-        return TestUtils.getParser(output, "validate");
     }
 }

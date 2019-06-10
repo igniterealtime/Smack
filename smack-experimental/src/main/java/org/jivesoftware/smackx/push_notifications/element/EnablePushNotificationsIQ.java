@@ -100,16 +100,19 @@ public class EnablePushNotificationsIQ extends IQ {
         if (publishOptions != null) {
             DataForm dataForm = new DataForm(DataForm.Type.submit);
 
-            FormField formTypeField = new FormField("FORM_TYPE");
+            // TODO: Shouldn't this use some potentially existing PubSub API? Also FORM_TYPE fields are usually of type
+            // 'hidden', but the examples in XEP-0357 do also not set the value to hidden and FORM_TYPE itself appears
+            // to be more convention than specification.
+            FormField.Builder formTypeField = FormField.builder("FORM_TYPE");
             formTypeField.addValue(PubSub.NAMESPACE + "#publish-options");
-            dataForm.addField(formTypeField);
+            dataForm.addField(formTypeField.build());
 
             Iterator<Map.Entry<String, String>> publishOptionsIterator = publishOptions.entrySet().iterator();
             while (publishOptionsIterator.hasNext()) {
                 Map.Entry<String, String> pairVariableValue = publishOptionsIterator.next();
-                FormField field = new FormField(pairVariableValue.getKey());
+                FormField.Builder field = FormField.builder(pairVariableValue.getKey());
                 field.addValue(pairVariableValue.getValue());
-                dataForm.addField(field);
+                dataForm.addField(field.build());
             }
 
             xml.element(dataForm);

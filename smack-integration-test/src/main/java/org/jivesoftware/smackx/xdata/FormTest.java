@@ -25,7 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
-
+import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -59,34 +59,35 @@ public class FormTest extends AbstractSmackIntegrationTest {
             "Fill out this form to report your case.\nThe case will be created automatically.");
         formToSend.setTitle("Case configurations");
         // Add a hidden variable
-        FormField field = new FormField("hidden_var");
+        FormField.Builder field = FormField.builder("hidden_var");
         field.setType(FormField.Type.hidden);
         field.addValue("Some value for the hidden variable");
-        formToSend.addField(field);
+        formToSend.addField(field.build());
         // Add a fixed variable
-        field = new FormField();
+        field = FormField.builder();
         field.addValue("Section 1: Case description");
-        formToSend.addField(field);
+        field.setType(Type.fixed);
+        formToSend.addField(field.build());
         // Add a text-single variable
-        field = new FormField("name");
+        field = FormField.builder("name");
         field.setLabel("Enter a name for the case");
         field.setType(FormField.Type.text_single);
-        formToSend.addField(field);
+        formToSend.addField(field.build());
         // Add a text-multi variable
-        field = new FormField("description");
+        field = FormField.builder("description");
         field.setLabel("Enter a description");
         field.setType(FormField.Type.text_multi);
-        formToSend.addField(field);
+        formToSend.addField(field.build());
         // Add a boolean variable
-        field = new FormField("time");
+        field = FormField.builder("time");
         field.setLabel("Is this your first case?");
         field.setType(FormField.Type.bool);
-        formToSend.addField(field);
+        formToSend.addField(field.build());
         // Add a text variable where an int value is expected
-        field = new FormField("age");
+        field = FormField.builder("age");
         field.setLabel("How old are you?");
         field.setType(FormField.Type.text_single);
-        formToSend.addField(field);
+        formToSend.addField(field.build());
 
         // Create the chats between the two participants
         org.jivesoftware.smack.chat.Chat chat = org.jivesoftware.smack.chat.ChatManager.getInstanceFor(conOne).createChat(conTwo.getUser(), null);

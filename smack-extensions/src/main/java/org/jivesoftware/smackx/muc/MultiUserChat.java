@@ -1212,14 +1212,14 @@ public class MultiUserChat {
      */
     public void requestVoice() throws NotConnectedException, InterruptedException {
         DataForm form = new DataForm(DataForm.Type.submit);
-        FormField formTypeField = new FormField(FormField.FORM_TYPE);
+        FormField.Builder formTypeField = FormField.builder(FormField.FORM_TYPE);
         formTypeField.addValue(MUCInitialPresence.NAMESPACE + "#request");
-        form.addField(formTypeField);
-        FormField requestVoiceField = new FormField("muc#role");
+        form.addField(formTypeField.build());
+        FormField.Builder requestVoiceField = FormField.builder("muc#role");
         requestVoiceField.setType(FormField.Type.text_single);
         requestVoiceField.setLabel("Requested role");
         requestVoiceField.addValue("participant");
-        form.addField(requestVoiceField);
+        form.addField(requestVoiceField.build());
         Message message = new Message(room);
         message.addExtension(form);
         connection.sendStanza(message);

@@ -403,9 +403,9 @@ public class Workgroup {
             String name = iter.next();
             String value = metadata.get(name).toString();
 
-            FormField field = new FormField(name);
+            FormField.Builder field = FormField.builder(name);
             field.setType(FormField.Type.text_single);
-            form.addField(field);
+            form.addField(field.build());
             form.setAnswer(name, value);
         }
         joinQueue(form, userID);

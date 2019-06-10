@@ -20,21 +20,24 @@ package org.jivesoftware.smackx.xdata.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.FormFieldChildElement;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider;
-import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
-import org.jivesoftware.smackx.xdatavalidation.provider.DataValidationProvider;
 
 /**
  * The DataFormProvider parses DataForm packets.
@@ -42,6 +45,8 @@ import org.jivesoftware.smackx.xdatavalidation.provider.DataValidationProvider;
  * @author Gaston Dombiak
  */
 public class DataFormProvider extends ExtensionElementProvider<DataForm> {
+
+    private static final Logger LOGGER = Logger.getLogger(DataFormProvider.class.getName());
 
     public static final DataFormProvider INSTANCE = new DataFormProvider();
 
@@ -55,6 +60,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
             case START_ELEMENT:
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
+                XmlEnvironment elementXmlEnvironment = XmlEnvironment.from(parser, xmlEnvironment);
                 switch (name) {
                 case "instructions":
                     dataForm.addInstruction(parser.nextText());
@@ -63,13 +69,16 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     dataForm.setTitle(parser.nextText());
                     break;
                 case "field":
-                    dataForm.addField(parseField(parser));
+                    FormField formField = parseField(parser, elementXmlEnvironment);
+                    dataForm.addField(formField);
                     break;
                 case "item":
-                    dataForm.addItem(parseItem(parser));
+                    DataForm.Item item = parseItem(parser, elementXmlEnvironment);
+                    dataForm.addItem(item);
                     break;
                 case "reported":
-                    dataForm.setReportedData(parseReported(parser));
+                    DataForm.ReportedData reported = parseReported(parser, elementXmlEnvironment);
+                    dataForm.setReportedData(reported);
                     break;
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
                 case RosterPacket.ELEMENT:
@@ -98,45 +107,35 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return dataForm;
     }
 
-    private static FormField parseField(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
+
         final String var = parser.getAttributeValue("", "var");
         final FormField.Type type = FormField.Type.fromString(parser.getAttributeValue("", "type"));
 
-        final FormField formField;
-        if (type == FormField.Type.fixed) {
-            formField = new FormField();
-        } else {
-            formField = new FormField(var);
-            formField.setType(type);
+        final FormField.Builder builder = FormField.builder();
+        builder.setType(type);
+        if (type != FormField.Type.fixed) {
+            builder.setVariable(var);
         }
-        formField.setLabel(parser.getAttributeValue("", "label"));
+        String label = parser.getAttributeValue("", "label");
+        if (StringUtils.isNotEmpty(label)) {
+            builder.setLabel(label);
+        }
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
             case START_ELEMENT:
-                String name = parser.getName();
-                String namespace = parser.getNamespace();
-                switch (name) {
-                case "desc":
-                    formField.setDescription(parser.nextText());
-                    break;
-                case "value":
-                    formField.addValue(parser.nextText());
-                    break;
-                case "required":
-                    formField.setRequired(true);
-                    break;
-                case "option":
-                    formField.addOption(parseOption(parser));
-                    break;
-                // See XEP-122 Data Forms Validation
-                case ValidateElement.ELEMENT:
-                    if (namespace.equals(ValidateElement.NAMESPACE)) {
-                        formField.setValidateElement(DataValidationProvider.parse(parser));
-                    }
-                    break;
+                QName qname = parser.getQName();
+                FormFieldChildElementProvider<?> provider = FormFieldChildElementProviderManager.getFormFieldChildElementProvider(
+                                qname);
+                if (provider != null) {
+                    FormFieldChildElement formFieldChildElement = provider.parse(parser, XmlEnvironment.from(parser, xmlEnvironment));
+                    builder.addFormFieldChildElement(formFieldChildElement);
+                } else {
+                    LOGGER.warning("Unknown form field child element " + qname + " ignored");
                 }
                 break;
             case END_ELEMENT:
@@ -149,20 +148,23 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 break;
             }
         }
-        return formField;
+
+        return builder.build();
     }
 
-    private static DataForm.Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<>();
         outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
+            XmlPullParser.TagEvent eventType = parser.nextTag();
             switch (eventType) {
             case START_ELEMENT:
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    fields.add(parseField(parser));
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment));
+                    fields.add(field);
                     break;
                 }
                 break;
@@ -170,26 +172,25 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
-                break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }
         return new DataForm.Item(fields);
     }
 
-    private static DataForm.ReportedData parseReported(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static DataForm.ReportedData parseReported(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<>();
         outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
+            XmlPullParser.TagEvent eventType = parser.nextTag();
             switch (eventType) {
             case START_ELEMENT:
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    fields.add(parseField(parser));
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment));
+                    fields.add(field);
                     break;
                 }
                 break;
@@ -197,40 +198,10 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
-                break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
                 break;
             }
         }
         return new DataForm.ReportedData(fields);
     }
 
-    private static FormField.Option parseOption(XmlPullParser parser) throws XmlPullParserException, IOException {
-        final int initialDepth = parser.getDepth();
-        FormField.Option option = null;
-        String label = parser.getAttributeValue("", "label");
-        outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
-            switch (eventType) {
-            case START_ELEMENT:
-                String name = parser.getName();
-                switch (name) {
-                case "value":
-                    option = new FormField.Option(label, parser.nextText());
-                    break;
-                }
-                break;
-            case END_ELEMENT:
-                if (parser.getDepth() == initialDepth) {
-                    break outerloop;
-                }
-                break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
-                break;
-            }
-        }
-        return option;
-    }
 }

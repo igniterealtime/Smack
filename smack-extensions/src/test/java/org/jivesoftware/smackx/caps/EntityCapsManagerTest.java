@@ -117,31 +117,31 @@ public class EntityCapsManagerTest extends InitExtensions {
 
         DataForm df = new DataForm(DataForm.Type.result);
 
-        FormField ff = new FormField("os");
+        FormField.Builder ff = FormField.builder("os");
         ff.addValue("Mac");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("FORM_TYPE");
+        ff = FormField.builder("FORM_TYPE");
         ff.setType(FormField.Type.hidden);
         ff.addValue("urn:xmpp:dataforms:softwareinfo");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("ip_version");
+        ff = FormField.builder("ip_version");
         ff.addValue("ipv4");
         ff.addValue("ipv6");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("os_version");
+        ff = FormField.builder("os_version");
         ff.addValue("10.5.1");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("software");
+        ff = FormField.builder("software");
         ff.addValue("Psi");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("software_version");
+        ff = FormField.builder("software_version");
         ff.addValue("0.11");
-        df.addField(ff);
+        df.addField(ff.build());
 
         di.addExtension(df);
         return di;
@@ -174,31 +174,31 @@ public class EntityCapsManagerTest extends InitExtensions {
 
         DataForm df = new DataForm(DataForm.Type.result);
 
-        FormField ff = new FormField("os");
+        FormField.Builder ff = FormField.builder("os");
         ff.addValue("Mac");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("FORM_TYPE");
+        ff = FormField.builder("FORM_TYPE");
         ff.setType(FormField.Type.hidden);
         ff.addValue("urn:xmpp:dataforms:softwareinfo");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("ip_version");
+        ff = FormField.builder("ip_version");
         ff.addValue("ipv4");
         ff.addValue("ipv6");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("os_version");
+        ff = FormField.builder("os_version");
         ff.addValue("10.5.1");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("software");
+        ff = FormField.builder("software");
         ff.addValue("Psi");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("software_version");
+        ff = FormField.builder("software_version");
         ff.addValue("0.11");
-        df.addField(ff);
+        df.addField(ff.build());
 
         di.addExtension(df);
 
@@ -206,14 +206,14 @@ public class EntityCapsManagerTest extends InitExtensions {
         // FORM_TYPE
         df = new DataForm(DataForm.Type.result);
 
-        ff = new FormField("FORM_TYPE");
+        ff = FormField.builder("FORM_TYPE");
         ff.setType(FormField.Type.hidden);
         ff.addValue("urn:xmpp:dataforms:softwareinfo");
-        df.addField(ff);
+        df.addField(ff.build());
 
-        ff = new FormField("software");
+        ff = FormField.builder("software");
         ff.addValue("smack");
-        df.addField(ff);
+        df.addField(ff.build());
 
         di.addExtension(df);
 

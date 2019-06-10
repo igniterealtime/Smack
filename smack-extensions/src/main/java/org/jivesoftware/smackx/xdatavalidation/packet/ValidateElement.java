@@ -16,13 +16,15 @@
  */
 package org.jivesoftware.smackx.xdatavalidation.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.NumberUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.FormFieldChildElement;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatavalidation.ValidationConsistencyException;
 
@@ -34,11 +36,13 @@ import org.jivesoftware.smackx.xdatavalidation.ValidationConsistencyException;
  *
  * @author Anno van Vliet
  */
-public abstract class ValidateElement implements ExtensionElement {
+public abstract class ValidateElement implements FormFieldChildElement {
 
     public static final String DATATYPE_XS_STRING = "xs:string";
     public static final String ELEMENT = "validate";
     public static final String NAMESPACE = "http://jabber.org/protocol/xdata-validate";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final String datatype;
 
@@ -83,8 +87,18 @@ public abstract class ValidateElement implements ExtensionElement {
     }
 
     @Override
+    public QName getQName() {
+        return QNAME;
+    }
+
+    @Override
+    public final boolean mustBeOnlyOfHisKind() {
+        return true;
+    }
+
+    @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder buf = new XmlStringBuilder(this);
+        XmlStringBuilder buf = new XmlStringBuilder(this, enclosingNamespace);
         buf.optAttribute("datatype", datatype);
         buf.rightAngleBracket();
         appendXML(buf);
@@ -115,11 +129,16 @@ public abstract class ValidateElement implements ExtensionElement {
     }
 
     /**
-     * Check if this element is consistent according to the business rules in XEP=0122.
+     * Check if this element is consistent according to the business rules in XEP-0122.
      *
-     * @param formField
+     * @param formFieldBuilder the builder used to construct the form field.
      */
-    public abstract void checkConsistency(FormField formField);
+    @Override
+    public abstract void checkConsistency(FormField.Builder formFieldBuilder);
+
+    public static ValidateElement from(FormField formField) {
+        return (ValidateElement) formField.getFormFieldChildElement(QNAME);
+    }
 
     /**
      * Validation only against the datatype itself. Indicates that the value(s) should simply match the field type and
@@ -146,7 +165,7 @@ public abstract class ValidateElement implements ExtensionElement {
         }
 
         @Override
-        public void checkConsistency(FormField formField) {
+        public void checkConsistency(FormField.Builder formField) {
             checkListRangeConsistency(formField);
             if (formField.getType() != null) {
                 switch (formField.getType()) {
@@ -189,7 +208,7 @@ public abstract class ValidateElement implements ExtensionElement {
         }
 
         @Override
-        public void checkConsistency(FormField formField) {
+        public void checkConsistency(FormField.Builder formField) {
             checkListRangeConsistency(formField);
             if (formField.getType() != null) {
                 switch (formField.getType()) {
@@ -257,7 +276,7 @@ public abstract class ValidateElement implements ExtensionElement {
         }
 
         @Override
-        public void checkConsistency(FormField formField) {
+        public void checkConsistency(FormField.Builder formField) {
             checkNonMultiConsistency(formField, METHOD);
             if (getDatatype().equals(ValidateElement.DATATYPE_XS_STRING)) {
                 throw new ValidationConsistencyException(String.format(
@@ -307,7 +326,7 @@ public abstract class ValidateElement implements ExtensionElement {
         }
 
         @Override
-        public void checkConsistency(FormField formField) {
+        public void checkConsistency(FormField.Builder formField) {
             checkNonMultiConsistency(formField, METHOD);
         }
 
@@ -385,7 +404,7 @@ public abstract class ValidateElement implements ExtensionElement {
      *
      * @param formField
      */
-    protected void checkListRangeConsistency(FormField formField) {
+    protected void checkListRangeConsistency(FormField.Builder formField) {
         ListRange listRange = getListRange();
         if (listRange == null) {
             return;
@@ -403,7 +422,7 @@ public abstract class ValidateElement implements ExtensionElement {
      * @param formField
      * @param method
      */
-    protected void checkNonMultiConsistency(FormField formField, String method) {
+    protected void checkNonMultiConsistency(FormField.Builder formField, String method) {
         checkListRangeConsistency(formField);
         if (formField.getType() != null) {
             switch (formField.getType()) {

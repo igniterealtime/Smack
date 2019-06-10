@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.xdata;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -107,7 +108,7 @@ public class Form {
      * @throws IllegalArgumentException if the form does not include the specified variable or
      *      if the answer type does not correspond with the field type..
      */
-    public void setAnswer(String variable, String value) {
+    public void setAnswer(String variable, CharSequence value) {
         FormField field = getField(variable);
         if (field == null) {
             throw new IllegalArgumentException("Field not found for the specified variable name.");
@@ -260,8 +261,9 @@ public class Form {
             throw new IllegalStateException("Cannot set an answer if the form is not of type " +
             "\"submit\"");
         }
-        field.resetValues();
-        field.addValue(value.toString());
+
+        FormField filledOutfield = field.buildAnswer().addValue(value.toString()).build();
+        dataForm.replaceField(filledOutfield);
     }
 
     /**
@@ -277,7 +279,7 @@ public class Form {
      * @throws IllegalStateException if the form is not of type "submit".
      * @throws IllegalArgumentException if the form does not include the specified variable.
      */
-    public void setAnswer(String variable, List<? extends CharSequence> values) {
+    public void setAnswer(String variable, Collection<? extends CharSequence> values) {
         if (!isSubmitType()) {
             throw new IllegalStateException("Cannot set an answer if the form is not of type " +
             "\"submit\"");
@@ -295,10 +297,9 @@ public class Form {
             default:
                 throw new IllegalArgumentException("This field only accept list of values.");
             }
-            // Clear the old values
-            field.resetValues();
-            // Set the new values. The string representation of each value will be actually used.
-            field.addValues(values);
+
+            FormField filledOutfield = field.buildAnswer().addValues(values).build();
+            dataForm.replaceField(filledOutfield);
         }
         else {
             throw new IllegalArgumentException("Couldn't find a field for the specified variable.");
@@ -321,12 +322,12 @@ public class Form {
         }
         FormField field = getField(variable);
         if (field != null) {
-            // Clear the old values
-            field.resetValues();
+            FormField.Builder filledOutFormFieldBuilder = field.buildAnswer();
             // Set the default value
             for (CharSequence value : field.getValues()) {
-                field.addValue(value);
+                filledOutFormFieldBuilder.addValue(value);
             }
+            dataForm.replaceField(filledOutFormFieldBuilder.build());
         }
         else {
             throw new IllegalArgumentException("Couldn't find a field for the specified variable.");
@@ -497,9 +498,9 @@ public class Form {
             // Add to the new form any type of field that includes a variable.
             // Note: The fields of type FIXED are the only ones that don't specify a variable
             if (field.getVariable() != null) {
-                FormField newField = new FormField(field.getVariable());
+                FormField.Builder newField = FormField.builder(field.getVariable());
                 newField.setType(field.getType());
-                form.addField(newField);
+                form.addField(newField.build());
                 // Set the answer ONLY to the hidden fields
                 if (field.getType() == FormField.Type.hidden) {
                     // Since a hidden field could have many values we need to collect them

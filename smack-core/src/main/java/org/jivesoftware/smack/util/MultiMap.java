@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -57,7 +58,11 @@ public class MultiMap<K, V> {
      * @param size the initial capacity.
      */
     public MultiMap(int size) {
-        map = new LinkedHashMap<>(size);
+        this(new LinkedHashMap<>(size));
+    }
+
+    private MultiMap(Map<K, List<V>> map) {
+        this.map = map;
     }
 
     public int size() {
@@ -233,6 +238,18 @@ public class MultiMap<K, V> {
             }
         }
         return entrySet;
+    }
+
+    public MultiMap<K, V> asUnmodifiableMultiMap() {
+        LinkedHashMap<K, List<V>> mapCopy = new LinkedHashMap<>(map.size());
+        for (Entry<K, List<V>> entry : map.entrySet()) {
+            K key = entry.getKey();
+            List<V> values = entry.getValue();
+
+            mapCopy.put(key, Collections.unmodifiableList(values));
+        }
+
+        return new MultiMap<K, V>(Collections.unmodifiableMap(mapCopy));
     }
 
     private static final class SimpleMapEntry<K, V> implements Map.Entry<K, V> {

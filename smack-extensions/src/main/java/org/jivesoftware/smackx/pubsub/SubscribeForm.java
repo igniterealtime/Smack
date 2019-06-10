@@ -209,9 +209,9 @@ public class SubscribeForm extends Form {
         String fieldName = nodeField.getFieldName();
 
         if (getField(fieldName) == null) {
-            FormField field = new FormField(fieldName);
+            FormField.Builder field = FormField.builder(fieldName);
             field.setType(type);
-            addField(field);
+            addField(field.build());
         }
     }
 }

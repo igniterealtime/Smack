@@ -81,12 +81,12 @@ public abstract class StreamNegotiator extends Manager {
         response.setStanzaId(streamInitiationOffer.getStanzaId());
 
         DataForm form = new DataForm(DataForm.Type.submit);
-        FormField field = new FormField(
+        FormField.Builder field = FormField.builder(
                 FileTransferNegotiator.STREAM_DATA_FIELD_NAME);
         for (String namespace : namespaces) {
             field.addValue(namespace);
         }
-        form.addField(field);
+        form.addField(field.build());
 
         response.setFeatureNegotiationForm(form);
         return response;

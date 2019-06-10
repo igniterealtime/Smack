@@ -28,6 +28,7 @@ import java.util.Map;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.xdata.FormField;
@@ -157,6 +158,17 @@ public class DataForm implements ExtensionElement {
     public FormField getField(String variableName) {
         synchronized (fields) {
             return fields.get(variableName);
+        }
+    }
+
+    public FormField replaceField(FormField field) {
+        String fieldVariableName = field.getVariable();
+
+        synchronized (fields) {
+            if (!fields.containsKey(fieldVariableName)) {
+                throw new IllegalArgumentException("No field with the name " + fieldVariableName + " exists");
+            }
+            return fields.put(fieldVariableName, field);
         }
     }
 
@@ -312,10 +324,15 @@ public class DataForm implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder buf = new XmlStringBuilder(this);
         buf.attribute("type", getType());
         buf.rightAngleBracket();
+
+        XmlEnvironment dataFormxmlEnvironment = XmlEnvironment.builder()
+                        .withNamespace(NAMESPACE)
+                        .withNext(xmlEnvironment)
+                        .build();
 
         buf.optElement("title", getTitle());
         for (String instruction : getInstructions()) {
@@ -329,10 +346,8 @@ public class DataForm implements ExtensionElement {
         for (Item item : getItems()) {
             buf.append(item.toXML());
         }
-        // Loop through all the form fields and append them to the string buffer
-        for (FormField field : getFields()) {
-            buf.append(field.toXML());
-        }
+        // Add all form fields.
+        buf.append(getFields(), dataFormxmlEnvironment);
         for (Element element : extensionElements) {
             buf.append(element.toXML());
         }

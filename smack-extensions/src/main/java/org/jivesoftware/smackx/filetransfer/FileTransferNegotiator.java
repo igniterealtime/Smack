@@ -226,7 +226,7 @@ public final class FileTransferNegotiator extends Manager {
         boolean isByteStream = false;
         boolean isIBB = false;
         for (FormField.Option option : field.getOptions()) {
-            variable = option.getValue();
+            variable = option.getValueString();
             if (variable.equals(Bytestream.NAMESPACE) && !IBB_ONLY) {
                 isByteStream = true;
             }
@@ -369,13 +369,15 @@ public final class FileTransferNegotiator extends Manager {
 
     private static DataForm createDefaultInitiationForm() {
         DataForm form = new DataForm(DataForm.Type.form);
-        FormField field = new FormField(STREAM_DATA_FIELD_NAME);
-        field.setType(FormField.Type.list_single);
+        FormField.Builder fieldBuilder = FormField.builder();
+        fieldBuilder.setFieldName(STREAM_DATA_FIELD_NAME)
+        .setType(FormField.Type.list_single);
+
         if (!IBB_ONLY) {
-            field.addOption(new FormField.Option(Bytestream.NAMESPACE));
+            fieldBuilder.addOption(Bytestream.NAMESPACE);
         }
-        field.addOption(new FormField.Option(DataPacketExtension.NAMESPACE));
-        form.addField(field);
+        fieldBuilder.addOption(DataPacketExtension.NAMESPACE);
+        form.addField(fieldBuilder.build());
         return form;
     }
 }
