@@ -43,4 +43,19 @@ public class NumberUtil {
             throw new IllegalArgumentException("unsigned 32-bit integers can't be greater then 2^32 - 1");
         }
     }
+
+    /**
+     * Checks if the given int is within the range of an unsigned 16-bit integer, the XML type "xs:unsignedShort".
+     *
+     * @param value
+     */
+    public static int requireUShort16(int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("unsigned 16-bit integers can't be negative");
+        }
+        if (value > ((1 << 16) - 1)) {
+            throw new IllegalArgumentException("unsigned 16-bit integers can't be greater than 2^16 - 1");
+        }
+        return value;
+    }
 }
