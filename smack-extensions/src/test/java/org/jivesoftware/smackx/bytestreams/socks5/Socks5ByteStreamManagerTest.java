@@ -42,6 +42,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.util.ExceptionUtil;
 import org.jivesoftware.smack.util.NetworkUtil;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -602,7 +603,7 @@ public class Socks5ByteStreamManagerTest {
         // initiator can't connect to proxy because it is not running
         protocol.verifyAll();
         Throwable actualCause = e.getCause().getCause();
-        assertEquals(ConnectException.class, actualCause.getClass());
+        assertEquals("Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause), ConnectException.class, actualCause.getClass());
     }
 
     /**
