@@ -77,11 +77,11 @@ public class MultiMap<K, V> {
         return map.isEmpty();
     }
 
-    public boolean containsKey(Object key) {
+    public boolean containsKey(K key) {
         return map.containsKey(key);
     }
 
-    public boolean containsValue(Object value) {
+    public boolean containsValue(V value) {
         for (List<V> list : map.values()) {
             if (list.contains(value)) {
                 return true;
@@ -96,7 +96,7 @@ public class MultiMap<K, V> {
      * @param key
      * @return the first value or null.
      */
-    public V getFirst(Object key) {
+    public V getFirst(K key) {
         List<V> res = getAll(key);
         if (res.isEmpty()) {
             return null;
@@ -114,7 +114,7 @@ public class MultiMap<K, V> {
      * @param key
      * @return all values for the given key.
      */
-    public List<V> getAll(Object key) {
+    public List<V> getAll(K key) {
         List<V> res = map.get(key);
         if (res == null) {
             res = Collections.emptyList();
@@ -143,7 +143,7 @@ public class MultiMap<K, V> {
      * @param key
      * @return the first value of the given key or null.
      */
-    public V remove(Object key) {
+    public V remove(K key) {
         List<V> res = map.remove(key);
         if (res == null) {
             return null;
@@ -162,7 +162,7 @@ public class MultiMap<K, V> {
      * @param value
      * @return true if the mapping was removed, false otherwise.
      */
-    public boolean removeOne(Object key, V value) {
+    public boolean removeOne(K key, V value) {
         List<V> list = map.get(key);
         if (list == null) {
             return false;
