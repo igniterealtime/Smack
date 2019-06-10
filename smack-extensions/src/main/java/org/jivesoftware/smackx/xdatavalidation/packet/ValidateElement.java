@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.xdatavalidation.packet;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.datatypes.UInt32;
 import org.jivesoftware.smack.packet.NamedElement;
-import org.jivesoftware.smack.util.NumberUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -339,8 +339,12 @@ public abstract class ValidateElement implements FormFieldChildElement {
     public static class ListRange implements NamedElement {
 
         public static final String ELEMENT = "list-range";
-        private final Long min;
-        private final Long max;
+        private final UInt32 min;
+        private final UInt32 max;
+
+        public ListRange(Long min, Long max) {
+            this(min != null ? UInt32.from(min) : null, max != null ? UInt32.from(max) : null);
+        }
 
         /**
          * The 'max' attribute specifies the maximum allowable number of selected/entered values. The 'min' attribute
@@ -350,13 +354,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
          * @param min
          * @param max
          */
-        public ListRange(Long min, Long max) {
-            if (min != null) {
-                NumberUtil.requireUInt32(min);
-            }
-            if (max != null) {
-                NumberUtil.requireUInt32(max);
-            }
+        public ListRange(UInt32 min, UInt32 max) {
             if (max == null && min == null) {
                 throw new IllegalArgumentException("Either min or max must be given");
             }
@@ -367,8 +365,8 @@ public abstract class ValidateElement implements FormFieldChildElement {
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder buf = new XmlStringBuilder(this);
-            buf.optLongAttribute("min", getMin());
-            buf.optLongAttribute("max", getMax());
+            buf.optAttribute("min", getMin());
+            buf.optAttribute("max", getMax());
             buf.closeEmptyElement();
             return buf;
         }
@@ -383,7 +381,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
          *
          * @return a positive integer, can be null
          */
-        public Long getMin() {
+        public UInt32 getMin() {
             return min;
         }
 
@@ -392,7 +390,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
          *
          * @return a positive integer, can be null
          */
-        public Long getMax() {
+        public UInt32 getMax() {
             return max;
         }
 
@@ -410,8 +408,8 @@ public abstract class ValidateElement implements FormFieldChildElement {
             return;
         }
 
-        Long max = listRange.getMax();
-        Long min = listRange.getMin();
+        Object max = listRange.getMax();
+        Object min = listRange.getMin();
         if ((max != null || min != null) && formField.getType() != FormField.Type.list_multi) {
             throw new ValidationConsistencyException(
                             "Field type is not of type 'list-multi' while a 'list-range' is defined.");

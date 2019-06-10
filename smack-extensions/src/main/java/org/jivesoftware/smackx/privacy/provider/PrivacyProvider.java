@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.privacy.provider;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jivesoftware.smack.datatypes.UInt32;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -109,7 +110,7 @@ public class PrivacyProvider extends IQProvider<Privacy> {
         // Retrieves the required attributes
         String actionValue = parser.getAttributeValue("", "action");
         // Set the order number, this attribute is required
-        long order = ParserUtils.getLongAttribute(parser, "order");
+        UInt32 order = ParserUtils.getUInt32Attribute(parser, "order");
 
         // If type is not set, then it's the fall-through case
         String type = parser.getAttributeValue("", "type");

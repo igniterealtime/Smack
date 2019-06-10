@@ -43,8 +43,8 @@ public class MediaElementProviderTest {
                         "</media>";
 
         MediaElement mediaElement = SmackTestUtil.parse(xml, MediaElementProvider.class, parserKind);
-        assertEquals(80, mediaElement.getHeight());
-        assertEquals(290, mediaElement.getWidth());
+        assertEquals(80, mediaElement.getHeight().intValue());
+        assertEquals(290, mediaElement.getWidth().intValue());
 
         List<MediaElement.Uri> uris = mediaElement.getUris();
         assertEquals(1, uris.size());

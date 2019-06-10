@@ -25,6 +25,8 @@ import java.util.Locale;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.datatypes.UInt16;
+import org.jivesoftware.smack.datatypes.UInt32;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
@@ -204,6 +206,14 @@ public class ParserUtils {
         }
     }
 
+    public static UInt16 getUInt16Attribute(XmlPullParser parser, String name) {
+        Integer integer = getIntegerAttribute(parser, name);
+        if (integer == null) {
+            return null;
+        }
+        return UInt16.from(integer);
+    }
+
     public static int getIntegerFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
         String intString = parser.nextText();
         return Integer.valueOf(intString);
@@ -224,6 +234,14 @@ public class ParserUtils {
         else {
             return l;
         }
+    }
+
+    public static UInt32 getUInt32Attribute(XmlPullParser parser, String name) {
+        Long l = getLongAttribute(parser, name);
+        if (l == null) {
+            return null;
+        }
+        return UInt32.from(l);
     }
 
     public static double getDoubleFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {

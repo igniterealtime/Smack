@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.datatypes.UInt32;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -72,8 +73,8 @@ public class DataValidationProvider extends FormFieldChildElementProvider<Valida
                     dataValidation = new RegexValidateElement(dataType, parser.nextText());
                     break;
                 case ListRange.ELEMENT:
-                    Long min = ParserUtils.getLongAttribute(parser, "min");
-                    Long max = ParserUtils.getLongAttribute(parser, "max");
+                    UInt32 min = ParserUtils.getUInt32Attribute(parser, "min");
+                    UInt32 max = ParserUtils.getUInt32Attribute(parser, "max");
                     if (min != null || max != null) {
                         listRange = new ListRange(min, max);
                     } else {

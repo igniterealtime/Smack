@@ -23,9 +23,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.NumberUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -41,9 +41,9 @@ public class MediaElement implements FormFieldChildElement {
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    private final int height;
+    private final UInt16 height;
 
-    private final int width;
+    private final UInt16 width;
 
     private final List<Uri> uris;
 
@@ -53,11 +53,11 @@ public class MediaElement implements FormFieldChildElement {
         this.uris = Collections.unmodifiableList(builder.uris);
     }
 
-    public int getHeight() {
+    public UInt16 getHeight() {
         return height;
     }
 
-    public int getWidth() {
+    public UInt16 getWidth() {
         return width;
     }
 
@@ -83,8 +83,8 @@ public class MediaElement implements FormFieldChildElement {
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
-        xml.optIntAttribute("height", height)
-            .optIntAttribute("width", width)
+        xml.optAttribute("height", height)
+            .optAttribute("width", width)
             .rightAngleBracket();
 
         xml.append(uris, xmlEnvironment);
@@ -102,13 +102,17 @@ public class MediaElement implements FormFieldChildElement {
     }
 
     public static final class Builder {
-        private int height, width;
+        private UInt16 height, width;
 
         private List<Uri> uris = new ArrayList<>();
 
         public Builder setHeightAndWidth(int height, int width) {
-            this.height = NumberUtil.requireUShort16(height);
-            this.width = NumberUtil.requireUShort16(width);
+            return setHeightAndWidth(UInt16.from(height), UInt16.from(width));
+        }
+
+        public Builder setHeightAndWidth(UInt16 height, UInt16 width) {
+            this.height = height;
+            this.width = width;
             return this;
         }
 

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -42,8 +43,8 @@ public class MediaElementProvider extends FormFieldChildElementProvider<MediaEle
 
     @Override
     public MediaElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackUriSyntaxParsingException {
-        Integer height = ParserUtils.getIntegerAttribute(parser, "height");
-        Integer width = ParserUtils.getIntegerAttribute(parser, "width");
+        UInt16 height = ParserUtils.getUInt16Attribute(parser, "height");
+        UInt16 width = ParserUtils.getUInt16Attribute(parser, "width");
 
         MediaElement.Builder mediaElementBuilder = MediaElement.builder();
         if (height != null && width != null) {

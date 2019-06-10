@@ -59,11 +59,11 @@ public class PrivacyProviderTest extends InitExtensions {
         assertEquals(PrivacyItem.Type.jid, first.getType());
         assertEquals("tybalt@example.com", first.getValue());
         assertEquals(false, first.isAllow());
-        assertEquals(1, first.getOrder());
+        assertEquals(1L, first.getOrder().nativeRepresentation());
 
         PrivacyItem second = pl.get(1);
         assertEquals(true, second.isAllow());
-        assertEquals(2, second.getOrder());
+        assertEquals(2L, second.getOrder().nativeRepresentation());
     }
 
     @Test
@@ -95,11 +95,11 @@ public class PrivacyProviderTest extends InitExtensions {
         assertEquals(PrivacyItem.Type.jid, first.getType());
         assertEquals("tybalt@example.com", first.getValue());
         assertEquals(false, first.isAllow());
-        assertEquals(1, first.getOrder());
+        assertEquals(1L, first.getOrder().nativeRepresentation());
 
         PrivacyItem second = pl.get(1);
         assertTrue(second.isAllow());
-        assertEquals(2, second.getOrder());
+        assertEquals(2L, second.getOrder().nativeRepresentation());
         assertTrue(second.isFilterMessage());
         assertTrue(second.isFilterPresenceIn());
         assertFalse(second.isFilterPresenceOut());

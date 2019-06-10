@@ -105,8 +105,8 @@ public class DataValidationTest extends SmackTestSuite {
         assertEquals("min-val", rdv.getMin());
         assertEquals("max-val", rdv.getMax());
         assertNotNull(rdv.getListRange());
-        assertEquals(Long.valueOf(111), rdv.getListRange().getMin());
-        assertEquals(999, rdv.getListRange().getMax().intValue());
+        assertEquals(111L, rdv.getListRange().getMin().nativeRepresentation());
+        assertEquals(999L, rdv.getListRange().getMax().nativeRepresentation());
 
         assertNotNull(dv.toXML());
         xml = dv.toXML().toString();

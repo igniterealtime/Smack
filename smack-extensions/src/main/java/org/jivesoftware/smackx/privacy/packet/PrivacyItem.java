@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.privacy.packet;
 
-import org.jivesoftware.smack.util.NumberUtil;
+import java.util.Objects;
+
+import org.jivesoftware.smack.datatypes.UInt32;
 
 /**
  * A privacy item acts a rule that when matched defines if a stanza should be blocked or not.
@@ -46,7 +48,7 @@ public class PrivacyItem {
     /**
      * order is a unsigned 32-bit integer that is unique among all items in the list.
      **/
-    private final long order;
+    private final UInt32 order;
 
     /**
      * Type defines if the rule is based on JIDs, roster groups or presence subscription types.
@@ -72,6 +74,10 @@ public class PrivacyItem {
     /** blocks outgoing presence notifications. */
     private boolean filterPresenceOut = false;
 
+    public PrivacyItem(boolean allow, long order) {
+        this(null, null, allow, UInt32.from(order));
+    }
+
     /**
      * Creates a new fall-through privacy item.
      *
@@ -80,8 +86,12 @@ public class PrivacyItem {
      * @param allow true if this is an allow item
      * @param order the order of this privacy item
      */
-    public PrivacyItem(boolean allow, long order) {
+    public PrivacyItem(boolean allow, UInt32 order) {
         this(null, null, allow, order);
+    }
+
+    public PrivacyItem(Type type, String value, boolean allow, long order) {
+        this(type, value, allow, UInt32.from(order));
     }
 
     /**
@@ -98,12 +108,11 @@ public class PrivacyItem {
      * @param allow true if this is an allow item
      * @param order the order of this privacy item
      */
-    public PrivacyItem(Type type, String value, boolean allow, long order) {
-        NumberUtil.requireUInt32(order);
+    public PrivacyItem(Type type, String value, boolean allow, UInt32 order) {
         this.type = type;
         this.value = value;
         this.allow = allow;
-        this.order = order;
+        this.order = Objects.requireNonNull(order);
     }
 
     /**
@@ -215,7 +224,7 @@ public class PrivacyItem {
      *
      * @return the order number.
      */
-    public long getOrder() {
+    public UInt32 getOrder() {
         return order;
     }
 

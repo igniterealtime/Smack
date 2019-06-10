@@ -35,13 +35,14 @@ public class NumberUtil {
      *
      * @param value
      */
-    public static void requireUInt32(long value) {
+    public static long requireUInt32(long value) {
         if (value < 0) {
             throw new IllegalArgumentException("unsigned 32-bit integers can't be negative");
         }
         if (value > ((1L << 32) - 1)) {
             throw new IllegalArgumentException("unsigned 32-bit integers can't be greater then 2^32 - 1");
         }
+        return value;
     }
 
     /**
