@@ -454,7 +454,7 @@ public class PacketParserUtils {
                     presence.setStatus(parser.nextText());
                     break;
                 case "priority":
-                    int priority = Integer.parseInt(parser.nextText());
+                    Byte priority = ParserUtils.getByteAttributeFromNextText(parser);
                     presence.setPriority(priority);
                     break;
                 case "show":

@@ -68,12 +68,12 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     private String status = null;
 
     /**
-     * The priority of the presence. The magic value {@link Integer#MIN_VALUE} is used to indicate that the original
+     * The priority of the presence. It is <code>null</code> to indicate that the original
      * presence stanza did not had an explicit priority set. In which case the priority defaults to 0.
      *
      * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3.</a>
      */
-    private int priority = Integer.MIN_VALUE;
+    private Byte priority;
 
     private Mode mode = null;
 
@@ -203,13 +203,13 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     }
 
     /**
-     * Returns the priority of the presence, or Integer.MIN_VALUE if no priority has been set.
+     * Returns the priority of the presence.
      *
      * @return the priority.
      * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
      */
     public int getPriority() {
-        if (priority == Integer.MIN_VALUE) {
+        if (priority == null) {
             return 0;
         }
         return priority;
@@ -227,6 +227,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
             throw new IllegalArgumentException("Priority value " + priority +
                     " is not valid. Valid range is -128 through 127.");
         }
+        setPriority((byte) priority);
+    }
+
+    public void setPriority(byte priority) {
         this.priority = priority;
     }
 
@@ -264,7 +268,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         if (!StringUtils.isNullOrEmpty(status)) {
             sb.append("status=").append(status).append(',');
         }
-        if (priority != Integer.MIN_VALUE) {
+        if (priority != null) {
             sb.append("prio=").append(priority).append(',');
         }
         sb.append(']');
@@ -282,9 +286,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         buf.rightAngleBracket();
 
         buf.optElement("status", status);
-        if (priority != Integer.MIN_VALUE) {
-            buf.element("priority", Integer.toString(priority));
-        }
+        buf.optElement("priority", priority);
         if (mode != null && mode != Mode.available) {
             buf.element("show", mode);
         }

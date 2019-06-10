@@ -179,6 +179,11 @@ public class ParserUtils {
         }
     }
 
+    public static Byte getByteAttributeFromNextText(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String nextText = parser.nextText();
+        return Byte.valueOf(nextText);
+    }
+
     public static int getIntegerAttributeOrThrow(XmlPullParser parser, String name, String throwMessage)
                     throws IOException {
         Integer res = getIntegerAttribute(parser, name);
