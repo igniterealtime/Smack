@@ -2,6 +2,7 @@
     <startupClasses>
         <className>org.jivesoftware.smackx.disco.ServiceDiscoveryManager</className>
         <className>org.jivesoftware.smackx.xhtmlim.XHTMLManager</className>
+        <className>org.jivesoftware.smackx.mediaelement.MediaElementManager</className>
         <className>org.jivesoftware.smackx.muc.MultiUserChatManager</className>
         <className>org.jivesoftware.smackx.muc.bookmarkautojoin.MucBookmarkAutojoinManager</className>
         <className>org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager</className>

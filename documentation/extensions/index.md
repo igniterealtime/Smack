@@ -68,6 +68,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Entity Time                                 | [XEP-0202](https://xmpp.org/extensions/xep-0202.html)  | n/a       | Allows entities to communicate their local time |
 | Delayed Delivery                            | [XEP-0203](https://xmpp.org/extensions/xep-0203.html)  | n/a       | Extension for communicating the fact that an XML stanza has been delivered with a delay. |
 | XMPP Over BOSH                              | [XEP-0206](https://xmpp.org/extensions/xep-0206.html)  | n/a       | Use Bidirectional-streams Over Synchronous HTTP (BOSH) to transport XMPP stanzas. |
+| Data Forms Media Element                    | [XEP-0221](https://xmpp.org/extensions/xep-0221.html)  | n/a       | Allows to include media data in XEP-0004 data forms. |
 | Attention                                   | [XEP-0224](https://xmpp.org/extensions/xep-0224.html)  | n/a       | Getting attention of another user. |
 | Bits of Binary                              | [XEP-0231](https://xmpp.org/extensions/xep-0231.html)  | n/a       | Including or referring to small bits of binary data in an XML stanza. |
 | Best Practices for Resource Locking         | [XEP-0296](https://xmpp.org/extensions/xep-0296.html)  | n/a       | Specifies best practices to be followed by Jabber/XMPP clients about when to lock into, and unlock away from, resources. |
