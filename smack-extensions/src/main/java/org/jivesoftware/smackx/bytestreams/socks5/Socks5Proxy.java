@@ -435,33 +435,23 @@ public class Socks5Proxy {
         @Override
         public void run() {
             while (true) {
+                ServerSocket serverSocket = Socks5Proxy.this.serverSocket;
+                if (serverSocket == null || serverSocket.isClosed() || Thread.currentThread().isInterrupted()) {
+                    return;
+                }
+
+                // accept connection
                 Socket socket = null;
-
                 try {
-
-                    if (Socks5Proxy.this.serverSocket == null || Socks5Proxy.this.serverSocket.isClosed()
-                                    || Thread.currentThread().isInterrupted()) {
-                        return;
-                    }
-
-                    // accept connection
-                    socket = Socks5Proxy.this.serverSocket.accept();
-
+                    socket = serverSocket.accept();
                     // initialize connection
                     establishConnection(socket);
-
-                }
-                catch (SocketException e) {
-                    /*
-                     * do nothing, if caused by closing the server socket, thread will terminate in
-                     * next loop
-                     */
-                }
-                catch (Exception e) {
+                } catch (SmackException | IOException e) {
+                    // Do nothing, if caused by closing the server socket, thread will terminate in next loop.
+                    LOGGER.log(Level.FINE, "Exception while " + Socks5Proxy.this + " was handling connection", e);
                     CloseableUtil.maybeClose(socket, LOGGER);
                 }
             }
-
         }
 
         /**
@@ -478,7 +468,7 @@ public class Socks5Proxy {
             // first byte is version should be 5
             int b = in.read();
             if (b != 5) {
-                throw new SmackException.SmackMessageException("Only SOCKS5 supported");
+                throw new SmackException.SmackMessageException("Only SOCKS5 supported: Peer send " + b + " but we expect 5");
             }
 
             // second byte number of authentication methods supported
@@ -523,7 +513,8 @@ public class Socks5Proxy {
                 out.write(connectionRequest);
                 out.flush();
 
-                throw new SmackException.SmackMessageException("Connection is not allowed");
+                throw new SmackException.SmackMessageException(
+                                "Connection with digest '" + responseDigest + "' is not allowed");
             }
 
             // Store the connection before we send the return status.
