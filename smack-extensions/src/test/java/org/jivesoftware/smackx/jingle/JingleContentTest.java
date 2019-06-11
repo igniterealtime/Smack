@@ -32,7 +32,7 @@ import org.junit.Test;
  */
 public class JingleContentTest extends SmackTestSuite {
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void emptyBuilderThrowsTest() {
         JingleContent.Builder builder = JingleContent.getBuilder();
         builder.build();

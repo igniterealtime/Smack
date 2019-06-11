@@ -20,10 +20,11 @@ import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 public class PresenceTest {
@@ -59,9 +60,11 @@ public class PresenceTest {
         assertXmlSimilar(control, presenceTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void setNullPresenceTypeTest() {
-        getNewPresence().setType(null);
+        assertThrows(IllegalArgumentException.class, () ->
+        getNewPresence().setType(null)
+        );
     }
 
     @Test
@@ -112,9 +115,11 @@ public class PresenceTest {
         assertXmlSimilar(control, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void setIllegalPriorityTest() {
-        getNewPresence().setPriority(Integer.MIN_VALUE);
+        assertThrows(IllegalArgumentException.class, () ->
+        getNewPresence().setPriority(Integer.MIN_VALUE)
+        );
     }
 
     @Test

@@ -41,7 +41,7 @@ public class JingleTest extends SmackTestSuite {
         builder.build();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void onlySessionIdBuilderTest() {
         String sessionId = "testSessionId";
 

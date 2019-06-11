@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2018 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,26 @@ import java.util.Collection;
 
 public class Objects {
 
-    public static <T> T requireNonNull(T obj, String message) {
+    /**
+     * Checks that the specified object reference is not <code>null</code> and throws a customized
+     * {@link IllegalArgumentException} if it is.
+     * <p>
+     * Note that unlike <code>java.util.Objects</code>, this method throws an {@link IllegalArgumentException} instead
+     * of an {@link NullPointerException}.
+     * </p>
+     *
+     * @param <T> the type of the reference.
+     * @param obj the object reference to check for nullity.
+     * @param message detail message to be used in the event that a {@link IllegalArgumentException} is thrown.
+     * @return <code>obj</code> if not null.
+     * @throws IllegalArgumentException in case <code>obj</code> is <code>null</code>.
+     */
+    public static <T> T requireNonNull(T obj, String message) throws IllegalArgumentException {
         if (obj == null) {
-            throw new NullPointerException(message);
+            if (message == null) {
+                message = "Can not provide null argument";
+            }
+            throw new IllegalArgumentException(message);
         }
         return obj;
     }

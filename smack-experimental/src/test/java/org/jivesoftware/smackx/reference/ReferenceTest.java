@@ -98,7 +98,7 @@ public class ReferenceTest extends SmackTestSuite {
 
     @Test
     public void typeArgumentNullTest() throws URISyntaxException {
-        assertThrows(NullPointerException.class, () ->
+        assertThrows(IllegalArgumentException.class, () ->
         new ReferenceElement(1, 2, null, null, new URI("xmpp:test@test.test")));
     }
 
