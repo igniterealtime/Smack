@@ -37,6 +37,7 @@ import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -268,6 +269,7 @@ public final class PubSubManager extends Manager {
      * @throws NotAPubSubNodeException
      */
     public Node getNode(String id) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotAPubSubNodeException {
+        StringUtils.requireNotNullNorEmpty(id, "The node ID can not be null or the empty string");
         Node node = nodeMap.get(id);
 
         if (node == null) {
