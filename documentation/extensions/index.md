@@ -86,6 +86,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 |-----------------------------------------------------------|--------------------------------------------------------|-----------|-------------------------------------------------------------------------------------------------------------------------|
 | Message Carbons                                           | [XEP-0280](https://xmpp.org/extensions/xep-0280.html)  | n/a       | Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested resources. |
 | [Message Archive Management](mam.md)                      | [XEP-0313](https://xmpp.org/extensions/xep-0313.html)  | n/a       | Query and control an archive of messages stored on a server. |
+| Data Forms XML Element                                    | [XEP-0315](https://xmpp.org/extensions/xep-0315.html)  | n/a       | Allows to include XML-data in XEP-0004 data forms. |
 | [Internet of Things - Sensor Data](iot.md)                | [XEP-0323](https://xmpp.org/extensions/xep-0323.html)  | n/a       | Sensor data interchange over XMPP. |
 | [Internet of Things - Provisioning](iot.md)               | [XEP-0324](https://xmpp.org/extensions/xep-0324.html)  | n/a       | Provisioning, access rights and user privileges for the Internet of Things. |
 | [Internet of Things - Control](iot.md)                    | [XEP-0325](https://xmpp.org/extensions/xep-0325.html)  | n/a       | Describes how to control devices or actuators in an XMPP-based sensor network. |

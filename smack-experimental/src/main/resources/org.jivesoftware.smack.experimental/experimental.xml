@@ -7,5 +7,6 @@
         <className>org.jivesoftware.smackx.httpfileupload.HttpFileUploadManager</className>
 		<className>org.jivesoftware.smackx.eme.ExplicitMessageEncryptionManager</className>
         <className>org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager</className>
+        <className>org.jivesoftware.smackx.xmlelement.DataFormsXmlElementManager</className>
     </startupClasses>
 </smack>
