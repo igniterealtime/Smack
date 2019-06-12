@@ -16,13 +16,30 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.logging.Logger;
+
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 
 public class XmppElementUtil {
 
+    public static final Logger LOGGER = Logger.getLogger(XmppElementUtil.class.getName());
+
     public static QName getQNameFor(Class<? extends FullyQualifiedElement> fullyQualifiedElement) {
+        try {
+            Object qnameObject = fullyQualifiedElement.getField("QNAME").get(null);
+            if (QName.class.isAssignableFrom(qnameObject.getClass())) {
+                return (QName) qnameObject;
+            }
+            LOGGER.warning("The QNAME field of " + fullyQualifiedElement + " is not of type QNAME.");
+        } catch (NoSuchFieldException e) {
+            LOGGER.finer("The class " + fullyQualifiedElement + " has no static QNAME field. Consider adding one.");
+            // Proceed to fallback strategy.
+        } catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
+            throw new IllegalArgumentException(e);
+        }
+
         String element, namespace;
         try {
             element = (String) fullyQualifiedElement.getField("ELEMENT").get(null);
