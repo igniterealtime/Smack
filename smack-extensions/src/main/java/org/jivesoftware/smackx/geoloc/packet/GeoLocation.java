@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,15 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.FormFieldChildElement;
 
 /**
  * A GeoLocation Extension packet, which is used by the XMPP clients to exchange their respective geographic locations.
@@ -33,11 +38,15 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @see <a href="http://www.xmpp.org/extensions/xep-0080.html">XEP-0080</a>
  * @author Ishan Khanna
  */
-public final class GeoLocation implements Serializable, ExtensionElement {
+public final class GeoLocation implements Serializable, ExtensionElement, FormFieldChildElement {
 
     private static final long serialVersionUID = 1L;
+
     public static final String NAMESPACE = "http://jabber.org/protocol/geoloc";
+
     public static final String ELEMENT = "geoloc";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private static final Logger LOGGER = Logger.getLogger(GeoLocation.class.getName());
 
@@ -209,6 +218,11 @@ public final class GeoLocation implements Serializable, ExtensionElement {
     }
 
     @Override
+    public QName getQName() {
+        return QNAME;
+    }
+
+    @Override
     public String getElementName() {
         return ELEMENT;
     }
@@ -254,8 +268,17 @@ public final class GeoLocation implements Serializable, ExtensionElement {
         return new GeoLocation.Builder();
     }
 
+    @Override
+    public boolean isExclusiveElement() {
+        return true;
+    }
+
     public static GeoLocation from(Message message) {
         return message.getExtension(ELEMENT, NAMESPACE);
+    }
+
+    public static GeoLocation from(FormField formField) {
+        return (GeoLocation) formField.getFormFieldChildElement(QNAME);
     }
 
     public static class Builder {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,12 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+import org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
+import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProviderManager;
 
 import org.jxmpp.jid.Jid;
 
@@ -41,6 +43,9 @@ public final class GeoLocationManager extends Manager {
     private static final Map<XMPPConnection, GeoLocationManager> INSTANCES = new WeakHashMap<>();
 
     static {
+        FormFieldChildElementProviderManager.addFormFieldChildElementProvider(
+                        GeoLocationProvider.GeoLocationFormFieldChildElementProvider.INSTANCE);
+
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {

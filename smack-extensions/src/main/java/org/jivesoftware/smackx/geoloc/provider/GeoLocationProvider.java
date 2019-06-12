@@ -18,7 +18,10 @@ package org.jivesoftware.smackx.geoloc.provider;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -27,8 +30,11 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProvider;
 
 public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
+
+    public static final GeoLocationProvider INSTANCE = new GeoLocationProvider();
 
     @Override
     public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException,
@@ -128,6 +134,23 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
         }
 
         return builder.build();
+    }
+
+    public static class GeoLocationFormFieldChildElementProvider extends FormFieldChildElementProvider<GeoLocation> {
+
+        public static final GeoLocationFormFieldChildElementProvider INSTANCE = new GeoLocationFormFieldChildElementProvider();
+
+        @Override
+        public QName getQName() {
+            return GeoLocation.QNAME;
+        }
+
+        @Override
+        public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                        throws XmlPullParserException, IOException, SmackParsingException {
+            return GeoLocationProvider.INSTANCE.parse(parser, initialDepth, xmlEnvironment);
+        }
+
     }
 
 }

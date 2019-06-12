@@ -74,6 +74,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Best Practices for Resource Locking         | [XEP-0296](https://xmpp.org/extensions/xep-0296.html)  | n/a       | Specifies best practices to be followed by Jabber/XMPP clients about when to lock into, and unlock away from, resources. |
 | Last Message Correction                     | [XEP-0308](https://xmpp.org/extensions/xep-0308.html)  | n/a       | Provides a method for indicating that a message is a correction of the last sent message. |
 | Last User Interaction in Presence           | [XEP-0319](https://xmpp.org/extensions/xep-0319.html)  | n/a       | Communicate time of last user interaction via XMPP presence notifications. |
+| Data Forms Geolocation Element              | [XEP-0350](https://xmpp.org/extensions/xep-0350.html)  | n/a       | Allows to include XEP-0080 gelocation data in XEP-0004 data forms.  |
 | [Group Chat Invitations](invitation.md)     | n/a                                                    | n/a       | Send invitations to other users to join a group chat room. |
 | [Jive Properties](properties.md)            | n/a                                                    | n/a       | TODO |
 
