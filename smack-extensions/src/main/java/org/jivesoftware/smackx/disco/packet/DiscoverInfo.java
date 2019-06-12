@@ -203,7 +203,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * @param node the node attribute that supplements the 'jid' attribute
      */
     public void setNode(String node) {
-        this.node = node;
+        this.node = StringUtils.requireNullOrNotEmpty(node, "The node can not be the empty string");
     }
 
     /**
