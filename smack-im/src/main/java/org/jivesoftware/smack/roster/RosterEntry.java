@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
+import org.jivesoftware.smack.util.EqualsUtil;
 
 import org.jxmpp.jid.BareJid;
 
@@ -251,15 +252,9 @@ public final class RosterEntry extends Manager {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object != null && object instanceof RosterEntry) {
-            return getJid().equals(((RosterEntry) object).getJid());
-        }
-        else {
-            return false;
-        }
+        return EqualsUtil.equals(this, object, (e, o) ->
+            e.append(getJid(), o.getJid())
+        );
     }
 
     /**
@@ -272,14 +267,9 @@ public final class RosterEntry extends Manager {
      *         otherwise.
      */
     public boolean equalsDeep(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        RosterEntry other = (RosterEntry) obj;
-        return other.item.equals(this.item);
+        return EqualsUtil.equals(this, obj, (e, o) ->
+            e.append(item, o.item)
+        );
     }
 
     /**

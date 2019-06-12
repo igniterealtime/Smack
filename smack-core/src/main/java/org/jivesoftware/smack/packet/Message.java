@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.jivesoftware.smack.util.EqualsUtil;
+import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -561,32 +563,22 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             return subject;
         }
 
+        private final HashCode.Cache hashCodeCache = new HashCode.Cache();
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            if (language != null) {
-                result = prime * result + this.language.hashCode();
-            }
-            result = prime * result + this.subject.hashCode();
-            return result;
+            return hashCodeCache.getHashCode(c ->
+                c.append(language)
+                 .append(subject)
+            );
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            Subject other = (Subject) obj;
-            // simplified comparison because language and subject are always set
-            return this.language.equals(other.language) && this.subject.equals(other.subject);
+            return EqualsUtil.equals(this, obj, (e, o) ->
+                e.append(language, o.language)
+                 .append(subject, o.subject)
+            );
         }
 
         @Override
@@ -670,31 +662,22 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             return message;
         }
 
+        private final HashCode.Cache hashCodeCache = new HashCode.Cache();
+
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            if (language != null) {
-                result = prime * result + this.language.hashCode();
-            }
-            result = prime * result + this.message.hashCode();
-            return result;
+            return hashCodeCache.getHashCode(c ->
+                c.append(language)
+                .append(message)
+            );
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            Body other = (Body) obj;
-            // simplified comparison because language and message are always set
-            return Objects.equals(this.language, other.language) && this.message.equals(other.message);
+            return EqualsUtil.equals(this, obj, (e, o) ->
+                e.append(language, o.language)
+                 .append(message, o.message)
+            );
         }
 
         @Override

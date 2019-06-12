@@ -23,6 +23,8 @@ import java.util.concurrent.Future;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.EqualsUtil;
+import org.jivesoftware.smack.util.HashCode;
 
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
@@ -112,22 +114,20 @@ public abstract class JingleSession implements JingleSessionHandler {
 
     @Override
     public int hashCode() {
-        int hashCode = 31 + getInitiator().hashCode();
-        hashCode = 31 * hashCode + getResponder().hashCode();
-        hashCode = 31 * hashCode + getSessionId().hashCode();
-        return hashCode;
+        return HashCode.builder()
+                       .append(getInitiator())
+                       .append(getResponder())
+                       .append(getSessionId())
+                       .build();
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof JingleSession)) {
-            return false;
-        }
-
-        JingleSession otherJingleSession = (JingleSession) other;
-        return getInitiator().equals(otherJingleSession.getInitiator())
-                && getResponder().equals(otherJingleSession.getResponder())
-                && sid.equals(otherJingleSession.sid);
+        return EqualsUtil.equals(this, other, (e, o) ->
+            e.append(getInitiator(), o.getInitiator())
+              .append(getResponder(), o.getResponder())
+              .append(sid, o.sid)
+        );
     }
 
     @Override

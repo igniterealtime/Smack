@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.util.EqualsUtil;
+import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -397,37 +399,22 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          */
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
-            if (obj == this)
-                return true;
-            if (obj.getClass() != getClass())
-                return false;
-
-            DiscoverInfo.Identity other = (DiscoverInfo.Identity) obj;
-            if (!this.key.equals(other.key))
-                return false;
-
-            String otherLang = other.lang == null ? "" : other.lang;
-            String thisLang = lang == null ? "" : lang;
-            if (!otherLang.equals(thisLang))
-                return false;
-
-            String otherName = other.name == null ? "" : other.name;
-            String thisName = name == null ? "" : other.name;
-            if (!thisName.equals(otherName))
-                return false;
-
-            return true;
+            return EqualsUtil.equals(this, obj, (e, o) -> {
+                e.append(key, o.key)
+                 .append(lang, o.lang)
+                 .append(name, o.name);
+            });
         }
+
+        private final HashCode.Cache hashCodeCache = new HashCode.Cache();
 
         @Override
         public int hashCode() {
-            int result = 1;
-            result = 37 * result + key.hashCode();
-            result = 37 * result + (lang == null ? 0 : lang.hashCode());
-            result = 37 * result + (name == null ? 0 : name.hashCode());
-            return result;
+            return hashCodeCache.getHashCode(c ->
+                c.append(key)
+                 .append(lang)
+                 .append(name)
+            );
         }
 
         /**
@@ -522,15 +509,9 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
-            if (obj == this)
-                return true;
-            if (obj.getClass() != getClass())
-                return false;
-
-            DiscoverInfo.Feature other = (DiscoverInfo.Feature) obj;
-            return variable.equals(other.variable);
+            return EqualsUtil.equals(this, obj, (e, o) -> {
+                e.append(variable, o.variable);
+            });
         }
 
         @Override

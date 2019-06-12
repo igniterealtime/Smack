@@ -30,6 +30,8 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.EqualsUtil;
+import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -770,33 +772,20 @@ public final class FormField implements FullyQualifiedElement {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj == null)
-                return false;
-            if (obj == this)
-                return true;
-            if (obj.getClass() != getClass())
-                return false;
-
-            Option other = (Option) obj;
-
-            if (!value.equals(other.value))
-                return false;
-
-            String thisLabel = label == null ? "" : label;
-            String otherLabel = other.label == null ? "" : other.label;
-
-            if (!thisLabel.equals(otherLabel))
-                return false;
-
-            return true;
+            return EqualsUtil.equals(this, obj, (e, o) -> {
+                e.append(value, o.value)
+                 .append(label, o.label);
+            });
         }
+
+        private final HashCode.Cache hashCodeCache = new HashCode.Cache();
 
         @Override
         public int hashCode() {
-            int result = 1;
-            result = 37 * result + value.hashCode();
-            result = 37 * result + (label == null ? 0 : label.hashCode());
-            return result;
+            return hashCodeCache.getHashCode(c ->
+                c.append(value)
+                 .append(label)
+            );
         }
 
     }
@@ -916,6 +905,16 @@ public final class FormField implements FullyQualifiedElement {
             xml.rightAngleBracket();
             xml.escape(value);
             return xml.closeElement(this);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return EqualsUtil.equals(this, other, (e, o) -> e.append(this.value, o.value));
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
         }
     }
 }
