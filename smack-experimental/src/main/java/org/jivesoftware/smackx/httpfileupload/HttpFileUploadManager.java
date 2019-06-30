@@ -21,16 +21,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.NoSuchPaddingException;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -43,13 +49,14 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
-
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest_V0_2;
+import org.jivesoftware.smackx.omemo_media_sharing.AesgcmUrl;
+import org.jivesoftware.smackx.omemo_media_sharing.OmemoMediaSharingUtils;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -57,10 +64,13 @@ import org.jxmpp.jid.DomainBareJid;
 
 /**
  * A manager for XEP-0363: HTTP File Upload.
+ * This manager is also capable of XEP-XXXX: OMEMO Media Sharing.
  *
  * @author Grigory Fedorov
  * @author Florian Schmaus
+ * @author Paul Schaub
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
+ * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
  */
 public final class HttpFileUploadManager extends Manager {
 
@@ -245,7 +255,7 @@ public final class HttpFileUploadManager extends Manager {
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
      * @param file file to be uploaded
-     * @param listener upload progress listener of null
+     * @param listener upload progress listener or null
      * @return public URL for sharing uploaded file
      *
      * @throws InterruptedException
@@ -265,6 +275,74 @@ public final class HttpFileUploadManager extends Manager {
         return slot.getGetUrl();
     }
 
+    /**
+     * Upload a file encrypted using the scheme described in OMEMO Media Sharing.
+     * The file is being encrypted using a random 256 bit AES key in Galois Counter Mode using a random 16 byte IV and
+     * then uploaded to the server.
+     * The URL that is returned has a modified scheme (aesgcm:// instead of https://) and has the IV and key attached
+     * as ref part.
+     *
+     * Note: The URL contains the used key and IV in plain text. Keep in mind to only share this URL though a secured
+     * channel (i.e. end-to-end encrypted message), as anybody who can read the URL can also decrypt the file.
+     *
+     * Note: This method uses a IV of length 16 instead of 12. Although not specified in the ProtoXEP, 16 byte IVs are
+     * currently used by most implementations. This implementation also supports 12 byte IVs when decrypting.
+     *
+     * @param file file
+     * @return AESGCM URL which contains the key and IV of the encrypted file.
+     *
+     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+     */
+    public AesgcmUrl uploadFileEncrypted(File file) throws InterruptedException, IOException,
+            XMPPException.XMPPErrorException, SmackException, InvalidAlgorithmParameterException,
+            NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
+        return uploadFileEncrypted(file, null);
+    }
+    /**
+     * Upload a file encrypted using the scheme described in OMEMO Media Sharing.
+     * The file is being encrypted using a random 256 bit AES key in Galois Counter Mode using a random 16 byte IV and
+     * then uploaded to the server.
+     * The URL that is returned has a modified scheme (aesgcm:// instead of https://) and has the IV and key attached
+     * as ref part.
+     *
+     * Note: The URL contains the used key and IV in plain text. Keep in mind to only share this URL though a secured
+     * channel (i.e. end-to-end encrypted message), as anybody who can read the URL can also decrypt the file.
+     *
+     * Note: This method uses a IV of length 16 instead of 12. Although not specified in the ProtoXEP, 16 byte IVs are
+     * currently used by most implementations. This implementation also supports 12 byte IVs when decrypting.
+     *
+     * @param file file
+     * @param listener progress listener or null
+     * @return AESGCM URL which contains the key and IV of the encrypted file.
+     *
+     * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+     */
+    public AesgcmUrl uploadFileEncrypted(File file, UploadProgressListener listener) throws IOException,
+            InterruptedException, XMPPException.XMPPErrorException, SmackException, NoSuchPaddingException,
+            NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+        if (!file.isFile()) {
+            throw new FileNotFoundException("The path " + file.getAbsolutePath() + " is not a file");
+        }
+
+        // The encrypted file will contain an extra block with the AEAD MAC.
+        long cipherFileLength = file.length() + 16;
+
+        final Slot slot = requestSlot(file.getName(), cipherFileLength, "application/octet-stream");
+        URL slotUrl = slot.getGetUrl();
+
+        // fresh AES key + iv
+        byte[] key = OmemoMediaSharingUtils.generateRandomKey();
+        byte[] iv = OmemoMediaSharingUtils.generateRandomIV();
+        Cipher cipher = OmemoMediaSharingUtils.encryptionCipherFrom(key, iv);
+
+        FileInputStream fis = new FileInputStream(file);
+        // encrypt the file on the fly - encryption actually happens below in uploadFile()
+        CipherInputStream cis = new CipherInputStream(fis, cipher);
+
+        uploadFile(cis, cipherFileLength, slot, listener);
+
+        return new AesgcmUrl(slotUrl, key, iv);
+    }
 
     /**
      * Request a new upload slot from default upload service (if discovered). When you get slot you should upload file
@@ -391,10 +469,13 @@ public final class HttpFileUploadManager extends Manager {
         if (fileSize >= Integer.MAX_VALUE) {
             throw new IllegalArgumentException("File size " + fileSize + " must be less than " + Integer.MAX_VALUE);
         }
-        final int fileSizeInt = (int) fileSize;
 
         // Construct the FileInputStream first to make sure we can actually read the file.
         final FileInputStream fis = new FileInputStream(file);
+        uploadFile(fis, fileSize, slot, listener);
+    }
+
+    private void uploadFile(final InputStream fis, long fileSize, final Slot slot, UploadProgressListener listener) throws IOException {
 
         final URL putUrl = slot.getPutUrl();
 
@@ -404,7 +485,7 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setUseCaches(false);
         urlConnection.setDoOutput(true);
         // TODO Change to using fileSize once Smack's minimum Android API level is 19 or higher.
-        urlConnection.setFixedLengthStreamingMode(fileSizeInt);
+        urlConnection.setFixedLengthStreamingMode((int) fileSize);
         urlConnection.setRequestProperty("Content-Type", "application/octet-stream;");
         for (Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());

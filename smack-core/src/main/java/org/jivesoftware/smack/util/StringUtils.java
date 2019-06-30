@@ -261,6 +261,24 @@ public class StringUtils {
         return new String(hexChars);
     }
 
+    /**
+     * Convert a hexadecimal String to bytes.
+     *
+     * Source: https://stackoverflow.com/a/140861/11150851
+     *
+     * @param s hex string
+     * @return byte array
+     */
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
+
     public static byte[] toUtf8Bytes(String string) {
         return string.getBytes(StandardCharsets.UTF_8);
     }
