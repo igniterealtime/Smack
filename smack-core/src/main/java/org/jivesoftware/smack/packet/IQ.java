@@ -261,6 +261,8 @@ public abstract class IQ extends Stanza {
     }
 
     protected final void initializeAsResultFor(IQ request) {
+        assert this != request;
+
         if (!(request.getType() == Type.get || request.getType() == Type.set)) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
