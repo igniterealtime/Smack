@@ -22,6 +22,10 @@ import java.io.StringWriter;
 public class ExceptionUtil {
 
     public static String getStackTrace(Throwable throwable) {
+        if (throwable == null) {
+            return null;
+        }
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
 
