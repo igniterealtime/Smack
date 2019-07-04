@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
@@ -92,7 +93,7 @@ public final class EntityCapsManager extends Manager {
      */
     private static final String DEFAULT_HASH = StringUtils.SHA1;
 
-    private static String DEFAULT_ENTITY_NODE = "http://www.igniterealtime.org/projects/smack";
+    private static String DEFAULT_ENTITY_NODE = SmackConfiguration.SMACK_URL_STRING;
 
     protected static EntityCapsPersistentCache persistentCache;
 

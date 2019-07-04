@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.SmackConfiguration;
+
 public class TestIQ extends SimpleIQ {
 
     public TestIQ() {
-        this("https://igniterealtime.org/projects/smack", "test-iq");
+        this(SmackConfiguration.SMACK_URL_STRING, "test-iq");
     }
 
     public TestIQ(String element, String namespace) {

@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,6 +51,18 @@ import org.jivesoftware.smack.util.Objects;
  * @author Gaston Dombiak
  */
 public final class SmackConfiguration {
+
+    public static final String SMACK_URL_STRING = "https://igniterealtime.org/projects/smack";
+
+    public static final URL SMACK_URL;
+
+    static {
+        try {
+            SMACK_URL = new URL(SMACK_URL_STRING);
+        } catch (MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     private static int defaultPacketReplyTimeout = 5000;
     private static int packetCollectorSize = 5000;

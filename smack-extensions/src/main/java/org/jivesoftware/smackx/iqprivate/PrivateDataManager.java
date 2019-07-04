@@ -25,6 +25,7 @@ import java.util.WeakHashMap;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -193,7 +194,7 @@ public final class PrivateDataManager extends Manager {
 
         @Override
         public String getNamespace() {
-            return "https://igniterealtime.org/projects/smack/";
+            return SmackConfiguration.SMACK_URL_STRING;
         }
 
         @Override
