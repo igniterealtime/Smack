@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2018 Paul Schaub
+ * Copyright © 2018-2019 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,17 +19,16 @@ package org.jivesoftware.smackx.colors;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.SHA1;
 
+import org.hsluv.HUSLColorConverter;
+
+/**
+ * Implementation of XEP-0392: Consistent Color Generation version 0.6.0.
+ *
+ * @author Paul Schaub
+ */
 public class ConsistentColor {
 
     private static final ConsistentColorSettings DEFAULT_SETTINGS = new ConsistentColorSettings();
-
-    // See XEP-0392 §13.1 Constants for YCbCr (BT.601)
-    private static final double KR = 0.299;
-    private static final double KG = 0.587;
-    private static final double KB = 0.114;
-
-    // See XEP-0392 §5.4 CbCr to RGB
-    private static final double Y = 0.732;
 
     public enum Deficiency {
         /**
@@ -49,17 +48,17 @@ public class ConsistentColor {
     }
 
     /**
-     * Generate an angle in the CbCr plane from the input string.
+     * Generate an angle in the HSLuv color space from the input string.
      * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-angle">§5.1: Angle generation</a>
      *
      * @param input input string
-     * @return output angle
+     * @return output angle in degrees
      */
     private static double createAngle(CharSequence input) {
         byte[] h = SHA1.bytes(input.toString());
         double v = u(h[0]) + (256 * u(h[1]));
         double d = v / 65536;
-        return d * 2 * Math.PI;
+        return d * 360;
     }
 
     /**
@@ -75,84 +74,51 @@ public class ConsistentColor {
             case none:
                 break;
             case redGreenBlindness:
-                angle %= Math.PI;
+                angle += 90;
+                angle %= 180;
+                angle += 270; // equivalent to -90 % 360, but eliminates negative results
+                angle %= 360;
                 break;
             case blueBlindness:
-                angle -= Math.PI / 2;
-                angle %= Math.PI;
-                angle += Math.PI / 2;
+                angle %= 180;
                 break;
         }
         return angle;
     }
 
     /**
-     * Convert an angle in the CbCr plane to values cb, cr in the YCbCr color space.
-     * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-cbcr">§5.3: CbCr generation</a>
+     * Converting a HSLuv angle to RGB.
+     * Saturation is set to 100 and lightness to 50, according to the XEP.
      *
-     * @param angle angel in CbCr plane.
-     * @return value pair cb, cr
+     * @param hue angle
+     * @return rgb values between 0 and 1
+     *
+     * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-rgb">XEP-0392 §5.4: RGB generation</a>
      */
-    private static double[] angleToCbCr(double angle) {
-        double cb = Math.cos(angle);
-        double cr = Math.sin(angle);
-
-        double acb = Math.abs(cb);
-        double acr = Math.abs(cr);
-        double factor;
-        if (acr > acb) {
-            factor = 0.5 / acr;
-        } else {
-            factor = 0.5 / acb;
-        }
-
-        cb *= factor;
-        cr *= factor;
-
-        return new double[] {cb, cr};
+    private static double[] hsluvToRgb(double hue) {
+        return hsluvToRgb(hue, 100, 50);
     }
 
     /**
-     * Convert a value pair cb, cr in the YCbCr color space to RGB.
-     * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-rgb">§5.4: CbCr to RGB</a>
+     * Converting a HSLuv angle to RGB.
      *
-     * @param cbcr value pair from the YCbCr color space
-     * @return RGB value triple (R, G, B in [0,1])
+     * @param hue angle 0 <= hue < 360
+     * @param saturation saturation 0 <= saturation <= 100
+     * @param lightness lightness 0 <= lightness <= 100
+     * @return rbg array with values 0 <= (r,g,b) <= 1
+     *
+     * @see <a href="https://www.rapidtables.com/convert/color/hsl-to-rgb.html">HSL to RGB conversion</a>
      */
-    private static float[] CbCrToRGB(double[] cbcr, double y) {
-        double cb = cbcr[0];
-        double cr = cbcr[1];
-
-        double r = 2 * (1 - KR) * cr + y;
-        double b = 2 * (1 - KB) * cb + y;
-        double g = (y - KR * r - KB * b) / KG;
-
-        // Clip values to [0,1]
-        r = clip(r);
-        g = clip(g);
-        b = clip(b);
-
-        return new float[] {(float) r, (float) g, (float) b};
+    private static double[] hsluvToRgb(double hue, double saturation, double lightness) {
+        return HUSLColorConverter.hsluvToRgb(new double[] {hue, saturation, lightness});
     }
 
-    /**
-     * Clip values to stay in range(0,1).
-     *
-     * @param value input
-     * @return input clipped to stay in boundaries from 0 to 1.
-     */
-    private static double clip(double value) {
-        double out = value;
-
-        if (value < 0) {
-            out = 0;
-        }
-
-        if (value > 1) {
-            out = 1;
-        }
-
-        return out;
+    private static double[] mixWithBackground(double[] rgbi, float[] rgbb) {
+        return new double[] {
+                0.2 * (1 - rgbb[0]) + 0.8 * rgbi[0],
+                0.2 * (1 - rgbb[1]) + 0.8 * rgbi[1],
+                0.2 * (1 - rgbb[2]) + 0.8 * rgbi[2]
+        };
     }
 
     /**
@@ -189,21 +155,54 @@ public class ConsistentColor {
     public static float[] RGBFrom(CharSequence input, ConsistentColorSettings settings) {
         double angle = createAngle(input);
         double correctedAngle = applyColorDeficiencyCorrection(angle, settings.getDeficiency());
-        double[] CbCr = angleToCbCr(correctedAngle);
-        float[] rgb = CbCrToRGB(CbCr, Y);
-        return rgb;
+        double[] rgb = hsluvToRgb(correctedAngle);
+        if (settings.backgroundRGB != null) {
+            rgb = mixWithBackground(rgb, settings.backgroundRGB);
+        }
+
+        return new float[] {(float) rgb[0], (float) rgb[1], (float) rgb[2]};
+    }
+
+    public static int[] floatRgbToInts(float[] floats) {
+        return new int[] {
+                (int) (floats[0] * 255),
+                (int) (floats[1] * 255),
+                (int) (floats[2] * 255)
+        };
     }
 
     public static class ConsistentColorSettings {
 
         private final Deficiency deficiency;
+        private final float[] backgroundRGB;
 
         public ConsistentColorSettings() {
-            this(Deficiency.none);
+            this.deficiency = Deficiency.none;
+            this.backgroundRGB = null;
         }
 
         public ConsistentColorSettings(Deficiency deficiency) {
             this.deficiency = Objects.requireNonNull(deficiency, "Deficiency must be given");
+            this.backgroundRGB = null;
+        }
+
+        public ConsistentColorSettings(Deficiency deficiency,
+                                       float[] backgroundRGB) {
+            this.deficiency = Objects.requireNonNull(deficiency, "Deficiency must be given");
+            if (backgroundRGB.length != 3) {
+                throw new IllegalArgumentException("Background RGB value array must have length 3.");
+            }
+
+            for (float f : backgroundRGB) {
+                checkRange(f, 0, 1);
+            }
+            this.backgroundRGB = backgroundRGB;
+        }
+
+        private static void checkRange(float value, float lower, float upper) {
+            if (lower > value || upper < value) {
+                throw new IllegalArgumentException("Value out of range.");
+            }
         }
 
         /**
