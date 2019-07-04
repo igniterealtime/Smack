@@ -28,7 +28,6 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.List;
@@ -521,17 +520,24 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException
      * @throws SmackException
      * @throws XMPPException
+     * @throws XmppStringprepException
      */
     @Test
     public void shouldFailIfInitiatorCannotConnectToSocks5Proxy()
-                    throws SmackException, InterruptedException, XMPPException {
+                    throws SmackException, InterruptedException, XMPPException, XmppStringprepException {
         final Protocol protocol = new Protocol();
         final XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
         final String sessionID = "session_id_shouldFailIfInitiatorCannotConnectToSocks5Proxy";
 
+        // TODO: The following two variables should be named initatorProxyJid and initiatorProxyAddress.
+        final DomainBareJid proxyJID = JidCreate.domainBareFrom("s5b-proxy.initiator.org");
+        // Use an TEST-NET-1 address from RFC 5737 to act as black hole.
+        final String proxyAddress = "192.0.2.1";
+
         // get Socks5ByteStreamManager for connection
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         byteStreamManager.setAnnounceLocalStreamHost(false);
+        byteStreamManager.setProxyConnectionTimeout(3000);
 
         /**
          * create responses in the order they should be queried specified by the XEP-0065
@@ -602,8 +608,9 @@ public class Socks5ByteStreamManagerTest {
 
         // initiator can't connect to proxy because it is not running
         protocol.verifyAll();
-        Throwable actualCause = e.getCause().getCause();
-        assertEquals("Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause), ConnectException.class, actualCause.getClass());
+        Throwable actualCause = e.getCause();
+        assertEquals("Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause),
+                        TimeoutException.class, actualCause.getClass());
     }
 
     /**
