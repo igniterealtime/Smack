@@ -18,14 +18,13 @@ package org.jivesoftware.smackx.pubsub;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.List;
-
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.StanzaError;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -69,8 +68,6 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         try {
             LeafNode leafNode = (LeafNode) node;
             leafNode.publish();
-            List<Item> items = leafNode.getItems();
-            assertTrue(items.isEmpty());
         }
         finally {
             pubSubManagerOne.deleteNode(nodename);
@@ -95,6 +92,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     public void transientNotificationOnlyNodeWithItemTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final String nodename = "sinttest-transient-notificationonly-withitem-nodename-" + testRunId;
         final String itemId = "sinttest-transient-notificationonly-withitem-itemid-" + testRunId;
+
         ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
         ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
         // Configure the node as "Notification-Only Node".
@@ -102,12 +100,23 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         // Configure the node as "transient" (set persistent_items to 'false')
         config.setPersistentItems(false);
         Node node = pubSubManagerOne.createNode(nodename, config);
+
+        // Add a dummy payload. If there is no payload, but just an item ID, then ejabberd will *not* return an error,
+        // which I believe to be non-compliant behavior (although, granted, the XEP is not very clear about this). A user
+        // which sends an empty item with ID to an node that is configured to be notification-only and transient probably
+        // does something wrong, as the item's ID will never appear anywhere. Hence it would be nice if the user would be
+        // made aware of this issue by returning an error. Sadly ejabberd does not do so.
+        // See also https://github.com/processone/ejabberd/issues/2864#issuecomment-500741915
+        final StandardExtensionElement dummyPayload = StandardExtensionElement.builder("dummy-payload",
+                        SmackConfiguration.SMACK_URL_STRING).setText(testRunId).build();
+
         try {
-            LeafNode leafNode = (LeafNode) node;
-            leafNode.publish(new Item(itemId));
-            fail("An exception should have been thrown.");
-        }
-        catch (XMPPErrorException e) {
+            XMPPErrorException e = assertThrows(XMPPErrorException.class, () -> {
+                LeafNode leafNode = (LeafNode) node;
+
+                Item item = new PayloadItem<>(itemId, dummyPayload);
+                leafNode.publish(item);
+            });
             assertEquals(StanzaError.Type.MODIFY, e.getStanzaError().getType());
             assertNotNull(e.getStanzaError().getExtension("item-forbidden", "http://jabber.org/protocol/pubsub#errors"));
         }

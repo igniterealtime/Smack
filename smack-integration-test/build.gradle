@@ -23,6 +23,8 @@ dependencies {
 	// (ab)uses @Before from org.junit
 	compile "org.junit.vintage:junit-vintage-engine:$junitVersion"
 	compile 'junit:junit:4.12'
+	// Add Junit 5 API for e.g. assertThrows()
+	implementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 }
 
