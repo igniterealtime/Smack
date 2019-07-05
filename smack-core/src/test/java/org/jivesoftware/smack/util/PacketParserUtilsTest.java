@@ -22,15 +22,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,8 +48,9 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.xml.sax.SAXException;
@@ -428,7 +427,7 @@ public class PacketParserUtilsTest {
     }
 
     // TODO: Re-enable once we throw an exception on duplicate body elements.
-    @Ignore
+    @Disabled
     @Test
     public void duplicateMessageBodiesTest()
             throws FactoryConfigurationError, XmlPullParserException, IOException, Exception {
@@ -460,7 +459,7 @@ public class PacketParserUtilsTest {
         assertXmlNotSimilar(control, message.toXML().toString());
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void duplicateMessageBodiesTest2()
             throws FactoryConfigurationError, XmlPullParserException, IOException, Exception {
@@ -679,7 +678,7 @@ public class PacketParserUtilsTest {
      *
      * @throws Exception
      */
-    @Test(expected = XmlPullParserException.class)
+    @Test
     public void invalidMessageBodyContainingTagTest() throws Exception {
         String control = XMLBuilder.create("message")
             .namespace(StreamOpen.CLIENT_NAMESPACE)
@@ -695,14 +694,14 @@ public class PacketParserUtilsTest {
                     .t("Bad Message Body")
             .asString(outputProperties);
 
-        Message message = PacketParserUtils.parseMessage(TestUtils.getMessageParser(control));
-
-        fail("Should throw exception. Instead got message: " + message.toXML().toString());
+        assertThrows(XmlPullParserException.class, () ->
+            PacketParserUtils.parseMessage(TestUtils.getMessageParser(control))
+        );
     }
 
     @Test
     public void invalidXMLInMessageBody() throws Exception {
-        String validControl = XMLBuilder.create("message")
+        final String validControl = XMLBuilder.create("message")
             .namespace(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
@@ -713,41 +712,20 @@ public class PacketParserUtilsTest {
                 .t("Good Message Body")
             .asString(outputProperties);
 
-        // XPP3 writes "end tag", StAX writes "end-tag".
-        Supplier<Stream<String>> expectedContentOfExceptionMessage = () -> Stream.of("end tag", "end-tag");
-
-        String invalidControl = validControl.replace("Good Message Body", "Bad </span> Body");
-
-        try {
+        assertThrows(XmlPullParserException.class, () -> {
+            String invalidControl = validControl.replace("Good Message Body", "Bad </span> Body");
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
-            fail("Exception should be thrown");
-        } catch (XmlPullParserException e) {
-            String exceptionMessage = e.getMessage();
-            boolean expectedContentFound = expectedContentOfExceptionMessage.get().anyMatch((expected) -> exceptionMessage.contains(expected));
-            assertTrue(expectedContentFound);
-        }
+        });
 
-        invalidControl = validControl.replace("Good Message Body", "Bad </body> Body");
-
-        try {
+        assertThrows(XmlPullParserException.class, () -> {
+            String invalidControl = validControl.replace("Good Message Body", "Bad </body> Body");
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
-            fail("Exception should be thrown");
-        } catch (XmlPullParserException e) {
-            String exceptionMessage = e.getMessage();
-            boolean expectedContentFound = expectedContentOfExceptionMessage.get().anyMatch((expected) -> exceptionMessage.contains(expected));
-            assertTrue(expectedContentFound);
-        }
+        });
 
-        invalidControl = validControl.replace("Good Message Body", "Bad </message> Body");
-
-        try {
+        assertThrows(XmlPullParserException.class, () -> {
+            String invalidControl = validControl.replace("Good Message Body", "Bad </message> Body");
             PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
-            fail("Exception should be thrown");
-        } catch (XmlPullParserException e) {
-            String exceptionMessage = e.getMessage();
-            boolean expectedContentFound = expectedContentOfExceptionMessage.get().anyMatch((expected) -> exceptionMessage.contains(expected));
-            assertTrue(expectedContentFound);
-        }
+        });
     }
 
     @Test
@@ -891,15 +869,18 @@ public class PacketParserUtilsTest {
         return otherLanguage;
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void descriptiveTextNullLangPassedMap() throws Exception {
         final String text = "Dummy descriptive text";
         Map<String, String> texts = new HashMap<>();
         texts.put(null, text);
-        StanzaError
-            .getBuilder(StanzaError.Condition.internal_server_error)
-            .setDescriptiveTexts(texts)
-            .build();
+
+        assertThrows(IllegalArgumentException.class, () ->
+            StanzaError
+                .getBuilder(StanzaError.Condition.internal_server_error)
+                .setDescriptiveTexts(texts)
+                .build()
+        );
     }
 
     @Test
