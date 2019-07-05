@@ -16,25 +16,27 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jxmpp.jid.Jid;
+
 /**
  * Represents a request to subscribe to a node.
  *
  * @author Robin Collier
  */
 public class SubscribeExtension extends NodeExtension {
-    protected String jid;
+    protected final Jid jid;
 
-    public SubscribeExtension(String subscribeJid) {
+    public SubscribeExtension(Jid subscribeJid) {
         super(PubSubElementType.SUBSCRIBE);
         jid = subscribeJid;
     }
 
-    public SubscribeExtension(String subscribeJid, String nodeId) {
+    public SubscribeExtension(Jid subscribeJid, String nodeId) {
         super(PubSubElementType.SUBSCRIBE, nodeId);
         jid = subscribeJid;
     }
 
-    public String getJid() {
+    public Jid getJid() {
         return jid;
     }
 
