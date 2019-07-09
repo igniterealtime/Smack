@@ -40,7 +40,7 @@ public class NumberUtil {
             throw new IllegalArgumentException("unsigned 32-bit integers can't be negative");
         }
         if (value > ((1L << 32) - 1)) {
-            throw new IllegalArgumentException("unsigned 32-bit integers can't be greater then 2^32 - 1");
+            throw new IllegalArgumentException("unsigned 32-bit integers can't be greater than 2^32 - 1");
         }
         return value;
     }
