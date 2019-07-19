@@ -8,9 +8,14 @@ jdk:
   - openjdk9
   - openjdk11
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
-  - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.android/build-cache
+    - $HOME/.m2
 
 before_install:
   - export GRADLE_VERSION=5.5.1
