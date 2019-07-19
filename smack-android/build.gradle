@@ -7,7 +7,7 @@ smack-extensions and smack-experimental."""
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
-	api project(':smack-xmlparser-xpp3')
+	implementation project(':smack-xmlparser-xpp3')
 	// Depend on minidns-android21 as optional dependency, even if may
 	// not need it. Can't hurt to have it in the programm path with
 	// the correct MiniDNS version as it won't hurt even if the
