@@ -5,7 +5,9 @@ android:
     - android-19
 jdk:
   - oraclejdk8
-  - openjdk8
+  - openjdk9
+  - openjdk11
+
 sudo: false
 cache:
   directories:
