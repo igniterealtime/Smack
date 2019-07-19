@@ -438,9 +438,9 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
 
     /**
      * Returns the thread id of the message, which is a unique identifier for a sequence
-     * of "chat" messages. If no thread id is set, <tt>null</tt> will be returned.
+     * of "chat" messages. If no thread id is set, <code>null</code> will be returned.
      *
-     * @return the thread id of the message, or <tt>null</tt> if it doesn't exist.
+     * @return the thread id of the message, or <code>null</code> if it doesn't exist.
      */
     public String getThread() {
         return thread;

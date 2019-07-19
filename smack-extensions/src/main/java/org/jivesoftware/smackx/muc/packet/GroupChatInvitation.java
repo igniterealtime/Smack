@@ -41,7 +41,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * </pre>
  *
  * To listen for group chat invitations, use a StanzaExtensionFilter for the
- * <tt>x</tt> element name and <tt>jabber:x:conference</tt> namespace, as in the
+ * <code>x</code> element name and <code>jabber:x:conference</code> namespace, as in the
  * following code example:
  *
  * <pre>
@@ -72,9 +72,9 @@ public class GroupChatInvitation implements ExtensionElement {
 
     /**
      * Creates a new group chat invitation to the specified room address.
-     * GroupChat room addresses are in the form <tt>room@service</tt>,
-     * where <tt>service</tt> is the name of group chat server, such as
-     * <tt>chat.example.com</tt>.
+     * GroupChat room addresses are in the form <code>room@service</code>,
+     * where <code>service</code> is the name of group chat server, such as
+     * <code>chat.example.com</code>.
      *
      * @param roomAddress the address of the group chat room.
      */
@@ -84,8 +84,8 @@ public class GroupChatInvitation implements ExtensionElement {
 
     /**
      * Returns the address of the group chat room. GroupChat room addresses
-     * are in the form <tt>room@service</tt>, where <tt>service</tt> is
-     * the name of group chat server, such as <tt>chat.example.com</tt>.
+     * are in the form <code>room@service</code>, where <code>service</code> is
+     * the name of group chat server, such as <code>chat.example.com</code>.
      *
      * @return the address of the group chat room.
      */

@@ -286,7 +286,7 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
-     * Returns the keystore type, or <tt>null</tt> if it's not set.
+     * Returns the keystore type, or <code>null</code> if it's not set.
      *
      * @return the keystore type.
      */
@@ -902,7 +902,7 @@ public abstract class ConnectionConfiguration {
          * Sets if an initial available presence will be sent to the server. By default
          * an available presence will be sent to the server indicating that this presence
          * is not online and available to receive messages. If you want to log in without
-         * being 'noticed' then pass a <tt>false</tt> value.
+         * being 'noticed' then pass a <code>false</code> value.
          *
          * @param sendPresence true if an initial available presence will be sent while logging in.
          * @return a reference to this builder.

@@ -26,9 +26,9 @@ import org.jivesoftware.smack.packet.Stanza;
  * Filters for Stanzas of a particular type. The type is given as a Class object, so
  * example types would:
  * <ul>
- *      <li><tt>Message.class</tt>
- *      <li><tt>IQ.class</tt>
- *      <li><tt>Presence.class</tt>
+ *      <li><code>Message.class</code>
+ *      <li><code>IQ.class</code>
+ *      <li><code>Presence.class</code>
  * </ul>
  *
  * @author Matt Tucker
@@ -43,7 +43,7 @@ public final class StanzaTypeFilter implements StanzaFilter {
 
     /**
      * Creates a new stanza type filter that will filter for packets that are the
-     * same type as <tt>packetType</tt>.
+     * same type as <code>packetType</code>.
      *
      * @param packetType the Class type.
      */

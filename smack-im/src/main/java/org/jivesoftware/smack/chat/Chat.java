@@ -65,7 +65,7 @@ public class Chat {
 
     /**
      * Returns the thread id associated with this chat, which corresponds to the
-     * <tt>thread</tt> field of XMPP messages. This method may return <tt>null</tt>
+     * <code>thread</code> field of XMPP messages. This method may return <code>null</code>
      * if there is no thread ID is associated with this Chat.
      *
      * @return the thread ID of this chat.

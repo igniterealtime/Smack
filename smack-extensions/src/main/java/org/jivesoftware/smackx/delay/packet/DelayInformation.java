@@ -62,7 +62,7 @@ public class DelayInformation implements ExtensionElement {
 
     /**
      * Returns the JID of the entity that originally sent the stanza or that delayed the
-     * delivery of the stanza or <tt>null</tt> if this information is not available.
+     * delivery of the stanza or <code>null</code> if this information is not available.
      *
      * @return the JID of the entity that originally sent the stanza or that delayed the
      *         delivery of the packet.
@@ -82,10 +82,10 @@ public class DelayInformation implements ExtensionElement {
     }
 
     /**
-     * Returns a natural-language description of the reason for the delay or <tt>null</tt> if
+     * Returns a natural-language description of the reason for the delay or <code>null</code> if
      * this information is not available.
      *
-     * @return a natural-language description of the reason for the delay or <tt>null</tt>.
+     * @return a natural-language description of the reason for the delay or <code>null</code>.
      */
     public String getReason() {
         return reason;

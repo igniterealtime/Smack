@@ -68,11 +68,11 @@ public class Registration extends IQ {
     }
 
     /**
-     * Returns the registration instructions, or <tt>null</tt> if no instructions
+     * Returns the registration instructions, or <code>null</code> if no instructions
      * have been set. If present, instructions should be displayed to the end-user
      * that will complete the registration process.
      *
-     * @return the registration instructions, or <tt>null</tt> if there are none.
+     * @return the registration instructions, or <code>null</code> if there are none.
      */
     public String getInstructions() {
         return instructions;

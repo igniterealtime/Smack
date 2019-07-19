@@ -184,9 +184,9 @@ public final class AdHocCommandManager extends Manager {
 
     /**
      * Registers a new command with this command manager, which is related to a
-     * connection. The <tt>node</tt> is an unique identifier of that command for
-     * the connection related to this command manager. The <tt>name</tt> is the
-     * human readable name of the command. The <tt>class</tt> is the class of
+     * connection. The <code>node</code> is an unique identifier of that command for
+     * the connection related to this command manager. The <code>name</code> is the
+     * human readable name of the command. The <code>class</code> is the class of
      * the command, which must extend {@link LocalCommand} and have a default
      * constructor.
      *
@@ -205,9 +205,9 @@ public final class AdHocCommandManager extends Manager {
 
     /**
      * Registers a new command with this command manager, which is related to a
-     * connection. The <tt>node</tt> is an unique identifier of that
-     * command for the connection related to this command manager. The <tt>name</tt>
-     * is the human readable name of the command. The <tt>factory</tt> generates
+     * connection. The <code>node</code> is an unique identifier of that
+     * command for the connection related to this command manager. The <code>name</code>
+     * is the human readable name of the command. The <code>factory</code> generates
      * new instances of the command.
      *
      * @param node the unique identifier of the command.

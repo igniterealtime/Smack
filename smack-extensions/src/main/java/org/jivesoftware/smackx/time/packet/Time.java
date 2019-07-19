@@ -61,7 +61,7 @@ public class Time extends IQ {
     }
 
     /**
-     * Returns the local time or <tt>null</tt> if the time hasn't been set.
+     * Returns the local time or <code>null</code> if the time hasn't been set.
      *
      * @return the local time.
      */

@@ -38,7 +38,7 @@ public class SimplePayload implements ExtensionElement {
     private final String payload;
 
     /**
-     * Construct a <tt>SimplePayload</tt> object with the specified element name,
+     * Construct a <code>SimplePayload</code> object with the specified element name,
      * namespace and content.  The content must be well formed XML.
      *
      * @param xmlPayload The payload data
@@ -60,7 +60,7 @@ public class SimplePayload implements ExtensionElement {
     }
 
     /**
-     * Construct a <tt>SimplePayload</tt> object with the specified element name,
+     * Construct a <code>SimplePayload</code> object with the specified element name,
      * namespace and content.  The content must be well formed XML.
      *
      * @param elementName The root element name (of the payload)

@@ -33,7 +33,7 @@ public class NodeExtension implements ExtensionElement {
     private final String node;
 
     /**
-     * Constructs a <tt>NodeExtension</tt> with an element name specified
+     * Constructs a <code>NodeExtension</code> with an element name specified
      * by {@link PubSubElementType} and the specified node id.
      *
      * @param elem Defines the element name and namespace
@@ -45,7 +45,7 @@ public class NodeExtension implements ExtensionElement {
     }
 
     /**
-     * Constructs a <tt>NodeExtension</tt> with an element name specified
+     * Constructs a <code>NodeExtension</code> with an element name specified
      * by {@link PubSubElementType}.
      *
      * @param elem Defines the element name and namespace

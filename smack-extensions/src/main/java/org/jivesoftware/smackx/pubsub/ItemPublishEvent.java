@@ -30,7 +30,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent {
     private Date originalDate;
 
     /**
-     * Constructs an <tt>ItemPublishEvent</tt> with the provided list
+     * Constructs an <code>ItemPublishEvent</code> with the provided list
      * of {@link Item} that were published.
      *
      * @param nodeId The id of the node the event came from
@@ -42,7 +42,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent {
     }
 
     /**
-     * Constructs an <tt>ItemPublishEvent</tt> with the provided list
+     * Constructs an <code>ItemPublishEvent</code> with the provided list
      * of {@link Item} that were published.  The list of subscription ids
      * represents the subscriptions that matched the event, in the case
      * of the user having multiple subscriptions.
@@ -57,7 +57,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent {
     }
 
     /**
-     * Constructs an <tt>ItemPublishEvent</tt> with the provided list
+     * Constructs an <code>ItemPublishEvent</code> with the provided list
      * of {@link Item} that were published in the past.  The published
      * date signifies that this is delayed event.  The list of subscription ids
      * represents the subscriptions that matched the event, in the case

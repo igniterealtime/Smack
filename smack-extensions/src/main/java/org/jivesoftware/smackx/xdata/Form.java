@@ -52,7 +52,7 @@ public class Form {
      * extension that matches the elementName and namespace "x","jabber:x:data".
      *
      * @param packet the stanza used for gathering data.
-     * @return the data form parsed from the stanza or <tt>null</tt> if there was not
+     * @return the data form parsed from the stanza or <code>null</code> if there was not
      *      a form in the packet.
      */
     public static Form getFormFrom(Stanza packet) {

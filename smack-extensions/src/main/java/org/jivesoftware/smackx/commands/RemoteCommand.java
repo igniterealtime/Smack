@@ -121,7 +121,7 @@ public class RemoteCommand extends AdHocCommand {
     /**
      * Executes the <code>action</code> with the <code>form</code>.
      * The action could be any of the available actions. The form must
-     * be the answer of the previous stage. It can be <tt>null</tt> if it is the first stage.
+     * be the answer of the previous stage. It can be <code>null</code> if it is the first stage.
      *
      * @param action the action to execute.
      * @param form the form with the information.

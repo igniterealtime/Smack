@@ -110,11 +110,11 @@ public class OfflineMessageManager {
     }
 
     /**
-     * Returns a List of <tt>OfflineMessageHeader</tt> that keep information about the
+     * Returns a List of <code>OfflineMessageHeader</code> that keep information about the
      * offline message. The OfflineMessageHeader includes a stamp that could be used to retrieve
      * the complete message or delete the specific message.
      *
-     * @return a List of <tt>OfflineMessageHeader</tt> that keep information about the offline
+     * @return a List of <code>OfflineMessageHeader</code> that keep information about the offline
      *         message.
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
@@ -133,13 +133,13 @@ public class OfflineMessageManager {
     }
 
     /**
-     * Returns a List of the offline <tt>Messages</tt> whose stamp matches the specified
+     * Returns a List of the offline <code>Messages</code> whose stamp matches the specified
      * request. The request will include the list of stamps that uniquely identifies
      * the offline messages to retrieve. The returned offline messages will not be deleted
      * from the server. Use {@link #deleteMessages(java.util.List)} to delete the messages.
      *
      * @param nodes the list of stamps that uniquely identifies offline message.
-     * @return a List with the offline <tt>Messages</tt> that were received as part of
+     * @return a List with the offline <code>Messages</code> that were received as part of
      *         this request.
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
@@ -184,11 +184,11 @@ public class OfflineMessageManager {
     }
 
     /**
-     * Returns a List of Messages with all the offline <tt>Messages</tt> of the user. The returned offline
+     * Returns a List of Messages with all the offline <code>Messages</code> of the user. The returned offline
      * messages will not be deleted from the server. Use {@link #deleteMessages(java.util.List)}
      * to delete the messages.
      *
-     * @return a List with all the offline <tt>Messages</tt> of the user.
+     * @return a List with all the offline <code>Messages</code> of the user.
      * @throws XMPPErrorException If the user is not allowed to make this request or the server does
      *                       not support offline message retrieval.
      * @throws NoResponseException if there was no response from the server.

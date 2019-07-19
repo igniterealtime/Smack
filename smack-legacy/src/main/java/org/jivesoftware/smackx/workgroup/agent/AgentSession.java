@@ -119,7 +119,7 @@ public class AgentSession {
 
     /**
      * Constructs a new agent session instance. Note, the {@link #setOnline(boolean)}
-     * method must be called with an argument of <tt>true</tt> to mark the agent
+     * method must be called with an argument of <code>true</code> to mark the agent
      * as available to accept chat requests.
      *
      * @param connection   a connection instance which must have already gone through
@@ -307,7 +307,7 @@ public class AgentSession {
      * Allows the retrieval of meta data for a specified key.
      *
      * @param key the meta data key
-     * @return the meta data value associated with the key or <tt>null</tt> if the meta-data
+     * @return the meta data value associated with the key or <code>null</code> if the meta-data
      *         doesn't exist..
      */
     public List<String> getMetaData(String key) {

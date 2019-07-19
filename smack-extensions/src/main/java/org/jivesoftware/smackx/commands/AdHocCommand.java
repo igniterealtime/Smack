@@ -37,7 +37,7 @@ import org.jxmpp.jid.Jid;
  * list and the result is stored as a form in the command instance, i.e. the
  * <code>getForm</code> method retrieves a form with all the users.
  * <p>
- * Each command has a <tt>node</tt> that should be unique within a given JID.
+ * Each command has a <code>node</code> that should be unique within a given JID.
  * </p>
  * <p>
  * Commands may have zero or more stages. Each stage is usually used for
@@ -87,7 +87,7 @@ public abstract class AdHocCommand {
     }
 
     /**
-     * Returns the specific condition of the <code>error</code> or <tt>null</tt> if the
+     * Returns the specific condition of the <code>error</code> or <code>null</code> if the
      * error doesn't have any.
      *
      * @param error the error the get the specific condition from.

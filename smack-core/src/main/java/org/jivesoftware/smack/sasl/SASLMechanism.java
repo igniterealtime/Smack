@@ -94,7 +94,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected SSLSession sslSession;
 
     /**
-     * Builds and sends the <tt>auth</tt> stanza to the server. Note that this method of
+     * Builds and sends the <code>auth</code> stanza to the server. Note that this method of
      * authentication is not recommended, since it is very inflexible. Use
      * {@link #authenticate(String, DomainBareJid, CallbackHandler, EntityBareJid, SSLSession)} whenever possible.
      *
@@ -161,7 +161,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     }
 
     /**
-     * Builds and sends the <tt>auth</tt> stanza to the server. The callback handler will handle
+     * Builds and sends the <code>auth</code> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
      *
      * @param host     the hostname where the user account resides.

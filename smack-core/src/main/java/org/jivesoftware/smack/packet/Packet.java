@@ -63,11 +63,11 @@ public interface Packet extends TopLevelStreamElement {
     void setPacketID(String packetID);
 
     /**
-     * Returns who the stanza is being sent "to", or <tt>null</tt> if
+     * Returns who the stanza is being sent "to", or <code>null</code> if
      * the value is not set. The XMPP protocol often makes the "to"
      * attribute optional, so it does not always need to be set.<p>
      *
-     * @return who the stanza is being sent to, or <tt>null</tt> if the
+     * @return who the stanza is being sent to, or <code>null</code> if the
      *      value has not been set.
      */
     String getTo();
@@ -81,11 +81,11 @@ public interface Packet extends TopLevelStreamElement {
     void setTo(String to);
 
     /**
-     * Returns who the stanza is being sent "from" or <tt>null</tt> if
+     * Returns who the stanza is being sent "from" or <code>null</code> if
      * the value is not set. The XMPP protocol often makes the "from"
      * attribute optional, so it does not always need to be set.<p>
      *
-     * @return who the stanza is being sent from, or <tt>null</tt> if the
+     * @return who the stanza is being sent from, or <code>null</code> if the
      *      value has not been set.
      */
     String getFrom();
@@ -100,10 +100,10 @@ public interface Packet extends TopLevelStreamElement {
     void setFrom(String from);
 
     /**
-     * Returns the error associated with this packet, or <tt>null</tt> if there are
+     * Returns the error associated with this packet, or <code>null</code> if there are
      * no errors.
      *
-     * @return the error sub-packet or <tt>null</tt> if there isn't an error.
+     * @return the error sub-packet or <code>null</code> if there isn't an error.
      */
     StanzaError getError();
     /**
@@ -160,7 +160,7 @@ public interface Packet extends TopLevelStreamElement {
 
     /**
      * Returns the first stanza extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null,
+     * namespace, or <code>null</code> if it doesn't exist. If the provided elementName is null,
      * only the namespace is matched. Stanza extensions are
      * are arbitrary XML sub-documents in standard XMPP packets. By default, a
      * DefaultPacketExtension instance will be returned for each extension. However,
@@ -172,7 +172,7 @@ public interface Packet extends TopLevelStreamElement {
      * @param elementName the XML element name of the stanza extension. (May be null)
      * @param namespace the XML element namespace of the stanza extension.
      * @param <PE> type of the ExtensionElement.
-     * @return the extension, or <tt>null</tt> if it doesn't exist.
+     * @return the extension, or <code>null</code> if it doesn't exist.
      */
     <PE extends ExtensionElement> PE getExtension(String elementName, String namespace);
     /**

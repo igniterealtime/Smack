@@ -138,7 +138,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * Returns true if the {@link Type presence type} is available (online) and
      * false if the user is unavailable (offline), or if this is a presence packet
      * involved in a subscription operation. This is a convenience method
-     * equivalent to <tt>getType() == Presence.Type.available</tt>. Note that even
+     * equivalent to <code>getType() == Presence.Type.available</code>. Note that even
      * when the user is available, their presence mode may be {@link Mode#away away},
      * {@link Mode#xa extended away} or {@link Mode#dnd do not disturb}. Use
      * {@link #isAway()} to determine if the user is away.
@@ -155,7 +155,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * {@link Mode#dnd do not disturb}. False will be returned when the type or mode
      * is any other value, including when the presence type is unavailable (offline).
      * This is a convenience method equivalent to
-     * <tt>type == Type.available &amp;&amp; (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd)</tt>.
+     * <code>type == Type.available &amp;&amp; (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd)</code>.
      *
      * @return true if the presence type is available and the presence mode is away, xa, or dnd.
      */
@@ -182,7 +182,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     }
 
     /**
-     * Returns the status message of the presence update, or <tt>null</tt> if there
+     * Returns the status message of the presence update, or <code>null</code> if there
      * is not a status. The status is free-form text describing a user's presence
      * (i.e., "gone to lunch").
      *

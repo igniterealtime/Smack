@@ -194,11 +194,11 @@ public final class AccountManager extends Manager {
     }
 
     /**
-     * Returns the value of a given account attribute or <tt>null</tt> if the account
+     * Returns the value of a given account attribute or <code>null</code> if the account
      * attribute wasn't found.
      *
      * @param name the name of the account attribute to return its value.
-     * @return the value of the account attribute or <tt>null</tt> if an account
+     * @return the value of the account attribute or <code>null</code> if an account
      * attribute wasn't found for the requested name.
      * @throws XMPPErrorException
      * @throws NoResponseException
@@ -213,11 +213,11 @@ public final class AccountManager extends Manager {
     }
 
     /**
-     * Returns the instructions for creating a new account, or <tt>null</tt> if there
+     * Returns the instructions for creating a new account, or <code>null</code> if there
      * are no instructions. If present, instructions should be displayed to the end-user
      * that will complete the registration process.
      *
-     * @return the account creation instructions, or <tt>null</tt> if there are none.
+     * @return the account creation instructions, or <code>null</code> if there are none.
      * @throws XMPPErrorException
      * @throws NoResponseException
      * @throws NotConnectedException

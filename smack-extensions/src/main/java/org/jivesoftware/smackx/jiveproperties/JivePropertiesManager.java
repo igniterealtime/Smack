@@ -70,7 +70,7 @@ public class JivePropertiesManager {
      *
      * @param packet
      * @param name
-     * @return the property or <tt>null</tt> if none found.
+     * @return the property or <code>null</code> if none found.
      */
     public static Object getProperty(Stanza packet, String name) {
         Object res = null;

@@ -107,9 +107,9 @@ public class Privacy extends IQ {
     }
 
     /**
-     * Returns the active privacy list or <tt>null</tt> if none was found.
+     * Returns the active privacy list or <code>null</code> if none was found.
      *
-     * @return list with {@link PrivacyItem} or <tt>null</tt> if none was found.
+     * @return list with {@link PrivacyItem} or <code>null</code> if none was found.
      */
     public List<PrivacyItem> getActivePrivacyList() {
         // Check if we have the default list
@@ -123,9 +123,9 @@ public class Privacy extends IQ {
     }
 
     /**
-     * Returns the default privacy list or <tt>null</tt> if none was found.
+     * Returns the default privacy list or <code>null</code> if none was found.
      *
-     * @return list with {@link PrivacyItem} or <tt>null</tt> if none was found.
+     * @return list with {@link PrivacyItem} or <code>null</code> if none was found.
      */
     public List<PrivacyItem> getDefaultPrivacyList() {
         // Check if we have the default list

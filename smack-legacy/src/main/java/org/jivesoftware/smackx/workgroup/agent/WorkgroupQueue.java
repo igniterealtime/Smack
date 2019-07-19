@@ -122,7 +122,7 @@ public class WorkgroupQueue {
 
     /**
      * Returns the date of the oldest request waiting in the queue. If there
-     * are no requests waiting to be routed, this method will return <tt>null</tt>.
+     * are no requests waiting to be routed, this method will return <code>null</code>.
      *
      * @return the date of the oldest request in the queue.
      */

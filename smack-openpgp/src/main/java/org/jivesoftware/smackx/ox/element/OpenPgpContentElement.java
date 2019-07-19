@@ -122,14 +122,14 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
 
     /**
      * Returns the first extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist. If the provided elementName is null,
+     * namespace, or <code>null</code> if it doesn't exist. If the provided elementName is null,
      * only the namespace is matched. Extensions are
      * are arbitrary XML elements in standard XMPP stanzas.
      *
      * @param elementName the XML element name of the extension. (May be null)
      * @param namespace the XML element namespace of the extension.
      * @param <PE> type of the ExtensionElement.
-     * @return the extension, or <tt>null</tt> if it doesn't exist.
+     * @return the extension, or <code>null</code> if it doesn't exist.
      */
     @SuppressWarnings("unchecked")
     public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {

@@ -60,8 +60,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * &lt;/message&gt;
  *
  * I would have a classes
- * <tt>ItemsProvider</tt> extends {@link EmbeddedExtensionProvider}
- * <tt>ItemProvider</tt> extends {@link EmbeddedExtensionProvider}
+ * <code>ItemsProvider</code> extends {@link EmbeddedExtensionProvider}
+ * <code>ItemProvider</code> extends {@link EmbeddedExtensionProvider}
  * and
  * AtomProvider extends {@link ExtensionElementProvider}
  *

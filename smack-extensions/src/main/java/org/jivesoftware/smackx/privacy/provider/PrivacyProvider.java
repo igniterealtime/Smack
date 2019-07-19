@@ -31,8 +31,8 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
 /**
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
- * Parses the <tt>query</tt> sub-document and creates an instance of {@link Privacy}.
- * For each <tt>item</tt> in the <tt>list</tt> element, it creates an instance
+ * Parses the <code>query</code> sub-document and creates an instance of {@link Privacy}.
+ * For each <code>item</code> in the <code>list</code> element, it creates an instance
  * of {@link PrivacyItem}.
  *
  * @author Francisco Vives

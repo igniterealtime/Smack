@@ -56,11 +56,11 @@ public class MultipleRecipientManager {
      *
      * @param connection the connection to use to send the packet.
      * @param packet     the stanza to send to the list of recipients.
-     * @param to         the collection of JIDs to include in the TO list or <tt>null</tt> if no TO
+     * @param to         the collection of JIDs to include in the TO list or <code>null</code> if no TO
      *                   list exists.
-     * @param cc         the collection of JIDs to include in the CC list or <tt>null</tt> if no CC
+     * @param cc         the collection of JIDs to include in the CC list or <code>null</code> if no CC
      *                   list exists.
-     * @param bcc        the collection of JIDs to include in the BCC list or <tt>null</tt> if no BCC
+     * @param bcc        the collection of JIDs to include in the BCC list or <code>null</code> if no BCC
      *                   list exists.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
@@ -84,13 +84,13 @@ public class MultipleRecipientManager {
      *
      * @param connection the connection to use to send the packet.
      * @param packet the stanza to send to the list of recipients.
-     * @param to the collection of JIDs to include in the TO list or <tt>null</tt> if no TO list exists.
-     * @param cc the collection of JIDs to include in the CC list or <tt>null</tt> if no CC list exists.
-     * @param bcc the collection of JIDs to include in the BCC list or <tt>null</tt> if no BCC list
+     * @param to the collection of JIDs to include in the TO list or <code>null</code> if no TO list exists.
+     * @param cc the collection of JIDs to include in the CC list or <code>null</code> if no CC list exists.
+     * @param bcc the collection of JIDs to include in the BCC list or <code>null</code> if no BCC list
      *        exists.
-     * @param replyTo address to which all replies are requested to be sent or <tt>null</tt>
+     * @param replyTo address to which all replies are requested to be sent or <code>null</code>
      *        indicating that they can reply to any address.
-     * @param replyRoom JID of a MUC room to which responses should be sent or <tt>null</tt>
+     * @param replyRoom JID of a MUC room to which responses should be sent or <code>null</code>
      *        indicating that they can reply to any address.
      * @param noReply true means that receivers should not reply to the message.
      * @throws XMPPErrorException if server does not support XEP-33: Extended Stanza Addressing and
@@ -195,11 +195,11 @@ public class MultipleRecipientManager {
 
     /**
      * Returns the {@link MultipleRecipientInfo} contained in the specified stanza or
-     * <tt>null</tt> if none was found. Only packets sent to multiple recipients will
+     * <code>null</code> if none was found. Only packets sent to multiple recipients will
      * contain such information.
      *
      * @param packet the stanza to check.
-     * @return the MultipleRecipientInfo contained in the specified stanza or <tt>null</tt>
+     * @return the MultipleRecipientInfo contained in the specified stanza or <code>null</code>
      *         if none was found.
      */
     public static MultipleRecipientInfo getMultipleRecipientInfo(Stanza packet) {
@@ -278,7 +278,7 @@ public class MultipleRecipientManager {
      *
      * @param connection the connection to use for disco. The connected server is going to be
      *                   queried.
-     * @return the address of the multiple recipients service or <tt>null</tt> if none was found.
+     * @return the address of the multiple recipients service or <code>null</code> if none was found.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException
      * @throws NotConnectedException

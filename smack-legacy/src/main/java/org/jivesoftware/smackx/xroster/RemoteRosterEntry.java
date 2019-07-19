@@ -45,7 +45,7 @@ public class RemoteRosterEntry {
      *
      * @param user the user.
      * @param name the user's name.
-     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
      *      the roster entry won't belong to a group.
      */
     public RemoteRosterEntry(Jid user, String name, String[] groups) {

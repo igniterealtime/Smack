@@ -114,10 +114,10 @@ public class RosterGroup extends Manager {
 
     /**
      * Returns the roster entry associated with the given XMPP address or
-     * <tt>null</tt> if the user is not an entry in the group.
+     * <code>null</code> if the user is not an entry in the group.
      *
      * @param user the XMPP address of the user (eg "jsmith@example.com").
-     * @return the roster entry or <tt>null</tt> if it does not exist in the group.
+     * @return the roster entry or <code>null</code> if it does not exist in the group.
      */
     public RosterEntry getEntry(Jid user) {
         if (user == null) {

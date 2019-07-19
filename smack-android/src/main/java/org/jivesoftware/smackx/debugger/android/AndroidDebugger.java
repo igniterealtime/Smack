@@ -29,7 +29,7 @@ import android.util.Log;
  * </p>
  * It is possible to not only print the raw sent and received stanzas but also the interpreted
  * packets by Smack. By default interpreted packets won't be printed. To enable this feature
- * just change the <tt>printInterpreted</tt> static variable to <tt>true</tt>.
+ * just change the <code>printInterpreted</code> static variable to <code>true</code>.
  *
  */
 public class AndroidDebugger extends AbstractDebugger {

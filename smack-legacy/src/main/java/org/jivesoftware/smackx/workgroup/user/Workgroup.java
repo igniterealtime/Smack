@@ -334,7 +334,7 @@ public class Workgroup {
      *
      * @param answerForm the completed form associated with the join request.
      * @param userID     String that represents the ID of the user when using anonymous sessions
-     *                   or <tt>null</tt> if a userID should not be used.
+     *                   or <code>null</code> if a userID should not be used.
      * @throws XMPPErrorException if an error occurred joining the queue. An error may indicate
      *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
@@ -383,7 +383,7 @@ public class Workgroup {
      *
      * @param metadata metadata to create a dataform from.
      * @param userID   String that represents the ID of the user when using anonymous sessions
-     *                 or <tt>null</tt> if a userID should not be used.
+     *                 or <code>null</code> if a userID should not be used.
      * @throws XMPPException if an error occurred joining the queue. An error may indicate
      *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.

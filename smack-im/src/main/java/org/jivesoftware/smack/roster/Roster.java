@@ -637,7 +637,7 @@ public final class Roster extends Manager {
      *
      * @param user   the user. (e.g. johndoe@jabber.org)
      * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
      *               the roster entry won't belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -662,7 +662,7 @@ public final class Roster extends Manager {
      *
      * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
      * @param name the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the the roster entry won't
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the the roster entry won't
      *        belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -695,7 +695,7 @@ public final class Roster extends Manager {
      *
      * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
      * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
      *               the roster entry won't belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -716,7 +716,7 @@ public final class Roster extends Manager {
      *
      * @param user   the user. (e.g. johndoe@jabber.org)
      * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <tt>null</tt> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
      *               the roster entry won't belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -913,11 +913,11 @@ public final class Roster extends Manager {
 
     /**
      * Returns the roster entry associated with the given XMPP address or
-     * <tt>null</tt> if the user is not an entry in the roster.
+     * <code>null</code> if the user is not an entry in the roster.
      *
      * @param jid the XMPP address of the user (eg "jsmith@example.com"). The address could be
      *             in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
-     * @return the roster entry or <tt>null</tt> if it does not exist.
+     * @return the roster entry or <code>null</code> if it does not exist.
      */
     public RosterEntry getEntry(BareJid jid) {
         if (jid == null) {
@@ -939,7 +939,7 @@ public final class Roster extends Manager {
     }
 
     /**
-     * Returns the roster group with the specified name, or <tt>null</tt> if the
+     * Returns the roster group with the specified name, or <code>null</code> if the
      * group doesn't exist.
      *
      * @param name the name of the group.

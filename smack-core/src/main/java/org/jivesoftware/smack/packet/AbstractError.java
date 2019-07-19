@@ -93,12 +93,12 @@ public class AbstractError {
 
     /**
      * Returns the first stanza extension that matches the specified element name and
-     * namespace, or <tt>null</tt> if it doesn't exist.
+     * namespace, or <code>null</code> if it doesn't exist.
      *
      * @param elementName the XML element name of the stanza extension.
      * @param namespace the XML element namespace of the stanza extension.
      * @param <PE> type of the ExtensionElement.
-     * @return the extension, or <tt>null</tt> if it doesn't exist.
+     * @return the extension, or <code>null</code> if it doesn't exist.
      */
     public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {
         return PacketUtil.extensionElementFrom(extensions, elementName, namespace);

@@ -41,7 +41,8 @@ import javax.xml.namespace.QName;
  * <p>
  * The following table shows the mapping of Smack's XmlPullParser events to StAX and XPP3 events:
  * </p>
- * <table summary="XmlPullParser event mapping">
+ * <table>
+ * <caption>XmlPullParser event mapping</caption>
  * <tr><th>Smack's {@link XmlPullParser.Event}</th><th>StAX Event</th><th>XPP3 Event</th></tr>
  * <tr><td>{@link XmlPullParser.Event#START_DOCUMENT}</td><td>START_DOCUMENT (7)</td><td>START_DOCUMENT (0)</td></tr>
  * <tr><td>{@link XmlPullParser.Event#END_DOCUMENT}</td><td>END_DOCUMENT (8)</td><td>END_DOCUMENT (1)</td></tr>

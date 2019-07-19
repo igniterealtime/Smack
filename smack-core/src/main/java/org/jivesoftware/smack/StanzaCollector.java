@@ -63,7 +63,7 @@ public final class StanzaCollector implements AutoCloseable {
     private Exception connectionException;
 
     /**
-     * Creates a new stanza collector. If the stanza filter is <tt>null</tt>, then
+     * Creates a new stanza collector. If the stanza filter is <code>null</code>, then
      * all packets will match this collector.
      *
      * @param connection the connection the collector is tied to.
@@ -110,11 +110,11 @@ public final class StanzaCollector implements AutoCloseable {
 
     /**
      * Polls to see if a stanza is currently available and returns it, or
-     * immediately returns <tt>null</tt> if no packets are currently in the
+     * immediately returns <code>null</code> if no packets are currently in the
      * result queue.
      *
      * @param <P> type of the result stanza.
-     * @return the next stanza result, or <tt>null</tt> if there are no more
+     * @return the next stanza result, or <code>null</code> if there are no more
      *      results.
      */
     @SuppressWarnings("unchecked")
@@ -124,7 +124,7 @@ public final class StanzaCollector implements AutoCloseable {
 
     /**
      * Polls to see if a stanza is currently available and returns it, or
-     * immediately returns <tt>null</tt> if no packets are currently in the
+     * immediately returns <code>null</code> if no packets are currently in the
      * result queue.
      * <p>
      * Throws an XMPPErrorException in case the polled stanzas did contain an XMPPError.
@@ -183,8 +183,8 @@ public final class StanzaCollector implements AutoCloseable {
 
     /**
      * Returns the next available stanza. The method call will block (not return) until a stanza is available or the
-     * <tt>timeout</tt> has elapsed or if the connection was terminated because of an error. If the timeout elapses without a
-     * result or if there was an connection error, <tt>null</tt> will be returned.
+     * <code>timeout</code> has elapsed or if the connection was terminated because of an error. If the timeout elapses without a
+     * result or if there was an connection error, <code>null</code> will be returned.
      *
      * @param <P> type of the result stanza.
      * @param timeout the timeout in milliseconds.
@@ -230,7 +230,7 @@ public final class StanzaCollector implements AutoCloseable {
 
     /**
      * Returns the next available stanza. The method call will block until a stanza is
-     * available or the <tt>timeout</tt> has elapsed. This method does also cancel the
+     * available or the <code>timeout</code> has elapsed. This method does also cancel the
      * collector in every case.
      * <p>
      * Three things can happen when waiting for an response:

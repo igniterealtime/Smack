@@ -781,12 +781,12 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the room's configuration form that the room's owner can use or <tt>null</tt> if
+     * Returns the room's configuration form that the room's owner can use or <code>null</code> if
      * no configuration is possible. The configuration form allows to set the room's language,
      * enable logging, specify room's type, etc..
      *
      * @return the Form that contains the fields to complete together with the instrucions or
-     * <tt>null</tt> if no configuration is possible.
+     * <code>null</code> if no configuration is possible.
      * @throws XMPPErrorException if an error occurs asking the configuration form for the room.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException
@@ -822,7 +822,7 @@ public class MultiUserChat {
 
     /**
      * Returns the room's registration form that an unaffiliated user, can use to become a member
-     * of the room or <tt>null</tt> if no registration is possible. Some rooms may restrict the
+     * of the room or <code>null</code> if no registration is possible. Some rooms may restrict the
      * privilege to register members and allow only room admins to add new members.<p>
      *
      * If the user requesting registration requirements is not allowed to register with the room
@@ -830,7 +830,7 @@ public class MultiUserChat {
      * error to the user (error code 405).
      *
      * @return the registration Form that contains the fields to complete together with the
-     * instrucions or <tt>null</tt> if no registration is possible.
+     * instrucions or <code>null</code> if no registration is possible.
      * @throws XMPPErrorException if an error occurs asking the registration form for the room or a
      * 405 error if the user is not allowed to register with the room.
      * @throws NoResponseException if there was no response from the server.
@@ -1043,7 +1043,7 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the last known room's subject or <tt>null</tt> if the user hasn't joined the room
+     * Returns the last known room's subject or <code>null</code> if the user hasn't joined the room
      * or the room does not have a subject yet. In case the room has a subject, as soon as the
      * user joins the room a message with the current room's subject will be received.<p>
      *
@@ -1052,7 +1052,7 @@ public class MultiUserChat {
      *
      * To change the room's subject use {@link #changeSubject(String)}.
      *
-     * @return the room's subject or <tt>null</tt> if the user hasn't joined the room or the
+     * @return the room's subject or <code>null</code> if the user hasn't joined the room or the
      * room does not have a subject yet.
      */
     public String getSubject() {
@@ -1065,7 +1065,7 @@ public class MultiUserChat {
      * cases it may be desirable for the user to discover the reserved nickname before attempting
      * to enter the room.
      *
-     * @return the reserved room nickname or <tt>null</tt> if none.
+     * @return the reserved room nickname or <code>null</code> if none.
      * @throws SmackException if there was no response from the server.
      * @throws InterruptedException
      */
@@ -1088,7 +1088,7 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the nickname that was used to join the room, or <tt>null</tt> if not
+     * Returns the nickname that was used to join the room, or <code>null</code> if not
      * currently joined.
      *
      * @return the nickname currently being used.
@@ -1690,12 +1690,12 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the presence info for a particular user, or <tt>null</tt> if the user
+     * Returns the presence info for a particular user, or <code>null</code> if the user
      * is not in the room.<p>
      *
      * @param user the room occupant to search for his presence. The format of user must
      * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).
-     * @return the occupant's current presence, or <tt>null</tt> if the user is unavailable
+     * @return the occupant's current presence, or <code>null</code> if the user is unavailable
      *      or if no presence information is available.
      */
     public Presence getOccupantPresence(EntityFullJid user) {
@@ -1703,13 +1703,13 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the Occupant information for a particular occupant, or <tt>null</tt> if the
+     * Returns the Occupant information for a particular occupant, or <code>null</code> if the
      * user is not in the room. The Occupant object may include information such as full
      * JID of the user as well as the role and affiliation of the user in the room.<p>
      *
      * @param user the room occupant to search for his presence. The format of user must
      * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).
-     * @return the Occupant or <tt>null</tt> if the user is unavailable (i.e. not in the room).
+     * @return the Occupant or <code>null</code> if the user is unavailable (i.e. not in the room).
      */
     public Occupant getOccupant(EntityFullJid user) {
         Presence presence = getOccupantPresence(user);
@@ -1933,7 +1933,7 @@ public class MultiUserChat {
     }
 
     /**
-    * Polls for and returns the next message, or <tt>null</tt> if there isn't
+    * Polls for and returns the next message, or <code>null</code> if there isn't
     * a message immediately available. This method provides significantly different
     * functionalty than the {@link #nextMessage()} method since it's non-blocking.
     * In other words, the method call will always return immediately, whereas the
@@ -1941,7 +1941,7 @@ public class MultiUserChat {
     * a specific timeout).
     *
     * @return the next message if one is immediately available and
-    *      <tt>null</tt> otherwise.
+    *      <code>null</code> otherwise.
      * @throws MucNotJoinedException
     */
     public Message pollMessage() throws MucNotJoinedException {
@@ -1968,11 +1968,11 @@ public class MultiUserChat {
 
     /**
      * Returns the next available message in the chat. The method call will block
-     * (not return) until a stanza is available or the <tt>timeout</tt> has elapased.
-     * If the timeout elapses without a result, <tt>null</tt> will be returned.
+     * (not return) until a stanza is available or the <code>timeout</code> has elapased.
+     * If the timeout elapses without a result, <code>null</code> will be returned.
      *
      * @param timeout the maximum amount of time to wait for the next message.
-     * @return the next message, or <tt>null</tt> if the timeout elapses without a
+     * @return the next message, or <code>null</code> if the timeout elapses without a
      *      message becoming available.
      * @throws MucNotJoinedException
      * @throws InterruptedException

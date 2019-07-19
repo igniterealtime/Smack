@@ -58,12 +58,12 @@ public class MultipleRecipientInfo {
     }
 
     /**
-     * Returns the JID of a MUC room to which responses should be sent or <tt>null</tt>  if
+     * Returns the JID of a MUC room to which responses should be sent or <code>null</code>  if
      * no specific address was provided. When no specific address was provided then the reply
      * can be sent to any or all recipients. Otherwise, the user should join the specified room
      * and send the reply to the room.
      *
-     * @return the JID of a MUC room to which responses should be sent or <tt>null</tt>  if
+     * @return the JID of a MUC room to which responses should be sent or <code>null</code>  if
      *         no specific address was provided.
      */
     // TODO should return EntityBareJid
@@ -84,11 +84,11 @@ public class MultipleRecipientInfo {
     }
 
     /**
-     * Returns the address to which all replies are requested to be sent or <tt>null</tt> if
+     * Returns the address to which all replies are requested to be sent or <code>null</code> if
      * no specific address was provided. When no specific address was provided then the reply
      * can be sent to any or all recipients.
      *
-     * @return the address to which all replies are requested to be sent or <tt>null</tt> if
+     * @return the address to which all replies are requested to be sent or <code>null</code> if
      *         no specific address was provided.
      */
     public MultipleAddresses.Address getReplyAddress() {

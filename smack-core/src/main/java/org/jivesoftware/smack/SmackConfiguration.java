@@ -84,7 +84,7 @@ public final class SmackConfiguration {
      * <li> Interpreted Packets -- shows XML packets from the server as parsed by Smack.
      * </ul>
      * Debugging can be enabled by setting this field to true, or by setting the Java system
-     * property <tt>smack.debugEnabled</tt> to true. The system property can be set on the
+     * property <code>smack.debugEnabled</code> to true. The system property can be set on the
      * command line such as "java SomeApp -Dsmack.debugEnabled=true".
      */
     public static boolean DEBUG = false;

@@ -123,7 +123,7 @@ public interface XMPPConnection {
 
     /**
      * Returns the full XMPP address of the user that is logged in to the connection or
-     * <tt>null</tt> if not logged in yet. An XMPP address is in the form
+     * <code>null</code> if not logged in yet. An XMPP address is in the form
      * username@server/resource.
      *
      * @return the full XMPP address of the user logged in.
@@ -132,9 +132,9 @@ public interface XMPPConnection {
 
     /**
      * Returns the stream ID for this connection, which is the value set by the server
-     * when opening an XMPP stream. This value will be <tt>null</tt> if not connected to the server.
+     * when opening an XMPP stream. This value will be <code>null</code> if not connected to the server.
      *
-     * @return the ID of this connection returned from the XMPP server or <tt>null</tt> if
+     * @return the ID of this connection returned from the XMPP server or <code>null</code> if
      *      not connected to the server.
      * @see <a href="http://xmpp.org/rfcs/rfc6120.html#streams-attr-id">RFC 6120 § 4.7.3. id</a>
      */
@@ -471,7 +471,7 @@ public interface XMPPConnection {
     /**
      * Get the connection counter of this XMPPConnection instance. Those can be used as ID to
      * identify the connection, but beware that the ID may not be unique if you create more then
-     * <tt>2*Integer.MAX_VALUE</tt> instances as the counter could wrap.
+     * <code>2*Integer.MAX_VALUE</code> instances as the counter could wrap.
      *
      * @return the connection counter of this XMPPConnection
      */

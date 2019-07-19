@@ -114,7 +114,7 @@ public abstract class LocalCommand extends AdHocCommand {
     /**
      * Returns true if the current stage is the last one. If it is then the
      * execution of some action will complete the execution of the command.
-     * Commands that don't have multiple stages can always return <tt>true</tt>.
+     * Commands that don't have multiple stages can always return <code>true</code>.
      *
      * @return true if the command is in the last stage.
      */

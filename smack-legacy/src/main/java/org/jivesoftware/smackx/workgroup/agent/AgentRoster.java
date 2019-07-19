@@ -201,12 +201,12 @@ public class AgentRoster {
     }
 
     /**
-     * Returns the presence info for a particular agent, or <tt>null</tt> if the agent
+     * Returns the presence info for a particular agent, or <code>null</code> if the agent
      * is unavailable (offline) or if no presence information is available.<p>
      *
      * @param user a fully qualified xmpp JID. The address could be in any valid format (e.g.
      *             "domain/resource", "user@domain" or "user@domain/resource").
-     * @return the agent's current presence, or <tt>null</tt> if the agent is unavailable
+     * @return the agent's current presence, or <code>null</code> if the agent is unavailable
      *         or if no presence information is available..
      */
     public Presence getPresence(Jid user) {

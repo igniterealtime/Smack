@@ -159,7 +159,7 @@ public class OfferRequestProvider extends IQProvider<IQ> {
 
         /**
          * Returns the session ID associated with the request and ensuing chat. If the offer
-         * does not contain a session ID, <tt>null</tt> will be returned.
+         * does not contain a session ID, <code>null</code> will be returned.
          *
          * @return the session id associated with the request.
          */

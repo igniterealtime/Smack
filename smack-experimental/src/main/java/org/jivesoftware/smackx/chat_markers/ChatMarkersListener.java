@@ -32,7 +32,7 @@ public interface ChatMarkersListener {
      *
      * @param chatMarkersState the current state of the message.
      * @param message          the new incoming message with a markable XML tag.
-     * @param chat             associated to the message. This element can be <tt>NULL</tt>.
+     * @param chat             associated to the message. This element can be <code>NULL</code>.
      */
     void newChatMarkerMessage(ChatMarkersState chatMarkersState, Message message, Chat chat);
 }

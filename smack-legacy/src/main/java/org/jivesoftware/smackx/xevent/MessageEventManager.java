@@ -103,7 +103,7 @@ public final class MessageEventManager extends Manager {
 
     /**
      * Adds event notification requests to a message. For each event type that
-     * the user wishes event notifications from the message recipient for, <tt>true</tt>
+     * the user wishes event notifications from the message recipient for, <code>true</code>
      * should be passed in to this method.
      *
      * @param message the message to add the requested notifications.
