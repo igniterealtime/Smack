@@ -47,8 +47,4 @@ public abstract class AbstractXmppNioConnection extends AbstractXmppStateMachine
         SMACK_REACTOR.setInterestOps(selectionKey, interestOps);
     }
 
-    @Override
-    protected void finalize() {
-        disconnect();
-    }
 }
