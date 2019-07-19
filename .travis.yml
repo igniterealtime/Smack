@@ -18,7 +18,12 @@ before_install:
   - sudo apt install graphviz
 
 install: gradle assemble --stacktrace
-script: gradle check --stacktrace
+
+# Run the test suite and also install the artifacts in the local maven
+# archive to additionaly test if artifact creation is
+# functional. Which hasn't always be the case in the past, see
+# 90cbcaebc7a89f4f771f733a33ac9f389df85be2
+script: gradle check install --stacktrace
 
 after_success:
   - JAVAC_VERSION=$((javac -version) 2>&1)
