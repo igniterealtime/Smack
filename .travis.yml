@@ -20,6 +20,10 @@ before_install:
   - export PATH="$(pwd)/gradle-${GRADLE_VERSION}/bin:$PATH"
   - sudo apt-get install graphviz
 
+addons:
+  apt:
+    update: true
+
 install: gradle assemble --stacktrace
 
 # Run the test suite and also install the artifacts in the local maven
