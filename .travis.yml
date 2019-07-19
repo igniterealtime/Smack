@@ -8,7 +8,6 @@ jdk:
   - openjdk9
   - openjdk11
 
-sudo: false
 cache:
   directories:
   - $HOME/.m2
