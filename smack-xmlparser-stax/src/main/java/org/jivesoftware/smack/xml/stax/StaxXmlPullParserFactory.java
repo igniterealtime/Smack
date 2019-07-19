@@ -27,7 +27,7 @@ import org.jivesoftware.smack.xml.XmlPullParserFactory;
 
 public class StaxXmlPullParserFactory implements XmlPullParserFactory {
 
-    private static final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+    private static final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
     static {
         // XPP3 appears to coalescing hence we need to configure our StAX parser to also return all available text on
