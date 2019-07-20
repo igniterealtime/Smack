@@ -1,7 +1,7 @@
 allprojects {
 	ext {
 		shortVersion = '4.4.0-alpha2'
-		isSnapshot = true
+		isSnapshot = false
 		// When using dynamic versions for those, do *not* use [1.0,
 		// 2.0), since this will also pull in 2.0-alpha1. Instead use
 		// [1.0, 1.0.99].
