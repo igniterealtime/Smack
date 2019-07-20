@@ -399,7 +399,6 @@ subprojects {
 	apply plugin: 'org.kordamp.gradle.clirr'
 
 	checkstyle {
-		configFile = new File(rootConfigDir, 'checkstyle.xml')
 		toolVersion = '8.10'
 	}
 	task sourcesJar(type: Jar, dependsOn: classes) {

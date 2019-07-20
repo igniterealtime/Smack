@@ -4,7 +4,7 @@
      "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="Checker">
 	<module name="SuppressionFilter">
-		<property name="file" value="config/suppressions.xml"/>
+		<property name="file" value="${config_loc}/suppressions.xml"/>
 	</module>
 	<module name="SuppressWithPlainTextCommentFilter">
 		<property name="offCommentFormat" value="CHECKSTYLE\:OFF\:(\w+)"/>
@@ -12,7 +12,7 @@
 		<property name="checkFormat" value="$1"/>
 	</module>
 	<module name="Header">
-		<property name="headerFile" value="config/${checkstyleLicenseHeader}.txt"/>
+		<property name="headerFile" value="${config_loc}/${checkstyleLicenseHeader}.txt"/>
 		<property name="ignoreLines" value="3"/>
 		<property name="fileExtensions" value="java"/>
 	</module>
