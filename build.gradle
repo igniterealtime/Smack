@@ -484,6 +484,15 @@ subprojects {
 			include "$libsDirName/*${version}-sources.jar"
 		}
 	}
+
+	// Workaround for gpg signatory not supporting the 'required' option
+	// See https://github.com/gradle/gradle/issues/5064#issuecomment-381924984
+	// Note what we use 'signing.gnupg.keyName' instead of 'signing.keyId'.
+	tasks.withType(Sign) {
+		onlyIf {
+			project.hasProperty('signing.gnupg.keyName')
+		}
+	}
 	signing {
 		useGpgCmd()
 		required { signingRequired }
