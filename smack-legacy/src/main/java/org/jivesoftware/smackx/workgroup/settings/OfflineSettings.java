@@ -78,7 +78,7 @@ public class OfflineSettings extends SimpleIQ {
     }
 
     public boolean redirects() {
-        return (StringUtils.isNotEmpty(getRedirectURL()));
+        return StringUtils.isNotEmpty(getRedirectURL());
     }
 
     public boolean isConfigured() {

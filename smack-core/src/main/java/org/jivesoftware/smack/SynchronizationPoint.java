@@ -79,7 +79,7 @@ public class SynchronizationPoint<E extends Exception> {
      */
     public Exception sendAndWaitForResponse(TopLevelStreamElement request) throws NoResponseException,
                     NotConnectedException, InterruptedException {
-        assert (state == State.Initial);
+        assert state == State.Initial;
         connectionLock.lock();
         try {
             if (request != null) {

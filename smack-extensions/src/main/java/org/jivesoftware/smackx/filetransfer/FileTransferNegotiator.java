@@ -73,7 +73,7 @@ public final class FileTransferNegotiator extends Manager {
      * set this variable to true for testing purposes as IBB is the backup file transfer method
      * and shouldn't be used as the only transfer method in production systems.
      */
-    public static boolean IBB_ONLY = (System.getProperty("ibb") != null);//true;
+    public static boolean IBB_ONLY = System.getProperty("ibb") != null;//true;
 
     /**
      * Returns the file transfer negotiator related to a particular connection.

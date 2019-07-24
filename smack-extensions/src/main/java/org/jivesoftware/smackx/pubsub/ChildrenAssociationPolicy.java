@@ -30,5 +30,5 @@ public enum ChildrenAssociationPolicy {
     owners,
 
     /** Only those on a whitelist may associate leaf nodes with the collection.  */
-    whitelist;
+    whitelist,
 }

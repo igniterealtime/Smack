@@ -33,7 +33,7 @@ public abstract class AbstractDelayInformationProvider extends ExtensionElementP
     public final DelayInformation parse(XmlPullParser parser,
                     int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
                     IOException, SmackTextParseException {
-        String stampString = (parser.getAttributeValue("", "stamp"));
+        String stampString = parser.getAttributeValue("", "stamp");
         String from = parser.getAttributeValue("", "from");
         final String reason;
         XmlPullParser.Event event = parser.next();

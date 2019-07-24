@@ -123,7 +123,7 @@ public final class RosterEntry extends Manager {
      * @param item new item
      */
     void updateItem(RosterPacket.Item item) {
-        assert (item != null);
+        assert item != null;
         this.item = item;
     }
 

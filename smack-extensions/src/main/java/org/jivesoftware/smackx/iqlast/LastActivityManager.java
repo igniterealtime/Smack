@@ -214,7 +214,7 @@ public final class LastActivityManager extends Manager {
     private long getIdleTime() {
         long lms = lastMessageSent;
         long now = System.currentTimeMillis();
-        return ((now - lms) / 1000);
+        return (now - lms) / 1000;
     }
 
     /**

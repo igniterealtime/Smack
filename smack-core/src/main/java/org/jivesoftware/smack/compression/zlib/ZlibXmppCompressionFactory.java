@@ -95,7 +95,7 @@ public final class ZlibXmppCompressionFactory extends XmppCompressionFactory {
             }
 
             // There is an invariant of Deflater/Inflater that input should only be set if needsInput() return true.
-            assert (compressor.needsInput());
+            assert compressor.needsInput();
 
             final byte[] compressorInputBuffer;
             final int compressorInputBufferOffset, compressorInputBufferLength;

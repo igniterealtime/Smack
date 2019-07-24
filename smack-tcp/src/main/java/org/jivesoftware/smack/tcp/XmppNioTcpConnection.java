@@ -229,7 +229,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
                         notifyConnectionError(ise);
                         return;
                     }
-                    assert (config.getXMPPServiceDomain().equals(reportedServerDomain));
+                    assert config.getXMPPServiceDomain().equals(reportedServerDomain);
                     break;
                 case "xmlns":
                     streamOpen.append(" xmlns='").append(attributeValue).append('\'');
@@ -513,7 +513,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
                     } else {
                         outgoingCharSequenceIterator = Collections.singletonList(nextCharSequence).iterator();
                     }
-                    assert (outgoingCharSequenceIterator != null);
+                    assert outgoingCharSequenceIterator != null;
                 } else {
                     // There is nothing more to write.
                     break;
@@ -1067,7 +1067,6 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
         initiated,
         successful,
         failed,
-        ;
     }
 
     private static final Level SSL_ENGINE_DEBUG_LOG_LEVEL = Level.FINEST;
@@ -1282,7 +1281,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
                     return null;
                 case BUFFER_OVERFLOW:
                     int applicationBufferSize = engine.getSession().getApplicationBufferSize();
-                    assert (peerAppData.remaining() < applicationBufferSize);
+                    assert peerAppData.remaining() < applicationBufferSize;
                     peerAppData = ByteBuffer.allocate(applicationBufferSize);
                     continue;
                 }

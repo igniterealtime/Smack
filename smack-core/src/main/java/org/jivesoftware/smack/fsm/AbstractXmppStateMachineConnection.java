@@ -178,7 +178,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
 
         if (initialStateDescriptor.getClass() == walkStateGraphContext.finalStateClass) {
             // If this is used as final state, then it should be marked as such.
-            assert (initialStateDescriptor.isFinalState());
+            assert initialStateDescriptor.isFinalState();
 
             // We reached the final state.
             invokeConnectionStateMachineListener(new ConnectionStateEvent.FinalStateReached(initialState));
@@ -578,7 +578,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
 
         @Override
         protected TransitionIntoResult transitionInto(WalkStateGraphContext walkStateGraphContext) {
-            assert (walkFromDisconnectToAuthenticated == null);
+            assert walkFromDisconnectToAuthenticated == null;
             if (getStateDescriptor().getClass() == walkStateGraphContext.finalStateClass) {
                 // If this is the final state, then record the walk so far.
                 walkFromDisconnectToAuthenticated = new ArrayList<>(walkStateGraphContext.walkedStateGraphPath);
@@ -780,7 +780,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
             if (walkFromDisconnectToAuthenticated != null) {
                 // If there was already a previous walk to ConnectedButUnauthenticated, then the context of the current
                 // walk must not start from the 'Disconnected' state.
-                assert (walkStateGraphContext.walkedStateGraphPath.get(0).stateDescriptor.getClass() != DisconnectedStateDescriptor.class);
+                assert walkStateGraphContext.walkedStateGraphPath.get(0).stateDescriptor.getClass() != DisconnectedStateDescriptor.class;
                 walkFromDisconnectToAuthenticated.addAll(walkStateGraphContext.walkedStateGraphPath);
             } else {
                 walkFromDisconnectToAuthenticated = new ArrayList<>(walkStateGraphContext.walkedStateGraphPath.size() + 1);

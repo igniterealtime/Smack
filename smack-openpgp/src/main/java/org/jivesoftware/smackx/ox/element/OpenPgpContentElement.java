@@ -160,7 +160,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
     }
 
     protected void addCommonXml(XmlStringBuilder xml) {
-        for (Jid toJid : (to != null ? to : Collections.<Jid>emptySet())) {
+        for (Jid toJid : to != null ? to : Collections.<Jid>emptySet()) {
             xml.halfOpenElement(ELEM_TO).attribute(ATTR_JID, toJid).closeEmptyElement();
         }
 

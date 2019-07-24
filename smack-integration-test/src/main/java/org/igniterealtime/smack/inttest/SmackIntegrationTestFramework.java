@@ -592,7 +592,7 @@ public class SmackIntegrationTestFramework<DC extends AbstractXMPPConnection> {
         }
         final String className = clz.getName();
         final String unqualifiedClassName = clz.getSimpleName();
-        return (classes.contains(className) || classes.contains(unqualifiedClassName));
+        return classes.contains(className) || classes.contains(unqualifiedClassName);
     }
 
     public static final class TestRunResult {
@@ -709,7 +709,7 @@ public class SmackIntegrationTestFramework<DC extends AbstractXMPPConnection> {
             this.testMethod = testMethod;
 
             smackIntegrationTestAnnotation = testMethod.getAnnotation(SmackIntegrationTest.class);
-            assert (smackIntegrationTestAnnotation != null);
+            assert smackIntegrationTestAnnotation != null;
             parameterListOfConnections = testMethodParametersIsListOfConnections(testMethod);
         }
 

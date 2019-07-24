@@ -1570,7 +1570,7 @@ public final class Roster extends Manager {
                         else {
                             fullFrom = from.asFullJidIfPossible();
                             // We know that this must be a full JID in this case.
-                            assert (fullFrom != null);
+                            assert fullFrom != null;
                         }
                     }
                     Map<Resourcepart, Presence> userPresences;

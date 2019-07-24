@@ -180,7 +180,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     public XmlStringBuilder halfOpenElement(String name) {
-        assert (StringUtils.isNotEmpty(name));
+        assert StringUtils.isNotEmpty(name);
         sb.append('<').append(name);
         return this;
     }

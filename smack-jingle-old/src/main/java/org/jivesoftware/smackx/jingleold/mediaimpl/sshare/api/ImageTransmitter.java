@@ -164,7 +164,7 @@ public class ImageTransmitter implements Runnable {
                     }
                 }
 
-                trace = (System.currentTimeMillis() - trace);
+                trace = System.currentTimeMillis() - trace;
                 LOGGER.fine("Loop Time:" + trace);
 
                 if (trace < 500) {

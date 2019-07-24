@@ -110,7 +110,6 @@ public class StringUtils {
         forAttribute,
         forAttributeApos,
         forText,
-        ;
     }
 
     /**

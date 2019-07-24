@@ -79,7 +79,7 @@ public class ServiceAdministrationManager extends Manager {
         answerForm.setAnswer("password-verify", password);
 
         command.execute(answerForm);
-        assert (command.isCompleted());
+        assert command.isCompleted();
     }
 
     public RemoteCommand deleteUser() {
@@ -106,6 +106,6 @@ public class ServiceAdministrationManager extends Manager {
         answerForm.setAnswer("accountjids", jidsToDelete);
 
         command.execute(answerForm);
-        assert (command.isCompleted());
+        assert command.isCompleted();
     }
 }

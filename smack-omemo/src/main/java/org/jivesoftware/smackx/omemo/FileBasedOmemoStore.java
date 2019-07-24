@@ -113,7 +113,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         SortedSet<Integer> deviceIds = new TreeSet<>();
         File userDir = hierarchy.getUserDirectory(localUser);
         File[] list = userDir.listFiles();
-        for (File d : (list != null ? list : new File[] {})) {
+        for (File d : list != null ? list : new File[] {}) {
             if (d.isDirectory()) {
                 try {
                     deviceIds.add(Integer.parseInt(d.getName()));

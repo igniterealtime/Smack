@@ -55,7 +55,7 @@ public class SubscriptionProvider extends ExtensionElementProvider<Subscription>
             while (tag != XmlPullParser.Event.END_ELEMENT && !parser.getName().equals("subscribe-options")) tag = parser.next();
         }
         while (parser.getEventType() != XmlPullParser.Event.END_ELEMENT) parser.next();
-        return new Subscription(jid, nodeId, subId, (state == null ? null : Subscription.State.valueOf(state)), isRequired);
+        return new Subscription(jid, nodeId, subId, state == null ? null : Subscription.State.valueOf(state), isRequired);
     }
 
 }

@@ -135,7 +135,7 @@ public class SignalOmemoStoreConnector
     @Override
     public boolean containsPreKey(int i) {
         try {
-            return (loadPreKey(i) != null);
+            return loadPreKey(i) != null;
         } catch (InvalidKeyIdException e) {
             return false;
         }

@@ -114,14 +114,14 @@ public class SmackTestUtil {
     public static XmlPullParser getParserFor(String xml, QName startTagQName, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException {
         XmlPullParser parser = getParserFor(xml, parserKind);
-        forwardParserToStartElement(parser, (p) -> p.getQName().equals(startTagQName));
+        forwardParserToStartElement(parser, p -> p.getQName().equals(startTagQName));
         return parser;
     }
 
     public static XmlPullParser getParserFor(String xml, String startTagLocalpart, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException {
         XmlPullParser parser = getParserFor(xml, parserKind);
-        forwardParserToStartElement(parser, (p) -> p.getName().equals(startTagLocalpart));
+        forwardParserToStartElement(parser, p -> p.getName().equals(startTagLocalpart));
         return parser;
     }
 

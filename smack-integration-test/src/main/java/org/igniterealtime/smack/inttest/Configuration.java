@@ -149,7 +149,7 @@ public final class Configuration {
         this.disabledTests = disabledTests;
         this.testPackages = testPackages;
 
-        this.configurationApplier =  (builder) -> {
+        this.configurationApplier = builder -> {
             if (tlsContext != null) {
                 builder.setCustomSSLContext(tlsContext);
             }

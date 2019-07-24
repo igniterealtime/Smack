@@ -233,7 +233,7 @@ public class DNSUtil {
                 }
 
                 for (SRVRecord r : bucket) {
-                    running_total += (r.getWeight() + zeroWeight);
+                    running_total += r.getWeight() + zeroWeight;
                     totals[count] = running_total;
                     count++;
                 }

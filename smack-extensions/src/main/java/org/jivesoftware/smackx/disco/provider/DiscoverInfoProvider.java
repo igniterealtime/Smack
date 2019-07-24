@@ -79,7 +79,7 @@ public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
                 if (parser.getName().equals("feature")) {
                     // Create a new feature and add it to the discovered info.
                     boolean notADuplicateFeature = discoverInfo.addFeature(variable);
-                    assert (notADuplicateFeature);
+                    assert notADuplicateFeature;
                 }
                 if (parser.getName().equals("query")) {
                     done = true;

@@ -212,5 +212,9 @@
 			<property name="sortImportsInGroupAlphabetically" value="true"/>
 			<property name="separateLineBetweenGroups" value="true"/>
 		</module>
+		<module name="MissingJavadocPackage"/>
+		<module name="UnnecessaryParentheses"/>
+		<module name="UnnecessarySemicolonInEnumeration"/>
+		<module name="UnnecessarySemicolonInTryWithResources"/>
 	</module>
 </module>

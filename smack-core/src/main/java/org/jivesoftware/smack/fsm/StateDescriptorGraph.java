@@ -326,7 +326,7 @@ public class StateDescriptorGraph {
 
     private static <E> List<GraphVertex<E>> topologicalSort(Collection<GraphVertex<E>> vertexes) {
         List<GraphVertex<E>> res = new ArrayList<>();
-        dfs(vertexes, (vertex) -> res.add(0, vertex), null);
+        dfs(vertexes, vertex -> res.add(0, vertex), null);
         return res;
     }
 
@@ -365,7 +365,7 @@ public class StateDescriptorGraph {
                     PrintWriter dotOut, boolean breakStateName) {
         dotOut.append("digraph {\n");
         dfs(vertexes,
-               (finishedVertex) -> {
+                finishedVertex -> {
                    boolean isMultiVisitState = finishedVertex.element.isMultiVisitState();
                    boolean isFinalState = finishedVertex.element.isFinalState();
                    boolean isNotImplemented = finishedVertex.element.isNotImplemented();

@@ -173,7 +173,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
                 String serverResponse = null;
                 for (String part : challengeParts) {
                     String[] keyValue = part.split("=");
-                    assert (keyValue.length == 2);
+                    assert keyValue.length == 2;
                     String key = keyValue[0];
                     String value = keyValue[1];
                     if ("rspauth".equals(key)) {

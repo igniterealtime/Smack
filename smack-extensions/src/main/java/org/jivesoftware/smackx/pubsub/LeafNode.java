@@ -305,7 +305,7 @@ public class LeafNode extends Node {
     @SuppressWarnings("unchecked")
     public <T extends Item> void publish(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Collection<T> items = new ArrayList<>(1);
-        items.add((item == null ? (T) new Item() : item));
+        items.add(item == null ? (T) new Item() : item);
         publish(items);
     }
 

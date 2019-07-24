@@ -56,7 +56,7 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
         } catch (NoSuchMethodException e) {
         }
         method = m;
-        supported = (method != null);
+        supported = method != null;
     }
 
     public Java7ZlibInputOutputStream() {

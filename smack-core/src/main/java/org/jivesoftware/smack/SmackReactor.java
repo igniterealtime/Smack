@@ -172,7 +172,7 @@ public class SmackReactor {
                     LOGGER.info(this + " shut down after " + shutDownDelay + "ms");
                 } else {
                     boolean contained = reactorThreads.remove(this);
-                    assert (contained);
+                    assert contained;
                 }
             }
         }

@@ -39,7 +39,6 @@ public class MamPrefsIQ extends IQ {
         always,
         never,
         roster,
-        ;
     }
 
     /**

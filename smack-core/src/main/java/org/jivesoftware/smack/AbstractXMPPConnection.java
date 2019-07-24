@@ -755,7 +755,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             hostAddresses = DNSUtil.resolveXMPPServiceDomain(dnsName, failedAddresses, config.getDnssecMode());
         }
         // Either the populated host addresses are not empty *or* there must be at least one failed address.
-        assert (!hostAddresses.isEmpty() || !failedAddresses.isEmpty());
+        assert !hostAddresses.isEmpty() || !failedAddresses.isEmpty();
         return failedAddresses;
     }
 
@@ -788,7 +788,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
-        assert (stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ);
+        assert stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ;
 
         throwNotConnectedExceptionIfAppropriate();
         switch (fromMode) {
@@ -1275,7 +1275,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws InterruptedException
      */
     protected void processStanza(final Stanza stanza) throws InterruptedException {
-        assert (stanza != null);
+        assert stanza != null;
 
         final SmackDebugger debugger = this.debugger;
         if (debugger != null) {
@@ -1892,7 +1892,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public final String toString() {
         EntityFullJid localEndpoint = getUser();
-        String localEndpointString = (localEndpoint == null ?  "not-authenticated" : localEndpoint.toString());
+        String localEndpointString = localEndpoint == null ?  "not-authenticated" : localEndpoint.toString();
         return getClass().getSimpleName() + '[' + localEndpointString + "] (" + getConnectionCounter() + ')';
     }
 

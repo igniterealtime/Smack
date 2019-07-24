@@ -309,7 +309,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @return true if a delivery receipt was requested
      */
     public static boolean hasDeliveryReceiptRequest(Message message) {
-        return (DeliveryReceiptRequest.from(message) != null);
+        return DeliveryReceiptRequest.from(message) != null;
     }
 
     /**

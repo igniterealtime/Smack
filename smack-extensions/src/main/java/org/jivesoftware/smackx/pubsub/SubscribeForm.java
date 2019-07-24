@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UnknownFormatConversionException;
 
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -58,7 +59,7 @@ public class SubscribeForm extends Form {
      * @return true if want to receive, false otherwise
      */
     public boolean isDeliverOn() {
-        return parseBoolean(getFieldValue(SubscribeOptionFields.deliver));
+        return ParserUtils.parseXmlBoolean(getFieldValue(SubscribeOptionFields.deliver));
     }
 
     /**
@@ -77,7 +78,7 @@ public class SubscribeForm extends Form {
      * @return true to aggregate, false otherwise
      */
     public boolean isDigestOn() {
-        return parseBoolean(getFieldValue(SubscribeOptionFields.digest));
+        return ParserUtils.parseXmlBoolean(getFieldValue(SubscribeOptionFields.digest));
     }
 
     /**
@@ -143,7 +144,7 @@ public class SubscribeForm extends Form {
      * @return true to receive the message body, false otherwise
      */
     public boolean isIncludeBody() {
-        return parseBoolean(getFieldValue(SubscribeOptionFields.include_body));
+        return ParserUtils.parseXmlBoolean(getFieldValue(SubscribeOptionFields.include_body));
     }
 
     /**
@@ -186,11 +187,6 @@ public class SubscribeForm extends Form {
         }
         addField(SubscribeOptionFields.show_values, FormField.Type.list_multi);
         setAnswer(SubscribeOptionFields.show_values.getFieldName(), values);
-    }
-
-
-    private static boolean parseBoolean(String fieldValue) {
-        return ("1".equals(fieldValue) || "true".equals(fieldValue));
     }
 
     private String getFieldValue(SubscribeOptionFields field) {

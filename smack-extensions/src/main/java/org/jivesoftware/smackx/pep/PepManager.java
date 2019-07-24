@@ -104,9 +104,9 @@ public final class PepManager extends Manager {
             public void processStanza(Stanza stanza) {
                 final Message message = (Message) stanza;
                 final EventElement event = EventElement.from(stanza);
-                assert (event != null);
+                assert event != null;
                 final EntityBareJid from = message.getFrom().asEntityBareJidIfPossible();
-                assert (from != null);
+                assert from != null;
                 asyncButOrdered.performAsyncButOrdered(from, new Runnable() {
                     @Override
                     public void run() {

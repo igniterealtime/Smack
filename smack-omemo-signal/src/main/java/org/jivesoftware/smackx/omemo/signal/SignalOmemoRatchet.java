@@ -149,8 +149,8 @@ public class SignalOmemoRatchet
         }
 
         // TODO: Figure out, if this is enough...
-        int type = (ciphertextMessage.getType() == CiphertextMessage.PREKEY_TYPE ?
-                OmemoElement.TYPE_OMEMO_PREKEY_MESSAGE : OmemoElement.TYPE_OMEMO_MESSAGE);
+        int type = ciphertextMessage.getType() == CiphertextMessage.PREKEY_TYPE ?
+                OmemoElement.TYPE_OMEMO_PREKEY_MESSAGE : OmemoElement.TYPE_OMEMO_MESSAGE;
 
         return new CiphertextTuple(ciphertextMessage.serialize(), type);
     }

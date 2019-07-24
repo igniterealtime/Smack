@@ -209,7 +209,7 @@ public abstract class ConnectionConfiguration {
         compressionEnabled = builder.compressionEnabled;
 
         // If the enabledSaslmechanisms are set, then they must not be empty
-        assert (enabledSaslMechanisms != null ? !enabledSaslMechanisms.isEmpty() : true);
+        assert enabledSaslMechanisms == null || !enabledSaslMechanisms.isEmpty();
 
         if (dnssecMode != DnssecMode.disabled && customSSLContext != null) {
             throw new IllegalStateException("You can not use a custom SSL context with DNSSEC enabled");

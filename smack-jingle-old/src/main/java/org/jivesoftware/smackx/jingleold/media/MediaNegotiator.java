@@ -354,7 +354,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * @return true if the content is fully negotiated.
      */
     public boolean isFullyEstablished() {
-        return (isEstablished() && ((getNegotiatorState() == JingleNegotiatorState.SUCCEEDED) || (getNegotiatorState() == JingleNegotiatorState.FAILED)));
+        return isEstablished() && ((getNegotiatorState() == JingleNegotiatorState.SUCCEEDED) || (getNegotiatorState() == JingleNegotiatorState.FAILED));
     }
 
     // Payload types

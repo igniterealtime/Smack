@@ -569,7 +569,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             int port = hostAddress.getPort();
             if (proxyInfo == null) {
                 inetAddresses = hostAddress.getInetAddresses().iterator();
-                assert (inetAddresses.hasNext());
+                assert inetAddresses.hasNext();
 
                 innerloop: while (inetAddresses.hasNext()) {
                     // Create a *new* Socket before every connection attempt, i.e. connect() call, since Sockets are not

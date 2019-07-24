@@ -208,7 +208,7 @@ public class RoomInfo {
             FormField subjectmodField = form.getField("muc#roominfo_subjectmod");
             if (subjectmodField != null && !subjectmodField.getValues().isEmpty()) {
                 String firstValue = subjectmodField.getFirstValue();
-                subjectmod = ("true".equals(firstValue) || "1".equals(firstValue));
+                subjectmod = "true".equals(firstValue) || "1".equals(firstValue);
             }
 
             FormField urlField = form.getField("muc#roominfo_logs");

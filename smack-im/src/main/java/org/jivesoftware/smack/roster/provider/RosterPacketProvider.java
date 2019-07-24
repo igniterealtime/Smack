@@ -113,7 +113,7 @@ public class RosterPacketProvider extends IQProvider<RosterPacket> {
             }
         }
         ParserUtils.assertAtEndTag(parser);
-        assert (item != null);
+        assert item != null;
         return item;
     }
 }

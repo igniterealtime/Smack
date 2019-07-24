@@ -148,7 +148,7 @@ public class MultiMap<K, V> {
         if (res == null) {
             return null;
         }
-        assert (!res.isEmpty());
+        assert !res.isEmpty();
         return res.iterator().next();
     }
 

@@ -86,12 +86,12 @@ public abstract class SmackDebugger {
      */
     public final Reader newConnectionReader(Reader reader) {
         XmlPrettyPrinter xmlPrettyPrinter = XmlPrettyPrinter.builder()
-                        .setPrettyWriter((sb) -> incomingStreamSink(sb))
+                        .setPrettyWriter(sb -> incomingStreamSink(sb))
                         .build();
         incomingStreamSplitterForPrettyPrinting = new XmppXmlSplitter(xmlPrettyPrinter);
 
         ObservableReader observableReader = new ObservableReader(reader);
-        observableReader.addReaderListener((readString) -> {
+        observableReader.addReaderListener(readString -> {
             try {
                 incomingStreamSplitterForPrettyPrinting.append(readString);
             }
@@ -113,12 +113,12 @@ public abstract class SmackDebugger {
      */
     public final Writer newConnectionWriter(Writer writer) {
         XmlPrettyPrinter xmlPrettyPrinter = XmlPrettyPrinter.builder()
-                        .setPrettyWriter((sb) -> outgoingStreamSink(sb))
+                        .setPrettyWriter(sb -> outgoingStreamSink(sb))
                         .build();
         outgoingStreamSplitterForPrettyPrinting = new XmppXmlSplitter(xmlPrettyPrinter);
 
         ObservableWriter observableWriter = new ObservableWriter(writer);
-        observableWriter.addWriterListener((writtenString) -> {
+        observableWriter.addWriterListener(writtenString -> {
             try {
                 outgoingStreamSplitterForPrettyPrinting.append(writtenString);
             }

@@ -648,7 +648,7 @@ public abstract class TransportCandidate {
             this.id = session.getSid();
             this.candidate = candidate;
 
-            int keySplitIndex = ((int) Math.ceil(((float) id.length()) / 2));
+            int keySplitIndex = (int) Math.ceil(((float) id.length()) / 2);
 
             String local = id.substring(0, keySplitIndex) + ";" + localUser;
             String remote = id.substring(keySplitIndex) + ";" + remoteUser;

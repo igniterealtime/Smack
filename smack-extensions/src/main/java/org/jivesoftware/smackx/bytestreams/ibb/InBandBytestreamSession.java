@@ -757,7 +757,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             bufferPointer = 0;
 
             // increment sequence, considering sequence overflow
-            this.seq = (this.seq + 1 == 65535 ? 0 : this.seq + 1);
+            this.seq = this.seq + 1 == 65535 ? 0 : this.seq + 1;
 
         }
 

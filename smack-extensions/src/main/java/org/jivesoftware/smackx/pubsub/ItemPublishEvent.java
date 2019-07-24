@@ -96,7 +96,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent {
      * @return true if the items are delayed, false otherwise.
      */
     public boolean isDelayed() {
-        return (originalDate != null);
+        return originalDate != null;
     }
 
     /**

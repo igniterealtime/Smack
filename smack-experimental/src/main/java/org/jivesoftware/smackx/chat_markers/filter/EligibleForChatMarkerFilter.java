@@ -62,7 +62,7 @@ public final class EligibleForChatMarkerFilter extends StanzaExtensionFilter {
             ChatState state;
             try {
                 state = ChatState.valueOf(chatStateElementName);
-                return (state == ChatState.active);
+                return state == ChatState.active;
             }
             catch (Exception ex) {
                 return false;

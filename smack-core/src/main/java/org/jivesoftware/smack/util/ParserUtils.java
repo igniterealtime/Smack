@@ -50,7 +50,7 @@ public class ParserUtils {
     public static final String JID = "jid";
 
     public static void assertAtStartTag(XmlPullParser parser) throws XmlPullParserException {
-        assert (parser.getEventType() == XmlPullParser.Event.START_ELEMENT);
+        assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
     }
 
     public static void assertAtStartTag(XmlPullParser parser, String name) throws XmlPullParserException {
@@ -59,7 +59,7 @@ public class ParserUtils {
     }
 
     public static void assertAtEndTag(XmlPullParser parser) throws XmlPullParserException {
-        assert (parser.getEventType() == XmlPullParser.Event.END_ELEMENT);
+        assert parser.getEventType() == XmlPullParser.Event.END_ELEMENT;
     }
 
     public static void forwardToEndTagOfDepth(XmlPullParser parser, int depth)

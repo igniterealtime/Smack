@@ -28,7 +28,7 @@ public abstract class TestResult {
 
     public TestResult(SmackIntegrationTestFramework.ConcreteTest concreteTest, long startTime, long endTime, List<String> logMessages) {
         this.concreteTest = concreteTest;
-        assert (endTime >= startTime);
+        assert endTime >= startTime;
         this.startTime = startTime;
         this.endTime = endTime;
         this.duration = endTime - startTime;

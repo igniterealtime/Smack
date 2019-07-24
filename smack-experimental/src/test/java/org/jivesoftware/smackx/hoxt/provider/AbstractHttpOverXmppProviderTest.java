@@ -65,7 +65,7 @@ public class AbstractHttpOverXmppProviderTest {
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppResp);
-        HttpOverXmppResp body = ((HttpOverXmppResp) iq);
+        HttpOverXmppResp body = (HttpOverXmppResp) iq;
 
         checkHeaders(body.getHeaders(), expectedHeaders);
     }
@@ -85,7 +85,7 @@ public class AbstractHttpOverXmppProviderTest {
 
         IQ iq = provider.parse(parser);
         assertTrue(iq instanceof HttpOverXmppReq);
-        HttpOverXmppReq body = ((HttpOverXmppReq) iq);
+        HttpOverXmppReq body = (HttpOverXmppReq) iq;
 
         checkHeaders(body.getHeaders(), expectedHeaders);
     }

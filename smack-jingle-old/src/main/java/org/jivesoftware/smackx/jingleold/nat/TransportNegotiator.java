@@ -281,7 +281,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @return true if the transport is fully established.
      */
     public final boolean isFullyEstablished() {
-        return (isEstablished() && ((getNegotiatorState() == JingleNegotiatorState.SUCCEEDED) || (getNegotiatorState() == JingleNegotiatorState.FAILED)));
+        return isEstablished() && ((getNegotiatorState() == JingleNegotiatorState.SUCCEEDED) || (getNegotiatorState() == JingleNegotiatorState.FAILED));
     }
 
     /**
@@ -303,7 +303,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
 
                     // Sleep for some time, waiting for the candidates checks
 
-                    int totalTime = (CANDIDATES_ACCEPT_PERIOD + TransportResolver.CHECK_TIMEOUT);
+                    int totalTime = CANDIDATES_ACCEPT_PERIOD + TransportResolver.CHECK_TIMEOUT;
                     int tries = (int) Math.ceil(totalTime / 1000);
 
                     for (int i = 0; i < tries - 1; i++) {

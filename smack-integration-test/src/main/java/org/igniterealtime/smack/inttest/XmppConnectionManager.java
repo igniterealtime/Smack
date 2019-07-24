@@ -283,7 +283,7 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
             registerAccount(finalAccountUsername, finalAccountPassword);
         }
 
-        DC mainConnection = defaultConnectionDescriptor.construct(sinttestConfiguration, (builder) -> {
+        DC mainConnection = defaultConnectionDescriptor.construct(sinttestConfiguration, builder -> {
             try {
                 builder.setUsernameAndPassword(finalAccountUsername, finalAccountPassword)
                     .setResource(middlefix + '-' + testRunId);
@@ -398,7 +398,7 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
             throw new IllegalArgumentException(e);
         }
 
-        ConnectionConfigurationBuilderApplier usernameAndPasswordApplier = (configurationBuilder) -> {
+        ConnectionConfigurationBuilderApplier usernameAndPasswordApplier = configurationBuilder -> {
             configurationBuilder.setUsernameAndPassword(username, password);
         };
 

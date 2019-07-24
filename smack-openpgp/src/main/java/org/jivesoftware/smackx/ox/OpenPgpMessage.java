@@ -60,7 +60,6 @@ public class OpenPgpMessage {
          * Represents a {@link CryptElement}.
          */
         crypt,
-        ;
     }
 
     private final String element;

@@ -50,6 +50,6 @@ public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketE
         if (getConfiguration() == null)
             return Collections.emptyList();
         else
-            return Arrays.asList(((ExtensionElement) getConfiguration().getDataFormToSend()));
+            return Arrays.asList((ExtensionElement) getConfiguration().getDataFormToSend());
     }
 }

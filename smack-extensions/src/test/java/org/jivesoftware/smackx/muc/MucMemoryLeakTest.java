@@ -26,7 +26,7 @@ public class MucMemoryLeakTest extends SmackTestSuite {
 
     @Test
     public void mucMemoryLeakTest() throws XmppStringprepException, IllegalArgumentException, InterruptedException {
-        MemoryLeakTestUtil.noResourceLeakTest((c) -> MultiUserChatManager.getInstanceFor(c));
+        MemoryLeakTestUtil.noResourceLeakTest(c -> MultiUserChatManager.getInstanceFor(c));
     }
 
 }

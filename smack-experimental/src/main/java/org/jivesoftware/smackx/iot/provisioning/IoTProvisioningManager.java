@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -316,7 +316,7 @@ public final class IoTProvisioningManager extends Manager {
             return null;
         }
         Jid jid = discoverInfos.get(0).getFrom();
-        assert (jid.isDomainBareJid());
+        assert jid.isDomainBareJid();
         return jid.asDomainBareJid();
     }
 
@@ -341,7 +341,7 @@ public final class IoTProvisioningManager extends Manager {
         IoTIsFriend iotIsFriend = new IoTIsFriend(friendInQuestion);
         iotIsFriend.setTo(provisioningServer);
         IoTIsFriendResponse response = connection().createStanzaCollectorAndSend(iotIsFriend).nextResultOrThrow();
-        assert (response.getJid().equals(friendInQuestion));
+        assert response.getJid().equals(friendInQuestion);
         boolean isFriend = response.getIsFriendResult();
         if (!isFriend) {
             // Cache the negative is friend response.

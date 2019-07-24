@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -246,7 +247,7 @@ public class ConfigureForm extends Form {
      * @return true if it does, false otherwise
      */
     public boolean isDeliverPayloads() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.deliver_payloads));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.deliver_payloads));
     }
 
     /**
@@ -353,7 +354,7 @@ public class ConfigureForm extends Form {
      * @return true if they should be notified, false otherwise
      */
     public boolean isNotifyConfig() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.notify_config));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.notify_config));
     }
 
     /**
@@ -372,7 +373,7 @@ public class ConfigureForm extends Form {
      * @return true if subscribers should be notified, false otherwise
      */
     public boolean isNotifyDelete() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.notify_delete));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.notify_delete));
     }
 
     /**
@@ -392,7 +393,7 @@ public class ConfigureForm extends Form {
      * @return true if subscribers should be notified, false otherwise
      */
     public boolean isNotifyRetract() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.notify_retract));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.notify_retract));
     }
 
     /**
@@ -436,7 +437,7 @@ public class ConfigureForm extends Form {
      * @return true if items are persisted
      */
     public boolean isPersistItems() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.persist_items));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.persist_items));
     }
 
     /**
@@ -455,7 +456,7 @@ public class ConfigureForm extends Form {
      * @return true if users must be available
      */
     public boolean isPresenceBasedDelivery() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.presence_based_delivery));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.presence_based_delivery));
     }
 
     /**
@@ -566,7 +567,7 @@ public class ConfigureForm extends Form {
      * @return true if subscriptions are allowed, false otherwise
      */
     public boolean isSubscribe() {
-        return parseBoolean(getFieldValue(ConfigureNodeFields.subscribe));
+        return ParserUtils.parseXmlBoolean(getFieldValue(ConfigureNodeFields.subscribe));
     }
 
     /**
@@ -643,10 +644,6 @@ public class ConfigureForm extends Form {
         }
         result.append(']');
         return result.toString();
-    }
-
-    private static boolean parseBoolean(String fieldValue) {
-        return ("1".equals(fieldValue) || "true".equals(fieldValue));
     }
 
     private String getFieldValue(ConfigureNodeFields field) {

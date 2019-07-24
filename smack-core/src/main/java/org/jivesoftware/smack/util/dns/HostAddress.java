@@ -111,7 +111,7 @@ public class HostAddress {
 
     public void setException(InetAddress inetAddress, Exception exception) {
         Exception old = exceptions.put(inetAddress, exception);
-        assert (old == null);
+        assert old == null;
     }
 
     /**

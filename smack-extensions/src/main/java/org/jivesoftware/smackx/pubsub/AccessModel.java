@@ -37,5 +37,5 @@ public enum AccessModel {
     roster,
 
     /** Only those on a whitelist may subscribe and retrieve items. */
-    whitelist;
+    whitelist,
 }

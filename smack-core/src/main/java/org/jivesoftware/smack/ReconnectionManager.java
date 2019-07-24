@@ -447,6 +447,5 @@ public final class ReconnectionManager {
          * Policy using fixed amount of time between reconnection attempts.
          */
         FIXED_DELAY,
-        ;
     }
 }

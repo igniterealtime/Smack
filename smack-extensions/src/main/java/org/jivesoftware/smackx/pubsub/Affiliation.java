@@ -167,7 +167,7 @@ public class Affiliation implements ExtensionElement {
      */
     public boolean isAffiliationModification() {
         if (jid != null && affiliation != null) {
-            assert (node == null && namespace == AffiliationNamespace.owner);
+            assert node == null && namespace == AffiliationNamespace.owner;
             return true;
         }
         return false;

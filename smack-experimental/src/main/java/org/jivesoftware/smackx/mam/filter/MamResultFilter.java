@@ -48,7 +48,7 @@ public class MamResultFilter extends FlexibleStanzaTypeFilter<Message> {
         }
 
         String resultQueryId = mamResultExtension.getQueryId();
-        return ((queryId == null && resultQueryId == null) || (queryId != null && queryId.equals(resultQueryId)));
+        return (queryId == null && resultQueryId == null) || (queryId != null && queryId.equals(resultQueryId));
     }
 
 }

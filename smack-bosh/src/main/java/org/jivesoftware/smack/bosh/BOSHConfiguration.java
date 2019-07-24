@@ -65,11 +65,11 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
     }
 
     public String getProxyAddress() {
-        return (proxy != null ? proxy.getProxyAddress() : null);
+        return proxy != null ? proxy.getProxyAddress() : null;
     }
 
     public int getProxyPort() {
-        return (proxy != null ? proxy.getProxyPort() : 8080);
+        return proxy != null ? proxy.getProxyPort() : 8080;
     }
 
     public boolean isUsingHTTPS() {

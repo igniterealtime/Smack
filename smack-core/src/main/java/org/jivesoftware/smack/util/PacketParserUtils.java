@@ -137,7 +137,7 @@ public class PacketParserUtils {
      */
     public static Message parseMessage(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
-        assert (parser.getName().equals(Message.ELEMENT));
+        assert parser.getName().equals(Message.ELEMENT);
 
         XmlEnvironment messageXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
         final int initialDepth = parser.getDepth();
@@ -218,7 +218,7 @@ public class PacketParserUtils {
      * @throws IOException
      */
     public static String parseElementText(XmlPullParser parser) throws XmlPullParserException, IOException {
-        assert (parser.getEventType() == XmlPullParser.Event.START_ELEMENT);
+        assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
         String res;
         // Advance to the text of the Element
         XmlPullParser.Event event = parser.next();
@@ -263,7 +263,7 @@ public class PacketParserUtils {
     public static CharSequence parseElement(XmlPullParser parser,
                     boolean fullNamespaces) throws XmlPullParserException,
                     IOException {
-        assert (parser.getEventType() == XmlPullParser.Event.START_ELEMENT);
+        assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
         return parseContentDepth(parser, parser.getDepth(), fullNamespaces);
     }
 
@@ -631,7 +631,7 @@ public class PacketParserUtils {
      */
     public static Compress.Feature parseCompressionFeature(XmlPullParser parser)
                     throws IOException, XmlPullParserException {
-        assert (parser.getEventType() == XmlPullParser.Event.START_ELEMENT);
+        assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
         String name;
         final int initialDepth = parser.getDepth();
         List<String> methods = new LinkedList<>();
@@ -660,8 +660,8 @@ public class PacketParserUtils {
                 break;
             }
         }
-        assert (parser.getEventType() == XmlPullParser.Event.END_ELEMENT);
-        assert (parser.getDepth() == initialDepth);
+        assert parser.getEventType() == XmlPullParser.Event.END_ELEMENT;
+        assert parser.getDepth() == initialDepth;
         return new Compress.Feature(methods);
     }
 
@@ -679,7 +679,7 @@ public class PacketParserUtils {
 
         String text = parser.nextText();
         String previousValue = descriptiveTexts.put(xmllang, text);
-        assert (previousValue == null);
+        assert previousValue == null;
         return descriptiveTexts;
     }
 
@@ -704,7 +704,7 @@ public class PacketParserUtils {
                     descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
                 }
                 else {
-                    assert (condition == null);
+                    assert condition == null;
                     condition = parser.getName();
                 }
                 break;
@@ -875,8 +875,8 @@ public class PacketParserUtils {
 
     public static StartTls parseStartTlsFeature(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
-        assert (parser.getEventType() == XmlPullParser.Event.START_ELEMENT);
-        assert (parser.getNamespace().equals(StartTls.NAMESPACE));
+        ParserUtils.assertAtStartTag(parser);
+        assert parser.getNamespace().equals(StartTls.NAMESPACE);
         int initalDepth = parser.getDepth();
         boolean required = false;
         outerloop: while (true) {
@@ -900,7 +900,7 @@ public class PacketParserUtils {
                 break;
             }
         }
-        assert (parser.getEventType() == XmlPullParser.Event.END_ELEMENT);
+        ParserUtils.assertAtEndTag(parser);
         return new StartTls(required);
     }
 

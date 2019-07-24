@@ -138,7 +138,7 @@ public final class CarbonManager extends Manager {
                 // also reset here.
                 enabled_state = false;
                 boolean removed = connection().removeSyncStanzaListener(carbonsListener);
-                assert (removed);
+                assert removed;
             }
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {
