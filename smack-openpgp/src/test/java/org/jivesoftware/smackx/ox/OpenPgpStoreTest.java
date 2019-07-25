@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +44,6 @@ import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpTrustStore;
 import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
@@ -81,7 +79,6 @@ public class OpenPgpStoreTest extends SmackTestSuite {
 
     static {
         storagePath = FileTestUtil.getTempDir("storeTest");
-        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Parameterized.Parameters

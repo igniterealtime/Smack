@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.ox.crypto;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -38,7 +37,6 @@ import org.jivesoftware.smackx.ox.element.SignElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
@@ -52,13 +50,6 @@ import org.pgpainless.encryption_signing.EncryptionStream;
 public class PainlessOpenPgpProvider implements OpenPgpProvider {
 
     private static final Logger LOGGER = Logger.getLogger(PainlessOpenPgpProvider.class.getName());
-
-    static {
-        // Remove any BC providers and add a fresh one.
-        // This is done, since older Android versions ship with a crippled BC provider.
-        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     private final XMPPConnection connection;
     private final OpenPgpStore store;

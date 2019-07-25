@@ -25,21 +25,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;
 import org.jivesoftware.smackx.omemo.internal.CiphertextTuple;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 /**
  * Test the identityKeyWrapper.
  */
-public class WrapperObjectsTest {
+public class WrapperObjectsTest extends SmackTestSuite {
 
     @Test
     public void ciphertextTupleTest() {
@@ -56,7 +55,6 @@ public class WrapperObjectsTest {
 
     @Test
     public void cipherAndAuthTagTest() throws NoSuchAlgorithmException, CryptoFailedException {
-        Security.addProvider(new BouncyCastleProvider());
         byte[] key = OmemoMessageBuilder.generateKey(KEYTYPE, KEYLENGTH);
         byte[] iv = OmemoMessageBuilder.generateIv();
         byte[] authTag = OmemoMessageBuilder.generateIv();

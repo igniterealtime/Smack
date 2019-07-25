@@ -35,7 +35,6 @@ import static org.jivesoftware.smackx.hashes.HashManager.ALGORITHM.SHA_512;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +42,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
-
+import org.jivesoftware.smack.util.SecurityUtil;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 
@@ -58,7 +57,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public final class HashManager extends Manager {
 
     static {
-        Security.addProvider(new BouncyCastleProvider());
+        // Remove any BC providers and add a fresh one.
+        // This is done, since older Android versions ship with a crippled BC provider.
+        SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class);
     }
 
     public static final String PREFIX_NS_ALGO = "urn:xmpp:hash-function-text-names:";

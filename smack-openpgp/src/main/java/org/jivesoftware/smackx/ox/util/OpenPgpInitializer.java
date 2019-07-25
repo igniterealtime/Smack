@@ -17,11 +17,20 @@
 package org.jivesoftware.smackx.ox.util;
 
 import org.jivesoftware.smack.initializer.UrlInitializer;
+import org.jivesoftware.smack.util.SecurityUtil;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Initializer class which registers ExtensionElementProviders on startup.
  */
 public class OpenPgpInitializer extends UrlInitializer {
+
+    static {
+        // Remove any BC providers and add a fresh one.
+        // This is done, since older Android versions ship with a crippled BC provider.
+        SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class);
+    }
 
     @Override
     protected String getProvidersUri() {

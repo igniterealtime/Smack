@@ -22,7 +22,6 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +44,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
-
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -80,7 +78,6 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
@@ -101,10 +98,6 @@ import org.jxmpp.jid.Jid;
  */
 public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>
         implements OmemoCarbonCopyStanzaReceivedListener, OmemoMessageStanzaReceivedListener {
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     protected static final Logger LOGGER = Logger.getLogger(OmemoService.class.getName());
 
