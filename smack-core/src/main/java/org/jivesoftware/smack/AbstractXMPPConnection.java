@@ -2012,7 +2012,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             from = XmppStringUtils.completeJidFrom(localpart, to);
         }
         String id = getStreamId();
-        sendNonza(new StreamOpen(to, from, id));
+        sendNonza(new StreamOpen(to, from, id, config.getXmlLang(), StreamOpen.StreamContentNamespace.client));
     }
 
     public static final class SmackTlsContext {
