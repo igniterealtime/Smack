@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -118,6 +119,8 @@ public abstract class ConnectionConfiguration {
     private final String password;
     private final Resourcepart resource;
 
+    private final Locale language;
+
     /**
      * The optional SASL authorization identity (see RFC 6120 § 6.3.8).
      */
@@ -164,6 +167,8 @@ public abstract class ConnectionConfiguration {
 
         // Resource can be null, this means that the server must provide one
         resource = builder.resource;
+
+        language = builder.language;
 
         xmppServiceDomain = builder.xmppServiceDomain;
         if (xmppServiceDomain == null) {
@@ -477,6 +482,34 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
+     * Returns the stream language to use when connecting to the server.
+     *
+     * @return the stream language to use when connecting to the server.
+     */
+    public Locale getLanguage() {
+        return language;
+    }
+
+    /**
+     * Returns the xml:lang string of the stream language to use when connecting to the server.
+     *
+     * <p>If the developer sets the language to null, this will also return null, leading to
+     * the removal of the xml:lang tag from the stream. If a Locale("") is configured, this will
+     * return "", which can be used as an override.</p>
+     *
+     * @return the stream language to use when connecting to the server.
+     */
+    public String getXmlLang() {
+        // TODO: Change to Locale.toLanguageTag() once Smack's minimum Android API level is 21 or higher.
+        // This will need a workaround for new Locale("").getLanguageTag() returning "und". Expected
+        // behavior of this function:
+        //  - returns null if language is null
+        //  - returns "" if language.getLanguage() returns the empty string
+        //  - returns language.toLanguageTag() otherwise
+        return language != null ? language.toString().replace("_", "-") : null;
+    }
+
+    /**
      * Returns the optional XMPP address to be requested as the SASL authorization identity.
      *
      * @return the authorization identifier.
@@ -564,6 +597,7 @@ public abstract class ConnectionConfiguration {
         private CharSequence username;
         private String password;
         private Resourcepart resource;
+        private Locale language = Locale.ENGLISH;
         private boolean sendPresence = true;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
@@ -685,6 +719,19 @@ public abstract class ConnectionConfiguration {
          */
         public B setResource(Resourcepart resource) {
             this.resource = resource;
+            return getThis();
+        }
+
+        /**
+         * Set the stream language.
+         *
+         * @param language the language to use.
+         * @return a reference to this builder.
+         * @see <a href="https://tools.ietf.org/html/rfc6120#section-4.7.4">RFC 6120 § 4.7.4</a>
+         * @see <a href="https://www.w3.org/TR/xml/#sec-lang-tag">XML 1.0 § 2.12 Language Identification</a>
+         */
+        public B setLanguage(Locale language) {
+            this.language = language;
             return getThis();
         }
 
