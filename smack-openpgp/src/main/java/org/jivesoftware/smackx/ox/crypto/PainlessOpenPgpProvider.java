@@ -57,7 +57,7 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
         // Remove any BC providers and add a fresh one.
         // This is done, since older Android versions ship with a crippled BC provider.
         Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
-        Security.addProvider(new BouncyCastleProvider());
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
 
     private final XMPPConnection connection;

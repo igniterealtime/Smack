@@ -103,7 +103,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         implements OmemoCarbonCopyStanzaReceivedListener, OmemoMessageStanzaReceivedListener {
 
     static {
-        Security.addProvider(new BouncyCastleProvider());
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
 
     protected static final Logger LOGGER = Logger.getLogger(OmemoService.class.getName());
