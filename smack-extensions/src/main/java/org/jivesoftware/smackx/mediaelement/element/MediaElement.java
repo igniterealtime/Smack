@@ -90,7 +90,7 @@ public class MediaElement implements FormFieldChildElement {
         xml.append(uris, xmlEnvironment);
 
         xml.closeElement(this);
-        return null;
+        return xml;
     }
 
     public MediaElement from(FormField formField) {
