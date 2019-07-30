@@ -58,6 +58,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Objects;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -328,16 +329,25 @@ public class MultiUserChat {
      */
     private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
-        final DomainBareJid mucService = room.asDomainBareJid();
-        DiscoverInfo discoInfo = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(room);
-        if (!KNOWN_MUC_SERVICES.containsKey(mucService)) {
-            if (discoInfo.containsFeature(MUCInitialPresence.NAMESPACE)) {
-                KNOWN_MUC_SERVICES.put(mucService, null);
-            } else {
+        try {
+            // first get disco#info, so we can check whether it is a MUC and populate roomInfo
+            DiscoverInfo discoInfo = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(room);
+            if (!discoInfo.containsFeature(MUCInitialPresence.NAMESPACE))
                 throw new NotAMucServiceException(this);
+            roomInfo = new RoomInfo(discoInfo);
+        } catch (XMPPErrorException e) {
+            // special case: a non-existing MUC is an item-not-found, we still can join
+            StanzaError se = e.getStanzaError();
+            if (se.getType() != StanzaError.Type.CANCEL || se.getCondition() != StanzaError.Condition.item_not_found)
+                throw e;
+            // as we didn't receive a valid disco#info, check the domain whether it's a MUC host
+            final DomainBareJid mucService = room.asDomainBareJid();
+            if (!KNOWN_MUC_SERVICES.containsKey(mucService)) {
+                if (!multiUserChatManager.providesMucService(mucService))
+                    throw new NotAMucServiceException(this);
+                KNOWN_MUC_SERVICES.put(mucService, null);
             }
         }
-        roomInfo = new RoomInfo(discoInfo);
         // We enter a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = conf.getJoinPresence(this);
