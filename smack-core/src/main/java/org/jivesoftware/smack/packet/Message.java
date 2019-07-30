@@ -201,6 +201,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
                 return subject;
             }
         }
+        if (language == null && !subjects.isEmpty())
+            return subjects.iterator().next();
         return null;
     }
 
@@ -320,6 +322,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
                 return body;
             }
         }
+        if (language == null && !getBodies().isEmpty())
+            return getBodies().iterator().next();
         return null;
     }
 
