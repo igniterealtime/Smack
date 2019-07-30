@@ -168,7 +168,7 @@ public class MediaElement implements FormFieldChildElement {
 
         @Override
         public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
-            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.attribute("type", type)
                .rightAngleBracket();
             xml.escape(uri.toString());
