@@ -112,7 +112,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
 
     public XmlStringBuilder element(String name, Enum<?> content) {
         assert content != null;
-        element(name, content.name());
+        element(name, content.toString());
         return this;
     }
 
