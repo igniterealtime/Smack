@@ -31,6 +31,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,10 +57,10 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.debugger.EnhancedDebuggerWindow;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -74,6 +75,12 @@ public class SmackIntegrationTestFramework<DC extends AbstractXMPPConnection> {
     private static final Logger LOGGER = Logger.getLogger(SmackIntegrationTestFramework.class.getName());
 
     public static boolean SINTTEST_UNIT_TEST = false;
+
+    static {
+        if (Security.getProvider("BC") == null) {
+            Security.insertProviderAt(new BouncyCastleProvider(), 0);
+        }
+    }
 
     private final Class<DC> defaultConnectionClass;
 

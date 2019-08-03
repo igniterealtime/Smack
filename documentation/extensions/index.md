@@ -114,6 +114,7 @@ Unofficial XMPP Extensions
 | Name                                        | XEP                                                    | Version   | Description |
 |---------------------------------------------|--------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------|
 | [Multi-User Chat Light](muclight.md)        | [XEP-xxxx](https://mongooseim.readthedocs.io/en/latest/open-extensions/xeps/xep-muc-light.html) | n/a     | Multi-User Chats for mobile XMPP applications and specific environment. |
+| OMEMO Media Sharing                         | [XEP-XXXX](https://xmpp.org/extensions/inbox/omemo-media-sharing.html) | 0.0.1     | Share files via HTTP File Upload in an encrypted fashion. |
 | Google GCM JSON payload                     | n/a                                                    | n/a       | Semantically the same as XEP-0335: JSON Containers. |
 
 Legacy Smack Extensions and currently supported XEPs of smack-legacy

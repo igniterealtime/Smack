@@ -277,8 +277,13 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @return iv
      */
     public static byte[] generateIv() {
+        // TODO: Switch to 12 once ChatSecure supports decrypting msgs with 12 byte IV.
+        return generateIv(16);
+    }
+
+    public static byte[] generateIv(int len) {
         SecureRandom random = new SecureRandom();
-        byte[] iv = new byte[16];
+        byte[] iv = new byte[len];
         random.nextBytes(iv);
         return iv;
     }
