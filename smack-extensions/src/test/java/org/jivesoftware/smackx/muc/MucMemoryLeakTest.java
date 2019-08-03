@@ -19,12 +19,14 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.MemoryLeakTestUtil;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class MucMemoryLeakTest extends SmackTestSuite {
 
     @Test
+    @Disabled
     public void mucMemoryLeakTest() throws XmppStringprepException, IllegalArgumentException, InterruptedException {
         MemoryLeakTestUtil.noResourceLeakTest(c -> MultiUserChatManager.getInstanceFor(c));
     }
