@@ -597,7 +597,7 @@ public abstract class ConnectionConfiguration {
         private CharSequence username;
         private String password;
         private Resourcepart resource;
-        private Locale language = Locale.ENGLISH;
+        private Locale language = Locale.getDefault();
         private boolean sendPresence = true;
         private ProxyInfo proxy;
         private CallbackHandler callbackHandler;
