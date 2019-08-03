@@ -20,7 +20,8 @@ and a stanza listener:
 ```
 // Create a stanza filter to listen for new messages from a particular
 // user. We use an AndFilter to combine two other filters._
-StanzaFilter filter = new AndFilter(StanzaTypeFilter.MESSAGE, FromMatchesFilter.create("mary@jivesoftware.com"));
+StanzaFilter filter = new AndFilter(StanzaTypeFilter.MESSAGE, 
+	FromMatchesFilter.create(JidCreate.entityBareFrom("mary@jivesoftware.com")));
 // Assume we've created an XMPPConnection named "connection".
 
 // First, register a stanza collector using the filter we created.
@@ -29,7 +30,7 @@ StanzaCollector myCollector = connection.createStanzaCollector(filter);
 
 // Next, create a stanza listener. We use an anonymous inner class for brevity.
 StanzaListener myListener = new StanzaListener() {
-		**public** **void** processStanza(Stanza stanza) {
+		public void processStanza(Stanza stanza) {
 			// Do something with the incoming stanza here._
 		}
 	};
