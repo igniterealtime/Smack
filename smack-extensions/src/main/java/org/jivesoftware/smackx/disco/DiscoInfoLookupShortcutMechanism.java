@@ -47,8 +47,7 @@ public abstract class DiscoInfoLookupShortcutMechanism implements Comparable<Dis
 
     @Override
     public final int compareTo(DiscoInfoLookupShortcutMechanism other) {
-        // Switch to Integer.compare(int, int) once Smack is on Android 19 or higher.
         Integer ourPriority = getPriority();
-        return ourPriority.compareTo(other.getPriority());
+        return Integer.compare(ourPriority, other.getPriority());
     }
 }
