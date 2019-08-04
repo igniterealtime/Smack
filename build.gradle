@@ -99,6 +99,7 @@ allprojects {
 		gplLicensedProjects = [
 			':smack-omemo-signal',
 			':smack-omemo-signal-integration-test',
+			':smack-repl'
 		].collect{ project(it) }
 		// When this list is empty, then move the according javadoc
 		// tool Werror option into the global configure section.
