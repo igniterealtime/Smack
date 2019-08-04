@@ -30,3 +30,5 @@ target/
 .metadata
 
 local.properties
+
+omemo-store/
