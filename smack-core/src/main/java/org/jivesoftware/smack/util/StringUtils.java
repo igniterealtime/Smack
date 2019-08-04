@@ -222,6 +222,10 @@ public class StringUtils {
         return out;
     }
 
+    public static String removeNewLines(String s) {
+        return s.trim().replaceAll("\n", "");
+    }
+
     /**
      * Hashes a String using the SHA-1 algorithm and returns the result as a
      * String of hexadecimal numbers. This method is synchronized to avoid

@@ -30,6 +30,7 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -59,39 +60,39 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                 case START_ELEMENT:
                     final int attributeCount = parser.getAttributeCount();
                     // <signedPreKeyPublic>
-                    if (name.equals(SIGNED_PRE_KEY_PUB)) {
+                    if (SIGNED_PRE_KEY_PUB.equals(name)) {
                         for (int i = 0; i < attributeCount; i++) {
-                            if (parser.getAttributeName(i).equals(SIGNED_PRE_KEY_ID)) {
+                            if (SIGNED_PRE_KEY_ID.equals(parser.getAttributeName(i))) {
                                 int id = Integer.parseInt(parser.getAttributeValue(i));
-                                signedPreKey = parser.nextText();
+                                signedPreKey = StringUtils.removeNewLines(parser.nextText());
                                 signedPreKeyId = id;
                             }
                         }
                     }
                     // <bundleGetSignedPreKeySignature>
-                    else if (name.equals(SIGNED_PRE_KEY_SIG)) {
-                        signedPreKeySignature = parser.nextText();
+                    else if (SIGNED_PRE_KEY_SIG.equals(name)) {
+                        signedPreKeySignature = StringUtils.removeNewLines(parser.nextText());
                     }
                     // <deserializeIdentityKey>
-                    else if (name.equals(IDENTITY_KEY)) {
-                        identityKey = parser.nextText();
+                    else if (IDENTITY_KEY.equals(name)) {
+                        identityKey = StringUtils.removeNewLines(parser.nextText());
                     }
                     // <deserializeECPublicKeys>
-                    else if (name.equals(PRE_KEYS)) {
+                    else if (PRE_KEYS.equals(name)) {
                         inPreKeys = true;
                     }
                     // <preKeyPublic preKeyId='424242'>
-                    else if (inPreKeys && name.equals(PRE_KEY_PUB)) {
+                    else if (inPreKeys && PRE_KEY_PUB.equals(name)) {
                         for (int i = 0; i < attributeCount; i++) {
-                            if (parser.getAttributeName(i).equals(PRE_KEY_ID)) {
+                            if (PRE_KEY_ID.equals(parser.getAttributeName(i))) {
                                 preKeys.put(Integer.parseInt(parser.getAttributeValue(i)),
-                                        parser.nextText());
+                                        StringUtils.removeNewLines(parser.nextText()));
                             }
                         }
                     }
                     break;
                 case END_ELEMENT:
-                    if (name.equals(BUNDLE)) {
+                    if (BUNDLE.equals(name)) {
                         stop = true;
                     }
                     break;
