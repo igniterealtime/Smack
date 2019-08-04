@@ -387,11 +387,6 @@ public final class HttpFileUploadManager extends Manager {
 
     private void uploadFile(final File file, final Slot slot, UploadProgressListener listener) throws IOException {
         final long fileSize = file.length();
-        // TODO Remove once Smack's minimum Android API level is 19 or higher. See also comment below.
-        if (fileSize >= Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("File size " + fileSize + " must be less than " + Integer.MAX_VALUE);
-        }
-        final int fileSizeInt = (int) fileSize;
 
         // Construct the FileInputStream first to make sure we can actually read the file.
         final FileInputStream fis = new FileInputStream(file);
@@ -403,8 +398,7 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setRequestMethod("PUT");
         urlConnection.setUseCaches(false);
         urlConnection.setDoOutput(true);
-        // TODO Change to using fileSize once Smack's minimum Android API level is 19 or higher.
-        urlConnection.setFixedLengthStreamingMode(fileSizeInt);
+        urlConnection.setFixedLengthStreamingMode(fileSize);
         urlConnection.setRequestProperty("Content-Type", "application/octet-stream;");
         for (Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());
