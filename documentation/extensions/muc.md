@@ -81,7 +81,7 @@ completed with default values:
 MultiUserChatManager manager = MultiUserChatManager.getInstanceFor(connection);
 
 // Create a MultiUserChat using an XMPPConnection for a room
-MultiUserChat muc = = manager.getMultiUserChat(mucJid);
+MultiUserChat muc = manager.getMultiUserChat(mucJid);
 
 // Prepare a list of owners of the new room
 Set<Jid> owners = JidUtil.jidSetFrom(new String[] { "me@example.org", "juliet@example.org" });
