@@ -109,4 +109,16 @@ public class StringUtilsTest  {
         String result = StringUtils.randomString(0);
         assertEquals("", result);
     }
+
+    @Test
+    public void testeDeleteXmlWhitespace() {
+        String noWhitespace = StringUtils.deleteXmlWhitespace(" foo\nbar ");
+        assertEquals("foobar", noWhitespace);
+
+        noWhitespace = StringUtils.deleteXmlWhitespace(" \tbaz\rbarz\t ");
+        assertEquals("bazbarz", noWhitespace);
+
+        noWhitespace = StringUtils.deleteXmlWhitespace("SNAFU");
+        assertEquals("SNAFU", noWhitespace);
+    }
 }

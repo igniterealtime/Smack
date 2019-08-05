@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 /**
  * A collection of utility methods for String objects.
@@ -540,5 +541,11 @@ public class StringUtils {
             return null;
         }
         return cs.toString();
+    }
+
+    private static final Pattern XMLWHITESPACE = Pattern.compile("[\t\n\r ]");
+
+    public static String deleteXmlWhitespace(String string) {
+        return XMLWHITESPACE.matcher(string).replaceAll("");
     }
 }
