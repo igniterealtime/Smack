@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
@@ -36,7 +35,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.stringencoder.BareJidEncoder;
 
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -67,13 +65,13 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     @Override
     public T_IdKeyPair loadOmemoIdentityKeyPair(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
         File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(userDevice);
         return keyUtil().identityKeyPairFromBytes(readBytes(identityKeyPairPath));
     }
 
     @Override
-    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) {
+    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) throws IOException {
         File identityKeyPairPath = hierarchy.getIdentityKeyPairPath(userDevice);
         writeBytes(identityKeyPairPath, keyUtil().identityKeyPairToBytes(identityKeyPair));
     }
@@ -88,14 +86,14 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     @Override
     public T_IdKey loadOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
         File identityKeyPath = hierarchy.getContactsIdentityKeyPath(userDevice, contactsDevice);
         byte[] bytes = readBytes(identityKeyPath);
         return bytes != null ? keyUtil().identityKeyFromBytes(bytes) : null;
     }
 
     @Override
-    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice, T_IdKey t_idKey) {
+    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice, T_IdKey t_idKey) throws IOException {
         File identityKeyPath = hierarchy.getContactsIdentityKeyPath(userDevice, contactsDevice);
         writeBytes(identityKeyPath, keyUtil().identityKeyToBytes(t_idKey));
     }
@@ -126,46 +124,46 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) {
+    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException {
         File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(userDevice, contactsDevice);
         writeLong(lastMessageReceived, date.getTime());
     }
 
     @Override
-    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(userDevice, contactsDevice);
         Long date = readLong(lastMessageReceived);
         return date != null ? new Date(date) : null;
     }
 
     @Override
-    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) {
+    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException {
         File lastDeviceIdPublished = hierarchy.getLastDeviceIdPublicationDatePath(userDevice, contactsDevice);
         writeLong(lastDeviceIdPublished, date.getTime());
     }
 
     @Override
-    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         File lastDeviceIdPublished = hierarchy.getLastDeviceIdPublicationDatePath(userDevice, contactsDevice);
         Long date = readLong(lastDeviceIdPublished);
         return date != null ? new Date(date) : null;
     }
 
     @Override
-    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) {
+    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) throws IOException {
         File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(userDevice);
         writeLong(lastSignedPreKeyRenewal, date.getTime());
     }
 
     @Override
-    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) {
+    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) throws IOException {
         File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(userDevice);
         Long date = readLong(lastSignedPreKeyRenewal);
         return date != null ? new Date(date) : null;
     }
 
     @Override
-    public T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
+    public T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) throws IOException {
         File preKeyPath = hierarchy.getPreKeyPath(userDevice, preKeyId);
         byte[] bytes = readBytes(preKeyPath);
 
@@ -181,7 +179,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey t_preKey) {
+    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey t_preKey) throws IOException {
         File preKeyPath = hierarchy.getPreKeyPath(userDevice, preKeyId);
         writeBytes(preKeyPath, keyUtil().preKeyToBytes(t_preKey));
     }
@@ -195,7 +193,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) {
+    public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException {
         File preKeyDirectory = hierarchy.getPreKeysDirectory(userDevice);
         TreeMap<Integer, T_PreKey> preKeys = new TreeMap<>();
 
@@ -221,7 +219,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
+    public T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) throws IOException {
         File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(userDevice), Integer.toString(signedPreKeyId));
         byte[] bytes = readBytes(signedPreKeyPath);
         if (bytes != null) {
@@ -235,7 +233,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) {
+    public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException {
         File signedPreKeysDirectory = hierarchy.getSignedPreKeysDirectory(userDevice);
         TreeMap<Integer, T_SigPreKey> signedPreKeys = new TreeMap<>();
 
@@ -263,7 +261,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     @Override
     public void storeOmemoSignedPreKey(OmemoDevice userDevice,
                                        int signedPreKeyId,
-                                       T_SigPreKey signedPreKey) {
+                                       T_SigPreKey signedPreKey) throws IOException {
         File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(userDevice), Integer.toString(signedPreKeyId));
         writeBytes(signedPreKeyPath, keyUtil().signedPreKeyToBytes(signedPreKey));
     }
@@ -277,7 +275,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         File sessionPath = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
         byte[] bytes = readBytes(sessionPath);
         if (bytes != null) {
@@ -291,7 +289,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) {
+    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException {
         File contactsDirectory = hierarchy.getContactsDir(userDevice, contact);
         HashMap<Integer, T_Sess> sessions = new HashMap<>();
         String[] devices = contactsDirectory.list();
@@ -322,7 +320,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice, T_Sess session) {
+    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice, T_Sess session) throws IOException {
         File sessionPath = hierarchy.getContactsSessionPath(userDevice, contactsDevice);
         writeBytes(sessionPath, keyUtil().rawSessionToBytes(session));
     }
@@ -357,13 +355,13 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) {
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) throws IOException {
         File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
         writeIntegers(messageCounterFile, Collections.singleton(counter));
     }
 
     @Override
-    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
         Set<Integer> integers = readIntegers(messageCounterFile);
 
@@ -375,7 +373,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
-    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) {
+    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) throws IOException {
         OmemoCachedDeviceList cachedDeviceList = new OmemoCachedDeviceList();
 
         if (contact == null) {
@@ -402,7 +400,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     @Override
     public void storeCachedDeviceList(OmemoDevice userDevice,
                                       BareJid contact,
-                                      OmemoCachedDeviceList contactsDeviceList) {
+                                      OmemoCachedDeviceList contactsDeviceList) throws IOException {
         if (contact == null) {
             return;
         }
@@ -420,166 +418,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         deleteDirectory(deviceDirectory);
     }
 
-    private static void writeLong(File target, long i) {
-        if (target == null) {
-            LOGGER.log(Level.WARNING, "Could not write long to null-path.");
-            return;
-        }
-
-        try {
-            FileHierarchy.createFile(target);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not create file.", e);
-            return;
-        }
-
-        DataOutputStream out = null;
-        try {
-            out = new DataOutputStream(new FileOutputStream(target));
-            out.writeLong(i);
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write longs to file.", e);
-        } finally {
-            CloseableUtil.maybeClose(out, LOGGER);
-        }
-    }
-
-    private static Long readLong(File target) {
-        if (target == null) {
-            LOGGER.log(Level.WARNING, "Could not read long from null-path.");
-            return null;
-        }
-
-        Long l;
-        DataInputStream in = null;
-
-        try {
-            in = new DataInputStream(new FileInputStream(target));
-            l = in.readLong();
-        } catch (FileNotFoundException e) {
-            l = null;
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not read long from file.", e);
-            return null;
-        } finally {
-            CloseableUtil.maybeClose(in, LOGGER);
-        }
-
-        return l;
-    }
-
-    private static void writeBytes(File target, byte[] bytes) {
-        if (target == null) {
-            LOGGER.log(Level.WARNING, "Could not write bytes to null-path.");
-            return;
-        }
-
-        // Create file
-        try {
-            FileHierarchy.createFile(target);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not create file.", e);
-            return;
-        }
-
-        DataOutputStream out = null;
-
-        try {
-            out = new DataOutputStream(new FileOutputStream(target));
-            out.write(bytes);
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write bytes to file.", e);
-        } finally {
-            CloseableUtil.maybeClose(out, LOGGER);
-        }
-    }
-
-    private static byte[] readBytes(File target) {
-        if (target == null) {
-            LOGGER.log(Level.WARNING, "Could not read bytes from null-path.");
-            return null;
-        }
-
-        byte[] b = null;
-        DataInputStream in = null;
-
-        try {
-            in = new DataInputStream(new FileInputStream(target));
-            b = new byte[(int) target.length()];
-            in.read(b);
-        } catch (FileNotFoundException e) {
-            b = null;
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not read bytes from file.", e);
-        } finally {
-            CloseableUtil.maybeClose(in, LOGGER);
-        }
-
-        return b;
-    }
-
-    private static void writeIntegers(File target, Set<Integer> integers) {
-        if (target == null) {
-            LOGGER.log(Level.WARNING, "Could not write integers to null-path.");
-            return;
-        }
-
-        DataOutputStream out = null;
-
-        try {
-            out = new DataOutputStream(new FileOutputStream(target));
-            for (int i : integers) {
-                out.writeInt(i);
-            }
-
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not write integers to file.", e);
-        } finally {
-            CloseableUtil.maybeClose(out, LOGGER);
-        }
-    }
-
-    private static Set<Integer> readIntegers(File target) {
-        if (target == null) {
-            LOGGER.log(Level.WARNING, "Could not read integers from null-path.");
-            return null;
-        }
-
-        HashSet<Integer> integers = new HashSet<>();
-        DataInputStream in = null;
-
-        try {
-            in = new DataInputStream(new FileInputStream(target));
-
-            try {
-                while (true) {
-                    integers.add(in.readInt());
-                }
-            } catch (EOFException e) {
-                // Reached end of the list.
-            }
-
-        } catch (FileNotFoundException e) {
-            integers = null;
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Could not read integers.", e);
-        } finally {
-            CloseableUtil.maybeClose(in, LOGGER);
-        }
-
-        return integers;
-    }
-
-    /**
-     * One day... *sheds a tear*
-     * TODO Use methods below once Smack's minimum Android API level is 19 or higher
-     */
-    /*
-    private static void writeLong(File target, long i)
-            throws IOException
-    {
+    private static void writeLong(File target, long i) throws IOException {
         if (target == null) {
             throw new IOException("Could not write long to null-path.");
         }
@@ -591,9 +430,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
     }
 
-    private static Long readLong(File target)
-            throws IOException
-    {
+    private static Long readLong(File target) throws IOException {
         if (target == null) {
             throw new IOException("Could not read long from null-path.");
         }
@@ -607,9 +444,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
     }
 
-    private static void writeBytes(File target, byte[] bytes)
-            throws IOException
-    {
+    private static void writeBytes(File target, byte[] bytes) throws IOException {
         if (target == null) {
             throw new IOException("Could not write bytes to null-path.");
         }
@@ -622,9 +457,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
     }
 
-    private static byte[] readBytes(File target)
-            throws IOException
-    {
+    private static byte[] readBytes(File target) throws IOException {
         if (target == null) {
             throw new IOException("Could not read bytes from null-path.");
         }
@@ -641,9 +474,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         return b;
     }
 
-    private static void writeIntegers(File target, Set<Integer> integers)
-            throws IOException
-    {
+    private static void writeIntegers(File target, Set<Integer> integers) throws IOException {
         if (target == null) {
             throw new IOException("Could not write integers to null-path.");
         }
@@ -657,9 +488,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         }
     }
 
-    private static Set<Integer> readIntegers(File target)
-            throws IOException
-    {
+    private static Set<Integer> readIntegers(File target) throws IOException {
         if (target == null) {
             throw new IOException("Could not write integers to null-path.");
         }
@@ -682,7 +511,6 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
         return integers;
     }
-     */
 
     /**
      * Delete a directory with all subdirectories.

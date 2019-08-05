@@ -20,6 +20,8 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
@@ -37,7 +39,9 @@ public class ReadOnlyDeviceIntegrationTest extends AbstractTwoUsersOmemoIntegrat
     }
 
     @SmackIntegrationTest
-    public void test() throws InterruptedException, SmackException.NoResponseException, SmackException.NotLoggedInException, SmackException.NotConnectedException, CryptoFailedException, UndecidedOmemoIdentityException {
+    public void test() throws InterruptedException, SmackException.NoResponseException,
+                    SmackException.NotLoggedInException, SmackException.NotConnectedException, CryptoFailedException,
+                    UndecidedOmemoIdentityException, IOException {
         boolean prevIgnoreReadOnlyConf = OmemoConfiguration.getIgnoreReadOnlyDevices();
         int prevMaxMessageCounter = OmemoConfiguration.getMaxReadOnlyMessageCount();
 

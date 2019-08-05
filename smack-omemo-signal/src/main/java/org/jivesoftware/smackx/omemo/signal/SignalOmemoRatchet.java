@@ -20,6 +20,7 @@
  */
 package org.jivesoftware.smackx.omemo.signal;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -73,7 +74,7 @@ public class SignalOmemoRatchet
     @Override
     public byte[] doubleRatchetDecrypt(OmemoDevice sender, byte[] encryptedKey)
             throws CorruptedOmemoKeyException, NoRawSessionException, CryptoFailedException,
-            UntrustedOmemoIdentityException {
+            UntrustedOmemoIdentityException, IOException {
 
         SessionCipher cipher = getCipher(sender);
         byte[] decryptedKey;

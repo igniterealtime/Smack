@@ -16,11 +16,13 @@
  */
 package org.jivesoftware.smackx.omemo.internal.listener;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.Stanza;
 
 import org.jivesoftware.smackx.omemo.OmemoManager;
 
 public interface OmemoMessageStanzaReceivedListener {
 
-    void onOmemoMessageStanzaReceived(Stanza stanza, OmemoManager.LoggedInOmemoManager omemoManager);
+    void onOmemoMessageStanzaReceived(Stanza stanza, OmemoManager.LoggedInOmemoManager omemoManager) throws IOException;
 }

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.omemo.internal.listener;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -26,5 +28,6 @@ import org.jivesoftware.smackx.omemo.OmemoManager;
  */
 public interface OmemoCarbonCopyStanzaReceivedListener {
 
-    void onOmemoCarbonCopyReceived(CarbonExtension.Direction direction, Message carbonCopy, Message wrappingMessage, OmemoManager.LoggedInOmemoManager omemoManager);
+    void onOmemoCarbonCopyReceived(CarbonExtension.Direction direction, Message carbonCopy, Message wrappingMessage,
+                    OmemoManager.LoggedInOmemoManager omemoManager) throws IOException;
 }

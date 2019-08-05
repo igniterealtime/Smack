@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.omemo;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.SortedSet;
@@ -80,7 +81,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
 
     @Override
     public T_IdKeyPair loadOmemoIdentityKeyPair(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
         T_IdKeyPair pair = getCache(userDevice).identityKeyPair;
 
         if (pair == null && persistent != null) {
@@ -94,7 +95,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) {
+    public void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) throws IOException {
         getCache(userDevice).identityKeyPair = identityKeyPair;
         if (persistent != null) {
             persistent.storeOmemoIdentityKeyPair(userDevice, identityKeyPair);
@@ -111,7 +112,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
 
     @Override
     public T_IdKey loadOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
         T_IdKey idKey = getCache(userDevice).identityKeys.get(contactsDevice);
 
         if (idKey == null && persistent != null) {
@@ -125,7 +126,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice device, T_IdKey t_idKey) {
+    public void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice device, T_IdKey t_idKey) throws IOException {
         getCache(userDevice).identityKeys.put(device, t_idKey);
         if (persistent != null) {
             persistent.storeOmemoIdentityKey(userDevice, device, t_idKey);
@@ -141,7 +142,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) {
+    public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) throws IOException {
         getCache(userDevice).messageCounters.put(contactsDevice, counter);
         if (persistent != null) {
             persistent.storeOmemoMessageCounter(userDevice, contactsDevice, counter);
@@ -149,7 +150,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         Integer counter = getCache(userDevice).messageCounters.get(contactsDevice);
         if (counter == null && persistent != null) {
             counter = persistent.loadOmemoMessageCounter(userDevice, contactsDevice);
@@ -165,7 +166,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice from, Date date) {
+    public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice from, Date date) throws IOException {
         getCache(userDevice).lastMessagesDates.put(from, date);
         if (persistent != null) {
             persistent.setDateOfLastReceivedMessage(userDevice, from, date);
@@ -173,7 +174,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice from) {
+    public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice from) throws IOException {
         Date last = getCache(userDevice).lastMessagesDates.get(from);
 
         if (last == null && persistent != null) {
@@ -187,7 +188,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) {
+    public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException {
         getCache(userDevice).lastDeviceIdPublicationDates.put(contactsDevice, date);
         if (persistent != null) {
             persistent.setDateOfLastReceivedMessage(userDevice, contactsDevice, date);
@@ -195,7 +196,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         Date last = getCache(userDevice).lastDeviceIdPublicationDates.get(contactsDevice);
 
         if (last == null && persistent != null) {
@@ -209,7 +210,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) {
+    public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) throws IOException {
         getCache(userDevice).lastRenewalDate = date;
         if (persistent != null) {
             persistent.setDateOfLastSignedPreKeyRenewal(userDevice, date);
@@ -217,7 +218,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) {
+    public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) throws IOException {
         Date lastRenewal = getCache(userDevice).lastRenewalDate;
 
         if (lastRenewal == null && persistent != null) {
@@ -231,7 +232,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) {
+    public T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) throws IOException {
         T_PreKey preKey = getCache(userDevice).preKeys.get(preKeyId);
 
         if (preKey == null && persistent != null) {
@@ -245,7 +246,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey t_preKey) {
+    public void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey t_preKey) throws IOException {
         getCache(userDevice).preKeys.put(preKeyId, t_preKey);
         if (persistent != null) {
             persistent.storeOmemoPreKey(userDevice, preKeyId, t_preKey);
@@ -261,7 +262,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) {
+    public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException {
         TreeMap<Integer, T_PreKey> preKeys = getCache(userDevice).preKeys;
 
         if (preKeys.isEmpty() && persistent != null) {
@@ -272,7 +273,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) {
+    public T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) throws IOException {
         T_SigPreKey sigPreKey = getCache(userDevice).signedPreKeys.get(signedPreKeyId);
 
         if (sigPreKey == null && persistent != null) {
@@ -286,7 +287,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) {
+    public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException {
         TreeMap<Integer, T_SigPreKey> sigPreKeys = getCache(userDevice).signedPreKeys;
 
         if (sigPreKeys.isEmpty() && persistent != null) {
@@ -299,7 +300,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     @Override
     public void storeOmemoSignedPreKey(OmemoDevice userDevice,
                                        int signedPreKeyId,
-                                       T_SigPreKey signedPreKey) {
+                                       T_SigPreKey signedPreKey) throws IOException {
         getCache(userDevice).signedPreKeys.put(signedPreKeyId, signedPreKey);
         if (persistent != null) {
             persistent.storeOmemoSignedPreKey(userDevice, signedPreKeyId, signedPreKey);
@@ -315,7 +316,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) {
+    public T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         HashMap<Integer, T_Sess> contactSessions = getCache(userDevice).sessions.get(contactsDevice.getJid());
         if (contactSessions == null) {
             contactSessions = new HashMap<>();
@@ -334,7 +335,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) {
+    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException {
         HashMap<Integer, T_Sess> sessions = getCache(userDevice).sessions.get(contact);
         if (sessions == null) {
             sessions = new HashMap<>();
@@ -349,7 +350,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevicece, T_Sess session) {
+    public void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevicece, T_Sess session) throws IOException {
         HashMap<Integer, T_Sess> sessions = getCache(userDevice).sessions.get(contactsDevicece.getJid());
         if (sessions == null) {
             sessions = new HashMap<>();
@@ -391,7 +392,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) {
+    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) throws IOException {
         OmemoCachedDeviceList list = getCache(userDevice).deviceLists.get(contact);
 
         if (list == null && persistent != null) {
@@ -407,7 +408,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     @Override
     public void storeCachedDeviceList(OmemoDevice userDevice,
                                       BareJid contact,
-                                      OmemoCachedDeviceList deviceList) {
+                                      OmemoCachedDeviceList deviceList) throws IOException {
         getCache(userDevice).deviceLists.put(contact, new OmemoCachedDeviceList(deviceList));
 
         if (persistent != null) {

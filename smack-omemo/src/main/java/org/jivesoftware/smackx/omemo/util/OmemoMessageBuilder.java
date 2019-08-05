@@ -20,6 +20,7 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMOD
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
@@ -219,10 +220,11 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws CorruptedOmemoKeyException if the identityKey of that device is corrupted.
      * @throws UndecidedOmemoIdentityException if the user hasn't yet decided whether to trust that device or not.
      * @throws UntrustedOmemoIdentityException if the user has decided not to trust that device.
+     * @throws IOException
      */
     public void addRecipient(OmemoDevice contactsDevice)
             throws NoIdentityKeyException, CorruptedOmemoKeyException, UndecidedOmemoIdentityException,
-            UntrustedOmemoIdentityException {
+            UntrustedOmemoIdentityException, IOException {
 
         OmemoFingerprint fingerprint;
         fingerprint = OmemoService.getInstance().getOmemoStoreBackend().getFingerprint(userDevice, contactsDevice);

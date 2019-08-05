@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PRE_KEY_COUNT_PER_BUNDLE;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -78,8 +79,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice    our current device.
      * @param id            deviceId to check for.
      * @return true if list did not contain our id, else false
+     * @throws IOException
      */
-    boolean isAvailableDeviceId(OmemoDevice userDevice, int id) {
+    boolean isAvailableDeviceId(OmemoDevice userDevice, int id) throws IOException {
         LOGGER.log(Level.INFO, "Check if id " + id + " is available...");
 
         // Lookup local cached device list
@@ -101,8 +103,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact Contact we received the list from.
      * @param list    List we received.
+     * @throws IOException
      */
-    OmemoCachedDeviceList mergeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoDeviceListElement list) {
+    OmemoCachedDeviceList mergeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoDeviceListElement list) throws IOException {
         OmemoCachedDeviceList cached = loadCachedDeviceList(userDevice, contact);
 
         if (cached == null) {
@@ -131,10 +134,11 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @throws CorruptedOmemoKeyException when our identityKey is invalid.
+     * @throws IOException
      * @throws IllegalStateException when our IdentityKeyPair is null.
      */
     void changeSignedPreKey(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
 
         T_IdKeyPair idKeyPair = loadOmemoIdentityKeyPair(userDevice);
         if (idKeyPair == null) {
@@ -159,8 +163,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Remove the oldest signedPreKey until there are only MAX_NUMBER_OF_STORED_SIGNED_PREKEYS left.
      *
      * @param userDevice our OmemoDevice.
+     * @throws IOException
      */
-    private void removeOldSignedPreKeys(OmemoDevice userDevice) {
+    private void removeOldSignedPreKeys(OmemoDevice userDevice) throws IOException {
         if (OmemoConfiguration.getMaxNumberOfStoredSignedPreKeys() <= 0) {
             return;
         }
@@ -181,9 +186,10 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @return OmemoBundleElement
      * @throws CorruptedOmemoKeyException when a key could not be loaded
+     * @throws IOException
      */
     OmemoBundleElement_VAxolotl packOmemoBundle(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
 
         int currentSignedPreKeyId = loadCurrentOmemoSignedPreKeyId(userDevice);
         T_SigPreKey currentSignedPreKey = loadOmemoSignedPreKeys(userDevice).get(currentSignedPreKeyId);
@@ -201,9 +207,10 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Replenish our supply of keys. If we are missing any type of keys, generate them fresh.
      * @param userDevice
      * @throws CorruptedOmemoKeyException
+     * @throws IOException
      */
     public void replenishKeys(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
 
         T_IdKeyPair identityKeyPair = loadOmemoIdentityKeyPair(userDevice);
         if (identityKeyPair == null) {
@@ -244,9 +251,10 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @return identityKeyPair
      * @throws CorruptedOmemoKeyException Thrown, if the stored key is damaged (*hands up* not my fault!)
+     * @throws IOException
      */
     public abstract T_IdKeyPair loadOmemoIdentityKeyPair(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException;
+            throws CorruptedOmemoKeyException, IOException;
 
     /**
      * Store our identityKeyPair in storage. It would be a cool feature, if the key could be stored in a encrypted
@@ -254,8 +262,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param identityKeyPair identityKeyPair
+     * @throws IOException
      */
-    public abstract void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair);
+    public abstract void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) throws IOException;
 
     /**
      * Remove the identityKeyPair of a user.
@@ -270,9 +279,10 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param contactsDevice the device of which we want to load the identityKey.
      * @return identityKey
      * @throws CorruptedOmemoKeyException when the key in question is corrupted and cant be deserialized.
+     * @throws IOException
      */
     public abstract T_IdKey loadOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice)
-            throws CorruptedOmemoKeyException;
+            throws CorruptedOmemoKeyException, IOException;
 
     /**
      * Store the public identityKey of the device.
@@ -280,8 +290,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice device.
      * @param contactsKey    identityKey belonging to the contactsDevice.
+     * @throws IOException
      */
-    public abstract void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice, T_IdKey contactsKey);
+    public abstract void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice, T_IdKey contactsKey) throws IOException;
 
     /**
      * Removes the identityKey of a device.
@@ -298,8 +309,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our omemoDevice.
      * @param contactsDevice device of which we want to set the message counter.
      * @param counter counter value.
+     * @throws IOException
      */
-    public abstract void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter);
+    public abstract void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) throws IOException;
 
     /**
      * Return the current value of the message counter.
@@ -309,8 +321,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our omemoDevice
      * @param contactsDevice device of which we want to get the message counter.
      * @return counter value.
+     * @throws IOException
      */
-    public abstract int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice);
+    public abstract int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
 
     /**
      * Set the date of the last message that was received from a device.
@@ -318,8 +331,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice omemoManager of our device.
      * @param contactsDevice device in question
      * @param date date of the last received message
+     * @throws IOException
      */
-    public abstract void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date);
+    public abstract void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException;
 
     /**
      * Return the date of the last message that was received from device 'from'.
@@ -327,8 +341,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice device in question
      * @return date if existent, null
+     * @throws IOException
      */
-    public abstract Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice);
+    public abstract Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
 
     /**
      * Set the date of the last time the deviceId was published. This method only gets called, when the deviceId
@@ -337,8 +352,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice
      * @param contactsDevice OmemoDevice in question
      * @param date date of the last publication after not being published
+     * @throws IOException
      */
-    public abstract void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date);
+    public abstract void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException;
 
     /**
      * Return the date of the last time the deviceId was published after previously being not published.
@@ -347,24 +363,27 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice
      * @param contactsDevice OmemoDevice in question
      * @return date of the last publication after not being published
+     * @throws IOException
      */
-    public abstract Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice);
+    public abstract Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
 
     /**
      * Set the date of the last time the signed preKey was renewed.
      *
      * @param userDevice our OmemoDevice.
      * @param date date
+     * @throws IOException
      */
-    public abstract void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date);
+    public abstract void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) throws IOException;
 
     /**
      * Get the date of the last time the signed preKey was renewed.
      *
      * @param userDevice our OmemoDevice.
      * @return date if existent, otherwise null
+     * @throws IOException
      */
-    public abstract Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice);
+    public abstract Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) throws IOException;
 
     /**
      * Generate 'count' new PreKeys beginning with id 'startId'.
@@ -384,8 +403,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param preKeyId id of the key to be loaded
      * @return loaded preKey
+     * @throws IOException
      */
-    public abstract T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId);
+    public abstract T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) throws IOException;
 
     /**
      * Store a PreKey in storage.
@@ -393,16 +413,18 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param preKeyId id of the key
      * @param preKey   key
+     * @throws IOException
      */
-    public abstract void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey preKey);
+    public abstract void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey preKey) throws IOException;
 
     /**
      * Store a whole bunch of preKeys.
      *
      * @param userDevice our OmemoDevice.
      * @param preKeyHashMap HashMap of preKeys
+     * @throws IOException
      */
-    public void storeOmemoPreKeys(OmemoDevice userDevice, TreeMap<Integer, T_PreKey> preKeyHashMap) {
+    public void storeOmemoPreKeys(OmemoDevice userDevice, TreeMap<Integer, T_PreKey> preKeyHashMap) throws IOException {
         for (Map.Entry<Integer, T_PreKey> entry : preKeyHashMap.entrySet()) {
             storeOmemoPreKey(userDevice, entry.getKey(), entry.getValue());
         }
@@ -422,8 +444,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @return Map containing our preKeys
+     * @throws IOException
      */
-    public abstract TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice);
+    public abstract TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException;
 
     /**
      * Return the signedPreKey with the id 'singedPreKeyId'.
@@ -431,10 +454,11 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param signedPreKeyId id of the key
      * @return key
+     * @throws IOException
      */
-    public abstract T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId);
+    public abstract T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) throws IOException;
 
-    public int loadCurrentOmemoSignedPreKeyId(OmemoDevice userDevice) {
+    public int loadCurrentOmemoSignedPreKeyId(OmemoDevice userDevice) throws IOException {
         return loadOmemoSignedPreKeys(userDevice).lastKey();
     }
 
@@ -443,8 +467,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @return HashMap of our singedPreKeys
+     * @throws IOException
      */
-    public abstract TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice);
+    public abstract TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException;
 
     /**
      * Generate a new signed preKey.
@@ -465,8 +490,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param signedPreKeyId id of the signedPreKey
      * @param signedPreKey   the key itself
+     * @throws IOException
      */
-    public abstract void storeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId, T_SigPreKey signedPreKey);
+    public abstract void storeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId, T_SigPreKey signedPreKey) throws IOException;
 
     /**
      * Remove a signedPreKey from storage.
@@ -482,8 +508,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice device whose session we want to load
      * @return crypto related session
+     * @throws IOException
      */
-    public abstract T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice);
+    public abstract T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
 
     /**
      * Load all crypto-lib specific session objects of contact 'contact'.
@@ -491,8 +518,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact BareJid of the contact we want to get all sessions from
      * @return TreeMap of deviceId and sessions of the contact
+     * @throws IOException
      */
-    public abstract HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact);
+    public abstract HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException;
 
     /**
      * Store a crypto-lib specific session to storage.
@@ -500,8 +528,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice  OmemoDevice whose session we want to store
      * @param session session
+     * @throws IOException
      */
-    public abstract void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice, T_Sess session);
+    public abstract void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice, T_Sess session) throws IOException;
 
     /**
      * Remove a crypto-lib specific session from storage.
@@ -535,15 +564,17 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact contact we want to get the deviceList of
      * @return CachedDeviceList of the contact
+     * @throws IOException
      */
-    public abstract OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact);
+    public abstract OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) throws IOException;
 
     /**
      * Load a list of deviceIds from our own devices.
      * @param userDevice
      * @return
+     * @throws IOException
      */
-    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice) {
+    public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice) throws IOException {
         return loadCachedDeviceList(userDevice, userDevice.getJid());
     }
 
@@ -554,10 +585,11 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact    Contact
      * @param contactsDeviceList list of the contacts devices' ids.
+     * @throws IOException
      */
     public abstract void storeCachedDeviceList(OmemoDevice userDevice,
                                                BareJid contact,
-                                               OmemoCachedDeviceList contactsDeviceList);
+                                               OmemoCachedDeviceList contactsDeviceList) throws IOException;
 
     /**
      * Delete this device's IdentityKey, PreKeys, SignedPreKeys and Sessions.
@@ -580,9 +612,10 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @return fingerprint of our identityKeyPair
      *
      * @throws CorruptedOmemoKeyException if the identityKey of userDevice is corrupted.
+     * @throws IOException
      */
     public OmemoFingerprint getFingerprint(OmemoDevice userDevice)
-            throws CorruptedOmemoKeyException {
+            throws CorruptedOmemoKeyException, IOException {
 
         T_IdKeyPair keyPair = loadOmemoIdentityKeyPair(userDevice);
         if (keyPair == null) {
@@ -600,9 +633,10 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @return fingerprint of the userDevices IdentityKey.
      * @throws CorruptedOmemoKeyException if the IdentityKey is corrupted.
      * @throws NoIdentityKeyException if no IdentityKey for contactsDevice has been found locally.
+     * @throws IOException
      */
     public OmemoFingerprint getFingerprint(OmemoDevice userDevice, OmemoDevice contactsDevice)
-            throws CorruptedOmemoKeyException, NoIdentityKeyException {
+            throws CorruptedOmemoKeyException, NoIdentityKeyException, IOException {
 
         T_IdKey identityKey = loadOmemoIdentityKey(userDevice, contactsDevice);
         if (identityKey == null) {
@@ -625,10 +659,11 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws SmackException.NotConnectedException
      * @throws InterruptedException
      * @throws SmackException.NoResponseException
+     * @throws IOException
      */
     public OmemoFingerprint getFingerprintAndMaybeBuildSession(OmemoManager.LoggedInOmemoManager managerGuard, OmemoDevice contactsDevice)
             throws CannotEstablishOmemoSessionException, CorruptedOmemoKeyException,
-            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, IOException {
         OmemoManager omemoManager = managerGuard.get();
 
         // Load identityKey

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackException;
@@ -50,7 +51,7 @@ public class OmemoMamDecryptionTest extends AbstractTwoUsersOmemoIntegrationTest
     @SmackIntegrationTest
     public void mamDecryptionTest() throws XMPPException.XMPPErrorException, SmackException.NotLoggedInException,
             SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException,
-            CryptoFailedException, UndecidedOmemoIdentityException {
+            CryptoFailedException, UndecidedOmemoIdentityException, IOException {
         // Make sure, Bobs server stores messages in the archive
         MamManager bobsMamManager = MamManager.getInstanceFor(bob.getConnection());
         bobsMamManager.enableMamForAllMessages();

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.omemo;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +66,11 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws NoRawSessionException when no double ratchet session was found.
      * @throws CryptoFailedException
      * @throws UntrustedOmemoIdentityException
+     * @throws IOException
      */
     public abstract byte[] doubleRatchetDecrypt(OmemoDevice sender, byte[] encryptedKey)
             throws CorruptedOmemoKeyException, NoRawSessionException, CryptoFailedException,
-            UntrustedOmemoIdentityException;
+            UntrustedOmemoIdentityException, IOException;
 
     /**
      * Encrypt a messageKey with the double ratchet session of the recipient.
@@ -86,9 +88,10 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @return tuple of cipher generated from the unpacked message key and the auth-tag
      * @throws CryptoFailedException if decryption using the double ratchet fails
      * @throws NoRawSessionException if we have no session, but the element was NOT a PreKeyMessage
+     * @throws IOException
      */
     CipherAndAuthTag retrieveMessageKeyAndAuthTag(OmemoDevice sender, OmemoElement element) throws CryptoFailedException,
-            NoRawSessionException {
+            NoRawSessionException, IOException {
         int keyId = omemoManager.getDeviceId();
         byte[] unpackedKey = null;
         List<CryptoFailedException> decryptExceptions = new ArrayList<>();

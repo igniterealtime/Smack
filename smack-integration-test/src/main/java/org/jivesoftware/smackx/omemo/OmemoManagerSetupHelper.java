@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.SmackException;
@@ -46,7 +47,7 @@ public class OmemoManagerSetupHelper {
     public static void trustAllIdentities(OmemoManager alice, OmemoManager bob)
             throws InterruptedException, SmackException.NotConnectedException, SmackException.NotLoggedInException,
             SmackException.NoResponseException, CannotEstablishOmemoSessionException, CorruptedOmemoKeyException,
-            XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException {
+            XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, IOException {
         Roster roster = Roster.getInstanceFor(alice.getConnection());
 
         if (alice.getOwnJid() != bob.getOwnJid() &&
@@ -66,7 +67,7 @@ public class OmemoManagerSetupHelper {
     public static void trustAllIdentitiesWithTests(OmemoManager alice, OmemoManager bob)
             throws InterruptedException, SmackException.NotConnectedException, SmackException.NotLoggedInException,
             SmackException.NoResponseException, CannotEstablishOmemoSessionException, CorruptedOmemoKeyException,
-            XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException {
+            XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, IOException {
         alice.requestDeviceListUpdateFor(bob.getOwnJid());
         HashMap<OmemoDevice, OmemoFingerprint> fps1 = alice.getActiveFingerprints(bob.getOwnJid());
 
@@ -124,7 +125,7 @@ public class OmemoManagerSetupHelper {
         }
     }
 
-    public static void cleanUpPubSub(OmemoManager omemoManager) {
+    public static void cleanUpPubSub(OmemoManager omemoManager) throws IOException {
         PubSubManager pm = PubSubManager.getInstanceFor(omemoManager.getConnection(), omemoManager.getOwnJid());
         try {
             omemoManager.requestDeviceListUpdateFor(omemoManager.getOwnJid());

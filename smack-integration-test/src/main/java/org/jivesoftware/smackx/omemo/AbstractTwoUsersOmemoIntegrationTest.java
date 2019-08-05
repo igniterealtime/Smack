@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.omemo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.io.IOException;
 import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
@@ -64,7 +65,7 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
     }
 
     @AfterClass
-    public void cleanUp() {
+    public void cleanUp() throws IOException {
         alice.stopStanzaAndPEPListeners();
         bob.stopStanzaAndPEPListeners();
         OmemoManagerSetupHelper.cleanUpPubSub(alice);
