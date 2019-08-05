@@ -543,9 +543,15 @@ public class StringUtils {
         return cs.toString();
     }
 
-    private static final Pattern XMLWHITESPACE = Pattern.compile("[\t\n\r ]");
+    /**
+     * Defined by XML 1.0 § 2.3 as:
+     *  S      ::=      (#x20 | #x9 | #xD | #xA)+
+     *
+     * @see <a href="https://www.w3.org/TR/xml/#sec-white-space">XML 1.0 § 2.3</a>
+     */
+    private static final Pattern XML_WHITESPACE = Pattern.compile("[\t\n\r ]");
 
     public static String deleteXmlWhitespace(String string) {
-        return XMLWHITESPACE.matcher(string).replaceAll("");
+        return XML_WHITESPACE.matcher(string).replaceAll("");
     }
 }

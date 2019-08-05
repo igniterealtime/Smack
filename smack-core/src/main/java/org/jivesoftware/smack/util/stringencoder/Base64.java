@@ -19,6 +19,7 @@ package org.jivesoftware.smack.util.stringencoder;
 import java.nio.charset.StandardCharsets;
 
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 
 public class Base64 {
 
@@ -57,6 +58,9 @@ public class Base64 {
     // TODO: We really should not mask the IllegalArgumentException. But some unit test depend on this behavior, like
     // ibb.packet.DataPacketExtension.shouldReturnNullIfDataIsInvalid().
     public static final byte[] decode(String string) {
+        // xs:base64Binary may include XML whitespace which we need to delete before feeding the string into the Base64
+        // decoder. See also XML Schema Part 2: Datatypes Second Edition § 3.2.16.
+        string = StringUtils.deleteXmlWhitespace(string);
         try {
             return base64encoder.decode(string);
         } catch (IllegalArgumentException e) {
