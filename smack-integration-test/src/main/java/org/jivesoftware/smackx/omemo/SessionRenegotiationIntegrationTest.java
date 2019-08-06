@@ -31,6 +31,7 @@ public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIn
         super(environment);
     }
 
+    @SuppressWarnings("SynchronizeOnNonFinalField")
     @SmackIntegrationTest
     public void sessionRenegotiationTest() throws Exception {
 
@@ -50,7 +51,7 @@ public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIn
         bob.removeOmemoMessageListener(listener1);
 
         // Remove the session on Bobs side.
-        synchronized (bob.LOCK) {
+        synchronized (bob) {
             bob.getOmemoService().getOmemoStoreBackend().removeRawSession(bob.getOwnDevice(), alice.getOwnDevice());
         }
 

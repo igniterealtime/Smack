@@ -55,6 +55,7 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
      * Bob still has B2
      * @throws Exception
      */
+    @SuppressWarnings("SynchronizeOnNonFinalField")
     @SmackIntegrationTest
     public void messageTest() throws Exception {
         OmemoBundleElement a1 = alice.getOmemoService().getOmemoStoreBackend().packOmemoBundle(alice.getOwnDevice());
@@ -74,7 +75,7 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
         OmemoBundleElement a1_ = alice.getOmemoService().getOmemoStoreBackend().packOmemoBundle(alice.getOwnDevice());
         OmemoBundleElement b2;
 
-        synchronized (bob.LOCK) { // Circumvent race condition where bundle gets replenished after getting stored in b2
+        synchronized (bob) { // Circumvent race condition where bundle gets replenished after getting stored in b2
             b2 = bob.getOmemoService().getOmemoStoreBackend().packOmemoBundle(bob.getOwnDevice());
         }
 
