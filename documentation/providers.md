@@ -46,9 +46,9 @@ ProviderManager.addExtensionProvider("element", "namespace", new MyExtProvider()
 
   * Add a loader - You can add a ProviderLoader which will inject a means of loading multiple providers (both types) into the manager. This is the mechanism used by Smack to load from the Smack specific file format (via ProviderFileLoader). Implementers can provide the means to load providers from any source they wish, or simply reuse the ProviderFileLoader to load from their own provider files.
 
-
+```
 	ProviderManager.addLoader(new ProviderFileLoader(FileUtils.getStreamForUrl("classpath:com/myco/provider/myco_custom.providers", null)));
-
+```
 
   * VM Argument - You can add a provider file via the VM argument _smack.provider.file_. This will load the file at the specified URL during startup when Smack initializes. This also assumes the default configuration, since it requires that the **VmArgInitializer** was part of the startup configuration.
 
