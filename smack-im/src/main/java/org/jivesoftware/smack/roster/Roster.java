@@ -1620,7 +1620,7 @@ public final class Roster extends Manager {
         @Override
         public void onSuccess(IQ packet) {
             final XMPPConnection connection = connection();
-            LOGGER.log(Level.FINE, "RosterResultListener received {}", packet);
+            LOGGER.log(Level.FINE, "RosterResultListener received {0}", packet);
             Collection<Jid> addedEntries = new ArrayList<>();
             Collection<Jid> updatedEntries = new ArrayList<>();
             Collection<Jid> deletedEntries = new ArrayList<>();
