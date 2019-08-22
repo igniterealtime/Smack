@@ -646,7 +646,7 @@ public abstract class ConnectionConfiguration {
 
         /**
          * Set the Internet address of the host providing the XMPP service. If set, then this will overwrite anything
-         * set via {@link #setHost(String)}.
+         * set via {@link #setHost(CharSequence)}.
          *
          * @param address the Internet address of the host providing the XMPP service.
          * @return a reference to this builder.
@@ -658,16 +658,29 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Set the name of the host providing the XMPP service. Note that this method does only allow DNS names and not
-         * IP addresses. Use {@link #setHostAddress(InetAddress)} if you want to explicitly set the Internet address of
-         * the host providing the XMPP service.
+         * Set the name of the host providing the XMPP service. This method takes DNS names and
+         * IP addresses.
          *
          * @param host the DNS name of the host providing the XMPP service.
          * @return a reference to this builder.
          */
-        public B setHost(String host) {
-            DnsName hostDnsName = DnsName.from(host);
-            return setHost(hostDnsName);
+        public B setHost(CharSequence host) {
+            String fqdnOrIpString = host.toString();
+            if (InetAddressUtil.isIpAddress(fqdnOrIpString)) {
+                InetAddress hostInetAddress;
+                try {
+                    hostInetAddress = InetAddress.getByName(fqdnOrIpString);
+                }
+                catch (UnknownHostException e) {
+                    // Should never happen.
+                    throw new AssertionError(e);
+                }
+                setHostAddress(hostInetAddress);
+            } else {
+                DnsName dnsName = DnsName.from(fqdnOrIpString);
+                setHost(dnsName);
+            }
+            return getThis();
         }
 
         /**
@@ -691,23 +704,12 @@ public abstract class ConnectionConfiguration {
          * @see #setHost(DnsName)
          * @see #setHostAddress(InetAddress)
          * @since 4.3.2
+         * @deprecated use {@link #setHost(CharSequence)} instead.
          */
+        @Deprecated
+        // TODO: Remove in Smack 4.5.
         public B setHostAddressByNameOrIp(CharSequence fqdnOrIp) {
-            String fqdnOrIpString = fqdnOrIp.toString();
-            if (InetAddressUtil.isIpAddress(fqdnOrIp)) {
-                InetAddress hostInetAddress;
-                try {
-                    hostInetAddress = InetAddress.getByName(fqdnOrIpString);
-                }
-                catch (UnknownHostException e) {
-                    // Should never happen.
-                    throw new AssertionError(e);
-                }
-                setHostAddress(hostInetAddress);
-            } else {
-                setHost(fqdnOrIpString);
-            }
-            return getThis();
+            return setHost(fqdnOrIp);
         }
 
         public B setPort(int port) {

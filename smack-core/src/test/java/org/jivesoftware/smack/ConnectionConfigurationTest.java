@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus.
+ * Copyright 2018-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class ConnectionConfigurationTest {
         DummyConnectionConfiguration.Builder builder = newUnitTestBuilder();
 
         final String ip = "192.168.0.1";
-        builder.setHostAddressByNameOrIp(ip);
+        builder.setHost(ip);
 
         DummyConnectionConfiguration connectionConfiguration = builder.build();
         assertEquals('/' + ip, connectionConfiguration.getHostAddress().toString());
@@ -39,7 +39,7 @@ public class ConnectionConfigurationTest {
         DummyConnectionConfiguration.Builder builder = newUnitTestBuilder();
 
         final String fqdn = "foo.example.org";
-        builder.setHostAddressByNameOrIp(fqdn);
+        builder.setHost(fqdn);
 
         DummyConnectionConfiguration connectionConfiguration = builder.build();
         assertEquals(fqdn, connectionConfiguration.getHost().toString());
