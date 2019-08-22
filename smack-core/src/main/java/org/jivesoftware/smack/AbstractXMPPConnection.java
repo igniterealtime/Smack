@@ -1192,11 +1192,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public void setReplyTimeout(long timeout) {
-    	if (Long.MAX_VALUE - System.currentTimeMillis() < timeout) {
-    		throw new IllegalArgumentException("Extremely long reply timeout");
+        if (Long.MAX_VALUE - System.currentTimeMillis() < timeout) {
+            throw new IllegalArgumentException("Extremely long reply timeout");
         }
         else {
-        	replyTimeout = timeout;
+            replyTimeout = timeout;
         }
     }
 
