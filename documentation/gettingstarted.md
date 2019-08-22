@@ -62,7 +62,7 @@ XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
   .setPort(8222)
   .build();
 
-AbstractXMPPConnection conn2 = **new** XMPPTCPConnection(config);
+AbstractXMPPConnection conn2 = new XMPPTCPConnection(config);
 conn2.connect().login();
 ```
 
