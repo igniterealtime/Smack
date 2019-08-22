@@ -294,6 +294,9 @@ public final class MultiUserChatManager extends Manager {
      * Returns a Set of the rooms where the user has joined. The Iterator will contain Strings where each String
      * represents a room (e.g. room@muc.jabber.org).
      *
+     * Note: In order to get a list of bookmarked (but not necessarily joined) conferences, use
+     * {@link org.jivesoftware.smackx.bookmarks.BookmarkManager#getBookmarkedConferences()}.
+     *
      * @return a List of the rooms where the user has joined using a given connection.
      */
     public Set<EntityBareJid> getJoinedRooms() {
