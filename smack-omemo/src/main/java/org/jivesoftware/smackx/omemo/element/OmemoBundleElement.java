@@ -60,8 +60,8 @@ public abstract class OmemoBundleElement implements ExtensionElement {
      * @param preKeysB64 HashMap of base64 encoded preKeys
      */
     public OmemoBundleElement(int signedPreKeyId, String signedPreKeyB64, String signedPreKeySigB64, String identityKeyB64, HashMap<Integer, String> preKeysB64) {
-        if (signedPreKeyId <= 0) {
-            throw new IllegalArgumentException("signedPreKeyId MUST be greater than 0.");
+        if (signedPreKeyId < 0) {
+            throw new IllegalArgumentException("signedPreKeyId MUST be greater than or equal to 0.");
         }
         this.signedPreKeyId = signedPreKeyId;
         this.signedPreKeyB64 = StringUtils.requireNotNullNorEmpty(signedPreKeyB64, "signedPreKeyB64 MUST NOT be null nor empty.");
