@@ -1256,7 +1256,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         try {
             stanza = PacketParserUtils.parseStanza(parser, incomingStreamXmlEnvironment);
         }
-        catch (XmlPullParserException | SmackParsingException | IOException e) {
+        catch (XmlPullParserException | SmackParsingException | IOException | IllegalArgumentException e) {
             CharSequence content = PacketParserUtils.parseContentDepth(parser,
                             parserDepth);
             UnparseableStanza message = new UnparseableStanza(content, e);
