@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2018 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,6 @@ import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
-import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.pubsub.filter.EventExtensionFilter;
@@ -151,19 +150,19 @@ public final class PepManager extends Manager {
     /**
      * Publish an event.
      *
+     * @param nodeId the ID of the node to publish on.
      * @param item the item to publish.
-     * @param node the node to publish on.
+     * @return the leaf node the item was published on.
      * @throws NotConnectedException
      * @throws InterruptedException
      * @throws XMPPErrorException
      * @throws NoResponseException
-     * @throws NotAPubSubNodeException
      * @throws NotALeafNodeException
      */
-    public void publish(Item item, String node) throws NotConnectedException, InterruptedException,
-                    NoResponseException, XMPPErrorException, NotAPubSubNodeException, NotALeafNodeException {
-        LeafNode pubSubNode = pepPubSubManager.getLeafNode(node);
-        pubSubNode.publish(item);
+    public LeafNode publish(String nodeId, Item item) throws NotConnectedException, InterruptedException,
+                    NoResponseException, XMPPErrorException, NotALeafNodeException {
+        // PEP nodes are auto created if not existent. Hence Use PubSubManager.tryToPublishAndPossibleAutoCreate() here.
+        return pepPubSubManager.tryToPublishAndPossibleAutoCreate(nodeId, item);
     }
 
     /**

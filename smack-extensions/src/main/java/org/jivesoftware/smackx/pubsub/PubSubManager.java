@@ -186,6 +186,17 @@ public final class PubSubManager extends Manager {
         pubSubService = toAddress;
     }
 
+    private void checkIfXmppErrorBecauseOfNotLeafNode(String nodeId, XMPPErrorException xmppErrorException)
+                    throws XMPPErrorException, NotALeafNodeException {
+        Condition condition = xmppErrorException.getStanzaError().getCondition();
+        if (condition == Condition.feature_not_implemented) {
+            // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
+            throw new PubSubException.NotALeafNodeException(nodeId, pubSubService);
+        }
+
+        throw xmppErrorException;
+    }
+
     /**
      * Creates an instant node, if supported.
      *
@@ -387,13 +398,7 @@ public final class PubSubManager extends Manager {
             // Try to ensure that this is not a collection node by asking for one item form the node.
             leafNode.getItems(1);
         } catch (XMPPErrorException e) {
-            Condition condition = e.getStanzaError().getCondition();
-            if (condition == Condition.feature_not_implemented) {
-                // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
-                throw new PubSubException.NotALeafNodeException(id, pubSubService);
-            }
-
-            throw e;
+            checkIfXmppErrorBecauseOfNotLeafNode(id, e);
         }
 
         nodeMap.put(id, leafNode);
@@ -430,12 +435,19 @@ public final class PubSubManager extends Manager {
      * @throws XMPPErrorException
      * @throws NotConnectedException
      * @throws InterruptedException
+     * @throws NotALeafNodeException
      * @since 4.2.1
      */
     public <I extends Item> LeafNode tryToPublishAndPossibleAutoCreate(String id, I item)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
+                    NotALeafNodeException {
         LeafNode leafNode = new LeafNode(this, id);
-        leafNode.publish(item);
+
+        try {
+            leafNode.publish(item);
+        } catch (XMPPErrorException e) {
+            checkIfXmppErrorBecauseOfNotLeafNode(id, e);
+        }
 
         // If LeafNode.publish() did not throw then we have successfully published an item and possible auto-created
         // (XEP-0163 § 3., XEP-0060 § 7.1.4) the node. So we can put the node into the nodeMap.

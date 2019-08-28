@@ -74,9 +74,11 @@ import org.jivesoftware.smackx.omemo.trust.TrustState;
 import org.jivesoftware.smackx.omemo.util.MessageOrOmemoMessage;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
 import org.jxmpp.jid.BareJid;
@@ -581,12 +583,13 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws SmackException.NotConnectedException
      * @throws InterruptedException
      * @throws SmackException.NoResponseException
+     * @throws NotALeafNodeException
      */
     static void publishBundle(XMPPConnection connection, OmemoDevice userDevice, OmemoBundleElement bundle)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
-            SmackException.NoResponseException {
-        PubSubManager pm = PubSubManager.getInstanceFor(connection, connection.getUser().asBareJid());
-        pm.tryToPublishAndPossibleAutoCreate(userDevice.getBundleNodeName(), new PayloadItem<>(bundle));
+            SmackException.NoResponseException, NotALeafNodeException {
+        PepManager pm = PepManager.getInstanceFor(connection);
+        pm.publish(userDevice.getBundleNodeName(), new PayloadItem<>(bundle));
     }
 
     /**
@@ -635,10 +638,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      */
     static void publishDeviceList(XMPPConnection connection, OmemoDeviceListElement deviceList)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            SmackException.NoResponseException {
-
-        PubSubManager.getInstanceFor(connection, connection.getUser().asBareJid())
-                .tryToPublishAndPossibleAutoCreate(OmemoConstants.PEP_NODE_DEVICE_LIST, new PayloadItem<>(deviceList));
+            SmackException.NoResponseException, NotALeafNodeException {
+        PepManager pm = PepManager.getInstanceFor(connection);
+        pm.publish(OmemoConstants.PEP_NODE_DEVICE_LIST, new PayloadItem<>(deviceList));
     }
 
     /**
@@ -1119,7 +1121,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     getOmemoStoreBackend().replenishKeys(userDevice);
                     OmemoBundleElement bundleElement = getOmemoStoreBackend().packOmemoBundle(userDevice);
                     publishBundle(manager.getConnection(), userDevice, bundleElement);
-                } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
+                } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException
+                                | SmackException.NotConnectedException | XMPPException.XMPPErrorException
+                                | NotALeafNodeException e) {
                     LOGGER.log(Level.WARNING, "Could not republish replenished bundle.", e);
                 }
             }
@@ -1200,7 +1204,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     getOmemoStoreBackend().replenishKeys(userDevice);
                     OmemoBundleElement bundleElement = getOmemoStoreBackend().packOmemoBundle(userDevice);
                     publishBundle(manager.getConnection(), userDevice, bundleElement);
-                } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
+                } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException
+                                | SmackException.NotConnectedException | XMPPException.XMPPErrorException
+                                | NotALeafNodeException e) {
                     LOGGER.log(Level.WARNING, "Could not republish replenished bundle.", e);
                 }
             }
@@ -1280,7 +1286,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     getOmemoStoreBackend().replenishKeys(userDevice);
                     OmemoBundleElement bundleElement = getOmemoStoreBackend().packOmemoBundle(userDevice);
                     publishBundle(manager.getConnection(), userDevice, bundleElement);
-                } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
+                } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException
+                                | SmackException.NotConnectedException | XMPPException.XMPPErrorException
+                                | NotALeafNodeException e) {
                     LOGGER.log(Level.WARNING, "Could not republish replenished bundle.", e);
                 }
             }
@@ -1371,10 +1379,11 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws SmackException.NotConnectedException
      * @throws SmackException.NoResponseException
      * @throws IOException
+     * @throws NotALeafNodeException
      */
     public void purgeDeviceList(OmemoManager.LoggedInOmemoManager managerGuard)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            SmackException.NoResponseException, IOException {
+            SmackException.NoResponseException, IOException, NotALeafNodeException {
 
         OmemoManager omemoManager = managerGuard.get();
         OmemoDevice userDevice = omemoManager.getOwnDevice();

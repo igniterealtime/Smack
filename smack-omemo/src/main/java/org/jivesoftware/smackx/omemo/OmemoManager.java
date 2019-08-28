@@ -703,10 +703,11 @@ public final class OmemoManager extends Manager {
      * @throws SmackException.NotConnectedException
      * @throws SmackException.NoResponseException
      * @throws IOException
+     * @throws PubSubException.NotALeafNodeException
      */
     public void purgeDeviceList()
             throws SmackException.NotLoggedInException, InterruptedException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, SmackException.NoResponseException, IOException {
+            SmackException.NotConnectedException, SmackException.NoResponseException, IOException, PubSubException.NotALeafNodeException {
         getOmemoService().purgeDeviceList(new LoggedInOmemoManager(this));
     }
 
@@ -722,10 +723,12 @@ public final class OmemoManager extends Manager {
      * @throws SmackException.NoResponseException XMPP error
      * @throws SmackException.NotLoggedInException
      * @throws IOException
+     * @throws PubSubException.NotALeafNodeException
      */
     public synchronized void rotateSignedPreKey()
             throws CorruptedOmemoKeyException, SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, IOException {
+                    SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException,
+                    IOException, PubSubException.NotALeafNodeException {
         if (!connection().isAuthenticated()) {
             throw new SmackException.NotLoggedInException();
         }
@@ -1032,7 +1035,7 @@ public final class OmemoManager extends Manager {
                                 try {
                                     OmemoService.publishDeviceList(connection(), newDeviceList);
                                 } catch (InterruptedException | XMPPException.XMPPErrorException |
-                                        SmackException.NotConnectedException | SmackException.NoResponseException e) {
+                                        SmackException.NotConnectedException | SmackException.NoResponseException | PubSubException.NotALeafNodeException e) {
                                     LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
                                 }
                             }

@@ -39,6 +39,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.omemo.OmemoManager;
@@ -56,6 +57,7 @@ import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
+import org.jivesoftware.smackx.pubsub.PubSubException;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -202,7 +204,7 @@ public class OmemoClient {
                 try {
                     omemoManager.purgeDeviceList();
                     print("Purged.");
-                } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
+                } catch (XMPPException.XMPPErrorException | SmackException.NoResponseException | PubSubException.NotALeafNodeException e) {
                     LOGGER.log(Level.SEVERE, "Unexpected Exception", e);
                 }
         }
