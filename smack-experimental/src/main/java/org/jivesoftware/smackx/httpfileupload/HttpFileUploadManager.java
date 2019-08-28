@@ -399,7 +399,7 @@ public final class HttpFileUploadManager extends Manager {
         urlConnection.setUseCaches(false);
         urlConnection.setDoOutput(true);
         urlConnection.setFixedLengthStreamingMode(fileSize);
-        urlConnection.setRequestProperty("Content-Type", "application/octet-stream;");
+        urlConnection.setRequestProperty("Content-Type", "application/octet-stream");
         for (Entry<String, String> header : slot.getHeaders().entrySet()) {
             urlConnection.setRequestProperty(header.getKey(), header.getValue());
         }
