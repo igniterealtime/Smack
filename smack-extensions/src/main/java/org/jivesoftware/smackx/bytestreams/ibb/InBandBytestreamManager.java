@@ -401,7 +401,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * @throws XMPPException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public InBandBytestreamSession establishSession(Jid targetJID) throws XMPPException, SmackException, InterruptedException {
@@ -419,8 +419,8 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * @throws XMPPErrorException if the user doesn't support or accept in-band bytestreams, or if the
      *         user prefers smaller block sizes
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public InBandBytestreamSession establishSession(Jid targetJID, String sessionID)
@@ -445,8 +445,8 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * not accepted.
      *
      * @param request IQ stanza that should be answered with a not-acceptable error
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void replyRejectPacket(IQ request) throws NotConnectedException, InterruptedException {
         IQ error = IQ.createErrorResponse(request, StanzaError.Condition.not_acceptable);
@@ -458,8 +458,8 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * request is rejected because its block size is greater than the maximum allowed block size.
      *
      * @param request IQ stanza that should be answered with a resource-constraint error
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
         IQ error = IQ.createErrorResponse(request, StanzaError.Condition.resource_constraint);
@@ -471,8 +471,8 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * session could not be found.
      *
      * @param request IQ stanza that should be answered with a item-not-found error
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void replyItemNotFoundPacket(IQ request) throws NotConnectedException, InterruptedException {
         IQ error = IQ.createErrorResponse(request, StanzaError.Condition.item_not_found);

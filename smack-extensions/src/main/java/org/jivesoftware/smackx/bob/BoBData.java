@@ -42,9 +42,9 @@ public class BoBData {
     /**
      * BoB data constructor.
      *
-     * @param type
-     * @param content
-     * @param maxAge
+     * @param type TODO javadoc me please
+     * @param content TODO javadoc me please
+     * @param maxAge TODO javadoc me please
      */
     public BoBData(String type, byte[] content, int maxAge) {
         this.type = type;

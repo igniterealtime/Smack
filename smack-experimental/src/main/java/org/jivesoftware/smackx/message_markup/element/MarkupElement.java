@@ -51,7 +51,7 @@ public class MarkupElement implements ExtensionElement {
 
     /**
      * Return a list of all child elements.
-     * @return children
+     * @return children TODO javadoc me please
      */
     public List<MarkupChildElement> getChildElements() {
         return childElements;
@@ -97,7 +97,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder
+         * @return builder TODO javadoc me please
          */
         public Builder setDeleted(int start, int end) {
             return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.deleted));
@@ -108,7 +108,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder
+         * @return builder TODO javadoc me please
          */
         public Builder setEmphasis(int start, int end) {
             return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.emphasis));
@@ -119,7 +119,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder
+         * @return builder TODO javadoc me please
          */
         public Builder setCode(int start, int end) {
             return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.code));
@@ -131,7 +131,7 @@ public class MarkupElement implements ExtensionElement {
          * @param start start index
          * @param end end index
          * @param styles list of text styles for that span
-         * @return builder
+         * @return builder TODO javadoc me please
          */
         public Builder addSpan(int start, int end, Set<SpanElement.SpanStyle> styles) {
             verifyStartEnd(start, end);
@@ -152,7 +152,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder
+         * @return builder TODO javadoc me please
          */
         public Builder setBlockQuote(int start, int end) {
             verifyStartEnd(start, end);
@@ -179,7 +179,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder
+         * @return builder TODO javadoc me please
          */
         public Builder setCodeBlock(int start, int end) {
             verifyStartEnd(start, end);
@@ -232,7 +232,7 @@ public class MarkupElement implements ExtensionElement {
             /**
              * End the list.
              *
-             * @return builder
+             * @return builder TODO javadoc me please
              */
             public Builder endList() {
                 if (entries.size() > 0) {

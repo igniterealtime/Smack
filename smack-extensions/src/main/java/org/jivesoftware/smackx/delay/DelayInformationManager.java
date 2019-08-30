@@ -41,7 +41,7 @@ public class DelayInformationManager {
      * <p>
      * Prefer {@link #getDelayInformation(Stanza)} over this method for backwards compatibility.
      * </p>
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getXep203DelayInformation(Stanza packet) {
@@ -53,7 +53,7 @@ public class DelayInformationManager {
      * <p>
      * Prefer {@link #getDelayInformation(Stanza)} over this method for backwards compatibility.
      * </p>
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getLegacyDelayInformation(Stanza packet) {
@@ -64,7 +64,7 @@ public class DelayInformationManager {
      * Get Delayed Delivery information. This method first looks for a PacketExtension with the
      * XEP-203 namespace and falls back to the XEP-91 namespace.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getDelayInformation(Stanza packet) {
@@ -78,7 +78,7 @@ public class DelayInformationManager {
     /**
      * Get the Delayed Delivery timestamp or <code>null</code>.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the Delayed Delivery timestamp or <code>null</code>
      */
     public static Date getDelayTimestamp(Stanza packet) {
@@ -92,7 +92,7 @@ public class DelayInformationManager {
      /**
      * Check if the given stanza is a delayed stanza as of XEP-203.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return true if the stanza got delayed.
      */
     public static boolean isDelayedStanza(Stanza packet) {

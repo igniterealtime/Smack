@@ -30,7 +30,7 @@ public class SMUtils {
      * of digits that can be represented by the unsignedInt datatype as specified in XML Schema Part 2 [10]
      * (i.e., 2^32), the value of 'h' SHALL be reset from 2^32-1 back to zero (rather than being incremented to 2^32)."
      *
-     * @param height
+     * @param height TODO javadoc me please
      * @return the incremented height
      */
     public static long incrementHeight(long height) {
@@ -42,8 +42,8 @@ public class SMUtils {
      * reported stanza handled count while considering that the new value may be
      * wrapped after 2^32-1.
      *
-     * @param reportedHandledCount
-     * @param lastKnownHandledCount
+     * @param reportedHandledCount TODO javadoc me please
+     * @param lastKnownHandledCount TODO javadoc me please
      * @return the delta
      */
     public static long calculateDelta(long reportedHandledCount, long lastKnownHandledCount) {

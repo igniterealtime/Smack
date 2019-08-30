@@ -117,7 +117,7 @@ public abstract class TransportCandidate {
     /**
      * Set local IP to bind to this candidate.
      *
-     * @param localIp
+     * @param localIp TODO javadoc me please
      */
     public void setLocalIp(String localIp) {
         this.localIp = localIp;
@@ -135,7 +135,7 @@ public abstract class TransportCandidate {
     /**
      * Set the symmetric candidate for this candidate.
      *
-     * @param symmetric
+     * @param symmetric TODO javadoc me please
      */
     public void setSymmetric(TransportCandidate symmetric) {
         this.symmetric = symmetric;
@@ -171,7 +171,7 @@ public abstract class TransportCandidate {
     /**
      * Set the XMPPConnection use to send or receive this candidate.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      */
     public void setConnection(XMPPConnection connection) {
         this.connection = connection;
@@ -189,7 +189,7 @@ public abstract class TransportCandidate {
     /**
      * Set the jingle's sessionId that is using this candidate.
      *
-     * @param sessionId
+     * @param sessionId TODO javadoc me please
      */
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
@@ -349,6 +349,8 @@ public abstract class TransportCandidate {
      * usable.
      *
      * Subclasses should provide better methods if they can...
+     *
+     * @param localCandidates a list of local candidates.
      */
     @SuppressWarnings("UnusedVariable")
     public void check(final List<TransportCandidate> localCandidates) {
@@ -474,6 +476,9 @@ public abstract class TransportCandidate {
 
         /**
          * Returns the Protocol constant associated with the String value.
+         *
+         * @param value the input String.
+         * @return the protocol.
          */
         public static Protocol fromString(String value) {
             if (value == null) {
@@ -563,6 +568,9 @@ public abstract class TransportCandidate {
 
         /**
          * Returns the MediaChannel constant associated with the String value.
+         *
+         * @param value the input String.
+         * @return the channel.
          */
         public static Channel fromString(String value) {
             if (value == null) {

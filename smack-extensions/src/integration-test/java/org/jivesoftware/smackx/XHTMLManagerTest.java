@@ -36,7 +36,7 @@ public class XHTMLManagerTest extends SmackTestCase {
 
     /**
      * Constructor for XHTMLManagerTest.
-     * @param name
+     * @param name TODO javadoc me please
      */
     public XHTMLManagerTest(String name) {
         super(name);

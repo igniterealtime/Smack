@@ -223,10 +223,10 @@ public final class CarbonManager extends Manager {
      * Returns true if XMPP Carbons are supported by the server.
      *
      * @return true if supported
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(CarbonExtension.NAMESPACE);
@@ -239,8 +239,8 @@ public final class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @deprecated use {@link #enableCarbonsAsync(ExceptionCallback)} or {@link #disableCarbonsAsync(ExceptionCallback)} instead.
      */
     @Deprecated
@@ -302,10 +302,10 @@ public final class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     public synchronized void setCarbonsEnabled(final boolean new_state) throws NoResponseException,
@@ -322,9 +322,9 @@ public final class CarbonManager extends Manager {
     /**
      * Helper method to enable carbons.
      *
-     * @throws XMPPException
+     * @throws XMPPException if an XMPP protocol error was received.
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void enableCarbons() throws XMPPException, SmackException, InterruptedException {
         setCarbonsEnabled(true);
@@ -333,9 +333,9 @@ public final class CarbonManager extends Manager {
     /**
      * Helper method to disable carbons.
      *
-     * @throws XMPPException
+     * @throws XMPPException if an XMPP protocol error was received.
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void disableCarbons() throws XMPPException, SmackException, InterruptedException {
         setCarbonsEnabled(false);

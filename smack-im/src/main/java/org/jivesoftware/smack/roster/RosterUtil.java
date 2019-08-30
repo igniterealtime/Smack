@@ -92,9 +92,9 @@ public class RosterUtil {
      *
      * @param roster The roster which should be used for the pre-approval.
      * @param jid The XMPP address which should be pre-approved.
-     * @throws NotLoggedInException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2.2
      */
     public static void preApproveSubscriptionIfRequiredAndPossible(Roster roster, BareJid jid)

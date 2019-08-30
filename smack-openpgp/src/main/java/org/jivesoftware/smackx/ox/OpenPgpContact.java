@@ -77,7 +77,7 @@ public class OpenPgpContact {
     /**
      * Return the jid of the contact.
      *
-     * @return jid
+     * @return jid TODO javadoc me please
      */
     public BareJid getJid() {
         return jid;

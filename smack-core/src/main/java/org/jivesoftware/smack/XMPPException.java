@@ -87,17 +87,6 @@ public abstract class XMPPException extends Exception {
         private final Stanza request;
 
         /**
-         * Creates a new XMPPErrorException with the given builder.
-         *
-         * @param xmppErrorBuilder
-         * @deprecated Use {@link #XMPPErrorException(Stanza, StanzaError)} instead.
-         */
-        @Deprecated
-        public XMPPErrorException(StanzaError.Builder xmppErrorBuilder) {
-            this(null, xmppErrorBuilder.build());
-        }
-
-        /**
          * Creates a new XMPPErrorException with the XMPPError that was the root case of the exception.
          *
          * @param stanza stanza that contained the exception.

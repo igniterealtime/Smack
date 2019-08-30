@@ -80,6 +80,8 @@ public class JingleSessionRequest {
     /**
      * Returns the Jingle stanza that was sent by the requester which contains
      * the parameters of the session.
+     *
+     * @return the jingle stanza.
      */
     public Jingle getJingle() {
         return jingle;
@@ -109,8 +111,9 @@ public class JingleSessionRequest {
      *
      * @return Returns the IncomingJingleSession on which the
      *         negotiation can be carried out.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized JingleSession accept() throws XMPPException, SmackException, InterruptedException {
         JingleSession session;

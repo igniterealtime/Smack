@@ -54,6 +54,11 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Asserts that an event notification (publication without item) can be published to
      * a node that is both 'notification-only' as well as 'transient'.
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @SmackIntegrationTest
     public void transientNotificationOnlyNodeWithoutItemTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -75,6 +80,10 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     /**
+
+     */
+
+    /**
      * Asserts that an error is returned when a publish request to a node that is both
      * 'notification-only' as well as 'transient' contains an item element.
      *
@@ -85,6 +94,10 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
      * and a pubsub-specific error condition of &lt;item-forbidden/&gt;.
      * </blockquote>
      *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="https://xmpp.org/extensions/xep-0060.html#publisher-publish-error-badrequest">
      *     7.1.3.6 Request Does Not Match Configuration</a>
      */

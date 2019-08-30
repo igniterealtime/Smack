@@ -76,7 +76,7 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
              * byte without blocking, 0 means that the system is known to block for more input.
              *
              * @return 0 if no data is available, 1 otherwise
-             * @throws IOException
+             * @throws IOException if an I/O error occured.
              */
             @Override
             public int available() throws IOException {

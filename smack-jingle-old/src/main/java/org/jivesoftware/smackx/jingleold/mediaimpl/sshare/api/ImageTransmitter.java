@@ -196,7 +196,7 @@ public class ImageTransmitter implements Runnable {
     /**
      * Get the encoder used to encode Images Tiles.
      *
-     * @return encoder
+     * @return encoder TODO javadoc me please
      */
     public ImageEncoder getEncoder() {
         return encoder;

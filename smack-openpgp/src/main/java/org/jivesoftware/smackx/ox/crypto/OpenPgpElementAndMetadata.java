@@ -42,7 +42,7 @@ public class OpenPgpElementAndMetadata {
     /**
      * Return the {@link OpenPgpElement}.
      *
-     * @return element
+     * @return element TODO javadoc me please
      */
     public OpenPgpElement getElement() {
         return element;
@@ -51,7 +51,7 @@ public class OpenPgpElementAndMetadata {
     /**
      * Return {@link OpenPgpMetadata} about the {@link OpenPgpElement}s encryption/signatures.
      *
-     * @return metadata
+     * @return metadata TODO javadoc me please
      */
     public OpenPgpMetadata getMetadata() {
         return metadata;

@@ -109,7 +109,7 @@ public final class HashManager extends Manager {
 
     /**
      * Announce support for the given list of algorithms.
-     * @param algorithms
+     * @param algorithms TODO javadoc me please
      */
     public void addAlgorithmsToFeatures(List<ALGORITHM> algorithms) {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
@@ -120,7 +120,7 @@ public final class HashManager extends Manager {
 
     /**
      * Get an instance of the HashManager for the  given connection.
-     * @param connection
+     * @param connection TODO javadoc me please
      * @return the manager for the given connection.
      */
     public static synchronized HashManager getInstanceFor(XMPPConnection connection) {
@@ -189,7 +189,7 @@ public final class HashManager extends Manager {
         /**
          * Compensational method for static 'valueOf' function.
          *
-         * @param s
+         * @param s TODO javadoc me please
          * @return the algorithm for the given string.
          * @throws IllegalArgumentException if no algorithm for the given string is known.
          */

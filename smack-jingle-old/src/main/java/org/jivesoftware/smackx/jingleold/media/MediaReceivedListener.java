@@ -23,6 +23,8 @@ public interface MediaReceivedListener {
 
     /**
      * Called when new Media is received.
+     *
+     * @param participant the participant.
      */
     void mediaReceived(String participant);
 

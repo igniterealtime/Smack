@@ -67,8 +67,8 @@ public class MultipleRecipientManager {
      * @throws XMPPErrorException if server does not support XEP-33: Extended Stanza Addressing and
      *                       some XEP-33 specific features were requested.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static void send(XMPPConnection connection, Stanza packet, Collection<? extends Jid> to,
             Collection<? extends Jid> cc, Collection<? extends Jid> bcc) throws NoResponseException, XMPPErrorException,
@@ -98,8 +98,8 @@ public class MultipleRecipientManager {
      * @throws NoResponseException if there was no response from the server.
      * @throws FeatureNotSupportedException if special XEP-33 features where requested, but the
      *         server does not support them.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static void send(XMPPConnection connection, Stanza packet, Collection<? extends Jid> to, Collection<? extends Jid> cc, Collection<? extends Jid> bcc,
             Jid replyTo, Jid replyRoom, boolean noReply) throws NoResponseException, XMPPErrorException, FeatureNotSupportedException, NotConnectedException, InterruptedException {
@@ -139,11 +139,11 @@ public class MultipleRecipientManager {
      * @param connection the connection to use to send the reply.
      * @param original   the previously received stanza that was sent to multiple recipients.
      * @param reply      the new message to send as a reply.
-     * @throws XMPPErrorException
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws FeatureNotSupportedException
-     * @throws NoResponseException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws FeatureNotSupportedException if a requested feature is not supported by the remote entity.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     public static void reply(XMPPConnection connection, Message original, Message reply)
             throws XMPPErrorException, InterruptedException, NotConnectedException, NoResponseException, FeatureNotSupportedException {
@@ -280,9 +280,9 @@ public class MultipleRecipientManager {
      *                   queried.
      * @return the address of the multiple recipients service or <code>null</code> if none was found.
      * @throws NoResponseException if there was no response from the server.
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private static DomainBareJid getMultipleRecipientServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);

@@ -514,7 +514,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     /**
      * Delete a directory with all subdirectories.
-     * @param root
+     * @param root TODO javadoc me please
      */
     public static void deleteDirectory(File root) {
         File[] currList;

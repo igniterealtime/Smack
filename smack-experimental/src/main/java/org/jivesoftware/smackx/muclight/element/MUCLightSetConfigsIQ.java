@@ -44,10 +44,10 @@ public class MUCLightSetConfigsIQ extends IQ {
     /**
      * MUC Light set configuration IQ constructor.
      *
-     * @param roomJid
-     * @param roomName
-     * @param subject
-     * @param customConfigs
+     * @param roomJid TODO javadoc me please
+     * @param roomName TODO javadoc me please
+     * @param subject TODO javadoc me please
+     * @param customConfigs TODO javadoc me please
      */
     public MUCLightSetConfigsIQ(Jid roomJid, String roomName, String subject, HashMap<String, String> customConfigs) {
         super(ELEMENT, NAMESPACE);
@@ -61,9 +61,9 @@ public class MUCLightSetConfigsIQ extends IQ {
     /**
      * MUC Light set configuration IQ constructor.
      *
-     * @param roomJid
-     * @param roomName
-     * @param customConfigs
+     * @param roomJid TODO javadoc me please
+     * @param roomName TODO javadoc me please
+     * @param customConfigs TODO javadoc me please
      */
     public MUCLightSetConfigsIQ(Jid roomJid, String roomName, HashMap<String, String> customConfigs) {
         this(roomJid, roomName, null, customConfigs);

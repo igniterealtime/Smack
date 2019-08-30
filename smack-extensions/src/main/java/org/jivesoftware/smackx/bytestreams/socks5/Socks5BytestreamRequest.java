@@ -224,10 +224,10 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      *
      * @return the socket to send/receive data
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws CouldNotConnectToAnyProvidedSocks5Host
-     * @throws NoSocks5StreamHostsProvided
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws CouldNotConnectToAnyProvidedSocks5Host if no connection to any provided stream host could be established
+     * @throws NoSocks5StreamHostsProvided if no stream host was provided.
      */
     @Override
     public Socks5BytestreamSession accept() throws InterruptedException, XMPPErrorException,
@@ -299,8 +299,8 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
 
     /**
      * Rejects the SOCKS5 Bytestream request by sending a reject error to the initiator.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public void reject() throws NotConnectedException, InterruptedException {
@@ -312,10 +312,10 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * XMPP exception.
      *
      * @param streamHosts the stream hosts.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws CouldNotConnectToAnyProvidedSocks5Host as expected result.
-     * @throws NoSocks5StreamHostsProvided
+     * @throws NoSocks5StreamHostsProvided if no stream host was provided.
      */
     private void cancelRequest(Map<StreamHost, Exception> streamHostsExceptions)
                     throws NotConnectedException, InterruptedException, CouldNotConnectToAnyProvidedSocks5Host, NoSocks5StreamHostsProvided {

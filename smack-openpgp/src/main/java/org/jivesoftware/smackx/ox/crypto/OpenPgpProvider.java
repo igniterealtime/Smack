@@ -38,7 +38,7 @@ public interface OpenPgpProvider {
      * Return the {@link OpenPgpStore} instance of this provider.
      * This MUST NOT return null.
      *
-     * @return store
+     * @return store TODO javadoc me please
      */
     OpenPgpStore getStore();
 

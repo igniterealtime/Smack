@@ -66,7 +66,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
 
     /**
      * Private constructor.
-     * @param connection
+     * @param connection TODO javadoc me please
      */
     private StableUniqueStanzaIdManager(XMPPConnection connection) {
         super(connection);

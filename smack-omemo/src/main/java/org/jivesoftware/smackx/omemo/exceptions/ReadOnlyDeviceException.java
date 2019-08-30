@@ -44,7 +44,7 @@ public class ReadOnlyDeviceException extends Exception {
 
     /**
      * Return the device in question.
-     * @return device
+     * @return device TODO javadoc me please
      */
     public OmemoDevice getDevice() {
         return device;

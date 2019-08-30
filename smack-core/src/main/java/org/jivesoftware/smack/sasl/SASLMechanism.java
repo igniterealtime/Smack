@@ -140,8 +140,8 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param authzid the optional authorization identity.
      * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws SmackSaslException if a SASL related error occurs.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public final void authenticate(String username, String host, DomainBareJid serviceName, String password,
                     EntityBareJid authzid, SSLSession sslSession)
@@ -170,8 +170,8 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param authzid the optional authorization identity.
      * @param sslSession the optional SSL/TLS session (if one was established)
      * @throws SmackSaslException if a SASL related error occurs.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void authenticate(String host, DomainBareJid serviceName, CallbackHandler cbh, EntityBareJid authzid, SSLSession sslSession)
                     throws SmackSaslException, NotConnectedException, InterruptedException {
@@ -210,7 +210,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * empty array here.
      *
      * @return the initial response or null
-     * @throws SmackSaslException
+     * @throws SmackSaslException if a SASL specific error occured.
      */
     protected abstract byte[] getAuthenticationText() throws SmackSaslException;
 
@@ -222,7 +222,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
      * @throws SmackSaslException if a SASL related error occurs.
      * @throws InterruptedException if the connection is interrupted
-     * @throws NotConnectedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackSaslException, InterruptedException, NotConnectedException {
         byte[] challenge = Base64.decode((challengeString != null && challengeString.equals("=")) ? "" : challengeString);

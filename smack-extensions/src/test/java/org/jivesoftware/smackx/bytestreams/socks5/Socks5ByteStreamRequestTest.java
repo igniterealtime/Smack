@@ -98,7 +98,7 @@ public class Socks5ByteStreamRequestTest {
      * Accepting a SOCKS5 Bytestream request should fail if target is not able to connect to any of
      * the provided SOCKS5 proxies.
      *
-     * @throws Exception
+     * @throws Exception if an exception occurs.
      */
     @Test
     public void shouldFailIfRequestHasInvalidStreamHosts() throws Exception {

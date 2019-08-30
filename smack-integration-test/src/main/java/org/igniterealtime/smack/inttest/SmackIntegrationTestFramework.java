@@ -689,7 +689,7 @@ public class SmackIntegrationTestFramework<DC extends AbstractXMPPConnection> {
              * Execute the test.
              *
              * @throws IllegalAccessException
-             * @throws InterruptedException
+             * @throws InterruptedException if the calling thread was interrupted.
              * @throws InvocationTargetException if the reflective invoked test throws an exception.
              * @throws XMPPException in case an XMPPException happens when <em>preparing</em> the test.
              * @throws IOException in case an IOException happens when <em>preparing</em> the test.

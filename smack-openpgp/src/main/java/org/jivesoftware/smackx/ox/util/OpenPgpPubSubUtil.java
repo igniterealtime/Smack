@@ -295,7 +295,7 @@ public class OpenPgpPubSubUtil {
      *
      * @param pm PubSubManager
      * @param nodeName name of the node
-     * @return node
+     * @return node TODO javadoc me please
      *
      * @throws XMPPException.XMPPErrorException in case of an XMPP protocol error.
      * @throws PubSubException.NotALeafNodeException if the queried node is not a {@link LeafNode}.
@@ -417,7 +417,7 @@ public class OpenPgpPubSubUtil {
      *
      * @param pubSubManager pubsub manager
      * @param nodeName name of the node
-     * @return leafNode
+     * @return leafNode TODO javadoc me please
      *
      * @throws PubSubException.NotALeafNodeException in case we already have the node cached, but it is not a LeafNode.
      */

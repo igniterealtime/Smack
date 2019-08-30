@@ -51,7 +51,7 @@ public class GcmPacketExtension extends AbstractJsonPacketExtension {
     /**
      * Retrieve the GCM stanza extension from the packet.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the GCM stanza extension or null.
      */
     public static GcmPacketExtension from(Stanza packet) {

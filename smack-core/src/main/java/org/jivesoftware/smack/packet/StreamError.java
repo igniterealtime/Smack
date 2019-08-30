@@ -26,7 +26,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * Represents a stream error packet. Stream errors are unrecoverable errors where the server
  * will close the underlying TCP connection after the stream error was sent to the client.
- * These is the list of stream errors as defined in the XMPP spec:<p>
+ * These is the list of stream errors as defined in the XMPP spec:
  *
  * <table border=1>
  *      <caption>Stream Errors</caption>

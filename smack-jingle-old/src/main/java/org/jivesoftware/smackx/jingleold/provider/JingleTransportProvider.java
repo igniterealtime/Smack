@@ -49,8 +49,8 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
      *
      * @param parser the structure to parse
      * @return a transport element.
-     * @throws IOException
-     * @throws XmlPullParserException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
      */
     @Override
     public JingleTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException  {

@@ -57,17 +57,17 @@ public interface BytestreamRequest {
      * @throws XMPPErrorException if an error occurred while accepting the bytestream request
      * @throws InterruptedException if the thread was interrupted while waiting in a blocking
      *         operation
-     * @throws NotConnectedException
-     * @throws CouldNotConnectToAnyProvidedSocks5Host
-     * @throws NoSocks5StreamHostsProvided
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws CouldNotConnectToAnyProvidedSocks5Host if no connection to any provided stream host could be established
+     * @throws NoSocks5StreamHostsProvided if no stream host was provided.
      */
     BytestreamSession accept() throws InterruptedException, XMPPErrorException, CouldNotConnectToAnyProvidedSocks5Host,
                     NotConnectedException, NoSocks5StreamHostsProvided;
 
     /**
      * Rejects the bytestream request by sending a reject error to the initiator.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     void reject() throws NotConnectedException, InterruptedException;
 

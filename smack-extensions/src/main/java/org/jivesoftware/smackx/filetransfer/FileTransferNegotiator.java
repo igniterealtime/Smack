@@ -182,9 +182,9 @@ public final class FileTransferNegotiator extends Manager {
      * @return The file transfer object that handles the transfer
      * @throws NoStreamMethodsOfferedException If there are either no stream methods contained in the packet, or
      *                       there is not an appropriate stream method.
-     * @throws NotConnectedException
-     * @throws NoAcceptableTransferMechanisms
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoAcceptableTransferMechanisms if no acceptable transfer mechanisms are available
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public StreamNegotiator selectStreamNegotiator(
             FileTransferRequest request) throws NotConnectedException, NoStreamMethodsOfferedException, NoAcceptableTransferMechanisms, InterruptedException {
@@ -296,10 +296,10 @@ public final class FileTransferNegotiator extends Manager {
      *                        user to respond. If they do not respond in time, this
      * @return Returns the stream negotiator selected by the peer.
      * @throws XMPPErrorException Thrown if there is an error negotiating the file transfer.
-     * @throws NotConnectedException
-     * @throws NoResponseException
-     * @throws NoAcceptableTransferMechanisms
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NoAcceptableTransferMechanisms if no acceptable transfer mechanisms are available
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
             final String streamID, final String fileName, final long size,

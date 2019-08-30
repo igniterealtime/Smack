@@ -91,12 +91,12 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param iv initialization vector used for message encryption
      * @param message message we want to send
      *
-     * @throws NoSuchPaddingException
-     * @throws BadPaddingException
-     * @throws InvalidKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws IllegalBlockSizeException
-     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
+     * @throws BadPaddingException if the input data is not padded properly.
+     * @throws InvalidKeyException if the key is invalid.
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
+     * @throws IllegalBlockSizeException if the input data length is incorrect.
+     * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
                                OmemoTrustCallback callback,
@@ -123,13 +123,13 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param ratchet our OmemoRatchet
      * @param message message we want to send
      *
-     * @throws NoSuchPaddingException
-     * @throws BadPaddingException
-     * @throws InvalidKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws IllegalBlockSizeException
-     * @throws UnsupportedEncodingException
-     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
+     * @throws BadPaddingException if the input data is not padded properly.
+     * @throws InvalidKeyException if the key is invalid.
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
+     * @throws IllegalBlockSizeException if the input data length is incorrect.
+     * @throws UnsupportedEncodingException if the encoding is not supported.
+     * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
                                OmemoTrustCallback callback,
@@ -147,12 +147,12 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @see <a href="https://conversations.im/omemo/audit.pdf">OMEMO security audit</a>.
      *
      * @param message plaintext message
-     * @throws NoSuchPaddingException
+     * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
      * @throws NoSuchProviderException
-     * @throws InvalidAlgorithmParameterException
-     * @throws InvalidKeyException
-     * @throws BadPaddingException
-     * @throws IllegalBlockSizeException
+     * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
+     * @throws InvalidKeyException if the key is invalid.
+     * @throws BadPaddingException if the input data is not padded properly.
+     * @throws IllegalBlockSizeException if the input data length is incorrect.
      */
     private void setMessage(String message)
                     throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
@@ -220,7 +220,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws CorruptedOmemoKeyException if the identityKey of that device is corrupted.
      * @throws UndecidedOmemoIdentityException if the user hasn't yet decided whether to trust that device or not.
      * @throws UntrustedOmemoIdentityException if the user has decided not to trust that device.
-     * @throws IOException
+     * @throws IOException if an I/O error occured.
      */
     public void addRecipient(OmemoDevice contactsDevice)
             throws NoIdentityKeyException, CorruptedOmemoKeyException, UndecidedOmemoIdentityException,
@@ -248,7 +248,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Assemble an OmemoMessageElement from the current state of the builder.
      *
-     * @return OmemoMessageElement
+     * @return OmemoMessageElement TODO javadoc me please
      */
     public OmemoElement finish() {
         OmemoHeaderElement_VAxolotl header = new OmemoHeaderElement_VAxolotl(
@@ -265,7 +265,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param keyType Key Type
      * @param keyLength Key Length in bit
      * @return new AES key
-     * @throws NoSuchAlgorithmException
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
      */
     public static byte[] generateKey(String keyType, int keyLength) throws NoSuchAlgorithmException {
         KeyGenerator generator = KeyGenerator.getInstance(keyType);
@@ -276,7 +276,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Generate a 16 byte initialization vector for AES encryption.
      *
-     * @return iv
+     * @return iv TODO javadoc me please
      */
     public static byte[] generateIv() {
         SecureRandom random = new SecureRandom();

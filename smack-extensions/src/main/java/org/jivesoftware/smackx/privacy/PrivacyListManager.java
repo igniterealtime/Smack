@@ -224,10 +224,10 @@ public final class PrivacyListManager extends Manager {
      * @param requestPrivacy is the {@link Privacy} stanza configured properly whose XML
      *      will be sent to the server.
      * @return a new {@link Privacy} with the data received from the server.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private Privacy getRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // The request is a get iq type
@@ -243,10 +243,10 @@ public final class PrivacyListManager extends Manager {
      * @param requestPrivacy is the {@link Privacy} stanza configured properly whose xml will be
      *        sent to the server.
      * @return a new {@link Privacy} with the data received from the server.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private Stanza setRequest(Privacy requestPrivacy) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // The request is a get iq type
@@ -259,10 +259,10 @@ public final class PrivacyListManager extends Manager {
      * Answer a privacy containing the list structure without {@link PrivacyItem}.
      *
      * @return a Privacy with the list names.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private Privacy getPrivacyWithListNames() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // The request of the list is an empty privacy message
@@ -276,10 +276,10 @@ public final class PrivacyListManager extends Manager {
      * Answer the active privacy list. Returns <code>null</code> if there is no active list.
      *
      * @return the privacy list of the active list.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public PrivacyList getActiveList() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
@@ -295,10 +295,10 @@ public final class PrivacyListManager extends Manager {
      * Get the name of the active list.
      *
      * @return the name of the active list or null if there is none set.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.1
      */
     public String getActiveListName() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -312,10 +312,10 @@ public final class PrivacyListManager extends Manager {
      * Answer the default privacy list. Returns <code>null</code> if there is no default list.
      *
      * @return the privacy list of the default list.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public PrivacyList getDefaultList() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Privacy privacyAnswer = this.getPrivacyWithListNames();
@@ -331,10 +331,10 @@ public final class PrivacyListManager extends Manager {
      * Get the name of the default list.
      *
      * @return the name of the default list or null if there is none set.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.1
      */
     public String getDefaultListName() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -352,10 +352,10 @@ public final class PrivacyListManager extends Manager {
      * </p>
      *
      * @return the name of the effective privacy list or null if there is none set.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.1
      */
     public String getEffectiveListName() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -371,10 +371,10 @@ public final class PrivacyListManager extends Manager {
      *
      * @param listName the name of the list to get the allowed and blocked permissions.
      * @return a list of privacy items under the list listName.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private List<PrivacyItem> getPrivacyListItems(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         assert StringUtils.isNotEmpty(listName);
@@ -393,10 +393,10 @@ public final class PrivacyListManager extends Manager {
      *
      * @param listName the name of the list to get the allowed and blocked permissions.
      * @return a privacy list under the list listName.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public PrivacyList getPrivacyList(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         listName = StringUtils.requireNotNullNorEmpty(listName, "List name must not be null");
@@ -407,10 +407,10 @@ public final class PrivacyListManager extends Manager {
      * Answer every privacy list with the allowed and blocked permissions.
      *
      * @return an array of privacy lists.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<PrivacyList> getPrivacyLists() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Privacy privacyAnswer = getPrivacyWithListNames();
@@ -429,10 +429,10 @@ public final class PrivacyListManager extends Manager {
      * Set or change the active list to listName.
      *
      * @param listName the list name to set as the active one.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void setActiveListName(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // The request of the list is an privacy message with an empty list
@@ -445,10 +445,10 @@ public final class PrivacyListManager extends Manager {
 
     /**
      * Client declines the use of active lists.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void declineActiveList() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // The request of the list is an privacy message with an empty list
@@ -463,10 +463,10 @@ public final class PrivacyListManager extends Manager {
      * Set or change the default list to listName.
      *
      * @param listName the list name to set as the default one.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void setDefaultListName(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // The request of the list is an privacy message with an empty list
@@ -479,10 +479,10 @@ public final class PrivacyListManager extends Manager {
 
     /**
      * Client declines the use of default lists.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void declineDefaultList() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // The request of the list is an privacy message with an empty list
@@ -498,10 +498,10 @@ public final class PrivacyListManager extends Manager {
      *
      * @param listName the list that has changed its content.
      * @param privacyItems a List with every privacy item in the list.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void createPrivacyList(String listName, List<PrivacyItem> privacyItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         updatePrivacyList(listName, privacyItems);
@@ -514,10 +514,10 @@ public final class PrivacyListManager extends Manager {
      *
      * @param listName the list that has changed its content.
      * @param privacyItems a List with every privacy item in the list.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void updatePrivacyList(String listName, List<PrivacyItem> privacyItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         // Build the privacy package to add or update the new list
@@ -532,10 +532,10 @@ public final class PrivacyListManager extends Manager {
      * Remove a privacy list.
      *
      * @param listName the list that has changed its content.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void deletePrivacyList(String listName) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // The request of the list is an privacy message with an empty list
@@ -560,7 +560,7 @@ public final class PrivacyListManager extends Manager {
     /**
      * Removes the privacy list listener.
      *
-     * @param listener
+     * @param listener TODO javadoc me please
      * @return true, if the listener was removed.
      */
     public boolean removeListener(PrivacyListListener listener) {
@@ -571,10 +571,10 @@ public final class PrivacyListManager extends Manager {
      * Check if the user's server supports privacy lists.
      *
      * @return true, if the server supports privacy lists, false otherwise.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isSupported() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).serverSupportsFeature(NAMESPACE);

@@ -56,6 +56,9 @@ public abstract class ContentInfo {
 
         /**
          * Returns the MediaInfo constant associated with the String value.
+         *
+         * @param value the input string.
+         * @return the content info.
          */
         public static ContentInfo fromString(String value) {
             value = value.toLowerCase(Locale.US);

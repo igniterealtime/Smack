@@ -154,10 +154,10 @@ public final class PrivateDataManager extends Manager {
      * @param elementName the element name.
      * @param namespace the namespace.
      * @return the private data.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public PrivateData getPrivateData(final String elementName, final String namespace) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create an IQ packet to get the private data.
@@ -174,10 +174,10 @@ public final class PrivateDataManager extends Manager {
      * element name and namespace, then the new private data will overwrite the old value.
      *
      * @param privateData the private data.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void setPrivateData(final PrivateData privateData) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Create an IQ packet to set the private data.
@@ -207,10 +207,10 @@ public final class PrivateDataManager extends Manager {
      * Check if the service supports private data.
      *
      * @return true if the service supports private data, false otherwise.
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPErrorException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @since 4.2
      */
     public boolean isSupported() throws NoResponseException, NotConnectedException,

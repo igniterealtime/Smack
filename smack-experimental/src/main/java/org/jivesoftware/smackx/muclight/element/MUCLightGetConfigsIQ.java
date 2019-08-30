@@ -38,8 +38,8 @@ public class MUCLightGetConfigsIQ extends IQ {
     /**
      * MUC Light get configurations IQ constructor.
      *
-     * @param roomJid
-     * @param version
+     * @param roomJid TODO javadoc me please
+     * @param version TODO javadoc me please
      */
     public MUCLightGetConfigsIQ(Jid roomJid, String version) {
         super(ELEMENT, NAMESPACE);
@@ -51,7 +51,7 @@ public class MUCLightGetConfigsIQ extends IQ {
     /**
      * MUC Light get configurations IQ constructor.
      *
-     * @param roomJid
+     * @param roomJid TODO javadoc me please
      */
     public MUCLightGetConfigsIQ(Jid roomJid) {
         this(roomJid, null);

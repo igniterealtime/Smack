@@ -220,7 +220,7 @@ public class MUCUser implements ExtensionElement {
     /**
      * Retrieve the MUCUser PacketExtension from packet, if any.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the MUCUser PacketExtension or {@code null}
      * @deprecated use {@link #from(Stanza)} instead
      */
@@ -232,7 +232,7 @@ public class MUCUser implements ExtensionElement {
     /**
      * Retrieve the MUCUser PacketExtension from packet, if any.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the MUCUser PacketExtension or {@code null}
      */
     public static MUCUser from(Stanza packet) {

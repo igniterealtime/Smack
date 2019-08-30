@@ -78,10 +78,10 @@ public class Socks5Client {
      * @throws IOException if initializing the socket failed due to a network error
      * @throws TimeoutException if connecting to SOCKS5 proxy timed out
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws XMPPException
-     * @throws SmackMessageException
-     * @throws NotConnectedException
-     * @throws NoResponseException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackMessageException if there was an error.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     public Socket getSocket(int timeout) throws IOException, InterruptedException,
                     TimeoutException, XMPPException, SmackMessageException, NotConnectedException, NoResponseException {
@@ -130,8 +130,8 @@ public class Socks5Client {
      * supported by the Socks5Client.
      *
      * @param socket connected to a SOCKS5 proxy
-     * @throws IOException
-     * @throws SmackMessageException
+     * @throws IOException if an I/O error occured.
+     * @throws SmackMessageException if there was an error.
      */
     protected void establish(Socket socket) throws IOException, SmackMessageException {
 

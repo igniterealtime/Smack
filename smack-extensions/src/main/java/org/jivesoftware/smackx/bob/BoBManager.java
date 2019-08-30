@@ -68,7 +68,7 @@ public final class BoBManager extends Manager {
     /**
      * Get the singleton instance of BoBManager.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      * @return the instance of BoBManager
      */
     public static synchronized BoBManager getInstanceFor(XMPPConnection connection) {
@@ -115,10 +115,10 @@ public final class BoBManager extends Manager {
      * Returns true if Bits of Binary is supported by the server.
      *
      * @return true if Bits of Binary is supported by the server.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isSupportedByServer()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -128,14 +128,14 @@ public final class BoBManager extends Manager {
     /**
      * Request BoB data.
      *
-     * @param to
-     * @param bobHash
+     * @param to TODO javadoc me please
+     * @param bobHash TODO javadoc me please
      * @return the BoB data
-     * @throws NotLoggedInException
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public BoBData requestBoB(Jid to, BoBHash bobHash) throws NotLoggedInException, NoResponseException,
             XMPPErrorException, NotConnectedException, InterruptedException {

@@ -59,7 +59,7 @@ public class JingleManagerTest extends SmackTestCase {
     /**
      * Constructor for JingleManagerTest.
      *
-     * @param name
+     * @param name TODO javadoc me please
      */
     public JingleManagerTest(final String name) {
         super(name);

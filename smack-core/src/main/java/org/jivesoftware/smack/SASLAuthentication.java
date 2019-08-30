@@ -183,13 +183,13 @@ public final class SASLAuthentication {
      * @param authzid the authorization identifier (typically null).
      * @param sslSession the optional SSL/TLS session (if one was established)
      * @return the used SASLMechanism.
-     * @throws XMPPErrorException
-     * @throws SASLErrorException
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws SmackSaslException
-     * @throws NotConnectedException
-     * @throws NoResponseException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws SASLErrorException if a SASL protocol error was returned.
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     public SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
@@ -239,8 +239,8 @@ public final class SASLAuthentication {
      * to <code>false</code>.
      *
      * @param challenge a base64 encoded string representing the challenge.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void challengeReceived(String challenge) throws SmackException, InterruptedException {
         challengeReceived(challenge, false);
@@ -254,9 +254,9 @@ public final class SASLAuthentication {
      *
      * @param challenge a base64 encoded string representing the challenge.
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
-     * @throws SmackSaslException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void challengeReceived(String challenge, boolean finalChallenge) throws SmackSaslException, NotConnectedException, InterruptedException {
         try {
@@ -271,8 +271,8 @@ public final class SASLAuthentication {
      * Notification message saying that SASL authentication was successful. The next step
      * would be to bind the resource.
      * @param success result of the authentication.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void authenticated(Success success) throws SmackException, InterruptedException {
         // RFC6120 6.3.10 "At the end of the authentication exchange, the SASL server (the XMPP

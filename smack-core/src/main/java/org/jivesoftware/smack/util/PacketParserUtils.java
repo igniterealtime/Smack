@@ -99,12 +99,12 @@ public class PacketParserUtils {
      *
      * connection is optional and is used to return feature-not-implemented errors for unknown IQ stanzas.
      *
-     * @param parser
+     * @param parser TODO javadoc me please
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return a stanza which is either a Message, IQ or Presence.
-     * @throws XmlPullParserException
-     * @throws SmackParsingException
-     * @throws IOException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
+     * @throws IOException if an I/O error occured.
      */
     public static Stanza parseStanza(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, SmackParsingException, IOException {
         ParserUtils.assertAtStartTag(parser);
@@ -131,9 +131,9 @@ public class PacketParserUtils {
      * @param parser the XML parser, positioned at the start of a message packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return a Message packet.
-     * @throws XmlPullParserException
-     * @throws IOException
-     * @throws SmackParsingException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static Message parseMessage(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
@@ -212,10 +212,10 @@ public class PacketParserUtils {
      * This method is used for the parts where the XMPP specification requires elements that contain
      * only text or are the empty element.
      *
-     * @param parser
+     * @param parser TODO javadoc me please
      * @return the textual content of the element as String
-     * @throws XmlPullParserException
-     * @throws IOException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
      */
     public static String parseElementText(XmlPullParser parser) throws XmlPullParserException, IOException {
         assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
@@ -253,8 +253,8 @@ public class PacketParserUtils {
      *
      * @param parser the XML pull parser
      * @return the element as string
-     * @throws XmlPullParserException
-     * @throws IOException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
      */
     public static CharSequence parseElement(XmlPullParser parser) throws XmlPullParserException, IOException {
         return parseElement(parser, false);
@@ -288,12 +288,12 @@ public class PacketParserUtils {
      * In particular Android's XmlPullParser does not support XML_ROUNDTRIP.
      * </p>
      *
-     * @param parser
-     * @param depth
-     * @param fullNamespaces
+     * @param parser TODO javadoc me please
+     * @param depth TODO javadoc me please
+     * @param fullNamespaces TODO javadoc me please
      * @return the content of the current depth
-     * @throws XmlPullParserException
-     * @throws IOException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
      */
     public static CharSequence parseContentDepth(XmlPullParser parser, int depth, boolean fullNamespaces) throws XmlPullParserException, IOException {
         if (parser.supportsRoundtrip()) {
@@ -418,9 +418,9 @@ public class PacketParserUtils {
      * @param parser the XML parser, positioned at the start of a presence packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return a Presence packet.
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @throws SmackParsingException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static Presence parsePresence(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
@@ -511,10 +511,10 @@ public class PacketParserUtils {
      * @param parser the XML parser, positioned at the start of an IQ packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return an IQ object.
-     * @throws XmlPullParserException
-     * @throws XmppStringprepException
-     * @throws IOException
-     * @throws SmackParsingException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws XmppStringprepException if the provided string is invalid.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static IQ parseIQ(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, XmppStringprepException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
@@ -596,8 +596,8 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of the mechanisms stanza.
      * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
-     * @throws IOException
-     * @throws XmlPullParserException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
      */
     public static Collection<String> parseMechanisms(XmlPullParser parser)
                     throws XmlPullParserException, IOException {
@@ -626,7 +626,7 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of the compression stanza.
      * @return The CompressionFeature stream element
-     * @throws IOException
+     * @throws IOException if an I/O error occured.
      * @throws XmlPullParserException if an exception occurs while parsing the stanza.
      */
     public static Compress.Feature parseCompressionFeature(XmlPullParser parser)
@@ -688,8 +688,8 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @return a SASL Failure packet.
-     * @throws IOException
-     * @throws XmlPullParserException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
      */
     public static SASLFailure parseSASLFailure(XmlPullParser parser) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
@@ -731,9 +731,9 @@ public class PacketParserUtils {
      * @param parser the XML parser.
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return an stream error packet.
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @throws SmackParsingException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static StreamError parseStreamError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
@@ -793,9 +793,9 @@ public class PacketParserUtils {
      * @param parser the XML parser.
      * @param outerXmlEnvironment the outer XML environment (optional).
      * @return an error sub-packet.
-     * @throws IOException
-     * @throws XmlPullParserException
-     * @throws SmackParsingException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static StanzaError.Builder parseError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
@@ -856,9 +856,9 @@ public class PacketParserUtils {
      * @param outerXmlEnvironment the outer XML environment (optional).
      *
      * @return an extension element.
-     * @throws XmlPullParserException
-     * @throws IOException
-     * @throws SmackParsingException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static ExtensionElement parseExtensionElement(String elementName, String namespace,
                     XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {

@@ -59,7 +59,7 @@ public class StanzaExtensionFilter implements StanzaFilter {
     /**
      * Creates a new stanza extension filter for the given stanza extension.
      *
-     * @param packetExtension
+     * @param packetExtension TODO javadoc me please
      */
     public StanzaExtensionFilter(ExtensionElement packetExtension) {
         this(packetExtension.getElementName(), packetExtension.getNamespace());

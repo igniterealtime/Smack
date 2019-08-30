@@ -56,7 +56,7 @@ public class ListElement implements MarkupElement.MarkupChildElement {
     /**
      * Return a list of all list entries.
      *
-     * @return entries
+     * @return entries TODO javadoc me please
      */
     public List<ListEntryElement> getEntries() {
         return entries;

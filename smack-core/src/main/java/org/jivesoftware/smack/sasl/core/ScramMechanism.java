@@ -259,7 +259,7 @@ public abstract class ScramMechanism extends SASLMechanism {
     /**
      *
      * @return the Channel Binding data.
-     * @throws SmackSaslException
+     * @throws SmackSaslException if a SASL specific error occured.
      */
     protected byte[] getChannelBindingData() throws SmackSaslException {
         return null;
@@ -327,7 +327,7 @@ public abstract class ScramMechanism extends SASLMechanism {
      * "The characters ',' or '=' in usernames are sent as '=2C' and '=3D' respectively."
      * </p>
      *
-     * @param string
+     * @param string TODO javadoc me please
      * @return the escaped string
      */
     private static String escape(String string) {
@@ -352,10 +352,10 @@ public abstract class ScramMechanism extends SASLMechanism {
     /**
      * RFC 5802 § 2.2 HMAC(key, str)
      *
-     * @param key
-     * @param str
+     * @param key TODO javadoc me please
+     * @param str TODO javadoc me please
      * @return the HMAC-SHA1 value of the input.
-     * @throws SmackException
+     * @throws SmackException if Smack detected an exceptional situation.
      */
     private byte[] hmac(byte[] key, byte[] str) throws SmackSaslException {
         try {
@@ -374,8 +374,8 @@ public abstract class ScramMechanism extends SASLMechanism {
      * </p>
      *
      * @param normalizedPassword the normalized password.
-     * @param salt
-     * @param iterations
+     * @param salt TODO javadoc me please
+     * @param iterations TODO javadoc me please
      * @return the result of the Hi function.
      * @throws SmackSaslException if a SASL related error occurs.
      */

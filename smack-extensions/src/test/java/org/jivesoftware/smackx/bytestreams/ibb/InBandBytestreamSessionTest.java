@@ -76,9 +76,9 @@ public class InBandBytestreamSessionTest extends InitExtensions {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {

@@ -46,7 +46,7 @@ public class BridgedTransportManager extends JingleTransportManager implements J
      * Return the correspondent resolver
      *
      * @param session correspondent Jingle Session
-     * @return resolver
+     * @return resolver TODO javadoc me please
      */
     @Override
     protected TransportResolver createResolver(JingleSession session) {

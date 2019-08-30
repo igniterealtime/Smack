@@ -68,8 +68,8 @@ public class JivePropertiesManager {
      * Convenience method to get a property from a packet. Will return null if the stanza contains
      * not property with the given name.
      *
-     * @param packet
-     * @param name
+     * @param packet TODO javadoc me please
+     * @param name TODO javadoc me please
      * @return the property or <code>null</code> if none found.
      */
     public static Object getProperty(Stanza packet, String name) {
@@ -85,7 +85,7 @@ public class JivePropertiesManager {
      * Return a collection of the names of all properties of the given packet. If the packet
      * contains no properties extension, then an empty collection will be returned.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return a collection of the names of all properties.
      */
     public static Collection<String> getPropertiesNames(Stanza packet) {
@@ -100,7 +100,7 @@ public class JivePropertiesManager {
      * Return a map of all properties of the given packet. If the stanza contains no properties
      * extension, an empty map will be returned.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return a map of all properties of the given packet.
      */
     public static Map<String, Object> getProperties(Stanza packet) {

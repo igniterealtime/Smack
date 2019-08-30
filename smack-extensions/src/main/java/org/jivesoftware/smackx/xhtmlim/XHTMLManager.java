@@ -129,10 +129,10 @@ public class XHTMLManager {
      * @param connection the connection to use to perform the service discovery
      * @param userID the user to check. A fully qualified xmpp ID, e.g. jdoe@example.com
      * @return a boolean indicating whether the specified user handles XHTML messages
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static boolean isServiceEnabled(XMPPConnection connection, Jid userID)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

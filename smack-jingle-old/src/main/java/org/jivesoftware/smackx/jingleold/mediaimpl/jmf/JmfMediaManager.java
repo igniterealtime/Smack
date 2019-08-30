@@ -50,6 +50,8 @@ public class JmfMediaManager extends JingleMediaManager {
 
     /**
      * Creates a Media Manager instance.
+     *
+     * @param transportManager the transport manger.
      */
     public JmfMediaManager(JingleTransportManager transportManager) {
         super(transportManager);
@@ -60,6 +62,7 @@ public class JmfMediaManager extends JingleMediaManager {
      * Creates a Media Manager instance.
      *
      * @param mediaLocator Media Locator
+     * @param transportManager the transport manger.
      */
     public JmfMediaManager(String mediaLocator, JingleTransportManager transportManager) {
         super(transportManager);
@@ -73,7 +76,7 @@ public class JmfMediaManager extends JingleMediaManager {
      * @param payloadType payloadType
      * @param remote      remote Candidate
      * @param local       local Candidate
-     * @return JingleMediaSession
+     * @return JingleMediaSession TODO javadoc me please
      */
     @Override
     public JingleMediaSession createMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {

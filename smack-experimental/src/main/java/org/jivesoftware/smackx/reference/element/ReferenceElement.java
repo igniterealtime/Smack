@@ -56,12 +56,12 @@ public class ReferenceElement implements ExtensionElement {
     /**
      * XEP-incompliant (v0.2) constructor. This is needed for SIMS.
      *
-     * @param begin
-     * @param end
-     * @param type
-     * @param anchor
-     * @param uri
-     * @param child
+     * @param begin TODO javadoc me please
+     * @param end TODO javadoc me please
+     * @param type TODO javadoc me please
+     * @param anchor TODO javadoc me please
+     * @param uri TODO javadoc me please
+     * @param child TODO javadoc me please
      */
     public ReferenceElement(Integer begin, Integer end, Type type, String anchor, URI uri, ExtensionElement child) {
         if (begin != null && begin < 0) {
@@ -89,11 +89,11 @@ public class ReferenceElement implements ExtensionElement {
     /**
      * XEP-Compliant constructor.
      *
-     * @param begin
-     * @param end
-     * @param type
-     * @param anchor
-     * @param uri
+     * @param begin TODO javadoc me please
+     * @param end TODO javadoc me please
+     * @param type TODO javadoc me please
+     * @param anchor TODO javadoc me please
+     * @param uri TODO javadoc me please
      */
     public ReferenceElement(Integer begin, Integer end, Type type, String anchor, URI uri) {
         this(begin, end, type, anchor, uri, null);

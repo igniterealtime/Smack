@@ -101,7 +101,7 @@ public class STUN extends SimpleIQ {
     /**
      * Set Public Ip returned from the XMPP server
      *
-     * @param publicIp
+     * @param publicIp TODO javadoc me please
      */
     private void setPublicIp(String publicIp) {
         this.publicIp = publicIp;
@@ -172,10 +172,10 @@ public class STUN extends SimpleIQ {
      * Get a new STUN Server Address and port from the server.
      * If a error occurs or the server don't support STUN Service, null is returned.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      * @return the STUN server address
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @SuppressWarnings("deprecation")
     public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException, InterruptedException {
@@ -202,9 +202,9 @@ public class STUN extends SimpleIQ {
      *
      * @param connection the connection
      * @return true if the server support STUN
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static boolean serviceAvailable(XMPPConnection connection) throws XMPPException, SmackException, InterruptedException {
 

@@ -48,9 +48,9 @@ public interface StanzaListener {
      * </p>
      *
      * @param packet the stanza to process.
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
      */
     void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException;
 

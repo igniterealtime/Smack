@@ -111,7 +111,7 @@ public class Forwarded implements ExtensionElement {
 
     /**
      * Get the forwarded extension.
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the Forwarded extension or null
      */
     public static Forwarded from(Stanza packet) {

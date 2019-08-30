@@ -117,8 +117,8 @@ public class RosterExchangeManager {
      *
      * @param roster the roster to send
      * @param targetUserID the user that will receive the roster entries
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void send(Roster roster, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
@@ -137,8 +137,8 @@ public class RosterExchangeManager {
      *
      * @param rosterEntry the roster entry to send
      * @param targetUserID the user that will receive the roster entries
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void send(RosterEntry rosterEntry, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster
@@ -159,8 +159,8 @@ public class RosterExchangeManager {
      *
      * @param rosterGroup the roster group to send
      * @param targetUserID the user that will receive the roster entries
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void send(RosterGroup rosterGroup, Jid targetUserID) throws NotConnectedException, InterruptedException {
         // Create a new message to send the roster

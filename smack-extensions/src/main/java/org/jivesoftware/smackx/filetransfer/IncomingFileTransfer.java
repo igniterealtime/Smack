@@ -74,10 +74,10 @@ public class IncomingFileTransfer extends FileTransfer {
      * the negotiated stream.
      *
      * @return The negotiated InputStream from which to read the data.
-     * @throws SmackException
+     * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPErrorException If there is an error in the negotiation process an exception
      *                       is thrown.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public InputStream receiveFile() throws SmackException, XMPPErrorException, InterruptedException {
         if (inputStream != null) {
@@ -110,7 +110,7 @@ public class IncomingFileTransfer extends FileTransfer {
      *
      * @param file The location to save the file.
      * @throws SmackException when the file transfer fails
-     * @throws IOException
+     * @throws IOException if an I/O error occured.
      * @throws IllegalArgumentException This exception is thrown when the the provided file is
      *         either null, or cannot be written to.
      */

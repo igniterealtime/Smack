@@ -95,8 +95,8 @@ public class Affiliation implements ExtensionElement {
     /**
      * Construct a affiliation modification request.
      *
-     * @param jid
-     * @param affiliation
+     * @param jid TODO javadoc me please
+     * @param affiliation TODO javadoc me please
      */
     public Affiliation(BareJid jid, Type affiliation) {
         this(jid, affiliation, AffiliationNamespace.owner);

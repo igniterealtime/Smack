@@ -36,10 +36,10 @@ public class AMPExpireAtCondition implements AMPExtension.Condition {
      * Check if server supports expire-at condition.
      * @param connection Smack connection instance
      * @return true if expire-at condition is supported.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static boolean isSupported(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return AMPManager.isConditionSupported(connection, NAME);

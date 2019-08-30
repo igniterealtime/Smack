@@ -99,8 +99,8 @@ public class OfflineMessageInfo implements ExtensionElement {
          *
          * @param parser the XML parser, positioned at the starting element of the extension.
          * @return a PacketExtension.
-         * @throws IOException
-         * @throws XmlPullParserException
+         * @throws IOException if an I/O error occured.
+         * @throws XmlPullParserException if an error in the XML parser occured.
          */
         @Override
         public OfflineMessageInfo parse(XmlPullParser parser,

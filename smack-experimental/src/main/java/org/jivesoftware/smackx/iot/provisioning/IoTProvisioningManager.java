@@ -284,7 +284,7 @@ public final class IoTProvisioningManager extends Manager {
      * Set the configured provisioning server. Use <code>null</code> as provisioningServer to use
      * automatic discovery of the provisioning server (the default behavior).
      *
-     * @param provisioningServer
+     * @param provisioningServer TODO javadoc me please
      */
     public void setConfiguredProvisioningServer(Jid provisioningServer) {
         this.configuredProvisioningServer = provisioningServer;
@@ -302,10 +302,10 @@ public final class IoTProvisioningManager extends Manager {
      * Try to find a provisioning server component.
      *
      * @return the XMPP address of the provisioning server component if one was found.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="http://xmpp.org/extensions/xep-0324.html#servercomponent">XEP-0324 § 3.1.2 Provisioning Server as a server component</a>
      */
     public DomainBareJid findProvisioningServerComponent() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -326,10 +326,10 @@ public final class IoTProvisioningManager extends Manager {
      * @param provisioningServer the provisioning server to ask.
      * @param friendInQuestion the JID to ask about.
      * @return <code>true</code> if the JID is a friend, <code>false</code> otherwise.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isFriend(Jid provisioningServer, BareJid friendInQuestion) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         LruCache<BareJid, Void> cache = negativeFriendshipRequestCache.lookup(provisioningServer);

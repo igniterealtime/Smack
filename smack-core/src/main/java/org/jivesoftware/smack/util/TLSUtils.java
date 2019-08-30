@@ -99,8 +99,8 @@ public class TLSUtils {
      *
      * @param builder a connection configuration builder.
      * @param <B> Type of the ConnectionConfiguration builder.
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
+     * @throws KeyManagementException if there was a key mangement error.
      * @return the given builder.
      */
     public static <B extends ConnectionConfiguration.Builder<B, ?>> B acceptAllCertificates(B builder) throws NoSuchAlgorithmException, KeyManagementException {
@@ -184,9 +184,9 @@ public class TLSUtils {
      *
      * @param sslSession the SSL/TLS session from which the data should be retrieved.
      * @return the channel binding data.
-     * @throws SSLPeerUnverifiedException
-     * @throws CertificateEncodingException
-     * @throws NoSuchAlgorithmException
+     * @throws SSLPeerUnverifiedException if we TLS peer could not be verified.
+     * @throws CertificateEncodingException if there was an encoding error with the certificate.
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
      * @see <a href="https://tools.ietf.org/html/rfc5929#section-4">RFC 5929 § 4.</a>
      */
     public static byte[] getChannelBindingTlsServerEndPoint(final SSLSession sslSession)

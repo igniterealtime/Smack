@@ -53,7 +53,7 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
      * Bob responds to Alice (normal message)
      * Alice still has A1
      * Bob still has B2
-     * @throws Exception
+     * @throws Exception if an exception occurs.
      */
     @SuppressWarnings("SynchronizeOnNonFinalField")
     @SmackIntegrationTest

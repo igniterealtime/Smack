@@ -181,6 +181,8 @@ public abstract class JingleContentDescription implements ExtensionElement {
 
         /**
          * Utility constructor, with a JinglePayloadType.
+         *
+         * @param pt the payload type.
          */
         public Audio(final JinglePayloadType pt) {
             super();

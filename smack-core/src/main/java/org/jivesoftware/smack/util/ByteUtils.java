@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,11 @@ public class ByteUtils {
     /**
      * Concatenate two byte arrays.
      *
-     * @deprecated use {@link #concat(byte[], byte[])} instead.
+     * @param arrayOne the first input array.
+     * @param arrayTwo the second input array
+     * @return the concatenation of the first and second input array.
+     *
      */
-    @Deprecated
-    public static byte[] concact(byte[] arrayOne, byte[] arrayTwo) {
-        return concat(arrayOne, arrayTwo);
-    }
-
     public static byte[] concat(byte[] arrayOne, byte[] arrayTwo) {
         int combinedLength = arrayOne.length + arrayTwo.length;
         byte[] res = new byte[combinedLength];
@@ -35,4 +33,5 @@ public class ByteUtils {
         System.arraycopy(arrayTwo, 0, res, arrayOne.length, arrayTwo.length);
         return res;
     }
+
 }

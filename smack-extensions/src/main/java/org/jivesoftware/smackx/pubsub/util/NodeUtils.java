@@ -32,8 +32,8 @@ public class NodeUtils {
     /**
      * Get a {@link ConfigureForm} from a packet.
      *
-     * @param packet
-     * @param elem
+     * @param packet TODO javadoc me please
+     * @param elem TODO javadoc me please
      * @return The configuration form
      */
     public static ConfigureForm getFormFromPacket(Stanza packet, PubSubElementType elem) {

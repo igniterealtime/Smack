@@ -93,7 +93,7 @@ public class MultiMap<K, V> {
     /**
      * Get the first value for the given key, or <code>null</code> if there are no entries.
      *
-     * @param key
+     * @param key TODO javadoc me please
      * @return the first value or null.
      */
     public V getFirst(K key) {
@@ -111,7 +111,7 @@ public class MultiMap<K, V> {
      * Changes to the returned set will update the underlying MultiMap if the return set is not empty.
      * </p>
      *
-     * @param key
+     * @param key TODO javadoc me please
      * @return all values for the given key.
      */
     public List<V> getAll(K key) {
@@ -140,7 +140,7 @@ public class MultiMap<K, V> {
     /**
      * Removes all mappings for the given key and returns the first value if there where mappings or <code>null</code> if not.
      *
-     * @param key
+     * @param key TODO javadoc me please
      * @return the first value of the given key or null.
      */
     public V remove(K key) {
@@ -158,8 +158,8 @@ public class MultiMap<K, V> {
      * Returns <code>true</code> if the mapping was removed and <code>false</code> if the mapping did not exist.
      * </p>
      *
-     * @param key
-     * @param value
+     * @param key TODO javadoc me please
+     * @param value TODO javadoc me please
      * @return true if the mapping was removed, false otherwise.
      */
     public boolean removeOne(K key, V value) {

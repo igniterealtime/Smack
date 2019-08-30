@@ -83,10 +83,10 @@ public class MucConfigFormManager {
      * </p>
      *
      * @param multiUserChat the MUC for this configuration form.
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     MucConfigFormManager(MultiUserChat multiUserChat) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
@@ -156,7 +156,7 @@ public class MucConfigFormManager {
      * Make the room for members only.
      *
      * @return a reference to this object.
-     * @throws MucConfigurationNotSupportedException
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager makeMembersOnly() throws MucConfigurationNotSupportedException {
         return setMembersOnly(true);
@@ -167,7 +167,7 @@ public class MucConfigFormManager {
      *
      * @param isMembersOnly if the room should be members only.
      * @return a reference to this object.
-     * @throws MucConfigurationNotSupportedException
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager setMembersOnly(boolean isMembersOnly) throws MucConfigurationNotSupportedException {
         if (!supportsMembersOnly()) {
@@ -192,7 +192,7 @@ public class MucConfigFormManager {
      *
      * @param password the password to set.
      * @return a reference to this object.
-     * @throws MucConfigurationNotSupportedException
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager setAndEnablePassword(String password)
                     throws MucConfigurationNotSupportedException {
@@ -203,7 +203,7 @@ public class MucConfigFormManager {
      * Make the room password protected.
      *
      * @return a reference to this object.
-     * @throws MucConfigurationNotSupportedException
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager makePasswordProtected() throws MucConfigurationNotSupportedException {
         return setIsPasswordProtected(true);
@@ -212,9 +212,9 @@ public class MucConfigFormManager {
     /**
      * Set if this room is password protected. Rooms are by default not password protected.
      *
-     * @param isPasswordProtected
+     * @param isPasswordProtected TODO javadoc me please
      * @return a reference to this object.
-     * @throws MucConfigurationNotSupportedException
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager setIsPasswordProtected(boolean isPasswordProtected)
                     throws MucConfigurationNotSupportedException {
@@ -232,7 +232,7 @@ public class MucConfigFormManager {
      *
      * @param secret the secret/password.
      * @return a reference to this object.
-     * @throws MucConfigurationNotSupportedException
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager setRoomSecret(String secret)
                     throws MucConfigurationNotSupportedException {
@@ -247,9 +247,9 @@ public class MucConfigFormManager {
      * Submit the configuration as {@link Form} to the room.
      *
      * @throws NoResponseException if there was no response from the room.
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void submitConfigurationForm() throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {

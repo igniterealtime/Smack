@@ -55,9 +55,9 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
      *
      * @param parser parser
      * @return HeadersExtension or null if no headers
-     * @throws XmlPullParserException
-     * @throws IOException
-     * @throws SmackParsingException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     protected HeadersExtension parseHeaders(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         HeadersExtension headersExtension = null;
@@ -76,8 +76,8 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
      * @param parser parser
      * @return Data or null if no data
      *
-     * @throws XmlPullParserException
-     * @throws IOException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
      */
     protected AbstractHttpOverXmpp.Data parseData(XmlPullParser parser) throws XmlPullParserException, IOException {
         NamedElement child = null;

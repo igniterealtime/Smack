@@ -37,15 +37,15 @@ import org.jxmpp.jid.BareJid;
  *
  * Alternatively this implementation can be used as an ephemeral keystore without a persisting backend.
  *
- * @param <T_IdKeyPair>
- * @param <T_IdKey>
- * @param <T_PreKey>
- * @param <T_SigPreKey>
- * @param <T_Sess>
- * @param <T_Addr>
- * @param <T_ECPub>
- * @param <T_Bundle>
- * @param <T_Ciph>
+ * @param <T_IdKeyPair> the type of the id key pair.
+ * @param <T_IdKey> the type of the id key.
+ * @param <T_PreKey> the prekey type
+ * @param <T_SigPreKey> the signed prekey type.
+ * @param <T_Sess> the session type.
+ * @param <T_Addr> the address type.
+ * @param <T_ECPub> the EC pub type.
+ * @param <T_Bundle> the bundle type.
+ * @param <T_Ciph> the cipher type.
  */
 public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>
         extends OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
@@ -437,7 +437,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
 
     /**
      * Return the {@link KeyCache} object of an {@link OmemoManager}.
-     * @param device
+     * @param device TODO javadoc me please
      * @return
      */
     private KeyCache<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess> getCache(OmemoDevice device) {

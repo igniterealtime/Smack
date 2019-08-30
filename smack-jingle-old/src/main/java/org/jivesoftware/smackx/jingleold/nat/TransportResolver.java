@@ -90,20 +90,27 @@ public abstract class TransportResolver {
 
     /**
      * Initialize the Resolver.
-     * @throws InterruptedException
+     *
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void initialize() throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Start a the resolution.
-     * @throws InterruptedException
+     *
+     * @param session the Jingle session.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void resolve(JingleSession session) throws XMPPException, SmackException, InterruptedException;
 
     /**
      * Clear the list of candidates and start a new resolution process.
      *
-     * @throws XMPPException
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     public void clear() throws XMPPException {
         cancel();
@@ -112,6 +119,8 @@ public abstract class TransportResolver {
 
     /**
      * Cancel any asynchronous resolution operation.
+     *
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     public abstract void cancel() throws XMPPException;
 
@@ -211,8 +220,8 @@ public abstract class TransportResolver {
      * Trigger a new candidate added event.
      *
      * @param cand The candidate added to the list of candidates.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void triggerCandidateAdded(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();
@@ -269,8 +278,8 @@ public abstract class TransportResolver {
      * Add a new transport candidate
      *
      * @param cand The candidate to add
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void addCandidate(TransportCandidate cand) throws NotConnectedException, InterruptedException {
         synchronized (candidates) {
@@ -347,6 +356,7 @@ public abstract class TransportResolver {
     /**
      * Get the n-th candidate.
      *
+     * @param i the index of the candidate.
      * @return a transport candidate
      */
     public TransportCandidate getCandidate(int i) {
@@ -360,8 +370,10 @@ public abstract class TransportResolver {
 
     /**
      * Initialize Transport Resolver and wait until it is completely uninitialized.
-     * @throws SmackException
-     * @throws InterruptedException
+     *
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void initializeAndWait() throws XMPPException, SmackException, InterruptedException {
         this.initialize();

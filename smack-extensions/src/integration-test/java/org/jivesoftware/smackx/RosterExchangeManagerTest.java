@@ -35,7 +35,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
 
     /**
      * Constructor for RosterExchangeManagerTest.
-     * @param name
+     * @param name TODO javadoc me please
      */
     public RosterExchangeManagerTest(String name) {
         super(name);

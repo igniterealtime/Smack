@@ -21,7 +21,7 @@ public class NumberUtil {
     /**
      * Checks if the given long is within the range of an unsigned 32-bit integer, the XML type "xs:unsignedInt".
      *
-     * @param value
+     * @param value TODO javadoc me please
      * @deprecated use {@link #requireUInt32(long)} instead.
      */
     @Deprecated
@@ -33,7 +33,8 @@ public class NumberUtil {
     /**
      * Checks if the given long is within the range of an unsigned 32-bit integer, the XML type "xs:unsignedInt".
      *
-     * @param value
+     * @param value TODO javadoc me please
+     * @return the input value.
      */
     public static long requireUInt32(long value) {
         if (value < 0) {
@@ -48,7 +49,8 @@ public class NumberUtil {
     /**
      * Checks if the given int is within the range of an unsigned 16-bit integer, the XML type "xs:unsignedShort".
      *
-     * @param value
+     * @param value TODO javadoc me please
+     * @return the input value.
      */
     public static int requireUShort16(int value) {
         if (value < 0) {

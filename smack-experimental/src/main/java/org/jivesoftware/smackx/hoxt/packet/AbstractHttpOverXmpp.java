@@ -226,7 +226,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         /**
          * Returns text of this element.
          *
-         * @return text
+         * @return text TODO javadoc me please
          */
         public String getText() {
             return text;
@@ -270,7 +270,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         /**
          * Returns text of this element.
          *
-         * @return text
+         * @return text TODO javadoc me please
          */
         public String getText() {
             return text;
@@ -314,7 +314,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         /**
          * Returns text of this element.
          *
-         * @return text
+         * @return text TODO javadoc me please
          */
         public String getText() {
             return text;

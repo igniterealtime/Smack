@@ -47,7 +47,7 @@ public class EventManger<K, R, E extends Exception> {
      * @param action the action to perform prior waiting for the event, must not be null.
      * @return the event value, may be null.
      * @throws InterruptedException if interrupted while waiting for the event.
-     * @throws E
+     * @throws E depending on the concrete use case.
      */
     public R performActionAndWaitForEvent(K eventKey, long timeout, Callback<E> action) throws InterruptedException, E {
         final Reference<R> reference = new Reference<>();

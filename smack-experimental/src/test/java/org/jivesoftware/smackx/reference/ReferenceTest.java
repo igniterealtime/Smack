@@ -57,7 +57,7 @@ public class ReferenceTest extends SmackTestSuite {
     /**
      * TODO: The uri might not be following the XMPP schema.
      * That shouldn't matter though.
-     * @throws Exception
+     * @throws Exception if an exception occurs.
      */
     @Test
     public void providerDataTest() throws Exception {

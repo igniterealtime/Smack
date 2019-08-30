@@ -107,6 +107,7 @@ public class PayloadItem<E extends ExtensionElement> extends Item {
      * error for an invalid packet.
      * </p>
      *
+     * @param itemNamespace the namespace of the item.
      * @param itemId The id of this item.
      * @param nodeId The id of the node the item was published to.
      * @param payloadExt A {@link ExtensionElement} which represents the payload data.

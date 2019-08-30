@@ -156,8 +156,8 @@ public class ParserUtils {
     /**
      * Get the boolean value of an argument.
      *
-     * @param parser
-     * @param name
+     * @param parser TODO javadoc me please
+     * @param name TODO javadoc me please
      * @return the boolean value or null of no argument of the given name exists
      */
     public static Boolean getBooleanAttribute(XmlPullParser parser, String name) {

@@ -88,10 +88,10 @@ public final class XDataManager extends Manager {
      *
      * @param jid the JID of the entity to check.
      * @return true if the entity supports data forms.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="http://xmpp.org/extensions/xep-0004.html#disco">XEP-0004: Data Forms § 6. Service Discovery</a>
      * @since 4.1
      */

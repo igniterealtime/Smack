@@ -92,7 +92,7 @@ public class RTPBridge extends IQ {
     /**
      * Creates a RTPBridge Instance with defined Session ID.
      *
-     * @param sid
+     * @param sid TODO javadoc me please
      */
     public RTPBridge(String sid) {
         this();
@@ -102,7 +102,7 @@ public class RTPBridge extends IQ {
     /**
      * Creates a RTPBridge Instance with defined Session ID.
      *
-     * @param action
+     * @param action TODO javadoc me please
      */
     public RTPBridge(BridgeAction action) {
         this();
@@ -112,8 +112,8 @@ public class RTPBridge extends IQ {
     /**
      * Creates a RTPBridge Instance with defined Session ID.
      *
-     * @param sid
-     * @param bridgeAction
+     * @param sid TODO javadoc me please
+     * @param bridgeAction TODO javadoc me please
      */
     public RTPBridge(String sid, BridgeAction bridgeAction) {
         this();
@@ -130,6 +130,8 @@ public class RTPBridge extends IQ {
 
     /**
      * Get the attributes string.
+     *
+     * @return the attributes.
      */
     public String getAttributes() {
         StringBuilder str = new StringBuilder();
@@ -167,7 +169,7 @@ public class RTPBridge extends IQ {
     /**
      * Set the Session ID of the Stanza (usually same as Jingle Session ID).
      *
-     * @param sid
+     * @param sid TODO javadoc me please
      */
     public void setSid(String sid) {
         this.sid = sid;
@@ -185,7 +187,7 @@ public class RTPBridge extends IQ {
     /**
      * Set the Host A IP Address.
      *
-     * @param hostA
+     * @param hostA TODO javadoc me please
      */
     public void setHostA(String hostA) {
         this.hostA = hostA;
@@ -203,7 +205,7 @@ public class RTPBridge extends IQ {
     /**
      * Set the Host B IP Address.
      *
-     * @param hostB
+     * @param hostB TODO javadoc me please
      */
     public void setHostB(String hostB) {
         this.hostB = hostB;
@@ -221,7 +223,7 @@ public class RTPBridge extends IQ {
     /**
      * Set Side A receive port.
      *
-     * @param portA
+     * @param portA TODO javadoc me please
      */
     public void setPortA(int portA) {
         this.portA = portA;
@@ -239,7 +241,7 @@ public class RTPBridge extends IQ {
     /**
      * Set Side B receive port.
      *
-     * @param portB
+     * @param portB TODO javadoc me please
      */
     public void setPortB(int portB) {
         this.portB = portB;
@@ -257,7 +259,7 @@ public class RTPBridge extends IQ {
     /**
      * Set the RTP Bridge IP.
      *
-     * @param ip
+     * @param ip TODO javadoc me please
      */
     public void setIp(String ip) {
         this.ip = ip;
@@ -275,7 +277,7 @@ public class RTPBridge extends IQ {
     /**
      * Set the RTP Agent Pass.
      *
-     * @param pass
+     * @param pass TODO javadoc me please
      */
     public void setPass(String pass) {
         this.pass = pass;
@@ -293,7 +295,7 @@ public class RTPBridge extends IQ {
     /**
      * Set the name of the Candidate.
      *
-     * @param name
+     * @param name TODO javadoc me please
      */
     public void setName(String name) {
         this.name = name;
@@ -389,11 +391,11 @@ public class RTPBridge extends IQ {
      * Get a new RTPBridge Candidate from the server.
      * If a error occurs or the server don't support RTPBridge Service, null is returned.
      *
-     * @param connection
-     * @param sessionID
+     * @param connection TODO javadoc me please
+     * @param sessionID TODO javadoc me please
      * @return the new RTPBridge
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @SuppressWarnings("deprecation")
     public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException, InterruptedException {
@@ -418,12 +420,12 @@ public class RTPBridge extends IQ {
     /**
      * Check if the server support RTPBridge Service.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      * @return true if the server supports the RTPBridge service
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static boolean serviceAvailable(XMPPConnection connection) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
@@ -458,10 +460,14 @@ public class RTPBridge extends IQ {
     /**
      * Check if the server support RTPBridge Service.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
+     * @param sessionID the session id.
+     * @param pass the password.
+     * @param proxyCandidate the proxy candidate.
+     * @param localCandidate the local candidate.
      * @return the RTPBridge
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @SuppressWarnings("deprecation")
     public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException, InterruptedException {
@@ -495,10 +501,10 @@ public class RTPBridge extends IQ {
     /**
      * Get Public Address from the Server.
      *
-     * @param xmppConnection
+     * @param xmppConnection TODO javadoc me please
      * @return public IP String or null if not found
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @SuppressWarnings("deprecation")
     public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException, InterruptedException {

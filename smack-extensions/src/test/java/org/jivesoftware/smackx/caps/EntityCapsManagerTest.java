@@ -47,7 +47,7 @@ public class EntityCapsManagerTest extends InitExtensions {
     /**
      * <a href="http://xmpp.org/extensions/xep-0115.html#ver-gen-complex">XEP-
      * 0115 Complex Generation Example</a>.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void testComplexGenerationExample() throws XmppStringprepException {

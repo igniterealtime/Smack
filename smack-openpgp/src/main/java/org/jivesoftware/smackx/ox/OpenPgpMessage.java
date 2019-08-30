@@ -148,7 +148,7 @@ public class OpenPgpMessage {
     /**
      * Return metadata about the encrypted message.
      *
-     * @return metadata
+     * @return metadata TODO javadoc me please
      */
     public OpenPgpMetadata getMetadata() {
         return metadata;

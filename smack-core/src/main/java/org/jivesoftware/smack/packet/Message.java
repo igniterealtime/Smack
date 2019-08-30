@@ -46,7 +46,6 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * </ul>
  *
  * For each message type, different message fields are typically used as follows:
- * <p>
  * <table border="1">
  * <caption>Message Types</caption>
  * <tr><td>&nbsp;</td><td colspan="5"><b>Message type</b></td></tr>
@@ -120,8 +119,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     /**
      * Creates a new message with the specified recipient and extension element.
      *
-     * @param to
-     * @param extensionElement
+     * @param to TODO javadoc me please
+     * @param extensionElement TODO javadoc me please
      * @since 4.2
      */
     public Message(Jid to, ExtensionElement extensionElement) {
@@ -136,7 +135,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * instance.
      * </p>
      *
-     * @param other
+     * @param other TODO javadoc me please
      */
     public Message(Message other) {
         super(other);

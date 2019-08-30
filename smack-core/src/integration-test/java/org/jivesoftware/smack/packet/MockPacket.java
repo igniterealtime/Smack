@@ -24,7 +24,7 @@ public class MockPacket extends Packet {
 
     /**
      * Returns null always.
-     * @return null
+     * @return null TODO javadoc me please
      */
     public String toXML() {
         return null;

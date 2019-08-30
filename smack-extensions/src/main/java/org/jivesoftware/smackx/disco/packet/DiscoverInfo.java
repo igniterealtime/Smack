@@ -61,7 +61,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     /**
      * Copy constructor.
      *
-     * @param d
+     * @param d TODO javadoc me please
      */
     public DiscoverInfo(DiscoverInfo d) {
         super(d);
@@ -93,7 +93,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     /**
      * Adds a collection of features to the packet. Does noting if featuresToAdd is null.
      *
-     * @param featuresToAdd
+     * @param featuresToAdd TODO javadoc me please
      */
     public void addFeatures(Collection<String> featuresToAdd) {
         if (featuresToAdd == null) return;
@@ -133,7 +133,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
     /**
      * Adds identities to the DiscoverInfo stanza.
      *
-     * @param identitiesToAdd
+     * @param identitiesToAdd TODO javadoc me please
      */
     public void addIdentities(Collection<Identity> identitiesToAdd) {
         if (identitiesToAdd == null) return;
@@ -422,7 +422,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
          * If all three are identical the other Identity is considered equal. Name is not used for
          * comparison, as defined by XEP-0115
          *
-         * @param other
+         * @param other TODO javadoc me please
          * @return a negative integer, zero, or a positive integer as this object is less than,
          *         equal to, or greater than the specified object.
          */

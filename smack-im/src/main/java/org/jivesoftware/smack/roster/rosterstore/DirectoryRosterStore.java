@@ -67,7 +67,7 @@ public final class DirectoryRosterStore implements RosterStore {
     };
 
     /**
-     * @param baseDir
+     * @param baseDir TODO javadoc me please
      *            will be the directory where all roster entries are stored. One
      *            file for each entry, such that file.name = entry.username.
      *            There is also one special file '__version__' that contains the
@@ -80,7 +80,7 @@ public final class DirectoryRosterStore implements RosterStore {
     /**
      * Creates a new roster store on disk.
      *
-     * @param baseDir
+     * @param baseDir TODO javadoc me please
      *            The directory to create the store in. The directory should
      *            be empty
      * @return A {@link DirectoryRosterStore} instance if successful,
@@ -98,7 +98,7 @@ public final class DirectoryRosterStore implements RosterStore {
 
     /**
      * Opens a roster store.
-     * @param baseDir
+     * @param baseDir TODO javadoc me please
      *            The directory containing the roster store.
      * @return A {@link DirectoryRosterStore} instance if successful,
      *         <code>null</code> else.

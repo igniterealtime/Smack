@@ -250,7 +250,7 @@ public final class AdHocCommandManager extends Manager {
      * @return the discovered items.
      * @throws XMPPException if the operation failed for some reason.
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverItems discoverCommands(Jid jid) throws XMPPException, SmackException, InterruptedException {
         return serviceDiscoveryManager.discoverItems(jid, NAMESPACE);
@@ -291,11 +291,11 @@ public final class AdHocCommandManager extends Manager {
      *  <li>The action to execute is one of the available actions</li>
      * </ul>
      *
-     * @param requestData
+     * @param requestData TODO javadoc me please
      *            the stanza to process.
-     * @throws NotConnectedException
-     * @throws NoResponseException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private IQ processAdHocCommand(AdHocCommandData requestData) throws NoResponseException, NotConnectedException, InterruptedException {
         // Creates the response with the corresponding data
@@ -555,7 +555,7 @@ public final class AdHocCommandManager extends Manager {
      *
      * @param response the response to send.
      * @param condition the condition of the error.
-     * @throws NotConnectedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     private static IQ respondError(AdHocCommandData response,
             StanzaError.Condition condition) {
@@ -568,7 +568,7 @@ public final class AdHocCommandManager extends Manager {
      * @param response the response to send.
      * @param condition the condition of the error.
      * @param specificCondition the adhoc command error condition.
-     * @throws NotConnectedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     private static IQ respondError(AdHocCommandData response, StanzaError.Condition condition,
             AdHocCommand.SpecificErrorCondition specificCondition) {
@@ -581,7 +581,7 @@ public final class AdHocCommandManager extends Manager {
      *
      * @param response the response to send.
      * @param error the error to send.
-     * @throws NotConnectedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     private static IQ respondError(AdHocCommandData response, StanzaError.Builder error) {
         response.setType(IQ.Type.error);
@@ -596,10 +596,10 @@ public final class AdHocCommandManager extends Manager {
      * @param sessionID the session id of this execution.
      * @return the command instance to execute.
      * @throws XMPPErrorException if there is problem creating the new instance.
-     * @throws SecurityException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalArgumentException
+     * @throws SecurityException if there was a security violation.
+     * @throws NoSuchMethodException if no such method is declared
+     * @throws InvocationTargetException if a reflection-based method or constructor invocation threw.
+     * @throws IllegalArgumentException if an illegal argument was given.
      * @throws IllegalAccessException
      * @throws InstantiationException
      */

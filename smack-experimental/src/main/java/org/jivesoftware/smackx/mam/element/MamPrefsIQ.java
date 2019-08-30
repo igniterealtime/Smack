@@ -79,9 +79,9 @@ public class MamPrefsIQ extends IQ {
     /**
      * MAM preferences IQ constructor.
      *
-     * @param alwaysJids
-     * @param neverJids
-     * @param defaultBehavior
+     * @param alwaysJids TODO javadoc me please
+     * @param neverJids TODO javadoc me please
+     * @param defaultBehavior TODO javadoc me please
      */
     public MamPrefsIQ(List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
         super(ELEMENT, NAMESPACE);

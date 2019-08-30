@@ -29,7 +29,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * Represents an XMPP error sub-packet. Typically, a server responds to a request that has
  * problems by sending the stanza back and including an error packet. Each error has a type,
- * error condition as well as as an optional text explanation. Typical errors are:<p>
+ * error condition as well as as an optional text explanation. Typical errors are:
  *
  * <table border=1>
  *      <caption>XMPP Errors</caption>
@@ -116,9 +116,9 @@ public class StanzaError extends AbstractError implements ExtensionElement {
      *
      * @param type the error type.
      * @param condition the error condition.
-     * @param conditionText
-     * @param errorGenerator
-     * @param descriptiveTexts
+     * @param conditionText TODO javadoc me please
+     * @param errorGenerator TODO javadoc me please
+     * @param descriptiveTexts TODO javadoc me please
      * @param extensions list of stanza extensions
      * @param stanza the stanza carrying this XMPP error.
      */

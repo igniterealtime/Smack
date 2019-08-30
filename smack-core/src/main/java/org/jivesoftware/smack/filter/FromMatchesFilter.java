@@ -39,7 +39,7 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      *
      * @param address The address to filter for. If <code>null</code> is given, the stanza must not
      *        have a from address.
-     * @param ignoreResourcepart
+     * @param ignoreResourcepart TODO javadoc me please
      */
     public FromMatchesFilter(Jid address, boolean ignoreResourcepart) {
         super(address, ignoreResourcepart);

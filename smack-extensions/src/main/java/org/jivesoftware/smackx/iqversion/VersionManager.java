@@ -135,12 +135,12 @@ public final class VersionManager extends Manager {
     /**
      * Request version information from a given JID.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      * @return the version information or {@code null} if not supported by JID
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Version getVersion(Jid jid) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {

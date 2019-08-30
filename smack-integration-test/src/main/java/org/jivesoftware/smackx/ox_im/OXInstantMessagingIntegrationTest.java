@@ -81,11 +81,11 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
      *
      * @param environment test environment
      *
-     * @throws XMPPException.XMPPErrorException
-     * @throws InterruptedException
-     * @throws SmackException.NotConnectedException
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws TestNotPossibleException if the test is not possible due to lacking server support for PEP.
-     * @throws SmackException.NoResponseException
+     * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public OXInstantMessagingIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException,

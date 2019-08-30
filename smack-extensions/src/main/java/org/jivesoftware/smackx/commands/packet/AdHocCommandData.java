@@ -230,7 +230,7 @@ public class AdHocCommandData extends IQ {
      * href="http://xmpp.org/extensions/xep-0050.html#impl-session">XEP-0050 § 3.3 Session Lifetime</a>.
      * </p>
      *
-     * @param sessionID
+     * @param sessionID TODO javadoc me please
      */
     public void setSessionID(String sessionID) {
         this.sessionID = sessionID;

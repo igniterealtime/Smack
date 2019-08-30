@@ -36,7 +36,7 @@ public class MUCLightDestroyIQ extends IQ {
     /**
      * MUC Light destroy IQ constructor.
      *
-     * @param roomJid
+     * @param roomJid TODO javadoc me please
      */
     public MUCLightDestroyIQ(Jid roomJid) {
         super(ELEMENT, NAMESPACE);

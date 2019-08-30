@@ -164,10 +164,10 @@ public final class IoTDataManager extends IoTManager {
      *
      * @param jid the full JID of the thing to read data from.
      * @return a list with the read out data.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<IoTFieldsExtension> requestMomentaryValuesReadOut(EntityFullJid jid)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

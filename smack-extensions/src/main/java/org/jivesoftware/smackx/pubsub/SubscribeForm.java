@@ -65,7 +65,7 @@ public class SubscribeForm extends Form {
     /**
      * Sets whether an entity wants to receive notifications.
      *
-     * @param deliverNotifications
+     * @param deliverNotifications TODO javadoc me please
      */
     public void setDeliverOn(boolean deliverNotifications) {
         addField(SubscribeOptionFields.deliver, FormField.Type.bool);

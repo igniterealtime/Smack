@@ -124,10 +124,10 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     /**
      * Test if entity caps actually prevent a disco info request and reply.
      *
-     * @throws XMPPException
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws NoResponseException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
      *
      */
     @SmackIntegrationTest

@@ -194,8 +194,8 @@ public class JingleManager implements JingleSessionListener {
      *
      * @param connection             XMPP XMPPConnection to be used
      * @param jingleMediaManagers     an implemented JingleMediaManager to be used.
-     * @throws SmackException
-     * @throws XMPPException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     public JingleManager(XMPPConnection connection, List<JingleMediaManager> jingleMediaManagers) throws XMPPException, SmackException {
         this.connection = connection;
@@ -303,8 +303,8 @@ public class JingleManager implements JingleSessionListener {
      * @return a boolean indicating whether the specified user handles Jingle
      *         messages
      * @throws SmackException if there was no response from the server.
-     * @throws XMPPException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static boolean isServiceEnabled(XMPPConnection connection, Jid userID) throws XMPPException, SmackException, InterruptedException {
             return ServiceDiscoveryManager.getInstanceFor(connection).supportsFeature(userID, Jingle.NAMESPACE);
@@ -367,7 +367,7 @@ public class JingleManager implements JingleSessionListener {
      * Adds a CreatedJingleSessionListener.
      * This listener will be called when a session is created by the JingleManager instance.
      *
-     * @param createdJingleSessionListener
+     * @param createdJingleSessionListener TODO javadoc me please
      */
     public void addCreationListener(CreatedJingleSessionListener createdJingleSessionListener) {
         this.creationListeners.add(createdJingleSessionListener);
@@ -377,7 +377,7 @@ public class JingleManager implements JingleSessionListener {
      * Removes a CreatedJingleSessionListener.
      * This listener will be called when a session is created by the JingleManager instance.
      *
-     * @param createdJingleSessionListener
+     * @param createdJingleSessionListener TODO javadoc me please
      */
     public void removeCreationListener(CreatedJingleSessionListener createdJingleSessionListener) {
         this.creationListeners.remove(createdJingleSessionListener);
@@ -386,7 +386,7 @@ public class JingleManager implements JingleSessionListener {
     /**
      * Trigger CreatedJingleSessionListeners that a session was created.
      *
-     * @param jingleSession
+     * @param jingleSession TODO javadoc me please
      */
     public void triggerSessionCreated(JingleSession jingleSession) {
         jingleSessions.add(jingleSession);
@@ -517,6 +517,7 @@ public class JingleManager implements JingleSessionListener {
      * @param responder    the fully qualified jabber ID with resource of the other
      *                     user.
      * @return The session on which the negotiation can be run.
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     public JingleSession createOutgoingJingleSession(EntityFullJid responder) throws XMPPException {
         JingleSession session = new JingleSession(connection, null, connection.getUser(), responder, jingleMediaManagers);
@@ -543,6 +544,7 @@ public class JingleManager implements JingleSessionListener {
      *
      * @param request      the remote request that is being accepted.
      * @return the session which manages the rest of the negotiation.
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     public JingleSession createIncomingJingleSession(JingleSessionRequest request) throws XMPPException {
         if (request == null) {
@@ -576,7 +578,7 @@ public class JingleManager implements JingleSessionListener {
     /**
      * Get a session with the informed JID. If no session is found, return null.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      * @return the JingleSession
      */
     public JingleSession getSession(String jid) {

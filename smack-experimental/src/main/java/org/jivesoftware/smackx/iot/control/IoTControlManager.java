@@ -101,13 +101,13 @@ public final class IoTControlManager extends IoTManager {
     /**
      * Control a thing by sending a collection of {@link SetData} instructions.
      *
-     * @param jid
-     * @param data
+     * @param jid TODO javadoc me please
+     * @param data TODO javadoc me please
      * @return a IoTSetResponse
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see #setUsingIq(FullJid, Collection)
      */
     public IoTSetResponse setUsingIq(FullJid jid, SetData data) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -120,10 +120,10 @@ public final class IoTControlManager extends IoTManager {
      * @param jid the thing to control.
      * @param data a collection of {@link SetData} instructions.
      * @return the {@link IoTSetResponse} if successful.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public IoTSetResponse setUsingIq(FullJid jid, Collection<? extends SetData> data) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         IoTSetRequest request = new IoTSetRequest(data);

@@ -109,9 +109,9 @@ public class Socks5ByteStreamManagerTest {
      * The SOCKS5 Bytestream feature should be removed form the service discovery manager if Socks5
      * bytestream feature is disabled.
      *
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPErrorException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPErrorException if there was an XMPP error returned.
      */
     @Test
     public void shouldDisableService() throws XMPPErrorException, SmackException, InterruptedException {
@@ -131,10 +131,10 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid)} should throw an exception
      * if the given target does not support SOCKS5 Bytestream.
-     * @throws XMPPException
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws IOException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldFailIfTargetDoesNotSupportSocks5()
@@ -159,10 +159,10 @@ public class Socks5ByteStreamManagerTest {
     /**
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if XMPP
      * server doesn't return any proxies.
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldFailIfNoSocks5ProxyFound1()
@@ -211,10 +211,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if no
      * proxy is a SOCKS5 proxy.
      *
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldFailIfNoSocks5ProxyFound2()
@@ -273,10 +273,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if no
      * SOCKS5 proxy can be found. If it turns out that a proxy is not a SOCKS5 proxy it should not
      * be queried again.
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldBlacklistNonSocks5Proxies() throws SmackException, InterruptedException, IOException, XMPPException {
@@ -355,10 +355,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if the
      * target does not accept a SOCKS5 Bytestream. See <a
      * href="http://xmpp.org/extensions/xep-0065.html#usecase-alternate">XEP-0065 Section 5.2 A2</a>
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldFailIfTargetDoesNotAcceptSocks5Bytestream() throws SmackException, InterruptedException, IOException, XMPPException {
@@ -435,10 +435,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if the
      * proxy used by target is invalid.
      *
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldFailIfTargetUsesInvalidSocks5Proxy()
@@ -517,10 +517,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should fail if
      * initiator can not connect to the SOCKS5 proxy used by target.
      *
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws XmppStringprepException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void shouldFailIfInitiatorCannotConnectToSocks5Proxy()
@@ -617,10 +617,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} should successfully
      * negotiate and return a SOCKS5 Bytestream connection.
      *
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      */
     @Test
     public void shouldNegotiateSocks5BytestreamAndTransferData()
@@ -737,11 +737,11 @@ public class Socks5ByteStreamManagerTest {
      * If multiple network addresses are added to the local SOCKS5 proxy, all of them should be
      * contained in the SOCKS5 Bytestream request.
      *
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws IOException
-     * @throws XMPPException
-     * @throws TimeoutException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws TimeoutException if there was a timeout.
      */
     @Test
     public void shouldUseMultipleAddressesForLocalSocks5Proxy()
@@ -843,10 +843,10 @@ public class Socks5ByteStreamManagerTest {
      * Invoking {@link Socks5BytestreamManager#establishSession(org.jxmpp.jid.Jid, String)} the first time
      * should successfully negotiate a SOCKS5 Bytestream via the second SOCKS5 proxy and should
      * prioritize this proxy for a second SOCKS5 Bytestream negotiation.
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
      *
      */
     @Test
@@ -932,10 +932,10 @@ public class Socks5ByteStreamManagerTest {
      * should successfully negotiate a SOCKS5 Bytestream via the second SOCKS5 proxy. The second
      * negotiation should run in the same manner if prioritization is disabled.
      *
-     * @throws IOException
-     * @throws InterruptedException
-     * @throws SmackException
-     * @throws XMPPException
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
      *
      */
     @Test

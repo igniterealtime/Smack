@@ -115,7 +115,7 @@ public class DelayInformation implements ExtensionElement {
     /**
      * Return delay information from the given stanza.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the DelayInformation or null
      * @deprecated use {@link #from(Stanza)} instead
      */
@@ -127,7 +127,7 @@ public class DelayInformation implements ExtensionElement {
     /**
      * Return delay information from the given stanza.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the DelayInformation or null
      */
     public static DelayInformation from(Stanza packet) {

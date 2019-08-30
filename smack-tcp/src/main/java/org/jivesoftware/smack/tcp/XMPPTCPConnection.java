@@ -314,7 +314,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @param jid the bare JID used by the client.
      * @param password the password or authentication token.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     public XMPPTCPConnection(CharSequence jid, String password) throws XmppStringprepException {
         this(XMPPTCPConnectionConfiguration.builder().setXmppAddressAndPassword(jid, password).build());
@@ -327,10 +327,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * you can get fine-grained control over connection settings using the
      * {@link #XMPPTCPConnection(XMPPTCPConnectionConfiguration)} constructor.
      * </p>
-     * @param username
-     * @param password
-     * @param serviceName
-     * @throws XmppStringprepException
+     * @param username TODO javadoc me please
+     * @param password TODO javadoc me please
+     * @param serviceName TODO javadoc me please
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     public XMPPTCPConnection(CharSequence username, String password, String serviceName) throws XmppStringprepException {
         this(XMPPTCPConnectionConfiguration.builder().setUsernameAndPassword(username, password).setXmppDomain(
@@ -629,8 +629,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws XMPPException if establishing a connection to the server fails.
      * @throws SmackException if the server fails to respond back or if there is anther error.
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private void initConnection() throws IOException, InterruptedException {
         compressionHandler = null;
@@ -673,14 +673,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * The server has indicated that TLS negotiation can start. We now need to secure the
      * existing plain connection and perform a handshake. This method won't return until the
      * connection has finished the handshake or an error occurred while securing the connection.
-     * @throws IOException
+     * @throws IOException if an I/O error occured.
      * @throws CertificateException
-     * @throws NoSuchAlgorithmException
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
      * @throws NoSuchProviderException
      * @throws KeyStoreException
      * @throws UnrecoverableKeyException
-     * @throws KeyManagementException
-     * @throws SmackException
+     * @throws KeyManagementException if there was a key mangement error.
+     * @throws SmackException if Smack detected an exceptional situation.
      * @throws Exception if an exception occurs.
      */
     @SuppressWarnings("LiteralClassName")
@@ -775,10 +775,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * before authentication took place.
      * </p>
      *
-     * @throws NotConnectedException
-     * @throws SmackException
-     * @throws NoResponseException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private void maybeEnableCompression() throws SmackException, InterruptedException {
         if (!config.isCompressionEnabled()) {
@@ -808,9 +808,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      *
      * @throws XMPPException if an error occurs while trying to establish the connection.
-     * @throws SmackException
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException {
@@ -832,7 +832,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * For unit testing purposes
      *
-     * @param writer
+     * @param writer TODO javadoc me please
      */
     protected void setWriter(Writer writer) {
         this.writer = writer;
@@ -871,8 +871,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * to be sent by the server.
      *
      * @throws SmackException if the parser could not be reset.
-     * @throws InterruptedException
-     * @throws XmlPullParserException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XmlPullParserException if an error in the XML parser occured.
      */
     void openStream() throws SmackException, InterruptedException, XmlPullParserException {
         sendStreamOpen();
@@ -1237,8 +1237,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          * Sends the specified element to the server.
          *
          * @param element the element to send.
-         * @throws NotConnectedException
-         * @throws InterruptedException
+         * @throws NotConnectedException if the XMPP connection is not connected.
+         * @throws InterruptedException if the calling thread was interrupted.
          */
         protected void sendStreamElement(Element element) throws NotConnectedException, InterruptedException {
             throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
@@ -1259,7 +1259,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         /**
          * Shuts down the stanza writer. Once this method has been called, no further
          * packets will be written to the server.
-         * @throws InterruptedException
+         * @throws InterruptedException if the calling thread was interrupted.
          */
         void shutdown(boolean instant) {
             instantShutdown = instant;
@@ -1570,7 +1570,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      * @throws NotConnectedException if the connection is not connected.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void requestSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
         if (!isSmEnabled()) {
@@ -1593,7 +1593,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
      * @throws NotConnectedException if the connection is not connected.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
         if (!isSmEnabled()) {
@@ -1870,7 +1870,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * Set the default bundle and defer callback used for new connections.
      *
-     * @param defaultBundleAndDeferCallback
+     * @param defaultBundleAndDeferCallback TODO javadoc me please
      * @see BundleAndDeferCallback
      * @since 4.1
      */

@@ -94,10 +94,10 @@ public final class RosterEntry extends Manager {
      * Sets the name associated with this entry.
      *
      * @param name the name.
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized void setName(String name) throws NotConnectedException, NoResponseException, XMPPErrorException, InterruptedException {
         // Do nothing if the name hasn't changed.
@@ -213,8 +213,8 @@ public final class RosterEntry extends Manager {
     /**
      * Cancel the presence subscription the XMPP entity representing this roster entry has with us.
      *
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2
      */
     public void cancelSubscription() throws NotConnectedException, InterruptedException {

@@ -88,7 +88,7 @@ public class SignalOmemoStoreConnector
 
     /**
      * We don't use this.
-     * @return dummy
+     * @return dummy TODO javadoc me please
      */
     @Override
     public int getLocalRegistrationId() {

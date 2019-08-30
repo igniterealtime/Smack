@@ -43,8 +43,8 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
      *
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @return a PacketExtension.
-     * @throws IOException
-     * @throws XmlPullParserException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
      */
     @Override
     public MUCUser parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {

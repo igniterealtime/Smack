@@ -503,7 +503,7 @@ public abstract class SmackTestCase extends TestCase {
     /**
      * Subscribes all connections with each other: They all become friends
      *
-     * @throws XMPPException
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     protected void letsAllBeFriends() throws XMPPException {
         ConnectionUtils.letsAllBeFriends(connections);

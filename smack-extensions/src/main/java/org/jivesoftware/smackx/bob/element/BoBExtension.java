@@ -39,9 +39,9 @@ public class BoBExtension extends XHTMLExtension {
     /**
      * Bits of Binary extension constructor.
      *
-     * @param bobHash
-     * @param alt
-     * @param paragraph
+     * @param bobHash TODO javadoc me please
+     * @param alt TODO javadoc me please
+     * @param paragraph TODO javadoc me please
      */
     public BoBExtension(BoBHash bobHash, String alt, String paragraph) {
         this.bobHash = bobHash;

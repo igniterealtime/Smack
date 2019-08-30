@@ -178,10 +178,10 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @return true if upload service was discovered
 
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws SmackException.NoResponseException
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public boolean discoverUploadService() throws XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
@@ -228,9 +228,9 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @param file file to be uploaded
      * @return public URL for sharing uploaded file
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException if Smack detected an exceptional situation.
      * @throws IOException in case of HTTP upload errors
      */
     public URL uploadFile(File file) throws InterruptedException, XMPPException.XMPPErrorException,
@@ -248,10 +248,10 @@ public final class HttpFileUploadManager extends Manager {
      * @param listener upload progress listener of null
      * @return public URL for sharing uploaded file
      *
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException
-     * @throws IOException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
      */
     public URL uploadFile(File file, UploadProgressListener listener) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException, IOException {
@@ -275,10 +275,10 @@ public final class HttpFileUploadManager extends Manager {
      * @return file upload Slot in case of success
      * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
      *         supported by the service.
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException.NotConnectedException
-     * @throws SmackException.NoResponseException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
+     * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public Slot requestSlot(String filename, long fileSize) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException {
@@ -298,10 +298,10 @@ public final class HttpFileUploadManager extends Manager {
 
      * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
      *         supported by the service.
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
-     * @throws SmackException.NoResponseException
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public Slot requestSlot(String filename, long fileSize, String contentType) throws SmackException,
             InterruptedException, XMPPException.XMPPErrorException {
@@ -321,9 +321,9 @@ public final class HttpFileUploadManager extends Manager {
      * @return file upload Slot in case of success
      * @throws IllegalArgumentException if fileSize is less than or equal to zero or greater than the maximum size
      *         supported by the service.
-     * @throws SmackException
-     * @throws InterruptedException
-     * @throws XMPPException.XMPPErrorException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      */
     public Slot requestSlot(String filename, long fileSize, String contentType, DomainBareJid uploadServiceAddress)
             throws SmackException, InterruptedException, XMPPException.XMPPErrorException {

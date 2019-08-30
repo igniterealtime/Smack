@@ -37,6 +37,7 @@ public class OriginIdElement extends StableAndUniqueIdElement {
      * Add an origin-id element to a message and set the stanzas id to the same id as in the origin-id element.
      *
      * @param message message.
+     * @return the added origin-id element.
      */
     public static OriginIdElement addOriginId(Message message) {
         OriginIdElement originId = new OriginIdElement();

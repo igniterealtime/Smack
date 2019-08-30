@@ -40,8 +40,8 @@ public abstract class AbstractXmppNioConnection extends AbstractXmppStateMachine
      * Set the interest Ops of a SelectionKey. Since Java's NIO interestOps(int) can block at any time, we use a queue
      * to perform the actual operation in the reactor where we can perform this operation non-blocking.
      *
-     * @param selectionKey
-     * @param interestOps
+     * @param selectionKey TODO javadoc me please
+     * @param interestOps TODO javadoc me please
      */
     protected void setInterestOps(SelectionKey selectionKey, int interestOps) {
         SMACK_REACTOR.setInterestOps(selectionKey, interestOps);

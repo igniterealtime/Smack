@@ -45,8 +45,8 @@ public class MUCLightAffiliationsIQ extends IQ {
     /**
      * MUC Light affiliations response IQ constructor.
      *
-     * @param version
-     * @param affiliations
+     * @param version TODO javadoc me please
+     * @param affiliations TODO javadoc me please
      */
     public MUCLightAffiliationsIQ(String version, HashMap<Jid, MUCLightAffiliation> affiliations) {
         super(ELEMENT, NAMESPACE);

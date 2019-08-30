@@ -89,6 +89,9 @@ public class JingleError implements ExtensionElement {
 
     /**
      * Returns a Action instance associated with the String value.
+     *
+     * @param value the input string.
+     * @return the jingle error.
      */
     public static JingleError fromString(String value) {
         if (value != null) {

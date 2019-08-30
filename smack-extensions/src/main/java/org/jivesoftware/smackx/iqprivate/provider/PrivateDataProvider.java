@@ -41,8 +41,8 @@ public interface PrivateDataProvider {
      *
      * @param parser an XML parser.
      * @return a new PrivateData instance.
-     * @throws XmlPullParserException
-     * @throws IOException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
      */
     PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException;
 }

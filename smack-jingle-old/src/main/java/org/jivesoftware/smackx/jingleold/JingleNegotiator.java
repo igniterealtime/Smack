@@ -129,7 +129,7 @@ public abstract class JingleNegotiator {
     /**
      * Add expected ID.
      *
-     * @param id
+     * @param id TODO javadoc me please
      */
     public void addExpectedId(String id) {
         expectedAckId = id;
@@ -138,7 +138,7 @@ public abstract class JingleNegotiator {
     /**
      * Check if the passed ID is the expected ID.
      *
-     * @param id
+     * @param id TODO javadoc me please
      * @return true if is expected id
      */
     public boolean isExpectedId(String id) {
@@ -152,7 +152,7 @@ public abstract class JingleNegotiator {
     /**
      * Remove and expected ID.
      *
-     * @param id
+     * @param id TODO javadoc me please
      */
     public void removeExpectedId(String id) {
         addExpectedId(null);
@@ -229,8 +229,9 @@ public abstract class JingleNegotiator {
      * @param iq the stanza received
      * @param id the ID of the response that will be sent
      * @return the new stanza to send (either a Jingle or an IQ error).
-     * @throws XMPPException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException;
 

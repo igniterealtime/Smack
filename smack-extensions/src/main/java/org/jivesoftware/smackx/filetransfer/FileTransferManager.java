@@ -65,7 +65,7 @@ public final class FileTransferManager extends Manager {
     /**
      * Creates a file transfer manager to initiate and receive file transfers.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      *            The XMPPConnection that the file transfers will use.
      */
     private FileTransferManager(XMPPConnection connection) {
@@ -90,7 +90,7 @@ public final class FileTransferManager extends Manager {
      * Add a file transfer listener to listen to incoming file transfer
      * requests.
      *
-     * @param li
+     * @param li TODO javadoc me please
      *            The listener
      * @see #removeFileTransferListener(FileTransferListener)
      * @see FileTransferListener
@@ -102,7 +102,7 @@ public final class FileTransferManager extends Manager {
     /**
      * Removes a file transfer listener.
      *
-     * @param li
+     * @param li TODO javadoc me please
      *            The file transfer listener to be removed
      * @see FileTransferListener
      */
@@ -113,7 +113,7 @@ public final class FileTransferManager extends Manager {
     /**
      * Creates an OutgoingFileTransfer to send a file to another user.
      *
-     * @param userID
+     * @param userID TODO javadoc me please
      *            The fully qualified jabber ID (i.e. full JID) with resource of the user to
      *            send the file to.
      * @return The send file object on which the negotiated transfer can be run.
@@ -137,7 +137,7 @@ public final class FileTransferManager extends Manager {
      * invoked. It will create an IncomingFileTransfer which allows the
      * transmission of the file to proceed.
      *
-     * @param request
+     * @param request TODO javadoc me please
      *            The remote request that is being accepted.
      * @return The IncomingFileTransfer which manages the download of the file
      *         from the transfer initiator.
@@ -160,9 +160,9 @@ public final class FileTransferManager extends Manager {
      * <p>
      * Specified in XEP-95 4.2 and 3.2 Example 8
      * </p>
-     * @param request
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @param request TODO javadoc me please
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException, InterruptedException {
         StreamInitiation initiation = request.getStreamInitiation();

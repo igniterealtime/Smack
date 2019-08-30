@@ -544,7 +544,7 @@ public abstract class ConnectionConfiguration {
     /**
      * Check if the given SASL mechansism is enabled in this connection configuration.
      *
-     * @param saslMechanism
+     * @param saslMechanism TODO javadoc me please
      * @return true if the given SASL mechanism is enabled, false otherwise.
      */
     public boolean isEnabledSaslMechanism(String saslMechanism) {
@@ -642,8 +642,8 @@ public abstract class ConnectionConfiguration {
          * Although most services will follow that pattern.
          * </p>
          *
-         * @param jid
-         * @param password
+         * @param jid TODO javadoc me please
+         * @param password TODO javadoc me please
          * @return a reference to this builder.
          * @since 4.4.0
          */
@@ -916,7 +916,7 @@ public abstract class ConnectionConfiguration {
         /**
          * Set the enabled SSL/TLS protocols.
          *
-         * @param enabledSSLProtocols
+         * @param enabledSSLProtocols TODO javadoc me please
          * @return a reference to this builder.
          */
         public B setEnabledSSLProtocols(String[] enabledSSLProtocols) {
@@ -939,7 +939,7 @@ public abstract class ConnectionConfiguration {
          * Set the HostnameVerifier used to verify the hostname of SSLSockets used by XMPP connections
          * created with this ConnectionConfiguration.
          *
-         * @param verifier
+         * @param verifier TODO javadoc me please
          * @return a reference to this builder.
          */
         public B setHostnameVerifier(HostnameVerifier verifier) {

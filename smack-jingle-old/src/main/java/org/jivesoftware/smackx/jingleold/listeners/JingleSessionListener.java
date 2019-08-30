@@ -37,8 +37,8 @@ public interface JingleSessionListener extends JingleListener {
      *                      service.
      * @param localCandidate            the local candidate where we must listen for connections
      * @param jingleSession Session that called the method
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     void sessionEstablished(PayloadType pt, TransportCandidate remoteCandidate,
                                    TransportCandidate localCandidate, JingleSession jingleSession) throws NotConnectedException, InterruptedException;
@@ -54,7 +54,7 @@ public interface JingleSessionListener extends JingleListener {
     /**
      * Notification that the session was redirected.
      *
-     * @param redirection
+     * @param redirection TODO javadoc me please
      * @param jingleSession session that called the method
      */
     void sessionRedirected(String redirection, JingleSession jingleSession);

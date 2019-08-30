@@ -56,6 +56,7 @@ public abstract class JingleMediaSession {
      * @param remote       Remote accepted Transport Candidate
      * @param local        Local accepted Transport Candidate
      * @param mediaLocator Media Locator of the capture device
+     * @param jingleSession the jingle session.
      */
     public JingleMediaSession(PayloadType payloadType, TransportCandidate remote,
             TransportCandidate local, String mediaLocator, JingleSession jingleSession) {
@@ -114,7 +115,7 @@ public abstract class JingleMediaSession {
     /**
      * Adds a Media Received Listener.
      *
-     * @param mediaReceivedListener
+     * @param mediaReceivedListener TODO javadoc me please
      */
     public void addMediaReceivedListener(MediaReceivedListener mediaReceivedListener) {
         mediaReceivedListeners.add(mediaReceivedListener);
@@ -123,7 +124,7 @@ public abstract class JingleMediaSession {
     /**
      * Removes a Media Received Listener.
      *
-     * @param mediaReceivedListener
+     * @param mediaReceivedListener TODO javadoc me please
      */
     public void removeMediaReceivedListener(MediaReceivedListener mediaReceivedListener) {
         mediaReceivedListeners.remove(mediaReceivedListener);
@@ -155,7 +156,7 @@ public abstract class JingleMediaSession {
      * Set transmit activity. If the active is true, the instance should trasmit.
      * If it is set to false, the instance should pause transmit.
      *
-     * @param active
+     * @param active TODO javadoc me please
      */
     public abstract void setTransmit(boolean active);
 
@@ -171,6 +172,8 @@ public abstract class JingleMediaSession {
 
     /**
      * Called when new Media is received.
+     *
+     * @param participant the particpant.
      */
     public void mediaReceived(String participant) {
         for (MediaReceivedListener mediaReceivedListener : mediaReceivedListeners) {

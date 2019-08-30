@@ -47,8 +47,8 @@ public class BoBIQ extends IQ {
     /**
      * Bits of Binary IQ constructor.
      *
-     * @param bobHash
-     * @param bobData
+     * @param bobHash TODO javadoc me please
+     * @param bobData TODO javadoc me please
      */
     public BoBIQ(BoBHash bobHash, BoBData bobData) {
         super(ELEMENT, NAMESPACE);
@@ -59,7 +59,7 @@ public class BoBIQ extends IQ {
     /**
      * Bits of Binary IQ constructor.
      *
-     * @param bobHash
+     * @param bobHash TODO javadoc me please
      */
     public BoBIQ(BoBHash bobHash) {
         this(bobHash, null);

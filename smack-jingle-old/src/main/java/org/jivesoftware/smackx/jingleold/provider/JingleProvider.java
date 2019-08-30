@@ -45,9 +45,9 @@ public class JingleProvider extends IQProvider<Jingle> {
 
     /**
      * Parse a iq/jingle element.
-     * @throws XmlPullParserException
-     * @throws IOException
-     * @throws SmackParsingException
+     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     @Override
     public Jingle parse(XmlPullParser parser, int intialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {

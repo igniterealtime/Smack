@@ -104,7 +104,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Set the default identity all new connections will have. If unchanged the default identity is an
      * identity where category is set to 'client', type is set to 'pc' and name is set to 'Smack'.
      *
-     * @param identity
+     * @param identity TODO javadoc me please
      */
     public static void setDefaultIdentity(DiscoverInfo.Identity identity) {
         defaultIdentity = identity;
@@ -206,7 +206,7 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Sets the default identity the client will report.
      *
-     * @param identity
+     * @param identity TODO javadoc me please
      */
     public synchronized void setIdentity(Identity identity) {
         this.identity = Objects.requireNonNull(identity, "Identity can not be null");
@@ -239,7 +239,7 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Add an further identity to the client.
      *
-     * @param identity
+     * @param identity TODO javadoc me please
      */
     public synchronized void addIdentity(DiscoverInfo.Identity identity) {
         identities.add(identity);
@@ -252,7 +252,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Remove an identity from the client. Note that the client needs at least one identity, the default identity, which
      * can not be removed.
      *
-     * @param identity
+     * @param identity TODO javadoc me please
      * @return true, if successful. Otherwise the default identity was given.
      */
     public synchronized boolean removeIdentity(DiscoverInfo.Identity identity) {
@@ -425,7 +425,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * configure the extended info before logging to the server so that the
      * information is already available if it is required upon login.
      *
-     * @param info
+     * @param info TODO javadoc me please
      *            the data form that contains the extend service discovery
      *            information.
      */
@@ -481,10 +481,10 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param entityID the address of the XMPP entity or null.
      * @return the discovered information.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverInfo discoverInfo(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (entityID == null)
@@ -518,8 +518,8 @@ public final class ServiceDiscoveryManager extends Manager {
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverInfo discoverInfo(Jid entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Discover the entity's info
@@ -540,8 +540,8 @@ public final class ServiceDiscoveryManager extends Manager {
      * @return the discovered information.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverItems discoverItems(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return discoverItems(entityID, null);
@@ -557,8 +557,8 @@ public final class ServiceDiscoveryManager extends Manager {
      * @return the discovered items.
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverItems discoverItems(Jid entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Discover the entity's items
@@ -574,12 +574,12 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Returns true if the server supports the given feature.
      *
-     * @param feature
+     * @param feature TODO javadoc me please
      * @return true if the server supports the given feature.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.1
      */
     public boolean serverSupportsFeature(CharSequence feature) throws NoResponseException, XMPPErrorException,
@@ -604,10 +604,10 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param features the features to check
      * @return <code>true</code> if all features are supported by the connection account, <code>false</code> otherwise
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2.2
      */
     public boolean accountSupportsFeatures(CharSequence... features)
@@ -621,10 +621,10 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param features a collection of features
      * @return <code>true</code> if all features are supported by the connection account, <code>false</code> otherwise
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2.2
      */
     public boolean accountSupportsFeatures(Collection<? extends CharSequence> features)
@@ -637,12 +637,12 @@ public final class ServiceDiscoveryManager extends Manager {
      * Queries the remote entity for it's features and returns true if the given feature is found.
      *
      * @param jid the JID of the remote entity
-     * @param feature
+     * @param feature TODO javadoc me please
      * @return true if the entity supports the feature, false otherwise
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean supportsFeature(Jid jid, CharSequence feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return supportsFeatures(jid, feature);
@@ -676,10 +676,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @return a possible empty list of services providing the given feature
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -694,10 +694,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
      * @return a possible empty list of services providing the given feature
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2.2
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
@@ -715,10 +715,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
      * @return a possible empty list of services providing the given feature
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.3.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(DomainBareJid serviceName, String feature, boolean stopOnFirst,
@@ -798,10 +798,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @return a possible empty list of services providing the given feature
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<DomainBareJid> findServices(String feature, boolean stopOnFirst, boolean useCache) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<DiscoverInfo> services = findServicesDiscoverInfo(feature, stopOnFirst, useCache);

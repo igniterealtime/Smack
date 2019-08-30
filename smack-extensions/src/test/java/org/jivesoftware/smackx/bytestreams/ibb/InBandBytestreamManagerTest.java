@@ -61,9 +61,9 @@ public class InBandBytestreamManagerTest extends InitExtensions {
 
     /**
      * Initialize fields used in the tests.
-     * @throws XMPPException
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Before
     public void setup() throws XMPPException, SmackException, InterruptedException {
@@ -105,9 +105,9 @@ public class InBandBytestreamManagerTest extends InitExtensions {
      * Invoking {@link InBandBytestreamManager#establishSession(org.jxmpp.jid.Jid)} should
      * throw an exception if the given target does not support in-band
      * bytestream.
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Test
     public void shouldFailIfTargetDoesNotSupportIBB() throws SmackException, XMPPException, InterruptedException {

@@ -437,8 +437,8 @@ public final class Roster extends Manager {
      * which means the method will return immediately, and the roster will be
      * reloaded at a later point when the server responds to the reload request.
      * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void reload() throws NotLoggedInException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
@@ -474,9 +474,9 @@ public final class Roster extends Manager {
     /**
      * Reload the roster and block until it is reloaded.
      *
-     * @throws NotLoggedInException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.1
      */
     public void reloadAndWait() throws NotLoggedInException, NotConnectedException, InterruptedException {
@@ -487,7 +487,7 @@ public final class Roster extends Manager {
     /**
      * Set the roster store, may cause a roster reload.
      *
-     * @param rosterStore
+     * @param rosterStore TODO javadoc me please
      * @return true if the roster reload was initiated, false otherwise.
      * @since 4.1
      */
@@ -642,8 +642,8 @@ public final class Roster extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @deprecated use {@link #createItemAndRequestSubscription(BareJid, String, String[])} instead.
      */
     // TODO: Remove in Smack 4.5.
@@ -667,8 +667,8 @@ public final class Roster extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.4.0
      */
     public void createItem(BareJid jid, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -700,8 +700,8 @@ public final class Roster extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.4.0
      */
     public void createItemAndRequestSubscription(BareJid jid, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -721,8 +721,8 @@ public final class Roster extends Manager {
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
      * @throws NotLoggedInException if not logged in.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws FeatureNotSupportedException if pre-approving is not supported.
      * @since 4.2
      */
@@ -736,8 +736,8 @@ public final class Roster extends Manager {
      *
      * @param user the user. (e.g. johndoe@jabber.org)
      * @throws NotLoggedInException if not logged in.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws FeatureNotSupportedException if pre-approving is not supported.
      * @since 4.2
      */
@@ -795,7 +795,7 @@ public final class Roster extends Manager {
      * Remove a subscribe listener. Also restores the previous subscription mode
      * state, if the last listener got removed.
      *
-     * @param subscribeListener
+     * @param subscribeListener TODO javadoc me please
      *            the subscribe listener to remove.
      * @return <code>true</code> if the listener registered and got removed.
      * @since 4.2
@@ -818,8 +818,8 @@ public final class Roster extends Manager {
      * @throws XMPPErrorException if an XMPP error occurs.
      * @throws NotLoggedInException if not logged in.
      * @throws NoResponseException SmackException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void removeEntry(RosterEntry entry) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
@@ -971,7 +971,7 @@ public final class Roster extends Manager {
      * Returns the presence info for a particular user. If the user is offline, or
      * if no presence data is available (such as when you are not subscribed to the
      * user's presence updates), unavailable presence will be returned.
-     * <p>
+     *
      * If the user has several presences (one for each resource), then the presence with
      * highest priority will be returned. If multiple presences have the same priority,
      * the one with the "most available" presence mode will be returned. In order,
@@ -979,8 +979,8 @@ public final class Roster extends Manager {
      * {@link org.jivesoftware.smack.packet.Presence.Mode#available available},
      * {@link org.jivesoftware.smack.packet.Presence.Mode#away away},
      * {@link org.jivesoftware.smack.packet.Presence.Mode#xa extended away}, and
-     * {@link org.jivesoftware.smack.packet.Presence.Mode#dnd do not disturb}.<p>
-     * </p>
+     * {@link org.jivesoftware.smack.packet.Presence.Mode#dnd do not disturb}.
+     *
      * <p>
      * Note that presence information is received asynchronously. So, just after logging
      * in to the server, presence values for users in the roster may be unavailable
@@ -1184,7 +1184,7 @@ public final class Roster extends Manager {
      * </p>
      * Note that if the roster is not loaded, then this method will always return false.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      * @return true if the given JID is allowed to see the users presence.
      * @since 4.1
      */
@@ -1871,7 +1871,7 @@ public final class Roster extends Manager {
     /**
      * Set the maximum size of the non-Roster presence map.
      *
-     * @param maximumSize
+     * @param maximumSize TODO javadoc me please
      * @since 4.2
      * @see #setDefaultNonRosterPresenceMapMaxSize(int)
      */

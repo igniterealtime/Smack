@@ -71,11 +71,11 @@ public class MUCItem implements NamedElement {
      *
      * @param affiliation the actor's affiliation to the room
      * @param role the privilege level of an occupant within a room.
-     * @param actor
-     * @param reason
-     * @param jid
-     * @param nick
-     * @param actorNick
+     * @param actor TODO javadoc me please
+     * @param reason TODO javadoc me please
+     * @param jid TODO javadoc me please
+     * @param nick TODO javadoc me please
+     * @param actorNick TODO javadoc me please
      */
     public MUCItem(MUCAffiliation affiliation, MUCRole role, Jid actor,
                     String reason, Jid jid, Resourcepart nick, Resourcepart actorNick) {

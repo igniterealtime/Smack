@@ -48,7 +48,7 @@ public class MamQueryIQ extends IQ {
     /**
      * MAM query IQ constructor.
      *
-     * @param queryId
+     * @param queryId TODO javadoc me please
      */
     public MamQueryIQ(String queryId) {
         this(queryId, null, null);
@@ -58,7 +58,7 @@ public class MamQueryIQ extends IQ {
     /**
      * MAM query IQ constructor.
      *
-     * @param form
+     * @param form TODO javadoc me please
      */
     public MamQueryIQ(DataForm form) {
         this(null, null, form);
@@ -67,8 +67,8 @@ public class MamQueryIQ extends IQ {
     /**
      * MAM query IQ constructor.
      *
-     * @param queryId
-     * @param form
+     * @param queryId TODO javadoc me please
+     * @param form TODO javadoc me please
      */
     public MamQueryIQ(String queryId, DataForm form) {
         this(queryId, null, form);
@@ -77,9 +77,9 @@ public class MamQueryIQ extends IQ {
     /**
      * MAM query IQ constructor.
      *
-     * @param queryId
-     * @param node
-     * @param dataForm
+     * @param queryId TODO javadoc me please
+     * @param node TODO javadoc me please
+     * @param dataForm TODO javadoc me please
      */
     public MamQueryIQ(String queryId, String node, DataForm dataForm) {
         super(ELEMENT, NAMESPACE);

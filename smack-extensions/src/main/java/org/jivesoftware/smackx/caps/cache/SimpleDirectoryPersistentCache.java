@@ -53,7 +53,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      * file systems, both case sensitive and case insensitive.  It does however
      * produce longer filenames.
      *
-     * @param cacheDir
+     * @param cacheDir TODO javadoc me please
      */
     public SimpleDirectoryPersistentCache(File cacheDir) {
         this(cacheDir, Base32.getStringEncoder());
@@ -125,9 +125,9 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     /**
      * Writes the DiscoverInfo stanza to an file
      *
-     * @param file
-     * @param info
-     * @throws IOException
+     * @param file TODO javadoc me please
+     * @param info TODO javadoc me please
+     * @throws IOException if an I/O error occured.
      */
     private static void writeInfoToFile(File file, DiscoverInfo info) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(file))) {
@@ -138,9 +138,9 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     /**
      * Tries to restore an DiscoverInfo stanza from a file.
      *
-     * @param file
+     * @param file TODO javadoc me please
      * @return the restored DiscoverInfo
-     * @throws Exception
+     * @throws Exception if an exception occurs.
      */
     private static DiscoverInfo restoreInfoFromFile(File file) throws Exception {
         String fileContent;

@@ -99,6 +99,7 @@ public class Item extends NodeExtension {
      * Create an <code>Item</code> with an id but no payload.  This is a valid item for nodes which are configured
      * so that {@link ConfigureForm#isDeliverPayloads()} is false.
      *
+     * @param itemNamespace the namespace of the item.
      * @param itemId The id if the item.  It must be unique within the node unless overwriting and existing item.
      * Passing null is the equivalent of calling {@link #Item()}.
      */
@@ -129,6 +130,7 @@ public class Item extends NodeExtension {
      * (via {@link LeafNode#publish(Item)}, the server <i>may</i> return an
      * error for an invalid packet.
      *
+     * @param itemNamespace the namespace of the item.
      * @param itemId The id of the item.
      * @param nodeId The id of the node which the item was published to.
      */

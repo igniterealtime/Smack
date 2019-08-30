@@ -69,8 +69,10 @@ public class MediaNegotiator extends JingleNegotiator {
      * but it does not start the negotiation. For starting the negotiation, call
      * startNegotiation.
      *
-     * @param session
-     *            The jingle session.
+     * @param session TODO javadoc me please
+     * @param mediaManager the media manager.
+     * @param pts the list of payload types.
+     * @param parentNegotiator the parent content negotiator.
      */
     public MediaNegotiator(JingleSession session, JingleMediaManager mediaManager, List<PayloadType> pts,
             ContentNegotiator parentNegotiator) {
@@ -89,7 +91,9 @@ public class MediaNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Return   The media manager for this negotiator.
+     * Returns the media manager for this negotiator.
+     *
+     * @return the media manager.
      */
     public JingleMediaManager getMediaManager() {
         return mediaManager;
@@ -100,12 +104,12 @@ public class MediaNegotiator extends JingleNegotiator {
      * the stanza type and, depending on the current state, delivering the
      * stanza to the right event handler and wait for a response.
      *
-     * @param iq
+     * @param iq TODO javadoc me please
      *            the stanza received
      * @return the new Jingle stanza to send.
-     * @throws XMPPException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, NotConnectedException, InterruptedException {
@@ -203,10 +207,10 @@ public class MediaNegotiator extends JingleNegotiator {
       *  This means we can walk through our list, in order, until we find one from their list that matches.  This
       *  will be the best payload type to use.
       *
-      *  @param jingle
+      *  @param jingle TODO javadoc me please
       *  @return the iq
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
       */
     private IQ receiveContentAcceptAction(Jingle jingle, JingleDescription description) throws XMPPException, NotConnectedException, InterruptedException {
         IQ response;
@@ -233,8 +237,8 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      *  Receive a session-initiate packet.
-     *  @param jingle
-     *  @param description
+     *  @param jingle TODO javadoc me please
+     *  @param description TODO javadoc me please
      *  @return the iq
      */
     private IQ receiveSessionInitiateAction(Jingle jingle, JingleDescription description) {
@@ -264,7 +268,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * A content info has been received. This is done for publishing the
      * list of payload types...
      *
-     * @param jingle
+     * @param jingle TODO javadoc me please
      *            The input packet
      * @return a Jingle packet
      * @throws JingleException
@@ -304,7 +308,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * A jmf description has been accepted. In this case, we must save the
      * accepted payload type and notify any listener...
      *
-     * @param jin
+     * @param jin TODO javadoc me please
      *            The input packet
      * @return a Jingle packet
      * @throws JingleException
@@ -409,7 +413,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * Adds a payload type to the list of remote payloads.
      *
-     * @param pt
+     * @param pt TODO javadoc me please
      *            the remote payload type
      */
     public void addRemoteAudioPayloadType(PayloadType.Audio pt) {
@@ -475,10 +479,10 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * Trigger a session established event.
      *
-     * @param bestPt
+     * @param bestPt TODO javadoc me please
      *            payload type that has been agreed.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void triggerMediaEstablished(PayloadType bestPt) throws NotConnectedException, InterruptedException {
         List<JingleListener> listeners = getListenersList();
@@ -493,7 +497,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * Trigger a jmf closed event.
      *
-     * @param currPt
+     * @param currPt TODO javadoc me please
      *            current payload type that is cancelled.
      */
     protected void triggerMediaClosed(PayloadType currPt) {
@@ -525,6 +529,8 @@ public class MediaNegotiator extends JingleNegotiator {
 
     /**
      *  Create a JingleDescription that matches this negotiator.
+     *
+     * @return the jingle description.
      */
     public JingleDescription getJingleDescription() {
         JingleDescription result = null;

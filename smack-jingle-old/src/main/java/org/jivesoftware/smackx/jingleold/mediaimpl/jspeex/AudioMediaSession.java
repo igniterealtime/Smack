@@ -67,11 +67,11 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * @param quality      quality
      * @param secure       secure
      * @param micOn        micOn
-     * @return MediaSession
-     * @throws NoProcessorException
-     * @throws UnsupportedFormatException
-     * @throws IOException
-     * @throws GeneralSecurityException
+     * @return MediaSession TODO javadoc me please
+     * @throws NoProcessorException if there is no media processor.
+     * @throws UnsupportedFormatException if the format is not supported.
+     * @throws IOException if an I/O error occured.
+     * @throws GeneralSecurityException if there was a geneeral security exception.
      */
     public static MediaSession createSession(String localhost, int localPort, String remoteHost, int remotePort, MediaSessionListener eventHandler, int quality, boolean secure, boolean micOn) throws NoProcessorException, UnsupportedFormatException, IOException, GeneralSecurityException {
 
@@ -102,6 +102,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * @param remote      the remote information. The candidate that the jmf will be sent to.
      * @param local       the local information. The candidate that will receive the jmf
      * @param locator     media locator
+     * @param jingleSession the jingle session.
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, String locator, JingleSession jingleSession) {

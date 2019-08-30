@@ -100,12 +100,12 @@ public final class GeoLocationManager extends Manager {
     /**
      * Send geolocation through the PubSub node.
      *
-     * @param geoLocation
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotALeafNodeException
+     * @param geoLocation TODO javadoc me please
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      */
     public void sendGeolocation(GeoLocation geoLocation)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
@@ -115,11 +115,11 @@ public final class GeoLocationManager extends Manager {
     /**
      * Send empty geolocation through the PubSub node.
      *
-     * @throws InterruptedException
-     * @throws NotConnectedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotALeafNodeException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      */
     public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {

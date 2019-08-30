@@ -66,6 +66,10 @@ public class Jingle extends IQ {
 
     /**
      * A constructor where the main components can be initialized.
+     *
+     * @param contents the contents.
+     * @param mi the jingle content info
+     * @param sid the sid.
      */
     public Jingle(final List<JingleContent> contents, final JingleContentInfo mi,
                   final String sid) {

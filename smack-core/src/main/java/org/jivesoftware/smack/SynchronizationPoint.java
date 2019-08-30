@@ -140,7 +140,7 @@ public class SynchronizationPoint<E extends Exception> {
     /**
      * Check if this synchronization point is successful or wait the connections reply timeout.
      * @throws NoResponseException if there was no response marking the synchronization point as success or failed.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      * @return <code>null</code> if synchronization point was successful, or the failure Exception.
      */
     public Exception checkIfSuccessOrWait() throws NoResponseException, InterruptedException {
@@ -281,7 +281,7 @@ public class SynchronizationPoint<E extends Exception> {
      * {@link #reportSuccess()}, {@link #reportFailure()} and {@link #reportFailure(Exception)} will either set this
      * synchronization point to {@link State#Success} or {@link State#Failure}. If none of them is set after the
      * connections reply timeout, this method will set the state of {@link State#NoResponse}.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private void waitForConditionOrTimeout() throws InterruptedException {
         waitStart = System.currentTimeMillis();
@@ -324,7 +324,7 @@ public class SynchronizationPoint<E extends Exception> {
      * The exception is thrown, if state is one of 'Initial', 'NoResponse' or 'RequestSent'
      * </p>
      * @return <code>true</code> if synchronization point was successful, <code>false</code> on failure.
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     private Exception checkForResponse() throws NoResponseException {
         switch (state) {

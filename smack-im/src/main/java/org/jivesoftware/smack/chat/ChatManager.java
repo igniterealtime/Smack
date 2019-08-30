@@ -279,7 +279,7 @@ public final class ChatManager extends Manager{
      * Creates a new {@link Chat} based on the message. May returns null if no chat could be
      * created, e.g. because the message comes without from.
      *
-     * @param message
+     * @param message TODO javadoc me please
      * @return a Chat or null if none can be created
      */
     private Chat createChat(Message message) {

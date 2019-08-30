@@ -33,9 +33,9 @@ public class MUCLightRoomConfiguration {
     /**
      * MUC Light room configuration model constructor.
      *
-     * @param roomName
-     * @param subject
-     * @param customConfigs
+     * @param roomName TODO javadoc me please
+     * @param subject TODO javadoc me please
+     * @param customConfigs TODO javadoc me please
      */
     public MUCLightRoomConfiguration(String roomName, String subject, HashMap<String, String> customConfigs) {
         this.roomName = roomName;

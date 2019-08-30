@@ -100,15 +100,15 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Full featured JingleSession constructor.
      *
-     * @param conn
+     * @param conn TODO javadoc me please
      *            the XMPPConnection which is used
-     * @param initiator
+     * @param initiator TODO javadoc me please
      *            the initiator JID
-     * @param responder
+     * @param responder TODO javadoc me please
      *            the responder JID
-     * @param sessionid
+     * @param sessionid TODO javadoc me please
      *            the session ID
-     * @param jingleMediaManagers
+     * @param jingleMediaManagers TODO javadoc me please
      *            the jingleMediaManager
      */
     public JingleSession(XMPPConnection conn, Jid initiator, Jid responder, String sessionid,
@@ -138,6 +138,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *
      * @param conn
      *            Connection
+     * @param request the request.
      * @param initiator
      *            the initiator JID
      * @param responder
@@ -168,7 +169,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Set the session initiator.
      *
-     * @param initiator
+     * @param initiator TODO javadoc me please
      *            the initiator to set
      */
     public void setInitiator(Jid initiator) {
@@ -187,7 +188,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Set the Media Manager of this Jingle Session.
      *
-     * @param jingleMediaManagers
+     * @param jingleMediaManagers TODO javadoc me please
      */
     public void setMediaManagers(List<JingleMediaManager> jingleMediaManagers) {
         this.jingleMediaManagers = jingleMediaManagers;
@@ -205,7 +206,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Set the session responder.
      *
-     * @param responder
+     * @param responder TODO javadoc me please
      *            the receptor to set
      */
     public void setResponder(Jid responder) {
@@ -224,7 +225,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Set the session ID
      *
-     * @param sessionId
+     * @param sessionId TODO javadoc me please
      *            the sid to set
      */
     protected void setSid(String sessionId) {
@@ -233,6 +234,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Generate a unique session ID.
+     *
+     * @return the generated session ID.
      */
     protected static String generateSessionId() {
         return String.valueOf(randomGenerator.nextInt(Integer.MAX_VALUE) + randomGenerator.nextInt(Integer.MAX_VALUE));
@@ -240,6 +243,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Validate the state changes.
+     *
+     * @param stateIs the jingle session state.
      */
 
     public void setSessionState(JingleSessionState stateIs) {
@@ -255,6 +260,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Return true if all of the media managers have finished.
+     *
+     * @return <code>true</code> if fully established.
      */
     public boolean isFullyEstablished() {
         boolean result = true;
@@ -277,11 +284,11 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * a response. The response will be another Jingle stanza that will be sent
      * to the other end point.
      *
-     * @param iq
+     * @param iq TODO javadoc me please
      *            the stanza received
-     * @throws XMPPException
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized void receivePacketAndRespond(IQ iq) throws XMPPException, SmackException, InterruptedException {
         List<IQ> responses = new ArrayList<>();
@@ -346,12 +353,12 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * the stanza type and, depending on the current state, delivering the
      * stanza to the right event handler and wait for a response.
      *
-     * @param iq
+     * @param iq TODO javadoc me please
      *            the stanza received
      * @return the new Jingle stanza to send.
-     * @throws XMPPException
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public List<IQ> dispatchIncomingPacket(IQ iq, String id) throws XMPPException, SmackException, InterruptedException {
@@ -395,6 +402,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Add a new content negotiator on behalf of a &lt;content/&gt; section received.
+     *
+     * @param inContentNegotiator the content negotiator.
      */
     public void addContentNegotiator(ContentNegotiator inContentNegotiator) {
         contentNegotiators.add(inContentNegotiator);
@@ -424,8 +433,9 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *
      * @param jout
      *            the Jingle stanza we want to complete and send
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @return the Jingle stanza.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Jingle sendFormattedJingle(Jingle jout) throws NotConnectedException, InterruptedException {
         return sendFormattedJingle(null, jout);
@@ -436,12 +446,11 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * reponse, using the session information we have or some info from the
      * incoming packet.
      *
-     * @param iq
-     *            The Jingle stanza we are responding to
-     * @param jout
-     *            the Jingle stanza we want to complete and send
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @param iq The Jingle stanza we are responding to
+     * @param jout the Jingle stanza we want to complete and send
+     * @return the Jingle stanza.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Jingle sendFormattedJingle(IQ iq, Jingle jout) throws NotConnectedException, InterruptedException {
         if (jout != null) {
@@ -486,8 +495,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     }
 
     /**
-     *  @param inJingle
-     *  @param inAction
+     *  @param inJingle TODO javadoc me please
+     *  @param inAction TODO javadoc me please
      */
     //    private void sendUnknownStateAction(Jingle inJingle, JingleActionEnum inAction) {
     //
@@ -508,8 +517,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Acknowledge a IQ packet.
      *
-     * @param iq
-     *            The IQ to acknowledge
+     * @param iq The IQ to acknowledge.
+     * @return the ack IQ.
      */
     public IQ createAck(IQ iq) {
         IQ result = null;
@@ -595,7 +604,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Clean a session from the list.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      *            The connection to clean up
      */
     private void unregisterInstanceFor(XMPPConnection connection) {
@@ -616,7 +625,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Returns the JingleSession related to a particular connection.
      *
-     * @param con
+     * @param con TODO javadoc me please
      *            A XMPP connection
      * @return a Jingle session
      */
@@ -638,7 +647,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Configure a session, setting some action listeners...
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      *            The connection to set up
      */
     private void installConnectionListeners(final XMPPConnection connection) {
@@ -750,7 +759,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Add a listener for jmf negotiation events.
      *
-     * @param li
+     * @param li TODO javadoc me please
      *            The listener
      */
     public void addMediaListener(JingleMediaListener li) {
@@ -765,7 +774,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Remove a listener for jmf negotiation events.
      *
-     * @param li
+     * @param li TODO javadoc me please
      *            The listener
      */
     public void removeMediaListener(JingleMediaListener li) {
@@ -779,7 +788,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Add a listener for transport negotiation events.
      *
-     * @param li
+     * @param li TODO javadoc me please
      *            The listener
      */
     public void addTransportListener(JingleTransportListener li) {
@@ -793,7 +802,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Remove a listener for transport negotiation events.
      *
-     * @param li
+     * @param li TODO javadoc me please
      *            The listener
      */
     public void removeTransportListener(JingleTransportListener li) {
@@ -883,6 +892,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Trigger a session closed event.
+     *
+     * @param reason the reason.
      */
     protected void triggerSessionClosed(String reason) {
         //        for (ContentNegotiator contentNegotiator : contentNegotiators) {
@@ -905,6 +916,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Trigger a session closed event due to an error.
+     *
+     * @param exc the exception.
      */
     protected void triggerSessionClosedOnError(XMPPException exc) {
         for (ContentNegotiator contentNegotiator : contentNegotiators) {
@@ -938,6 +951,8 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     //    }
     /**
      * Trigger a media received event.
+     *
+     * @param participant the participant.
      */
     protected void triggerMediaReceived(String participant) {
         List<JingleListener> listeners = getListenersList();
@@ -980,9 +995,9 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Terminates the session with default reason.
      *
-     * @throws XMPPException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void terminate() throws XMPPException, NotConnectedException, InterruptedException {
         terminate("Closed Locally");
@@ -991,9 +1006,10 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Terminates the session with a custom reason.
      *
-     * @throws XMPPException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @param reason the reason.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void terminate(String reason) throws XMPPException, NotConnectedException, InterruptedException {
         if (isClosed())
@@ -1048,6 +1064,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *            The Jingle stanza we are responding to
      * @param jingleError
      *            the IQ stanza we want to complete and send
+     * @return the jingle error IQ.
      */
     public IQ createJingleError(IQ iq, JingleError jingleError) {
         IQ errorPacket = null;
@@ -1078,9 +1095,9 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * This is the starting point for intitiating a new session.
      *
-     * @throws IllegalStateException
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws IllegalStateException if an illegal state was encountered
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void startOutgoing() throws IllegalStateException, SmackException, InterruptedException {
 
@@ -1168,6 +1185,9 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * The jingle session may have one or more media managers that are trying to establish media sessions.
      * When the media manager succeeds in creating a media session is registers it with the session by the
      * media manager's static name.  This routine is where the media manager does the registering.
+     *
+     * @param mediaManagerName the name of the media manager.
+     * @param mediaSession the jingle media session.
      */
     public void addJingleMediaSession(String mediaManagerName, JingleMediaSession mediaSession) {
         mediaSessionMap.put(mediaManagerName, mediaSession);
@@ -1178,6 +1198,9 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * When the media manager succeeds in creating a media session is registers it with the session by the
      * media manager's static name. This routine is where other objects can access the registered media sessions.
      * NB: If the media manager has not succeeded in establishing a media session then this could return null.
+     *
+     * @param mediaManagerName the name of the media manager.
+     * @return the jingle media session.
      */
     public JingleMediaSession getMediaSession(String mediaManagerName) {
         return mediaSessionMap.get(mediaManagerName);

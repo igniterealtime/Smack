@@ -48,8 +48,8 @@ public class FormTest extends AbstractSmackIntegrationTest {
      * 2. Retrieve the form to fill out, complete it and return it to the requestor
      * 3. Retrieve the completed form and check that everything is OK
      *
-     * @throws InterruptedException
-     * @throws NotConnectedException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     @SuppressWarnings("deprecation")
     @SmackIntegrationTest

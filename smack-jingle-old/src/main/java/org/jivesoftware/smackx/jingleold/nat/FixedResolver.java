@@ -34,6 +34,9 @@ public class FixedResolver extends TransportResolver {
 
     /**
      * Constructor.
+     *
+     * @param ip the IP address.
+     * @param port the port number.
      */
     public FixedResolver(String ip, int port) {
         super();
@@ -52,8 +55,8 @@ public class FixedResolver extends TransportResolver {
 
     /**
      * Resolve the IP address.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
@@ -76,7 +79,7 @@ public class FixedResolver extends TransportResolver {
     /**
      * Initialize the resolver.
      *
-     * @throws XMPPException
+     * @throws XMPPException if an XMPP protocol error was received.
      */
     @Override
     public void initialize() throws XMPPException {

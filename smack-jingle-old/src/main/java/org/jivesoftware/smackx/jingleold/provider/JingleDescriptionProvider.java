@@ -36,7 +36,7 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
     /**
      * Parse a iq/jingle/description/payload-type element.
      *
-     * @param parser
+     * @param parser TODO javadoc me please
      *            the input to parse
      * @return a payload type element
      */
@@ -63,11 +63,11 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
     /**
      * Parse a iq/jingle/description element.
      *
-     * @param parser
+     * @param parser TODO javadoc me please
      *            the input to parse
      * @return a description element
-     * @throws IOException
-     * @throws XmlPullParserException
+     * @throws IOException if an I/O error occured.
+     * @throws XmlPullParserException if an error in the XML parser occured.
      */
     @Override
     public JingleDescription parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
@@ -97,6 +97,8 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
     /**
      * Return a new instance of this class. Subclasses must overwrite this
      * method.
+     *
+     * @return the jingle description.
      */
     protected abstract JingleDescription getInstance();
 

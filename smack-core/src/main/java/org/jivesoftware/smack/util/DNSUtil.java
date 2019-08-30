@@ -51,7 +51,7 @@ public class DNSUtil {
     /**
      * Set the DNS resolver that should be used to perform DNS lookups.
      *
-     * @param resolver
+     * @param resolver TODO javadoc me please
      */
     public static void setDNSResolver(DNSResolver resolver) {
         dnsResolver = Objects.requireNonNull(resolver);
@@ -69,7 +69,7 @@ public class DNSUtil {
     /**
      * Set the DANE provider that should be used when DANE is enabled.
      *
-     * @param daneProvider
+     * @param daneProvider TODO javadoc me please
      */
     public static void setDaneProvider(SmackDaneProvider daneProvider) {
         DNSUtil.daneProvider = Objects.requireNonNull(daneProvider);
@@ -189,7 +189,7 @@ public class DNSUtil {
      * Note that we follow the RFC with one exception. In a group of the same priority, only the first entry
      * is calculated by random. The others are ore simply ordered by their priority.
      *
-     * @param records
+     * @param records TODO javadoc me please
      * @return the list of resolved HostAddresses
      */
     private static List<HostAddress> sortSRVRecords(List<SRVRecord> records) {

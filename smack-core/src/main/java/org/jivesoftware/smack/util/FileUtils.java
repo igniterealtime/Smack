@@ -108,9 +108,9 @@ public final class FileUtils {
     /**
      * Reads the contents of a File.
      *
-     * @param file
+     * @param file TODO javadoc me please
      * @return the content of file or null in case of an error
-     * @throws IOException
+     * @throws IOException if an I/O error occured.
      */
     @SuppressWarnings("DefaultCharset")
     public static String readFileOrThrow(File file) throws IOException {

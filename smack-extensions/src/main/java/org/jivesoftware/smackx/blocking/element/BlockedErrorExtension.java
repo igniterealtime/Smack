@@ -65,7 +65,7 @@ public class BlockedErrorExtension implements ExtensionElement {
      * message was blocked because the JID blocked the sender, and that was
      * reflected back as an error message.
      *
-     * @param message
+     * @param message TODO javadoc me please
      * @return true if the message contains a BlockedErrorExtension, false if
      *         not
      */

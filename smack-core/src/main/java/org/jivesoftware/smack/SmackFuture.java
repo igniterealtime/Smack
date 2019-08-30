@@ -292,7 +292,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
      * A simple version of InternalSmackFuture which implements isNonFatalException(E) as always returning
      * <code>false</code> method.
      *
-     * @param <V>
+     * @param <V> the return value of the future.
      */
     public abstract static class SimpleInternalProcessStanzaSmackFuture<V, E extends Exception>
                     extends InternalProcessStanzaSmackFuture<V, E> {

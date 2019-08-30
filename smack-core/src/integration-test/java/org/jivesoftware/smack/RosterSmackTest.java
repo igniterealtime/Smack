@@ -38,7 +38,7 @@ public class RosterSmackTest extends SmackTestCase {
 
     /**
      * Constructor for RosterSmackTest.
-     * @param name
+     * @param name TODO javadoc me please
      */
     public RosterSmackTest(String name) {
         super(name);

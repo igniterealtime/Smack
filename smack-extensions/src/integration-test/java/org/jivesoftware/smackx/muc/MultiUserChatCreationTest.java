@@ -36,7 +36,7 @@ public class MultiUserChatCreationTest extends SmackTestCase {
 
     /**
      * Constructor for MultiUserChatCreationTest.
-     * @param arg0
+     * @param arg0 TODO javadoc me please
      */
     public MultiUserChatCreationTest(String arg0) {
         super(arg0);

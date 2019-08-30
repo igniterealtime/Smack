@@ -48,7 +48,7 @@ public class Socks5ByteStreamTest extends SmackTestCase {
     /**
      * Constructor
      *
-     * @param arg0
+     * @param arg0 TODO javadoc me please
      */
     public Socks5ByteStreamTest(String arg0) {
         super(arg0);

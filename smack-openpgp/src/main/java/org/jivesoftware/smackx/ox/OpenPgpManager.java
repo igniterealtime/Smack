@@ -228,7 +228,7 @@ public final class OpenPgpManager extends Manager {
     /**
      * Get our OpenPGP self.
      *
-     * @return self
+     * @return self TODO javadoc me please
      * @throws SmackException.NotLoggedInException if we are not logged in
      */
     public OpenPgpSelf getOpenPgpSelf() throws SmackException.NotLoggedInException {

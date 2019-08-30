@@ -98,10 +98,10 @@ public class PingTest extends InitExtensions {
 
     /**
      * DummyConnection will not reply so it will timeout.
-     * @throws SmackException
-     * @throws XMPPException
-     * @throws IOException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Test
     public void checkFailedPingOnTimeout() throws SmackException, IOException, XMPPException, InterruptedException {
@@ -119,7 +119,7 @@ public class PingTest extends InitExtensions {
 
     /**
      * Server returns an exception for entity.
-     * @throws Exception
+     * @throws Exception if an exception occurs.
      */
     @Test
     public void checkFailedPingToEntityError() throws Exception {
@@ -155,7 +155,7 @@ public class PingTest extends InitExtensions {
 
     /**
      * Server returns an exception.
-     * @throws Exception
+     * @throws Exception if an exception occurs.
      */
     @Test
     public void checkPingToServerError() throws Exception {
@@ -243,10 +243,10 @@ public class PingTest extends InitExtensions {
      * The returned connection won't send replies to IQs
      *
      * @return
-     * @throws XMPPException
-     * @throws IOException
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private static DummyConnection getAuthenticatedDummyConnectionWithoutIqReplies() throws SmackException, IOException, XMPPException, InterruptedException {
         DummyConnection con = new DummyConnection();

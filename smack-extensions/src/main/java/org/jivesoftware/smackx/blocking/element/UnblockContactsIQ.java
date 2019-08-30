@@ -50,7 +50,7 @@ public class UnblockContactsIQ extends IQ {
     /**
      * Unblock contacts IQ constructor.
      *
-     * @param jids
+     * @param jids TODO javadoc me please
      */
     public UnblockContactsIQ(List<Jid> jids) {
         super(ELEMENT, NAMESPACE);

@@ -53,6 +53,9 @@ public enum JingleActionEnum {
 
     /**
      * Returns the Action enum for a String action value.
+     *
+     * @param inActionCode the action code.
+     * @return the jingle action.
      */
     public static JingleActionEnum getAction(String inActionCode) {
         for (JingleActionEnum jingleAction : JingleActionEnum.values()) {

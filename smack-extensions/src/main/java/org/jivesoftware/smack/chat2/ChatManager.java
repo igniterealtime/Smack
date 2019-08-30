@@ -264,7 +264,7 @@ public final class ChatManager extends Manager {
     /**
      * Also notify about messages containing XHTML-IM.
      *
-     * @param xhtmlIm
+     * @param xhtmlIm TODO javadoc me please
      */
     public void setXhmtlImEnabled(boolean xhtmlIm) {
         this.xhtmlIm = xhtmlIm;

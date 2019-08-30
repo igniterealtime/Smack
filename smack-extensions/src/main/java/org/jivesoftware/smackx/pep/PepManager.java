@@ -153,11 +153,11 @@ public final class PepManager extends Manager {
      * @param nodeId the ID of the node to publish on.
      * @param item the item to publish.
      * @return the leaf node the item was published on.
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotALeafNodeException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      */
     public LeafNode publish(String nodeId, Item item) throws NotConnectedException, InterruptedException,
                     NoResponseException, XMPPErrorException, NotALeafNodeException {

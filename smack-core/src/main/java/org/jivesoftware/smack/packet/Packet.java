@@ -56,7 +56,7 @@ public interface Packet extends TopLevelStreamElement {
 
     /**
      * Set the stanza ID.
-     * @param packetID
+     * @param packetID TODO javadoc me please
      * @deprecated use {@link #setStanzaId(String)} instead.
      */
     @Deprecated
@@ -195,8 +195,8 @@ public interface Packet extends TopLevelStreamElement {
      * The argument <code>elementName</code> may be null.
      * </p>
      *
-     * @param elementName
-     * @param namespace
+     * @param elementName TODO javadoc me please
+     * @param namespace TODO javadoc me please
      * @return true if a stanza extension exists, false otherwise.
      */
     boolean hasExtension(String elementName, String namespace);
@@ -204,7 +204,7 @@ public interface Packet extends TopLevelStreamElement {
     /**
      * Check if a stanza extension with the given namespace exists.
      *
-     * @param namespace
+     * @param namespace TODO javadoc me please
      * @return true if a stanza extension exists, false otherwise.
      */
     boolean hasExtension(String namespace);
@@ -212,8 +212,8 @@ public interface Packet extends TopLevelStreamElement {
     /**
      * Remove the stanza extension with the given elementName and namespace.
      *
-     * @param elementName
-     * @param namespace
+     * @param elementName TODO javadoc me please
+     * @param namespace TODO javadoc me please
      * @return the removed stanza extension or null.
      */
     ExtensionElement removeExtension(String elementName, String namespace);

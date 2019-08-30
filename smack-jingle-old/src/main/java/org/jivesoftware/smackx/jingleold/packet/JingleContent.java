@@ -41,7 +41,10 @@ public class JingleContent implements ExtensionElement {
     private final List<JingleTransport> transports = new ArrayList<>();
 
     /**
-     * Creates a content description..
+     * Creates a content description.
+     *
+     * @param creator the creator.
+     * @param name the name.
      */
     public JingleContent(String creator, String name) {
         super();
@@ -81,7 +84,7 @@ public class JingleContent implements ExtensionElement {
     /**
      * Sets the description for this Jingle content.
      *
-     * @param description
+     * @param description TODO javadoc me please
      *            The description
      */
     public void setDescription(JingleDescription description) {
@@ -100,7 +103,7 @@ public class JingleContent implements ExtensionElement {
     /**
      * Adds a JingleTransport type to the packet.
      *
-     * @param transport
+     * @param transport TODO javadoc me please
      *            the JingleTransport to add.
      */
     public void addJingleTransport(final JingleTransport transport) {
@@ -112,7 +115,7 @@ public class JingleContent implements ExtensionElement {
     /**
      * Adds a list of transports to add to the packet.
      *
-     * @param transports
+     * @param transports TODO javadoc me please
      *            the transports to add.
      */
     public void addTransports(final List<JingleTransport> transports) {

@@ -70,7 +70,7 @@ public class HeadersExtension implements ExtensionElement {
     /**
      * Return the SHIM headers extension of this stanza or null if there is none.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the headers extension or null.
      */
     public static HeadersExtension from(Stanza packet) {

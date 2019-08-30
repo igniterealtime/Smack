@@ -47,10 +47,10 @@ public class LeafNode extends Node {
      * {@link DiscoverItems} format.
      *
      * @return The item details in {@link DiscoverItems} format
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverItems discoverItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverItems items = new DiscoverItems();
@@ -64,10 +64,10 @@ public class LeafNode extends Node {
      *
      * @param <T> type of the items.
      * @return List of {@link Item} in the node
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getItems((List<ExtensionElement>) null, null);
@@ -83,10 +83,10 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return List of {@link Item} in the node
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId));
@@ -104,10 +104,10 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return The list of {@link Item} with payload
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(Collection<String> ids) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<Item> itemList = new ArrayList<>(ids.size());
@@ -126,10 +126,10 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return List of {@link Item}
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(int maxItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), maxItems));
@@ -147,10 +147,10 @@ public class LeafNode extends Node {
      * @return List of {@link Item}
      * @param <T> type of the items.
      *
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(int maxItems, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId, maxItems));
@@ -171,10 +171,10 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return List of {@link Item}
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(List<ExtensionElement> additionalExtensions,
                     List<ExtensionElement> returnedExtensions) throws NoResponseException,
@@ -208,10 +208,10 @@ public class LeafNode extends Node {
      * This is only acceptable for nodes with {@link ConfigureForm#isPersistItems()}=false
      * and {@link ConfigureForm#isDeliverPayloads()}=false.
      *
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      * @deprecated use {@link #publish()} instead.
      */
     @Deprecated
@@ -230,10 +230,10 @@ public class LeafNode extends Node {
      * @param item - The item being sent
      * @param <T> type of the items.
      *
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      * @deprecated use {@link #publish(Item)} instead.
      */
     @SuppressWarnings("unchecked")
@@ -251,10 +251,10 @@ public class LeafNode extends Node {
      * @param items - The collection of items being sent
      * @param <T> type of the items.
      *
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPErrorException
-     * @throws NoResponseException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      * @deprecated use {@link #publish(Collection)} instead.
      */
     @Deprecated
@@ -269,10 +269,10 @@ public class LeafNode extends Node {
      * This is only acceptable for nodes with {@link ConfigureForm#isPersistItems()}=false
      * and {@link ConfigureForm#isDeliverPayloads()}=false.
      *
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     public void publish() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -296,10 +296,10 @@ public class LeafNode extends Node {
      * @param item - The item being sent
      * @param <T> type of the items.
      *
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     @SuppressWarnings("unchecked")
@@ -318,10 +318,10 @@ public class LeafNode extends Node {
      * @param items - The collection of {@link Item} objects being sent
      * @param <T> type of the items.
      *
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -335,10 +335,10 @@ public class LeafNode extends Node {
      *
      * <p>Note: Some implementations may keep the last item
      * sent.
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void deleteAllItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()));
@@ -350,10 +350,10 @@ public class LeafNode extends Node {
      * Delete the item with the specified id from the node.
      *
      * @param itemId The id of the item
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void deleteItem(String itemId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Collection<String> items = new ArrayList<>(1);
@@ -365,10 +365,10 @@ public class LeafNode extends Node {
      * Delete the items with the specified id's from the node.
      *
      * @param itemIds The list of id's of items to delete
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void deleteItem(Collection<String> itemIds) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<Item> items = new ArrayList<>(itemIds.size());

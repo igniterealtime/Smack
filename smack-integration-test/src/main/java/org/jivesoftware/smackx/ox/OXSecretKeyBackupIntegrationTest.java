@@ -90,12 +90,12 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
      *
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#synchro-pep">
      *     XEP-0373 §5: Synchronizing the Secret Key with a Private PEP Node</a>
-     * @param environment
-     * @throws XMPPException.XMPPErrorException
-     * @throws TestNotPossibleException
-     * @throws SmackException.NotConnectedException
-     * @throws InterruptedException
-     * @throws SmackException.NoResponseException
+     * @param environment TODO javadoc me please
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws TestNotPossibleException if the test is not possible.
+     * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
     public OXSecretKeyBackupIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
             throws XMPPException.XMPPErrorException, TestNotPossibleException, SmackException.NotConnectedException,

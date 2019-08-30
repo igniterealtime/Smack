@@ -24,10 +24,10 @@ public class PacketUtil {
 
     /**
      * Get a extension element from a collection.
-     * @param collection
-     * @param element
-     * @param namespace
-     * @param <PE>
+     * @param collection TODO javadoc me please
+     * @param element TODO javadoc me please
+     * @param namespace TODO javadoc me please
+     * @param <PE> the type of the extension element.
      * @return the extension element
      * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead.
      */

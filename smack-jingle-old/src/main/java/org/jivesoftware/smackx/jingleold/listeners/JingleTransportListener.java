@@ -35,8 +35,8 @@ public interface JingleTransportListener extends JingleListener {
      *               in the local machine
      * @param remote The transport candidate that has been used for
      *               transmitting to the remote machine
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     void transportEstablished(TransportCandidate local,
                                      TransportCandidate remote) throws NotConnectedException, InterruptedException;

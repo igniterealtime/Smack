@@ -33,7 +33,7 @@ public class ValidationConsistencyException extends IllegalArgumentException {
 
     /**
      * Validation consistency exception constructor.
-     * @param message
+     * @param message TODO javadoc me please
      */
     public ValidationConsistencyException(String message) {
         super(message);

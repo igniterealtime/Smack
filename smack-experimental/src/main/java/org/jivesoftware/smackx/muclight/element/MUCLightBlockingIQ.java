@@ -44,8 +44,8 @@ public class MUCLightBlockingIQ extends IQ {
     /**
      * MUC Light blocking IQ constructor.
      *
-     * @param rooms
-     * @param users
+     * @param rooms TODO javadoc me please
+     * @param users TODO javadoc me please
      */
     public MUCLightBlockingIQ(HashMap<Jid, Boolean> rooms, HashMap<Jid, Boolean> users) {
         super(ELEMENT, NAMESPACE);

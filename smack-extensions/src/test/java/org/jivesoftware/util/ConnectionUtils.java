@@ -64,9 +64,9 @@ public class ConnectionUtils {
      * @param protocol protocol helper containing answer packets
      * @param initiatorJID the user associated to the XMPP connection
      * @return a mocked XMPP connection
-     * @throws SmackException
-     * @throws XMPPErrorException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public static XMPPConnection createMockedConnection(final Protocol protocol,
                     EntityFullJid initiatorJID) throws SmackException, XMPPErrorException, InterruptedException {

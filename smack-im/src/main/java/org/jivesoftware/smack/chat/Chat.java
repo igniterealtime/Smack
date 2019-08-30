@@ -94,8 +94,8 @@ public class Chat {
      * </pre>
      *
      * @param text the text to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendMessage(String text) throws NotConnectedException, InterruptedException {
         Message message = new Message();
@@ -108,8 +108,8 @@ public class Chat {
      * and message type of the message will automatically set to those of this chat.
      *
      * @param message the message to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
         // Force the recipient, message type, and thread ID since the user elected

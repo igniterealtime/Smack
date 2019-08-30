@@ -36,6 +36,8 @@ public abstract class JingleSessionState {
 
     /**
      * Called when entering the state.
+     *
+     * @return the jingle session state.
      */
     public static JingleSessionState getInstance() {
         // Since we can never instantiate this class there is nothing to return (ever).
@@ -54,8 +56,14 @@ public abstract class JingleSessionState {
 
     /**
      * Process an incoming Jingle Packet.
-     * When you look at the GoF State pattern this method roughly corresponds to example on p310: ProcessOctect().
-     * @throws InterruptedException
+     * When you look at the GoF State pattern this method roughly corresponds to example on p310: ProcessOctect()
+     *
+     * @param session the jingle session.
+     * @param jingle the jingle stanza.
+     * @param action the jingle action.
+     * @return the resulting IQ.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract IQ processJingle(JingleSession session, Jingle jingle, JingleActionEnum action) throws SmackException, InterruptedException;
 

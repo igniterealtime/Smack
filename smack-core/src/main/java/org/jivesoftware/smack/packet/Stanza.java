@@ -130,7 +130,7 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     /**
      * Set the stanza ID.
-     * @param packetID
+     * @param packetID TODO javadoc me please
      * @deprecated use {@link #setStanzaId(String)} instead.
      */
     @Deprecated
@@ -422,8 +422,8 @@ public abstract class Stanza implements TopLevelStreamElement {
      * The argument <code>elementName</code> may be null.
      * </p>
      *
-     * @param elementName
-     * @param namespace
+     * @param elementName TODO javadoc me please
+     * @param namespace TODO javadoc me please
      * @return true if a stanza extension exists, false otherwise.
      */
     public boolean hasExtension(String elementName, String namespace) {
@@ -439,7 +439,7 @@ public abstract class Stanza implements TopLevelStreamElement {
     /**
      * Check if a stanza extension with the given namespace exists.
      *
-     * @param namespace
+     * @param namespace TODO javadoc me please
      * @return true if a stanza extension exists, false otherwise.
      */
     public boolean hasExtension(String namespace) {
@@ -456,8 +456,8 @@ public abstract class Stanza implements TopLevelStreamElement {
     /**
      * Remove the stanza extension with the given elementName and namespace.
      *
-     * @param elementName
-     * @param namespace
+     * @param elementName TODO javadoc me please
+     * @param namespace TODO javadoc me please
      * @return the removed stanza extension or null.
      */
     public ExtensionElement removeExtension(String elementName, String namespace) {
@@ -546,6 +546,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Append an XMPPError is this stanza has one set.
      *
      * @param xml the XmlStringBuilder to append the error to.
+     * @param enclosingXmlEnvironment the enclosing XML environment.
      */
     protected void appendErrorIfExists(XmlStringBuilder xml, XmlEnvironment enclosingXmlEnvironment) {
         StanzaError error = getError();

@@ -41,12 +41,12 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
      * Check that the server is returning the correct error when trying to login using an invalid
      * (i.e. non-existent) user.
      *
-     * @throws InterruptedException
-     * @throws XMPPException
-     * @throws IOException
-     * @throws SmackException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws IOException if an I/O error occured.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
+     * @throws KeyManagementException if there was a key mangement error.
      */
     @SmackIntegrationTest
     public void testInvalidLogin() throws SmackException, IOException, XMPPException,

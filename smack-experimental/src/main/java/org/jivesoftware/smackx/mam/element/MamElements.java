@@ -72,9 +72,9 @@ public class MamElements {
         /**
          * MAM result extension constructor.
          *
-         * @param queryId
-         * @param id
-         * @param forwarded
+         * @param queryId TODO javadoc me please
+         * @param id TODO javadoc me please
+         * @param forwarded TODO javadoc me please
          */
         public MamResultExtension(String queryId, String id, Forwarded forwarded) {
             if (StringUtils.isEmpty(id)) {
@@ -160,7 +160,7 @@ public class MamElements {
         /**
          * Always JID list element constructor.
          *
-         * @param alwaysJids
+         * @param alwaysJids TODO javadoc me please
          */
         AlwaysJidListElement(List<Jid> alwaysJids) {
             this.alwaysJids = alwaysJids;
@@ -194,7 +194,7 @@ public class MamElements {
         /**
          * Never JID list element constructor.
          *
-         * @param neverJids
+         * @param neverJids TODO javadoc me please
          */
         public NeverJidListElement(List<Jid> neverJids) {
             this.neverJids = neverJids;

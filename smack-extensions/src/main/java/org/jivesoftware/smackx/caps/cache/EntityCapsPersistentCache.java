@@ -22,14 +22,14 @@ public interface EntityCapsPersistentCache {
     /**
      * Add an DiscoverInfo to the persistent Cache.
      *
-     * @param nodeVer
-     * @param info
+     * @param nodeVer TODO javadoc me please
+     * @param info TODO javadoc me please
      */
     void addDiscoverInfoByNodePersistent(String nodeVer, DiscoverInfo info);
 
     /**
      * Lookup DiscoverInfo by a Node string.
-     * @param nodeVer
+     * @param nodeVer TODO javadoc me please
      *
      * @return DiscoverInfo.
      */

@@ -72,7 +72,7 @@ public class Range implements NamedElement {
     /**
      * Return the index of the offset.
      * This marks the begin of the specified range.
-     * @return offset
+     * @return offset TODO javadoc me please
      */
     public int getOffset() {
         return offset;
@@ -80,7 +80,7 @@ public class Range implements NamedElement {
 
     /**
      * Return the length of the range.
-     * @return length
+     * @return length TODO javadoc me please
      */
     public int getLength() {
         return length;

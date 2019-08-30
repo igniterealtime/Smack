@@ -58,7 +58,7 @@ public class SpeexMediaManager extends JingleMediaManager {
      * @param payloadType payloadType
      * @param remote      remote Candidate
      * @param local       local Candidate
-     * @return JingleMediaSession
+     * @return JingleMediaSession TODO javadoc me please
      */
     @Override
     public JingleMediaSession createMediaSession(PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local, final JingleSession jingleSession) {

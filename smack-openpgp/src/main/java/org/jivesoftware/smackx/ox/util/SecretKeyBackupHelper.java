@@ -118,7 +118,7 @@ public class SecretKeyBackupHelper {
      *
      * @param backup encrypted {@link SecretkeyElement} containing the backup
      * @param backupCode passphrase for decrypting the {@link SecretkeyElement}.
-     * @return the
+     * @return the TODO javadoc me please
      * @throws InvalidBackupCodeException in case the provided backup code is invalid.
      * @throws IOException IO is dangerous.
      * @throws PGPException PGP is brittle.

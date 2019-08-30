@@ -203,8 +203,8 @@ public class XmppHostnameVerifier implements HostnameVerifier {
     /**
      * Returns true if the name matches against the template that may contain the wildcard char '*'.
      *
-     * @param name
-     * @param template
+     * @param name TODO javadoc me please
+     * @param template TODO javadoc me please
      * @return true if <code>name</code> matches <code>template</code>.
      */
     private static boolean matchWildCards(String name, String template) {
@@ -243,8 +243,8 @@ public class XmppHostnameVerifier implements HostnameVerifier {
      * must exactly match the IP in the URI."
      * <p>
      *
-     * @param expectedIP
-     * @param cert
+     * @param expectedIP TODO javadoc me please
+     * @param cert TODO javadoc me please
      * @throws CertificateException
      */
     private static void matchIp(String expectedIP, X509Certificate cert)

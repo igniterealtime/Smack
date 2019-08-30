@@ -72,8 +72,8 @@ public class InBandBytestreamRequest implements BytestreamRequest {
      * send/receive data.
      *
      * @return the session to send/receive data
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public InBandBytestreamSession accept() throws NotConnectedException, InterruptedException {
@@ -94,8 +94,8 @@ public class InBandBytestreamRequest implements BytestreamRequest {
     /**
      * Rejects the In-Band Bytestream request by sending a reject error to the
      * initiator.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public void reject() throws NotConnectedException, InterruptedException {

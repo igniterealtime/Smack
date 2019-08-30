@@ -214,10 +214,10 @@ public abstract class AdHocCommand {
      * command. It is invoked on every command. If there is a problem executing
      * the command it throws an XMPPException.
      *
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there is an error executing the command.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void execute() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
@@ -229,10 +229,10 @@ public abstract class AdHocCommand {
      * XMPPException.
      *
      * @param response the form answer of the previous stage.
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there is a problem executing the command.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void next(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
@@ -245,10 +245,10 @@ public abstract class AdHocCommand {
      *
      * @param response the form answer of the previous stage.
      *
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there is a problem executing the command.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void complete(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
@@ -258,10 +258,10 @@ public abstract class AdHocCommand {
      * the previous one. If there is a problem executing the command it throws
      * an XMPPException.
      *
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there is a problem executing the command.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void prev() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
@@ -270,10 +270,10 @@ public abstract class AdHocCommand {
      * the execution. If there is a problem executing the command it throws an
      * XMPPException.
      *
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there is a problem executing the command.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public abstract void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
@@ -369,7 +369,7 @@ public abstract class AdHocCommand {
      * The {@link Action#cancel cancel} action is always allowed. To define the
      * available actions use the <code>addActionAvailable</code> method.
      *
-     * @param action
+     * @param action TODO javadoc me please
      *            The action to check if it is available.
      * @return True if the action is available for the current stage.
      */

@@ -54,7 +54,7 @@ public class SpanElement implements MarkupElement.MarkupChildElement {
     /**
      * Return all styles of this span.
      *
-     * @return styles
+     * @return styles TODO javadoc me please
      */
     public Set<SpanStyle> getStyles() {
         return styles;

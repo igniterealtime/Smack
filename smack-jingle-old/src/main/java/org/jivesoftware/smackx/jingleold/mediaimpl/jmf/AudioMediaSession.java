@@ -51,6 +51,7 @@ public class AudioMediaSession extends JingleMediaSession {
      * @param remote      the remote information. The candidate that the jmf will be sent to.
      * @param local       the local information. The candidate that will receive the jmf
      * @param locator     media locator
+     * @param jingleSession the jingle session.
      */
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, String locator, JingleSession jingleSession) {

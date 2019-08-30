@@ -241,7 +241,7 @@ public final class SmackConfiguration {
     /**
      * Set the default parsing exception callback for all newly created connections.
      *
-     * @param callback
+     * @param callback TODO javadoc me please
      * @see ParsingExceptionCallback
      */
     public static void setDefaultParsingExceptionCallback(ParsingExceptionCallback callback) {
@@ -265,13 +265,20 @@ public final class SmackConfiguration {
     /**
      * Get compression handlers.
      *
+     * @return a list of compression handlers.
      * @deprecated use {@link #getCompressionHandlers()} instead.
      */
     @Deprecated
+    // TODO: Remove in Smack 4.4.
     public static List<XMPPInputOutputStream> getCompresionHandlers() {
         return getCompressionHandlers();
     }
 
+    /**
+     * Get compression handlers.
+     *
+     * @return a list of compression handlers.
+     */
     public static List<XMPPInputOutputStream> getCompressionHandlers() {
         List<XMPPInputOutputStream> res = new ArrayList<>(compressionHandlers.size());
         for (XMPPInputOutputStream ios : compressionHandlers) {
@@ -310,7 +317,7 @@ public final class SmackConfiguration {
      * package is disabled (but can be manually enabled).
      * </p>
      *
-     * @param className
+     * @param className TODO javadoc me please
      */
     public static void addDisabledSmackClass(String className) {
         disabledSmackClasses.add(className);

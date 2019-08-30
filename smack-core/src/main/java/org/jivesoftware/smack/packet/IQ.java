@@ -252,14 +252,6 @@ public abstract class IQ extends Stanza {
      */
     protected abstract IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml);
 
-    /**
-     * @deprecated use {@link #initializeAsResultFor(IQ)} instead.
-     */
-    @Deprecated
-    protected final void initialzeAsResultFor(IQ request) {
-        initializeAsResultFor(request);
-    }
-
     protected final void initializeAsResultFor(IQ request) {
         assert this != request;
 

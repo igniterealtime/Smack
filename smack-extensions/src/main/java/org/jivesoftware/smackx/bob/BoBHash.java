@@ -35,8 +35,8 @@ public class BoBHash {
     /**
      * BoB hash constructor.
      *
-     * @param hash
-     * @param hashType
+     * @param hash TODO javadoc me please
+     * @param hashType TODO javadoc me please
      */
     public BoBHash(String hash, String hashType) {
         this.hash = StringUtils.requireNotNullNorEmpty(hash, "hash must not be null nor empty");
@@ -97,7 +97,7 @@ public class BoBHash {
     /**
      * Get BoB hash from src attribute string.
      *
-     * @param src
+     * @param src TODO javadoc me please
      * @return the BoB hash
      */
     public static BoBHash fromSrc(String src) {
@@ -109,7 +109,7 @@ public class BoBHash {
     /**
      * Get BoB hash from cid attribute string.
      *
-     * @param cid
+     * @param cid TODO javadoc me please
      * @return the BoB hash
      */
     public static BoBHash fromCid(String cid) {

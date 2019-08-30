@@ -230,6 +230,8 @@ public class Socks5Proxy {
 
     /**
      * Starts the local SOCKS5 proxy server. If it is already running, this method does nothing.
+     *
+     * @return the server socket.
      */
     public synchronized ServerSocket start() {
         if (isRunning()) {

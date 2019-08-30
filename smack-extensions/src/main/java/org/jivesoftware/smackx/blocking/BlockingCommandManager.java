@@ -72,7 +72,7 @@ public final class BlockingCommandManager extends Manager {
     /**
      * Get the singleton instance of BlockingCommandManager.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      * @return the instance of BlockingCommandManager
      */
     public static synchronized BlockingCommandManager getInstanceFor(XMPPConnection connection) {
@@ -161,10 +161,10 @@ public final class BlockingCommandManager extends Manager {
      * Returns true if Blocking Command is supported by the server.
      *
      * @return true if Blocking Command is supported by the server.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isSupportedByServer()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -175,10 +175,10 @@ public final class BlockingCommandManager extends Manager {
      * Returns the block list.
      *
      * @return the blocking list
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<Jid> getBlockList()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -195,11 +195,11 @@ public final class BlockingCommandManager extends Manager {
     /**
      * Block contacts.
      *
-     * @param jids
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @param jids TODO javadoc me please
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void blockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -210,11 +210,11 @@ public final class BlockingCommandManager extends Manager {
     /**
      * Unblock contacts.
      *
-     * @param jids
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @param jids TODO javadoc me please
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void unblockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -225,10 +225,10 @@ public final class BlockingCommandManager extends Manager {
     /**
      * Unblock all.
      *
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void unblockAll()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

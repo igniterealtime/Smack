@@ -182,10 +182,10 @@ public class Workgroup {
      * available only when agents are available for this workgroup.
      *
      * @return true if the workgroup is available for receiving new requests.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isAvailable() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Presence directedPresence = new Presence(Presence.Type.available);
@@ -260,8 +260,8 @@ public class Workgroup {
      * @throws XMPPException if an error occurred joining the queue. An error may indicate
      *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void joinQueue() throws XMPPException, SmackException, InterruptedException {
         joinQueue(null);
@@ -299,8 +299,8 @@ public class Workgroup {
      * @throws XMPPException if an error occurred joining the queue. An error may indicate
      *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void joinQueue(Form answerForm) throws XMPPException, SmackException, InterruptedException {
         joinQueue(answerForm, null);
@@ -338,9 +338,9 @@ public class Workgroup {
      * @throws XMPPErrorException if an error occurred joining the queue. An error may indicate
      *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void joinQueue(Form answerForm, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // If already in the queue ignore the join request.
@@ -387,8 +387,8 @@ public class Workgroup {
      * @throws XMPPException if an error occurred joining the queue. An error may indicate
      *                       that a connection failure occurred or that the server explicitly rejected the
      *                       request to join the queue.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void joinQueue(Map<String, Object> metadata, Jid userID) throws XMPPException, SmackException, InterruptedException {
         // If already in the queue ignore the join request.
@@ -421,9 +421,9 @@ public class Workgroup {
      *
      * @throws XMPPErrorException if an error occurred trying to send the depart queue
      *                       request to the server.
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void departQueue() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // If not in the queue ignore the depart request.
@@ -599,8 +599,8 @@ public class Workgroup {
      * @param key the key to find.
      * @return the ChatSetting if found, otherwise false.
      * @throws XMPPException if an error occurs while getting information from the server.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public ChatSetting getChatSetting(String key) throws XMPPException, SmackException, InterruptedException {
         ChatSettings chatSettings = getChatSettings(key, -1);
@@ -613,8 +613,8 @@ public class Workgroup {
      * @param type the type of ChatSettings to return.
      * @return the ChatSettings of given type, otherwise null.
      * @throws XMPPException if an error occurs while getting information from the server.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public ChatSettings getChatSettings(int type) throws XMPPException, SmackException, InterruptedException {
         return getChatSettings(null, type);
@@ -625,8 +625,8 @@ public class Workgroup {
      *
      * @return all ChatSettings of a given workgroup.
      * @throws XMPPException if an error occurs while getting information from the server.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public ChatSettings getChatSettings() throws XMPPException, SmackException, InterruptedException {
         return getChatSettings(null, -1);
@@ -637,10 +637,10 @@ public class Workgroup {
      * Asks the workgroup for it's Chat Settings.
      *
      * @return key specify a key to retrieve only that settings. Otherwise for all settings, key should be null.
-     * @throws NoResponseException
+     * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if an error occurs while getting information from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private ChatSettings getChatSettings(String key, int type) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ChatSettings request = new ChatSettings();
@@ -663,8 +663,8 @@ public class Workgroup {
      * to see if the email service has been configured and is available.
      *
      * @return true if the email service is available, otherwise return false.
-     * @throws SmackException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isEmailAvailable() throws SmackException, InterruptedException {
         ServiceDiscoveryManager discoManager = ServiceDiscoveryManager.getInstanceFor(connection);
@@ -683,10 +683,10 @@ public class Workgroup {
      * Asks the workgroup for it's Offline Settings.
      *
      * @return offlineSettings the offline settings for this workgroup.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public OfflineSettings getOfflineSettings() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         OfflineSettings request = new OfflineSettings();
@@ -700,10 +700,10 @@ public class Workgroup {
      * Asks the workgroup for it's Sound Settings.
      *
      * @return soundSettings the sound settings for the specified workgroup.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public SoundSettings getSoundSettings() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         SoundSettings request = new SoundSettings();
@@ -717,10 +717,10 @@ public class Workgroup {
      * Asks the workgroup for it's Properties.
      *
      * @return the WorkgroupProperties for the specified workgroup.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public WorkgroupProperties getWorkgroupProperties() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         WorkgroupProperties request = new WorkgroupProperties();
@@ -735,10 +735,10 @@ public class Workgroup {
      *
      * @param jid the jid of the user who's information you would like the workgroup to retreive.
      * @return the WorkgroupProperties for the specified workgroup.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public WorkgroupProperties getWorkgroupProperties(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         WorkgroupProperties request = new WorkgroupProperties();
@@ -757,10 +757,10 @@ public class Workgroup {
      * for future submissions.
      *
      * @return the Form to use for searching transcripts.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Form getWorkgroupForm() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         WorkgroupForm workgroupForm = new WorkgroupForm();

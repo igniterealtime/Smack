@@ -491,6 +491,7 @@ public final class FormField implements FullyQualifiedElement {
          * Sets an indicative of the format for the data to answer.
          *
          * @param type an indicative of the format for the data to answer.
+         * @return a reference to this builder.
          * @see Type
          */
         public Builder setType(Type type) {
@@ -517,6 +518,7 @@ public final class FormField implements FullyQualifiedElement {
          * </p>
          *
          * @param description provides extra clarification about the question.
+         * @return a reference to this builder.
          */
         public Builder setDescription(String description) {
             Description descriptionElement = new Description(description);
@@ -529,6 +531,7 @@ public final class FormField implements FullyQualifiedElement {
          * fill out the form.
          *
          * @param label the label of the question.
+         * @return a reference to this builder.
          */
         public Builder setLabel(String label) {
             this.label = label;
@@ -539,6 +542,7 @@ public final class FormField implements FullyQualifiedElement {
          * Sets if the question must be answered in order to complete the questionnaire.
          *
          * @param required if the question must be answered in order to complete the questionnaire.
+         * @return a reference to this builder.
          */
         public Builder setRequired(boolean required) {
             setOnlyElement(Required.INSTANCE, Required.class);
@@ -550,6 +554,7 @@ public final class FormField implements FullyQualifiedElement {
          * Otherwise, adds an answered value to the question.
          *
          * @param value a default value or an answered value of the question.
+         * @return a reference to this builder.
          */
         public Builder addValue(CharSequence value) {
             return addFormFieldChildElement(new Value(value));
@@ -560,6 +565,7 @@ public final class FormField implements FullyQualifiedElement {
          * instance was formated.
          *
          * @param date the date instance to add as XEP-0082 formated string.
+         * @return a reference to this builder.
          */
         public Builder addValue(Date date) {
             String dateString = XmppDateTime.formatXEP0082Date(date);
@@ -571,6 +577,7 @@ public final class FormField implements FullyQualifiedElement {
          * Otherwise, adds an answered values to the question.
          *
          * @param values default values or an answered values of the question.
+         * @return a reference to this builder.
          */
         public Builder addValues(Collection<? extends CharSequence> values) {
             for (CharSequence value : values) {
@@ -588,6 +595,7 @@ public final class FormField implements FullyQualifiedElement {
          * the question.
          *
          * @param option a new available option for the question.
+         * @return a reference to this builder.
          */
         public Builder addOption(Option option) {
             return addFormFieldChildElement(option);

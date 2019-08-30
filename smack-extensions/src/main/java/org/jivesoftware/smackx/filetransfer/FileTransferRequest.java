@@ -37,10 +37,10 @@ public class FileTransferRequest {
      * A receive request is constructed from the Stream Initiation request
      * received from the initiator.
      *
-     * @param manager
+     * @param manager TODO javadoc me please
      *            The manager handling this file transfer
      *
-     * @param si
+     * @param si TODO javadoc me please
      *            The Stream initiation received from the initiator.
      */
     public FileTransferRequest(FileTransferManager manager, StreamInitiation si) {
@@ -131,8 +131,8 @@ public class FileTransferRequest {
 
     /**
      * Rejects the file transfer request.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void reject() throws NotConnectedException, InterruptedException {
         manager.rejectIncomingFileTransfer(this);

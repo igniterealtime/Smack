@@ -208,8 +208,8 @@ public final class ChatStateManager extends Manager {
      *
      * @param newState the new state of the chat
      * @param chat the chat.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void setCurrentState(ChatState newState, Chat chat) throws NotConnectedException, InterruptedException {
         if (chat == null || newState == null) {

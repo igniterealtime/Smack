@@ -45,7 +45,9 @@ public abstract class JingleMediaManager {
     }
 
     /**
-     * Return   The transport manager that goes with this media manager.
+     * Returns the transport manager that goes with this media manager.
+     *
+     * @return the transport manager.
      */
     public JingleTransportManager getTransportManager() {
         return transportManager;
@@ -70,9 +72,10 @@ public abstract class JingleMediaManager {
     /**
      * Create a Media Session Implementation.
      *
-     * @param payloadType
-     * @param remote
-     * @param local
+     * @param payloadType TODO javadoc me please
+     * @param remote TODO javadoc me please
+     * @param local TODO javadoc me please
+     * @param jingleSession the jingle session.
      * @return the media session
      */
     public abstract JingleMediaSession createMediaSession(PayloadType payloadType, TransportCandidate remote,

@@ -87,10 +87,10 @@ public final class BookmarkManager {
      * Returns all currently bookmarked conferences.
      *
      * @return returns all currently bookmarked conferences
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see BookmarkedConference
      */
     public List<BookmarkedConference> getBookmarkedConferences() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -109,8 +109,8 @@ public final class BookmarkManager {
      * @throws XMPPErrorException thrown when there is an issue retrieving the current bookmarks from
      * the server.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void addBookmarkedConference(String name, EntityBareJid jid, boolean isAutoJoin,
             Resourcepart nickname, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -141,8 +141,8 @@ public final class BookmarkManager {
      * @throws XMPPErrorException thrown when there is a problem with the connection attempting to
      * retrieve the bookmarks or persist the bookmarks.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws IllegalArgumentException thrown when the conference being removed is a shared
      * conference
      */
@@ -168,8 +168,8 @@ public final class BookmarkManager {
      * @return returns an unmodifiable collection of all bookmarked urls.
      * @throws XMPPErrorException thrown when there is a problem retriving bookmarks from the server.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<BookmarkedURL> getBookmarkedURLs() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         retrieveBookmarks();
@@ -185,8 +185,8 @@ public final class BookmarkManager {
      * @throws XMPPErrorException thrown when there is an error retriving or saving bookmarks from or to
      * the server
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void addBookmarkedURL(String URL, String name, boolean isRSS) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         retrieveBookmarks();
@@ -213,8 +213,8 @@ public final class BookmarkManager {
      * @throws XMPPErrorException thrown if there is an error retriving or saving bookmarks from or to
      * the server.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void removeBookmarkedURL(String bookmarkURL) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         retrieveBookmarks();
@@ -236,10 +236,10 @@ public final class BookmarkManager {
      * Check if the service supports bookmarks using private data.
      *
      * @return true if the service supports private data, false otherwise.
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws XMPPErrorException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @see PrivateDataManager#isSupported()
      * @since 4.2
      */

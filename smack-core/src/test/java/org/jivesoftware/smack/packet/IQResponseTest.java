@@ -38,7 +38,7 @@ public class IQResponseTest {
 
     /**
      * Test creating a simple and empty IQ response.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void testGeneratingSimpleResponse() throws XmppStringprepException {
@@ -58,7 +58,7 @@ public class IQResponseTest {
 
     /**
      * Test creating a error response based on an IQ request.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void testGeneratingValidErrorResponse() throws XmppStringprepException {
@@ -83,7 +83,7 @@ public class IQResponseTest {
     /**
      * According to <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq"
      * >RFC3920: IQ Semantics</a> we shouldn't respond to an IQ of type result.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void testGeneratingResponseBasedOnResult() throws XmppStringprepException {
@@ -106,7 +106,7 @@ public class IQResponseTest {
     /**
      * According to <a href="http://xmpp.org/rfcs/rfc3920.html#stanzas-semantics-iq"
      * >RFC3920: IQ Semantics</a> we shouldn't respond to an IQ of type error.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void testGeneratingErrorBasedOnError() throws XmppStringprepException {

@@ -34,7 +34,7 @@ public class GroupChatInvitationTest extends SmackTestCase {
 
     /**
      * Constructor for GroupChatInvitationTest.
-     * @param arg0
+     * @param arg0 TODO javadoc me please
      */
     public GroupChatInvitationTest(String arg0) {
         super(arg0);

@@ -50,10 +50,10 @@ public class TranscriptSearchManager {
      *
      * @param serviceJID the address of the workgroup service.
      * @return the Form to use for searching transcripts.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Form getSearchForm(DomainBareJid serviceJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         TranscriptSearch search = new TranscriptSearch();
@@ -73,10 +73,10 @@ public class TranscriptSearchManager {
      * @param serviceJID    the address of the workgroup service.
      * @param completedForm the filled out search form.
      * @return the result of the transcript search.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public ReportedData submitSearch(DomainBareJid serviceJID, Form completedForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         TranscriptSearch search = new TranscriptSearch();

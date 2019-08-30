@@ -45,7 +45,7 @@ public class JsonPacketExtension extends AbstractJsonPacketExtension {
     /**
      * Retrieve the JSON stanza extension from the packet.
      *
-     * @param packet
+     * @param packet TODO javadoc me please
      * @return the JSON stanza extension or null.
      */
     public static JsonPacketExtension from(Stanza packet) {

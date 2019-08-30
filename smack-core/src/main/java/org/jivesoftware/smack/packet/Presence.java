@@ -124,7 +124,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * instance.
      * </p>
      *
-     * @param other
+     * @param other TODO javadoc me please
      */
     public Presence(Presence other) {
         super(other);

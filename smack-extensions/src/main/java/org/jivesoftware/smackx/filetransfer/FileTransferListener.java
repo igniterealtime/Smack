@@ -26,7 +26,7 @@ public interface FileTransferListener {
     /**
      * A request to send a file has been received from another user.
      *
-     * @param request
+     * @param request TODO javadoc me please
      *            The request from the other user.
      */
     void fileTransferRequest(FileTransferRequest request);

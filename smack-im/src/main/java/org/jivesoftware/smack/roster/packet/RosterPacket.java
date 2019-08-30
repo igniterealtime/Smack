@@ -137,8 +137,8 @@ public final class RosterPacket extends IQ {
         /**
          * Creates a new roster item.
          *
-         * @param jid
-         * @param name
+         * @param jid TODO javadoc me please
+         * @param name TODO javadoc me please
          */
         public Item(BareJid jid, String name) {
             this(jid, name, false);
@@ -149,7 +149,7 @@ public final class RosterPacket extends IQ {
          *
          * @param jid the jid.
          * @param name the user's name.
-         * @param subscriptionPending
+         * @param subscriptionPending TODO javadoc me please
          */
         public Item(BareJid jid, String name, boolean subscriptionPending) {
             this.jid = Objects.requireNonNull(jid);

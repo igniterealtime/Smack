@@ -209,8 +209,8 @@ public final class MessageEventManager extends Manager {
      *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendDeliveredNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
@@ -229,8 +229,8 @@ public final class MessageEventManager extends Manager {
      *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendDisplayedNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
@@ -249,8 +249,8 @@ public final class MessageEventManager extends Manager {
      *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendComposingNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send
@@ -269,8 +269,8 @@ public final class MessageEventManager extends Manager {
      *
      * @param to the recipient of the notification.
      * @param packetID the id of the message to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendCancelledNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
         // Create the message to send

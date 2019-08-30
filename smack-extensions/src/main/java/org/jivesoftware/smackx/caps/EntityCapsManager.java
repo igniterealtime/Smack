@@ -166,7 +166,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * Set the default entity node that will be used for new EntityCapsManagers.
      *
-     * @param entityNode
+     * @param entityNode TODO javadoc me please
      */
     public static void setDefaultEntityNode(String entityNode) {
         DEFAULT_ENTITY_NODE = entityNode;
@@ -175,10 +175,10 @@ public final class EntityCapsManager extends Manager {
     /**
      * Add DiscoverInfo to the database.
      *
-     * @param nodeVer
+     * @param nodeVer TODO javadoc me please
      *            The node and verification String (e.g.
      *            "http://psi-im.org#q07IKJEyjvHSyhy//CH0CxmKi8w=").
-     * @param info
+     * @param info TODO javadoc me please
      *            DiscoverInfo for the specified node.
      */
     static void addDiscoverInfoByNode(String nodeVer, DiscoverInfo info) {
@@ -192,7 +192,7 @@ public final class EntityCapsManager extends Manager {
      * Get the Node version (node#ver) of a JID. Returns a String or null if
      * EntiyCapsManager does not have any information.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      *            the user (Full JID)
      * @return the node version (node#ver) or null
      */
@@ -214,7 +214,7 @@ public final class EntityCapsManager extends Manager {
      * the user has a node#ver associated with it and the node#ver has a
      * discover info associated with it.
      *
-     * @param user
+     * @param user TODO javadoc me please
      *            user name (Full JID)
      * @return the discovered info
      */
@@ -229,7 +229,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * Retrieve DiscoverInfo for a specific node.
      *
-     * @param nodeVer
+     * @param nodeVer TODO javadoc me please
      *            The node name (e.g.
      *            "http://psi-im.org#q07IKJEyjvHSyhy//CH0CxmKi8w=").
      * @return The corresponding DiscoverInfo or null if none is known.
@@ -256,7 +256,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * Set the persistent cache implementation.
      *
-     * @param cache
+     * @param cache TODO javadoc me please
      */
     public static void setPersistentCache(EntityCapsPersistentCache cache) {
         persistentCache = cache;
@@ -265,8 +265,8 @@ public final class EntityCapsManager extends Manager {
     /**
      * Sets the maximum cache sizes.
      *
-     * @param maxJidToNodeVerSize
-     * @param maxCapsCacheSize
+     * @param maxJidToNodeVerSize TODO javadoc me please
+     * @param maxCapsCacheSize TODO javadoc me please
      */
     public static void setMaxsCacheSizes(int maxJidToNodeVerSize, int maxCapsCacheSize) {
         JID_TO_NODEVER_CACHE.setMaxCacheSize(maxJidToNodeVerSize);
@@ -447,7 +447,7 @@ public final class EntityCapsManager extends Manager {
     /**
      * Remove a record telling what entity caps node a user has.
      *
-     * @param user
+     * @param user TODO javadoc me please
      *            the user (Full JID)
      */
     public static void removeUserCapsNode(Jid user) {
@@ -484,12 +484,12 @@ public final class EntityCapsManager extends Manager {
     /**
      * Returns true if Entity Caps are supported by a given JID.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      * @return true if the entity supports Entity Capabilities.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean areEntityCapsSupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sdm.supportsFeature(jid, NAMESPACE);
@@ -499,10 +499,10 @@ public final class EntityCapsManager extends Manager {
      * Returns true if Entity Caps are supported by the local service/server.
      *
      * @return true if the user's server supports Entity Capabilities.
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean areEntityCapsSupportedByServer() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
         return areEntityCapsSupported(connection().getXMPPServiceDomain());
@@ -577,9 +577,9 @@ public final class EntityCapsManager extends Manager {
      * @see <a href="http://xmpp.org/extensions/xep-0115.html#ver-proc">XEP-0115
      *      5.4 Processing Method</a>
      *
-     * @param ver
-     * @param hash
-     * @param info
+     * @param ver TODO javadoc me please
+     * @param hash TODO javadoc me please
+     * @param info TODO javadoc me please
      * @return true if it's valid and should be cache, false if not
      */
     public static boolean verifyDiscoverInfoVersion(String ver, String hash, DiscoverInfo info) {
@@ -605,7 +605,7 @@ public final class EntityCapsManager extends Manager {
 
     /**
      *
-     * @param info
+     * @param info TODO javadoc me please
      * @return true if the stanza extensions is ill-formed
      */
     protected static boolean verifyPacketExtensions(DiscoverInfo info) {
@@ -637,8 +637,8 @@ public final class EntityCapsManager extends Manager {
      * @see <a href="http://xmpp.org/extensions/xep-0115.html#ver">XEP-115
      *      Verification String</a>
      *
-     * @param discoverInfo
-     * @param hash
+     * @param discoverInfo TODO javadoc me please
+     * @param hash TODO javadoc me please
      *            the used hash function, if null, default hash will be used
      * @return The generated verification String or null if the hash is not
      *         supported

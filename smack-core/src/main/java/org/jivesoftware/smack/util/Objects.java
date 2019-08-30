@@ -54,7 +54,7 @@ public class Objects {
      * @param collection collection
      * @param message error message
      * @param <T> Collection type
-     * @return collection
+     * @return collection TODO javadoc me please
      */
     public static <T extends Collection<?>> T requireNonNullNorEmpty(T collection, String message) {
         if (requireNonNull(collection).isEmpty()) {

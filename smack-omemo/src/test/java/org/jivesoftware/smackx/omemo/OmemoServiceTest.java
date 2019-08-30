@@ -47,7 +47,7 @@ public class OmemoServiceTest extends SmackTestSuite {
 
     /**
      * Test correct functionality of isStale method.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     @Test
     public void isStaleDeviceTest() throws XmppStringprepException {

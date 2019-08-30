@@ -392,7 +392,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     /**
      * Set whether or not the bytestream manager will annouce the local stream host(s), i.e. the local SOCKS5 proxy.
      *
-     * @param announceLocalStreamHost
+     * @param announceLocalStreamHost TODO javadoc me please
      * @see #isAnnouncingLocalStreamHostEnabled()
      * @since 4.4.0
      */
@@ -435,11 +435,11 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @return the Socket to send/receive data to/from the user
      * @throws IOException if the bytestream could not be established
      * @throws InterruptedException if the current thread was interrupted while waiting
-     * @throws XMPPException
-     * @throws NotConnectedException
-     * @throws NoResponseException
-     * @throws SmackMessageException
-     * @throws FeatureNotSupportedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws SmackMessageException if there was an error.
+     * @throws FeatureNotSupportedException if a requested feature is not supported by the remote entity.
      */
     @Override
     public Socks5BytestreamSession establishSession(Jid targetJID, String sessionID)
@@ -540,10 +540,10 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @param targetJID the target JID
      * @return <code>true</code> if the given target JID supports feature SOCKS5 Bytestream
      *         otherwise <code>false</code>
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     private boolean supportsSocks5(Jid targetJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(targetJID, Bytestream.NAMESPACE);
@@ -556,8 +556,8 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @return list of JIDs of SOCKS5 proxies
      * @throws XMPPErrorException if there was an error querying the XMPP server for SOCKS5 proxies
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<Jid> determineProxies() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
@@ -714,8 +714,8 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * </p>
      *
      * @param packet Stanza that should be answered with a not-acceptable error
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
         StanzaError.Builder xmppError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable);

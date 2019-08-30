@@ -101,7 +101,7 @@ public final class MucEnterConfiguration {
          * 'available', otherwise an {@link IllegalArgumentException} will be thrown.
          * <p>
          *
-         * @param presence
+         * @param presence TODO javadoc me please
          * @return a reference to this builder.
          */
         public Builder withPresence(Presence presence) {

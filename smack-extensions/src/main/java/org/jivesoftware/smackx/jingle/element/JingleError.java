@@ -62,7 +62,10 @@ public final class JingleError implements ExtensionElement {
     }
 
     /**
-     * Returns a Action instance associated with the String value.
+     * Returns a error instance associated with the String value.
+     *
+     * @param value the input String.
+     * @return the jingle error instance associated with the input String.
      */
     public static JingleError fromString(String value) {
         value = value.toLowerCase(Locale.US);

@@ -492,11 +492,11 @@ public final class MamManager extends Manager {
      * Get the form fields supported by the server.
      *
      * @return the list of form fields.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
      */
     public List<FormField> retrieveFormFields() throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException, NotLoggedInException {
@@ -508,11 +508,11 @@ public final class MamManager extends Manager {
      *
      * @param node The PubSub node name, can be null
      * @return the list of form fields.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
      */
     public List<FormField> retrieveFormFields(String node)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
@@ -700,10 +700,10 @@ public final class MamManager extends Manager {
      *
      * @return true if MAM is supported, <code>false</code>otherwise.
      *
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2.1
      * @see <a href="https://xmpp.org/extensions/xep-0313.html#support">XEP-0313 § 7. Determining support</a>
      */
@@ -725,11 +725,11 @@ public final class MamManager extends Manager {
      * empty.
      *
      * @return the ID of the lastest message or {@code null}.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws NotLoggedInException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.3.0
      */
     public String getMessageUidOfLatestMessage() throws NoResponseException, XMPPErrorException, NotConnectedException, NotLoggedInException, InterruptedException {
@@ -750,11 +750,11 @@ public final class MamManager extends Manager {
      * Get the preferences stored in the server.
      *
      * @return the MAM preferences result
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
      */
     public MamPrefsResult retrieveArchivingPreferences() throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
@@ -765,20 +765,20 @@ public final class MamManager extends Manager {
     /**
      * Update the preferences in the server.
      *
-     * @param alwaysJids
+     * @param alwaysJids TODO javadoc me please
      *            is the list of JIDs that should always have messages to/from
      *            archived in the user's store
-     * @param neverJids
+     * @param neverJids TODO javadoc me please
      *            is the list of JIDs that should never have messages to/from
      *            archived in the user's store
-     * @param defaultBehavior
+     * @param defaultBehavior TODO javadoc me please
      *            can be "roster", "always", "never" (see XEP-0313)
      * @return the MAM preferences result
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
      * @deprecated use {@link #updateArchivingPreferences(MamPrefs)} instead.
      */
     @Deprecated
@@ -793,13 +793,13 @@ public final class MamManager extends Manager {
     /**
      * Update the preferences in the server.
      *
-     * @param mamPrefs
+     * @param mamPrefs TODO javadoc me please
      * @return the currently active preferences after the operation.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
-     * @throws NotLoggedInException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotLoggedInException if the XMPP connection is not authenticated.
      * @since 4.3.0
      */
     public MamPrefsResult updateArchivingPreferences(MamPrefs mamPrefs) throws NoResponseException, XMPPErrorException,

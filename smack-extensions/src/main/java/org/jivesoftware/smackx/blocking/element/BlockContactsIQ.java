@@ -49,7 +49,7 @@ public class BlockContactsIQ extends IQ {
     /**
      * Block list IQ constructor.
      *
-     * @param jids
+     * @param jids TODO javadoc me please
      */
     public BlockContactsIQ(List<Jid> jids) {
         super(ELEMENT, NAMESPACE);

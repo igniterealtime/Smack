@@ -83,10 +83,10 @@ public abstract class Node {
      * via the {@link #sendConfigurationForm(Form)}.
      *
      * @return the configuration form
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
@@ -98,11 +98,11 @@ public abstract class Node {
     /**
      * Update the configuration with the contents of the new {@link Form}.
      *
-     * @param submitForm
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @param submitForm TODO javadoc me please
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
@@ -114,10 +114,10 @@ public abstract class Node {
      * Discover node information in standard {@link DiscoverInfo} format.
      *
      * @return The discovery information about the node.
-     * @throws XMPPErrorException
+     * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = new DiscoverInfo();
@@ -130,10 +130,10 @@ public abstract class Node {
      * Get the subscriptions currently associated with this node.
      *
      * @return List of {@link Subscription}
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -147,14 +147,14 @@ public abstract class Node {
      * {@code returnedExtensions} will be filled with the stanza extensions found in the answer.
      * </p>
      *
-     * @param additionalExtensions
+     * @param additionalExtensions TODO javadoc me please
      * @param returnedExtensions a collection that will be filled with the returned packet
      *        extensions
      * @return List of {@link Subscription}
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -165,10 +165,10 @@ public abstract class Node {
      * Get the subscriptions currently associated with this node as owner.
      *
      * @return List of {@link Subscription}
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see #getSubscriptionsAsOwner(List, Collection)
      * @since 4.1
      */
@@ -189,13 +189,13 @@ public abstract class Node {
      * {@code returnedExtensions} will be filled with the stanza extensions found in the answer.
      * </p>
      *
-     * @param additionalExtensions
+     * @param additionalExtensions TODO javadoc me please
      * @param returnedExtensions a collection that will be filled with the returned stanza extensions
      * @return List of {@link Subscription}
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve">XEP-60 § 8.8.1 -
      *      Retrieve Subscriptions List</a>
      * @since 4.1
@@ -234,10 +234,10 @@ public abstract class Node {
      *
      * @param changedSubs subscriptions that have changed
      * @return <code>null</code> or a PubSub stanza with additional information on success.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="https://xmpp.org/extensions/xep-0060.html#owner-subscriptions-modify">XEP-60 § 8.8.2 Modify Subscriptions</a>
      * @since 4.3
      */
@@ -253,10 +253,10 @@ public abstract class Node {
      * Get the affiliations of this node.
      *
      * @return List of {@link Affiliation}
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
@@ -274,10 +274,10 @@ public abstract class Node {
      * @param returnedExtensions a collection that will be filled with the returned packet
      *        extensions
      * @return List of {@link Affiliation}
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<Affiliation> getAffiliations(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -289,10 +289,10 @@ public abstract class Node {
      * Retrieve the affiliation list for this node as owner.
      *
      * @return list of entities whose affiliation is not 'none'.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see #getAffiliations(List, Collection)
      * @since 4.2
      */
@@ -312,10 +312,10 @@ public abstract class Node {
      * @param returnedExtensions an optional collection that will be filled with the returned
      *        extension elements.
      * @return list of entities whose affiliation is not 'none'.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-retrieve">XEP-60 § 8.9.1 Retrieve Affiliations List</a>
      * @since 4.2
      */
@@ -351,12 +351,12 @@ public abstract class Node {
      * Note that this is an <b>optional</b> PubSub feature ('pubsub#modify-affiliations').
      * </p>
      *
-     * @param affiliations
+     * @param affiliations TODO javadoc me please
      * @return <code>null</code> or a PubSub stanza with additional information on success.
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-modify">XEP-60 § 8.9.2 Modify Affiliation</a>
      * @since 4.2
      */
@@ -385,10 +385,10 @@ public abstract class Node {
      * the caller can configure it but is not required to do so.
      * @param jid The jid to subscribe as.
      * @return The subscription
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Subscription subscribe(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub pubSub = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
@@ -410,10 +410,10 @@ public abstract class Node {
      *
      * @param jidString The jid to subscribe as.
      * @return The subscription
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws IllegalArgumentException if the provided string is not a valid JID.
      * @deprecated use {@link #subscribe(Jid)} instead.
      */
@@ -443,13 +443,13 @@ public abstract class Node {
      * the caller can configure it but is not required to do so.
      *
      * @param jid The jid to subscribe as.
-     * @param subForm
+     * @param subForm TODO javadoc me please
      *
      * @return The subscription
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public Subscription subscribe(Jid jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
@@ -472,13 +472,13 @@ public abstract class Node {
      * the caller can configure it but is not required to do so.
      *
      * @param jidString The jid to subscribe as.
-     * @param subForm
+     * @param subForm TODO javadoc me please
      *
      * @return The subscription
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws IllegalArgumentException if the provided string is not a valid JID.
      * @deprecated use {@link #subscribe(Jid, SubscribeForm)} instead.
      */
@@ -500,10 +500,10 @@ public abstract class Node {
      * use {@link #unsubscribe(String, String)}.
      *
      * @param jid The JID used to subscribe to the node
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     public void unsubscribe(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -515,10 +515,10 @@ public abstract class Node {
      *
      * @param jid The JID used to subscribe to the node
      * @param subscriptionId The id of the subscription being removed
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         sendPubsubPacket(createPubsubPacket(Type.set, new UnsubscribeExtension(jid, getId(), subscriptionId)));
@@ -528,13 +528,13 @@ public abstract class Node {
      * Returns a SubscribeForm for subscriptions, from which you can create an answer form to be submitted
      * via the {@link #sendConfigurationForm(Form)}.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      *
      * @return A subscription options form
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public SubscribeForm getSubscriptionOptions(String jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getSubscriptionOptions(jid, null);
@@ -548,10 +548,10 @@ public abstract class Node {
      * @param subscriptionId The subscription id
      *
      * @return The subscription option form
-     * @throws XMPPErrorException
-     * @throws NoResponseException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      *
      */
     public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

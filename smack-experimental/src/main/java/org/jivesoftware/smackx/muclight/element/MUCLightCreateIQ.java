@@ -47,11 +47,11 @@ public class MUCLightCreateIQ extends IQ {
     /**
      * MUCLight create IQ constructor.
      *
-     * @param room
-     * @param roomName
-     * @param subject
-     * @param customConfigs
-     * @param occupants
+     * @param room TODO javadoc me please
+     * @param roomName TODO javadoc me please
+     * @param subject TODO javadoc me please
+     * @param customConfigs TODO javadoc me please
+     * @param occupants TODO javadoc me please
      */
     public MUCLightCreateIQ(EntityJid room, String roomName, String subject, HashMap<String, String> customConfigs,
             List<Jid> occupants) {
@@ -70,9 +70,9 @@ public class MUCLightCreateIQ extends IQ {
     /**
      * MUCLight create IQ constructor.
      *
-     * @param room
-     * @param roomName
-     * @param occupants
+     * @param room TODO javadoc me please
+     * @param roomName TODO javadoc me please
+     * @param occupants TODO javadoc me please
      */
     public MUCLightCreateIQ(EntityJid room, String roomName, List<Jid> occupants) {
         this(room, roomName, null, null, occupants);

@@ -314,6 +314,8 @@ public class JingleTransport implements ExtensionElement {
 
             /**
              * Constructor with a transport candidate.
+             *
+             * @param tc the transport candidate.
              */
             public Candidate(final TransportCandidate tc) {
                 super(tc);
@@ -403,6 +405,8 @@ public class JingleTransport implements ExtensionElement {
 
             /**
              * Constructor with a transport candidate.
+             *
+             * @param tc the transport candidate.
              */
             public Candidate(final TransportCandidate tc) {
                 super(tc);

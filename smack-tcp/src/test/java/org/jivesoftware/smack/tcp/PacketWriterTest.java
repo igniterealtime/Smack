@@ -51,14 +51,14 @@ public class PacketWriterTest {
      * {@link PacketWriter#sendStanza(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
      * interrupt.
      *
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      * @throws BrokenBarrierException
-     * @throws NotConnectedException
-     * @throws XmppStringprepException
-     * @throws SecurityException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XmppStringprepException if the provided string is invalid.
+     * @throws SecurityException if there was a security violation.
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if an illegal argument was given.
      */
     @Test
     public void shouldBlockAndUnblockTest() throws InterruptedException, BrokenBarrierException, NotConnectedException, XmppStringprepException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {

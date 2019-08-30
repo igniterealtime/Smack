@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ public interface ScramHmac {
     /**
      * RFC 5802 § 2.2 HMAC(key, str).
      *
-     * @param key
-     * @param str
+     * @param key TODO javadoc me please
+     * @param str TODO javadoc me please
      * @return the HMAC-SHA1 value of the input.
-     * @throws InvalidKeyException
+     * @throws InvalidKeyException in case there was an invalid key.
      */
     byte[] hmac(byte[] key, byte[] str) throws InvalidKeyException;
 

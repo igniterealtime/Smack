@@ -61,7 +61,7 @@ public final class ReconnectionManager {
     /**
      * Get a instance of ReconnectionManager for the given connection.
      *
-     * @param connection
+     * @param connection TODO javadoc me please
      * @return a ReconnectionManager for the connection.
      */
     public static synchronized ReconnectionManager getInstanceFor(AbstractXMPPConnection connection) {
@@ -90,7 +90,7 @@ public final class ReconnectionManager {
      * Set if the automatic reconnection mechanism will be enabled per default for new XMPP connections. The default is
      * 'false'.
      *
-     * @param enabled
+     * @param enabled TODO javadoc me please
      */
     public static void setEnabledPerDefault(boolean enabled) {
         enabledPerDefault = enabled;
@@ -132,7 +132,7 @@ public final class ReconnectionManager {
     /**
      * Set the default Reconnection Policy to use.
      *
-     * @param reconnectionPolicy
+     * @param reconnectionPolicy TODO javadoc me please
      */
     public static void setDefaultReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {
         defaultReconnectionPolicy = reconnectionPolicy;
@@ -173,7 +173,7 @@ public final class ReconnectionManager {
     /**
      * Set the Reconnection Policy to use.
      *
-     * @param reconnectionPolicy
+     * @param reconnectionPolicy TODO javadoc me please
      */
     public void setReconnectionPolicy(ReconnectionPolicy reconnectionPolicy) {
         this.reconnectionPolicy = reconnectionPolicy;

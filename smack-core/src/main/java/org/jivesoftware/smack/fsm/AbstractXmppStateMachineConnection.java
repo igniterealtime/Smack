@@ -431,6 +431,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
         /**
          * Check if the state should be activated.
          *
+         * @param walkStateGraphContext the context of the current state graph walk.
          * @return <code>null</code> if the state should be activated.
          * @throws SmackException in case a Smack exception occurs.
          */

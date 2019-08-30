@@ -35,10 +35,10 @@ public class MUCLightRoomInfo {
     /**
      * MUC Light room info model constructor.
      *
-     * @param version
-     * @param roomJid
-     * @param configuration
-     * @param occupants
+     * @param version TODO javadoc me please
+     * @param roomJid TODO javadoc me please
+     * @param configuration TODO javadoc me please
+     * @param occupants TODO javadoc me please
      */
     public MUCLightRoomInfo(String version, Jid roomJid, MUCLightRoomConfiguration configuration,
             HashMap<Jid, MUCLightAffiliation> occupants) {

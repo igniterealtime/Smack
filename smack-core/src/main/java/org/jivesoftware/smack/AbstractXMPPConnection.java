@@ -488,9 +488,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
-     * @throws IOException
+     * @throws IOException if an I/O error occured.
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized AbstractXMPPConnection connect() throws SmackException, IOException, XMPPException, InterruptedException {
         // Check if not already connected
@@ -528,10 +528,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * way of XMPP connection establishment. Implementations are required to perform an automatic
      * login if the previous connection state was logged (authenticated).
      *
-     * @throws SmackException
-     * @throws IOException
-     * @throws XMPPException
-     * @throws InterruptedException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected abstract void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException;
 
@@ -563,7 +563,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
      * @throws IOException if an I/O error occurs during login.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized void login() throws XMPPException, SmackException, IOException, InterruptedException {
         // The previously used username, password and resource take over precedence over the
@@ -578,12 +578,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Same as {@link #login(CharSequence, String, Resourcepart)}, but takes the resource from the connection
      * configuration.
      *
-     * @param username
-     * @param password
-     * @throws XMPPException
-     * @throws SmackException
-     * @throws IOException
-     * @throws InterruptedException
+     * @param username TODO javadoc me please
+     * @param password TODO javadoc me please
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see #login
      */
     public synchronized void login(CharSequence username, String password) throws XMPPException, SmackException,
@@ -595,13 +595,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * Login with the given username (authorization identity). You may omit the password if a callback handler is used.
      * If resource is null, then the server will generate one.
      *
-     * @param username
-     * @param password
-     * @param resource
-     * @throws XMPPException
-     * @throws SmackException
-     * @throws IOException
-     * @throws InterruptedException
+     * @param username TODO javadoc me please
+     * @param password TODO javadoc me please
+     * @param resource TODO javadoc me please
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @see #login
      */
     public synchronized void login(CharSequence username, String password, Resourcepart resource) throws XMPPException,
@@ -847,7 +847,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * presence stanza with whatever data is set.
      *
      * @param unavailablePresence the optional presence stanza to send during shutdown.
-     * @throws NotConnectedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     public synchronized void disconnect(Presence unavailablePresence) throws NotConnectedException {
         if (unavailablePresence != null) {
@@ -1277,7 +1277,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * they are a match with the filter.
      *
      * @param stanza the stanza to process.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void processStanza(final Stanza stanza) throws InterruptedException {
         assert stanza != null;

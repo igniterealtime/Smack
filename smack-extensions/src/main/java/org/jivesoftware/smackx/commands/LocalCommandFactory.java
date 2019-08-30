@@ -36,10 +36,10 @@ public interface LocalCommandFactory {
      * @return a LocalCommand instance.
      * @throws InstantiationException if creating an instance failed.
      * @throws IllegalAccessException if creating an instance is not allowed.
-     * @throws SecurityException
-     * @throws NoSuchMethodException
-     * @throws InvocationTargetException
-     * @throws IllegalArgumentException
+     * @throws SecurityException if there was a security violation.
+     * @throws NoSuchMethodException if no such method is declared
+     * @throws InvocationTargetException if a reflection-based method or constructor invocation threw.
+     * @throws IllegalArgumentException if an illegal argument was given.
      */
     LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 

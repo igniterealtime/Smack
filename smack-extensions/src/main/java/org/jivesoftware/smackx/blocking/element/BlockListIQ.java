@@ -50,7 +50,7 @@ public class BlockListIQ extends IQ {
     /**
      * Block list IQ constructor.
      *
-     * @param jids
+     * @param jids TODO javadoc me please
      */
     public BlockListIQ(List<Jid> jids) {
         super(ELEMENT, NAMESPACE);

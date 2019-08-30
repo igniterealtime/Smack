@@ -369,7 +369,7 @@ public class RosterTest extends InitSmackIm {
 
     /**
      * Tests that roster pushes with invalid from are ignored.
-     * @throws XmppStringprepException
+     * @throws XmppStringprepException if the provided string is invalid.
      *
      * @see <a href="http://xmpp.org/rfcs/rfc6121.html#roster-syntax-actions-push">RFC 6121, Section 2.1.6</a>
      */
@@ -538,8 +538,8 @@ public class RosterTest extends InitSmackIm {
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
      *
-     * @throws SmackException
-     * @throws XmppStringprepException
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XmppStringprepException if the provided string is invalid.
      */
     private void initRoster() throws InterruptedException, SmackException, XmppStringprepException {
         roster.reload();

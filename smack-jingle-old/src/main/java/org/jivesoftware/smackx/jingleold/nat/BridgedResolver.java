@@ -54,18 +54,20 @@ public class BridgedResolver extends TransportResolver {
     /**
      * Constructor.
      * A Bridged Resolver need an XMPPConnection to connect to a RTP Bridge.
+     *
+     * @param connection the XMPP connection.
      */
     public BridgedResolver(XMPPConnection connection) {
         super();
         this.connection = connection;
     }
 
-    /**1
+    /**
      * Resolve Bridged Candidate.
      *
      * The BridgedResolver takes the IP address and ports of a jmf proxy service.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override
     public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {

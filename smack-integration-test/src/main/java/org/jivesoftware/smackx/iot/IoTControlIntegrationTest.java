@@ -52,8 +52,8 @@ public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Connection one provides a thing, which is controlled by connection two.
      *
-     * @throws Exception
-     * @throws TimeoutException
+     * @throws Exception if an exception occurs.
+     * @throws TimeoutException if there was a timeout.
      */
     @SmackIntegrationTest
     // @SmackSerialIntegrationTest

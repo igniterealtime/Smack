@@ -72,8 +72,8 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     /**
      * Add a new element to this builder.
      *
-     * @param name
-     * @param content
+     * @param name TODO javadoc me please
+     * @param content TODO javadoc me please
      * @return the XmlStringBuilder
      */
     public XmlStringBuilder element(String name, String content) {
@@ -102,8 +102,8 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
    /**
     * Add a new element to this builder.
     *
-    * @param name
-    * @param content
+    * @param name TODO javadoc me please
+    * @param content TODO javadoc me please
     * @return the XmlStringBuilder
     */
    public XmlStringBuilder element(String name, CharSequence content) {
@@ -234,8 +234,8 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     /**
      * Does nothing if value is null.
      *
-     * @param name
-     * @param value
+     * @param name TODO javadoc me please
+     * @param value TODO javadoc me please
      * @return the XmlStringBuilder
      */
     public XmlStringBuilder attribute(String name, String value) {
@@ -347,8 +347,8 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     /**
      * Add the given attribute if {@code value => 0}.
      *
-     * @param name
-     * @param value
+     * @param name TODO javadoc me please
+     * @param value TODO javadoc me please
      * @return a reference to this object
      */
     public XmlStringBuilder optIntAttribute(String name, int value) {
@@ -361,8 +361,8 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     /**
      * Add the given attribute if value not null and {@code value => 0}.
      *
-     * @param name
-     * @param value
+     * @param name TODO javadoc me please
+     * @param value TODO javadoc me please
      * @return a reference to this object
      */
     public XmlStringBuilder optLongAttribute(String name, Long value) {
@@ -586,8 +586,9 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
      * the single parts one-by-one, avoiding allocation of a big continuous memory block holding the
      * XmlStringBuilder contents.
      *
-     * @param writer
-     * @throws IOException
+     * @param writer TODO javadoc me please
+     * @param enclosingNamespace the enclosing XML namespace.
+     * @throws IOException if an I/O error occured.
      */
     public void write(Writer writer, String enclosingNamespace) throws IOException {
         for (CharSequence csq : sb.getAsList()) {

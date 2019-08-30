@@ -36,7 +36,7 @@ public abstract class AbstractFromToMatchesFilter implements StanzaFilter {
      *
      * @param address The address to filter for. If <code>null</code> is given, then
      *        {@link #getAddressToCompare(Stanza)} must also return <code>null</code> to match.
-     * @param ignoreResourcepart
+     * @param ignoreResourcepart TODO javadoc me please
      */
     protected AbstractFromToMatchesFilter(Jid address, boolean ignoreResourcepart) {
         if (address != null && ignoreResourcepart) {

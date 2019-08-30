@@ -30,7 +30,7 @@ public abstract class XMPPInputOutputStream {
      * Only use sync flush if you fully understand the implications.
      *
      * @see <a href="https://blog.thijsalkema.de/blog/2014/08/07/https-attacks-and-xmpp-2-crime-and-breach/">Attacks against XMPP when using compression</a>
-     * @param flushMethod
+     * @param flushMethod TODO javadoc me please
      */
     public static void setFlushMethod(FlushMethod flushMethod) {
         XMPPInputOutputStream.flushMethod = flushMethod;

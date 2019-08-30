@@ -207,11 +207,11 @@ public final class DeliveryReceiptManager extends Manager {
     /**
      * Returns true if Delivery Receipts are supported by a given JID.
      *
-     * @param jid
+     * @param jid TODO javadoc me please
      * @return true if supported
      * @throws SmackException if there was no response from the server.
-     * @throws XMPPException
-     * @throws InterruptedException
+     * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isSupported(Jid jid) throws SmackException, XMPPException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,

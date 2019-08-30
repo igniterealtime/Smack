@@ -63,7 +63,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      * Sets the time in milliseconds after which the file transfer negotiation
      * process will timeout if the other user has not responded.
      *
-     * @param responseTimeout
+     * @param responseTimeout TODO javadoc me please
      *            The timeout time in milliseconds.
      */
     public static void setResponseTimeout(int responseTimeout) {
@@ -108,21 +108,21 @@ public class OutgoingFileTransfer extends FileTransfer {
      * This method handles the negotiation of the file transfer and the stream,
      * it only returns the created stream after the negotiation has been completed.
      *
-     * @param fileName
+     * @param fileName TODO javadoc me please
      *            The name of the file that will be transmitted. It is
      *            preferable for this name to have an extension as it will be
      *            used to determine the type of file it is.
-     * @param fileSize
+     * @param fileSize TODO javadoc me please
      *            The size in bytes of the file that will be transmitted.
-     * @param description
+     * @param description TODO javadoc me please
      *            A description of the file that will be transmitted.
      * @return The OutputStream that is connected to the peer to transmit the
      *         file.
-     * @throws XMPPException
+     * @throws XMPPException if an XMPP protocol error was received.
      *             Thrown if an error occurs during the file transfer
      *             negotiation process.
      * @throws SmackException if there was no response from the server.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized OutputStream sendFile(String fileName, long fileSize,
             String description) throws XMPPException, SmackException, InterruptedException {
@@ -146,15 +146,15 @@ public class OutgoingFileTransfer extends FileTransfer {
      * returns immediately and its progress will be updated through the
      * {@link NegotiationProgress} callback.
      *
-     * @param fileName
+     * @param fileName TODO javadoc me please
      *            The name of the file that will be transmitted. It is
      *            preferable for this name to have an extension as it will be
      *            used to determine the type of file it is.
-     * @param fileSize
+     * @param fileSize TODO javadoc me please
      *            The size in bytes of the file that will be transmitted.
-     * @param description
+     * @param description TODO javadoc me please
      *            A description of the file that will be transmitted.
-     * @param progress
+     * @param progress TODO javadoc me please
      *            A callback to monitor the progress of the file transfer
      *            negotiation process and to retrieve the OutputStream when it
      *            is complete.
@@ -212,7 +212,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      *
      * @param file the file to transfer to the remote entity.
      * @param description a description for the file to transfer.
-     * @throws SmackException
+     * @throws SmackException if Smack detected an exceptional situation.
      *             If there is an error during the negotiation process or the
      *             sending of the file.
      */

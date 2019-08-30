@@ -158,7 +158,7 @@ public abstract class OmemoBundleElement implements ExtensionElement {
      * Return the HashMap of preKeys in the bundle.
      * The map uses the preKeys ids as key and the preKeys as value.
      *
-     * @return preKeys
+     * @return preKeys TODO javadoc me please
      */
     public HashMap<Integer, byte[]> getPreKeys() {
         if (preKeys == null) {

@@ -183,7 +183,7 @@ public interface XMPPConnection {
      *
      * @param stanza the stanza to send.
      * @throws NotConnectedException if the connection is not connected.
-     * @throws InterruptedException
+     * @throws InterruptedException if the calling thread was interrupted.
      * */
     void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException;
 
@@ -234,8 +234,8 @@ public interface XMPPConnection {
      * </p>
      *
      * @param nonza the Nonza to send.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException;
 
@@ -258,11 +258,12 @@ public interface XMPPConnection {
      * Send an IQ request and wait for the response.
      *
      * @param request the IQ request
+     * @param <I> the type of the expected result IQ.
      * @return an IQ with type 'result'
-     * @throws NoResponseException
-     * @throws XMPPErrorException
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.3
      */
     <I extends IQ> I sendIqRequestAndWaitForResponse(IQ request)
@@ -276,8 +277,8 @@ public interface XMPPConnection {
      *
      * @param request the IQ request to filter responses from
      * @return a new stanza collector.
-     * @throws NotConnectedException
-     * @throws InterruptedException
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
      */
     StanzaCollector createStanzaCollectorAndSend(IQ request) throws NotConnectedException, InterruptedException;
 
@@ -290,8 +291,8 @@ public interface XMPPConnection {
      * @param stanzaFilter the stanza filter to use.
      * @param stanza the stanza to send right after the collector got created
      * @return a new stanza collector.
-     * @throws InterruptedException
-     * @throws NotConnectedException
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     StanzaCollector createStanzaCollectorAndSend(StanzaFilter stanzaFilter, Stanza stanza)
                     throws NotConnectedException, InterruptedException;
@@ -498,7 +499,7 @@ public interface XMPPConnection {
      * Set the FromMode for this connection instance. Defines how the 'from' attribute of outgoing
      * stanzas should be populated by Smack.
      *
-     * @param fromMode
+     * @param fromMode TODO javadoc me please
      */
     void setFromMode(FromMode fromMode);
 
@@ -514,8 +515,8 @@ public interface XMPPConnection {
      * server, or <code>null</code> if the server doesn't support that feature.
      *
      * @param <F> {@link ExtensionElement} type of the feature.
-     * @param element
-     * @param namespace
+     * @param element TODO javadoc me please
+     * @param namespace TODO javadoc me please
      * @return a stanza extensions of the feature or <code>null</code>
      */
     <F extends FullyQualifiedElement> F getFeature(String element, String namespace);
@@ -523,8 +524,8 @@ public interface XMPPConnection {
     /**
      * Return true if the server supports the given stream feature.
      *
-     * @param element
-     * @param namespace
+     * @param element TODO javadoc me please
+     * @param namespace TODO javadoc me please
      * @return true if the server supports the stream feature.
      */
     boolean hasFeature(String element, String namespace);
@@ -552,6 +553,7 @@ public interface XMPPConnection {
      *
      * @param stanza the stanza to send.
      * @param replyFilter the filter used for the response stanza.
+     * @param <S> the type of the stanza to send.
      * @return a SmackFuture for the response.
      */
     <S extends Stanza> SmackFuture<S, Exception> sendAsync(S stanza, StanzaFilter replyFilter);
@@ -562,6 +564,7 @@ public interface XMPPConnection {
      * @param stanza the stanza to send.
      * @param replyFilter the filter used for the response stanza.
      * @param timeout the reply timeout in milliseconds.
+     * @param <S> the type of the stanza to send.
      * @return a SmackFuture for the response.
      */
     <S extends Stanza> SmackFuture<S, Exception> sendAsync(S stanza, StanzaFilter replyFilter, long timeout);
@@ -588,7 +591,7 @@ public interface XMPPConnection {
     /**
      * Convenience method for {@link #unregisterIQRequestHandler(String, String, org.jivesoftware.smack.packet.IQ.Type)}.
      *
-     * @param iqRequestHandler
+     * @param iqRequestHandler TODO javadoc me please
      * @return the previously registered IQ request handler or null.
      */
     IQRequestHandler unregisterIQRequestHandler(IQRequestHandler iqRequestHandler);
