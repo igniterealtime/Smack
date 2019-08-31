@@ -87,6 +87,12 @@ public class MediaElement implements FormFieldChildElement {
             .optAttribute("width", width)
             .rightAngleBracket();
 
+        if (!NAMESPACE.contentEquals(xmlEnvironment.getNamespace())) {
+            xmlEnvironment = XmlEnvironment.builder()
+                    .withNamespace(MediaElement.NAMESPACE)
+                    .withNext(null)
+                    .build();
+        }
         xml.append(uris, xmlEnvironment);
 
         xml.closeElement(this);
