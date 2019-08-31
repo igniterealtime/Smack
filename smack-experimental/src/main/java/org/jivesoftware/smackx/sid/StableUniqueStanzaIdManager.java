@@ -36,6 +36,15 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
+/**
+ * Manager class for Stable and Unique Stanza IDs.
+ *
+ * In order to start automatically appending origin ids to outgoing messages, use {@link #enable()}.
+ * This will announce support via the {@link ServiceDiscoveryManager}. If you want to stop appending origin-ids
+ * and de-announce support, call {@link #disable()}.
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0359.html">XEP-0359: Stable and Unique Stanza IDs</a>
+ */
 public final class StableUniqueStanzaIdManager extends Manager {
 
     public static final String NAMESPACE = "urn:xmpp:sid:0";
@@ -70,7 +79,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
 
     /**
      * Private constructor.
-     * @param connection TODO javadoc me please
+     * @param connection XMPP connection
      */
     private StableUniqueStanzaIdManager(XMPPConnection connection) {
         super(connection);
