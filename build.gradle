@@ -306,6 +306,12 @@ task javadocAll(type: Javadoc, dependsOn: copyAllJavadocDocFiles) {
 		project.sourceSets.main.compileClasspath})
 	classpath += files(androidBootClasspath)
 	options {
+		// Add source compatiblitiy statement to work around bug in JDK 11
+		// See
+		// - https://bugs.openjdk.java.net/browse/JDK-8217177
+		// - http://hg.openjdk.java.net/jdk/jdk/rev/8ce4083fc831
+		// - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=920020
+		source = sourceCompatibility
 		linkSource = true
 		use = true
 		links = [
