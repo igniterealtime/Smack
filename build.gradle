@@ -293,7 +293,13 @@ task copyAllJavadocDocFiles(type: Copy) {
 
 task javadocAll(type: Javadoc, dependsOn: copyAllJavadocDocFiles) {
 	source javadocAllProjects.collect {project ->
-		project.sourceSets.main.allJava }
+		project.sourceSets.main.allJava.findAll {
+			// Filter out symbolic links to avoid
+			// "warning: a package-info.java file has already been seen for package"
+			// javadoc warnings.
+			!java.nio.file.Files.isSymbolicLink(it.toPath())
+		}
+	}
 	destinationDir = javadocAllDir
 	// Might need a classpath
 	classpath = files(subprojects.collect {project ->
