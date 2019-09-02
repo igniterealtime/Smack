@@ -27,6 +27,7 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.NotFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -35,6 +36,15 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
+/**
+ * Manager class for Stable and Unique Stanza IDs.
+ *
+ * In order to start automatically appending origin ids to outgoing messages, use {@link #enable()}.
+ * This will announce support via the {@link ServiceDiscoveryManager}. If you want to stop appending origin-ids
+ * and de-announce support, call {@link #disable()}.
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0359.html">XEP-0359: Stable and Unique Stanza IDs</a>
+ */
 public final class StableUniqueStanzaIdManager extends Manager {
 
     public static final String NAMESPACE = "urn:xmpp:sid:0";
@@ -45,6 +55,9 @@ public final class StableUniqueStanzaIdManager extends Manager {
     private static final StanzaFilter OUTGOING_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT_OR_HEADLINE,
             ToTypeFilter.ENTITY_FULL_OR_BARE_JID);
+
+    // Filter that filters for messages with an origin id
+    private static final StanzaFilter ORIGIN_ID_FILTER = new StanzaExtensionFilter(OriginIdElement.ELEMENT, NAMESPACE);
 
     // Listener for outgoing stanzas that adds origin-ids to outgoing stanzas.
     private static final StanzaListener ADD_ORIGIN_ID_INTERCEPTOR = new StanzaListener() {
@@ -66,7 +79,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
 
     /**
      * Private constructor.
-     * @param connection TODO javadoc me please
+     * @param connection XMPP connection
      */
     private StableUniqueStanzaIdManager(XMPPConnection connection) {
         super(connection);
@@ -93,7 +106,8 @@ public final class StableUniqueStanzaIdManager extends Manager {
      */
     public synchronized void enable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE);
-        StanzaFilter filter = new AndFilter(OUTGOING_FILTER, new NotFilter(OUTGOING_FILTER));
+        // We need a filter for outgoing messages that do not carry an origin-id already
+        StanzaFilter filter = new AndFilter(OUTGOING_FILTER, new NotFilter(ORIGIN_ID_FILTER));
         connection().addStanzaInterceptor(ADD_ORIGIN_ID_INTERCEPTOR, filter);
     }
 
