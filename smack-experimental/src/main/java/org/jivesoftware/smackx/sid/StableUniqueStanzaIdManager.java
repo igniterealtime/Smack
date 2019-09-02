@@ -51,6 +51,8 @@ public final class StableUniqueStanzaIdManager extends Manager {
 
     private static final Map<XMPPConnection, StableUniqueStanzaIdManager> INSTANCES = new WeakHashMap<>();
 
+    private static boolean enabledByDefault = true;
+
     // Filter for outgoing stanzas.
     private static final StanzaFilter OUTGOING_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT_OR_HEADLINE,
@@ -72,7 +74,9 @@ public final class StableUniqueStanzaIdManager extends Manager {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
             public void connectionCreated(XMPPConnection connection) {
-                getInstanceFor(connection);
+                if (enabledByDefault) {
+                    getInstanceFor(connection).enable();
+                }
             }
         });
     }
@@ -83,7 +87,10 @@ public final class StableUniqueStanzaIdManager extends Manager {
      */
     private StableUniqueStanzaIdManager(XMPPConnection connection) {
         super(connection);
-        enable();
+    }
+
+    public static void setEnabledByDefault(boolean enabled) {
+        enabledByDefault = enabled;
     }
 
     /**
