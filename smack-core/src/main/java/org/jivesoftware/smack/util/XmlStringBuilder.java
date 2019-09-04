@@ -591,21 +591,10 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
      * @throws IOException if an I/O error occured.
      */
     public void write(Writer writer, String enclosingNamespace) throws IOException {
-        for (CharSequence csq : sb.getAsList()) {
-            if (csq instanceof XmlStringBuilder) {
-                ((XmlStringBuilder) csq).write(writer, enclosingNamespace);
-            }
-            else if (csq instanceof XmlNsAttribute) {
-                XmlNsAttribute xmlNsAttribute = (XmlNsAttribute) csq;
-                if (!xmlNsAttribute.value.equals(enclosingNamespace)) {
-                    writer.write(xmlNsAttribute.toString());
-                    enclosingNamespace = xmlNsAttribute.value;
-                }
-            }
-            else {
-                writer.write(csq.toString());
-            }
-        }
+        XmlEnvironment enclosingXmlEnvironment = XmlEnvironment.builder()
+                .withNamespace(enclosingNamespace)
+                .build();
+        appendXmlTo(writer, enclosingXmlEnvironment);
     }
 
     public Iterator<CharSequence> getCharSequenceIterator() {
@@ -615,14 +604,19 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     @Override
     public CharSequence toXML(XmlEnvironment enclosingXmlEnvironment) {
         StringBuilder res = new StringBuilder();
-        appendXmlTo(res, enclosingXmlEnvironment);
+        try {
+            appendXmlTo(res, enclosingXmlEnvironment);
+        } catch (IOException e) {
+            // Should never happen.
+            throw new AssertionError(e);
+        }
         return res;
     }
 
-    private void appendXmlTo(StringBuilder res, XmlEnvironment enclosingXmlEnvironment) {
+    private void appendXmlTo(Appendable appendable, XmlEnvironment enclosingXmlEnvironment) throws IOException {
         for (CharSequence csq : sb.getAsList()) {
             if (csq instanceof XmlStringBuilder) {
-                ((XmlStringBuilder) csq).appendXmlTo(res, enclosingXmlEnvironment);
+                ((XmlStringBuilder) csq).appendXmlTo(appendable, enclosingXmlEnvironment);
             }
             else if (csq instanceof XmlNsAttribute) {
                 XmlNsAttribute xmlNsAttribute = (XmlNsAttribute) csq;
@@ -632,7 +626,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
                 }
             }
             else {
-                res.append(csq);
+                appendable.append(csq);
             }
         }
     }
