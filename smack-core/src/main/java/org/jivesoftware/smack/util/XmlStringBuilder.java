@@ -461,11 +461,11 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return escape(text.toString());
     }
 
-    public XmlStringBuilder prelude(FullyQualifiedElement pe) {
+    protected XmlStringBuilder prelude(FullyQualifiedElement pe) {
         return prelude(pe.getElementName(), pe.getNamespace());
     }
 
-    public XmlStringBuilder prelude(String elementName, String namespace) {
+    protected XmlStringBuilder prelude(String elementName, String namespace) {
         halfOpenElement(elementName);
         xmlnsAttribute(namespace);
         return this;
