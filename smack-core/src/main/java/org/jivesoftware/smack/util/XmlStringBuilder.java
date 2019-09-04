@@ -56,9 +56,17 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         halfOpenElement(e.getElementName());
     }
 
-    public XmlStringBuilder(FullyQualifiedElement ee, XmlEnvironment enclosingXmlEnvironment) {
-        this(enclosingXmlEnvironment);
-        prelude(ee);
+    public XmlStringBuilder(FullyQualifiedElement element, XmlEnvironment enclosingXmlEnvironment) {
+        sb = new LazyStringBuilder();
+        halfOpenElement(element);
+        if (enclosingXmlEnvironment != null
+                && !enclosingXmlEnvironment.effectiveNamespaceEquals(element.getNamespace())) {
+            xmlnsAttribute(element.getNamespace());
+        }
+        effectiveXmlEnvironment = XmlEnvironment.builder()
+                .withNamespace(element.getNamespace())
+                .withNext(enclosingXmlEnvironment)
+                .build();
     }
 
     public XmlStringBuilder escapedElement(String name, String escapedContent) {
@@ -492,7 +500,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     public XmlStringBuilder append(Collection<? extends Element> elements) {
-        return append(elements, null);
+        return append(elements, effectiveXmlEnvironment);
     }
 
     public XmlStringBuilder append(Collection<? extends Element> elements, XmlEnvironment enclosingXmlEnvironment) {

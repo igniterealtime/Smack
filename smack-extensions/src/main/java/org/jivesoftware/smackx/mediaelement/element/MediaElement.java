@@ -87,7 +87,7 @@ public class MediaElement implements FormFieldChildElement {
             .optAttribute("width", width)
             .rightAngleBracket();
 
-        xml.append(uris, xmlEnvironment);
+        xml.append(uris);
 
         xml.closeElement(this);
         return xml;
