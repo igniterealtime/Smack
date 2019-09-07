@@ -636,7 +636,8 @@ public final class OpenPgpManager extends Manager {
      * @return {@link PubkeyElement} containing the key
      */
     private static PubkeyElement createPubkeyElement(byte[] bytes, Date date) {
-        return new PubkeyElement(new PubkeyElement.PubkeyDataElement(Base64.encode(bytes)), date);
+        String base64EncodedOpenPgpPubKey = Base64.encodeToString(bytes);
+        return new PubkeyElement(new PubkeyElement.PubkeyDataElement(base64EncodedOpenPgpPubKey), date);
     }
 
     /**

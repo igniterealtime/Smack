@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -34,7 +33,7 @@ import org.jivesoftware.smackx.ox.element.PubkeyElement;
  */
 public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElement> {
 
-    public static final PubkeyElementProvider TEST_INSTANCE = new PubkeyElementProvider();
+    public static final PubkeyElementProvider INSTANCE = new PubkeyElementProvider();
 
     @Override
     public PubkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackTextParseException {
@@ -46,11 +45,9 @@ public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElemen
             if (tag == XmlPullParser.Event.START_ELEMENT) {
                 switch (name) {
                     case PubkeyElement.PubkeyDataElement.ELEMENT:
-                        String data = parser.nextText();
-                        if (data != null) {
-                            byte[] bytes = data.getBytes(Charset.forName("UTF-8"));
-                            return new PubkeyElement(new PubkeyElement.PubkeyDataElement(bytes), date);
-                        }
+                        String base64EncodedOpenPgpPubKey = parser.nextText();
+                        PubkeyElement.PubkeyDataElement pubkeyDataElement = new PubkeyElement.PubkeyDataElement(base64EncodedOpenPgpPubKey);
+                        return new PubkeyElement(pubkeyDataElement, date);
                 }
             }
         }

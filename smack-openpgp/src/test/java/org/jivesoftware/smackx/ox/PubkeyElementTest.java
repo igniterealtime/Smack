@@ -17,44 +17,48 @@
 package org.jivesoftware.smackx.ox;
 
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.test.util.TestUtils;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.PubkeyElement;
 import org.jivesoftware.smackx.ox.provider.PubkeyElementProvider;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.jxmpp.util.XmppDateTime;
 
 public class PubkeyElementTest extends SmackTestSuite {
 
-    @Test
-    public void providerTest() throws Exception {
-        String expected =
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void providerTest(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws ParseException, XmlPullParserException, IOException, SmackParsingException {
+        String base64EncodedOpenPgpPublicKey = "VGhpcyBpcyBqdXN0IGEgdGVzdA==";
+        String pubkeyElement =
                 "<pubkey xmlns='urn:xmpp:openpgp:0' date='2018-01-21T10:46:21.000+00:00'>" +
                 "<data>" +
-                "BASE64_OPENPGP_PUBLIC_KEY" +
+                base64EncodedOpenPgpPublicKey +
                 "</data>" +
                 "</pubkey>";
 
         Date date = XmppDateTime.parseXEP0082Date("2018-01-21T10:46:21.000+00:00");
-        byte[] key = "BASE64_OPENPGP_PUBLIC_KEY".getBytes(Charset.forName("UTF-8"));
-        PubkeyElement element = new PubkeyElement(new PubkeyElement.PubkeyDataElement(key), date);
+        PubkeyElement element = new PubkeyElement(new PubkeyElement.PubkeyDataElement(base64EncodedOpenPgpPublicKey), date);
 
-        assertXmlSimilar(expected, element.toXML().toString());
+        assertXmlSimilar(pubkeyElement, element.toXML().toString());
 
-        XmlPullParser parser = TestUtils.getParser(expected);
-        PubkeyElement parsed = PubkeyElementProvider.TEST_INSTANCE.parse(parser);
+        XmlPullParser parser = SmackTestUtil.getParserFor(pubkeyElement, parserKind);
+        PubkeyElement parsed = PubkeyElementProvider.INSTANCE.parse(parser);
 
         assertEquals(element.getDate(), parsed.getDate());
-        assertTrue(Arrays.equals(element.getDataElement().getB64Data(), parsed.getDataElement().getB64Data()));
+        assertEquals(element.getDataElement().getB64Data(), parsed.getDataElement().getB64Data());
     }
 }

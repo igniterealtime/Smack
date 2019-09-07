@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.ox.element;
 
-import java.nio.charset.Charset;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Class representing a pubkey element which is used to transport OpenPGP public keys.
@@ -88,19 +88,28 @@ public class PubkeyElement implements ExtensionElement {
 
         public static final String ELEMENT = "data";
 
-        private final byte[] b64Data;
+        private final String b64Data;
 
-        public PubkeyDataElement(byte[] b64Data) {
+        public PubkeyDataElement(String b64Data) {
             this.b64Data = Objects.requireNonNull(b64Data);
         }
 
         /**
          * Base64 encoded public key.
          *
-         * @return public key bytes.
+         * @return the base64 encoded version of the public key.
          */
-        public byte[] getB64Data() {
+        public String getB64Data() {
             return b64Data;
+        }
+
+        private transient byte[] pubKeyBytesCache;
+
+        public byte[] getPubKeyBytes() {
+            if (pubKeyBytesCache == null) {
+                pubKeyBytesCache = Base64.decode(b64Data);
+            }
+            return pubKeyBytesCache.clone();
         }
 
         @Override
@@ -117,7 +126,7 @@ public class PubkeyElement implements ExtensionElement {
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace)
                     .rightAngleBracket()
-                    .append(new String(b64Data, Charset.forName("UTF-8")))
+                    .append(b64Data)
                     .closeElement(this);
             return xml;
         }
