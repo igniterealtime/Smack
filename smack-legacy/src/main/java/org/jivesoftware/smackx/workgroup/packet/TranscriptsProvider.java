@@ -69,8 +69,8 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
         return new Transcripts(userID, summaries);
     }
 
-    private Transcripts.TranscriptSummary parseSummary(XmlPullParser parser) throws IOException,
-            XmlPullParserException {
+    private static Transcripts.TranscriptSummary parseSummary(XmlPullParser parser)
+                    throws IOException, XmlPullParserException {
         String sessionID =  parser.getAttributeValue("", "sessionID");
         Date joinTime = null;
         Date leftTime = null;
@@ -108,7 +108,8 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
         return new Transcripts.TranscriptSummary(sessionID, joinTime, leftTime, agents);
     }
 
-    private List<Transcripts.AgentDetail> parseAgents(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private static List<Transcripts.AgentDetail> parseAgents(XmlPullParser parser)
+                    throws IOException, XmlPullParserException {
         List<Transcripts.AgentDetail> agents = new ArrayList<>();
         String agentJID =  null;
         Date joinTime = null;

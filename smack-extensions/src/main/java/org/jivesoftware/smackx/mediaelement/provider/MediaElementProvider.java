@@ -74,7 +74,7 @@ public class MediaElementProvider extends FormFieldChildElementProvider<MediaEle
         return mediaElementBuilder.build();
     }
 
-    private MediaElement.Uri parseUri(XmlPullParser parser)
+    private static MediaElement.Uri parseUri(XmlPullParser parser)
                     throws SmackUriSyntaxParsingException, XmlPullParserException, IOException {
         String type = parser.getAttributeValue("type");
         URI uri = ParserUtils.getUriFromNextText(parser);

@@ -100,7 +100,7 @@ public class JingleSessionStateActive extends JingleSessionState {
     /**
      * Receive and process the <session-terminate> action.
      */
-    private IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
+    private static IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
 
         // According to XEP-166 the only thing we can do is ack.
         IQ response = session.createAck(jingle);

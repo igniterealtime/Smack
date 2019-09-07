@@ -115,8 +115,8 @@ public class AgentChatHistory extends IQ {
             return agentChatHistory;
         }
 
-        private AgentChatSession parseChatSetting(XmlPullParser parser) throws XmlPullParserException, IOException {
-
+        private static AgentChatSession parseChatSetting(XmlPullParser parser)
+                        throws XmlPullParserException, IOException {
             boolean done = false;
             Date date = null;
             long duration = 0;

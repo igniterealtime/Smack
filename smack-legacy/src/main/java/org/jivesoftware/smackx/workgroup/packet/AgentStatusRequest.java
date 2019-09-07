@@ -131,7 +131,7 @@ public class AgentStatusRequest extends IQ {
             return statusRequest;
         }
 
-        private Item parseAgent(XmlPullParser parser) throws XmlPullParserException, IOException {
+        private static Item parseAgent(XmlPullParser parser) throws XmlPullParserException, IOException {
 
             boolean done = false;
             EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);

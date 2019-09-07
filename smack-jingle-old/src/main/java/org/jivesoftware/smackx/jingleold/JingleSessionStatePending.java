@@ -103,7 +103,7 @@ public class JingleSessionStatePending extends JingleSessionState {
     /**
      * Receive and process the <session-accept> action.
      */
-    private IQ receiveContentAcceptAction(Jingle inJingle) {
+    private static IQ receiveContentAcceptAction(Jingle inJingle) {
 
         // According to XEP-167 the only thing we can do is ack.
         // setSessionState(JingleSessionStateEnum.ACTIVE);
@@ -116,7 +116,7 @@ public class JingleSessionStatePending extends JingleSessionState {
     /**
      * Receive and process the <session-accept> action.
      */
-    private IQ receiveSessionAcceptAction(JingleSession session, Jingle inJingle) {
+    private static IQ receiveSessionAcceptAction(JingleSession session, Jingle inJingle) {
 
         // According to XEP-166 the only thing we can do is ack.
         session.setSessionState(JingleSessionStateActive.getInstance());
@@ -126,7 +126,7 @@ public class JingleSessionStatePending extends JingleSessionState {
     /**
      * Receive and process the <session-terminate> action.
      */
-    private IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
+    private static IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
 
         // According to XEP-166 the only thing we can do is ack.
         IQ response = session.createAck(jingle);

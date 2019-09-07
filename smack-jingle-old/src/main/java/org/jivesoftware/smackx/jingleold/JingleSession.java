@@ -607,7 +607,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * @param connection TODO javadoc me please
      *            The connection to clean up
      */
-    private void unregisterInstanceFor(XMPPConnection connection) {
+    private static void unregisterInstanceFor(XMPPConnection connection) {
         synchronized (sessions) {
             sessions.remove(connection);
         }

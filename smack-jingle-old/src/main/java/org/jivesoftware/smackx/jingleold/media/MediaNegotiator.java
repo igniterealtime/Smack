@@ -183,7 +183,7 @@ public class MediaNegotiator extends JingleNegotiator {
     /**
      * Process the ACK of our list of codecs (our offer).
      */
-    private Jingle receiveResult(IQ iq) throws XMPPException {
+    private static Jingle receiveResult(IQ iq) throws XMPPException {
         Jingle response = null;
 
 //        if (!remoteAudioPts.isEmpty()) {

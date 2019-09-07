@@ -318,7 +318,7 @@ public class AudioChannel {
      * @return the best stanza size
      * @throws IllegalArgumentException if an illegal argument was given.
      */
-    private int getPacketSize(Format codecFormat, int milliseconds) throws IllegalArgumentException {
+    private static int getPacketSize(Format codecFormat, int milliseconds) throws IllegalArgumentException {
         String encoding = codecFormat.getEncoding();
         if (encoding.equalsIgnoreCase(AudioFormat.GSM) ||
                 encoding.equalsIgnoreCase(AudioFormat.GSM_RTP)) {

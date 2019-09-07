@@ -252,7 +252,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @return the best STUN server that can be used.
      */
-    private STUNService bestSTUNServer(ArrayList<STUNService> listServers) {
+    private static STUNService bestSTUNServer(ArrayList<STUNService> listServers) {
         if (listServers.isEmpty()) {
             return null;
         } else {

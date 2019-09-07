@@ -203,7 +203,11 @@ allprojects {
 			'-Werror',
 		]
 		options.errorprone {
-			error("UnusedVariable", "UnusedMethod")
+			error(
+				"UnusedVariable",
+				"UnusedMethod",
+				"MethodCanBeStatic",
+			)
 			errorproneArgs = [
 				// Disable errorprone checks
 				'-Xep:TypeParameterUnusedInFormals:OFF',

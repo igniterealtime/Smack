@@ -86,7 +86,7 @@ public class MUCLightBlockingIQ extends IQ {
         return xml;
     }
 
-    private void parseBlocking(IQChildElementXmlStringBuilder xml, HashMap<Jid, Boolean> map, boolean isRoom) {
+    private static void parseBlocking(IQChildElementXmlStringBuilder xml, HashMap<Jid, Boolean> map, boolean isRoom) {
         Iterator<Map.Entry<Jid, Boolean>> it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Jid, Boolean> pair = it.next();

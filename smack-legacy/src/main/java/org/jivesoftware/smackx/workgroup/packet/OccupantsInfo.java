@@ -154,8 +154,8 @@ public class OccupantsInfo extends IQ {
             return occupantsInfo;
         }
 
-        private OccupantInfo parseOccupantInfo(XmlPullParser parser) throws XmlPullParserException, IOException, SmackTextParseException {
-
+        private static OccupantInfo parseOccupantInfo(XmlPullParser parser)
+                        throws XmlPullParserException, IOException, SmackTextParseException {
             boolean done = false;
             String jid = null;
             String nickname = null;

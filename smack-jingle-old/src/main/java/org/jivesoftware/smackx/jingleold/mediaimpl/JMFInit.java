@@ -58,7 +58,7 @@ public class JMFInit extends Frame implements Runnable {
         }
         catch (Exception e) {
 
-            message("Failed to commit to JMFRegistry!");
+            LOGGER.fine("Failed to commit to JMFRegistry!");
         }
 
         Thread detectThread = new Thread(this);
@@ -89,28 +89,28 @@ public class JMFInit extends Frame implements Runnable {
         if (args != null && args.length > 0) {
             tempDir = args[0];
 
-            message("Setting cache directory to " + tempDir);
+            LOGGER.fine("Setting cache directory to " + tempDir);
             try {
                 Registry.set("secure.cacheDir", tempDir);
                 Registry.commit();
 
-                message("Updated registry");
+                LOGGER.fine("Updated registry");
             }
             catch (Exception e) {
-                message("Couldn't update registry!");
+                LOGGER.fine("Couldn't update registry!");
             }
         }
     }
 
     @SuppressWarnings("LiteralClassName")
-    private void detectCaptureDevices() {
+    private static void detectCaptureDevices() {
         // check if JavaSound capture is available
-        message("Looking for Audio capturer");
+        LOGGER.fine("Looking for Audio capturer");
         Class<?> dsauto;
         try {
             dsauto = Class.forName("DirectSoundAuto");
             dsauto.getConstructor().newInstance();
-            message("Finished detecting DirectSound capturer");
+            LOGGER.fine("Finished detecting DirectSound capturer");
         }
         catch (ThreadDeath td) {
             throw td;
@@ -123,13 +123,13 @@ public class JMFInit extends Frame implements Runnable {
         try {
             jsauto = Class.forName("JavaSoundAuto");
             jsauto.getConstructor().newInstance();
-            message("Finished detecting javasound capturer");
+            LOGGER.fine("Finished detecting javasound capturer");
         }
         catch (ThreadDeath td) {
             throw td;
         }
         catch (Throwable t) {
-            message("JavaSound capturer detection failed!");
+             LOGGER.fine("JavaSound capturer detection failed!");
         }
 
         /*
@@ -182,7 +182,7 @@ public class JMFInit extends Frame implements Runnable {
         */
     }
 
-    private void detectDirectAudio() {
+    private static void detectDirectAudio() {
         Class<?> cls;
         int plType = PlugInManager.RENDERER;
         String dar = "com.sun.media.renderer.audio.DirectAudioRenderer";
@@ -229,7 +229,7 @@ public class JMFInit extends Frame implements Runnable {
         }
     }
 
-    private void detectS8DirectAudio() {
+    private static void detectS8DirectAudio() {
         Class<?> cls;
         int plType = PlugInManager.RENDERER;
         String dar = "com.sun.media.renderer.audio.DirectAudioRenderer";
@@ -271,10 +271,6 @@ public class JMFInit extends Frame implements Runnable {
         catch (Throwable tt) {
             // Do nothing.
         }
-    }
-
-    private void message(String mesg) {
-        LOGGER.fine(mesg);
     }
 
     public static void start(boolean visible) {
