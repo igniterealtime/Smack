@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
@@ -23,7 +24,14 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 /**
  * Class representing possible SOCKS5 TransportInfo elements.
  */
-public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo {
+public abstract class JingleS5BTransportInfo implements JingleContentTransportInfo {
+
+    public static final String NAMESPACE = JingleS5BTransport.NAMESPACE_V1;
+
+    @Override
+    public final String getNamespace() {
+        return NAMESPACE;
+    }
 
     public abstract static class JingleS5BCandidateTransportInfo extends JingleS5BTransportInfo {
         public static final String ATTR_CID = "cid";
@@ -39,9 +47,8 @@ public abstract class JingleS5BTransportInfo extends JingleContentTransportInfo 
         }
 
         @Override
-        public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(this);
+        public final XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
             xml.attribute(ATTR_CID, getCandidateId());
             xml.closeEmptyElement();
             return xml;

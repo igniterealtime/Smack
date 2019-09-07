@@ -257,6 +257,11 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     }
 
     @Override
+    public String getElementName() {
+        return ELEMENT;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Presence Stanza [");
@@ -277,9 +282,8 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
 
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder buf = new XmlStringBuilder(enclosingNamespace);
-        buf.halfOpenElement(ELEMENT);
-        addCommonAttributes(buf, enclosingNamespace);
+        XmlStringBuilder buf = new XmlStringBuilder(this, enclosingNamespace);
+        addCommonAttributes(buf);
         if (type != Type.available) {
             buf.attribute("type", type);
         }
@@ -291,10 +295,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
             buf.element("show", mode);
         }
 
-        buf.append(getExtensions(), enclosingNamespace);
+        buf.append(getExtensions());
 
         // Add the error sub-packet, if there is one.
-        appendErrorIfExists(buf, enclosingNamespace);
+        appendErrorIfExists(buf);
 
         buf.closeElement(ELEMENT);
 

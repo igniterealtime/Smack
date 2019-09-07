@@ -134,12 +134,12 @@ public class MamPrefsIQ extends IQ {
 
         if (alwaysJids != null) {
             MamElements.AlwaysJidListElement alwaysElement = new AlwaysJidListElement(alwaysJids);
-            xml.element(alwaysElement);
+            xml.append(alwaysElement);
         }
 
         if (neverJids != null) {
             MamElements.NeverJidListElement neverElement = new NeverJidListElement(neverJids);
-            xml.element(neverElement);
+            xml.append(neverElement);
         }
 
         return xml;

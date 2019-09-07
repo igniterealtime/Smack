@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,6 @@ package org.jivesoftware.smack.packet;
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/extensions/xep-0360.html">XEP-0360: Nonzas (are not Stanzas)</a>
  */
-public interface Nonza extends TopLevelStreamElement, FullyQualifiedElement {
+public interface Nonza extends TopLevelStreamElement {
 
 }

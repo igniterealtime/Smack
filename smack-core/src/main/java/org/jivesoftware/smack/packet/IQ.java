@@ -137,6 +137,11 @@ public abstract class IQ extends Stanza {
     }
 
     @Override
+    public final String getElementName() {
+        return IQ_ELEMENT;
+    }
+
+    @Override
     public final String toString() {
             StringBuilder sb = new StringBuilder();
             sb.append("IQ Stanza (");
@@ -150,9 +155,8 @@ public abstract class IQ extends Stanza {
 
     @Override
     public final XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
-        XmlStringBuilder buf = new XmlStringBuilder(enclosingXmlEnvironment);
-        buf.halfOpenElement(IQ_ELEMENT);
-        addCommonAttributes(buf, enclosingXmlEnvironment);
+        XmlStringBuilder buf = new XmlStringBuilder(this, enclosingXmlEnvironment);
+        addCommonAttributes(buf);
         if (type == null) {
             buf.attribute("type", "get");
         }
@@ -160,7 +164,7 @@ public abstract class IQ extends Stanza {
             buf.attribute("type", type.toString());
         }
         buf.rightAngleBracket();
-        buf.append(getChildElementXML(enclosingXmlEnvironment));
+        appendInnerXml(buf);
         buf.closeElement(IQ_ELEMENT);
         return buf;
     }
@@ -171,44 +175,52 @@ public abstract class IQ extends Stanza {
      *
      * @return the child element section of the IQ XML.
      */
+    // TODO: This method should not be part of the public API as it is mostly used for testing purposes, with the one
+    // exception of AdHocCommand.getRaw().
     public final XmlStringBuilder getChildElementXML() {
-        return getChildElementXML(null);
+        XmlStringBuilder xml = new XmlStringBuilder();
+        appendInnerXml(xml);
+        return xml;
     }
 
     /**
-     * Returns the sub-element XML section of the IQ packet, or the empty String if there
-     * isn't one.
+     * Append the sub-element XML section of the IQ stanza.
      *
-     * @param enclosingXmlEnvironment the enclosing XML namespace.
-     * @return the child element section of the IQ XML.
-     * @since 4.3.0
+     * @param xml the XmlStringBuilder to append to.
      */
-    public final XmlStringBuilder getChildElementXML(XmlEnvironment enclosingXmlEnvironment) {
-        XmlStringBuilder xml = new XmlStringBuilder();
+    private void appendInnerXml(XmlStringBuilder xml) {
         if (type == Type.error) {
             // Add the error sub-packet, if there is one.
-            appendErrorIfExists(xml, enclosingXmlEnvironment);
+            appendErrorIfExists(xml);
+            return;
         }
-        else if (childElementName != null) {
-            // Add the query section if there is one.
-            IQChildElementXmlStringBuilder iqChildElement = getIQChildElementBuilder(new IQChildElementXmlStringBuilder(this));
-            if (iqChildElement != null) {
-                xml.append(iqChildElement);
+        if (childElementName == null) {
+            return;
+        }
 
-                List<ExtensionElement> extensionsXml = getExtensions();
-                if (iqChildElement.isEmptyElement) {
-                    if (extensionsXml.isEmpty()) {
-                         xml.closeEmptyElement();
-                         return xml;
-                    } else {
-                        xml.rightAngleBracket();
-                    }
-                }
-                xml.append(extensionsXml);
-                xml.closeElement(iqChildElement.element);
-            }
+        // Add the query section if there is one.
+        IQChildElementXmlStringBuilder iqChildElement = getIQChildElementBuilder(
+                        new IQChildElementXmlStringBuilder(this));
+        // TOOD: Document the cases where iqChildElement is null but childElementName not. And if there are none, change
+        // the logic.
+        if (iqChildElement == null) {
+            return;
         }
-        return xml;
+
+        xml.append(iqChildElement);
+
+        List<ExtensionElement> extensionsXml = getExtensions();
+        if (iqChildElement.isEmptyElement) {
+            if (extensionsXml.isEmpty()) {
+                xml.closeEmptyElement();
+                return;
+            }
+
+            xml.rightAngleBracket();
+        }
+
+        xml.append(extensionsXml);
+        xml.closeElement(iqChildElement.element);
     }
 
     /**

@@ -188,5 +188,10 @@ public class StanzaCollectorTest {
         public String toString() {
             return toXML().toString();
         }
+
+        @Override
+        public String getElementName() {
+            return "packetId";
+        }
     }
 }

@@ -38,17 +38,12 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     private final XmlEnvironment effectiveXmlEnvironment;
 
     public XmlStringBuilder() {
-        this((XmlEnvironment) null);
-    }
-
-    public XmlStringBuilder(XmlEnvironment effectiveXmlEnvironment) {
         sb = new LazyStringBuilder();
-        this.effectiveXmlEnvironment = effectiveXmlEnvironment;
+        effectiveXmlEnvironment = null;
     }
 
     public XmlStringBuilder(ExtensionElement pe) {
-        this();
-        prelude(pe);
+        this(pe, null);
     }
 
     public XmlStringBuilder(NamedElement e) {
@@ -59,12 +54,24 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public XmlStringBuilder(FullyQualifiedElement element, XmlEnvironment enclosingXmlEnvironment) {
         sb = new LazyStringBuilder();
         halfOpenElement(element);
-        if (enclosingXmlEnvironment != null
-                && !enclosingXmlEnvironment.effectiveNamespaceEquals(element.getNamespace())) {
-            xmlnsAttribute(element.getNamespace());
+
+        String xmlNs = element.getNamespace();
+        String xmlLang = element.getLanguage();
+        if (enclosingXmlEnvironment == null) {
+            xmlnsAttribute(xmlNs);
+            xmllangAttribute(xmlLang);
+        } else {
+            if (!enclosingXmlEnvironment.effectiveNamespaceEquals(xmlNs)) {
+                xmlnsAttribute(xmlNs);
+            }
+            if (!enclosingXmlEnvironment.effectiveLanguageEquals(xmlLang)) {
+                xmllangAttribute(xmlLang);
+            }
         }
+
         effectiveXmlEnvironment = XmlEnvironment.builder()
-                .withNamespace(element.getNamespace())
+                .withNamespace(xmlNs)
+                .withLanguage(xmlLang)
                 .withNext(enclosingXmlEnvironment)
                 .build();
     }
@@ -124,6 +131,15 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
+    /**
+     * Deprecated.
+     *
+     * @param element deprecated.
+     * @return deprecated.
+     * @deprecated use {@link #append(Element)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public XmlStringBuilder element(Element element) {
         assert element != null;
         return append(element.toXML());
@@ -161,7 +177,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
 
     public XmlStringBuilder optElement(Element element) {
         if (element != null) {
-            append(element.toXML());
+            append(element);
         }
         return this;
     }
@@ -435,6 +451,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     public XmlStringBuilder xmllangAttribute(String value) {
+        // TODO: This should probably be attribute(), not optAttribute().
         optAttribute("xml:lang", value);
         return this;
     }
@@ -499,13 +516,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
-    public XmlStringBuilder append(Collection<? extends Element> elements) {
-        return append(elements, effectiveXmlEnvironment);
+    public XmlStringBuilder append(Element element) {
+        return append(element.toXML(effectiveXmlEnvironment));
     }
 
-    public XmlStringBuilder append(Collection<? extends Element> elements, XmlEnvironment enclosingXmlEnvironment) {
+    public XmlStringBuilder append(Collection<? extends Element> elements) {
         for (Element element : elements) {
-            append(element.toXML(enclosingXmlEnvironment));
+            append(element);
         }
         return this;
     }

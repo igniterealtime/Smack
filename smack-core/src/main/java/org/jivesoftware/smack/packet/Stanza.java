@@ -59,6 +59,10 @@ public abstract class Stanza implements TopLevelStreamElement {
 
     private final MultiMap<QName, ExtensionElement> extensionElements = new MultiMap<>();
 
+    // Assume that all stanzas Smack handles are in the client namespace, since Smack is an XMPP client library. We can
+    // change this behavior later if it is required.
+    private final String namespace = StreamOpen.CLIENT_NAMESPACE;
+
     private String id = null;
     private Jid to;
     private Jid from;
@@ -283,11 +287,7 @@ public abstract class Stanza implements TopLevelStreamElement {
         error = xmppErrorBuilder.build();
     }
 
-    /**
-     * Returns the xml:lang of this Stanza, or null if one has not been set.
-     *
-     * @return the xml:lang of this Stanza, or null.
-     */
+    @Override
     public String getLanguage() {
         return language;
     }
@@ -491,6 +491,11 @@ public abstract class Stanza implements TopLevelStreamElement {
     @Override
     public abstract String toString();
 
+    @Override
+    public final String getNamespace() {
+        return namespace;
+    }
+
     /**
      * Returns the default language used for all messages containing localized content.
      *
@@ -501,33 +506,14 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * Add to, from, id and 'xml:lang' attributes
+     * Add to, from, and id attributes.
      *
      * @param xml the {@link XmlStringBuilder}.
-     * @param enclosingXmlEnvironment the enclosing XML namespace.
-     * @return the XML environment for this stanza.
      */
-    protected XmlEnvironment addCommonAttributes(XmlStringBuilder xml, XmlEnvironment enclosingXmlEnvironment) {
-        String language = getLanguage();
-        String namespace = StreamOpen.CLIENT_NAMESPACE;
-        if (enclosingXmlEnvironment != null) {
-            String effectiveEnclosingNamespace = enclosingXmlEnvironment.getEffectiveNamespaceOrUse(namespace);
-            switch (effectiveEnclosingNamespace) {
-            case StreamOpen.CLIENT_NAMESPACE:
-            case StreamOpen.SERVER_NAMESPACE:
-                break;
-            default:
-                namespace = effectiveEnclosingNamespace;
-            }
-        }
-
-        xml.xmlnsAttribute(namespace);
+    protected final void addCommonAttributes(XmlStringBuilder xml) {
         xml.optAttribute("to", getTo());
         xml.optAttribute("from", getFrom());
         xml.optAttribute("id", getStanzaId());
-        xml.xmllangAttribute(language);
-
-        return new XmlEnvironment(namespace, language);
     }
 
     protected void logCommonAttributes(StringBuilder sb) {
@@ -546,12 +532,11 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Append an XMPPError is this stanza has one set.
      *
      * @param xml the XmlStringBuilder to append the error to.
-     * @param enclosingXmlEnvironment the enclosing XML environment.
      */
-    protected void appendErrorIfExists(XmlStringBuilder xml, XmlEnvironment enclosingXmlEnvironment) {
+    protected void appendErrorIfExists(XmlStringBuilder xml) {
         StanzaError error = getError();
         if (error != null) {
-            xml.append(error.toXML(enclosingXmlEnvironment));
+            xml.append(error);
         }
     }
 }

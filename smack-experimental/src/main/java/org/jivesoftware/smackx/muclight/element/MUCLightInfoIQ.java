@@ -62,8 +62,8 @@ public class MUCLightInfoIQ extends IQ {
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
         xml.optElement("version", version);
-        xml.element(new ConfigurationElement(configuration));
-        xml.element(new OccupantsElement(occupants));
+        xml.append(new ConfigurationElement(configuration));
+        xml.append(new OccupantsElement(occupants));
         return xml;
     }
 

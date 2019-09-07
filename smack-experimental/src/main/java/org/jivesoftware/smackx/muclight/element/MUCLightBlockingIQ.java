@@ -90,7 +90,7 @@ public class MUCLightBlockingIQ extends IQ {
         Iterator<Map.Entry<Jid, Boolean>> it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Jid, Boolean> pair = it.next();
-            xml.element(new BlockingElement(pair.getKey(), pair.getValue(), isRoom));
+            xml.append(new BlockingElement(pair.getKey(), pair.getValue(), isRoom));
         }
     }
 

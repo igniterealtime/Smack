@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.InternetAddress;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -260,13 +260,20 @@ public class Bytestream extends IQ {
         return xml;
     }
 
+    private abstract static class BytestreamExtensionElement implements ExtensionElement {
+        @Override
+        public final String getNamespace() {
+            return NAMESPACE;
+        }
+    }
+
     /**
      * Stanza extension that represents a potential SOCKS5 proxy for the file transfer. Stream hosts
      * are forwarded to the target of the file transfer who then chooses and connects to one.
      *
      * @author Alexander Wenckus
      */
-    public static class StreamHost implements NamedElement {
+    public static class StreamHost extends BytestreamExtensionElement {
 
         public static String ELEMENTNAME = "streamhost";
 
@@ -342,7 +349,7 @@ public class Bytestream extends IQ {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this);
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.attribute("jid", getJID());
             xml.attribute("host", address);
             if (getPort() != 0) {
@@ -366,7 +373,7 @@ public class Bytestream extends IQ {
      *
      * @author Alexander Wenckus
      */
-    public static class StreamHostUsed implements NamedElement {
+    public static class StreamHostUsed extends BytestreamExtensionElement {
 
         public static String ELEMENTNAME = "streamhost-used";
 
@@ -397,7 +404,7 @@ public class Bytestream extends IQ {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this);
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.attribute("jid", getJID());
             xml.closeEmptyElement();
             return xml;
@@ -409,7 +416,7 @@ public class Bytestream extends IQ {
      *
      * @author Alexander Wenckus
      */
-    public static class Activate implements NamedElement {
+    public static class Activate extends BytestreamExtensionElement {
 
         public static String ELEMENTNAME = "activate";
 
@@ -440,12 +447,13 @@ public class Bytestream extends IQ {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this);
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.rightAngleBracket();
             xml.escape(getTarget());
             xml.closeElement(this);
             return xml;
         }
+
     }
 
     /**

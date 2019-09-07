@@ -120,7 +120,7 @@ public class JingleProvider extends IQProvider<Jingle> {
                 }
 
             } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(Jingle.getElementName())) {
+                if (parser.getName().equals(Jingle.NODENAME)) {
                     done = true;
                 }
             }

@@ -323,7 +323,7 @@ public class MUCUser implements ExtensionElement {
      *
      * @author Gaston Dombiak
      */
-    public static class Decline implements NamedElement {
+    public static class Decline implements ExtensionElement {
         public static final String ELEMENT = "decline";
 
         private final String reason;
@@ -370,7 +370,7 @@ public class MUCUser implements ExtensionElement {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this);
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.optAttribute("to", getTo());
             xml.optAttribute("from", getFrom());
             xml.rightAngleBracket();
@@ -382,6 +382,11 @@ public class MUCUser implements ExtensionElement {
         @Override
         public String getElementName() {
             return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
         }
     }
 

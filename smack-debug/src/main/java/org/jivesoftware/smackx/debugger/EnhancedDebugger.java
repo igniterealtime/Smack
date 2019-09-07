@@ -943,6 +943,11 @@ public class EnhancedDebugger extends SmackDebugger {
         public String toString() {
             return toXML((XmlEnvironment) null);
         }
+
+        @Override
+        public String getElementName() {
+            return null;
+        }
     }
 
     /**

@@ -113,11 +113,7 @@ public interface Packet extends TopLevelStreamElement {
      */
     void setError(StanzaError error);
 
-    /**
-     * Returns the xml:lang of this Stanza, or null if one has not been set.
-     *
-     * @return the xml:lang of this Stanza, or null.
-     */
+    @Override
     String getLanguage();
 
     /**

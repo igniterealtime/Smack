@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle.element;
+package org.jivesoftware.smackx.iot.data.element;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
-/**
- * An element found usually in Jingle 'transport' elements.
- *
- */
-public abstract class JingleContentTransportCandidate implements FullyQualifiedElement {
-
-    public static final String ELEMENT = "candidate";
+public abstract class IoTDataExtensionElement implements ExtensionElement {
 
     @Override
-    public String getElementName() {
-        return ELEMENT;
+    public final String getNamespace() {
+        return IoTFieldsExtension.NAMESPACE;
     }
+
 }

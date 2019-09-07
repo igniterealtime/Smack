@@ -76,7 +76,7 @@ public abstract class OmemoElement implements ExtensionElement {
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace).rightAngleBracket();
 
-        sb.element(header);
+        sb.append(header);
 
         if (payload != null) {
             sb.openElement(ATTR_PAYLOAD).append(Base64.encodeToString(payload)).closeElement(ATTR_PAYLOAD);

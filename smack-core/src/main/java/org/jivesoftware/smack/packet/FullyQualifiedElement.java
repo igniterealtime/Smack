@@ -32,4 +32,13 @@ public interface FullyQualifiedElement extends NamedElement {
         String localPart = getElementName();
         return new QName(namespaceURI, localPart);
     }
+
+    /**
+     * Returns the xml:lang of this XML element, or null if one has not been set.
+     *
+     * @return the xml:lang of this XML element, or null.
+     */
+    default String getLanguage() {
+        return null;
+    }
 }

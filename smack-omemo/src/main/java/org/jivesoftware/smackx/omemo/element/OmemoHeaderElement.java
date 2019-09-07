@@ -19,17 +19,22 @@ package org.jivesoftware.smackx.omemo.element;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
  * Header element of the message. The header contains information about the sender and the encrypted keys for
  * the recipients, as well as the iv element for AES.
  */
-public abstract class OmemoHeaderElement implements NamedElement {
+public abstract class OmemoHeaderElement implements FullyQualifiedElement {
 
-    public static final String NAME_HEADER = "header";
+    public static final String ELEMENT = "header";
+    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+
     public static final String ATTR_SID = "sid";
     public static final String ATTR_IV = "iv";
 
@@ -62,16 +67,21 @@ public abstract class OmemoHeaderElement implements NamedElement {
 
     @Override
     public String getElementName() {
-        return NAME_HEADER;
+        return ELEMENT;
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this);
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
         sb.attribute(ATTR_SID, getSid()).rightAngleBracket();
 
         for (OmemoKeyElement k : getKeys()) {
-            sb.element(k);
+            sb.append(k);
         }
 
         sb.openElement(ATTR_IV).append(Base64.encodeToString(getIv())).closeElement(ATTR_IV);

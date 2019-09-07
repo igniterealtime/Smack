@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Florian Schmaus
+ * Copyright © 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,7 @@ public abstract class AbstractTextElement implements ExtensionElement {
 
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.optXmlLangAttribute(lang);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.rightAngleBracket();
         xml.escape(text);
         xml.closeElement(this);
@@ -50,6 +49,19 @@ public abstract class AbstractTextElement implements ExtensionElement {
         return text;
     }
 
+    @Override
+    public final String getLanguage() {
+        return lang;
+    }
+
+    /**
+     * Deprecated.
+     *
+     * @return deprecated
+     * @deprecated use {@link #getLanguage()} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public final String getLang() {
         return lang;
     }

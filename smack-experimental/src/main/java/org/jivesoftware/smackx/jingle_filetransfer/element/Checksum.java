@@ -52,7 +52,7 @@ public class Checksum implements ExtensionElement {
         sb.optAttribute(ATTR_CREATOR, creator);
         sb.optAttribute(ATTR_NAME, name);
         sb.rightAngleBracket();
-        sb.element(file);
+        sb.append(file);
         sb.closeElement(this);
         return sb;
     }

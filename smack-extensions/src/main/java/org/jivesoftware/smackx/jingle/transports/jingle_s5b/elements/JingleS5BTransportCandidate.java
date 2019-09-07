@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.InternetAddress;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
@@ -32,6 +33,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * TransportCandidate for Jingle Socks5Bytestream transports.
  */
 public final class JingleS5BTransportCandidate extends JingleContentTransportCandidate {
+
+    public static final String NAMESPACE = JingleS5BTransport.NAMESPACE_V1;
 
     public static final String ATTR_CID = "cid";
     public static final String ATTR_HOST = "host";
@@ -130,10 +133,15 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
         return new Bytestream.StreamHost(jid, host, port);
     }
 
+
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(this);
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
         xml.attribute(ATTR_CID, cid);
         xml.attribute(ATTR_HOST, host);
         xml.attribute(ATTR_JID, jid);
@@ -207,4 +215,5 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
             return new JingleS5BTransportCandidate(cid, host, jid, port, priority, type);
         }
     }
+
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet
+ * Copyright 2014 Anno van Vliet, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package org.jivesoftware.smackx.xdatavalidation.packet;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.datatypes.UInt32;
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -336,7 +337,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
      * This element indicates for "list-multi", that a minimum and maximum number of options should be selected and/or
      * entered.
      */
-    public static class ListRange implements NamedElement {
+    public static class ListRange implements FullyQualifiedElement {
 
         public static final String ELEMENT = "list-range";
         private final UInt32 min;
@@ -363,8 +364,8 @@ public abstract class ValidateElement implements FormFieldChildElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder buf = new XmlStringBuilder(this);
+        public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+            XmlStringBuilder buf = new XmlStringBuilder(this, enclosingXmlEnvironment);
             buf.optAttribute("min", getMin());
             buf.optAttribute("max", getMax());
             buf.closeEmptyElement();
@@ -392,6 +393,11 @@ public abstract class ValidateElement implements FormFieldChildElement {
          */
         public UInt32 getMax() {
             return max;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
         }
 
     }

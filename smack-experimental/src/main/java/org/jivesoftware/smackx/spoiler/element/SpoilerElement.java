@@ -131,12 +131,7 @@ public class SpoilerElement implements ExtensionElement {
         return map;
     }
 
-    /**
-     * Return the language of the hint.
-     * May be null.
-     *
-     * @return language of hint text
-     */
+    @Override
     public String getLanguage() {
         return language;
     }
@@ -153,8 +148,7 @@ public class SpoilerElement implements ExtensionElement {
 
     @Override
     public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        xml.optXmlLangAttribute(getLanguage());
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         if (getHint() == null) {
             xml.closeEmptyElement();
         } else {

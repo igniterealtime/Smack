@@ -106,6 +106,29 @@ public class XmlEnvironment {
         return effectiveLanguage;
     }
 
+    public boolean effectiveLanguageEquals(String language) {
+        String effectiveLanguage = getEffectiveLanguage();
+        if (effectiveLanguage == null) {
+            return false;
+        }
+        return effectiveLanguage.equals(language);
+    }
+
+    private transient String toStringCache;
+
+    @Override
+    public String toString() {
+        if (toStringCache == null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(XmlEnvironment.class.getSimpleName()).append(' ');
+            sb.append("xmlns=").append(getEffectiveNamespace()).append(' ');
+            sb.append("xmllang=").append(getEffectiveLanguage()).append(' ');
+
+            toStringCache = sb.toString();
+        }
+        return toStringCache;
+    }
+
     public static XmlEnvironment from(XmlPullParser parser) {
         return from(parser, null);
     }

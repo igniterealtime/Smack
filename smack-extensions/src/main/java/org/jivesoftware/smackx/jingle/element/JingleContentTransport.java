@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -66,8 +67,8 @@ public abstract class JingleContentTransport implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
         addExtraAttributes(xml);
 
         if (candidates.isEmpty() && info == null) {

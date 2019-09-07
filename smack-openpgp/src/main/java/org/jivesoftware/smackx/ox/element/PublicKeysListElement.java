@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -66,9 +65,7 @@ public final class PublicKeysListElement implements ExtensionElement {
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this).rightAngleBracket();
-        for (PubkeyMetadataElement metadataElement : metadata.values()) {
-            xml.element(metadataElement);
-        }
+        xml.append(metadata.values());
         xml.closeElement(this);
         return xml;
     }
@@ -92,7 +89,7 @@ public final class PublicKeysListElement implements ExtensionElement {
         }
     }
 
-    public static class PubkeyMetadataElement implements NamedElement {
+    public static class PubkeyMetadataElement implements ExtensionElement {
 
         public static final String ELEMENT = "pubkey-metadata";
         public static final String ATTR_V4_FINGERPRINT = "v4-fingerprint";
@@ -121,6 +118,11 @@ public final class PublicKeysListElement implements ExtensionElement {
         @Override
         public String getElementName() {
             return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
         }
 
         @Override

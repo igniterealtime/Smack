@@ -122,7 +122,7 @@ public class ParseStreamManagementTest {
 
         StanzaErrorTextElement textElement = textElements.get(0);
         assertEquals("Previous session timed out", textElement.getText());
-        assertEquals("en", textElement.getLang());
+        assertEquals("en", textElement.getLanguage());
     }
 
     @Test

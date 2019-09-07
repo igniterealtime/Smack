@@ -126,15 +126,14 @@ public class MamElements {
         }
 
         @Override
-        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(this);
-            xml.xmlnsAttribute(NAMESPACE);
+        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+
             xml.optAttribute("queryid", getQueryId());
             xml.optAttribute("id", getId());
             xml.rightAngleBracket();
 
-            xml.element(getForwarded());
+            xml.append(getForwarded());
 
             xml.closeElement(this);
             return xml;

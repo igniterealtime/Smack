@@ -99,10 +99,10 @@ public class MUCLightCreateIQ extends IQ {
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
-        xml.element(new ConfigurationElement(configuration));
+        xml.append(new ConfigurationElement(configuration));
 
         if (!occupants.isEmpty()) {
-            xml.element(new OccupantsElement(occupants));
+            xml.append(new OccupantsElement(occupants));
         }
 
         return xml;

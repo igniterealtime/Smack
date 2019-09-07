@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class MarkupElement implements ExtensionElement {
@@ -267,46 +266,89 @@ public class MarkupElement implements ExtensionElement {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * Interface for child elements.
      */
-    public interface MarkupChildElement extends NamedElement {
+    public abstract static class MarkupChildElement implements ExtensionElement {
 
-        String ATTR_START = "start";
-        String ATTR_END = "end";
+        public static final String ATTR_START = "start";
+        public static final String ATTR_END = "end";
+
+        private final int start, end;
+
+        protected MarkupChildElement(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
 
         /**
          * Return the start index of this element.
          *
          * @return start index
          */
-        int getStart();
+        public final int getStart() {
+            return start;
+        }
 
         /**
          * Return the end index of this element.
          *
          * @return end index
          */
-        int getEnd();
+        public final int getEnd() {
+            return end;
+        }
+
+        @Override
+        public final String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+            xml.attribute(ATTR_START, getStart());
+            xml.attribute(ATTR_END, getEnd());
+
+            afterXmlPrelude(xml);
+            return xml;
+        }
+
+        protected abstract void afterXmlPrelude(XmlStringBuilder xml);
+    }
+
+    public abstract static class NonEmptyChildElement extends MarkupChildElement {
+
+        protected NonEmptyChildElement(int start, int end) {
+            super(start, end);
+        }
+
+        @Override
+        protected final void afterXmlPrelude(XmlStringBuilder xml) {
+            xml.rightAngleBracket();
+
+            appendInnerXml(xml);
+
+            xml.closeElement(this);
+        }
+
+        protected abstract void appendInnerXml(XmlStringBuilder xml);
+
     }
 
     /**
      * Interface for block level child elements.
      */
-    public interface BlockLevelMarkupElement extends MarkupChildElement {
+    public abstract static class BlockLevelMarkupElement extends MarkupChildElement {
+
+        protected BlockLevelMarkupElement(int start, int end) {
+            super(start, end);
+        }
+
+        @Override
+        protected final void afterXmlPrelude(XmlStringBuilder xml) {
+            xml.closeEmptyElement();
+        }
 
     }
 }

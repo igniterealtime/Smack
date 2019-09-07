@@ -417,7 +417,7 @@ public final class FormField implements FullyQualifiedElement {
         } else {
             buf.rightAngleBracket();
 
-            buf.append(formFieldChildElements, enclosingNamespace);
+            buf.append(formFieldChildElements);
 
             buf.closeElement(this);
         }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package org.jivesoftware.smackx.iot.control.element;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public abstract class SetData implements NamedElement {
+public abstract class SetData implements ExtensionElement {
 
     public enum Type {
         BOOL,
@@ -76,6 +76,11 @@ public abstract class SetData implements NamedElement {
         return getType().toString();
     }
 
+    @Override
+    public final String getNamespace() {
+        return IoTSetRequest.NAMESPACE;
+    }
+
     /**
      * Returns the XML representation of this Element.
      *
@@ -83,7 +88,7 @@ public abstract class SetData implements NamedElement {
      */
     @Override
     public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.attribute("name", name);
         xml.attribute("value", value);
         xml.closeEmptyElement();

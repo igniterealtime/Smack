@@ -124,7 +124,7 @@ public class MamFinIQ extends IQ {
             xml.setEmptyElement();
         } else {
             xml.rightAngleBracket();
-            xml.element(rsmSet);
+            xml.append(rsmSet);
         }
         return xml;
     }

@@ -114,9 +114,7 @@ public class AbstractError {
             xml.escape(text);
             xml.closeElement("text");
         }
-        for (ExtensionElement packetExtension : extensions) {
-            xml.append(packetExtension.toXML());
-        }
+        xml.append(extensions);
     }
 
     public abstract static class Builder<B extends Builder<B>> {

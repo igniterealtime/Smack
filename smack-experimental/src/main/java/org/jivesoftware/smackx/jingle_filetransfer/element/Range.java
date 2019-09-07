@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.element;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
@@ -24,9 +24,11 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 /**
  * RangeElement which specifies, which range of a file shall be transferred.
  */
-public class Range implements NamedElement {
+public class Range implements FullyQualifiedElement {
 
     public static final String ELEMENT = "range";
+    public static final String NAMESPACE = JingleFileTransferChild.NAMESPACE;
+
     public static final String ATTR_OFFSET = "offset";
     public static final String ATTR_LENGTH = "length";
 
@@ -100,6 +102,11 @@ public class Range implements NamedElement {
     }
 
     @Override
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
     public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder sb =  new XmlStringBuilder(this);
 
@@ -108,7 +115,7 @@ public class Range implements NamedElement {
 
         if (hash != null) {
             sb.rightAngleBracket();
-            sb.element(hash);
+            sb.append(hash);
             sb.closeElement(this);
         } else {
             sb.closeEmptyElement();

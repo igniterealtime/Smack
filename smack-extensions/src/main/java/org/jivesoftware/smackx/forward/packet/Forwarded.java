@@ -72,10 +72,10 @@ public class Forwarded implements ExtensionElement {
 
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.rightAngleBracket();
         xml.optElement(getDelayInformation());
-        xml.append(forwardedPacket.toXML(NAMESPACE));
+        xml.append(forwardedPacket);
         xml.closeElement(this);
         return xml;
     }

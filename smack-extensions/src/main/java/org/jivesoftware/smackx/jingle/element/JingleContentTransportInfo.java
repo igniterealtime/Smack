@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
 
 /**
  * Abstract JingleContentTransportInfo element.
  */
-public abstract class JingleContentTransportInfo implements NamedElement {
+public interface JingleContentTransportInfo extends FullyQualifiedElement {
 
 }

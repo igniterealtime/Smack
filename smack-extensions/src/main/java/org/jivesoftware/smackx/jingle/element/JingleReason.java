@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package org.jivesoftware.smackx.jingle.element;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -29,9 +30,10 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @see <a href="https://xmpp.org/extensions/xep-0166.html#def-reason">XEP-0166 § 7.4</a>
  *
  */
-public class JingleReason implements NamedElement {
+public class JingleReason implements FullyQualifiedElement {
 
     public static final String ELEMENT = "reason";
+    public static final String NAMESPACE = Jingle.NAMESPACE;
 
     public static AlternativeSession AlternativeSession(String sessionId) {
         return new AlternativeSession(sessionId);
@@ -114,11 +116,16 @@ public class JingleReason implements NamedElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
         xml.rightAngleBracket();
 
-        xml.emptyElement(reason.asString);
+        xml.emptyElement(reason);
 
         xml.closeElement(this);
         return xml;

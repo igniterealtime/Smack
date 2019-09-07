@@ -54,14 +54,14 @@ public class OmemoVAxolotlProvider extends ExtensionElementProvider<OmemoElement
             switch (tag) {
                 case START_ELEMENT:
                     switch (name) {
-                        case OmemoHeaderElement.NAME_HEADER:
+                        case OmemoHeaderElement.ELEMENT:
                             for (int i = 0; i < parser.getAttributeCount(); i++) {
                                 if (parser.getAttributeName(i).equals(OmemoHeaderElement.ATTR_SID)) {
                                     sid = Integer.parseInt(parser.getAttributeValue(i));
                                 }
                             }
                             break;
-                        case OmemoKeyElement.NAME_KEY:
+                        case OmemoKeyElement.ELEMENT:
                             boolean prekey = false;
                             int rid = -1;
                             for (int i = 0; i < parser.getAttributeCount(); i++) {

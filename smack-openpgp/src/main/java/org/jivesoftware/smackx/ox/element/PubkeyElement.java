@@ -20,7 +20,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -77,7 +76,7 @@ public class PubkeyElement implements ExtensionElement {
         XmlStringBuilder xml = new XmlStringBuilder(this)
                 .optAttribute(ATTR_DATE, date)
                 .rightAngleBracket()
-                .element(getDataElement())
+                .append(getDataElement())
                 .closeElement(this);
         return xml;
     }
@@ -85,7 +84,7 @@ public class PubkeyElement implements ExtensionElement {
     /**
      * Element that contains the base64 encoded public key.
      */
-    public static class PubkeyDataElement implements NamedElement {
+    public static class PubkeyDataElement implements ExtensionElement {
 
         public static final String ELEMENT = "data";
 
@@ -110,8 +109,13 @@ public class PubkeyElement implements ExtensionElement {
         }
 
         @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this)
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace)
                     .rightAngleBracket()
                     .append(new String(b64Data, Charset.forName("UTF-8")))
                     .closeElement(this);

@@ -738,10 +738,6 @@ public class PacketParserUtilsTest {
             .a("type", "chat")
             .a("xml:lang", "en")
             .e("body")
-                // TODO: Remove the following xml:lang once Smack's serialization toXml() API is aware of a potential
-                // scoping xml:lang value. The out message stanza already declares an xml:lang with the exact same
-                // value, hence this statement is redundant.
-                .a("xml:lang", "en")
                 .t("This is a test of the emergency broadcast system, 1.")
             .up()
             .e("body")

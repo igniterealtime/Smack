@@ -468,6 +468,11 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     }
 
     @Override
+    public String getElementName() {
+        return ELEMENT;
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Message Stanza [");
@@ -481,9 +486,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
 
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
-        XmlStringBuilder buf = new XmlStringBuilder(enclosingXmlEnvironment);
-        buf.halfOpenElement(ELEMENT);
-        enclosingXmlEnvironment = addCommonAttributes(buf, enclosingXmlEnvironment);
+        XmlStringBuilder buf = new XmlStringBuilder(this, enclosingXmlEnvironment);
+        addCommonAttributes(buf);
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
@@ -497,16 +501,16 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             // Skip the default language
             if (subject.equals(defaultSubject))
                 continue;
-            buf.append(subject.toXML());
+            buf.append(subject);
         }
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
-            appendErrorIfExists(buf, enclosingXmlEnvironment);
+            appendErrorIfExists(buf);
         }
 
         // Add extension elements, if any are defined.
-        buf.append(getExtensions(), enclosingXmlEnvironment);
+        buf.append(getExtensions());
 
         buf.closeElement(ELEMENT);
         return buf;
@@ -544,11 +548,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             this.subject = subject;
         }
 
-        /**
-         * Returns the language of this message subject.
-         *
-         * @return the language of this message subject.
-         */
+        @Override
         public String getLanguage() {
             return language;
         }
@@ -592,8 +592,8 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(getElementName()).optXmlLangAttribute(getLanguage()).rightAngleBracket();
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+            xml.rightAngleBracket();
             xml.escape(subject);
             xml.closeElement(getElementName());
             return xml;
@@ -642,12 +642,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
             this.namespace = Objects.requireNonNull(namespace);
         }
 
-        /**
-         * Returns the language of this message body or {@code null} if the body extension element does not explicitly
-         * set a language, but instead inherits it from the outer element (usually a {@link Message} stanza).
-         *
-         * @return the language of this message body or {@code null}.
-         */
+        @Override
         public String getLanguage() {
             return language;
         }
@@ -692,7 +687,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         @Override
         public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
-            xml.optXmlLangAttribute(getLanguage()).rightAngleBracket();
+            xml.rightAngleBracket();
             xml.escape(message);
             xml.closeElement(getElementName());
             return xml;

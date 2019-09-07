@@ -24,8 +24,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
@@ -112,7 +112,7 @@ public final class RosterPacket extends IQ {
      * the groups the roster item belongs to.
      */
     // TODO Make this class immutable.
-    public static final class Item implements NamedElement {
+    public static final class Item implements ExtensionElement {
 
         /**
          * The constant value "{@value}".
@@ -161,6 +161,11 @@ public final class RosterPacket extends IQ {
         @Override
         public String getElementName() {
             return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
         }
 
         /**
@@ -275,7 +280,7 @@ public final class RosterPacket extends IQ {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this);
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.attribute("jid", jid);
             xml.optAttribute("name", name);
             xml.optAttribute("subscription", itemType);

@@ -325,14 +325,9 @@ public class DataForm implements ExtensionElement {
 
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
-        XmlStringBuilder buf = new XmlStringBuilder(this);
+        XmlStringBuilder buf = new XmlStringBuilder(this, xmlEnvironment);
         buf.attribute("type", getType());
         buf.rightAngleBracket();
-
-        XmlEnvironment dataFormxmlEnvironment = XmlEnvironment.builder()
-                        .withNamespace(NAMESPACE)
-                        .withNext(xmlEnvironment)
-                        .build();
 
         buf.optElement("title", getTitle());
         for (String instruction : getInstructions()) {
@@ -347,7 +342,7 @@ public class DataForm implements ExtensionElement {
             buf.append(item.toXML());
         }
         // Add all form fields.
-        buf.append(getFields(), dataFormxmlEnvironment);
+        buf.append(getFields());
         for (Element element : extensionElements) {
             buf.append(element.toXML());
         }

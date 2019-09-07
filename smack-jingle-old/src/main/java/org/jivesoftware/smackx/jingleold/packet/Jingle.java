@@ -183,25 +183,6 @@ public class Jingle extends IQ {
     }
 
     /**
-     * Returns the XML element name of the extension sub-packet root element.
-     * Always returns "jingle"
-     *
-     * @return the XML element name of the stanza extension.
-     */
-    public static String getElementName() {
-        return NODENAME;
-    }
-
-    /**
-     * Returns the XML namespace of the extension sub-packet root element.
-     *
-     * @return the XML namespace of the stanza extension.
-     */
-    public static String getNamespace() {
-        return NAMESPACE;
-    }
-
-    /**
      * Jingle content info.
      *
      * @return the audioInfo.

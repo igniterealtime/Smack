@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.element;
 import java.io.File;
 import java.util.Date;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
@@ -27,8 +28,10 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildEleme
 /**
  * Content of type File.
  */
-public class JingleFileTransferChild extends JingleContentDescriptionChildElement {
+public class JingleFileTransferChild implements JingleContentDescriptionChildElement {
     public static final String ELEMENT = "file";
+    public static final String NAMESPACE = JingleFileTransfer.NAMESPACE_V5;
+
     public static final String ELEM_DATE = "date";
     public static final String ELEM_DESC = "desc";
     public static final String ELEM_MEDIA_TYPE = "media-type";
@@ -87,8 +90,13 @@ public class JingleFileTransferChild extends JingleContentDescriptionChildElemen
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this);
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace);
         sb.rightAngleBracket();
 
         sb.optElement(ELEM_DATE, date);

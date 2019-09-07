@@ -115,7 +115,7 @@ public class EnablePushNotificationsIQ extends IQ {
                 dataForm.addField(field.build());
             }
 
-            xml.element(dataForm);
+            xml.append(dataForm);
         }
 
         return xml;

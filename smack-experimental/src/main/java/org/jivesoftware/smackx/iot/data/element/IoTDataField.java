@@ -16,10 +16,9 @@
  */
 package org.jivesoftware.smackx.iot.data.element;
 
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public abstract class IoTDataField implements NamedElement {
+public abstract class IoTDataField extends IoTDataExtensionElement {
 
     enum Type {
         integer("int"),
@@ -53,7 +52,7 @@ public abstract class IoTDataField implements NamedElement {
 
     @Override
     public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.attribute("name", name).attribute("value", getValueString());
         // TODO handle 'unit' attribute as special case if <numeric/> is implemented.
         xml.closeEmptyElement();

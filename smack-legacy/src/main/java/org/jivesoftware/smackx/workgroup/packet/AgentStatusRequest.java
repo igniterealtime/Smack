@@ -65,14 +65,6 @@ public class AgentStatusRequest extends IQ {
         return Collections.unmodifiableSet(agents);
     }
 
-    public String getElementName() {
-        return ELEMENT_NAME;
-    }
-
-    public String getNamespace() {
-        return NAMESPACE;
-    }
-
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
         buf.rightAngleBracket();

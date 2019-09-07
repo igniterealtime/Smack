@@ -16,16 +16,21 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
  * Small class to collect key (byte[]), its id and whether its a preKey or not.
  */
-public class OmemoKeyElement implements NamedElement {
+public class OmemoKeyElement implements FullyQualifiedElement {
 
-    public static final String NAME_KEY = "key";
+    public static final String ELEMENT = "key";
+    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+
     public static final String ATTR_RID = "rid";
     public static final String ATTR_PREKEY = "prekey";
 
@@ -34,9 +39,7 @@ public class OmemoKeyElement implements NamedElement {
     private final boolean preKey;
 
     public OmemoKeyElement(byte[] data, int id) {
-        this.data = data;
-        this.id = id;
-        this.preKey = false;
+        this(data, id, false);
     }
 
     public OmemoKeyElement(byte[] data, int id, boolean preKey) {
@@ -64,12 +67,17 @@ public class OmemoKeyElement implements NamedElement {
 
     @Override
     public String getElementName() {
-        return NAME_KEY;
+        return ELEMENT;
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this);
+    public String getNamespace() {
+        return NAMESPACE;
+    }
+
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
+        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
 
         if (isPreKey()) {
             sb.attribute(ATTR_PREKEY, true);
