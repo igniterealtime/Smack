@@ -47,7 +47,7 @@ public class PagingTest extends MamTest {
 
         assertEquals(mamQueryIQ.getDataForm(), dataForm);
         assertEquals(mamQueryIQ.getDataForm().getFields().get(0).getValues().get(0).toString(), "urn:xmpp:mam:1");
-        assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), pagingStanza);
+        assertEquals(pagingStanza, mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
 }
