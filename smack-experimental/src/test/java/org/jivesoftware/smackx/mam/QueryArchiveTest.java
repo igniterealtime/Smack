@@ -82,8 +82,7 @@ public class QueryArchiveTest extends MamTest {
 
         message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
 
-        // FIXME: The order of assertEquals is reversed, fix it by switching it.
-        assertEquals(message.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamQueryResultExample);
+        assertEquals(mamQueryResultExample, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 
