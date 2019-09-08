@@ -62,10 +62,6 @@ public abstract class IQ extends Stanza {
         this.childElementQName = iq.childElementQName;
     }
 
-    protected IQ(String childElementName) {
-        this(childElementName, null);
-    }
-
     protected IQ(String childElementName, String childElementNamespace) {
         this.childElementName = childElementName;
         this.childElementNamespace = childElementNamespace;
