@@ -90,6 +90,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Internet of Things - Sensor Data](iot.md)                | [XEP-0323](https://xmpp.org/extensions/xep-0323.html)  | n/a       | Sensor data interchange over XMPP. |
 | [Internet of Things - Provisioning](iot.md)               | [XEP-0324](https://xmpp.org/extensions/xep-0324.html)  | n/a       | Provisioning, access rights and user privileges for the Internet of Things. |
 | [Internet of Things - Control](iot.md)                    | [XEP-0325](https://xmpp.org/extensions/xep-0325.html)  | n/a       | Describes how to control devices or actuators in an XMPP-based sensor network. |
+| Jid Prep                                                  | [XEP-0328](https://xmpp.org/extensions/xep-0328.html)  | 0.1       | Describes a way for an XMPP client to request an XMPP server to prep and normalize a given JID. |
 | [HTTP over XMPP transport](hoxt.md)                       | [XEP-0332](https://xmpp.org/extensions/xep-0332.html)  | n/a       | Allows to transport HTTP communication over XMPP peer-to-peer networks. |
 | Chat Markers                                              | [XEP-0333](https://xmpp.org/extensions/xep-0333.html)  | n/a       | A solution of marking the last received, displayed and acknowledged message in a chat. |
 | Message Processing Hints                                  | [XEP-0334](https://xmpp.org/extensions/xep-0334.html)  | n/a       | Hints to entities routing or receiving a message. |

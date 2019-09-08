@@ -324,4 +324,11 @@
       <className>org.jivesoftware.smackx.dox.provider.DnsIqProvider</className>
     </iqProvider>
 
+    <!-- XEP-0328: JID Prep -->
+    <iqProvider>
+      <elementName>jid</elementName>
+      <namespace>urn:xmpp:jidprep:0</namespace>
+      <className>org.jivesoftware.smackx.jid_prep.provider.JidPrepIqProvider</className>
+    </iqProvider>
+
 </smackProviders>
