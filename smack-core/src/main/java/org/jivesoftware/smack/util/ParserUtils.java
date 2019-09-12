@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.datatypes.UInt32;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
@@ -339,6 +340,14 @@ public class ParserUtils {
             throw new IOException("Next text is null or empty (" + text + ')');
         }
         return text;
+    }
+
+    public static String getXmlLang(XmlPullParser parser, XmlEnvironment xmlEnvironment) {
+        String currentXmlLang = getXmlLang(parser);
+        if (currentXmlLang != null) {
+            return currentXmlLang;
+        }
+        return xmlEnvironment.getEffectiveLanguage();
     }
 
     public static String getXmlLang(XmlPullParser parser) {

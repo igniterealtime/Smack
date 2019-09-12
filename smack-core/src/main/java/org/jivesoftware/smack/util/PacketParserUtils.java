@@ -121,6 +121,20 @@ public class PacketParserUtils {
         }
     }
 
+    private static void parseCommonStanzaAttributes(Stanza stanza, XmlPullParser parser, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
+        String id = parser.getAttributeValue("id");
+        stanza.setStanzaId(id);
+
+        Jid to = ParserUtils.getJidAttribute(parser, "to");
+        stanza.setTo(to);
+
+        Jid from = ParserUtils.getJidAttribute(parser, "from");
+        stanza.setFrom(from);
+
+        String language = ParserUtils.getXmlLang(parser, xmlEnvironment);
+        stanza.setLanguage(language);
+    }
+
     public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         return parseMessage(parser, XmlEnvironment.EMPTY);
     }
@@ -142,15 +156,11 @@ public class PacketParserUtils {
         XmlEnvironment messageXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
         final int initialDepth = parser.getDepth();
         Message message = new Message();
-        message.setStanzaId(parser.getAttributeValue("", "id"));
-        message.setTo(ParserUtils.getJidAttribute(parser, "to"));
-        message.setFrom(ParserUtils.getJidAttribute(parser, "from"));
+        parseCommonStanzaAttributes(message, parser, outerXmlEnvironment);
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null) {
             message.setType(Message.Type.fromString(typeString));
         }
-        String language = ParserUtils.getXmlLang(parser);
-        message.setLanguage(language);
 
         // Parse sub-elements. We include extra logic to make sure the values
         // are only read once. This is because it's possible for the names to appear
@@ -433,14 +443,7 @@ public class PacketParserUtils {
             type = Presence.Type.fromString(typeString);
         }
         Presence presence = new Presence(type);
-        presence.setTo(ParserUtils.getJidAttribute(parser, "to"));
-        presence.setFrom(ParserUtils.getJidAttribute(parser, "from"));
-        presence.setStanzaId(parser.getAttributeValue("", "id"));
-
-        String language = ParserUtils.getXmlLang(parser);
-        if (language != null && !"".equals(language.trim())) {
-            presence.setLanguage(language);
-        }
+        parseCommonStanzaAttributes(presence, parser, outerXmlEnvironment);
 
         // Parse sub-elements
         outerloop: while (true) {
