@@ -91,7 +91,7 @@ public class PacketParserUtils {
 
     @SuppressWarnings("unchecked")
     public static <S extends Stanza> S parseStanza(String stanza) throws XmlPullParserException, SmackParsingException, IOException {
-        return (S) parseStanza(getParserFor(stanza), null);
+        return (S) parseStanza(getParserFor(stanza), XmlEnvironment.EMPTY);
     }
 
     /**
@@ -122,7 +122,7 @@ public class PacketParserUtils {
     }
 
     public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseMessage(parser, null);
+        return parseMessage(parser, XmlEnvironment.EMPTY);
     }
 
     /**
@@ -409,7 +409,7 @@ public class PacketParserUtils {
     }
 
     public static Presence parsePresence(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parsePresence(parser, null);
+        return parsePresence(parser, XmlEnvironment.EMPTY);
     }
 
     /**
