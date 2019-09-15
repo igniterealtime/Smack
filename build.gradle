@@ -1,5 +1,3 @@
-import org.gradle.plugins.signing.Sign
-
 buildscript {
     repositories {
         jcenter()
@@ -38,7 +36,8 @@ allprojects {
 		rootConfigDir = new File(rootDir, 'config')
 		sonatypeCredentialsAvailable = project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
 		isReleaseVersion = !isSnapshot
-		signingRequired = isReleaseVersion
+		isContinuousIntegrationEnvironment = Boolean.parseBoolean(System.getenv('CI'))
+		signingRequired = !(isSnapshot || isContinuousIntegrationEnvironment)
 		sonatypeSnapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
 		sonatypeStagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
 		// Returns only the date in yyyy-MM-dd format, as otherwise, with
@@ -387,7 +386,7 @@ ${oneLineDesc}."""
 
 evaluationDependsOnChildren()
 subprojects {
-	apply plugin: 'maven'
+	apply plugin: 'maven-publish'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
 	apply plugin: 'org.kordamp.gradle.clirr'
@@ -403,85 +402,62 @@ subprojects {
 		classifier = 'javadoc'
 		from javadoc.destinationDir
 	}
-	task testJar(type: Jar, dependsOn: testClasses) {
+	task testsJar(type: Jar, dependsOn: testClasses) {
 		classifier = 'tests'
 		from sourceSets.test.output
 	}
 
-	// Does install unique snapshosts (and release)s in the local maven
-	// repository, unlike the 'install' task.
-	// You can specify the path of the local maven repository using 'maven.repo.local', e.g.
-	// gradle uploadLocal -Dmaven.repo.local=/var/www/repo
-	task uploadLocal(type: Upload) {
-		description "Uploads artifacts into the local maven repositories URL."
-		configuration = configurations['archives']
-		repositories {
-			mavenDeployer {
-				repository url: repositories.mavenLocal().url
-			}
-		}
-	}
-
-	configurations {
-		archivesOutput.extendsFrom (testCompile)
-	}
-
 	artifacts {
+		// TODO delete those?
 		archives sourcesJar
 		archives javadocJar
-		archives testJar
+		archives testsJar
 		// See http://stackoverflow.com/a/21946676/194894
-		testRuntime testJar
+		testRuntime testsJar
 	}
 
-	uploadArchives {
-		repositories {
-			mavenDeployer {
-				if (signingRequired) {
-					beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-				}
-				repository(url: project.sonatypeStagingUrl) {
-					if (sonatypeCredentialsAvailable) {
-						authentication(userName: sonatypeUsername, password: sonatypePassword)
-					}
-				}
-				snapshotRepository(url: project.sonatypeSnapshotUrl) {
-					if (sonatypeCredentialsAvailable) {
-						authentication(userName: sonatypeUsername, password: sonatypePassword)
-					}
-				}
-
-				pom.project {
-					name 'Smack'
-					packaging 'jar'
-					inceptionYear '2003'
-					url 'http://www.igniterealtime.org/projects/smack/'
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				from components.java
+				artifact sourcesJar
+				artifact javadocJar
+				artifact testsJar
+				pom {
+					name = 'Smack'
+					packaging = 'jar'
+					inceptionYear = '2003'
+					url = 'http://www.igniterealtime.org/projects/smack/'
 					description project.description
 
 					issueManagement {
-						system 'JIRA'
-						url 'https://igniterealtime.org/issues/browse/SMACK'
-					}
-
-					distributionManagement {
-						snapshotRepository {
-							id 'smack.snapshot'
-							url project.sonatypeSnapshotUrl
-						}
+						system = 'JIRA'
+						url = 'https://igniterealtime.org/issues/browse/SMACK'
 					}
 
 					scm {
-						url 'https://github.com/igniterealtime/Smack'
-						connection 'scm:git:https://github.com/igniterealtime/Smack.git'
-						developerConnection 'scm:git:https://github.com/igniterealtime/Smack.git'
+						url = 'https://github.com/igniterealtime/Smack'
+						connection =  'scm:git:https://github.com/igniterealtime/Smack.git'
+						developerConnection =  'scm:git:https://github.com/igniterealtime/Smack.git'
 					}
 
 					developers {
 						developer {
-							id 'flow'
-							name 'Florian Schmaus'
-							email 'flow@igniterealtime.org'
+							id = 'flow'
+							name = 'Florian Schmaus'
+							email = 'flow@igniterealtime.org'
 						}
+					}
+				}
+			}
+		}
+		repositories {
+			maven {
+				url isSnapshot ? sonatypeSnapshotUrl : sonatypeStagingUrl
+				if (sonatypeCredentialsAvailable) {
+					credentials {
+						username = sonatypeUsername
+						password = sonatypePassword
 					}
 				}
 			}
@@ -507,7 +483,7 @@ subprojects {
 	signing {
 		useGpgCmd()
 		required { signingRequired }
-		sign configurations.archives
+		sign publishing.publications.mavenJava
 	}
 
 	clirr {
@@ -589,15 +565,15 @@ configure(subprojects - gplLicensedProjects) {
 	checkstyle {
 		configProperties.checkstyleLicenseHeader = "header"
 	}
-	uploadArchives {
-		repositories {
-			mavenDeployer {
-				pom.project {
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom {
 					licenses {
 						license {
-							name 'The Apache Software License, Version 2.0'
-							url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-							distribution 'repo'
+							name = 'The Apache Software License, Version 2.0'
+							url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+							distribution = 'repo'
 						}
 					}
 				}
@@ -610,22 +586,21 @@ configure(gplLicensedProjects) {
 	checkstyle {
 		configProperties.checkstyleLicenseHeader = "${project.name}-gplv3-license-header"
 	}
-	uploadArchives {
-	repositories {
-		mavenDeployer {
-			pom.project {
-				licenses {
-					license {
-						name 'GNU General Public License, version 3 or any later version'
-						url 'https://www.gnu.org/licenses/gpl.txt'
-						distribution 'repo'
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom {
+					licenses {
+						license {
+							name = 'GNU General Public License, version 3 or any later version'
+							url = 'https://www.gnu.org/licenses/gpl.txt'
+							distribution = 'repo'
+						}
 					}
 				}
 			}
 		}
 	}
-}
-
 }
 
 configure(androidBootClasspathProjects) {

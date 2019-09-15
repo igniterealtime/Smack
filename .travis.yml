@@ -36,7 +36,7 @@ install: gradle assemble --stacktrace
 # functional. Which hasn't always be the case in the past, see
 # 90cbcaebc7a89f4f771f733a33ac9f389df85be2
 # Also run javadocAll to ensure it works.
-script: gradle check install javadocAll --stacktrace
+script: gradle check publishToMavenLocal javadocAll --stacktrace
 
 after_success:
   - JAVAC_VERSION=$((javac -version) 2>&1)
