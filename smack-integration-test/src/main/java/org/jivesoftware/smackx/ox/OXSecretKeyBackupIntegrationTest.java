@@ -32,7 +32,6 @@ import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.ox.callback.backup.AskForBackupCodeCallback;
 import org.jivesoftware.smackx.ox.callback.backup.DisplayBackupCodeCallback;
@@ -63,8 +62,9 @@ import org.pgpainless.key.protection.UnprotectedKeysProtector;
 public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegrationTest {
 
     private static final String sessionId = StringUtils.randomString(10);
-    private static final File beforePath = FileTestUtil.getTempDir("ox_backup_" + sessionId);
-    private static final File afterPath = FileTestUtil.getTempDir("ox_restore_" + sessionId);
+    private static final File tempDir = org.apache.commons.io.FileUtils.getTempDirectory();
+    private static final File beforePath = new File(tempDir, "ox_backup_" + sessionId);
+    private static final File afterPath = new File(tempDir, "ox_restore_" + sessionId);
 
     private String backupCode = null;
 
@@ -108,10 +108,10 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
 
     @AfterClass
     @BeforeClass
-    public static void cleanStore() {
+    public static void cleanStore() throws IOException {
         LOGGER.log(Level.INFO, "Delete store directories...");
-        FileTestUtil.deleteDirectory(afterPath);
-        FileTestUtil.deleteDirectory(beforePath);
+        org.apache.commons.io.FileUtils.deleteDirectory(afterPath);
+        org.apache.commons.io.FileUtils.deleteDirectory(beforePath);
     }
 
     @After

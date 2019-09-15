@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.ox.callback.SecretKeyPassphraseCallback;
@@ -78,7 +77,7 @@ public class OpenPgpStoreTest extends SmackTestSuite {
     private final OpenPgpStore openPgpStoreInstance2;
 
     static {
-        storagePath = FileTestUtil.getTempDir("storeTest");
+        storagePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "storeTest");
     }
 
     @Parameterized.Parameters
@@ -99,8 +98,8 @@ public class OpenPgpStoreTest extends SmackTestSuite {
 
     @Before
     @After
-    public void deletePath() {
-        FileTestUtil.deleteDirectory(storagePath);
+    public void deletePath() throws IOException {
+        org.apache.commons.io.FileUtils.deleteDirectory(storagePath);
     }
 
     /*

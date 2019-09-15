@@ -14,9 +14,9 @@ dependencies {
 	compile project(':smack-omemo')
 	compile project(':smack-openpgp')
 	compile project(':smack-debug')
-	compile project(path: ":smack-omemo", configuration: "testRuntime")
 	compile 'org.reflections:reflections:0.9.11'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
+	compile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
 	// Note that the junit-vintage-engine runtime dependency is not
 	// directly required, but it declares a dependency to
 	// junit:junit:4.12, which we currently need in sinttest, since it
@@ -25,6 +25,7 @@ dependencies {
 	compile 'junit:junit:4.12'
 	// Add Junit 5 API for e.g. assertThrows()
 	implementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+	testCompile project(path: ":smack-core", configuration: "testRuntime")
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 }
 

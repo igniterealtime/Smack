@@ -34,7 +34,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -63,7 +62,7 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
     private static final File basePath;
 
     static {
-        basePath = FileTestUtil.getTempDir("ox_im_test_" + StringUtils.randomString(10));
+        basePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "ox_im_test_" + StringUtils.randomString(10));
     }
 
     @Test
@@ -169,7 +168,7 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
 
     @AfterClass
     @BeforeClass
-    public static void deleteDirs() {
-        FileTestUtil.deleteDirectory(basePath);
+    public static void deleteDirs() throws IOException {
+        org.apache.commons.io.FileUtils.deleteDirectory(basePath);
     }
 }

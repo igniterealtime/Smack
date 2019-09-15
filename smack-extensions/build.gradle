@@ -11,5 +11,4 @@ dependencies {
 	// e.g. message delivery receipts the roster
 	compile project(':smack-im')
 	testCompile project(path: ":smack-core", configuration: "testRuntime")
-	testCompile project(path: ":smack-core", configuration: "archives")
 }

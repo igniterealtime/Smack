@@ -131,6 +131,7 @@ allprojects {
 		].collect { project(it) }
 		junitVersion = '5.4.2'
 		powerMockVersion = '2.0.2'
+		commonsIoVersion = '2.6'
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = JavaVersion.VERSION_1_8
@@ -408,10 +409,6 @@ subprojects {
 	}
 
 	artifacts {
-		// TODO delete those?
-		archives sourcesJar
-		archives javadocJar
-		archives testsJar
 		// See http://stackoverflow.com/a/21946676/194894
 		testRuntime testsJar
 	}

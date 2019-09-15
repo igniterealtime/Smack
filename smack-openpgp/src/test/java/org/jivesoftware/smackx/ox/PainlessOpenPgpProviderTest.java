@@ -32,7 +32,6 @@ import java.util.List;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -63,13 +62,13 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
     private static final BareJid bob = JidTestUtil.BARE_JID_2;
 
     static {
-        storagePath = FileTestUtil.getTempDir("smack-painlessprovidertest");
+        storagePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "smack-painlessprovidertest");
     }
 
     @BeforeClass
     @AfterClass
-    public static void deletePath() {
-        FileTestUtil.deleteDirectory(storagePath);
+    public static void deletePath() throws IOException {
+        org.apache.commons.io.FileUtils.deleteDirectory(storagePath);
     }
 
     @Test

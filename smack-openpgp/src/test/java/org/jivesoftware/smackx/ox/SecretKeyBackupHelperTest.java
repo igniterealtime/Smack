@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.jivesoftware.smack.DummyConnection;
-import org.jivesoftware.smack.test.util.FileTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
@@ -55,7 +54,7 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
     private static final File basePath;
 
     static {
-        basePath = FileTestUtil.getTempDir("ox_secret_keys");
+        basePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "ox_secret_keys");
     }
 
     @Test
@@ -98,7 +97,7 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
 
     @AfterClass
     @BeforeClass
-    public static void deleteDirs() {
-        FileTestUtil.deleteDirectory(basePath);
+    public static void deleteDirs() throws IOException {
+        org.apache.commons.io.FileUtils.deleteDirectory(basePath);
     }
 }

@@ -8,7 +8,6 @@ dependencies {
 	compile project(':smack-core')
 	compile project(':smack-extensions')
 	testCompile project(path: ":smack-core", configuration: "testRuntime")
-	testCompile project(path: ":smack-core", configuration: "archives")
 	testCompile project(path: ":smack-extensions", configuration: "testRuntime")
 
 	compile "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
