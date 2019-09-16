@@ -557,6 +557,7 @@ public class ConfigureForm extends Form {
      * @deprecated use {@link #isSubscribe()} instead
      */
     @Deprecated
+    // TODO: Remove in Smack 4.5.
     public boolean isSubscibe() {
         return isSubscribe();
     }
