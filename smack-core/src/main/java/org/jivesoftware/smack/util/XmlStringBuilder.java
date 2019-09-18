@@ -646,7 +646,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
             else if (csq instanceof XmlNsAttribute) {
                 XmlNsAttribute xmlNsAttribute = (XmlNsAttribute) csq;
                 if (!xmlNsAttribute.value.equals(enclosingXmlEnvironment.getEffectiveNamespace())) {
-                    sb.append(xmlNsAttribute);
+                    appendable.append(xmlNsAttribute);
                     enclosingXmlEnvironment = new XmlEnvironment(xmlNsAttribute.value);
                 }
             }
