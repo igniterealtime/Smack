@@ -66,15 +66,23 @@ public class AbstractError {
      * @return the descriptive text or null.
      */
     public String getDescriptiveText() {
-        String defaultLocale = Locale.getDefault().getLanguage();
-        String descriptiveText = getDescriptiveText(defaultLocale);
-        if (descriptiveText == null) {
-            descriptiveText = getDescriptiveText("en");
-            if (descriptiveText == null) {
-                descriptiveText = getDescriptiveText("");
-            }
+        if (descriptiveTexts.isEmpty())
+            return null;
+        // attempt to obtain the text in the user's locale, the English text, or the "" default
+        Locale l = Locale.getDefault();
+        String[] tags = new String[] {
+                l.getLanguage() + "-" + l.getCountry() + "-" + l.getVariant(),
+                l.getLanguage() + "-" + l.getCountry(),
+                l.getLanguage(),
+                "en",
+                ""
+        };
+        for (String tag : tags) {
+            String descriptiveText = getDescriptiveText(tag);
+            if (descriptiveText != null)
+                return descriptiveText;
         }
-        return descriptiveText;
+        return descriptiveTexts.values().iterator().next();
     }
 
     /**
