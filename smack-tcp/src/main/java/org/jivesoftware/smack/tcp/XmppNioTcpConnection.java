@@ -82,6 +82,7 @@ import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TlsFailure;
 import org.jivesoftware.smack.packet.TlsProceed;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
@@ -509,7 +510,7 @@ public class XmppNioTcpConnection extends AbstractXmppNioConnection {
                     CharSequence nextCharSequence = currentlyOutgonigTopLevelStreamElement.toXML(StreamOpen.CLIENT_NAMESPACE);
                     if (nextCharSequence instanceof XmlStringBuilder) {
                         XmlStringBuilder xmlStringBuilder = (XmlStringBuilder) nextCharSequence;
-                        outgoingCharSequenceIterator = xmlStringBuilder.getCharSequenceIterator();
+                        outgoingCharSequenceIterator = xmlStringBuilder.toList(XmlEnvironment.EMPTY).iterator();
                     } else {
                         outgoingCharSequenceIterator = Collections.singletonList(nextCharSequence).iterator();
                     }

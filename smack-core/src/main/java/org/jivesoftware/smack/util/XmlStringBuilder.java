@@ -18,9 +18,10 @@ package org.jivesoftware.smack.util;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -606,6 +607,17 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return toString().hashCode();
     }
 
+    private static final class WrappedIoException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        private final IOException wrappedIoException;
+
+        private WrappedIoException(IOException wrappedIoException) {
+            this.wrappedIoException = wrappedIoException;
+        }
+    }
+
     /**
      * Write the contents of this <code>XmlStringBuilder</code> to a {@link Writer}. This will write
      * the single parts one-by-one, avoiding allocation of a big continuous memory block holding the
@@ -620,10 +632,25 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
                 .withNamespace(enclosingNamespace)
                 .build();
         appendXmlTo(writer, enclosingXmlEnvironment);
+        try {
+            appendXmlTo(csq -> {
+                try {
+                    writer.append(csq);
+                } catch (IOException e) {
+                    throw new WrappedIoException(e);
+                }
+            }, enclosingXmlEnvironment);
+        } catch (WrappedIoException e) {
+            throw e.wrappedIoException;
+        }
     }
 
-    public Iterator<CharSequence> getCharSequenceIterator() {
-        return sb.getAsList().iterator();
+    public List<CharSequence> toList(XmlEnvironment enclosingXmlEnvironment) {
+        List<CharSequence> res = new ArrayList<>(sb.getAsList().size());
+
+        appendXmlTo(csq -> res.add(csq), enclosingXmlEnvironment);
+
+        return res;
     }
 
     @Override
@@ -631,29 +658,26 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         // This is only the potential length, since the actual length depends on the given XmlEnvironment.
         int potentialLength = length();
         StringBuilder res = new StringBuilder(potentialLength);
-        try {
-            appendXmlTo(res, enclosingXmlEnvironment);
-        } catch (IOException e) {
-            // Should never happen.
-            throw new AssertionError(e);
-        }
+
+        appendXmlTo(csq -> res.append(csq), enclosingXmlEnvironment);
+
         return res;
     }
 
-    private void appendXmlTo(Appendable appendable, XmlEnvironment enclosingXmlEnvironment) throws IOException {
+    private void appendXmlTo(Consumer<CharSequence> charSequenceSink, XmlEnvironment enclosingXmlEnvironment) {
         for (CharSequence csq : sb.getAsList()) {
             if (csq instanceof XmlStringBuilder) {
-                ((XmlStringBuilder) csq).appendXmlTo(appendable, enclosingXmlEnvironment);
+                ((XmlStringBuilder) csq).appendXmlTo(charSequenceSink, enclosingXmlEnvironment);
             }
             else if (csq instanceof XmlNsAttribute) {
                 XmlNsAttribute xmlNsAttribute = (XmlNsAttribute) csq;
                 if (!xmlNsAttribute.value.equals(enclosingXmlEnvironment.getEffectiveNamespace())) {
-                    appendable.append(xmlNsAttribute);
+                    charSequenceSink.accept(xmlNsAttribute);
                     enclosingXmlEnvironment = new XmlEnvironment(xmlNsAttribute.value);
                 }
             }
             else {
-                appendable.append(csq);
+                charSequenceSink.accept(csq);
             }
         }
     }
