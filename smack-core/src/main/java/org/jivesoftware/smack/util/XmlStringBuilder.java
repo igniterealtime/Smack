@@ -624,14 +624,10 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
      * XmlStringBuilder contents.
      *
      * @param writer TODO javadoc me please
-     * @param enclosingNamespace the enclosing XML namespace.
+     * @param enclosingXmlEnvironment the enclosing XML environment.
      * @throws IOException if an I/O error occured.
      */
-    public void write(Writer writer, String enclosingNamespace) throws IOException {
-        XmlEnvironment enclosingXmlEnvironment = XmlEnvironment.builder()
-                .withNamespace(enclosingNamespace)
-                .build();
-        appendXmlTo(writer, enclosingXmlEnvironment);
+    public void write(Writer writer, XmlEnvironment enclosingXmlEnvironment) throws IOException {
         try {
             appendXmlTo(csq -> {
                 try {

@@ -87,7 +87,6 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
 import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
@@ -1347,9 +1346,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     }
                     maybeAddToUnacknowledgedStanzas(packet);
 
-                    CharSequence elementXml = element.toXML(StreamOpen.CLIENT_NAMESPACE);
+                    CharSequence elementXml = element.toXML(outgoingStreamXmlEnvironment);
                     if (elementXml instanceof XmlStringBuilder) {
-                        ((XmlStringBuilder) elementXml).write(writer, StreamOpen.CLIENT_NAMESPACE);
+                        ((XmlStringBuilder) elementXml).write(writer, outgoingStreamXmlEnvironment);
                     }
                     else {
                         writer.write(elementXml.toString());

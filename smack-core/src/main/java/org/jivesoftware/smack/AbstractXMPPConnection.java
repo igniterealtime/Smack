@@ -235,6 +235,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private XmlEnvironment incomingStreamXmlEnvironment;
 
+    protected XmlEnvironment outgoingStreamXmlEnvironment;
+
     final Map<QName, NonzaCallback> nonzaCallbacks = new HashMap<>();
 
     protected final Lock connectionLock = new ReentrantLock();
@@ -2017,7 +2019,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             from = XmppStringUtils.completeJidFrom(localpart, to);
         }
         String id = getStreamId();
-        sendNonza(new StreamOpen(to, from, id, config.getXmlLang(), StreamOpen.StreamContentNamespace.client));
+
+        StreamOpen streamOpen = new StreamOpen(to, from, id, config.getXmlLang(), StreamOpen.StreamContentNamespace.client);
+        sendNonza(streamOpen);
+
+        XmlEnvironment.Builder xmlEnvironmentBuilder = XmlEnvironment.builder();
+        xmlEnvironmentBuilder.with(streamOpen);
+        outgoingStreamXmlEnvironment = xmlEnvironmentBuilder.build();
     }
 
     public static final class SmackTlsContext {

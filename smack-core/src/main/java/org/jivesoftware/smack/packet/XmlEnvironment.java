@@ -163,6 +163,12 @@ public class XmlEnvironment {
             return this;
         }
 
+        public Builder with(StreamOpen streamOpen) {
+            withNamespace(streamOpen.getNamespace());
+            withLanguage(streamOpen.getLanguage());
+            return this;
+        }
+
         public XmlEnvironment build() {
             return new XmlEnvironment(this);
         }
