@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.DisconnectedStateDescriptor;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.MultiMap;
 
 /**
@@ -330,7 +331,8 @@ public class StateDescriptorGraph {
         return res;
     }
 
-    private static <E> void dfsVisit(GraphVertex<E> vertex, DfsFinishedVertex<E> dfsFinishedVertex, DfsEdgeFound<E> dfsEdgeFound) {
+    private static <E> void dfsVisit(GraphVertex<E> vertex, Consumer<GraphVertex<E>> dfsFinishedVertex,
+                    DfsEdgeFound<E> dfsEdgeFound) {
         vertex.color = GraphVertex.VertexColor.grey;
 
         final int totalEdgeCount = vertex.getOutgoingEdges().size();
@@ -349,11 +351,12 @@ public class StateDescriptorGraph {
 
         vertex.color = GraphVertex.VertexColor.black;
         if (dfsFinishedVertex != null) {
-            dfsFinishedVertex.onVertexFinished(vertex);
+            dfsFinishedVertex.accept(vertex);
         }
     }
 
-    private static <E> void dfs(Collection<GraphVertex<E>> vertexes, DfsFinishedVertex<E> dfsFinishedVertex, DfsEdgeFound<E> dfsEdgeFound) {
+    private static <E> void dfs(Collection<GraphVertex<E>> vertexes, Consumer<GraphVertex<E>> dfsFinishedVertex,
+                    DfsEdgeFound<E> dfsEdgeFound) {
         for (GraphVertex<E> vertex : vertexes) {
             if (vertex.color == GraphVertex.VertexColor.white) {
                 dfsVisit(vertex, dfsFinishedVertex, dfsEdgeFound);
@@ -407,12 +410,6 @@ public class StateDescriptorGraph {
         dotOut.append("}\n");
     }
 
-    // TODO: Replace with java.util.function.Consumer<GraphVertex<E>> once Smack's minimum Android SDK level is 24 or higher.
-    private interface DfsFinishedVertex<E> {
-        void onVertexFinished(GraphVertex<E> vertex);
-    }
-
-    // TODO: Replace with java.util.function.Consumer<GraphVertex<E>> once Smack's minimum Android SDK level is 24 or higher.
     private interface DfsEdgeFound<E> {
         void onEdgeFound(GraphVertex<E> from, GraphVertex<E> to, int edgeId, int totalEdgeCount);
     }
