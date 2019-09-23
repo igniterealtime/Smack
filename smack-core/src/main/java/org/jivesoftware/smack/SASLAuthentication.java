@@ -168,7 +168,6 @@ public final class SASLAuthentication {
     SASLAuthentication(AbstractXMPPConnection connection, ConnectionConfiguration configuration) {
         this.configuration = configuration;
         this.connection = connection;
-        this.init();
     }
 
     /**
@@ -199,6 +198,8 @@ public final class SASLAuthentication {
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
         final DomainBareJid xmppServiceDomain = connection.getXMPPServiceDomain();
+
+        authenticationSuccessful = false;
 
         synchronized (this) {
             if (callbackHandler != null) {
@@ -320,15 +321,6 @@ public final class SASLAuthentication {
 
     public boolean authenticationSuccessful() {
         return authenticationSuccessful;
-    }
-
-    /**
-     * Initializes the internal state in order to be able to be reused. The authentication
-     * is used by the connection at the first login and then reused after the connection
-     * is disconnected and then reconnected.
-     */
-    void init() {
-        authenticationSuccessful = false;
     }
 
     String getNameOfLastUsedSaslMechansism() {

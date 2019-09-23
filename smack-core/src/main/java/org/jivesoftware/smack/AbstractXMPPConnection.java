@@ -500,7 +500,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Reset the connection state
         initState();
-        saslAuthentication.init();
         streamId = null;
 
         try {
