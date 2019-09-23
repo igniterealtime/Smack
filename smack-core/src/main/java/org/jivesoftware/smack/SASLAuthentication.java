@@ -160,7 +160,8 @@ public final class SASLAuthentication {
     private boolean authenticationSuccessful;
 
     /**
-     * Either of type {@link SmackException} or {@link SASLErrorException}
+     * Either of type {@link SmackSaslException},{@link SASLErrorException}, {@link NotConnectedException} or
+     * {@link InterruptedException}.
      */
     private Exception saslException;
 
@@ -227,6 +228,8 @@ public final class SASLAuthentication {
                 throw (SASLErrorException) saslException;
             } else if (saslException instanceof NotConnectedException) {
                 throw (NotConnectedException) saslException;
+            } else if (saslException instanceof InterruptedException) {
+                throw (InterruptedException) saslException;
             } else {
                 throw new IllegalStateException("Unexpected exception type" , saslException);
             }
