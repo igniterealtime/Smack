@@ -216,6 +216,11 @@ public final class SASLAuthentication {
         }
 
         if (saslException != null) {
+            Exception saslException = this.saslException;
+            // Clear the saslException class field, so that this exception is not thrown after a new authenticate()
+            // invocation (with different credentials).
+            this.saslException = null;
+
             if (saslException instanceof SmackSaslException) {
                 throw (SmackSaslException) saslException;
             } else if (saslException instanceof SASLErrorException) {
@@ -321,7 +326,6 @@ public final class SASLAuthentication {
      */
     void init() {
         authenticationSuccessful = false;
-        saslException = null;
     }
 
     String getNameOfLastUsedSaslMechansism() {
