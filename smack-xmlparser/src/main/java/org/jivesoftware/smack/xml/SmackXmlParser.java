@@ -31,7 +31,8 @@ public class SmackXmlParser {
     public static XmlPullParserFactory getXmlPullParserFactory() {
         Iterator<XmlPullParserFactory> iterator = xmlPullParserFactoryServiceLoader.iterator();
         if (!iterator.hasNext()) {
-            throw new IllegalStateException("Could not load a XmlPullParserFactory via Service Provider Interface (SPI)");
+            throw new IllegalStateException(
+                    "No XmlPullParserFactory registered with Service Provider Interface (SPI). Is smack-xmlparser-xpp3 or smack-xmlparser-stax in classpath?");
         }
         return iterator.next();
     }
