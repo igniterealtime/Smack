@@ -8,6 +8,7 @@ dependencies {
 	compile project(":smack-core")
 	compile project(":smack-resolver-javax")
 	compile project(":smack-sasl-javax")
+	implementation project(":smack-xmlparser-stax")
 }
 
 javadoc {
