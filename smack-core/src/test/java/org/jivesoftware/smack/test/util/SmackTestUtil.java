@@ -125,10 +125,19 @@ public class SmackTestUtil {
         return parser;
     }
 
+    @SuppressWarnings("unchecked")
     private static <E extends Element, P extends Provider<E>> P providerClassToProvider(Class<P> providerClass) {
         P provider;
-        // TODO: Consider adding a shortcut in case there is a static INSTANCE field holding an instance of the
-        // requested provider.
+
+        try {
+            provider = (P) providerClass.getDeclaredField("INSTANCE").get(null);
+            return provider;
+        } catch (NoSuchFieldException e) {
+            // Continue with the next approach.
+        } catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
+            throw new AssertionError(e);
+        }
+
         try {
             provider = providerClass.getDeclaredConstructor().newInstance();
         }
