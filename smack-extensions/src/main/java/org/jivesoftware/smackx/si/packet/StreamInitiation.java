@@ -146,7 +146,7 @@ public class StreamInitiation extends IQ {
             buf.rightAngleBracket();
 
             // Add the file section if there is one.
-            buf.optAppend(file.toXML());
+            buf.optElement(file);
             break;
         case result:
             buf.rightAngleBracket();
