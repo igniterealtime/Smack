@@ -154,17 +154,6 @@ public final class SASLAuthentication {
     private final ConnectionConfiguration configuration;
     private SASLMechanism currentMechanism = null;
 
-    /**
-     * Boolean indicating if SASL negotiation has finished and was successful.
-     */
-    private boolean authenticationSuccessful;
-
-    /**
-     * Either of type {@link SmackSaslException},{@link SASLErrorException}, {@link NotConnectedException} or
-     * {@link InterruptedException}.
-     */
-    private Exception saslException;
-
     SASLAuthentication(AbstractXMPPConnection connection, ConnectionConfiguration configuration) {
         this.configuration = configuration;
         this.connection = connection;
@@ -194,22 +183,23 @@ public final class SASLAuthentication {
     public SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     InterruptedException, SmackSaslException, NotConnectedException, NoResponseException {
-        currentMechanism = selectMechanism(authzid);
+        final SASLMechanism mechanism = selectMechanism(authzid);
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
         final DomainBareJid xmppServiceDomain = connection.getXMPPServiceDomain();
 
-        authenticationSuccessful = false;
-
         synchronized (this) {
+            currentMechanism = mechanism;
+
             if (callbackHandler != null) {
                 currentMechanism.authenticate(host, xmppServiceDomain, callbackHandler, authzid, sslSession);
             }
             else {
                 currentMechanism.authenticate(username, host, xmppServiceDomain, password, authzid, sslSession);
             }
+
             final long deadline = System.currentTimeMillis() + connection.getReplyTimeout();
-            while (!authenticationSuccessful && saslException == null) {
+            while (!mechanism.isFinished()) {
                 final long now = System.currentTimeMillis();
                 if (now >= deadline) break;
                 // Wait until SASL negotiation finishes
@@ -217,30 +207,9 @@ public final class SASLAuthentication {
             }
         }
 
-        if (saslException != null) {
-            Exception saslException = this.saslException;
-            // Clear the saslException class field, so that this exception is not thrown after a new authenticate()
-            // invocation (with different credentials).
-            this.saslException = null;
+        mechanism.throwExceptionIfRequired();
 
-            if (saslException instanceof SmackSaslException) {
-                throw (SmackSaslException) saslException;
-            } else if (saslException instanceof SASLErrorException) {
-                throw (SASLErrorException) saslException;
-            } else if (saslException instanceof NotConnectedException) {
-                throw (NotConnectedException) saslException;
-            } else if (saslException instanceof InterruptedException) {
-                throw (InterruptedException) saslException;
-            } else {
-                throw new IllegalStateException("Unexpected exception type" , saslException);
-            }
-        }
-
-        if (!authenticationSuccessful) {
-            throw NoResponseException.newWith(connection, "successful SASL authentication");
-        }
-
-        return currentMechanism;
+        return mechanism;
     }
 
     /**
@@ -269,7 +238,9 @@ public final class SASLAuthentication {
      */
     public void challengeReceived(String challenge, boolean finalChallenge) throws SmackSaslException, NotConnectedException, InterruptedException {
         try {
-            currentMechanism.challengeReceived(challenge, finalChallenge);
+            synchronized (this) {
+                currentMechanism.challengeReceived(challenge, finalChallenge);
+            }
         } catch (InterruptedException | SmackSaslException | NotConnectedException e) {
             authenticationFailed(e);
             throw e;
@@ -292,10 +263,11 @@ public final class SASLAuthentication {
         if (success.getData() != null) {
             challengeReceived(success.getData(), true);
         }
-        currentMechanism.checkIfSuccessfulOrThrow();
-        authenticationSuccessful = true;
+
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
+            currentMechanism.afterFinalSaslChallenge();
+
             notify();
         }
     }
@@ -312,15 +284,20 @@ public final class SASLAuthentication {
     }
 
     private void authenticationFailed(Exception exception) {
-        saslException = exception;
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
+            currentMechanism.setException(exception);
             notify();
         }
     }
 
     public boolean authenticationSuccessful() {
-        return authenticationSuccessful;
+        synchronized (this) {
+            if (currentMechanism == null) {
+                return false;
+            }
+            return currentMechanism.isAuthenticationSuccessful();
+        }
     }
 
     String getNameOfLastUsedSaslMechansism() {

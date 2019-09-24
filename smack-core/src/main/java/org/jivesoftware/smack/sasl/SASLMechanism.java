@@ -23,6 +23,7 @@ import javax.net.ssl.SSLSession;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -55,6 +56,17 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     public static final String EXTERNAL = "EXTERNAL";
     public static final String GSSAPI = "GSSAPI";
     public static final String PLAIN = "PLAIN";
+
+    /**
+     * Boolean indicating if SASL negotiation has finished and was successful.
+     */
+    private boolean authenticationSuccessful;
+
+    /**
+     * Either of type {@link SmackSaslException},{@link SASLErrorException}, {@link NotConnectedException} or
+     * {@link InterruptedException}.
+     */
+    private Exception exception;
 
     protected XMPPConnection connection;
 
@@ -275,7 +287,18 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      */
     public abstract int getPriority();
 
-    public abstract void checkIfSuccessfulOrThrow() throws SmackSaslException;
+    /**
+     * Check if the SASL mechanism was successful and if it was, then mark it so.
+     *
+     * @throws SmackSaslException in case of an SASL error.
+     */
+    public final void afterFinalSaslChallenge() throws SmackSaslException {
+        checkIfSuccessfulOrThrow();
+
+        authenticationSuccessful = true;
+    }
+
+    protected abstract void checkIfSuccessfulOrThrow() throws SmackSaslException;
 
     public SASLMechanism instanceForAuthentication(XMPPConnection connection, ConnectionConfiguration connectionConfiguration) {
         SASLMechanism saslMechansim = newInstance();
@@ -286,6 +309,39 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     public boolean authzidSupported() {
         return false;
+    }
+
+    public boolean isAuthenticationSuccessful() {
+        return authenticationSuccessful;
+    }
+
+    public boolean isFinished() {
+        return isAuthenticationSuccessful() || exception != null;
+    }
+
+    public void throwExceptionIfRequired() throws SmackSaslException, SASLErrorException, NotConnectedException,
+                    InterruptedException, NoResponseException {
+        if (exception != null) {
+            if (exception instanceof SmackSaslException) {
+                throw (SmackSaslException) exception;
+            } else if (exception instanceof SASLErrorException) {
+                throw (SASLErrorException) exception;
+            } else if (exception instanceof NotConnectedException) {
+                throw (NotConnectedException) exception;
+            } else if (exception instanceof InterruptedException) {
+                throw (InterruptedException) exception;
+            } else {
+                throw new IllegalStateException("Unexpected exception type", exception);
+            }
+        }
+
+        if (!authenticationSuccessful) {
+            throw NoResponseException.newWith(connection, "successful SASL authentication");
+        }
+    }
+
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 
     protected abstract SASLMechanism newInstance();
