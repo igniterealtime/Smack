@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
+import org.jivesoftware.smack.sasl.packet.SaslNonza.AuthMechanism;
+import org.jivesoftware.smack.sasl.packet.SaslNonza.Response;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 

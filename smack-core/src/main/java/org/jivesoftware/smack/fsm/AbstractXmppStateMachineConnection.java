@@ -53,8 +53,6 @@ import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -335,19 +333,6 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
                     parseFeatures(parser);
                     afterFeaturesReceived();
                     break;
-                // SASL related top level stream elements
-                case Challenge.ELEMENT:
-                    // The server is challenging the SASL authentication made by the client
-                    String challengeData = parser.nextText();
-                    getSASLAuthentication().challengeReceived(challengeData);
-                    break;
-                case Success.ELEMENT:
-                    Success success = new Success(parser.nextText());
-                    // The SASL authentication with the server was successful. The next step
-                    // will be to bind the resource
-                    getSASLAuthentication().authenticated(success);
-                    sendStreamOpen();
-                    break;
                 default:
                     parseAndProcessNonza(parser);
                     break;
@@ -613,7 +598,7 @@ public abstract class AbstractXmppStateMachineConnection extends AbstractXMPPCon
             prepareToWaitForFeaturesReceived();
 
             LoginContext loginContext = walkStateGraphContext.loginContext;
-            SASLMechanism usedSaslMechanism = saslAuthentication.authenticate(loginContext.username, loginContext.password, config.getAuthzid(), getSSLSession());
+            SASLMechanism usedSaslMechanism = authenticate(loginContext.username, loginContext.password, config.getAuthzid(), getSSLSession());
             // authenticate() will only return if the SASL authentication was successful, but we also need to wait for the next round of stream features.
 
             waitForFeaturesReceived("server stream features after SASL authentication");

@@ -60,6 +60,7 @@ import java.util.logging.Logger;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.Callback;
@@ -78,6 +79,7 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
+import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.XMPPException.FailedNonzaException;
@@ -113,9 +115,14 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.sasl.SASLErrorException;
+import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.DNSUtil;
+import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -127,6 +134,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -237,7 +245,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected XmlEnvironment outgoingStreamXmlEnvironment;
 
-    final Map<QName, NonzaCallback> nonzaCallbacks = new HashMap<>();
+    final MultiMap<QName, NonzaCallback> nonzaCallbacksMap = new MultiMap<>();
 
     protected final Lock connectionLock = new ReentrantLock();
 
@@ -308,7 +316,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * The SASLAuthentication manager that is responsible for authenticating with the server.
      */
-    protected final SASLAuthentication saslAuthentication;
+    private final SASLAuthentication saslAuthentication;
 
     /**
      * A number to uniquely identify connections that are created. This is distinct from the
@@ -402,6 +410,26 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         saslAuthentication = new SASLAuthentication(this, configuration);
         config = configuration;
+
+        // Install the SASL Nonza callbacks.
+        buildNonzaCallback()
+            .listenFor(SaslNonza.Challenge.class, c -> {
+                try {
+                    saslAuthentication.challengeReceived(c);
+                } catch (SmackException | InterruptedException e) {
+                    saslAuthentication.authenticationFailed(e);
+                }
+            })
+            .listenFor(SaslNonza.Success.class, s -> {
+                try {
+                    saslAuthentication.authenticated(s);
+                } catch (SmackSaslException | NotConnectedException | InterruptedException e) {
+                    saslAuthentication.authenticationFailed(e);
+                }
+            })
+            .listenFor(SaslNonza.SASLFailure.class, f -> saslAuthentication.authenticationFailed(f))
+            .install();
+
         SmackDebuggerFactory debuggerFactory = configuration.getDebuggerFactory();
         if (debuggerFactory != null) {
             debugger = debuggerFactory.create(this);
@@ -810,14 +838,50 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * Returns the SASLAuthentication manager that is responsible for authenticating with
-     * the server.
+     * Authenticate a connection.
      *
-     * @return the SASLAuthentication manager that is responsible for authenticating with
-     *         the server.
+     * @param username the username that is authenticating with the server.
+     * @param password the password to send to the server.
+     * @param authzid the authorization identifier (typically null).
+     * @param sslSession the optional SSL/TLS session (if one was established)
+     * @return the used SASLMechanism.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws SASLErrorException if a SASL protocol error was returned.
+     * @throws IOException if an I/O error occured.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws SmackWrappedException in case of an exception.
+     * @see SASLAuthentication#authenticate(String, String, EntityBareJid, SSLSession)
      */
-    protected SASLAuthentication getSASLAuthentication() {
-        return saslAuthentication;
+    protected final SASLMechanism authenticate(String username, String password, EntityBareJid authzid,
+                    SSLSession sslSession) throws XMPPErrorException, SASLErrorException, SmackSaslException,
+                    NotConnectedException, NoResponseException, IOException, InterruptedException, SmackWrappedException {
+        SASLMechanism saslMechanism = saslAuthentication.authenticate(username, password, authzid, sslSession);
+        afterSaslAuthenticationSuccess();
+        return saslMechanism;
+    }
+
+    /**
+     * Hook for subclasses right after successful SASL authentication. RFC 6120 § 6.4.6. specifies a that the initiating
+     * entity, needs to initiate a new stream in this case. But some transports, like BOSH, requires a special handling.
+     * <p>
+     * Note that we can not reset XMPPTCPConnection's parser here, because this method is invoked by the thread calling
+     * {@link #login()}, but the parser reset has to be done within the reader thread.
+     * </p>
+     *
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackWrappedException in case of an exception.
+     */
+    protected void afterSaslAuthenticationSuccess()
+                    throws NotConnectedException, InterruptedException, SmackWrappedException {
+        sendStreamOpen();
+    }
+
+    protected final boolean isSaslAuthenticated() {
+        return saslAuthentication.authenticationSuccessful();
     }
 
     /**
@@ -1225,6 +1289,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected final void parseAndProcessNonza(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
+        ParserUtils.assertAtStartTag(parser);
+
+        final int initialDepth = parser.getDepth();
         final String element = parser.getName();
         final String namespace = parser.getNamespace();
         final QName key = new QName(namespace, element);
@@ -1232,21 +1299,26 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         NonzaProvider<? extends Nonza> nonzaProvider = ProviderManager.getNonzaProvider(key);
         if (nonzaProvider == null) {
             LOGGER.severe("Unknown nonza: " + key);
+            ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
             return;
         }
 
-        NonzaCallback nonzaCallback;
-        synchronized (nonzaCallbacks) {
-            nonzaCallback = nonzaCallbacks.get(key);
+        List<NonzaCallback> nonzaCallbacks;
+        synchronized (nonzaCallbacksMap) {
+            nonzaCallbacks = nonzaCallbacksMap.getAll(key);
+            nonzaCallbacks = CollectionUtil.newListWith(nonzaCallbacks);
         }
-        if (nonzaCallback == null) {
+        if (nonzaCallbacks == null) {
             LOGGER.info("No nonza callback for " + key);
+            ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
             return;
         }
 
         Nonza nonza = nonzaProvider.parse(parser, incomingStreamXmlEnvironment);
 
-        nonzaCallback.onNonzaReceived(nonza);
+        for (NonzaCallback nonzaCallback : nonzaCallbacks) {
+            nonzaCallback.onNonzaReceived(nonza);
+        }
     }
 
     protected void parseAndProcessStanza(XmlPullParser parser)

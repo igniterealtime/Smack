@@ -27,8 +27,8 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.AuthMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Response;
+import org.jivesoftware.smack.sasl.packet.SaslNonza.AuthMechanism;
+import org.jivesoftware.smack.sasl.packet.SaslNonza.Response;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ import org.jivesoftware.smack.util.XmppElementUtil;
 public class NonzaCallback {
 
     protected final AbstractXMPPConnection connection;
-    protected final Map<QName, GenericElementListener<? extends Nonza>> filterAndListeners;
+    protected final Map<QName, ClassAndConsumer<? extends Nonza>> filterAndListeners;
 
     private NonzaCallback(Builder builder) {
         this.connection = builder.connection;
@@ -38,21 +39,18 @@ public class NonzaCallback {
         install();
     }
 
-    void onNonzaReceived(Nonza nonza) {
+    void onNonzaReceived(Nonza nonza) throws IOException {
         QName key = nonza.getQName();
-        GenericElementListener<? extends Nonza> nonzaListener = filterAndListeners.get(key);
+        ClassAndConsumer<? extends Nonza> classAndConsumer = filterAndListeners.get(key);
 
-        nonzaListener.processElement(nonza);
+        classAndConsumer.accept(nonza);
     }
 
     public void cancel() {
-        synchronized (connection.nonzaCallbacks) {
-            for (Map.Entry<QName, GenericElementListener<? extends Nonza>> entry : filterAndListeners.entrySet()) {
-                QName filterKey = entry.getKey();
-                NonzaCallback installedCallback = connection.nonzaCallbacks.get(filterKey);
-                if (equals(installedCallback)) {
-                    connection.nonzaCallbacks.remove(filterKey);
-                }
+        for (Map.Entry<QName, ClassAndConsumer<? extends Nonza>> entry : filterAndListeners.entrySet()) {
+            QName filterKey = entry.getKey();
+            synchronized (connection.nonzaCallbacksMap) {
+                connection.nonzaCallbacksMap.removeOne(filterKey, this);
             }
         }
     }
@@ -62,9 +60,9 @@ public class NonzaCallback {
             return;
         }
 
-        synchronized (connection.nonzaCallbacks) {
-            for (QName key : filterAndListeners.keySet()) {
-                connection.nonzaCallbacks.put(key, this);
+        for (QName key : filterAndListeners.keySet()) {
+            synchronized (connection.nonzaCallbacksMap) {
+                connection.nonzaCallbacksMap.put(key, this);
             }
         }
     }
@@ -74,31 +72,35 @@ public class NonzaCallback {
         private SN successNonza;
         private FN failedNonza;
 
-        private NonzaResponseCallback(Class<? extends SN> successNonzaClass, Class<? extends FN> failedNonzaClass,
+        private NonzaResponseCallback(Class<SN> successNonzaClass, Class<FN> failedNonzaClass,
                         Builder builder) {
             super(builder);
 
             final QName successNonzaKey = XmppElementUtil.getQNameFor(successNonzaClass);
             final QName failedNonzaKey = XmppElementUtil.getQNameFor(failedNonzaClass);
 
-            final GenericElementListener<SN> successListener = new GenericElementListener<SN>(successNonzaClass) {
+            final NonzaListener<SN> successListener = new NonzaListener<SN>() {
                 @Override
-                public void process(SN successNonza) {
+                public void accept(SN successNonza) {
                     NonzaResponseCallback.this.successNonza = successNonza;
                     notifyResponse();
                 }
             };
+            final ClassAndConsumer<SN> successClassAndConsumer = new ClassAndConsumer<>(successNonzaClass,
+                            successListener);
 
-            final GenericElementListener<FN> failedListener = new GenericElementListener<FN>(failedNonzaClass) {
+            final NonzaListener<FN> failedListener = new NonzaListener<FN>() {
                 @Override
-                public void process(FN failedNonza) {
+                public void accept(FN failedNonza) {
                     NonzaResponseCallback.this.failedNonza = failedNonza;
                     notifyResponse();
                 }
             };
+            final ClassAndConsumer<FN> failedClassAndConsumer = new ClassAndConsumer<>(failedNonzaClass,
+                            failedListener);
 
-            filterAndListeners.put(successNonzaKey, successListener);
-            filterAndListeners.put(failedNonzaKey, failedListener);
+            filterAndListeners.put(successNonzaKey, successClassAndConsumer);
+            filterAndListeners.put(failedNonzaKey, failedClassAndConsumer);
 
             install();
         }
@@ -139,20 +141,40 @@ public class NonzaCallback {
     public static final class Builder {
         private final AbstractXMPPConnection connection;
 
-        private Map<QName, GenericElementListener<? extends Nonza>> filterAndListeners = new HashMap<>();
+        private Map<QName, ClassAndConsumer<? extends Nonza>> filterAndListeners = new HashMap<>();
 
         Builder(AbstractXMPPConnection connection) {
             this.connection = connection;
         }
 
-        public <N extends Nonza> Builder listenFor(Class<? extends N> nonza, GenericElementListener<? extends N> nonzaListener) {
+        public <N extends Nonza> Builder listenFor(Class<N> nonza, NonzaListener<N> nonzaListener) {
             QName key = XmppElementUtil.getQNameFor(nonza);
-            filterAndListeners.put(key, nonzaListener);
+            ClassAndConsumer<N> classAndConsumer = new ClassAndConsumer<>(nonza, nonzaListener);
+            filterAndListeners.put(key, classAndConsumer);
             return this;
         }
 
         public NonzaCallback install() {
             return new NonzaCallback(this);
+        }
+    }
+
+    public interface NonzaListener<N extends Nonza> {
+        void accept(N nonza) throws IOException;
+    }
+
+    private static final class ClassAndConsumer<N extends Nonza> {
+        private final Class<N> clazz;
+        private final NonzaListener<N> consumer;
+
+        private ClassAndConsumer(Class<N> clazz, NonzaListener<N> consumer) {
+            this.clazz = clazz;
+            this.consumer = consumer;
+        }
+
+        private void accept(Object object) throws IOException {
+            N nonza = clazz.cast(object);
+            consumer.accept(nonza);
         }
     }
 

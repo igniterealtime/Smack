@@ -39,9 +39,6 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.sasl.SASLError;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -812,41 +809,6 @@ public class PacketParserUtilsTest {
         XmlPullParser parser = TestUtils.getParser(stanza, "outer");
         CharSequence result = PacketParserUtils.parseElement(parser, true);
         assertXmlSimilar(stanza, result.toString());
-    }
-
-    @Test
-    public void parseSASLFailureSimple() throws FactoryConfigurationError, SAXException, IOException,
-                    TransformerException, ParserConfigurationException, XmlPullParserException {
-        // @formatter:off
-        final String saslFailureString = XMLBuilder.create(SASLFailure.ELEMENT, SaslStreamElements.NAMESPACE)
-                        .e(SASLError.account_disabled.toString())
-                        .asString();
-        // @formatter:on
-        XmlPullParser parser = TestUtils.getParser(saslFailureString, SASLFailure.ELEMENT);
-        SASLFailure saslFailure = PacketParserUtils.parseSASLFailure(parser);
-        assertXmlSimilar(saslFailureString, saslFailure.toString());
-    }
-
-    @Test
-    public void parseSASLFailureExtended() throws FactoryConfigurationError, TransformerException,
-                    ParserConfigurationException, XmlPullParserException, IOException, SAXException {
-        // @formatter:off
-        final String saslFailureString = XMLBuilder.create(SASLFailure.ELEMENT, SaslStreamElements.NAMESPACE)
-                        .e(SASLError.account_disabled.toString())
-                        .up()
-                        .e("text").a("xml:lang", "en")
-                            .t("Call 212-555-1212 for assistance.")
-                        .up()
-                        .e("text").a("xml:lang", "de")
-                            .t("Bitte wenden sie sich an (04321) 123-4444")
-                        .up()
-                        .e("text")
-                            .t("Wusel dusel")
-                        .asString();
-        // @formatter:on
-        XmlPullParser parser = TestUtils.getParser(saslFailureString, SASLFailure.ELEMENT);
-        SASLFailure saslFailure = PacketParserUtils.parseSASLFailure(parser);
-        assertXmlSimilar(saslFailureString, saslFailure.toXML(StreamOpen.CLIENT_NAMESPACE));
     }
 
     @SuppressWarnings("ReferenceEquality")

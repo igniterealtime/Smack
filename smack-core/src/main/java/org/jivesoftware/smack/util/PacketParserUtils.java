@@ -49,7 +49,6 @@ import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
 import org.jivesoftware.smack.xml.SmackXmlParser;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -684,44 +683,6 @@ public class PacketParserUtils {
         String previousValue = descriptiveTexts.put(xmllang, text);
         assert previousValue == null;
         return descriptiveTexts;
-    }
-
-    /**
-     * Parses SASL authentication error packets.
-     *
-     * @param parser the XML parser.
-     * @return a SASL Failure packet.
-     * @throws IOException if an I/O error occured.
-     * @throws XmlPullParserException if an error in the XML parser occured.
-     */
-    public static SASLFailure parseSASLFailure(XmlPullParser parser) throws XmlPullParserException, IOException {
-        final int initialDepth = parser.getDepth();
-        String condition = null;
-        Map<String, String> descriptiveTexts = null;
-        outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
-            switch (eventType) {
-            case START_ELEMENT:
-                String name = parser.getName();
-                if (name.equals("text")) {
-                    descriptiveTexts = parseDescriptiveTexts(parser, descriptiveTexts);
-                }
-                else {
-                    assert condition == null;
-                    condition = parser.getName();
-                }
-                break;
-            case END_ELEMENT:
-                if (parser.getDepth() == initialDepth) {
-                    break outerloop;
-                }
-                break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
-                break;
-            }
-        }
-        return new SASLFailure(condition, descriptiveTexts);
     }
 
     public static StreamError parseStreamError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {

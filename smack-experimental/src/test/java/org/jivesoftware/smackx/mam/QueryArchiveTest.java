@@ -46,7 +46,7 @@ public class QueryArchiveTest extends MamTest {
     private static final String mamQueryResultExample = "<message to='hag66@shakespeare.lit/pda' from='coven@chat.shakespeare.lit' id='iasd207'>"
             + "<result xmlns='urn:xmpp:mam:1' queryid='g27' id='34482-21985-73620'>"
             + "<forwarded xmlns='urn:xmpp:forward:0'>"
-            + "<delay xmlns='urn:xmpp:delay' stamp='2002-10-13T23:58:37.000+00:00'></delay>" + "<message "
+            + "<delay xmlns='urn:xmpp:delay' stamp='2002-10-13T23:58:37.000+00:00'/>" + "<message "
             + "xmlns='jabber:client' from='coven@chat.shakespeare.lit/firstwitch' " + "id='162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2' "
             + "type='chat'>" + "<body>Thrice the brinded cat hath mew.</body>" + "</message>" + "</forwarded>"
             + "</result>" + "</message>";

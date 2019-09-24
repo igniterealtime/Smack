@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2018 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,30 @@ package org.jivesoftware.smack.sasl.packet;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.AbstractError;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class SaslStreamElements {
-    public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl";
+public interface SaslNonza extends Nonza {
+    String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl";
+
+    @Override
+    default String getNamespace() {
+        return NAMESPACE;
+    }
 
     /**
      * Initiating SASL authentication by select a mechanism.
      */
-    public static class AuthMechanism implements Nonza {
+    class AuthMechanism implements SaslNonza {
         public static final String ELEMENT = "auth";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String mechanism;
         private final String authenticationText;
@@ -44,11 +53,11 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).attribute("mechanism", mechanism).rightAngleBracket();
-            xml.optAppend(authenticationText);
-            xml.closeElement(ELEMENT);
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.attribute("mechanism", mechanism).rightAngleBracket();
+            xml.escape(authenticationText);
+            xml.closeElement(this);
             return xml;
         }
 
@@ -61,11 +70,6 @@ public class SaslStreamElements {
         }
 
         @Override
-        public String getNamespace() {
-            return NAMESPACE;
-        }
-
-        @Override
         public String getElementName() {
             return ELEMENT;
         }
@@ -74,8 +78,9 @@ public class SaslStreamElements {
     /**
      * A SASL challenge stream element.
      */
-    public static class Challenge implements Nonza {
+    class Challenge implements SaslNonza {
         public static final String ELEMENT = "challenge";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String data;
 
@@ -83,18 +88,15 @@ public class SaslStreamElements {
             this.data = StringUtils.returnIfNotEmptyTrimmed(data);
         }
 
-        @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder().halfOpenElement(ELEMENT).xmlnsAttribute(
-                            NAMESPACE).rightAngleBracket();
-            xml.optAppend(data);
-            xml.closeElement(ELEMENT);
-            return xml;
+        public String getData() {
+            return data;
         }
 
         @Override
-        public String getNamespace() {
-            return NAMESPACE;
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.optTextChild(data, this);
+            return xml;
         }
 
         @Override
@@ -106,8 +108,9 @@ public class SaslStreamElements {
     /**
      * A SASL response stream element.
      */
-    public static class Response implements Nonza {
+    class Response implements SaslNonza {
         public static final String ELEMENT = "response";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String authenticationText;
 
@@ -120,21 +123,14 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
-            xml.optAppend(authenticationText);
-            xml.closeElement(ELEMENT);
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.optTextChild(authenticationText, this);
             return xml;
         }
 
         public String getAuthenticationText() {
             return authenticationText;
-        }
-
-        @Override
-        public String getNamespace() {
-            return NAMESPACE;
         }
 
         @Override
@@ -146,8 +142,9 @@ public class SaslStreamElements {
     /**
      * A SASL success stream element.
      */
-    public static class Success implements Nonza {
+    class Success implements SaslNonza {
         public static final String ELEMENT = "success";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String data;
 
@@ -171,17 +168,10 @@ public class SaslStreamElements {
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(ELEMENT).xmlnsAttribute(NAMESPACE).rightAngleBracket();
-            xml.optAppend(data);
-            xml.closeElement(ELEMENT);
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.optTextChild(data, this);
             return xml;
-        }
-
-        @Override
-        public String getNamespace() {
-            return NAMESPACE;
         }
 
         @Override
@@ -194,8 +184,9 @@ public class SaslStreamElements {
      * A SASL failure stream element, also called "SASL Error".
      * @see <a href="http://xmpp.org/rfcs/rfc6120.html#sasl-errors">RFC 6120 6.5 SASL Errors</a>
      */
-    public static class SASLFailure extends AbstractError implements Nonza {
+    class SASLFailure extends AbstractError implements SaslNonza {
         public static final String ELEMENT = "failure";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final SASLError saslError;
         private final String saslErrorString;
@@ -248,11 +239,6 @@ public class SaslStreamElements {
         @Override
         public String toString() {
             return toXML().toString();
-        }
-
-        @Override
-        public String getNamespace() {
-            return NAMESPACE;
         }
 
         @Override

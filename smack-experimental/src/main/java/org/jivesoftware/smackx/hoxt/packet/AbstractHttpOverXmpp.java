@@ -225,9 +225,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
-            xml.rightAngleBracket();
-            xml.optAppend(text);
-            xml.closeElement(this);
+            xml.optTextChild(text, this);
             return xml;
         }
 
@@ -269,9 +267,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
-            xml.rightAngleBracket();
-            xml.optAppend(text);
-            xml.closeElement(this);
+            xml.optTextChild(text, this);
             return xml;
         }
 
@@ -313,9 +309,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
-            xml.rightAngleBracket();
-            xml.optAppend(text);
-            xml.closeElement(this);
+            xml.optTextChild(text, this);
             return xml;
         }
 

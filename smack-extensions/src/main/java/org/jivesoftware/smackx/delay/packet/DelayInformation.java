@@ -106,9 +106,7 @@ public class DelayInformation implements ExtensionElement {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
         xml.attribute("stamp", XmppDateTime.formatXEP0082Date(stamp));
         xml.optAttribute("from", from);
-        xml.rightAngleBracket();
-        xml.optAppend(reason);
-        xml.closeElement(this);
+        xml.optTextChild(reason, this);
         return xml;
     }
 

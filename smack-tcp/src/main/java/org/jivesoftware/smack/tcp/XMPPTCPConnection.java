@@ -88,10 +88,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.proxy.ProxyInfo;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Challenge;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.sm.SMUtils;
 import org.jivesoftware.smack.sm.StreamManagementException;
 import org.jivesoftware.smack.sm.StreamManagementException.StreamIdDoesNotMatchException;
@@ -301,6 +298,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
         });
+
+        // Re-init the reader and writer in case of SASL <success/>. This is done to reset the parser since a new stream
+        // is initiated.
+        buildNonzaCallback().listenFor(SaslNonza.Success.class, s -> resetParser()).install();
     }
 
     /**
@@ -370,7 +371,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
         SSLSession sslSession = secureSocket != null ? secureSocket.getSession() : null;
-        saslAuthentication.authenticate(username, password, config.getAuthzid(), sslSession);
+        authenticate(username, password, config.getAuthzid(), sslSession);
 
         // Wait for stream features after the authentication.
         // TODO: The name of this synchronization point "maybeCompressFeaturesReceived" is not perfect. It should be
@@ -856,7 +857,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             tlsHandled.reportSuccess();
         }
 
-        if (getSASLAuthentication().authenticationSuccessful()) {
+        if (isSaslAuthenticated()) {
             // If we have received features after the SASL has been successfully completed, then we
             // have also *maybe* received, as it is an optional feature, the compression feature
             // from the server.
@@ -864,18 +865,17 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
     }
 
-    /**
-     * Resets the parser using the latest connection's reader. Resetting the parser is necessary
-     * when the plain connection has been secured or when a new opening stream element is going
-     * to be sent by the server.
-     *
-     * @throws SmackException if the parser could not be reset.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @throws XmlPullParserException if an error in the XML parser occured.
-     */
-    void openStream() throws SmackException, InterruptedException, XmlPullParserException {
+    private void resetParser() throws IOException {
+        try {
+            packetReader.parser = SmackXmlParser.newXmlParser(reader);
+        } catch (XmlPullParserException e) {
+            throw new IOException(e);
+        }
+   }
+
+    private void openStreamAndResetParser() throws IOException, NotConnectedException, InterruptedException {
         sendStreamOpen();
-        packetReader.parser = SmackXmlParser.newXmlParser(reader);
+        resetParser();
     }
 
     protected class PacketReader {
@@ -920,7 +920,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         private void parsePackets() {
             boolean initialStreamOpenSend = false;
             try {
-                openStream();
+                openStreamAndResetParser();
                 initialStreamOpenSend = true;
                 XmlPullParser.Event eventType = parser.getEventType();
                 while (!done) {
@@ -956,7 +956,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 // Secure the connection by negotiating TLS
                                 proceedTLSReceived();
                                 // Send a new opening stream to the server
-                                openStream();
+                                openStreamAndResetParser();
                             }
                             catch (Exception e) {
                                 SmackException.SmackWrappedException smackException = new SmackException.SmackWrappedException(e);
@@ -979,27 +979,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 compressSyncPoint.reportFailure(new SmackException.SmackMessageException(
                                                 "Could not establish compression"));
                                 break;
-                            case SaslStreamElements.NAMESPACE:
-                                // SASL authentication has failed. The server may close the connection
-                                // depending on the number of retries
-                                final SASLFailure failure = PacketParserUtils.parseSASLFailure(parser);
-                                getSASLAuthentication().authenticationFailed(failure);
-                                break;
+                            default:
+                                parseAndProcessNonza(parser);
                             }
-                            break;
-                        case Challenge.ELEMENT:
-                            // The server is challenging the SASL authentication made by the client
-                            String challengeData = parser.nextText();
-                            getSASLAuthentication().challengeReceived(challengeData);
-                            break;
-                        case Success.ELEMENT:
-                            Success success = new Success(parser.nextText());
-                            // We now need to bind a resource for the connection
-                            // Open a new stream and wait for the response
-                            openStream();
-                            // The SASL authentication with the server was successful. The next step
-                            // will be to bind the resource
-                            getSASLAuthentication().authenticated(success);
                             break;
                         case Compressed.ELEMENT:
                             // Server confirmed that it's possible to use stream compression. Start
@@ -1007,7 +989,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             // Initialize the reader and writer with the new compressed version
                             initReaderAndWriter();
                             // Send a new opening stream to the server
-                            openStream();
+                            openStreamAndResetParser();
                             // Notify that compression is being used
                             compressSyncPoint.reportSuccess();
                             break;
@@ -1089,7 +1071,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             break;
                          default:
-                             LOGGER.warning("Unknown top level stream element: " + name);
+                             parseAndProcessNonza(parser);
                              break;
                         }
                         break;

@@ -37,6 +37,9 @@ import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.BodyElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.provider.SaslChallengeProvider;
+import org.jivesoftware.smack.provider.SaslFailureProvider;
+import org.jivesoftware.smack.provider.SaslSuccessProvider;
 import org.jivesoftware.smack.provider.TlsFailureProvider;
 import org.jivesoftware.smack.provider.TlsProceedProvider;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
@@ -126,6 +129,9 @@ public final class SmackInitialization {
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
         ProviderManager.addExtensionProvider(Body.ELEMENT, Body.NAMESPACE, new BodyElementProvider());
 
+        ProviderManager.addNonzaProvider(SaslChallengeProvider.INSTANCE);
+        ProviderManager.addNonzaProvider(SaslSuccessProvider.INSTANCE);
+        ProviderManager.addNonzaProvider(SaslFailureProvider.INSTANCE);
         ProviderManager.addNonzaProvider(TlsProceedProvider.INSTANCE);
         ProviderManager.addNonzaProvider(TlsFailureProvider.INSTANCE);
         ProviderManager.addNonzaProvider(CompressedProvider.INSTANCE);

@@ -51,8 +51,9 @@ public class CollectionUtil {
     }
 
     public static <T> ArrayList<T> newListWith(Collection<? extends T> collection) {
-        ArrayList<T> arrayList = new ArrayList<>(collection.size());
-        arrayList.addAll(collection);
-        return arrayList;
+        if (collection == null) {
+            return null;
+        }
+        return new ArrayList<>(collection);
     }
 }

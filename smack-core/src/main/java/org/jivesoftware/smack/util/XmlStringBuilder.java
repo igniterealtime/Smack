@@ -497,17 +497,20 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
-    public XmlStringBuilder optAppend(CharSequence csq) {
-        if (csq != null) {
-            append(csq);
-        }
-        return this;
-    }
-
     public XmlStringBuilder optAppend(Element element) {
         if (element != null) {
             append(element.toXML(effectiveXmlEnvironment));
         }
+        return this;
+    }
+
+    public XmlStringBuilder optTextChild(CharSequence sqc, NamedElement parentElement) {
+        if (sqc == null) {
+            return closeEmptyElement();
+        }
+        rightAngleBracket();
+        escape(sqc);
+        closeElement(parentElement);
         return this;
     }
 

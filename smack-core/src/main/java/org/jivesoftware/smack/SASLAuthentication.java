@@ -39,8 +39,9 @@ import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.SASLFailure;
-import org.jivesoftware.smack.sasl.packet.SaslStreamElements.Success;
+import org.jivesoftware.smack.sasl.packet.SaslNonza;
+import org.jivesoftware.smack.sasl.packet.SaslNonza.SASLFailure;
+import org.jivesoftware.smack.sasl.packet.SaslNonza.Success;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -180,7 +181,7 @@ public final class SASLAuthentication {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws NoResponseException if there was no response from the remote entity.
      */
-    public SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
+    SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     InterruptedException, SmackSaslException, NotConnectedException, NoResponseException {
         final SASLMechanism mechanism = selectMechanism(authzid);
@@ -216,12 +217,12 @@ public final class SASLAuthentication {
      * Wrapper for {@link #challengeReceived(String, boolean)}, with <code>finalChallenge</code> set
      * to <code>false</code>.
      *
-     * @param challenge a base64 encoded string representing the challenge.
+     * @param challenge the challenge Nonza.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void challengeReceived(String challenge) throws SmackException, InterruptedException {
-        challengeReceived(challenge, false);
+    void challengeReceived(SaslNonza.Challenge challenge) throws SmackException, InterruptedException {
+        challengeReceived(challenge.getData(), false);
     }
 
     /**
@@ -236,15 +237,12 @@ public final class SASLAuthentication {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void challengeReceived(String challenge, boolean finalChallenge) throws SmackSaslException, NotConnectedException, InterruptedException {
-        try {
-            synchronized (this) {
-                currentMechanism.challengeReceived(challenge, finalChallenge);
-            }
-        } catch (InterruptedException | SmackSaslException | NotConnectedException e) {
-            authenticationFailed(e);
-            throw e;
+    private void challengeReceived(String challenge, boolean finalChallenge) throws SmackSaslException, NotConnectedException, InterruptedException {
+        SASLMechanism mechanism;
+        synchronized (this) {
+            mechanism = currentMechanism;
         }
+        mechanism.challengeReceived(challenge, finalChallenge);
     }
 
     /**
@@ -253,8 +251,10 @@ public final class SASLAuthentication {
      * @param success result of the authentication.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws SmackSaslException if a SASL specific error occured.
      */
-    public void authenticated(Success success) throws SmackException, InterruptedException {
+    void authenticated(Success success) throws InterruptedException, SmackSaslException, NotConnectedException {
         // RFC6120 6.3.10 "At the end of the authentication exchange, the SASL server (the XMPP
         // "receiving entity") can include "additional data with success" if appropriate for the
         // SASL mechanism in use. In XMPP, this is done by including the additional data as the XML
@@ -279,11 +279,15 @@ public final class SASLAuthentication {
      * @param saslFailure the SASL failure as reported by the server
      * @see <a href="https://tools.ietf.org/html/rfc6120#section-6.5">RFC6120 6.5</a>
      */
-    public void authenticationFailed(SASLFailure saslFailure) {
-        authenticationFailed(new SASLErrorException(currentMechanism.getName(), saslFailure));
+    void authenticationFailed(SASLFailure saslFailure) {
+        SASLErrorException saslErrorException;
+        synchronized (this) {
+            saslErrorException = new SASLErrorException(currentMechanism.getName(), saslFailure);
+        }
+        authenticationFailed(saslErrorException);
     }
 
-    private void authenticationFailed(Exception exception) {
+    void authenticationFailed(Exception exception) {
         // Wake up the thread that is waiting in the #authenticate method
         synchronized (this) {
             currentMechanism.setException(exception);
