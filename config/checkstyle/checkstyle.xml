@@ -35,10 +35,6 @@
 		<property name="format" value="\.append\(&quot;(.|\\.)&quot;\)"/>
 		<property name="message" value="Don&apos;t use StringBuilder.append(String) when you can use StringBuilder.append(char). Solution: Replace double quotes of append&apos;s argument with single quotes."/>
 	</module>
-	<module name="RegexpSingleline">
-		<property name="format" value="^\s+$"/>
-		<property name="message" value="Line containing only whitespace character(s)"/>
-	</module>
 	<module name="FileTabCharacter"/>
 	<module name="RegexpSingleline">
 		<!--
