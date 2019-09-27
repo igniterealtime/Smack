@@ -58,24 +58,34 @@ debugger=console
 
 ### Framework properties
 
-| Name                 |                                           |
-|----------------------|-------------------------------------------|
-| service              | XMPP service to run the tests on          |
+| Name                 |                                             |
+|----------------------|---------------------------------------------|
+| service              | XMPP service to run the tests on            |
 | serviceTlsPin        | TLS Pin (used by [java-pinning](https://github.com/Flowdalic/java-pinning))            |
-| securityMode         | Either 'required' or 'disabled'           |
-| replyTimeout         | In milliseconds                           |
-| adminAccountUsername | Username of the XEP-0133 Admin account    |
-| adminAccountPassword | Password of the XEP-0133 Admin account    |
-| accountOneUsername   | Username of the first XMPP account        |
-| accountOnePassword   | Password of the first XMPP account        |
-| accountTwoUsername   | Username of the second XMPP account       |
-| accountTwoPassword   | Password of the second XMPP account       |
-| accountThreeUsername | Username of the third XMPP account        |
-| accountThreePassword | Password of the third XMPP account        |
+| securityMode         | Either 'required' or 'disabled'             |
+| replyTimeout         | In milliseconds                             |
+| adminAccountUsername | Username of the XEP-0133 Admin account      |
+| adminAccountPassword | Password of the XEP-0133 Admin account      |
+| adminAccountHostname | Hostname to use for the Admin account       |
+| adminAccountPort     | Port to use with the Admin account          |
+| accountOneUsername   | Username of the first XMPP account          |
+| accountOnePassword   | Password of the first XMPP account          |
+| accountOneHostname   | Hostname to use for the first XMPP account  |
+| accountOnePort       | Port to use for the first XMPP account      |
+| accountTwoUsername   | Username of the second XMPP account         |
+| accountTwoPassword   | Password of the second XMPP account         |
+| accountTwoHostname   | Hostname to use for the second XMPP account |
+| accountTwoPort       | Port to use for the second XMPP account     |
+| accountThreeUsername | Username of the third XMPP account          |
+| accountThreePassword | Password of the third XMPP account          |
+| accountThreeHostname | Hostname to use for the third XMPP account  |
+| accountThreePort     | Port to use for the third XMPP account      |
 | debugger             | 'console' for console debugger, 'enhanced' for the enhanced debugger  |
-| enabledTests         | List of enabled tests                     |
-| disabledTests        | List of disabled tests                    |
-| testPackages         | List of packages with tests               |
+| enabledTests         | List of enabled tests                       |
+| disabledTests        | List of disabled tests                      |
+| testPackages         | List of packages with tests                 |
+
+The hostname and port properties may come in handy when testing on clustered systems.
 
 ### Where to place the properties file
 
