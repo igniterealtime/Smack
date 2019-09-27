@@ -76,17 +76,33 @@ public final class Configuration {
 
     public final String adminAccountPassword;
 
+    public final String adminAccountHostname;
+
+    public final int adminAccountPort;
+
     public final String accountOneUsername;
 
     public final String accountOnePassword;
+
+    public final String accountOneHostname;
+
+    public final int accountOnePort;
 
     public final String accountTwoUsername;
 
     public final String accountTwoPassword;
 
+    public final String accountTwoHostname;
+
+    public final int accountTwoPort;
+
     public final String accountThreeUsername;
 
     public final String accountThreePassword;
+
+    public final String accountThreeHostname;
+
+    public final int accountThreePort;
 
     public final Debugger debugger;
 
@@ -98,10 +114,13 @@ public final class Configuration {
 
     public final ConnectionConfigurationBuilderApplier configurationApplier;
 
-    private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode, int replyTimeout,
-                    Debugger debugger, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
-                    String accountTwoPassword, String accountThreeUsername, String accountThreePassword, Set<String> enabledTests, Set<String> disabledTests,
-                    Set<String> testPackages, String adminAccountUsername, String adminAccountPassword)
+    private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode,
+                          int replyTimeout, Debugger debugger,
+                          String accountOneUsername, String accountOnePassword, String accountOneHostname, int accountOnePort,
+                          String accountTwoUsername, String accountTwoPassword, String accountTwoHostname, int accountTwoPort,
+                          String accountThreeUsername, String accountThreePassword, String accountThreeHostname, int accountThreePort,
+                          Set<String> enabledTests, Set<String> disabledTests, Set<String> testPackages,
+                          String adminAccountUsername, String adminAccountPassword, String adminAccountHostname, int adminAccountPort)
                     throws KeyManagementException, NoSuchAlgorithmException {
         this.service = Objects.requireNonNull(service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
@@ -131,6 +150,8 @@ public final class Configuration {
 
         this.adminAccountUsername = adminAccountUsername;
         this.adminAccountPassword = adminAccountPassword;
+        this.adminAccountHostname = adminAccountHostname;
+        this.adminAccountPort = adminAccountPort;
 
         boolean accountOnePasswordSet = StringUtils.isNotEmpty(accountOnePassword);
         if (accountOnePasswordSet != StringUtils.isNotEmpty(accountTwoPassword) ||
@@ -141,10 +162,19 @@ public final class Configuration {
 
         this.accountOneUsername = accountOneUsername;
         this.accountOnePassword = accountOnePassword;
+        this.accountOneHostname = accountOneHostname;
+        this.accountOnePort = accountOnePort;
+
         this.accountTwoUsername = accountTwoUsername;
         this.accountTwoPassword = accountTwoPassword;
+        this.accountTwoHostname = accountTwoHostname;
+        this.accountTwoPort = accountTwoPort;
+
         this.accountThreeUsername = accountThreeUsername;
         this.accountThreePassword = accountThreePassword;
+        this.accountThreeHostname = accountThreeHostname;
+        this.accountThreePort = accountThreePort;
+
         this.enabledTests = enabledTests;
         this.disabledTests = disabledTests;
         this.testPackages = testPackages;
@@ -192,17 +222,33 @@ public final class Configuration {
 
         private String adminAccountPassword;
 
+        private String adminAccountHostname;
+
+        private int adminAccountPort;
+
         private String accountOneUsername;
 
         private String accountOnePassword;
+
+        private String accountOneHostname;
+
+        private int accountOnePort;
 
         private String accountTwoUsername;
 
         private String accountTwoPassword;
 
-        public String accountThreeUsername;
+        private String accountTwoHostname;
 
-        public String accountThreePassword;
+        private int accountTwoPort;
+
+        private String accountThreeUsername;
+
+        private String accountThreePassword;
+
+        private String accountThreeHostname;
+
+        private int accountThreePort;
 
         private Debugger debugger = Debugger.none;
 
@@ -256,6 +302,12 @@ public final class Configuration {
             return this;
         }
 
+        public Builder setAdminHostnameAndPort(String adminAccountHostname, int adminAccountPort) {
+            this.adminAccountHostname = adminAccountHostname;
+            this.adminAccountPort = adminAccountPort;
+            return this;
+        }
+
         public Builder setUsernamesAndPassword(String accountOneUsername, String accountOnePassword,
                         String accountTwoUsername, String accountTwoPassword, String accountThreeUsername, String accountThreePassword) {
             this.accountOneUsername = StringUtils.requireNotNullNorEmpty(accountOneUsername, "accountOneUsername must not be null nor empty");
@@ -264,6 +316,18 @@ public final class Configuration {
             this.accountTwoPassword = StringUtils.requireNotNullNorEmpty(accountTwoPassword, "accountTwoPasswordmust not be null nor empty");
             this.accountThreeUsername = StringUtils.requireNotNullNorEmpty(accountThreeUsername, "accountThreeUsername must not be null nor empty");
             this.accountThreePassword = StringUtils.requireNotNullNorEmpty(accountThreePassword, "accountThreePassword must not be null nor empty");
+            return this;
+        }
+
+        public Builder setUserHostnamesAndPorts(String accountOneHostname, int accountOnePort,
+                                                String accountTwoHostname, int accountTwoPort,
+                                                String accountThreeHostname, int accountThreePort) {
+            this.accountOneHostname = accountOneHostname;
+            this.accountOnePort = accountOnePort;
+            this.accountTwoHostname = accountTwoHostname;
+            this.accountTwoPort = accountTwoPort;
+            this.accountThreeHostname = accountThreeHostname;
+            this.accountThreePort = accountThreePort;
             return this;
         }
 
@@ -351,9 +415,12 @@ public final class Configuration {
         }
 
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
-            return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debugger, accountOneUsername,
-                            accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword, enabledTests, disabledTests,
-                            testPackages, adminAccountUsername, adminAccountPassword);
+            return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debugger,
+                    accountOneUsername, accountOnePassword, accountOneHostname, accountOnePort,
+                    accountTwoUsername, accountTwoPassword, accountTwoHostname, accountTwoPort,
+                    accountThreeUsername, accountThreePassword, accountThreeHostname, accountThreePort,
+                    enabledTests, disabledTests, testPackages,
+                    adminAccountUsername, adminAccountPassword, adminAccountHostname, adminAccountPort);
         }
     }
 
@@ -394,6 +461,12 @@ public final class Configuration {
             builder.setAdminAccountUsernameAndPassword(adminAccountUsername, adminAccountPassword);
         }
 
+        String adminAccountHostname = properties.getProperty("adminAccountHostname");
+        int adminAccountPort = getIntProperty(properties, "adminAccountPort", 0);
+        if (StringUtils.isNotEmpty(adminAccountHostname)) {
+            builder.setAdminHostnameAndPort(adminAccountHostname, adminAccountPort);
+        }
+
         String accountOneUsername = properties.getProperty("accountOneUsername");
         String accountOnePassword = properties.getProperty("accountOnePassword");
         String accountTwoUsername = properties.getProperty("accountTwoUsername");
@@ -404,6 +477,19 @@ public final class Configuration {
                         || accountTwoPassword != null || accountThreeUsername != null || accountThreePassword != null) {
             builder.setUsernamesAndPassword(accountOneUsername, accountOnePassword, accountTwoUsername,
                             accountTwoPassword, accountThreeUsername, accountThreePassword);
+        }
+
+        String accountOneHostname = properties.getProperty("accountOneHostname");
+        int accountOnePort = getIntProperty(properties, "accountOnePort", 0);
+        String accountTwoHostname = properties.getProperty("accountTwoHostname");
+        int accountTwoPort = getIntProperty(properties, "accountTwoPort", 0);
+        String accountThreeHostname = properties.getProperty("accountThreeHostname");
+        int accountThreePort = getIntProperty(properties, "accountThreePort", 0);
+        if (accountOneHostname != null || accountTwoHostname != null || accountThreeHostname != null) {
+            builder.setUserHostnamesAndPorts(
+                    accountOneHostname, accountOnePort,
+                    accountTwoHostname, accountTwoPort,
+                    accountThreeHostname, accountThreePort);
         }
 
         String debugString = properties.getProperty("debug");
@@ -455,5 +541,10 @@ public final class Configuration {
             string = "org.jivesoftware." + string;
         }
         return string;
+    }
+
+    private static int getIntProperty(Properties properties, String propertyName, int defaultValue) {
+        String s = properties.getProperty(propertyName, Integer.toString(defaultValue));
+        return Integer.parseInt(s);
     }
 }

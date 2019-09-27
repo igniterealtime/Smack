@@ -133,7 +133,15 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
         switch (sinttestConfiguration.accountRegistration) {
         case serviceAdministration:
         case inBandRegistration:
-            accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration);
+            accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration,
+                    builder -> {
+                        if (sinttestConfiguration.adminAccountHostname != null) {
+                            builder.setHost(sinttestConfiguration.adminAccountHostname);
+                        }
+                        if (sinttestConfiguration.adminAccountPort != 0) {
+                            builder.setPort(sinttestConfiguration.adminAccountPort);
+                        }
+                    });
             accountRegistrationConnection.connect();
             accountRegistrationConnection.login(sinttestConfiguration.adminAccountUsername,
                             sinttestConfiguration.adminAccountPassword);
@@ -255,20 +263,28 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
         String middlefix;
         String accountUsername;
         String accountPassword;
+        String accountHostname;
+        int accountPort;
         switch (accountNum) {
         case One:
             accountUsername = sinttestConfiguration.accountOneUsername;
             accountPassword = sinttestConfiguration.accountOnePassword;
+            accountHostname = sinttestConfiguration.accountOneHostname;
+            accountPort = sinttestConfiguration.accountOnePort;
             middlefix = "one";
             break;
         case Two:
             accountUsername = sinttestConfiguration.accountTwoUsername;
             accountPassword = sinttestConfiguration.accountTwoPassword;
+            accountHostname = sinttestConfiguration.accountTwoHostname;
+            accountPort = sinttestConfiguration.accountTwoPort;
             middlefix = "two";
             break;
         case Three:
             accountUsername = sinttestConfiguration.accountThreeUsername;
             accountPassword = sinttestConfiguration.accountThreePassword;
+            accountHostname = sinttestConfiguration.accountThreeHostname;
+            accountPort = sinttestConfiguration.accountThreePort;
             middlefix = "three";
             break;
         default:
@@ -284,6 +300,12 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
         }
 
         DC mainConnection = defaultConnectionDescriptor.construct(sinttestConfiguration, builder -> {
+            if (accountHostname != null) {
+                builder.setHost(accountHostname);
+            }
+            if (accountPort != 0) {
+                builder.setPort(accountPort);
+            }
             try {
                 builder.setUsernameAndPassword(finalAccountUsername, finalAccountPassword)
                     .setResource(middlefix + '-' + testRunId);
