@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
@@ -545,6 +546,12 @@ public final class Configuration {
 
     private static int getIntProperty(Properties properties, String propertyName, int defaultValue) {
         String s = properties.getProperty(propertyName, Integer.toString(defaultValue));
-        return Integer.parseInt(s);
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            LOGGER.log(Level.WARNING, "Could not parse value of property " + propertyName +
+                    ". Using default value " + defaultValue + " instead.");
+            return defaultValue;
+        }
     }
 }
