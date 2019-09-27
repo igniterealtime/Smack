@@ -336,11 +336,11 @@ public class XmppConnectionManager<DC extends AbstractXMPPConnection> {
             break;
         case inBandRegistration:
             if (!accountManager.supportsAccountCreation()) {
-                throw new UnsupportedOperationException("Account creation/registation is not supported");
+                throw new UnsupportedOperationException("Account creation/registration is not supported");
             }
             Set<String> requiredAttributes = accountManager.getAccountAttributes();
             if (requiredAttributes.size() > 4) {
-                throw new IllegalStateException("Unkown required attributes");
+                throw new IllegalStateException("Unknown required attributes");
             }
             Map<String, String> additionalAttributes = new HashMap<>();
             additionalAttributes.put("name", "Smack Integration Test");
