@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -105,7 +104,7 @@ public final class VCardManager extends Manager {
         vcard.setType(IQ.Type.set);
         // Also make sure to generate a new stanza id (the given vcard could be a vcard result), in which case we don't
         // want to use the same stanza id again (although it wouldn't break if we did)
-        vcard.setStanzaId(StanzaIdUtil.newStanzaId());
+        vcard.setNewStanzaId();
         connection().createStanzaCollectorAndSend(vcard).nextResultOrThrow();
     }
 

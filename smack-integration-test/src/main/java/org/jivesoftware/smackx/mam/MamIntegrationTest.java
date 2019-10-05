@@ -67,7 +67,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
 
         Message message = new Message(userTwo);
-        String messageId = message.setStanzaId();
+        String messageId = message.ensureStanzaIdSet();
         final String messageBody = "Test MAM message (" + testRunId + ')';
         message.setBody(messageBody);
 

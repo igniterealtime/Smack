@@ -22,7 +22,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.packet.id.StanzaIdUtil;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -83,9 +82,7 @@ public class DeliveryReceiptRequest implements ExtensionElement {
      * @return the Message ID which will be used as receipt ID
      */
     public static String addTo(Message message) {
-        if (message.getStanzaId() == null) {
-            message.setStanzaId(StanzaIdUtil.newStanzaId());
-        }
+        message.ensureStanzaIdSet();
         message.addExtension(new DeliveryReceiptRequest());
         return message.getStanzaId();
     }

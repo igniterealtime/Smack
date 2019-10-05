@@ -138,9 +138,43 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @return the stanza id.
      * @since 4.2
+     * @deprecated use {@link #setNewStanzaId()} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public String setStanzaId() {
-        if (!hasStanzaIdSet()) {
+        return ensureStanzaIdSet();
+    }
+
+    /**
+     * Set a new stanza ID even if there is already one set.
+     *
+     * @return the stanza id.
+     * @since 4.4
+     */
+    public String setNewStanzaId() {
+        return ensureStanzaIdSet(true);
+    }
+
+    /**
+     * Ensure a stanza id is set.
+     *
+     * @return the stanza id.
+     * @since 4.4
+     */
+    public String ensureStanzaIdSet() {
+        return ensureStanzaIdSet(false);
+    }
+
+    /**
+     * Ensure that a stanza ID is set.
+     *
+     * @param forceNew force a new ID even if there is already one set.
+     * @return the stanza ID.
+     * @since 4.4
+     */
+    private String ensureStanzaIdSet(boolean forceNew) {
+        if (forceNew || !hasStanzaIdSet()) {
             setStanzaId(StanzaIdUtil.newStanzaId());
         }
         return getStanzaId();
