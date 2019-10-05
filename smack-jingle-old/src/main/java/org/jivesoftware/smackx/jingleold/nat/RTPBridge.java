@@ -40,6 +40,10 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
+
 /**
  * RTPBridge IQ Stanza used to request and retrieve a RTPBridge Candidates that can be used for a Jingle Media Transmission between two parties that are behind NAT.
  * This Jingle Bridge has all the needed information to establish a full UDP Channel (Send and Receive) between two parties.
@@ -397,7 +401,6 @@ public class RTPBridge extends IQ {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @SuppressWarnings("deprecation")
     public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException, InterruptedException {
 
         if (!connection.isConnected()) {
@@ -405,7 +408,13 @@ public class RTPBridge extends IQ {
         }
 
         RTPBridge rtpPacket = new RTPBridge(sessionID);
-        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
+        DomainBareJid jid;
+        try {
+            jid = JidCreate.domainBareFrom(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
+        } catch (XmppStringprepException e) {
+            throw new AssertionError(e);
+        }
+        rtpPacket.setTo(jid);
 
         StanzaCollector collector = connection.createStanzaCollectorAndSend(rtpPacket);
 
@@ -469,7 +478,6 @@ public class RTPBridge extends IQ {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @SuppressWarnings("deprecation")
     public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException, InterruptedException {
 
         if (!connection.isConnected()) {
@@ -477,7 +485,13 @@ public class RTPBridge extends IQ {
         }
 
         RTPBridge rtpPacket = new RTPBridge(sessionID, RTPBridge.BridgeAction.change);
-        rtpPacket.setTo(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
+        DomainBareJid jid;
+        try {
+            jid = JidCreate.domainBareFrom(RTPBridge.NAME + "." + connection.getXMPPServiceDomain());
+        } catch (XmppStringprepException e) {
+            throw new AssertionError(e);
+        }
+        rtpPacket.setTo(jid);
         rtpPacket.setType(Type.set);
 
         rtpPacket.setPass(pass);
@@ -506,7 +520,6 @@ public class RTPBridge extends IQ {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @SuppressWarnings("deprecation")
     public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException, InterruptedException {
 
         if (!xmppConnection.isConnected()) {
@@ -514,7 +527,13 @@ public class RTPBridge extends IQ {
         }
 
         RTPBridge rtpPacket = new RTPBridge(RTPBridge.BridgeAction.publicip);
-        rtpPacket.setTo(RTPBridge.NAME + "." + xmppConnection.getXMPPServiceDomain());
+        DomainBareJid jid;
+        try {
+            jid = JidCreate.domainBareFrom(RTPBridge.NAME + "." + xmppConnection.getXMPPServiceDomain());
+        } catch (XmppStringprepException e) {
+            throw new AssertionError(e);
+        }
+        rtpPacket.setTo(jid);
         rtpPacket.setType(Type.set);
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());

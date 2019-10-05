@@ -37,6 +37,10 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
+import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
+
 /**
  * STUN IQ Stanza used to request and retrieve a STUN server and port to make p2p connections easier. STUN is usually used by Jingle Media Transmission between two parties that are behind NAT.
  *
@@ -177,7 +181,6 @@ public class STUN extends SimpleIQ {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @SuppressWarnings("deprecation")
     public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException, InterruptedException {
 
         if (!connection.isConnected()) {
@@ -185,7 +188,13 @@ public class STUN extends SimpleIQ {
         }
 
         STUN stunPacket = new STUN();
-        stunPacket.setTo(DOMAIN + "." + connection.getXMPPServiceDomain());
+        DomainBareJid jid;
+        try {
+            jid = JidCreate.domainBareFrom(DOMAIN + "." + connection.getXMPPServiceDomain());
+        } catch (XmppStringprepException e) {
+            throw new AssertionError(e);
+        }
+        stunPacket.setTo(jid);
 
         StanzaCollector collector = connection.createStanzaCollectorAndSend(stunPacket);
 

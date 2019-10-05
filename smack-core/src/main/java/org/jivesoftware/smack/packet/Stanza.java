@@ -31,8 +31,6 @@ import org.jivesoftware.smack.util.PacketUtil;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Base class for XMPP Stanzas, which are called Stanza in older versions of Smack (i.e. &lt; 4.1).
@@ -47,6 +45,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * </p>
  *
  * @author Matt Tucker
+ * @author Florian Schmaus
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas">RFC 6120 § 8. XML Stanzas</a>
  */
 public abstract class Stanza implements TopLevelStreamElement {
@@ -110,16 +109,6 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * Get the Stanza ID.
-     * @return the stanza id.
-     * @deprecated use {@link #getStanzaId()} instead.
-     */
-    @Deprecated
-    public String getPacketID() {
-        return getStanzaId();
-    }
-
-    /**
      * Sets the unique ID of the packet. To indicate that a stanza has no id
      * pass <code>null</code> as the packet's id value.
      *
@@ -130,16 +119,6 @@ public abstract class Stanza implements TopLevelStreamElement {
             requireNotNullNorEmpty(id, "id must either be null or not the empty String");
         }
         this.id = id;
-    }
-
-    /**
-     * Set the stanza ID.
-     * @param packetID TODO javadoc me please
-     * @deprecated use {@link #setStanzaId(String)} instead.
-     */
-    @Deprecated
-    public void setPacketID(String packetID) {
-        setStanzaId(packetID);
     }
 
     /**
@@ -180,26 +159,6 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * Sets who the stanza is being sent "to". The XMPP protocol often makes
-     * the "to" attribute optional, so it does not always need to be set.
-     *
-     * @param to who the stanza is being sent to.
-     * @throws IllegalArgumentException if to is not a valid JID String.
-     * @deprecated use {@link #setTo(Jid)} instead.
-     */
-    @Deprecated
-    public void setTo(String to) {
-        Jid jid;
-        try {
-            jid = JidCreate.from(to);
-        }
-        catch (XmppStringprepException e) {
-            throw new IllegalArgumentException(e);
-        }
-        setTo(jid);
-    }
-
-    /**
      * Sets who the packet is being sent "to". The XMPP protocol often makes
      * the "to" attribute optional, so it does not always need to be set.
      *
@@ -222,27 +181,6 @@ public abstract class Stanza implements TopLevelStreamElement {
     }
 
     /**
-     * Sets who the stanza is being sent "from". The XMPP protocol often
-     * makes the "from" attribute optional, so it does not always need to
-     * be set.
-     *
-     * @param from who the stanza is being sent to.
-     * @throws IllegalArgumentException if from is not a valid JID String.
-     * @deprecated use {@link #setFrom(Jid)} instead.
-     */
-    @Deprecated
-    public void setFrom(String from) {
-        Jid jid;
-        try {
-            jid = JidCreate.from(from);
-        }
-        catch (XmppStringprepException e) {
-            throw new IllegalArgumentException(e);
-        }
-        setFrom(jid);
-    }
-
-    /**
      * Sets who the packet is being sent "from". The XMPP protocol often
      * makes the "from" attribute optional, so it does not always need to
      * be set.
@@ -261,17 +199,6 @@ public abstract class Stanza implements TopLevelStreamElement {
      */
     public StanzaError getError() {
         return error;
-    }
-
-    /**
-     * Sets the error for this packet.
-     *
-     * @param error the error to associate with this packet.
-     * @deprecated use {@link #setError(org.jivesoftware.smack.packet.StanzaError.Builder)} instead.
-     */
-    @Deprecated
-    public void setError(StanzaError error) {
-        this.error = error;
     }
 
     /**
