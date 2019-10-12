@@ -216,7 +216,7 @@ public class SmackReactor {
             }
 
             if (selectWait < 0) {
-                // A scheduled action was just released and become ready to execute.
+                // A scheduled action was just released and became ready to execute.
                 return;
             }
 
