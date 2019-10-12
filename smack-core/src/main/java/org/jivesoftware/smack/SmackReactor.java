@@ -204,25 +204,25 @@ public class SmackReactor {
                 return;
             }
 
-            ScheduledAction nextScheduledAction = scheduledActions.peek();
-
-            long selectWait;
-            if (nextScheduledAction == null) {
-                // There is no next scheduled action, wait indefinitely in select() or until another thread invokes
-                // selector.wakeup().
-                selectWait = 0;
-            } else {
-                selectWait = nextScheduledAction.getTimeToDueMillis();
-            }
-
-            if (selectWait < 0) {
-                // A scheduled action was just released and became ready to execute.
-                return;
-            }
-
             int newSelectedKeysCount = 0;
             List<SelectionKey> selectedKeys;
             synchronized (selector) {
+                ScheduledAction nextScheduledAction = scheduledActions.peek();
+
+                long selectWait;
+                if (nextScheduledAction == null) {
+                    // There is no next scheduled action, wait indefinitely in select() or until another thread invokes
+                    // selector.wakeup().
+                    selectWait = 0;
+                } else {
+                    selectWait = nextScheduledAction.getTimeToDueMillis();
+                }
+
+                if (selectWait < 0) {
+                    // A scheduled action was just released and became ready to execute.
+                    return;
+                }
+
                 // Before we call select, we handle the pending the interest Ops. This will not block since no other
                 // thread is currently in select() at this time.
                 // Note: This was put deliberately before the registration lock. It may cause more synchronization but
