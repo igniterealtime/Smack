@@ -43,7 +43,7 @@ public class XmlUnitUtils {
 
         NormalizedSource expected = new NormalizedSource(new StreamSource(new StringReader(expectedString)));
         NormalizedSource actual = new NormalizedSource(new StreamSource(new StringReader(actualString)));
-        return XmlAssert.assertThat(expected).and(actual)
+        return XmlAssert.assertThat(actual).and(expected)
                         .ignoreChildNodesOrder()
                         .withNodeMatcher(new DefaultNodeMatcher(ElementSelectors.byNameAndAllAttributes, ElementSelectors.byNameAndText))
                         .normalizeWhitespace();
