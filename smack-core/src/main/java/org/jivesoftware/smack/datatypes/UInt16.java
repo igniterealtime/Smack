@@ -39,4 +39,19 @@ public final class UInt16 extends Scalar {
     public static UInt16 from(int number) {
         return new UInt16(number);
     }
+
+    @Override
+    public int hashCode() {
+        return number;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof UInt16) {
+            UInt16 otherUint16 = (UInt16) other;
+            return number == otherUint16.number;
+        }
+
+        return super.equals(other);
+    }
 }

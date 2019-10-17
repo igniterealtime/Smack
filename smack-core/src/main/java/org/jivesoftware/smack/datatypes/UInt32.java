@@ -39,4 +39,20 @@ public final class UInt32 extends Scalar {
     public static UInt32 from(long number) {
         return new UInt32(number);
     }
+
+    @Override
+    public int hashCode() {
+        // TODO: Use Long.hashCode(number) once Smack's minimum Android SDK level is 24 or higher.
+        return (int) (number ^ (number >>> 32));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof UInt32) {
+            UInt32 otherUint32 = (UInt32) other;
+            return number == otherUint32.number;
+        }
+
+        return super.equals(other);
+    }
 }

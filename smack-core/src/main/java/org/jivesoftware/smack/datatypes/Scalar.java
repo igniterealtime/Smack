@@ -54,13 +54,29 @@ public abstract class Scalar extends java.lang.Number {
     }
 
     @Override
-    public final int hashCode() {
-        return number.hashCode();
-    }
+    public abstract int hashCode();
 
     @Override
-    public final boolean equals(Object other) {
-        return number.equals(other);
+    public boolean equals(Object other) {
+        if (!(other instanceof Scalar)) {
+            return false;
+        }
+
+        Scalar otherScalar = (Scalar) other;
+
+        if (longValue() == otherScalar.longValue()) {
+            return true;
+        }
+
+        if (doubleValue() == otherScalar.doubleValue()) {
+            return true;
+        }
+
+        if (floatValue() == otherScalar.floatValue()) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
