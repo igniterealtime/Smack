@@ -143,7 +143,6 @@ public final class UserTuneElement implements ExtensionElement {
                                                             .append(length, otherTune.length)
                                                             .append(rating, otherTune.rating)
                                                             .append(source, otherTune.source)
-                                                            .append(title, otherTune.source)
                                                             .append(title, otherTune.title)
                                                             .append(track, otherTune.track)
                                                             .append(uri, otherTune.uri));

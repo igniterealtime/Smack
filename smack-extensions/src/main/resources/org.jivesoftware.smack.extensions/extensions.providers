@@ -595,5 +595,5 @@
         <namespace>http://jabber.org/protocol/tune</namespace>
         <className>org.jivesoftware.smackx.usertune.provider.UserTuneProvider</className>
     </extensionProvider>
-    
+
 </smackProviders>

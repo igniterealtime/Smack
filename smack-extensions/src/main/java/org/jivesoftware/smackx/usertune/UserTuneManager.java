@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.usertune;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
@@ -28,6 +29,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.pep.PepListener;
@@ -64,10 +66,12 @@ public final class UserTuneManager extends Manager {
 
     private static final Map<XMPPConnection, UserTuneManager> INSTANCES = new WeakHashMap<>();
 
-    private final Set<UserTuneListener> userTuneListeners = new HashSet<>();
+    private static boolean ENABLE_USER_TUNE_NOTIFICATIONS_BY_DEFAULT = true;
+
+    private final Set<UserTuneListener> userTuneListeners = new CopyOnWriteArraySet<>();
     private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<>();
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
     private final PepManager pepManager;
-    private boolean ENABLE_USER_TUNE_NOTIFICATIONS_BY_DEFAULT = true;
 
     public static synchronized UserTuneManager getInstanceFor(XMPPConnection connection) throws NotLoggedInException {
         UserTuneManager manager = INSTANCES.get(connection);
@@ -90,34 +94,34 @@ public final class UserTuneManager extends Manager {
 
                 final BareJid contact = from.asBareJid();
                 asyncButOrdered.performAsyncButOrdered(contact, () -> {
-                    ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                    PayloadItem<?> payload = (PayloadItem) items.getItems().get(0);
-                    UserTuneElement tune = (UserTuneElement) payload.getPayload();
+                    ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
+                    List<ExtensionElement> items = itemsExtension.getExtensions();
+                    @SuppressWarnings("unchecked")
+                    PayloadItem<UserTuneElement> payload = (PayloadItem<UserTuneElement>) items.get(0);
+                    UserTuneElement tune = payload.getPayload();
 
                     for (UserTuneListener listener : userTuneListeners) {
-                        synchronized (userTuneListeners) {
-                            listener.onUserTuneUpdated(contact, message, tune);
-                        }
+                        listener.onUserTuneUpdated(contact, message, tune);
                     }
                 });
             }
         });
+        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         if (ENABLE_USER_TUNE_NOTIFICATIONS_BY_DEFAULT) {
             enableUserTuneNotifications();
         }
     }
 
-    public void setUserTuneNotificationsEnabledByDefault(boolean bool) {
+    public static void setUserTuneNotificationsEnabledByDefault(boolean bool) {
         ENABLE_USER_TUNE_NOTIFICATIONS_BY_DEFAULT = bool;
     }
 
     public void enableUserTuneNotifications() {
-        ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(USERTUNE_NOTIFY);
+        serviceDiscoveryManager.addFeature(USERTUNE_NOTIFY);
     }
 
-    @SuppressWarnings("unused")
-    private void disableUserTuneNotifications() {
-        ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(USERTUNE_NOTIFY);
+    public void disableUserTuneNotifications() {
+        serviceDiscoveryManager.removeFeature(USERTUNE_NOTIFY);
     }
 
     public void clearUserTune() throws NotLoggedInException, NotALeafNodeException, NoResponseException, NotConnectedException, XMPPErrorException, InterruptedException {
@@ -129,15 +133,11 @@ public final class UserTuneManager extends Manager {
         pepManager.publish(USERTUNE_NODE, new PayloadItem<>(userTuneElement));
     }
 
-    public void addUserTuneListener(UserTuneListener listener) {
-        synchronized (userTuneListeners) {
-            userTuneListeners.add(listener);
-        }
+    public boolean addUserTuneListener(UserTuneListener listener) {
+        return userTuneListeners.add(listener);
     }
 
-    public void removeUserTuneListener(UserTuneListener listener) {
-        synchronized (userTuneListeners) {
-            userTuneListeners.remove(listener);
-        }
+    public boolean removeUserTuneListener(UserTuneListener listener) {
+        return userTuneListeners.remove(listener);
     }
 }
