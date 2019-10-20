@@ -161,11 +161,16 @@ public final class UserTuneElement implements ExtensionElement {
 
     /**
      * This class defines a Builder class for {@link UserTuneElement}. <br>
-     * {@link UserTuneElement} instance can be obtained using the {@link #build()} method as follows. <br>
-     * UserTuneElement.Builder builder = new UserTuneElement.Builder();
-     * builder.setSource("Yessongs"); builder.setTitle("Heart of the Sunrise");
-     * UserTuneElement userTuneElement = builder.build(); <br>
-     * Values such as title, source, artist, length, source, track and uri can be set using their respective setters through {@link Builder}
+     * {@link UserTuneElement} instance can be obtained using the {@link #build()} method as follows. <br><br>
+     * <pre>
+     * {@code
+     * UserTuneElement.Builder builder = UserTuneElement.getBuilder();
+     * builder.setSource("Yessongs");
+     * builder.setTitle("Heart of the Sunrise");
+     * UserTuneElement userTuneElement = builder.build();
+     * }
+     * </pre>
+     * Values such as title, source, artist, length, source, track and uri can be set using their respective setters through {@link Builder}.
      */
     public static final class Builder {
         private String artist;
