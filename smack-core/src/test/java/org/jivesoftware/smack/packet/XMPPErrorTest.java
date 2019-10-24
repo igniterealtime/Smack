@@ -16,11 +16,12 @@
  */
 package org.jivesoftware.smack.packet;
 
-import static org.jivesoftware.smack.packet.StanzaError.Condition;
-import static org.jivesoftware.smack.packet.StanzaError.Type;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
+
+import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.StanzaError.Type;
 
 import org.junit.Test;
 

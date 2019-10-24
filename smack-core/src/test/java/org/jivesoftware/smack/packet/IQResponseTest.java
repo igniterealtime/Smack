@@ -62,7 +62,7 @@ public class IQResponseTest {
      */
     @Test
     public void testGeneratingValidErrorResponse() throws XmppStringprepException {
-        final StanzaError.Builder error = StanzaError.getBuilder(StanzaError.Condition.bad_request);
+        final StanzaError error = StanzaError.getBuilder(StanzaError.Condition.bad_request).build();
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.set);
@@ -75,7 +75,7 @@ public class IQResponseTest {
         assertNotNull(result.getStanzaId());
         assertEquals(request.getStanzaId(), result.getStanzaId());
         assertEquals(request.getFrom(), result.getTo());
-        assertEquals(error.build().toXML().toString(), result.getError().toXML().toString());
+        assertEquals(error.toXML().toString(), result.getError().toXML().toString());
         // TODO this test was never valid
         // assertEquals(CHILD_ELEMENT, result.getChildElementXML());
     }
@@ -110,7 +110,7 @@ public class IQResponseTest {
      */
     @Test
     public void testGeneratingErrorBasedOnError() throws XmppStringprepException {
-        final StanzaError.Builder error = StanzaError.getBuilder(StanzaError.Condition.bad_request);
+        final StanzaError error = StanzaError.getBuilder(StanzaError.Condition.bad_request).build();
         final IQ request = new TestIQ(ELEMENT, NAMESPACE);
 
         request.setType(IQ.Type.error);

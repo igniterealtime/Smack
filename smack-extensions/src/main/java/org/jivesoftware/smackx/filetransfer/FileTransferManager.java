@@ -172,7 +172,7 @@ public final class FileTransferManager extends Manager {
         // 'not-acceptable' should be returned. This is done by Smack in
         // Socks5BytestreamManager.replyRejectPacket(IQ).
         IQ rejection = IQ.createErrorResponse(initiation, StanzaError.getBuilder(
-                        StanzaError.Condition.forbidden));
+                        StanzaError.Condition.forbidden).build());
         connection().sendStanza(rejection);
     }
 }

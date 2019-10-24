@@ -28,6 +28,9 @@ import java.util.Date;
 import org.jivesoftware.smack.chat.ChatManagerListener;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -69,17 +72,18 @@ public class ChatTest extends AbstractSmackIntegrationTest {
         org.jivesoftware.smack.chat.Chat newChat = chatManagerOne.createChat(conTwo.getUser());
         StanzaCollector collector = conTwo.createStanzaCollector(new ThreadFilter(newChat.getThreadID()));
 
-        Message msg = new Message();
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
 
-        msg.setSubject("Subject of the chat");
-        msg.setBody("Body of the chat");
-        addProperty(msg, "favoriteColor", "red");
-        addProperty(msg, "age", 30);
-        addProperty(msg, "distance", 30f);
-        addProperty(msg, "weight", 30d);
-        addProperty(msg, "male", true);
-        addProperty(msg, "birthdate", new Date());
+        messageBuilder.setSubject("Subject of the chat");
+        messageBuilder.setBody("Body of the chat");
+        addProperty(messageBuilder, "favoriteColor", "red");
+        addProperty(messageBuilder, "age", 30);
+        addProperty(messageBuilder, "distance", 30f);
+        addProperty(messageBuilder, "weight", 30d);
+        addProperty(messageBuilder, "male", true);
+        addProperty(messageBuilder, "birthdate", new Date());
 
+        Message msg = messageBuilder.build();
         newChat.sendMessage(msg);
 
         Message msg2 = collector.nextResult(2000);

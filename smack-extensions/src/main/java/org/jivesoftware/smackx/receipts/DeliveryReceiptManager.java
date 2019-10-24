@@ -39,6 +39,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -342,8 +343,11 @@ public final class DeliveryReceiptManager extends Manager {
         if (StringUtils.isNullOrEmpty(stanzaId)) {
             return null;
         }
-        Message message = new Message(messageWithReceiptRequest.getFrom(), messageWithReceiptRequest.getType());
-        message.addExtension(new DeliveryReceipt(stanzaId));
+        Message message = StanzaBuilder.buildMessage()
+                .ofType(messageWithReceiptRequest.getType())
+                .to(messageWithReceiptRequest.getFrom())
+                .addExtension(new DeliveryReceipt(stanzaId))
+                .build();
         return message;
     }
 }

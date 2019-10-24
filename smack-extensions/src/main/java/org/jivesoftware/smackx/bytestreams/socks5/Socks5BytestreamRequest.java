@@ -333,7 +333,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
             errorMessage = couldNotConnectException.getMessage();
         }
 
-        StanzaError.Builder error = StanzaError.from(StanzaError.Condition.item_not_found, errorMessage);
+        StanzaError error = StanzaError.from(StanzaError.Condition.item_not_found, errorMessage).build();
         IQ errorIQ = IQ.createErrorResponse(this.bytestreamRequest, error);
         this.manager.getConnection().sendStanza(errorIQ);
 

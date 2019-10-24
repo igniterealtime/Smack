@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.compress.packet.Compress;
@@ -36,9 +37,12 @@ import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
@@ -120,18 +124,25 @@ public class PacketParserUtils {
         }
     }
 
-    private static void parseCommonStanzaAttributes(Stanza stanza, XmlPullParser parser, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
+    private interface StanzaBuilderSupplier<SB extends StanzaBuilder<?>> {
+        SB get(String stanzaId);
+    }
+
+    private static <SB extends StanzaBuilder<?>> SB parseCommonStanzaAttributes(StanzaBuilderSupplier<SB> stanzaBuilderSupplier, XmlPullParser parser, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
         String id = parser.getAttributeValue("id");
-        stanza.setStanzaId(id);
+
+        SB stanzaBuilder = stanzaBuilderSupplier.get(id);
 
         Jid to = ParserUtils.getJidAttribute(parser, "to");
-        stanza.setTo(to);
+        stanzaBuilder.to(to);
 
         Jid from = ParserUtils.getJidAttribute(parser, "from");
-        stanza.setFrom(from);
+        stanzaBuilder.from(from);
 
         String language = ParserUtils.getXmlLang(parser, xmlEnvironment);
-        stanza.setLanguage(language);
+        stanzaBuilder.setLanguage(language);
+
+        return stanzaBuilder;
     }
 
     public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
@@ -154,11 +165,14 @@ public class PacketParserUtils {
 
         XmlEnvironment messageXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
         final int initialDepth = parser.getDepth();
-        Message message = new Message();
-        parseCommonStanzaAttributes(message, parser, outerXmlEnvironment);
+
+        MessageBuilder message = parseCommonStanzaAttributes(id -> {
+            return StanzaBuilder.buildMessage(id);
+        }, parser, outerXmlEnvironment);
+
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null) {
-            message.setType(Message.Type.fromString(typeString));
+            message.ofType(Message.Type.fromString(typeString));
         }
 
         // Parse sub-elements. We include extra logic to make sure the values
@@ -176,9 +190,8 @@ public class PacketParserUtils {
                     String xmlLangSubject = ParserUtils.getXmlLang(parser);
                     String subject = parseElementText(parser);
 
-                    if (message.getSubject(xmlLangSubject) == null) {
-                        message.addSubject(xmlLangSubject, subject);
-                    }
+                    Message.Subject subjectExtensionElement = new Message.Subject(xmlLangSubject, subject);
+                    message.addExtension(subjectExtensionElement);
                     break;
                 case "thread":
                     if (thread == null) {
@@ -189,7 +202,8 @@ public class PacketParserUtils {
                     message.setError(parseError(parser, messageXmlEnvironment));
                     break;
                  default:
-                    PacketParserUtils.addExtensionElement(message, parser, elementName, namespace, messageXmlEnvironment);
+                    ExtensionElement extensionElement = parseExtensionElement(elementName, namespace, parser, messageXmlEnvironment);
+                    message.addExtension(extensionElement);
                     break;
                 }
                 break;
@@ -208,7 +222,7 @@ public class PacketParserUtils {
         // situations where we have a body element with an explicit xml lang set and once where the value is inherited
         // and both values are equal.
 
-        return message;
+        return message.build();
     }
 
     /**
@@ -436,13 +450,16 @@ public class PacketParserUtils {
         final int initialDepth = parser.getDepth();
         XmlEnvironment presenceXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
 
+        PresenceBuilder presence = parseCommonStanzaAttributes(
+                        stanzaId -> StanzaBuilder.buildPresence(stanzaId), parser, outerXmlEnvironment);
+
         Presence.Type type = Presence.Type.available;
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null && !typeString.equals("")) {
             type = Presence.Type.fromString(typeString);
         }
-        Presence presence = new Presence(type);
-        parseCommonStanzaAttributes(presence, parser, outerXmlEnvironment);
+
+        presence.ofType(type);
 
         // Parse sub-elements
         outerloop: while (true) {
@@ -468,9 +485,7 @@ public class PacketParserUtils {
                         // '<show />' element, which is a invalid XMPP presence
                         // stanza according to RFC 6121 4.7.2.1
                         LOGGER.warning("Empty or null mode text in presence show element form "
-                                        + presence.getFrom()
-                                        + " with id '"
-                                        + presence.getStanzaId()
+                                        + presence
                                         + "' which is invalid according to RFC6121 4.7.2.1");
                     }
                     break;
@@ -482,10 +497,10 @@ public class PacketParserUtils {
                     // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
                     // failing completely here. See SMACK-390 for more information.
                     try {
-                        PacketParserUtils.addExtensionElement(presence, parser, elementName, namespace, presenceXmlEnvironment);
+                        ExtensionElement extensionElement = parseExtensionElement(elementName, namespace, parser, presenceXmlEnvironment);
+                        presence.addExtension(extensionElement);
                     } catch (Exception e) {
-                        LOGGER.warning("Failed to parse extension element in Presence stanza: \"" + e + "\" from: '"
-                                        + presence.getFrom() + " id: '" + presence.getStanzaId() + "'");
+                        LOGGER.log(Level.WARNING, "Failed to parse extension element in Presence stanza: " + presence, e);
                     }
                     break;
                 }
@@ -500,7 +515,8 @@ public class PacketParserUtils {
                 break;
             }
         }
-        return presence;
+
+        return presence.build();
     }
 
     public static IQ parseIQ(XmlPullParser parser) throws Exception {
@@ -523,7 +539,7 @@ public class PacketParserUtils {
         final int initialDepth = parser.getDepth();
         XmlEnvironment iqXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
         IQ iqPacket = null;
-        StanzaError.Builder error = null;
+        StanzaError error = null;
 
         final String id = parser.getAttributeValue("", "id");
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
@@ -747,7 +763,7 @@ public class PacketParserUtils {
         return new StreamError(condition, conditionText, descriptiveTexts, extensions);
     }
 
-    public static StanzaError.Builder parseError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
+    public static StanzaError parseError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
         return parseError(parser, null);
     }
 
@@ -761,7 +777,7 @@ public class PacketParserUtils {
      * @throws XmlPullParserException if an error in the XML parser occured.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
-    public static StanzaError.Builder parseError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public static StanzaError parseError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
         XmlEnvironment stanzaErrorXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
@@ -808,7 +824,8 @@ public class PacketParserUtils {
             }
         }
         builder.setExtensions(extensions).setDescriptiveTexts(descriptiveTexts);
-        return builder;
+
+        return builder.build();
     }
 
     /**

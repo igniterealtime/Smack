@@ -18,7 +18,6 @@ package org.jivesoftware.smack.packet;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -44,10 +43,12 @@ public class MessageTest {
                 .append("</message>");
         String control = controlBuilder.toString();
 
-        Message messageTypeInConstructor = new Message(null, Message.Type.chat);
-        messageTypeInConstructor.setStanzaId(null);
-        assertEquals(type, messageTypeInConstructor.getType());
-        assertXmlSimilar(control, messageTypeInConstructor.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        Message messageBuildWithBuilder = StanzaBuilder.buildMessage()
+                        .ofType(Message.Type.chat)
+                        .build();
+
+        assertEquals(type, messageBuildWithBuilder.getType());
+        assertXmlSimilar(control, messageBuildWithBuilder.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
         controlBuilder = new StringBuilder();
         controlBuilder.append("<message")
@@ -57,16 +58,18 @@ public class MessageTest {
                 .append("</message>");
         control = controlBuilder.toString();
 
-        Message messageTypeSet = getNewMessage();
-        messageTypeSet.setType(type2);
+        Message messageTypeSet = StanzaBuilder.buildMessage()
+                        .ofType(type2)
+                        .build();
         assertEquals(type2, messageTypeSet.getType());
         assertXmlSimilar(control, messageTypeSet.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 
     @Test(expected = NullPointerException.class)
     public void setNullMessageBodyTest() {
-        Message message = getNewMessage();
-        message.addBody(null, null);
+        StanzaBuilder.buildMessage()
+                        .addBody(null, null)
+                        .build();
     }
 
     @Test
@@ -81,9 +84,9 @@ public class MessageTest {
                 .append("</message>");
         String control = controlBuilder.toString();
 
-        Message message = getNewMessage();
-        message.setSubject(messageSubject);
-
+        Message message = StanzaBuilder.buildMessage()
+                        .setSubject(messageSubject)
+                        .build();
         assertEquals(messageSubject, message.getSubject());
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
@@ -100,9 +103,9 @@ public class MessageTest {
                 .append("</message>");
         String control = controlBuilder.toString();
 
-        Message message = getNewMessage();
-        message.setBody(messageBody);
-
+        Message message = StanzaBuilder.buildMessage()
+                        .setBody(messageBody)
+                        .build();
         assertEquals(messageBody, message.getBody());
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
@@ -133,10 +136,11 @@ public class MessageTest {
                 .append("</message>");
         String control = controlBuilder.toString();
 
-        Message message = getNewMessage();
-        message.addBody(null, messageBody1);
-        message.addBody(lang2, messageBody2);
-        message.addBody(lang3, messageBody3);
+        Message message = StanzaBuilder.buildMessage()
+                        .addBody(null, messageBody1)
+                        .addBody(lang2, messageBody2)
+                        .addBody(lang3, messageBody3)
+                        .build();
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE));
 
         Collection<String> languages = message.getBodyLanguages();
@@ -148,21 +152,20 @@ public class MessageTest {
     }
 
     @Test
-    public void removeMessageBodyTest() {
-        Message message = getNewMessage();
-        message.setBody("test");
+    public void simpleMessageBodyTest() {
+        Message message = StanzaBuilder.buildMessage()
+                        .setBody("test")
+                        .build();
         assertTrue(message.getBodies().size() == 1);
 
-        message.setBody(null);
+        message = StanzaBuilder.buildMessage().build();
         assertTrue(message.getBodies().size() == 0);
 
-        assertFalse(message.removeBody("sp"));
 
-        Message.Body body = message.addBody("es", "test");
+        message = StanzaBuilder.buildMessage()
+                        .addBody("es", "test")
+                        .build();
         assertTrue(message.getBodies().size() == 1);
-
-        message.removeBody(body);
-        assertTrue(message.getBodies().size() == 0);
     }
 
     @Test
@@ -177,8 +180,9 @@ public class MessageTest {
                 .append("</message>");
         String control = controlBuilder.toString();
 
-        Message message = getNewMessage();
-        message.setThread(messageThread);
+        Message message = StanzaBuilder.buildMessage()
+                        .setThread(messageThread)
+                        .build();
 
         assertEquals(messageThread, message.getThread());
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
@@ -196,15 +200,10 @@ public class MessageTest {
                 .append("</message>");
         String control = controlBuilder.toString();
 
-        Message message = getNewMessage();
-        message.setLanguage(lang);
+        Message message = StanzaBuilder.buildMessage()
+                        .setLanguage(lang)
+                        .build();
 
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
-    }
-
-    private static Message getNewMessage() {
-        Message message = new Message();
-        message.setStanzaId(null);
-        return message;
     }
 }

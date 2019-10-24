@@ -39,7 +39,7 @@ public class IBBPacketUtils {
      * @return an error IQ
      */
     public static IQ createErrorIQ(Jid from, Jid to, StanzaError.Condition condition) {
-        StanzaError.Builder xmppError = StanzaError.getBuilder(condition);
+        StanzaError xmppError = StanzaError.getBuilder(condition).build();
         IQ errorIQ = new ErrorIQ(xmppError);
         errorIQ.setType(IQ.Type.error);
         errorIQ.setFrom(from);

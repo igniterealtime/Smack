@@ -125,10 +125,14 @@ public final class IoTDataManager extends IoTManager {
                     @Override
                     public void momentaryReadOut(List<? extends IoTDataField> results) {
                         IoTFieldsExtension iotFieldsExtension = IoTFieldsExtension.buildFor(dataRequest.getSequenceNr(), true, thing.getNodeInfo(), results);
-                        Message message = new Message(dataRequest.getFrom());
-                        message.addExtension(iotFieldsExtension);
+
+                        XMPPConnection connection = connection();
+                        Message message = connection.getStanzaFactory().buildMessageStanza()
+                                .to(dataRequest.getFrom())
+                                .addExtension(iotFieldsExtension)
+                                .build();
                         try {
-                            connection().sendStanza(message);
+                            connection.sendStanza(message);
                         }
                         catch (NotConnectedException | InterruptedException e) {
                             LOGGER.log(Level.SEVERE, "Could not send read-out response " + message, e);

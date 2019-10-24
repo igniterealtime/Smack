@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,18 @@ package org.jivesoftware.smack.packet;
 
 public class EmptyResultIQ extends IQ {
 
+    EmptyResultIQ(IqBuilder iqBuilder) {
+        super(iqBuilder, null, null);
+    }
+
+    // TODO: Deprecate when stanza builder and parsing logic is ready.
     public EmptyResultIQ() {
         super(null, null);
         setType(IQ.Type.result);
     }
 
     public EmptyResultIQ(IQ request) {
-        this();
-        initializeAsResultFor(request);
+        this(StanzaBuilder.buildIqResultFor(request));
     }
 
     @Override

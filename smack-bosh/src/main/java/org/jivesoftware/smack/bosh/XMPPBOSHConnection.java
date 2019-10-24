@@ -517,8 +517,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                 if ("urn:ietf:params:xml:ns:xmpp-streams".equals(parser.getNamespace(null))) {
                                     throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
                                 } else {
-                                    StanzaError.Builder builder = PacketParserUtils.parseError(parser);
-                                    throw new XMPPException.XMPPErrorException(null, builder.build());
+                                    StanzaError stanzaError = PacketParserUtils.parseError(parser);
+                                    throw new XMPPException.XMPPErrorException(null, stanzaError);
                                 }
                             default:
                                 parseAndProcessNonza(parser);

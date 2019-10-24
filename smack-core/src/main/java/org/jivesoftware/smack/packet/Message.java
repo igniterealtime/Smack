@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.Objects;
@@ -58,7 +60,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  *
  * @author Matt Tucker
  */
-public final class Message extends Stanza implements TypedCloneable<Message> {
+public final class Message extends Stanza implements MessageView, TypedCloneable<Message> {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
@@ -66,11 +68,12 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     private Type type;
     private String thread = null;
 
-    private final Set<Subject> subjects = new HashSet<Subject>();
-
     /**
      * Creates a new, "normal" message.
+     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Message() {
     }
 
@@ -78,7 +81,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * Creates a new "normal" message to the specified recipient.
      *
      * @param to the recipient of the message.
+     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Message(Jid to) {
         setTo(to);
     }
@@ -88,7 +94,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      *
      * @param to the user to send the message to.
      * @param type the message type.
+     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Message(Jid to, Type type) {
         this(to);
         setType(type);
@@ -99,7 +108,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      *
      * @param to the user to send the message to.
      * @param body the body of the message.
+     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Message(Jid to, String body) {
         this(to);
         setBody(body);
@@ -111,7 +123,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @param to the user to send the message to.
      * @param body the body of the message.
      * @throws XmppStringprepException if 'to' is not a valid XMPP address.
+     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Message(String to, String body) throws XmppStringprepException {
         this(JidCreate.from(to), body);
     }
@@ -122,10 +137,19 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @param to TODO javadoc me please
      * @param extensionElement TODO javadoc me please
      * @since 4.2
+     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Message(Jid to, ExtensionElement extensionElement) {
         this(to);
         addExtension(extensionElement);
+    }
+
+    Message(MessageBuilder messageBuilder) {
+        super(messageBuilder);
+        type = messageBuilder.type;
+        thread = messageBuilder.thread;
     }
 
     /**
@@ -141,15 +165,9 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         super(other);
         this.type = other.type;
         this.thread = other.thread;
-        this.subjects.addAll(other.subjects);
     }
 
-    /**
-     * Returns the type of the message. If no type has been set this method will return {@link
-     * org.jivesoftware.smack.packet.Message.Type#normal}.
-     *
-     * @return the type of the message.
-     */
+    @Override
     public Type getType() {
         if (type == null) {
             return Type.normal;
@@ -161,7 +179,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * Sets the type of the message.
      *
      * @param type the type of the message.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setType(Type type) {
         this.type = type;
     }
@@ -195,8 +216,9 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
 
     private Subject getMessageSubject(String language) {
         language = determineLanguage(language);
-        for (Subject subject : subjects) {
-            if (Objects.equals(language, subject.language)) {
+        for (Subject subject : getSubjects()) {
+            if (Objects.equals(language, subject.language)
+                            || (subject.language == null && Objects.equals(this.language, language))) {
                 return subject;
             }
         }
@@ -210,7 +232,12 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @return a collection of all subjects in this message.
      */
     public Set<Subject> getSubjects() {
-        return Collections.unmodifiableSet(subjects);
+        List<Subject> subjectList = getExtensions(Subject.class);
+
+        Set<Subject> subjects = new HashSet<>(subjectList.size());
+        subjects.addAll(subjectList);
+
+        return subjects;
     }
 
     /**
@@ -218,7 +245,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * message contents.
      *
      * @param subject the subject of the message.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public void setSubject(String subject) {
         if (subject == null) {
             removeSubject(""); // use empty string because #removeSubject(null) is ambiguous
@@ -235,10 +265,20 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @return the new {@link org.jivesoftware.smack.packet.Message.Subject}
      * @throws NullPointerException if the subject is null, a null pointer exception is thrown
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public Subject addSubject(String language, String subject) {
         language = determineLanguage(language);
+
+        List<Subject> currentSubjects = getExtensions(Subject.class);
+        for (Subject currentSubject : currentSubjects) {
+            if (language.equals(currentSubject.getLanguage())) {
+                throw new IllegalArgumentException("Subject with the language " + language + " already exists");
+            }
+        }
+
         Subject messageSubject = new Subject(language, subject);
-        subjects.add(messageSubject);
+        addExtension(messageSubject);
         return messageSubject;
     }
 
@@ -248,11 +288,13 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @param language the language of the subject which is to be removed
      * @return true if a subject was removed and false if it was not.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public boolean removeSubject(String language) {
         language = determineLanguage(language);
-        for (Subject subject : subjects) {
+        for (Subject subject : getExtensions(Subject.class)) {
             if (language.equals(subject.language)) {
-                return subjects.remove(subject);
+                return removeSubject(subject);
             }
         }
         return false;
@@ -264,8 +306,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @param subject the subject being removed from the message.
      * @return true if the subject was successfully removed and false if it was not.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public boolean removeSubject(Subject subject) {
-        return subjects.remove(subject);
+        return removeExtension(subject) != null;
     }
 
     /**
@@ -276,7 +320,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
     public List<String> getSubjectLanguages() {
         Subject defaultSubject = getMessageSubject(null);
         List<String> languages = new ArrayList<String>();
-        for (Subject subject : subjects) {
+        for (Subject subject : getExtensions(Subject.class)) {
             if (!subject.equals(defaultSubject)) {
                 languages.add(subject.language);
             }
@@ -345,7 +389,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @param body the body of the message.
      * @see #setBody(String)
      * @since 4.2
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public void setBody(CharSequence body) {
         String bodyString;
         if (body != null) {
@@ -360,7 +407,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * Sets the body of the message. The body is the main message contents.
      *
      * @param body the body of the message.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public void setBody(String body) {
         if (body == null) {
             removeBody(""); // use empty string because #removeBody(null) is ambiguous
@@ -377,7 +427,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @return the new {@link org.jivesoftware.smack.packet.Message.Body}
      * @throws NullPointerException if the body is null, a null pointer exception is thrown
      * @since 3.0.2
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public Body addBody(String language, String body) {
         language = determineLanguage(language);
 
@@ -393,7 +446,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      *
      * @param language the language of the body which is to be removed
      * @return true if a body was removed and false if it was not.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public boolean removeBody(String language) {
         language = determineLanguage(language);
         for (Body body : getBodies()) {
@@ -412,7 +468,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * @param body the body being removed from the message.
      * @return true if the body was successfully removed and false if it was not.
      * @since 3.0.2
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public boolean removeBody(Body body) {
         ExtensionElement removedElement = removeExtension(body);
         return removedElement != null;
@@ -450,7 +509,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
      * of "chat" messages.
      *
      * @param thread the thread id of the message.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public void setThread(String thread) {
         this.thread = thread;
     }
@@ -472,6 +534,10 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         return ELEMENT;
     }
 
+    public MessageBuilder asBuilder() {
+        return StanzaBuilder.buildMessageFrom(this, getStanzaId());
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -491,18 +557,6 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
-        // Add the subject in the default language
-        Subject defaultSubject = getMessageSubject(null);
-        if (defaultSubject != null) {
-            buf.element("subject", defaultSubject.subject);
-        }
-        // Add the subject in other languages
-        for (Subject subject : getSubjects()) {
-            // Skip the default language
-            if (subject.equals(defaultSubject))
-                continue;
-            buf.append(subject);
-        }
         buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
@@ -537,10 +591,12 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         public static final String ELEMENT = "subject";
         public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
 
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         private final String subject;
         private final String language;
 
-        private Subject(String language, String subject) {
+        public Subject(String language, String subject) {
             if (subject == null) {
                 throw new NullPointerException("Subject cannot be null.");
             }

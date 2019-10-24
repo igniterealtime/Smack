@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -52,4 +55,21 @@ public class XmppElementUtil {
         return new QName(namespace, element);
     }
 
+    public static <E extends FullyQualifiedElement, R extends FullyQualifiedElement> List<R> getElementsFrom(
+                    MultiMap<QName, E> elementMap, Class<R> extensionElementClass) {
+        QName qname = XmppElementUtil.getQNameFor(extensionElementClass);
+
+        List<E> extensionElements = elementMap.getAll(qname);
+
+        if (extensionElements.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<R> res = new ArrayList<>(extensionElements.size());
+        for (E extensionElement : extensionElements) {
+            R e = extensionElementClass.cast(extensionElement);
+            res.add(e);
+        }
+        return res;
+    }
 }

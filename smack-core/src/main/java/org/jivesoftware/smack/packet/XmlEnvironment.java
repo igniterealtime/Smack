@@ -18,7 +18,6 @@ package org.jivesoftware.smack.packet;
 
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 public class XmlEnvironment {

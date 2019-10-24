@@ -36,6 +36,9 @@ import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.CallbackHandler;
 
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
+import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
+import org.jivesoftware.smack.packet.id.StanzaIdSource;
+import org.jivesoftware.smack.packet.id.StanzaIdSourceFactory;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
@@ -159,6 +162,8 @@ public abstract class ConnectionConfiguration {
 
     private final boolean compressionEnabled;
 
+    private final StanzaIdSourceFactory stanzaIdSourceFactory;
+
     protected ConnectionConfiguration(Builder<?, ?> builder) {
         authzid = builder.authzid;
         username = builder.username;
@@ -212,6 +217,8 @@ public abstract class ConnectionConfiguration {
         enabledSaslMechanisms = builder.enabledSaslMechanisms;
 
         compressionEnabled = builder.compressionEnabled;
+
+        stanzaIdSourceFactory = builder.stanzaIdSourceFactory;
 
         // If the enabledSaslmechanisms are set, then they must not be empty
         assert enabledSaslMechanisms == null || !enabledSaslMechanisms.isEmpty();
@@ -568,6 +575,10 @@ public abstract class ConnectionConfiguration {
         return Collections.unmodifiableSet(enabledSaslMechanisms);
     }
 
+    StanzaIdSource constructStanzaIdSource() {
+        return stanzaIdSourceFactory.constructStanzaIdSource();
+    }
+
     /**
      * A builder for XMPP connection configurations.
      * <p>
@@ -612,6 +623,7 @@ public abstract class ConnectionConfiguration {
         private Set<String> enabledSaslMechanisms;
         private X509TrustManager customX509TrustManager;
         private boolean compressionEnabled = false;
+        private StanzaIdSourceFactory stanzaIdSourceFactory = new StandardStanzaIdSource.Factory();
 
         protected Builder() {
             if (SmackConfiguration.DEBUG) {
@@ -1134,6 +1146,17 @@ public abstract class ConnectionConfiguration {
             return getThis();
         }
 
+        /**
+         * Set the factory for stanza ID sources to use.
+         *
+         * @param stanzaIdSourceFactory the factory for stanza ID sources to use.
+         * @return a reference to this builder.
+         * @since 4.4
+         */
+        public B setStanzaIdSourceFactory(StanzaIdSourceFactory stanzaIdSourceFactory) {
+            this.stanzaIdSourceFactory = Objects.requireNonNull(stanzaIdSourceFactory);
+            return getThis();
+        }
 
         public abstract C build();
 

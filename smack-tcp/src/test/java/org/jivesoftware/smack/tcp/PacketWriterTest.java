@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 import org.jivesoftware.smack.util.ExceptionUtil;
 
@@ -80,7 +80,7 @@ public class PacketWriterTest {
         // full capacity. The +1 is because the writer thread will dequeue one stanza and try to write it into the
         // blocking writer.
         for (int i = 0; i < XMPPTCPConnection.PacketWriter.QUEUE_SIZE + 1; i++) {
-            pw.sendStreamElement(new Message());
+            pw.sendStreamElement(StanzaBuilder.buildMessage().build());
         }
 
         final CyclicBarrier barrier = new CyclicBarrier(2);
@@ -93,7 +93,7 @@ public class PacketWriterTest {
             public void run() {
                 try {
                     barrier.await();
-                    pw.sendStreamElement(new Message());
+                    pw.sendStreamElement(StanzaBuilder.buildMessage().build());
                     // should only return after the pw was interrupted
                     if (!shutdown) {
                         prematureUnblocked = true;

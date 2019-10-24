@@ -159,7 +159,7 @@ public class MultipleRecipientManager {
         }
         // Any <thread/> element from the initial message MUST be copied into the reply.
         if (original.getThread() != null) {
-            reply.setThread(original.getThread());
+            reply.asBuilder().setThread(original.getThread()).build();
         }
         MultipleAddresses.Address replyAddress = info.getReplyAddress();
         if (replyAddress != null && replyAddress.getJid() != null) {

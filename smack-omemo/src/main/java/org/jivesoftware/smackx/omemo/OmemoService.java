@@ -45,6 +45,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -1343,10 +1344,13 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
         OmemoManager manager = managerGuard.get();
         OmemoElement ratchetUpdate = createRatchetUpdateElement(managerGuard, contactsDevice);
-        Message m = new Message();
-        m.setTo(contactsDevice.getJid());
-        m.addExtension(ratchetUpdate);
-        manager.getConnection().sendStanza(m);
+
+        XMPPConnection connection = manager.getConnection();
+        Message message = connection.getStanzaFactory().buildMessageStanza()
+                .to(contactsDevice.getJid())
+                .addExtension(ratchetUpdate)
+                .build();
+        connection.sendStanza(message);
     }
 
     /**

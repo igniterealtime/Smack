@@ -45,9 +45,9 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
-
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.MetaData;
@@ -335,8 +335,11 @@ public class AgentSession {
 
         // If the user is going online...
         if (online) {
-            presence = new Presence(Presence.Type.available);
-            presence.setTo(workgroupJID);
+            presence = connection.getStanzaFactory().buildPresenceStanza()
+                    .ofType(Presence.Type.available)
+                    .to(workgroupJID)
+                    .build();
+
             presence.addExtension(new StandardExtensionElement(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
 
@@ -353,8 +356,10 @@ public class AgentSession {
             // Update this iv now since we don't care at this point of any error
             this.online = online;
 
-            presence = new Presence(Presence.Type.unavailable);
-            presence.setTo(workgroupJID);
+            presence = connection.getStanzaFactory().buildPresenceStanza()
+                    .ofType(Presence.Type.unavailable)
+                    .to(workgroupJID)
+                    .build();
             presence.addExtension(new StandardExtensionElement(AgentStatus.ELEMENT_NAME,
                     AgentStatus.NAMESPACE));
             connection.sendStanza(presence);
@@ -427,21 +432,21 @@ public class AgentSession {
         this.presenceMode = presenceMode;
         this.maxChats = maxChats;
 
-        Presence presence = new Presence(Presence.Type.available);
-        presence.setMode(presenceMode);
-        presence.setTo(this.getWorkgroupJID());
-
-        if (status != null) {
-            presence.setStatus(status);
-        }
+        PresenceBuilder presenceBuilder = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.available)
+                .setMode(presenceMode)
+                .to(workgroupJID)
+                .setStatus(status)
+                ;
 
         // Send information about max chats and current chats as a packet extension.
         StandardExtensionElement.Builder builder = StandardExtensionElement.builder(AgentStatus.ELEMENT_NAME,
                 AgentStatus.NAMESPACE);
         builder.addElement("max_chats", Integer.toString(maxChats));
-        presence.addExtension(builder.build());
-        presence.addExtension(new MetaData(this.metaData));
+        presenceBuilder.addExtension(builder.build());
+        presenceBuilder.addExtension(new MetaData(this.metaData));
 
+        Presence presence = presenceBuilder.build();
         StanzaCollector collector = this.connection.createStanzaCollectorAndSend(new AndFilter(
                         new StanzaTypeFilter(Presence.class),
                         FromMatchesFilter.create(workgroupJID)), presence);
@@ -478,13 +483,16 @@ public class AgentSession {
         }
         this.presenceMode = presenceMode;
 
-        Presence presence = new Presence(Presence.Type.available);
-        presence.setMode(presenceMode);
-        presence.setTo(this.getWorkgroupJID());
+        PresenceBuilder presenceBuilder = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.available)
+                .setMode(presenceMode)
+                .to(getWorkgroupJID());
 
         if (status != null) {
-            presence.setStatus(status);
+            presenceBuilder.setStatus(status);
         }
+
+        Presence presence = presenceBuilder.build();
         presence.addExtension(new MetaData(this.metaData));
 
         StanzaCollector collector = this.connection.createStanzaCollectorAndSend(new AndFilter(new StanzaTypeFilter(Presence.class),

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ public abstract class SimpleIQ extends IQ {
 
     protected SimpleIQ(String childElementName, String childElementNamespace) {
         super(childElementName, childElementNamespace);
+    }
+
+    protected SimpleIQ(IqBuilder iqBuilder, String childElementName, String childElementNamespace) {
+        super(iqBuilder, childElementName, childElementNamespace);
     }
 
     @Override

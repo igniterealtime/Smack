@@ -36,6 +36,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -166,8 +167,9 @@ public class OmemoClient {
                 BareJid recipient = JidCreate.bareFrom(com[1]);
                 String body = com[2];
 
+                MessageBuilder messageBuilder = connection.getStanzaFactory().buildMessageStanza();
                 try {
-                    Message omemoMessage = omemoManager.encrypt(recipient, body).asMessage(recipient);
+                    Message omemoMessage = omemoManager.encrypt(recipient, body).buildMessage(messageBuilder, recipient);
                     connection.sendStanza(omemoMessage);
                 } catch (UndecidedOmemoIdentityException e) {
                     print("Undecided Identities!\n" + Arrays.toString(e.getUndecidedDevices().toArray()));

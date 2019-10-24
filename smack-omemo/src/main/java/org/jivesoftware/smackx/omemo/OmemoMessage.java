@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.hints.element.StoreHint;
@@ -123,22 +124,23 @@ public class OmemoMessage {
          * as well as an optional clear text hint as body, a MAM storage hint
          * and an EME hint about OMEMO encryption.
          *
+         * @param messageBuilder a message builder which will be used to build the message.
          * @param recipient recipient for the to-field of the message.
-         * @return Message TODO javadoc me please
+         * @return the build message.
          */
-        public Message asMessage(Jid recipient) {
+        public Message buildMessage(MessageBuilder messageBuilder, Jid recipient) {
+            messageBuilder.ofType(Message.Type.chat).to(recipient);
 
-            Message messageStanza = new Message(recipient, Message.Type.chat);
-            messageStanza.addExtension(getElement());
+            messageBuilder.addExtension(getElement());
 
             if (OmemoConfiguration.getAddOmemoHintBody()) {
-                messageStanza.setBody(BODY_OMEMO_HINT);
+                messageBuilder.setBody(BODY_OMEMO_HINT);
             }
 
-            StoreHint.set(messageStanza);
-            messageStanza.addExtension(new ExplicitMessageEncryptionElement(OMEMO_NAMESPACE_V_AXOLOTL, OMEMO));
+            StoreHint.set(messageBuilder);
+            messageBuilder.addExtension(new ExplicitMessageEncryptionElement(OMEMO_NAMESPACE_V_AXOLOTL, OMEMO));
 
-            return messageStanza;
+            return messageBuilder.build();
         }
     }
 

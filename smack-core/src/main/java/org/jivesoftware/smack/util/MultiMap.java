@@ -34,7 +34,7 @@ import java.util.Set;
  * @param <K> the type of the keys the map uses.
  * @param <V> the type of the values the map uses.
  */
-public class MultiMap<K, V> {
+public class MultiMap<K, V> implements TypedCloneable<MultiMap<K, V>> {
 
     /**
      * The constant value {@value}.
@@ -250,6 +250,19 @@ public class MultiMap<K, V> {
         }
 
         return new MultiMap<K, V>(Collections.unmodifiableMap(mapCopy));
+    }
+
+    @Override
+    public MultiMap<K, V> clone() {
+        Map<K, List<V>> clonedMap = new LinkedHashMap<>(map.size());
+
+        // TODO: Use Map.forEach() once Smack's minimum Android API is 24 or higher.
+        for (Entry<K, List<V>> entry : map.entrySet()) {
+            List<V> clonedList = CollectionUtil.newListWith(entry.getValue());
+            clonedMap.put(entry.getKey(), clonedList);
+        }
+
+        return new MultiMap<>(clonedMap);
     }
 
     private static final class SimpleMapEntry<K, V> implements Map.Entry<K, V> {

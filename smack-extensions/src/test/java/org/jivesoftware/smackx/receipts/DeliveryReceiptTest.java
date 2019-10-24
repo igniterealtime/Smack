@@ -27,7 +27,9 @@ import java.util.Properties;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -38,7 +40,6 @@ import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.Test;
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
 
 public class DeliveryReceiptTest extends InitExtensions {
 
@@ -66,10 +67,13 @@ public class DeliveryReceiptTest extends InitExtensions {
 
         assertTrue(DeliveryReceiptManager.hasDeliveryReceiptRequest(p));
 
-        Message m = new Message(JidCreate.from("romeo@montague.com"), Message.Type.normal);
-        assertFalse(DeliveryReceiptManager.hasDeliveryReceiptRequest(m));
-        DeliveryReceiptRequest.addTo(m);
-        assertTrue(DeliveryReceiptManager.hasDeliveryReceiptRequest(m));
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage("request-id")
+                .to("romeo@montague.com")
+                .ofType(Message.Type.normal)
+                ;
+        assertFalse(DeliveryReceiptManager.hasDeliveryReceiptRequest(messageBuilder.build()));
+        DeliveryReceiptRequest.addTo(messageBuilder);
+        assertTrue(DeliveryReceiptManager.hasDeliveryReceiptRequest(messageBuilder.build()));
     }
 
     @Test
@@ -81,10 +85,12 @@ public class DeliveryReceiptTest extends InitExtensions {
         TestReceiptReceivedListener rrl = new TestReceiptReceivedListener();
         drm.addReceiptReceivedListener(rrl);
 
-        Message m = new Message(JidCreate.from("romeo@montague.com"), Message.Type.normal);
-        m.setFrom(JidCreate.from("julia@capulet.com"));
-        m.setStanzaId("reply-id");
-        m.addExtension(new DeliveryReceipt("original-test-id"));
+        Message m = StanzaBuilder.buildMessage("reply-id")
+                .from("julia@capulet.com")
+                .to("romeo@montague.com")
+                .ofType(Message.Type.normal)
+                .addExtension(new DeliveryReceipt("original-test-id"))
+                .build();
         c.processStanza(m);
 
         rrl.waitUntilInvocationOrTimeout();
@@ -110,13 +116,15 @@ public class DeliveryReceiptTest extends InitExtensions {
         assertEquals(AutoReceiptMode.always, drm.getAutoReceiptMode());
 
         // test auto-receipts
-        Message m = new Message(JidCreate.from("julia@capulet.com"), Message.Type.normal);
-        m.setFrom(JidCreate.from("romeo@montague.com"));
-        m.setStanzaId("test-receipt-request");
-        DeliveryReceiptRequest.addTo(m);
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage("test-receipt-request")
+                .to("julia@capulet.com")
+                .from("romeo@montague.com")
+                .ofType(Message.Type.normal)
+                ;
+        DeliveryReceiptRequest.addTo(messageBuilder);
 
         // the DRM will send a reply-packet
-        c.processStanza(m);
+        c.processStanza(messageBuilder.build());
 
         Stanza reply = c.getSentPacket();
         DeliveryReceipt r = DeliveryReceipt.from((Message) reply);

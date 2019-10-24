@@ -106,7 +106,6 @@ public class StanzaError extends AbstractError implements ExtensionElement {
     private final String conditionText;
     private final String errorGenerator;
     private final Type type;
-    private final Stanza stanza;
 
     /**
      * Creates a new error with the specified type, condition and message.
@@ -120,13 +119,11 @@ public class StanzaError extends AbstractError implements ExtensionElement {
      * @param errorGenerator TODO javadoc me please
      * @param descriptiveTexts TODO javadoc me please
      * @param extensions list of stanza extensions
-     * @param stanza the stanza carrying this XMPP error.
      */
     public StanzaError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
-            List<ExtensionElement> extensions, Stanza stanza) {
+            List<ExtensionElement> extensions) {
         super(descriptiveTexts, ERROR_CONDITION_AND_TEXT_NAMESPACE, extensions);
         this.condition = Objects.requireNonNull(condition, "condition must not be null");
-        this.stanza = stanza;
         // Some implementations may send the condition as non-empty element containing the empty string, that is
         // <condition xmlns='foo'></condition>, in this case the parser may calls this constructor with the empty string
         // as conditionText, therefore reset it to null if it's the empty string
@@ -182,16 +179,6 @@ public class StanzaError extends AbstractError implements ExtensionElement {
 
     public String getConditionText() {
         return conditionText;
-    }
-
-    /**
-     * Get the stanza carrying the XMPP error.
-     *
-     * @return the stanza carrying the XMPP error.
-     * @since 4.2
-     */
-    public Stanza getStanza() {
-        return stanza;
     }
 
     @Override
@@ -271,7 +258,6 @@ public class StanzaError extends AbstractError implements ExtensionElement {
         private String conditionText;
         private String errorGenerator;
         private Type type;
-        private Stanza stanza;
 
         private Builder() {
         }
@@ -296,17 +282,11 @@ public class StanzaError extends AbstractError implements ExtensionElement {
             return this;
         }
 
-        public Builder setStanza(Stanza stanza) {
-            this.stanza = stanza;
-            return this;
-        }
-
         public Builder copyFrom(StanzaError xmppError) {
             setCondition(xmppError.getCondition());
             setType(xmppError.getType());
             setConditionText(xmppError.getConditionText());
             setErrorGenerator(xmppError.getErrorGenerator());
-            setStanza(xmppError.getStanza());
             setDescriptiveTexts(xmppError.descriptiveTexts);
             setTextNamespace(xmppError.textNamespace);
             setExtensions(xmppError.extensions);
@@ -315,7 +295,7 @@ public class StanzaError extends AbstractError implements ExtensionElement {
 
         public StanzaError build() {
             return new StanzaError(condition, conditionText, errorGenerator, type, descriptiveTexts,
-            extensions, stanza);
+            extensions);
         }
 
         @Override

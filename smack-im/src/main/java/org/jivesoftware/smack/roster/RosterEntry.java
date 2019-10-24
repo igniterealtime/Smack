@@ -218,8 +218,12 @@ public final class RosterEntry extends Manager {
      * @since 4.2
      */
     public void cancelSubscription() throws NotConnectedException, InterruptedException {
-        Presence unsubscribed = new Presence(item.getJid(), Type.unsubscribed);
-        connection().sendStanza(unsubscribed);
+        XMPPConnection connection = connection();
+        Presence unsubscribed = connection.getStanzaFactory().buildPresenceStanza()
+                .to(item.getJid())
+                .ofType(Type.unsubscribed)
+                .build();
+        connection.sendStanza(unsubscribed);
     }
 
     @Override

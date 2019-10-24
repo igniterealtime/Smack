@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016-2017 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.jivesoftware.smack.packet;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jivesoftware.smack.packet.Presence.Mode;
-
 import org.junit.Test;
 import org.jxmpp.jid.JidTestUtil;
 
@@ -27,15 +25,21 @@ public class ToStringTest {
 
     @Test
     public void messageTest() {
-        Message message = new Message(JidTestUtil.BARE_JID_1, Message.Type.headline);
-        message.setStanzaId("message-id");
+        Message message = StanzaBuilder.buildMessage("message-id")
+                        .ofType(Message.Type.headline)
+                        .to(JidTestUtil.BARE_JID_1)
+                        .build();
         String string = message.toString();
         assertEquals("Message Stanza [to=one@exampleone.org,id=message-id,type=headline,]", string);
     }
 
     @Test
     public void presenceTest() {
-        Presence presence = new Presence(Presence.Type.subscribe, null, 0, Mode.away);
+        Presence presence = StanzaBuilder.buildPresence()
+                        .ofType(Presence.Type.subscribe)
+                        .setPriority(0)
+                        .setMode(Presence.Mode.away)
+                        .build();
         presence.setStanzaId("presence-id");
         String string = presence.toString();
         assertEquals("Presence Stanza [id=presence-id,type=subscribe,mode=away,prio=0,]", string);

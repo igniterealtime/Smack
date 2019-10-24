@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
 import org.jivesoftware.smackx.omemo.internal.CipherAndAuthTag;

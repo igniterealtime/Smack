@@ -43,6 +43,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -218,7 +219,7 @@ public final class ChatStateManager extends Manager {
         if (!updateChatState(chat, newState)) {
             return;
         }
-        Message message = new Message();
+        Message message = StanzaBuilder.buildMessage().build();
         ChatStateExtension extension = new ChatStateExtension(newState);
         message.addExtension(extension);
 

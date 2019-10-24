@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -46,6 +48,8 @@ public class JivePropertiesExtension implements ExtensionElement {
     public static final String NAMESPACE = "http://www.jivesoftware.com/xmlns/xmpp/properties";
 
     public static final String ELEMENT = "properties";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private static final Logger LOGGER = Logger.getLogger(JivePropertiesExtension.class.getName());
 

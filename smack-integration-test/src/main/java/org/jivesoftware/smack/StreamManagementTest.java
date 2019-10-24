@@ -77,8 +77,10 @@ public class StreamManagementTest extends AbstractSmackSpecificLowLevelIntegrati
 
     private static void send(String messageString, XMPPConnection from, XMPPConnection to)
                     throws NotConnectedException, InterruptedException {
-        Message message = new Message(to.getUser());
-        message.setBody(messageString);
+        Message message = from.getStanzaFactory().buildMessageStanza()
+                        .to(to.getUser())
+                        .setBody(messageString)
+                        .build();
         from.sendStanza(message);
     }
 

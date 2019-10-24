@@ -18,7 +18,10 @@ package org.jivesoftware.smackx.muc;
 
 import java.util.Date;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.Objects;
 
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
@@ -58,7 +61,7 @@ public final class MucEnterConfiguration {
         timeout = builder.timeout;
 
         if (builder.joinPresence == null) {
-            joinPresence = new Presence(Presence.Type.available);
+            joinPresence = builder.joinPresenceBuilder.ofType(Presence.Type.available).build();
         }
         else {
             joinPresence = builder.joinPresence.clone();
@@ -87,11 +90,17 @@ public final class MucEnterConfiguration {
         private int seconds = -1;
         private Date since;
         private long timeout;
+
+        private final PresenceBuilder joinPresenceBuilder;
         private Presence joinPresence;
 
-        Builder(Resourcepart nickname, long timeout) {
+        Builder(Resourcepart nickname, XMPPConnection connection) {
             this.nickname = Objects.requireNonNull(nickname, "Nickname must not be null");
+
+            timeout = connection.getReplyTimeout();
             timeoutAfter(timeout);
+
+            joinPresenceBuilder = connection.getStanzaFactory().buildPresenceStanza();
         }
 
         /**
@@ -103,13 +112,36 @@ public final class MucEnterConfiguration {
          *
          * @param presence TODO javadoc me please
          * @return a reference to this builder.
+         * @deprecated use {@link #withPresence(Consumer)} instead.
          */
+        @Deprecated
+        // TODO: Remove in Smack 4.5.
         public Builder withPresence(Presence presence) {
             if (presence.getType() != Presence.Type.available) {
                 throw new IllegalArgumentException("Presence must be of type 'available'");
             }
 
             joinPresence = presence;
+            return this;
+        }
+
+        /**
+         * Set the presence used to join the MUC room.
+         * <p>
+         * The consumer must not modify the presence type, otherwise an {@link IllegalArgumentException} will be thrown.
+         * <p>
+         *
+         * @param presenceBuilderConsumer a consumer which will be passed the presence build.
+         * @return a reference to this builder.
+         * @since 4.5
+         */
+        public Builder withPresence(Consumer<? super PresenceBuilder> presenceBuilderConsumer) {
+            presenceBuilderConsumer.accept(joinPresenceBuilder);
+
+            if (joinPresenceBuilder.getType() != Presence.Type.available) {
+                throw new IllegalArgumentException("Presence must be of type 'available'");
+            }
+
             return this;
         }
 

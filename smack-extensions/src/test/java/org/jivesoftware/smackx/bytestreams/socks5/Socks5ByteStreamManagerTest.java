@@ -413,8 +413,8 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build error packet to reject SOCKS5 Bytestream
-        StanzaError.Builder builder = StanzaError.getBuilder(StanzaError.Condition.not_acceptable);
-        IQ rejectPacket = new ErrorIQ(builder);
+        StanzaError stanzaError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable).build();
+        IQ rejectPacket = new ErrorIQ(stanzaError);
         rejectPacket.setFrom(targetJID);
         rejectPacket.setTo(initiatorJID);
 

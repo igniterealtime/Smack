@@ -31,6 +31,7 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.BooleansUtils;
@@ -86,18 +87,19 @@ public class XmppConnectionStressTest {
             MultiMap<XMPPConnection, Message> toConnectionMessages = new MultiMap<>();
             for (XMPPConnection toConnection : connections) {
                 for (int i = 0; i < configuration.messagesPerConnection; i++) {
-                    Message message = new Message();
-                    message.setTo(toConnection.getUser());
+                    MessageBuilder messageBuilder = fromConnection.getStanzaFactory().buildMessageStanza();
+                    messageBuilder.to(toConnection.getUser());
 
                     int payloadChunkCount = random.nextInt(configuration.maxPayloadChunks) + 1;
                     for (int c = 0; c < payloadChunkCount; c++) {
                         int payloadChunkSize = random.nextInt(configuration.maxPayloadChunkSize) + 1;
                         String payloadCunk = StringUtils.randomString(payloadChunkSize, random);
-                        JivePropertiesManager.addProperty(message, "payload-chunk-" + c, payloadCunk);
+                        JivePropertiesManager.addProperty(messageBuilder, "payload-chunk-" + c, payloadCunk);
                     }
 
-                    JivePropertiesManager.addProperty(message, MESSAGE_NUMBER_PROPERTY, i);
+                    JivePropertiesManager.addProperty(messageBuilder, MESSAGE_NUMBER_PROPERTY, i);
 
+                    Message message = messageBuilder.build();
                     toConnectionMessages.put(toConnection, message);
                 }
             }

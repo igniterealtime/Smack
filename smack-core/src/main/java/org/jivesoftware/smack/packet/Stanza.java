@@ -20,15 +20,19 @@ package org.jivesoftware.smack.packet;
 import static org.jivesoftware.smack.util.StringUtils.requireNotNullNorEmpty;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
+import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.PacketUtil;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smack.util.XmppElementUtil;
 
 import org.jxmpp.jid.Jid;
 
@@ -43,12 +47,16 @@ import org.jxmpp.jid.Jid;
  * XMPP Stanzas are {@link Message}, {@link IQ} and {@link Presence}. Which therefore subclass this
  * class. <b>If you think you need to subclass this class, then you are doing something wrong.</b>
  * </p>
+ * <p>
+ * Use {@link StanzaBuilder} to construct a stanza instance. All instance mutating methods of this
+ * class are deprecated, although not all of them are currently marked as such, and must not be used.
+ * </p>
  *
  * @author Matt Tucker
  * @author Florian Schmaus
  * @see <a href="http://xmpp.org/rfcs/rfc6120.html#stanzas">RFC 6120 § 8. XML Stanzas</a>
  */
-public abstract class Stanza implements TopLevelStreamElement {
+public abstract class Stanza implements StanzaView, TopLevelStreamElement {
 
     public static final String TEXT = "text";
     public static final String ITEM = "item";
@@ -56,11 +64,13 @@ public abstract class Stanza implements TopLevelStreamElement {
     protected static final String DEFAULT_LANGUAGE =
             java.util.Locale.getDefault().getLanguage().toLowerCase(Locale.US);
 
-    private final MultiMap<QName, ExtensionElement> extensionElements = new MultiMap<>();
+    private final MultiMap<QName, ExtensionElement> extensionElements;
 
     // Assume that all stanzas Smack handles are in the client namespace, since Smack is an XMPP client library. We can
     // change this behavior later if it is required.
     private final String namespace = StreamOpen.CLIENT_NAMESPACE;
+
+    private final StanzaIdSource usedStanzaIdSource;
 
     private String id = null;
     private Jid to;
@@ -80,30 +90,46 @@ public abstract class Stanza implements TopLevelStreamElement {
     protected String language;
 
     protected Stanza() {
-        this(StanzaIdUtil.newStanzaId());
+        extensionElements = new MultiMap<>();
+        usedStanzaIdSource = null;
+        id = StandardStanzaIdSource.DEFAULT.getNewStanzaId();
     }
 
-    protected Stanza(String stanzaId) {
-        setStanzaId(stanzaId);
+    protected Stanza(StanzaBuilder<?> stanzaBuilder) {
+        if (stanzaBuilder.stanzaIdSource != null) {
+            id = stanzaBuilder.stanzaIdSource.getNewStanzaId();
+            // Note that some stanza ID sources, e.g. StanzaBuilder.PresenceBuilder.EMPTY return null here. Hence we
+            // only check that the returned string is not empty.
+            assert StringUtils.isNullOrNotEmpty(id);
+            usedStanzaIdSource = stanzaBuilder.stanzaIdSource;
+        } else {
+            // N.B. It is ok if stanzaId here is null.
+            id = stanzaBuilder.stanzaId;
+            usedStanzaIdSource = null;
+        }
+
+        to = stanzaBuilder.to;
+        from = stanzaBuilder.from;
+
+        error = stanzaBuilder.stanzaError;
+
+        language = stanzaBuilder.language;
+
+        extensionElements = stanzaBuilder.extensionElements.clone();
     }
 
     protected Stanza(Stanza p) {
+        usedStanzaIdSource = p.usedStanzaIdSource;
+
         id = p.getStanzaId();
         to = p.getTo();
         from = p.getFrom();
         error = p.error;
 
-        // Copy extensions
-        for (ExtensionElement pe : p.getExtensions()) {
-            addExtension(pe);
-        }
+        extensionElements = p.extensionElements.clone();
     }
 
-    /**
-     * Returns the unique ID of the stanza. The returned value could be <code>null</code>.
-     *
-     * @return the packet's unique ID or <code>null</code> if the id is not available.
-     */
+    @Override
     public String getStanzaId() {
         return id;
     }
@@ -138,56 +164,50 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @return the stanza id.
      * @since 4.2
-     * @deprecated use {@link #setNewStanzaId()} instead.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
     public String setStanzaId() {
-        return ensureStanzaIdSet();
-    }
-
-    /**
-     * Set a new stanza ID even if there is already one set.
-     *
-     * @return the stanza id.
-     * @since 4.4
-     */
-    public String setNewStanzaId() {
-        return ensureStanzaIdSet(true);
-    }
-
-    /**
-     * Ensure a stanza id is set.
-     *
-     * @return the stanza id.
-     * @since 4.4
-     */
-    public String ensureStanzaIdSet() {
-        return ensureStanzaIdSet(false);
-    }
-
-    /**
-     * Ensure that a stanza ID is set.
-     *
-     * @param forceNew force a new ID even if there is already one set.
-     * @return the stanza ID.
-     * @since 4.4
-     */
-    private String ensureStanzaIdSet(boolean forceNew) {
-        if (forceNew || !hasStanzaIdSet()) {
-            setStanzaId(StanzaIdUtil.newStanzaId());
+        if (!hasStanzaIdSet()) {
+            setNewStanzaId();
         }
         return getStanzaId();
     }
 
     /**
-     * Returns who the stanza is being sent "to", or <code>null</code> if
-     * the value is not set. The XMPP protocol often makes the "to"
-     * attribute optional, so it does not always need to be set.<p>
+     * Throws an {@link IllegalArgumentException} if this stanza has no stanza ID set.
      *
-     * @return who the stanza is being sent to, or <code>null</code> if the
-     *      value has not been set.
+     * @throws IllegalArgumentException if this stanza has no stanza ID set.
+     * @since 4.4.
      */
+    public final void throwIfNoStanzaId() {
+        if (hasStanzaIdSet()) {
+            return;
+        }
+
+        throw new IllegalArgumentException("The stanza has no RFC stanza ID set, although one is required");
+    }
+
+    /**
+     * Ensure that a stanza ID is set.
+     *
+     * @return the stanza ID.
+     * @since 4.4
+     */
+    // TODO: Remove this method once StanzaBuilder is ready.
+    protected String setNewStanzaId() {
+        if (usedStanzaIdSource != null) {
+            id = usedStanzaIdSource.getNewStanzaId();
+        }
+        else {
+            id = StandardStanzaIdSource.DEFAULT.getNewStanzaId();
+        }
+
+        return getStanzaId();
+    }
+
+    @Override
     public Jid getTo() {
         return to;
     }
@@ -198,18 +218,12 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param to who the packet is being sent to.
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public void setTo(Jid to) {
         this.to = to;
     }
 
-    /**
-     * Returns who the stanza is being sent "from" or <code>null</code> if
-     * the value is not set. The XMPP protocol often makes the "from"
-     * attribute optional, so it does not always need to be set.<p>
-     *
-     * @return who the stanza is being sent from, or <code>null</code> if the
-     *      value has not been set.
-     */
+    @Override
     public Jid getFrom() {
         return from;
     }
@@ -221,16 +235,12 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param from who the packet is being sent to.
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public void setFrom(Jid from) {
         this.from = from;
     }
 
-    /**
-     * Returns the error associated with this packet, or <code>null</code> if there are
-     * no errors.
-     *
-     * @return the error sub-packet or <code>null</code> if there isn't an error.
-     */
+    @Override
     public StanzaError getError() {
         return error;
     }
@@ -238,14 +248,22 @@ public abstract class Stanza implements TopLevelStreamElement {
     /**
      * Sets the error for this stanza.
      *
-     * @param xmppErrorBuilder the error to associate with this stanza.
+     * @param stanzaError the error that this stanza carries and hence signals.
      */
-    public void setError(StanzaError.Builder xmppErrorBuilder) {
-        if (xmppErrorBuilder == null) {
-            return;
-        }
-        xmppErrorBuilder.setStanza(this);
-        error = xmppErrorBuilder.build();
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
+    public void setError(StanzaError stanzaError) {
+        error = stanzaError;
+    }
+
+    /**
+     * Deprecated.
+     * @param stanzaError the stanza error.
+     * @deprecated use {@link StanzaBuilder} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
+    public void setError(StanzaError.Builder stanzaError) {
+        setError(stanzaError.build());
     }
 
     @Override
@@ -257,20 +275,29 @@ public abstract class Stanza implements TopLevelStreamElement {
      * Sets the xml:lang of this Stanza.
      *
      * @param language the xml:lang of this Stanza.
+     * @deprecated use {@link StanzaBuilder#setLanguage(String)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setLanguage(String language) {
         this.language = language;
     }
 
-    /**
-     * Returns a list of all extension elements of this stanza.
-     *
-     * @return a list of all extension elements of this stanza.
-     */
+    @Override
     public List<ExtensionElement> getExtensions() {
         synchronized (extensionElements) {
             // No need to create a new list, values() will already create a new one for us
             return extensionElements.values();
+        }
+    }
+
+    public final MultiMap<QName, ExtensionElement> getExtensionsMap() {
+        return cloneExtensionsMap();
+    }
+
+    final MultiMap<QName, ExtensionElement> cloneExtensionsMap() {
+        synchronized (extensionElements) {
+            return extensionElements.clone();
         }
     }
 
@@ -289,7 +316,23 @@ public abstract class Stanza implements TopLevelStreamElement {
         requireNotNullNorEmpty(elementName, "elementName must not be null nor empty");
         requireNotNullNorEmpty(namespace, "namespace must not be null nor empty");
         QName key = new QName(namespace, elementName);
-        return extensionElements.getAll(key);
+        return getExtensions(key);
+    }
+
+    @Override
+    public List<ExtensionElement> getExtensions(QName qname) {
+        List<ExtensionElement> res;
+        synchronized (extensionElements) {
+            res = extensionElements.getAll(qname);
+        }
+        return Collections.unmodifiableList(res);
+    }
+
+    @Override
+    public <E extends ExtensionElement> List<E> getExtensions(Class<E> extensionElementClass) {
+        synchronized (extensionElements) {
+            return XmppElementUtil.getElementsFrom(extensionElements, extensionElementClass);
+        }
     }
 
     /**
@@ -322,21 +365,31 @@ public abstract class Stanza implements TopLevelStreamElement {
             return null;
         }
         QName key = new QName(namespace, elementName);
-        ExtensionElement packetExtension;
-        synchronized (extensionElements) {
-            packetExtension = extensionElements.getFirst(key);
-        }
+        ExtensionElement packetExtension = getExtension(key);
         if (packetExtension == null) {
             return null;
         }
         return (PE) packetExtension;
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public final <E extends ExtensionElement> E getExtension(QName qname) {
+        synchronized (extensionElements) {
+            return (E) extensionElements.getFirst(qname);
+        }
+    }
+
     /**
      * Adds a stanza extension to the packet. Does nothing if extension is null.
+     * <p>
+     * Please note that although this method is not yet marked as deprecated, it is recommended to use
+     * {@link StanzaBuilder#addExtension(ExtensionElement)} instead.
+     * </p>
      *
      * @param extension a stanza extension.
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public void addExtension(ExtensionElement extension) {
         if (extension == null) return;
         QName key = extension.getQName();
@@ -348,11 +401,16 @@ public abstract class Stanza implements TopLevelStreamElement {
     /**
      * Add the given extension and override eventually existing extensions with the same name and
      * namespace.
+     * <p>
+     * Please note that although this method is not yet marked as deprecated, it is recommended to use
+     * {@link StanzaBuilder#overrideExtension(ExtensionElement)} instead.
+     * </p>
      *
      * @param extension the extension element to add.
      * @return one of the removed extensions or <code>null</code> if there are none.
      * @since 4.1.2
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public ExtensionElement overrideExtension(ExtensionElement extension) {
         if (extension == null) return null;
         synchronized (extensionElements) {
@@ -370,6 +428,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param extensions a collection of stanza extensions
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public void addExtensions(Collection<ExtensionElement> extensions) {
         if (extensions == null) return;
         for (ExtensionElement packetExtension : extensions) {
@@ -421,6 +480,7 @@ public abstract class Stanza implements TopLevelStreamElement {
      * @param namespace TODO javadoc me please
      * @return the removed stanza extension or null.
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public ExtensionElement removeExtension(String elementName, String namespace) {
         QName key = new QName(namespace, elementName);
         synchronized (extensionElements) {
@@ -433,7 +493,10 @@ public abstract class Stanza implements TopLevelStreamElement {
      *
      * @param extension the stanza extension to remove.
      * @return the removed stanza extension or null.
+     * @deprecated use {@link StanzaBuilder} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public ExtensionElement removeExtension(ExtensionElement extension)  {
         QName key = extension.getQName();
         synchronized (extensionElements) {

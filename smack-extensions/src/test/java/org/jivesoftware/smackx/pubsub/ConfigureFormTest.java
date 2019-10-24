@@ -67,7 +67,7 @@ public class ConfigureFormTest extends InitExtensions {
         PubSub errorIq = new PubSub();
         errorIq.setType(Type.error);
         errorIq.setFrom(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
-        StanzaError.Builder error = StanzaError.getBuilder(Condition.forbidden);
+        StanzaError error = StanzaError.getBuilder(Condition.forbidden).build();
         errorIq.setError(error);
         con.addIQReply(errorIq);
 

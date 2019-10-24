@@ -49,7 +49,6 @@ import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
-
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 

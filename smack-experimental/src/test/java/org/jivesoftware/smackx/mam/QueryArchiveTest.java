@@ -25,6 +25,7 @@ import java.util.TimeZone;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Type;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
@@ -62,21 +63,21 @@ public class QueryArchiveTest extends MamTest {
 
     @Test
     public void checkMamQueryResults() throws Exception {
-        Message message = new Message();
-        message.setStanzaId("iasd207");
-        message.setFrom(JidCreate.from("coven@chat.shakespeare.lit"));
-        message.setTo(JidCreate.from("hag66@shakespeare.lit/pda"));
+        Message message = StanzaBuilder.buildMessage("iasd207")
+                .from("coven@chat.shakespeare.lit")
+                .to("hag66@shakespeare.lit/pda")
+                .build();
 
         GregorianCalendar calendar = new GregorianCalendar(2002, 10 - 1, 13, 23, 58, 37);
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = calendar.getTime();
 
         DelayInformation delay = new DelayInformation(date);
-        Message forwardedMessage = new Message();
-        forwardedMessage.setFrom(JidCreate.from("coven@chat.shakespeare.lit/firstwitch"));
-        forwardedMessage.setStanzaId("162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2");
-        forwardedMessage.setType(Type.chat);
-        forwardedMessage.setBody("Thrice the brinded cat hath mew.");
+        Message forwardedMessage = StanzaBuilder.buildMessage("162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2")
+                        .from(JidCreate.from("coven@chat.shakespeare.lit/firstwitch"))
+                        .ofType(Type.chat)
+                        .setBody("Thrice the brinded cat hath mew.")
+                        .build();
 
         Forwarded forwarded = new Forwarded(delay, forwardedMessage);
 

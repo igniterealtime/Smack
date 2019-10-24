@@ -80,8 +80,10 @@ public final class GeoLocationManager extends Manager {
 
         final XMPPConnection connection = connection();
 
-        Message geoLocationMessage = new Message(jid);
-        geoLocationMessage.addExtension(geoLocation);
+        Message geoLocationMessage = connection.getStanzaFactory().buildMessageStanza()
+                .to(jid)
+                .addExtension(geoLocation)
+                .build();
 
         connection.sendStanza(geoLocationMessage);
 

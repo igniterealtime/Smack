@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015 Florian Schmaus
+ * Copyright 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,32 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.jivesoftware.smack.util.StringUtils;
 
-public class StanzaIdUtil {
+public class StandardStanzaIdSource implements StanzaIdSource {
+
+    public static final StandardStanzaIdSource DEFAULT = new StandardStanzaIdSource();
 
     /**
      * A prefix helps to make sure that ID's are unique across multiple instances.
      */
-    private static final String PREFIX = StringUtils.randomString(5) + "-";
+    private final String prefix = StringUtils.randomString(5) + "-";
 
     /**
      * Keeps track of the current increment, which is appended to the prefix to
      * forum a unique ID.
      */
-    private static final AtomicLong ID = new AtomicLong();
+    private final AtomicLong id = new AtomicLong();
 
-    public static String newStanzaId() {
-        return PREFIX + Long.toString(ID.incrementAndGet());
+    @Override
+    public String getNewStanzaId() {
+        return prefix + Long.toString(id.incrementAndGet());
+    }
+
+    public static class Factory implements StanzaIdSourceFactory {
+
+        @Override
+        public StandardStanzaIdSource constructStanzaIdSource() {
+            return new StandardStanzaIdSource();
+        }
+
     }
 }

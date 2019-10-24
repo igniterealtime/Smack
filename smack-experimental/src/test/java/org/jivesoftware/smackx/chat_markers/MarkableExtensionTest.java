@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.chat_markers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -39,10 +40,12 @@ public class MarkableExtensionTest {
 
     @Test
     public void checkMarkableExtension() throws Exception {
-        Message message = new Message(JidCreate.from("ingrichard@royalty.england.lit/throne"));
-        message.setStanzaId("message-1");
-        message.setBody("My lord, dispatch; read o'er these articles.");
-        message.addExtension(ChatMarkersElements.MarkableExtension.INSTANCE);
+        Message message = StanzaBuilder.buildMessage("message-1")
+                .to(JidCreate.from("ingrichard@royalty.england.lit/throne"))
+                .setBody("My lord, dispatch; read o'er these articles.")
+                .addExtension(ChatMarkersElements.MarkableExtension.INSTANCE)
+                .build();
+
         assertEquals(markableMessageStanza, message.toXML().toString());
     }
 

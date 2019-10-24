@@ -23,6 +23,7 @@ import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -50,7 +51,9 @@ public class IdleTest extends SmackTestSuite {
 
     @Test
     public void helperTest() {
-        Presence presence = new Presence(Presence.Type.available);
+        Presence presence = StanzaBuilder.buildPresence()
+                .ofType(Presence.Type.available)
+                .build();
         IdleElement.addToPresence(presence);
         IdleElement element = IdleElement.fromPresence(presence);
         assertNotNull(element);

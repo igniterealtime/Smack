@@ -19,7 +19,8 @@ package org.jivesoftware.smack.packet;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.id.StanzaIdUtil;
+import javax.net.SocketFactory;
+
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TypedCloneable;
@@ -60,7 +61,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Matt Tucker
  */
-public final class Presence extends Stanza implements TypedCloneable<Presence> {
+public final class Presence extends Stanza implements PresenceView, TypedCloneable<Presence> {
 
     public static final String ELEMENT = "presence";
 
@@ -81,7 +82,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * Creates a new presence update. Status, priority, and mode are left un-set.
      *
      * @param type the type.
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Presence(Type type) {
         // Ensure that the stanza ID is set by calling super().
         super();
@@ -94,7 +98,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @param to the recipient.
      * @param type the type.
      * @since 4.2
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Presence(Jid to, Type type) {
         this(type);
         setTo(to);
@@ -107,7 +114,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @param status a text message describing the presence update.
      * @param priority the priority of this presence update.
      * @param mode the mode type for this presence update.
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public Presence(Type type, String status, int priority, Mode mode) {
         // Ensure that the stanza ID is set by calling super().
         super();
@@ -115,6 +125,14 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         setStatus(status);
         setPriority(priority);
         setMode(mode);
+    }
+
+    Presence(PresenceBuilder presenceBuilder) {
+        super(presenceBuilder);
+        type = presenceBuilder.type;
+        status = presenceBuilder.status;
+        priority = presenceBuilder.priority;
+        mode = presenceBuilder.mode;
     }
 
     /**
@@ -163,11 +181,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         return type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd);
     }
 
-    /**
-     * Returns the type of this presence packet.
-     *
-     * @return the type of the presence packet.
-     */
+    @Override
     public Type getType() {
         return type;
     }
@@ -176,18 +190,15 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * Sets the type of the presence packet.
      *
      * @param type the type of the presence packet.
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setType(Type type) {
         this.type = Objects.requireNonNull(type, "Type cannot be null");
     }
 
-    /**
-     * Returns the status message of the presence update, or <code>null</code> if there
-     * is not a status. The status is free-form text describing a user's presence
-     * (i.e., "gone to lunch").
-     *
-     * @return the status message.
-     */
+    @Override
     public String getStatus() {
         return status;
     }
@@ -197,18 +208,21 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * describing a user's presence (i.e., "gone to lunch").
      *
      * @param status the status message.
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setStatus(String status) {
         this.status = status;
     }
 
-    /**
-     * Returns the priority of the presence.
-     *
-     * @return the priority.
-     * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
-     */
+    @Override
     public int getPriority() {
+        return getPriorityByte();
+    }
+
+    @Override
+    public byte getPriorityByte() {
         if (priority == null) {
             return 0;
         }
@@ -221,7 +235,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * @param priority the priority of the presence.
      * @throws IllegalArgumentException if the priority is outside the valid range.
      * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setPriority(int priority) {
         if (priority < -128 || priority > 127) {
             throw new IllegalArgumentException("Priority value " + priority +
@@ -234,11 +251,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
         this.priority = priority;
     }
 
-    /**
-     * Returns the mode of the presence update.
-     *
-     * @return the mode.
-     */
+    @Override
     public Mode getMode() {
         if (mode == null) {
             return Mode.available;
@@ -251,7 +264,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      * to be the same thing as {@link Presence.Mode#available}.
      *
      * @param mode the mode.
+     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setMode(Mode mode) {
         this.mode = mode;
     }
@@ -259,6 +275,10 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
     @Override
     public String getElementName() {
         return ELEMENT;
+    }
+
+    public PresenceBuilder asBuilder() {
+        return StanzaBuilder.buildPresenceFrom(this, getStanzaId());
     }
 
     @Override
@@ -326,7 +346,7 @@ public final class Presence extends Stanza implements TypedCloneable<Presence> {
      */
     public Presence cloneWithNewId() {
         Presence clone = clone();
-        clone.setStanzaId(StanzaIdUtil.newStanzaId());
+        clone.setNewStanzaId();
         return clone;
     }
 

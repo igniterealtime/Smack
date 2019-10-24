@@ -105,11 +105,13 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StanzaFactory;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -402,6 +404,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private final Map<QName, IQRequestHandler> setIqRequestHandler = new HashMap<>();
     private final Map<QName, IQRequestHandler> getIqRequestHandler = new HashMap<>();
 
+    private final StanzaFactory stanzaFactory;
+
     /**
      * Create a new XMPPConnection to an XMPP server.
      *
@@ -440,6 +444,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         for (ConnectionCreationListener listener : XMPPConnectionRegistry.getConnectionCreationListeners()) {
             listener.connectionCreated(this);
         }
+
+        StanzaIdSource stanzaIdSource = configuration.constructStanzaIdSource();
+        stanzaFactory = new StanzaFactory(stanzaIdSource);
     }
 
     /**
@@ -733,7 +740,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // eventually load the roster. And we should load the roster before we
         // send the initial presence.
         if (config.isSendPresence() && !resumed) {
-            sendStanza(new Presence(Presence.Type.available));
+            Presence availablePresence = getStanzaFactory()
+                            .buildPresenceStanza()
+                            .ofType(Presence.Type.available)
+                            .build();
+            sendStanza(availablePresence);
         }
     }
 
@@ -815,6 +826,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    public final StanzaFactory getStanzaFactory() {
+        return stanzaFactory;
+    }
+
+    @Override
     public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
         assert stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ;
@@ -893,7 +909,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public void disconnect() {
         Presence unavailablePresence = null;
         if (isAuthenticated()) {
-            unavailablePresence = new Presence(Presence.Type.unavailable);
+            unavailablePresence = getStanzaFactory().buildPresenceStanza()
+                            .ofType(Presence.Type.unavailable)
+                            .build();
         }
         try {
             disconnect(unavailablePresence);
@@ -1416,7 +1434,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     // If the IQ stanza is of type "get" or "set" with no registered IQ request handler, then answer an
                     // IQ of type 'error' with condition 'service-unavailable'.
                     final ErrorIQ errorIQ = IQ.createErrorResponse(iq, StanzaError.getBuilder(
-                                    replyCondition));
+                                    replyCondition).build());
                     // Use async sendStanza() here, since if sendStanza() would block, then some connections, e.g.
                     // XmppNioTcpConnection, would deadlock, as this operation is performed in the same thread that is
                     asyncGo(() -> {

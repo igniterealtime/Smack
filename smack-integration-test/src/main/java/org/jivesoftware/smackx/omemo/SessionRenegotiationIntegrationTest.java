@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.omemo;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.MessageBuilder;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -46,7 +48,10 @@ public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIn
                 new AbstractOmemoMessageListener.PreKeyMessageListener(body1);
         OmemoMessage.Sent e1 = alice.encrypt(bob.getOwnJid(), body1);
         bob.addOmemoMessageListener(listener1);
-        alice.getConnection().sendStanza(e1.asMessage(bob.getOwnJid()));
+
+        XMPPConnection alicesConnection = alice.getConnection();
+        MessageBuilder messageBuilder = alicesConnection.getStanzaFactory().buildMessageStanza();
+        alicesConnection.sendStanza(e1.buildMessage(messageBuilder, bob.getOwnJid()));
         listener1.getSyncPoint().waitForResult(10 * 1000);
         bob.removeOmemoMessageListener(listener1);
 
@@ -61,7 +66,9 @@ public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIn
                 new AbstractOmemoMessageListener.PreKeyKeyTransportListener();
         OmemoMessage.Sent e2 = alice.encrypt(bob.getOwnJid(), body2);
         alice.addOmemoMessageListener(listener2);
-        alice.getConnection().sendStanza(e2.asMessage(bob.getOwnJid()));
+
+        messageBuilder = alicesConnection.getStanzaFactory().buildMessageStanza();
+        alicesConnection.sendStanza(e2.buildMessage(messageBuilder, bob.getOwnJid()));
         listener2.getSyncPoint().waitForResult(10 * 1000);
         alice.removeOmemoMessageListener(listener2);
 
@@ -70,7 +77,9 @@ public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIn
         AbstractOmemoMessageListener.MessageListener listener3 = new AbstractOmemoMessageListener.MessageListener(body3);
         OmemoMessage.Sent e3 = alice.encrypt(bob.getOwnJid(), body3);
         bob.addOmemoMessageListener(listener3);
-        alice.getConnection().sendStanza(e3.asMessage(bob.getOwnJid()));
+
+        messageBuilder = alicesConnection.getStanzaFactory().buildMessageStanza();
+        alicesConnection.sendStanza(e3.buildMessage(messageBuilder, bob.getOwnJid()));
         listener3.getSyncPoint().waitForResult(10 * 1000);
         bob.removeOmemoMessageListener(listener3);
 

@@ -194,7 +194,7 @@ public final class FileTransferNegotiator extends Manager {
 
         if (streamMethodField == null) {
             String errorMessage = "No stream methods contained in stanza.";
-            StanzaError.Builder error = StanzaError.from(StanzaError.Condition.bad_request, errorMessage);
+            StanzaError error = StanzaError.from(StanzaError.Condition.bad_request, errorMessage).build();
             IQ iqPacket = IQ.createErrorResponse(si, error);
             connection().sendStanza(iqPacket);
             throw new FileTransferException.NoStreamMethodsOfferedException();
@@ -206,7 +206,7 @@ public final class FileTransferNegotiator extends Manager {
             selectedStreamNegotiator = getNegotiator(streamMethodField);
         }
         catch (NoAcceptableTransferMechanisms e) {
-            IQ iqPacket = IQ.createErrorResponse(si, StanzaError.from(StanzaError.Condition.bad_request, "No acceptable transfer mechanism"));
+            IQ iqPacket = IQ.createErrorResponse(si, StanzaError.from(StanzaError.Condition.bad_request, "No acceptable transfer mechanism").build());
             connection().sendStanza(iqPacket);
             throw e;
         }

@@ -31,6 +31,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.InitExtensions;
@@ -266,8 +267,9 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         // build invalid packet with out of order sequence
         String base64Data = Base64.encode("Data");
         DataPacketExtension dpe = new DataPacketExtension(sessionID, 123, base64Data);
-        Message dataMessage = new Message();
-        dataMessage.addExtension(dpe);
+        Message dataMessage = StanzaBuilder.buildMessage()
+                .addExtension(dpe)
+                .build();
 
         // add data packets
         listener.processStanza(dataMessage);
@@ -307,8 +309,9 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         for (int i = 0; i < controlData.length / blockSize; i++) {
             String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
-            Message dataMessage = new Message();
-            dataMessage.addExtension(dpe);
+            Message dataMessage = StanzaBuilder.buildMessage()
+                    .addExtension(dpe)
+                    .build();
             listener.processStanza(dataMessage);
         }
 
@@ -352,8 +355,9 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         for (int i = 0; i < controlData.length / blockSize; i++) {
             String base64Data = Base64.encodeToString(controlData, i * blockSize, blockSize);
             DataPacketExtension dpe = new DataPacketExtension(sessionID, i, base64Data);
-            Message dataMessage = new Message();
-            dataMessage.addExtension(dpe);
+            Message dataMessage = StanzaBuilder.buildMessage()
+                    .addExtension(dpe)
+                    .build();
             listener.processStanza(dataMessage);
         }
 

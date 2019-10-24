@@ -44,6 +44,7 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CleaningWeakReferenceMap;
@@ -438,16 +439,18 @@ public final class MultiUserChatManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void decline(EntityBareJid room, EntityBareJid inviter, String reason) throws NotConnectedException, InterruptedException {
-        Message message = new Message(room);
+        XMPPConnection connection = connection();
+
+        MessageBuilder messageBuilder = connection.getStanzaFactory().buildMessageStanza().to(room);
 
         // Create the MUCUser packet that will include the rejection
         MUCUser mucUser = new MUCUser();
         MUCUser.Decline decline = new MUCUser.Decline(reason, inviter);
         mucUser.setDecline(decline);
         // Add the MUCUser packet that includes the rejection
-        message.addExtension(mucUser);
+        messageBuilder.addExtension(mucUser);
 
-        connection().sendStanza(message);
+        connection.sendStanza(messageBuilder.build());
     }
 
     /**

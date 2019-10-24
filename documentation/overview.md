@@ -15,7 +15,11 @@ Smack Key Advantages
     AbstractXMPPConnection connection = new XMPPTCPConnection("mtucker", "password", "jabber.org");
     connection.connect().login();
 
-    Message message = new Message("jsmith@jivesoftware.com", "Howdy! How are you?");
+    Message message = connection.getStanzaFactory()
+                      .buildMessageStanza()
+                      .to("jsmith@jivesoftware.com")
+                      .setBody("Howdy! How are you?")
+                      .build();
     connection.sendStanza(message);
     ```
 

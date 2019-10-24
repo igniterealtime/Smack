@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaFactory;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -177,6 +178,8 @@ public interface XMPPConnection {
      * @return true if network traffic is being compressed.
      */
     boolean isUsingCompression();
+
+    StanzaFactory getStanzaFactory();
 
     /**
      * Sends the specified stanza to the server.

@@ -98,13 +98,15 @@ public final class VCardManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
+    // TODO: Split VCard into VCardIq and VCardData, then create saveVCard(VCardData) and deprecate this method.
+    @SuppressWarnings("deprecation")
     public void saveVCard(VCard vcard) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // XEP-54 § 3.2 "A user may publish or update his or her vCard by sending an IQ of type "set" with no 'to' address…"
         vcard.setTo((Jid) null);
         vcard.setType(IQ.Type.set);
         // Also make sure to generate a new stanza id (the given vcard could be a vcard result), in which case we don't
         // want to use the same stanza id again (although it wouldn't break if we did)
-        vcard.setNewStanzaId();
+        vcard.setStanzaId();
         connection().createStanzaCollectorAndSend(vcard).nextResultOrThrow();
     }
 

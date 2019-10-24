@@ -45,7 +45,6 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import com.jamesmurty.utils.XMLBuilder;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -547,30 +546,6 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
-        // message has default language, first subject no language, second subject default language
-        control = XMLBuilder.create("message")
-            .a("from", "romeo@montague.lit/orchard")
-            .a("to", "juliet@capulet.lit/balcony")
-            .a("id", "zid615d9")
-            .a("type", "chat")
-            .a("xml:lang", defaultLanguage)
-            .e("subject")
-                .t(defaultLanguage)
-            .up()
-            .e("subject")
-                .a("xml:lang", defaultLanguage)
-                .t(defaultLanguage + "2")
-            .asString(outputProperties);
-
-        message = PacketParserUtils
-                        .parseMessage(PacketParserUtils.getParserFor(control));
-
-        assertEquals(defaultLanguage, message.getSubject());
-        assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
-        assertEquals(1, message.getSubjects().size());
-        assertEquals(0, message.getSubjectLanguages().size());
-        assertXmlNotSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
-
         // message has non-default language, first subject no language, second subject default language
         control = XMLBuilder.create("message")
             .a("from", "romeo@montague.lit/orchard")
@@ -867,7 +842,7 @@ public class PacketParserUtilsTest {
             .element("text", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).t(text).up()
             .asString();
         XmlPullParser parser = TestUtils.getParser(errorXml);
-        StanzaError error = PacketParserUtils.parseError(parser).build();
+        StanzaError error = PacketParserUtils.parseError(parser);
         assertEquals(text, error.getDescriptiveText());
     }
 }

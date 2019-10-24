@@ -26,7 +26,6 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
-
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -62,8 +61,7 @@ public final class FailureProvider extends NonzaProvider<Failure> {
                 case StreamOpen.SERVER_NAMESPACE:
                     switch (name) {
                         case StanzaError.ERROR:
-                            StanzaError.Builder stanzaErrorBuilder = PacketParserUtils.parseError(parser, failureXmlEnvironment);
-                            stanzaError = stanzaErrorBuilder.build();
+                            stanzaError = PacketParserUtils.parseError(parser, failureXmlEnvironment);
                             break;
                         default:
                             LOGGER.warning("Unknown element in " + namespace + ": " + name);

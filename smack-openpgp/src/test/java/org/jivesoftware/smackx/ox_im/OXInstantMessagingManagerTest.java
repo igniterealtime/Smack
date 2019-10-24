@@ -34,6 +34,8 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -138,11 +140,13 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
         assertFalse(aliceForBob.hasUndecidedKeys());
         assertFalse(bobForAlice.hasUndecidedKeys());
 
-        Message message = new Message();
-        assertFalse(ExplicitMessageEncryptionElement.hasProtocol(message, ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0));
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+        assertFalse(ExplicitMessageEncryptionElement.hasProtocol(messageBuilder.build(), ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0));
 
-        aliceOxim.addOxMessage(message, bobForAlice,
+        aliceOxim.addOxMessage(messageBuilder, bobForAlice,
                 Collections.<ExtensionElement>singletonList(new Message.Body(null, "Hello World!")));
+
+        Message message = messageBuilder.build();
         assertTrue(ExplicitMessageEncryptionElement.hasProtocol(message, ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0));
         assertNotNull(OpenPgpElement.fromStanza(message));
 

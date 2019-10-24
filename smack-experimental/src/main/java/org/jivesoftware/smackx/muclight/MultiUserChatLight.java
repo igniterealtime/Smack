@@ -35,8 +35,8 @@ import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
-
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightChangeAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
@@ -126,9 +126,9 @@ public class MultiUserChatLight {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendMessage(String text) throws NotConnectedException, InterruptedException {
-        Message message = createMessage();
+        MessageBuilder message = buildMessage();
         message.setBody(text);
-        connection.sendStanza(message);
+        connection.sendStanza(message.build());
     }
 
     /**
@@ -157,9 +157,28 @@ public class MultiUserChatLight {
      * Creates a new Message to send to the chat room.
      *
      * @return a new Message addressed to the chat room.
+     * @deprecated use {@link #buildMessage()} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public Message createMessage() {
-        return new Message(room, Message.Type.groupchat);
+        return connection.getStanzaFactory().buildMessageStanza()
+                .ofType(Message.Type.groupchat)
+                .to(room)
+                .build();
+    }
+
+    /**
+     * Constructs a new message builder for messages send to this MUC room.
+     *
+     * @return a new message builder.
+     */
+    public MessageBuilder buildMessage() {
+        return connection.getStanzaFactory()
+                .buildMessageStanza()
+                .ofType(Message.Type.groupchat)
+                .to(room)
+                ;
     }
 
     /**
@@ -169,10 +188,23 @@ public class MultiUserChatLight {
      *            the message.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @deprecated use {@link #sendMessage(MessageBuilder)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
-        message.setTo(room);
-        message.setType(Message.Type.groupchat);
+        sendMessage(message.asBuilder());
+    }
+
+    /**
+     * Sends a Message to the chat room.
+     *
+     * @param messageBuilder the message.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public void sendMessage(MessageBuilder messageBuilder) throws NotConnectedException, InterruptedException {
+        Message message = messageBuilder.to(room).ofType(Message.Type.groupchat).build();
         connection.sendStanza(message);
     }
 

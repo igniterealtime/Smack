@@ -88,10 +88,11 @@ public final class DnsOverXmppManager extends Manager {
             try {
                 response = resolver.resolve(query);
             } catch (IOException exception) {
-                StanzaError.Builder errorBuilder = StanzaError.getBuilder()
+                StanzaError errorBuilder = StanzaError.getBuilder()
                         .setType(Type.CANCEL)
                         .setCondition(Condition.internal_server_error)
                         .setDescriptiveEnText("Exception while resolving your DNS query", exception)
+                        .build()
                         ;
 
                 IQ errorResponse = IQ.createErrorResponse(iqRequest, errorBuilder);

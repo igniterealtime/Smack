@@ -56,6 +56,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
@@ -419,7 +420,7 @@ public class MultiUserChat {
      * @since 4.2
      */
     public MucEnterConfiguration.Builder getEnterConfigurationBuilder(Resourcepart nickname) {
-        return new MucEnterConfiguration.Builder(nickname, connection.getReplyTimeout());
+        return new MucEnterConfiguration.Builder(nickname, connection);
     }
 
     /**
@@ -744,8 +745,10 @@ public class MultiUserChat {
 
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
-        Presence leavePresence = new Presence(Presence.Type.unavailable);
-        leavePresence.setTo(myRoomJid);
+        Presence leavePresence = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.unavailable)
+                .to(myRoomJid)
+                .build();
 
         StanzaFilter reflectedLeavePresenceFilter = new AndFilter(
                         StanzaTypeFilter.PRESENCE,
@@ -927,7 +930,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void invite(EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
-        invite(new Message(), user, reason);
+        invite(connection.getStanzaFactory().buildMessageStanza(), user, reason);
     }
 
     /**
@@ -942,7 +945,10 @@ public class MultiUserChat {
      * @param reason the reason why the user is being invited.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @deprecated use {@link #invite(MessageBuilder, EntityBareJid, String)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void invite(Message message, EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
         // TODO listen for 404 error code when inviter supplies a non-existent JID
         message.setTo(room);
@@ -954,6 +960,34 @@ public class MultiUserChat {
         // Add the MUCUser packet that includes the invitation to the message
         message.addExtension(mucUser);
 
+        connection.sendStanza(message);
+    }
+
+    /**
+     * Invites another user to the room in which one is an occupant using a given Message. The invitation
+     * will be sent to the room which in turn will forward the invitation to the invitee.<p>
+     *
+     * If the room is password-protected, the invitee will receive a password to use to join
+     * the room. If the room is members-only, the the invitee may be added to the member list.
+     *
+     * @param messageBuilder the message to use for sending the invitation.
+     * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
+     * @param reason the reason why the user is being invited.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public void invite(MessageBuilder messageBuilder, EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
+        // TODO listen for 404 error code when inviter supplies a non-existent JID
+        messageBuilder.to(room);
+
+        // Create the MUCUser packet that will include the invitation
+        MUCUser mucUser = new MUCUser();
+        MUCUser.Invite invite = new MUCUser.Invite(reason, user);
+        mucUser.setInvite(invite);
+        // Add the MUCUser packet that includes the invitation to the message
+        messageBuilder.addExtension(mucUser);
+
+        Message message = messageBuilder.build();
         connection.sendStanza(message);
     }
 
@@ -1126,8 +1160,10 @@ public class MultiUserChat {
         // We change the nickname by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         // We don't have to signal the MUC support again
-        Presence joinPresence = new Presence(Presence.Type.available);
-        joinPresence.setTo(jid);
+        Presence joinPresence = connection.getStanzaFactory().buildPresenceStanza()
+                .to(jid)
+                .ofType(Presence.Type.available)
+                .build();
 
         // Wait for a presence packet back from the server.
         StanzaFilter responseFilter =
@@ -1167,10 +1203,12 @@ public class MultiUserChat {
         }
         // We change the availability status by sending a presence packet to the room with the
         // new presence status and mode
-        Presence joinPresence = new Presence(Presence.Type.available);
-        joinPresence.setStatus(status);
-        joinPresence.setMode(mode);
-        joinPresence.setTo(myRoomJid);
+        Presence joinPresence = connection.getStanzaFactory().buildPresenceStanza()
+                .to(myRoomJid)
+                .ofType(Presence.Type.available)
+                .setStatus(status)
+                .setMode(mode)
+                .build();
 
         // Send join packet.
         connection.sendStanza(joinPresence);
@@ -1220,8 +1258,11 @@ public class MultiUserChat {
         requestVoiceField.setLabel("Requested role");
         requestVoiceField.addValue("participant");
         form.addField(requestVoiceField.build());
-        Message message = new Message(room);
-        message.addExtension(form);
+
+        Message message = connection.getStanzaFactory().buildMessageStanza()
+                .to(room)
+                .addExtension(form)
+                .build();
         connection.sendStanza(message);
     }
 
@@ -1887,8 +1928,9 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendMessage(String text) throws NotConnectedException, InterruptedException {
-        Message message = createMessage();
-        message.setBody(text);
+        Message message = buildMessage()
+                .setBody(text)
+                .build();
         connection.sendStanza(message);
     }
 
@@ -1914,9 +1956,28 @@ public class MultiUserChat {
      * Creates a new Message to send to the chat room.
      *
      * @return a new Message addressed to the chat room.
+     * @deprecated use {@link #buildMessage()} instead.
      */
+    @Deprecated
+    // TODO: Remove when stanza builder is ready.
     public Message createMessage() {
-        return new Message(room, Message.Type.groupchat);
+        return connection.getStanzaFactory().buildMessageStanza()
+                .ofType(Message.Type.groupchat)
+                .to(room)
+                .build();
+    }
+
+    /**
+     * Constructs a new message builder for messages send to this MUC room.
+     *
+     * @return a new message builder.
+     */
+    public MessageBuilder buildMessage() {
+        return connection.getStanzaFactory()
+                .buildMessageStanza()
+                .ofType(Message.Type.groupchat)
+                .to(room)
+                ;
     }
 
     /**
@@ -1925,10 +1986,23 @@ public class MultiUserChat {
      * @param message the message.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @deprecated use {@link #sendMessage(MessageBuilder)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
-        message.setTo(room);
-        message.setType(Message.Type.groupchat);
+        sendMessage(message.asBuilder());
+    }
+
+    /**
+     * Sends a Message to the chat room.
+     *
+     * @param messageBuilder the message.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public void sendMessage(MessageBuilder messageBuilder) throws NotConnectedException, InterruptedException {
+        Message message = messageBuilder.to(room).ofType(Message.Type.groupchat).build();
         connection.sendStanza(message);
     }
 
@@ -2024,7 +2098,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void changeSubject(final String subject) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        Message message = createMessage();
+        MessageBuilder message = buildMessage();
         message.setSubject(subject);
         // Wait for an error or confirmation message back from the server.
         StanzaFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new StanzaFilter() {
@@ -2034,7 +2108,7 @@ public class MultiUserChat {
                 return subject.equals(msg.getSubject());
             }
         });
-        StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, message);
+        StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, message.build());
         // Wait up to a certain number of seconds for a reply.
         response.nextResultOrThrow();
     }

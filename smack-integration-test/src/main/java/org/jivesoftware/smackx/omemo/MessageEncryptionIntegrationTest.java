@@ -20,7 +20,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.MessageBuilder;
+
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -68,7 +71,10 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
                 new AbstractOmemoMessageListener.PreKeyMessageListener(body1);
         bob.addOmemoMessageListener(listener1);
         OmemoMessage.Sent e1 = alice.encrypt(bob.getOwnJid(), body1);
-        alice.getConnection().sendStanza(e1.asMessage(bob.getOwnJid()));
+
+        XMPPConnection alicesConnection = alice.getConnection();
+        MessageBuilder messageBuilder = alicesConnection.getStanzaFactory().buildMessageStanza();
+        alicesConnection.sendStanza(e1.buildMessage(messageBuilder, bob.getOwnJid()));
         listener1.getSyncPoint().waitForResult(10 * 1000);
         bob.removeOmemoMessageListener(listener1);
 
@@ -88,7 +94,9 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
                 new AbstractOmemoMessageListener.MessageListener(body3);
         alice.addOmemoMessageListener(listener3);
         OmemoMessage.Sent e3 = bob.encrypt(alice.getOwnJid(), body3);
-        bob.getConnection().sendStanza(e3.asMessage(alice.getOwnJid()));
+        XMPPConnection bobsConnection = bob.getConnection();
+        messageBuilder = bobsConnection.getStanzaFactory().buildMessageStanza();
+        bobsConnection.sendStanza(e3.buildMessage(messageBuilder, alice.getOwnJid()));
         listener3.getSyncPoint().waitForResult(10 * 1000);
         alice.removeOmemoMessageListener(listener3);
 

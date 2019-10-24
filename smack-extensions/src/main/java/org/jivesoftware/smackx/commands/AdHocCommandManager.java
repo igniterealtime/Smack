@@ -329,7 +329,10 @@ public final class AdHocCommandManager extends Manager {
                 }
                 catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                                 | InvocationTargetException | NoSuchMethodException | SecurityException e) {
-                    StanzaError.Builder xmppError = StanzaError.getBuilder().setCondition(StanzaError.Condition.internal_server_error).setDescriptiveEnText(e.getMessage());
+                    StanzaError xmppError = StanzaError.getBuilder()
+                                    .setCondition(StanzaError.Condition.internal_server_error)
+                                    .setDescriptiveEnText(e.getMessage())
+                                    .build();
                     return respondError(response, xmppError);
                 }
 
@@ -393,7 +396,7 @@ public final class AdHocCommandManager extends Manager {
                     response.setStatus(Status.canceled);
                     executingCommands.remove(sessionId);
                 }
-                return respondError(response, StanzaError.getBuilder(error));
+                return respondError(response, error);
             }
         }
         else {
@@ -503,7 +506,7 @@ public final class AdHocCommandManager extends Manager {
                         response.setStatus(Status.canceled);
                         executingCommands.remove(sessionId);
                     }
-                    return respondError(response, StanzaError.getBuilder(error));
+                    return respondError(response, error);
                 }
             }
         }
@@ -559,7 +562,7 @@ public final class AdHocCommandManager extends Manager {
      */
     private static IQ respondError(AdHocCommandData response,
             StanzaError.Condition condition) {
-        return respondError(response, StanzaError.getBuilder(condition));
+        return respondError(response, StanzaError.getBuilder(condition).build());
     }
 
     /**
@@ -572,7 +575,9 @@ public final class AdHocCommandManager extends Manager {
      */
     private static IQ respondError(AdHocCommandData response, StanzaError.Condition condition,
             AdHocCommand.SpecificErrorCondition specificCondition) {
-        StanzaError.Builder error = StanzaError.getBuilder(condition).addExtension(new AdHocCommandData.SpecificError(specificCondition));
+        StanzaError error = StanzaError.getBuilder(condition)
+                        .addExtension(new AdHocCommandData.SpecificError(specificCondition))
+                        .build();
         return respondError(response, error);
     }
 
@@ -583,7 +588,7 @@ public final class AdHocCommandManager extends Manager {
      * @param error the error to send.
      * @throws NotConnectedException if the XMPP connection is not connected.
      */
-    private static IQ respondError(AdHocCommandData response, StanzaError.Builder error) {
+    private static IQ respondError(AdHocCommandData response, StanzaError error) {
         response.setType(IQ.Type.error);
         response.setError(error);
         return response;

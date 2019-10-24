@@ -1070,8 +1070,10 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
         IQ errorPacket = null;
         if (jingleError != null) {
             // TODO This is wrong according to XEP-166 § 10, but this jingle implementation is deprecated anyways
-            StanzaError.Builder builder = StanzaError.getBuilder(StanzaError.Condition.undefined_condition);
-            builder.addExtension(jingleError);
+            StanzaError builder = StanzaError.getBuilder()
+                            .setCondition(StanzaError.Condition.undefined_condition)
+                            .addExtension(jingleError)
+                            .build();
 
             errorPacket = IQ.createErrorResponse(iq, builder);
 

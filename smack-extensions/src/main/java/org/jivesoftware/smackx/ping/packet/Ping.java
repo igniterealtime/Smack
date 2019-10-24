@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012-2015 Florian Schmaus
+ * Copyright 2012-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.ping.packet;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqBuilder;
 import org.jivesoftware.smack.packet.SimpleIQ;
 
 import org.jxmpp.jid.Jid;
@@ -34,6 +36,18 @@ public class Ping extends SimpleIQ {
         this();
         setTo(to);
         setType(IQ.Type.get);
+    }
+
+    public Ping(XMPPConnection connection, Jid to) {
+        this(connection.getStanzaFactory().buildIqStanza(), to);
+    }
+
+    public Ping(IqBuilder iqBuilder, Jid to) {
+        super(iqBuilder.to(to).ofType(IQ.Type.get), ELEMENT, NAMESPACE);
+    }
+
+    public Ping(IqBuilder iqBuilder) {
+        super(iqBuilder, ELEMENT, NAMESPACE);
     }
 
     /**

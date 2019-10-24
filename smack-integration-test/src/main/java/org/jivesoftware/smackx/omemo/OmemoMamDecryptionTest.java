@@ -22,7 +22,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.MessageBuilder;
+
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.omemo.exceptions.CryptoFailedException;
@@ -62,7 +65,10 @@ public class OmemoMamDecryptionTest extends AbstractTwoUsersOmemoIntegrationTest
 
         String body = "This message will be stored in MAM!";
         OmemoMessage.Sent encrypted = alice.encrypt(bob.getOwnJid(), body);
-        alice.getConnection().sendStanza(encrypted.asMessage(bob.getOwnJid()));
+
+        XMPPConnection alicesConnection = alice.getConnection();
+        MessageBuilder messageBuilder = alicesConnection.getStanzaFactory().buildMessageStanza();
+        alicesConnection.sendStanza(encrypted.buildMessage(messageBuilder, bob.getOwnJid()));
 
         MamManager.MamQuery query = bobsMamManager.queryArchive(MamManager.MamQueryArgs.builder().limitResultsToJid(alice.getOwnJid()).build());
         assertEquals(1, query.getMessageCount());

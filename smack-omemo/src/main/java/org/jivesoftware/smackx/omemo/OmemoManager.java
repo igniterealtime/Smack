@@ -43,6 +43,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
 
@@ -491,16 +492,17 @@ public final class OmemoManager extends Manager {
             throws SmackException.NotLoggedInException, CorruptedOmemoKeyException, InterruptedException,
             SmackException.NoResponseException, NoSuchAlgorithmException, SmackException.NotConnectedException,
             CryptoFailedException, CannotEstablishOmemoSessionException, IOException {
-        Message message = new Message();
-        message.setFrom(getOwnJid());
-        message.setTo(recipient.getJid());
+        XMPPConnection connection = connection();
+        MessageBuilder message = connection.getStanzaFactory()
+                        .buildMessageStanza()
+                        .to(recipient.getJid());
 
         OmemoElement element = getOmemoService().createRatchetUpdateElement(new LoggedInOmemoManager(this), recipient);
         message.addExtension(element);
 
         // Set MAM Storage hint
         StoreHint.set(message);
-        connection().sendStanza(message);
+        connection.sendStanza(message.build());
     }
 
     /**

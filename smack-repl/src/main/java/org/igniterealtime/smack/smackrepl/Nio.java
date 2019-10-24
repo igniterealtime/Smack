@@ -95,8 +95,10 @@ public class Nio {
 
         connection.login();
 
-        Message message = new Message("flo@geekplace.eu",
-                "It is alive! " + XmppDateTime.formatXEP0082Date(new Date()));
+        Message message = connection.getStanzaFactory().buildMessageStanza()
+                .to("flo@geekplace.eu")
+                .setBody("It is alive! " + XmppDateTime.formatXEP0082Date(new Date()))
+                .build();
         connection.sendStanza(message);
 
         Thread.sleep(1000);

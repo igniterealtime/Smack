@@ -424,9 +424,10 @@ public class JingleUtil {
      */
 
     public IQ createErrorUnknownSession(Jingle request) {
-        StanzaError.Builder error = StanzaError.getBuilder();
-        error.setCondition(StanzaError.Condition.item_not_found)
-                .addExtension(JingleError.UNKNOWN_SESSION);
+        StanzaError error = StanzaError.getBuilder()
+                        .setCondition(StanzaError.Condition.item_not_found)
+                        .addExtension(JingleError.UNKNOWN_SESSION)
+                        .build();
         return IQ.createErrorResponse(request, error);
     }
 
@@ -445,9 +446,10 @@ public class JingleUtil {
     }
 
     public IQ createErrorUnsupportedInfo(Jingle request) {
-        StanzaError.Builder error = StanzaError.getBuilder();
-        error.setCondition(StanzaError.Condition.feature_not_implemented)
-                .addExtension(JingleError.UNSUPPORTED_INFO);
+        StanzaError error = StanzaError.getBuilder()
+                        .setCondition(StanzaError.Condition.feature_not_implemented)
+                        .addExtension(JingleError.UNSUPPORTED_INFO)
+                        .build();
         return IQ.createErrorResponse(request, error);
     }
 
@@ -457,9 +459,10 @@ public class JingleUtil {
     }
 
     public IQ createErrorTieBreak(Jingle request) {
-        StanzaError.Builder error = StanzaError.getBuilder();
-        error.setCondition(StanzaError.Condition.conflict)
-                .addExtension(JingleError.TIE_BREAK);
+        StanzaError error = StanzaError.getBuilder()
+                        .setCondition(StanzaError.Condition.conflict)
+                        .addExtension(JingleError.TIE_BREAK)
+                        .build();
         return IQ.createErrorResponse(request, error);
     }
 
@@ -469,9 +472,10 @@ public class JingleUtil {
     }
 
     public IQ createErrorOutOfOrder(Jingle request) {
-        StanzaError.Builder error = StanzaError.getBuilder();
-        error.setCondition(StanzaError.Condition.unexpected_request)
-                .addExtension(JingleError.OUT_OF_ORDER);
+        StanzaError error = StanzaError.getBuilder()
+                        .setCondition(StanzaError.Condition.unexpected_request)
+                        .addExtension(JingleError.OUT_OF_ORDER)
+                        .build();
         return IQ.createErrorResponse(request, error);
     }
 

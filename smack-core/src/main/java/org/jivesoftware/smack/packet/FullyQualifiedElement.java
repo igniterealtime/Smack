@@ -18,7 +18,7 @@ package org.jivesoftware.smack.packet;
 
 import javax.xml.namespace.QName;
 
-public interface FullyQualifiedElement extends NamedElement {
+public interface FullyQualifiedElement extends NamedElement, XmlLangElement {
 
     /**
      * Returns the root element XML namespace.
@@ -33,11 +33,7 @@ public interface FullyQualifiedElement extends NamedElement {
         return new QName(namespaceURI, localPart);
     }
 
-    /**
-     * Returns the xml:lang of this XML element, or null if one has not been set.
-     *
-     * @return the xml:lang of this XML element, or null.
-     */
+    @Override
     default String getLanguage() {
         return null;
     }

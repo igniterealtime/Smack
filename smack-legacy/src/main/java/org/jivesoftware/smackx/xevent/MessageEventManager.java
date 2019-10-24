@@ -213,15 +213,18 @@ public final class MessageEventManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendDeliveredNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
-        // Create the message to send
-        Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setDelivered(true);
         messageEvent.setStanzaId(packetID);
-        msg.addExtension(messageEvent);
+
+        XMPPConnection connection = connection();
+        Message msg = connection.getStanzaFactory().buildMessageStanza()
+                .to(to)
+                .addExtension(messageEvent)
+                .build();
         // Send the packet
-        connection().sendStanza(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -233,15 +236,18 @@ public final class MessageEventManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendDisplayedNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
-        // Create the message to send
-        Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setDisplayed(true);
         messageEvent.setStanzaId(packetID);
-        msg.addExtension(messageEvent);
+
+        XMPPConnection connection = connection();
+        Message msg = connection.getStanzaFactory().buildMessageStanza()
+                .to(to)
+                .addExtension(messageEvent)
+                .build();
         // Send the packet
-        connection().sendStanza(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -253,15 +259,18 @@ public final class MessageEventManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendComposingNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
-        // Create the message to send
-        Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setComposing(true);
         messageEvent.setStanzaId(packetID);
-        msg.addExtension(messageEvent);
+
+        XMPPConnection connection = connection();
+        Message msg = connection.getStanzaFactory().buildMessageStanza()
+                .to(to)
+                .addExtension(messageEvent)
+                .build();
         // Send the packet
-        connection().sendStanza(msg);
+        connection.sendStanza(msg);
     }
 
     /**
@@ -273,13 +282,17 @@ public final class MessageEventManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendCancelledNotification(Jid to, String packetID) throws NotConnectedException, InterruptedException {
-        // Create the message to send
-        Message msg = new Message(to);
         // Create a MessageEvent Package and add it to the message
         MessageEvent messageEvent = new MessageEvent();
         messageEvent.setCancelled(true);
         messageEvent.setStanzaId(packetID);
-        msg.addExtension(messageEvent);
+
+        XMPPConnection connection = connection();
+
+        Message msg = connection.getStanzaFactory().buildMessageStanza()
+                .to(to)
+                .addExtension(messageEvent)
+                .build();
         // Send the packet
         connection().sendStanza(msg);
     }

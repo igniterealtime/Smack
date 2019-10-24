@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.StanzaView;
 
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
@@ -54,12 +56,31 @@ public class JivePropertiesManager {
      * @param packet the stanza to add the property to.
      * @param name the name of the property to add.
      * @param value the value of the property to add.
+     * @deprecated use {@link #addProperty(StanzaBuilder, String, Object)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public static void addProperty(Stanza packet, String name, Object value) {
         JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
         if (jpe == null) {
             jpe = new JivePropertiesExtension();
             packet.addExtension(jpe);
+        }
+        jpe.setProperty(name, value);
+    }
+
+    /**
+     * Convenience method to add a property to a stanza.
+     *
+     * @param stanzaBuilder the stanza to add the property to.
+     * @param name the name of the property to add.
+     * @param value the value of the property to add.
+     */
+    public static void addProperty(StanzaBuilder<?> stanzaBuilder, String name, Object value) {
+        JivePropertiesExtension jpe = (JivePropertiesExtension) stanzaBuilder.getExtension(JivePropertiesExtension.QNAME);
+        if (jpe == null) {
+            jpe = new JivePropertiesExtension();
+            stanzaBuilder.addExtension(jpe);
         }
         jpe.setProperty(name, value);
     }
@@ -72,9 +93,9 @@ public class JivePropertiesManager {
      * @param name TODO javadoc me please
      * @return the property or <code>null</code> if none found.
      */
-    public static Object getProperty(Stanza packet, String name) {
+    public static Object getProperty(StanzaView packet, String name) {
         Object res = null;
-        JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
+        JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.QNAME);
         if (jpe != null) {
             res = jpe.getProperty(name);
         }

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.chat_markers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -28,7 +29,6 @@ import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.Displaye
 import org.jivesoftware.smackx.chat_markers.provider.DisplayedProvider;
 
 import org.junit.jupiter.api.Test;
-import org.jxmpp.jid.impl.JidCreate;
 
 public class DisplayedExtensionTest {
 
@@ -39,9 +39,10 @@ public class DisplayedExtensionTest {
 
     @Test
     public void checkDisplayedExtension() throws Exception {
-        Message message = new Message(JidCreate.from("northumberland@shakespeare.lit/westminster"));
-        message.setStanzaId("message-2");
-        message.addExtension(new ChatMarkersElements.DisplayedExtension("message-1"));
+        Message message = StanzaBuilder.buildMessage("message-2")
+                .to("northumberland@shakespeare.lit/westminster")
+                .addExtension(new ChatMarkersElements.DisplayedExtension("message-1"))
+                .build();
         assertEquals(displayedMessageStanza, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
 

@@ -50,7 +50,9 @@ public class RemoteDisablingProvider extends ExtensionElementProvider<RemoteDisa
 
                     String affiliation = parser.getAttributeValue("", "affiliation");
                     if (affiliation == null || !affiliation.equals("none")) {
-                        return null;
+                        // TODO: Is this correct? We previously returned null here, but was certainly wrong, as
+                        // providers should always return an element or throw.
+                        throw new IOException("Invalid affiliation: " + affiliation);
                     }
                 }
             } else if (eventType == XmlPullParser.Event.END_ELEMENT) {

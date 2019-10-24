@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -70,7 +71,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
 
     @Test
     public void fromMessageTest() {
-        Message message = new Message();
+        Message message = StanzaBuilder.buildMessage().build();
         assertFalse(OriginIdElement.hasOriginId(message));
         assertFalse(StanzaIdElement.hasStanzaId(message));
 

@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -35,7 +37,7 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
 
     @Test
     public void addToMessageTest() {
-        Message message = new Message();
+        Message message = StanzaBuilder.buildMessage().build();
 
         // Check inital state (no elements)
         assertNull(ExplicitMessageEncryptionElement.from(message));
@@ -45,9 +47,12 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
         List<ExtensionElement> extensions = message.getExtensions();
         assertEquals(0, extensions.size());
 
+        MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
         // Add OMEMO
-        ExplicitMessageEncryptionElement.set(message,
+        ExplicitMessageEncryptionElement.set(messageBuilder,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl);
+
+        message = messageBuilder.build();
         extensions = message.getExtensions();
         assertEquals(1, extensions.size());
         assertTrue(ExplicitMessageEncryptionElement.hasProtocol(message,
@@ -59,8 +64,10 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
         assertFalse(ExplicitMessageEncryptionElement.hasProtocol(message,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0.getNamespace()));
 
-        ExplicitMessageEncryptionElement.set(message,
+        ExplicitMessageEncryptionElement.set(messageBuilder,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0);
+
+        message = messageBuilder.build();
         extensions = message.getExtensions();
         assertEquals(2, extensions.size());
         assertTrue(ExplicitMessageEncryptionElement.hasProtocol(message,
@@ -69,9 +76,10 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl));
 
         // Check, if adding additional OMEMO wont add another element
-        ExplicitMessageEncryptionElement.set(message,
+        ExplicitMessageEncryptionElement.set(messageBuilder,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl);
 
+        message = messageBuilder.build();
         extensions = message.getExtensions();
         assertEquals(2, extensions.size());
     }

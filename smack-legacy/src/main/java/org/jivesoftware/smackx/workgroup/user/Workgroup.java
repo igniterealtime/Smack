@@ -188,8 +188,11 @@ public class Workgroup {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean isAvailable() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        Presence directedPresence = new Presence(Presence.Type.available);
-        directedPresence.setTo(workgroupJID);
+        Presence directedPresence = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.available)
+                .to(workgroupJID)
+                .build();
+
         StanzaFilter typeFilter = new StanzaTypeFilter(Presence.class);
         StanzaFilter fromFilter = FromMatchesFilter.create(workgroupJID);
         StanzaCollector collector = connection.createStanzaCollectorAndSend(new AndFilter(fromFilter,

@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
@@ -45,8 +46,9 @@ public class UserTuneManagerTest extends SmackTestSuite{
         builder.setUri(uri);
         UserTuneElement userTuneElement = builder.build();
 
-        Message message = new Message();
-        message.addExtension(userTuneElement);
+        Message message = StanzaBuilder.buildMessage()
+                .addExtension(userTuneElement)
+                .build();
 
         assertTrue(message.hasExtension(UserTuneElement.ELEMENT, UserTuneElement.NAMESPACE));
         assertTrue(UserTuneElement.hasUserTuneElement(message));

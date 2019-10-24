@@ -56,7 +56,9 @@ import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.roster.SubscribeListener.SubscribeAnswer;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
@@ -286,23 +288,26 @@ public final class Roster extends Manager {
                     return;
                 }
 
-                Presence response;
+                Presence.Type type;
                 switch (subscribeAnswer) {
                 case ApproveAndAlsoRequestIfRequired:
                     BareJid bareFrom = from.asBareJid();
                     RosterUtil.askForSubscriptionIfRequired(Roster.this, bareFrom);
                     // The fall through is intended.
                 case Approve:
-                    response = new Presence(Presence.Type.subscribed);
+                    type = Presence.Type.subscribed;
                     break;
                 case Deny:
-                    response = new Presence(Presence.Type.unsubscribed);
+                    type = Presence.Type.unsubscribed;
                     break;
                 default:
                     throw new AssertionError();
                 }
 
-                response.setTo(presence.getFrom());
+                Presence response = connection.getStanzaFactory().buildPresenceStanza()
+                        .ofType(type)
+                        .to(presence.getFrom())
+                        .build();
                 connection.sendStanza(response);
             }
         }, PresenceTypeFilter.SUBSCRIBE);
@@ -747,8 +752,10 @@ public final class Roster extends Manager {
             throw new FeatureNotSupportedException("Pre-approving");
         }
 
-        Presence presencePacket = new Presence(Presence.Type.subscribed);
-        presencePacket.setTo(user);
+        Presence presencePacket = connection.getStanzaFactory().buildPresenceStanza()
+            .ofType(Presence.Type.subscribed)
+            .to(user)
+            .build();
         connection.sendStanza(presencePacket);
     }
 
@@ -768,8 +775,10 @@ public final class Roster extends Manager {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
         // Create a presence subscription packet and send.
-        Presence presencePacket = new Presence(Presence.Type.subscribe);
-        presencePacket.setTo(jid);
+        Presence presencePacket = connection.getStanzaFactory().buildPresenceStanza()
+                .ofType(Presence.Type.subscribe)
+                .to(jid)
+                .build();
         connection.sendStanza(presencePacket);
     }
 
@@ -1000,8 +1009,7 @@ public final class Roster extends Manager {
     public Presence getPresence(BareJid jid) {
         Map<Resourcepart, Presence> userPresences = getPresencesInternal(jid);
         if (userPresences == null) {
-            Presence presence = new Presence(Presence.Type.unavailable);
-            presence.setFrom(jid);
+            Presence presence = synthesizeUnvailablePresence(jid);
             return presence;
         }
         else {
@@ -1042,8 +1050,7 @@ public final class Roster extends Manager {
                     return unavailable.clone();
                 }
                 else {
-                    presence = new Presence(Presence.Type.unavailable);
-                    presence.setFrom(jid);
+                    presence = synthesizeUnvailablePresence(jid);
                     return presence;
                 }
             }
@@ -1067,15 +1074,13 @@ public final class Roster extends Manager {
         Resourcepart resource = userWithResource.getResourcepart();
         Map<Resourcepart, Presence> userPresences = getPresencesInternal(key);
         if (userPresences == null) {
-            Presence presence = new Presence(Presence.Type.unavailable);
-            presence.setFrom(userWithResource);
+            Presence presence = synthesizeUnvailablePresence(userWithResource);
             return presence;
         }
         else {
             Presence presence = userPresences.get(resource);
             if (presence == null) {
-                presence = new Presence(Presence.Type.unavailable);
-                presence.setFrom(userWithResource);
+                presence = synthesizeUnvailablePresence(userWithResource);
                 return presence;
             }
             else {
@@ -1097,8 +1102,7 @@ public final class Roster extends Manager {
         List<Presence> res;
         if (userPresences == null) {
             // Create an unavailable presence if none was found
-            Presence unavailable = new Presence(Presence.Type.unavailable);
-            unavailable.setFrom(bareJid);
+            Presence unavailable = synthesizeUnvailablePresence(bareJid);
             res = new ArrayList<>(Arrays.asList(unavailable));
         } else {
             res = new ArrayList<>(userPresences.values().size());
@@ -1143,8 +1147,7 @@ public final class Roster extends Manager {
         List<Presence> res;
         Map<Resourcepart, Presence> userPresences = getPresencesInternal(jid);
         if (userPresences == null) {
-            Presence presence = new Presence(Presence.Type.unavailable);
-            presence.setFrom(jid);
+            Presence presence = synthesizeUnvailablePresence(jid);
             res = Arrays.asList(presence);
         }
         else {
@@ -1166,8 +1169,7 @@ public final class Roster extends Manager {
                 res = Arrays.asList(unavailable.clone());
             }
             else {
-                Presence presence = new Presence(Presence.Type.unavailable);
-                presence.setFrom(jid);
+                Presence presence = synthesizeUnvailablePresence(jid);
                 res = Arrays.asList(presence);
             }
         }
@@ -1266,20 +1268,20 @@ public final class Roster extends Manager {
      * presence sent from the server.
      */
     private void setOfflinePresences() {
-        Presence packetUnavailable;
         outerloop: for (Jid user : presenceMap.keySet()) {
             Map<Resourcepart, Presence> resources = presenceMap.get(user);
             if (resources != null) {
                 for (Resourcepart resource : resources.keySet()) {
-                    packetUnavailable = new Presence(Presence.Type.unavailable);
+                    PresenceBuilder presenceBuilder = StanzaBuilder.buildPresence()
+                            .ofType(Presence.Type.unavailable);
                     EntityBareJid bareUserJid = user.asEntityBareJidIfPossible();
                     if (bareUserJid == null) {
                         LOGGER.warning("Can not transform user JID to bare JID: '" + user + "'");
                         continue;
                     }
-                    packetUnavailable.setFrom(JidCreate.fullFrom(bareUserJid, resource));
+                    presenceBuilder.from(JidCreate.fullFrom(bareUserJid, resource));
                     try {
-                        presencePacketListener.processStanza(packetUnavailable);
+                        presencePacketListener.processStanza(presenceBuilder.build());
                     }
                     catch (NotConnectedException e) {
                         throw new IllegalStateException(
@@ -1469,6 +1471,13 @@ public final class Roster extends Manager {
             default:
                 return false;
         }
+    }
+
+    private static Presence synthesizeUnvailablePresence(Jid from) {
+        return StanzaBuilder.buildPresence()
+                .ofType(Presence.Type.unavailable)
+                .from(from)
+                .build();
     }
 
     /**

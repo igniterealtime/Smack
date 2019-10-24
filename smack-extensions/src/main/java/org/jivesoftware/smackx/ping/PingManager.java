@@ -193,8 +193,9 @@ public final class PingManager extends Manager {
             }
         };
 
-        Ping ping = new Ping(jid);
-        connection().sendIqRequestAsync(ping, pongTimeout)
+        XMPPConnection connection = connection();
+        Ping ping = new Ping(connection, jid);
+        connection.sendIqRequestAsync(ping, pongTimeout)
         .onSuccess(new SuccessCallback<IQ>() {
             @Override
             public void onSuccess(IQ result) {
@@ -233,7 +234,7 @@ public final class PingManager extends Manager {
         if (!connection.isAuthenticated()) {
             throw new NotConnectedException();
         }
-        Ping ping = new Ping(jid);
+        Ping ping = new Ping(connection, jid);
         try {
             connection.createStanzaCollectorAndSend(ping).nextResultOrThrow(pingTimeout);
         }

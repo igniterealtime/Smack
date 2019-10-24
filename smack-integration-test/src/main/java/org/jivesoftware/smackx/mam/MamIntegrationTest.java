@@ -32,6 +32,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 
 import org.jivesoftware.smackx.mam.MamManager.MamQuery;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
@@ -66,10 +67,12 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         EntityBareJid userOne = conOne.getUser().asEntityBareJid();
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
 
-        Message message = new Message(userTwo);
-        String messageId = message.ensureStanzaIdSet();
         final String messageBody = "Test MAM message (" + testRunId + ')';
-        message.setBody(messageBody);
+        Message message = conTwo.getStanzaFactory().buildMessageStanza()
+                        .to(userTwo)
+                        .setBody(messageBody)
+                        .build();
+        final String messageId = message.getStanzaId();
 
         final SimpleResultSyncPoint messageReceived = new SimpleResultSyncPoint();
 
@@ -122,7 +125,10 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
         for (int i = 0; i < totalMessages; i++) {
             String messageBody = "MAM Page Test " + testRunId + ' ' + (i + 1);
-            Message message = new Message(userTwo, messageBody);
+            Message message = StanzaBuilder.buildMessage()
+                    .to(userTwo)
+                    .setBody(messageBody)
+                    .build();
             outgoingMessages.add(message);
         }
 

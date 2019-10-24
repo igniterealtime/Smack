@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,25 @@
 package org.jivesoftware.smackx.iot.control.element;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 
 public class IoTSetResponse extends IQ {
 
     public static final String ELEMENT = "setResponse";
     public static final String NAMESPACE = Constants.IOT_CONTROL_NAMESPACE;
 
+    public IoTSetResponse(IqBuilder iqBuilder) {
+        super(iqBuilder, ELEMENT, NAMESPACE);
+    }
+
+    // TODO: Deprecate when stanza build is ready.
     public IoTSetResponse() {
         super(ELEMENT, NAMESPACE);
     }
 
     public IoTSetResponse(IoTSetRequest iotSetRequest) {
-        this();
-        initializeAsResultFor(iotSetRequest);
+        this(StanzaBuilder.buildIqResultFor(iotSetRequest));
     }
 
     @Override

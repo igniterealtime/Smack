@@ -140,8 +140,10 @@ public final class IoTProvisioningManager extends Manager {
                                     + " is already not subscribed to our presence.");
                     return;
                 }
-                Presence unsubscribed = new Presence(Presence.Type.unsubscribed);
-                unsubscribed.setTo(unfriendJid);
+                Presence unsubscribed = connection.getStanzaFactory().buildPresenceStanza()
+                        .ofType(Presence.Type.unsubscribed)
+                        .to(unfriendJid)
+                        .build();
                 connection.sendStanza(unsubscribed);
             }
         }, UNFRIEND_MESSAGE);
@@ -162,7 +164,10 @@ public final class IoTProvisioningManager extends Manager {
                     // friendship requests.
                     final XMPPConnection connection = connection();
                     Friend friendNotification = new Friend(connection.getUser().asBareJid());
-                    Message notificationMessage = new Message(friendJid, friendNotification);
+                    Message notificationMessage = connection.getStanzaFactory().buildMessageStanza()
+                            .to(friendJid)
+                            .addExtension(friendNotification)
+                            .build();
                     connection.sendStanza(notificationMessage);
                 } else {
                     // Check is the message was send from a thing we previously
@@ -359,8 +364,11 @@ public final class IoTProvisioningManager extends Manager {
     }
 
     public void sendFriendshipRequest(BareJid bareJid) throws NotConnectedException, InterruptedException {
-        Presence presence = new Presence(Presence.Type.subscribe);
-        presence.setTo(bareJid);
+        XMPPConnection connection = connection();
+        Presence presence = connection.getStanzaFactory().buildPresenceStanza()
+            .ofType(Presence.Type.subscribe)
+            .to(bareJid)
+            .build();
 
         friendshipRequestedCache.put(bareJid, null);
 
@@ -379,9 +387,12 @@ public final class IoTProvisioningManager extends Manager {
 
     public void unfriend(Jid friend) throws NotConnectedException, InterruptedException {
         if (isMyFriend(friend)) {
-            Presence presence = new Presence(Presence.Type.unsubscribed);
-            presence.setTo(friend);
-            connection().sendStanza(presence);
+            XMPPConnection connection = connection();
+            Presence presence = connection.getStanzaFactory().buildPresenceStanza()
+                    .ofType(Presence.Type.unsubscribed)
+                    .to(friend)
+                    .build();
+            connection.sendStanza(presence);
         }
     }
 

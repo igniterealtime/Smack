@@ -42,7 +42,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Matt Tucker
  */
-public abstract class IQ extends Stanza {
+public abstract class IQ extends Stanza implements IqView {
 
     // Don't name this field 'ELEMENT'. When it comes to IQ, ELEMENT is the child element!
     public static final String IQ_ELEMENT = "iq";
@@ -54,6 +54,7 @@ public abstract class IQ extends Stanza {
 
     private Type type = Type.get;
 
+    // TODO: This method should be protected!
     public IQ(IQ iq) {
         super(iq);
         type = iq.getType();
@@ -62,7 +63,16 @@ public abstract class IQ extends Stanza {
         this.childElementQName = iq.childElementQName;
     }
 
+    // TODO: Deprecate when stanza builder is ready.
     protected IQ(String childElementName, String childElementNamespace) {
+        this(IqBuilder.EMPTY, childElementName, childElementNamespace);
+    }
+
+    protected IQ(IqBuilder iqBuilder, String childElementName, String childElementNamespace) {
+        super(iqBuilder);
+
+        type = iqBuilder.type;
+
         this.childElementName = childElementName;
         this.childElementNamespace = childElementNamespace;
         if (childElementName == null) {
@@ -72,11 +82,7 @@ public abstract class IQ extends Stanza {
         }
     }
 
-    /**
-     * Returns the type of the IQ packet.
-     *
-     * @return the type of the IQ packet.
-     */
+    @Override
     public Type getType() {
         return type;
     }
@@ -90,6 +96,7 @@ public abstract class IQ extends Stanza {
      *
      * @param type the type of the IQ packet.
      */
+    // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
     public void setType(Type type) {
         this.type = Objects.requireNonNull(type, "type must not be null");
     }
@@ -260,19 +267,6 @@ public abstract class IQ extends Stanza {
      */
     protected abstract IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml);
 
-    protected final void initializeAsResultFor(IQ request) {
-        assert this != request;
-
-        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
-            throw new IllegalArgumentException(
-                    "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
-        }
-        setStanzaId(request.getStanzaId());
-        setFrom(request.getTo());
-        setTo(request.getFrom());
-        setType(Type.result);
-    }
-
     /**
      * Convenience method to create a new empty {@link Type#result IQ.Type.result}
      * IQ based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
@@ -311,7 +305,7 @@ public abstract class IQ extends Stanza {
      *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
      * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
      */
-    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Builder error) {
+    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError error) {
         if (!request.isRequestIQ()) {
             throw new IllegalArgumentException(
                     "IQ must be of type 'set' or 'get'. Original IQ: " + request.toXML());
@@ -321,35 +315,25 @@ public abstract class IQ extends Stanza {
         result.setFrom(request.getTo());
         result.setTo(request.getFrom());
 
-        error.setStanza(result);
-
         return result;
     }
 
-    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Condition condition) {
-        return createErrorResponse(request, StanzaError.getBuilder(condition));
+    /**
+     * Deprecated.
+     *
+     * @param request the request.
+     * @param error the error.
+     * @return an error IQ.
+     * @deprecated use {@link #createErrorResponse(IQ, StanzaError)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
+    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Builder error) {
+        return createErrorResponse(request, error.build());
     }
 
-    /**
-     * Convenience method to create a new {@link Type#error IQ.Type.error} IQ
-     * based on a {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}
-     * IQ. The new stanza will be initialized with:<ul>
-     *      <li>The sender set to the recipient of the originating IQ.
-     *      <li>The recipient set to the sender of the originating IQ.
-     *      <li>The type set to {@link Type#error IQ.Type.error}.
-     *      <li>The id set to the id of the originating IQ.
-     *      <li>The child element contained in the associated originating IQ.
-     *      <li>The provided {@link StanzaError XMPPError}.
-     * </ul>
-     *
-     * @param request the {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set} IQ packet.
-     * @param error the error to associate with the created IQ packet.
-     * @throws IllegalArgumentException if the IQ stanza does not have a type of
-     *      {@link Type#get IQ.Type.get} or {@link Type#set IQ.Type.set}.
-     * @return a new {@link Type#error IQ.Type.error} IQ based on the originating IQ.
-     */
-    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError error) {
-        return createErrorResponse(request, StanzaError.getBuilder(error));
+    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Condition condition) {
+        return createErrorResponse(request, StanzaError.getBuilder(condition).build());
     }
 
     /**

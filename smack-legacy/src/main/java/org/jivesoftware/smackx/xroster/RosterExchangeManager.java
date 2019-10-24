@@ -30,6 +30,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -121,15 +122,16 @@ public class RosterExchangeManager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void send(Roster roster, Jid targetUserID) throws NotConnectedException, InterruptedException {
+        XMPPConnection connection = weakRefConnection.get();
+
         // Create a new message to send the roster
-        Message msg = new Message(targetUserID);
+        MessageBuilder messageBuilder = connection.getStanzaFactory().buildMessageStanza().to(targetUserID);
         // Create a RosterExchange Package and add it to the message
         RosterExchange rosterExchange = new RosterExchange(roster);
-        msg.addExtension(rosterExchange);
+        messageBuilder.addExtension(rosterExchange);
 
-        XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendStanza(msg);
+        connection.sendStanza(messageBuilder.build());
     }
 
     /**
@@ -141,16 +143,17 @@ public class RosterExchangeManager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void send(RosterEntry rosterEntry, Jid targetUserID) throws NotConnectedException, InterruptedException {
+        XMPPConnection connection = weakRefConnection.get();
+
         // Create a new message to send the roster
-        Message msg = new Message(targetUserID);
+        MessageBuilder messageBuilder = connection.getStanzaFactory().buildMessageStanza().to(targetUserID);
         // Create a RosterExchange Package and add it to the message
         RosterExchange rosterExchange = new RosterExchange();
         rosterExchange.addRosterEntry(rosterEntry);
-        msg.addExtension(rosterExchange);
+        messageBuilder.addExtension(rosterExchange);
 
-        XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendStanza(msg);
+        connection.sendStanza(messageBuilder.build());
     }
 
     /**
@@ -163,8 +166,10 @@ public class RosterExchangeManager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void send(RosterGroup rosterGroup, Jid targetUserID) throws NotConnectedException, InterruptedException {
+        XMPPConnection connection = weakRefConnection.get();
+
         // Create a new message to send the roster
-        Message msg = new Message(targetUserID);
+        MessageBuilder msg = connection.getStanzaFactory().buildMessageStanza().to(targetUserID);
         // Create a RosterExchange Package and add it to the message
         RosterExchange rosterExchange = new RosterExchange();
         for (RosterEntry entry : rosterGroup.getEntries()) {
@@ -172,9 +177,8 @@ public class RosterExchangeManager {
         }
         msg.addExtension(rosterExchange);
 
-        XMPPConnection connection = weakRefConnection.get();
         // Send the message that contains the roster
-        connection.sendStanza(msg);
+        connection.sendStanza(msg.build());
     }
 
     /**

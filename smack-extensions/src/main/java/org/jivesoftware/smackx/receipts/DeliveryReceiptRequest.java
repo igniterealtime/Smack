@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -81,10 +82,26 @@ public class DeliveryReceiptRequest implements ExtensionElement {
      * @param message Message object to add a request to
      * @return the Message ID which will be used as receipt ID
      */
+    // TODO: Deprecate in favor of addTo(MessageBuilder) once connection's stanza interceptors use StanzaBuilder.
     public static String addTo(Message message) {
-        message.ensureStanzaIdSet();
+        message.throwIfNoStanzaId();
+
         message.addExtension(new DeliveryReceiptRequest());
         return message.getStanzaId();
+    }
+
+    /**
+     * Add a delivery receipt request to an outgoing packet.
+     *
+     * Only message packets may contain receipt requests as of XEP-0184,
+     * therefore only allow Message as the parameter type.
+     *
+     * @param messageBuilder Message object to add a request to
+     */
+    public static void addTo(MessageBuilder messageBuilder) {
+        messageBuilder.throwIfNoStanzaId();
+
+        messageBuilder.overrideExtension(new DeliveryReceiptRequest());
     }
 
     /**

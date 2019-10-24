@@ -28,6 +28,7 @@ import static junit.framework.TestCase.assertTrue;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
@@ -83,9 +84,9 @@ public class SignalOmemoManagerTest extends SmackTestSuite {
     public void stanzaRecognitionTest() throws Exception {
         String omemoXML = "<encrypted xmlns='eu.siacs.conversations.axolotl'><header sid='1009'><key rid='1337'>MwohBfRqBm2atj3fT0/KUDg59Cnvfpgoe/PLNIu1xgSXujEZEAAYACIwKh6TTC7VBQZcCcKnQlO+6s1GQ9DIRKH4JU7XrJ+JJnkPUwJ4VLSeOEQD7HmFbhQPTLZO0u/qlng=</key><iv>sN0amy4e2NBrlb4G/OjNIQ==</iv></header><payload>4xVUAeg4M0Mhk+5n3YG1x12Dw/cYTc0Z</payload></encrypted>";
         OmemoElement omemoElement = new OmemoVAxolotlProvider().parse(TestUtils.getParser(omemoXML));
-        Message m = new Message();
-        m.addExtension(omemoElement);
-        Message n = new Message();
+
+        Message m = StanzaBuilder.buildMessage().addExtension(omemoElement).build();
+        Message n = StanzaBuilder.buildMessage().build();
 
         assertTrue(OmemoManager.stanzaContainsOmemoElement(m));
         assertFalse(OmemoManager.stanzaContainsOmemoElement(n));

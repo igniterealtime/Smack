@@ -34,6 +34,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -835,8 +836,9 @@ public class InBandBytestreamSession implements BytestreamSession {
         @Override
         protected synchronized void writeToXML(DataPacketExtension data) throws NotConnectedException, InterruptedException {
             // create message stanza containing data packet
-            Message message = new Message(remoteJID);
-            message.addExtension(data);
+            Message message = StanzaBuilder.buildMessage().to(remoteJID)
+                    .addExtension(data)
+                    .build();
 
             connection.sendStanza(message);
 

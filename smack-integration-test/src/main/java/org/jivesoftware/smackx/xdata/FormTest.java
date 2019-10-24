@@ -25,6 +25,8 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+
 import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -96,9 +98,10 @@ public class FormTest extends AbstractSmackIntegrationTest {
         StanzaCollector collector2 = conTwo.createStanzaCollector(
                 new ThreadFilter(chat.getThreadID()));
 
-        Message msg = new Message();
-        msg.setBody("To enter a case please fill out this form and send it back to me");
-        msg.addExtension(formToSend.getDataFormToSend());
+        Message msg = StanzaBuilder.buildMessage()
+                .setBody("To enter a case please fill out this form and send it back to me")
+                .addExtension(formToSend.getDataFormToSend())
+                .build();
 
         try {
             // Send the message with the form to fill out
@@ -130,13 +133,14 @@ public class FormTest extends AbstractSmackIntegrationTest {
             completedForm.setAnswer("time", true);
             completedForm.setAnswer("age", 20);
             // Create a new message to send with the completed form
-            msg2 = new Message();
-            msg2.setTo(conOne.getUser().asBareJid());
-            msg2.setThread(msg.getThread());
-            msg2.setType(Message.Type.chat);
-            msg2.setBody("To enter a case please fill out this form and send it back to me");
-            // Add the completed form to the message
-            msg2.addExtension(completedForm.getDataFormToSend());
+            msg2 = StanzaBuilder.buildMessage()
+                    .to(conOne.getUser().asBareJid())
+                    .setThread(msg.getThread())
+                    .ofType(Message.Type.chat)
+                    .setBody("To enter a case please fill out this form and send it back to me")
+                    // Add the completed form to the message
+                    .addExtension(completedForm.getDataFormToSend())
+                    .build();
             // Send the message with the completed form
             conTwo.sendStanza(msg2);
 

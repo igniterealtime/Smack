@@ -146,7 +146,7 @@ public final class ServiceDiscoveryManager extends Manager {
                     // Return <item-not-found/> error since client doesn't contain
                     // the specified node
                     response.setType(IQ.Type.error);
-                    response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found));
+                    response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found).build());
                 }
                 return response;
             }
@@ -184,7 +184,7 @@ public final class ServiceDiscoveryManager extends Manager {
                     } else {
                         // Return <item-not-found/> error since specified node was not found
                         response.setType(IQ.Type.error);
-                        response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found));
+                        response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found).build());
                     }
                 }
                 return response;

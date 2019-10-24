@@ -718,7 +718,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @throws InterruptedException if the calling thread was interrupted.
      */
     protected void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
-        StanzaError.Builder xmppError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable);
+        StanzaError xmppError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable).build();
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         connection().sendStanza(errorIQ);
     }

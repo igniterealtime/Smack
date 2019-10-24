@@ -184,7 +184,7 @@ public class Socks5ClientForInitiatorTest {
         XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
 
         // build error response as reply to the stream activation
-        IQ error = new ErrorIQ(StanzaError.getBuilder(StanzaError.Condition.internal_server_error));
+        IQ error = new ErrorIQ(StanzaError.getBuilder(StanzaError.Condition.internal_server_error).build());
         error.setFrom(proxyJID);
         error.setTo(initiatorJID);
 

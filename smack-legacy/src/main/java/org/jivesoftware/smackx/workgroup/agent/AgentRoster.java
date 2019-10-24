@@ -34,7 +34,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
-
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
 
@@ -213,8 +213,10 @@ public class AgentRoster {
         Jid key = getPresenceMapKey(user);
         Map<Resourcepart, Presence> userPresences = presenceMap.get(key);
         if (userPresences == null) {
-            Presence presence = new Presence(Presence.Type.unavailable);
-            presence.setFrom(user);
+            Presence presence = StanzaBuilder.buildPresence()
+                    .ofType(Presence.Type.unavailable)
+                    .from(user)
+                    .build();
             return presence;
         }
         else {
@@ -236,8 +238,7 @@ public class AgentRoster {
                 }
             }
             if (presence == null) {
-                presence = new Presence(Presence.Type.unavailable);
-                presence.setFrom(user);
+                presence = synthesizeUnvailablePresence(user);
                 return presence;
             }
             else {
@@ -287,6 +288,13 @@ public class AgentRoster {
                     break;
             }
         }
+    }
+
+    private static Presence synthesizeUnvailablePresence(Jid from) {
+        return StanzaBuilder.buildPresence()
+                .ofType(Presence.Type.unavailable)
+                .from(from)
+                .build();
     }
 
     /**
