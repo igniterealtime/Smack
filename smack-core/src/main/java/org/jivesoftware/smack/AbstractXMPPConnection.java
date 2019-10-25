@@ -100,8 +100,12 @@ import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.MessageOrPresence;
+import org.jivesoftware.smack.packet.MessageOrPresenceBuilder;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Session;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
@@ -123,11 +127,13 @@ import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
@@ -242,6 +248,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     private final Map<StanzaListener, InterceptorWrapper> interceptors =
             new HashMap<>();
+
+    private final Map<Consumer<MessageBuilder>, GenericInterceptorWrapper<MessageBuilder, Message>> messageInterceptors = new HashMap<>();
+
+    private final Map<Consumer<PresenceBuilder>, GenericInterceptorWrapper<PresenceBuilder, Presence>> presenceInterceptors = new HashMap<>();
 
     private XmlEnvironment incomingStreamXmlEnvironment;
 
@@ -849,8 +859,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
         // Invoke interceptors for the new stanza that is about to be sent. Interceptors may modify
         // the content of the stanza.
-        firePacketInterceptors(stanza);
-        sendStanzaInternal(stanza);
+        Stanza stanzaAfterInterceptors = firePacketInterceptors(stanza);
+        sendStanzaInternal(stanzaAfterInterceptors);
     }
 
     /**
@@ -1204,6 +1214,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         });
     }
 
+    @Deprecated
     @Override
     public void addStanzaInterceptor(StanzaListener packetInterceptor,
             StanzaFilter packetFilter) {
@@ -1216,11 +1227,79 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    @Deprecated
     @Override
     public void removeStanzaInterceptor(StanzaListener packetInterceptor) {
         synchronized (interceptors) {
             interceptors.remove(packetInterceptor);
         }
+    }
+
+    private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> void addInterceptor(
+                    Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors, Consumer<MPB> interceptor,
+                    Predicate<MP> filter) {
+        Objects.requireNonNull(interceptor, "Interceptor must not be null");
+
+        GenericInterceptorWrapper<MPB, MP> interceptorWrapper = new GenericInterceptorWrapper<>(interceptor, filter);
+
+        synchronized (interceptors) {
+            interceptors.put(interceptor, interceptorWrapper);
+        }
+    }
+
+    private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> void removeInterceptor(
+                    Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors, Consumer<MPB> interceptor) {
+        synchronized (interceptors) {
+            interceptors.remove(interceptor);
+        }
+    }
+
+    @Override
+    public void addMessageInterceptor(Consumer<MessageBuilder> messageInterceptor, Predicate<Message> messageFilter) {
+        addInterceptor(messageInterceptors, messageInterceptor, messageFilter);
+    }
+
+    @Override
+    public void removeMessageInterceptor(Consumer<MessageBuilder> messageInterceptor) {
+        removeInterceptor(messageInterceptors, messageInterceptor);
+    }
+
+    @Override
+    public void addPresenceInterceptor(Consumer<PresenceBuilder> presenceInterceptor,
+                    Predicate<Presence> presenceFilter) {
+        addInterceptor(presenceInterceptors, presenceInterceptor, presenceFilter);
+    }
+
+    @Override
+    public void removePresenceInterceptor(Consumer<PresenceBuilder> presenceInterceptor) {
+        removeInterceptor(presenceInterceptors, presenceInterceptor);
+    }
+
+    private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> MP fireMessageOrPresenceInterceptors(
+                    MP messageOrPresence, Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors) {
+        List<Consumer<MPB>> interceptorsToInvoke = new LinkedList<>();
+        synchronized (interceptors) {
+            for (GenericInterceptorWrapper<MPB, MP> interceptorWrapper : interceptors.values()) {
+                if (interceptorWrapper.filterMatches(messageOrPresence)) {
+                    Consumer<MPB> interceptor = interceptorWrapper.getInterceptor();
+                    interceptorsToInvoke.add(interceptor);
+                }
+            }
+        }
+
+        // Avoid transforming the stanza to a builder if there is no interceptor.
+        if (interceptorsToInvoke.isEmpty()) {
+            return messageOrPresence;
+        }
+
+        MPB builder = messageOrPresence.asBuilder();
+        for (Consumer<MPB> interceptor : interceptorsToInvoke) {
+            interceptor.accept(builder);
+        }
+
+        // Now that the interceptors have (probably) modified the stanza in its builder form, we need to re-assemble it.
+        messageOrPresence = builder.build();
+        return messageOrPresence;
     }
 
     /**
@@ -1229,9 +1308,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * is important that interceptors perform their work as soon as possible so that the
      * thread does not remain blocked for a long period.
      *
-     * @param packet the stanza that is going to be sent to the server
+     * @param packet the stanza that is going to be sent to the server.
+     * @return the, potentially modified stanza, after the interceptors are run.
      */
-    private void firePacketInterceptors(Stanza packet) {
+    private Stanza firePacketInterceptors(Stanza packet) {
         List<StanzaListener> interceptorsToInvoke = new LinkedList<>();
         synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
@@ -1247,6 +1327,22 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 LOGGER.log(Level.SEVERE, "Packet interceptor threw exception", e);
             }
         }
+
+        final Stanza stanzaAfterInterceptors;
+        if (packet instanceof Message) {
+            Message message = (Message) packet;
+            stanzaAfterInterceptors = fireMessageOrPresenceInterceptors(message, messageInterceptors);
+        }
+        else if (packet instanceof Presence) {
+            Presence presence = (Presence) packet;
+            stanzaAfterInterceptors = fireMessageOrPresenceInterceptors(presence, presenceInterceptors);
+        } else {
+            // We do not (yet) support interceptors for IQ stanzas.
+            assert packet instanceof IQ;
+            stanzaAfterInterceptors = packet;
+        }
+
+        return stanzaAfterInterceptors;
     }
 
     /**
@@ -1674,6 +1770,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * A wrapper class to associate a stanza filter with an interceptor.
      */
+    @Deprecated
+    // TODO: Remove once addStanzaInterceptor is gone.
     protected static class InterceptorWrapper {
 
         private final StanzaListener packetInterceptor;
@@ -1696,6 +1794,24 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         public StanzaListener getInterceptor() {
             return packetInterceptor;
+        }
+    }
+
+    private static final class GenericInterceptorWrapper<MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> {
+        private final Consumer<MPB> stanzaInterceptor;
+        private final Predicate<MP> stanzaFilter;
+
+        private GenericInterceptorWrapper(Consumer<MPB> stanzaInterceptor, Predicate<MP> stanzaFilter) {
+            this.stanzaInterceptor = stanzaInterceptor;
+            this.stanzaFilter = stanzaFilter;
+        }
+
+        private boolean filterMatches(MP stanza) {
+            return stanzaFilter == null || stanzaFilter.test(stanza);
+        }
+
+        public Consumer<MPB> getInterceptor() {
+            return stanzaInterceptor;
         }
     }
 

@@ -63,6 +63,26 @@ public interface StanzaView extends XmlLangElement {
 
     <E extends ExtensionElement> E getExtension(QName qname);
 
+    default boolean hasExtension(QName qname) {
+        return getExtension(qname) != null;
+    }
+
+    /**
+     * Check if a extension element with the given namespace exists.
+     *
+     * @param namespace the namespace of the extension element to check for.
+     * @return true if a stanza extension exists, false otherwise.
+     */
+    default boolean hasExtension(String namespace) {
+        for (ExtensionElement packetExtension : getExtensions()) {
+            if (packetExtension.getNamespace().equals(namespace)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     default <E extends ExtensionElement> E getExtension(Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);

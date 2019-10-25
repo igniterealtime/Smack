@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Predicate;
 
 /**
  * Defines a way to filter stanzas for particular attributes. Stanza filters are used when
@@ -51,7 +52,7 @@ import org.jivesoftware.smack.packet.Stanza;
  * @see org.jivesoftware.smack.StanzaListener
  * @author Matt Tucker
  */
-public interface StanzaFilter {
+public interface StanzaFilter extends Predicate<Stanza> {
 
     /**
      * Tests whether or not the specified stanza should pass the filter.
@@ -60,4 +61,9 @@ public interface StanzaFilter {
      * @return true if and only if <code>stanza</code> passes the filter.
      */
     boolean accept(Stanza stanza);
+
+    @Override
+    default boolean test(Stanza stanza) {
+        return accept(stanza);
+    }
 }

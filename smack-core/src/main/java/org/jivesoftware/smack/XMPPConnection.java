@@ -27,9 +27,15 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaFactory;
+import org.jivesoftware.smack.util.Consumer;
+import org.jivesoftware.smack.util.Predicate;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -361,7 +367,7 @@ public interface XMPPConnection {
     boolean removeStanzaListener(StanzaListener stanzaListener);
 
     /**
-     * Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
+     *  Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
      * an incoming stanza is received. A stanza filter determines which stanzas will be delivered to the listener. If
      * the same stanza listener is added again with a different filter, only the new filter will be used.
      * <p>
@@ -446,16 +452,65 @@ public interface XMPPConnection {
      *
      * @param stanzaInterceptor the stanza interceptor to notify of stanzas about to be sent.
      * @param stanzaFilter      the stanza filter to use.
+     * @deprecated use {@link #addMessageInterceptor(Consumer, Predicate)} or {@link #addPresenceInterceptor(Consumer, Predicate)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     void addStanzaInterceptor(StanzaListener stanzaInterceptor, StanzaFilter stanzaFilter);
 
     /**
      * Removes a stanza interceptor.
      *
      * @param stanzaInterceptor the stanza interceptor to remove.
+     * @deprecated use {@link #removeMessageInterceptor(Consumer)} or {@link #removePresenceInterceptor(Consumer)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     void removeStanzaInterceptor(StanzaListener stanzaInterceptor);
 
+    /**
+     * Registers a stanza interceptor with this connection. The interceptor will be
+     * invoked every time a stanza is about to be sent by this connection. Interceptors
+     * may modify the stanza to be sent. A stanza filter determines which stanzas
+     * will be delivered to the interceptor.
+     *
+     * <p>
+     * NOTE: For a similar functionality on incoming stanzas, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
+     * </p>
+     *
+     * @param messageInterceptor the stanza interceptor to notify of stanzas about to be sent.
+     * @param messageFilter      the stanza filter to use.
+     */
+    void addMessageInterceptor(Consumer<MessageBuilder> messageInterceptor, Predicate<Message> messageFilter);
+
+    /**
+     * Removes a message interceptor.
+     *
+     * @param messageInterceptor the message interceptor to remove.
+     */
+    void removeMessageInterceptor(Consumer<MessageBuilder> messageInterceptor);
+
+    /**
+     * Registers a stanza interceptor with this connection. The interceptor will be
+     * invoked every time a stanza is about to be sent by this connection. Interceptors
+     * may modify the stanza to be sent. A stanza filter determines which stanzas
+     * will be delivered to the interceptor.
+     *
+     * <p>
+     * NOTE: For a similar functionality on incoming stanzas, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
+     * </p>
+     *
+     * @param presenceInterceptor the stanza interceptor to notify of stanzas about to be sent.
+     * @param presenceFilter      the stanza filter to use.
+     */
+    void addPresenceInterceptor(Consumer<PresenceBuilder> presenceInterceptor, Predicate<Presence> presenceFilter);
+
+    /**
+     * Removes a presence interceptor.
+     *
+     * @param presenceInterceptor the stanza interceptor to remove.
+     */
+    void removePresenceInterceptor(Consumer<PresenceBuilder> presenceInterceptor);
     /**
      * Returns the current value of the reply timeout in milliseconds for request for this
      * XMPPConnection instance.

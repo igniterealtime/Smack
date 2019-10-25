@@ -22,7 +22,7 @@ import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.ToStringUtil;
 
-public final class MessageBuilder extends StanzaBuilder<MessageBuilder> implements MessageView {
+public final class MessageBuilder extends MessageOrPresenceBuilder<Message, MessageBuilder> implements MessageView {
     static final MessageBuilder EMPTY = new MessageBuilder(() -> {
         return null;
     });
@@ -153,6 +153,7 @@ public final class MessageBuilder extends StanzaBuilder<MessageBuilder> implemen
         return this;
     }
 
+    @Override
     public Message build() {
         return new Message(this);
     }

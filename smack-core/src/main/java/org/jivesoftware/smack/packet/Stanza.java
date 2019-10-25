@@ -456,12 +456,8 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
         }
     }
 
-    /**
-     * Check if a stanza extension with the given namespace exists.
-     *
-     * @param namespace TODO javadoc me please
-     * @return true if a stanza extension exists, false otherwise.
-     */
+    // Overridden in order to avoid an extra copy.
+    @Override
     public boolean hasExtension(String namespace) {
         synchronized (extensionElements) {
             for (ExtensionElement packetExtension : extensionElements.values()) {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2018 Florian Schmaus.
+ * Copyright 2017-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -36,6 +35,7 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.AbstractRosterListener;
@@ -124,22 +124,20 @@ public final class ChatManager extends Manager {
             }
         }, INCOMING_MESSAGE_FILTER);
 
-        connection.addStanzaInterceptor(new StanzaListener() {
-            @Override
-            public void processStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
-                Message message = (Message) stanza;
-                if (!shouldAcceptMessage(message)) {
-                    return;
-                }
-
-                final EntityBareJid to = message.getTo().asEntityBareJidOrThrow();
-                final Chat chat = chatWith(to);
-
-                for (OutgoingChatMessageListener listener : outgoingListeners) {
-                    listener.newOutgoingMessage(to, message, chat);
-                }
+        connection.addMessageInterceptor(messageBuilder -> {
+            if (!shouldAcceptMessage(messageBuilder)) {
+                return;
             }
-        }, OUTGOING_MESSAGE_FILTER);
+
+            final EntityBareJid to = messageBuilder.getTo().asEntityBareJidOrThrow();
+            final Chat chat = chatWith(to);
+
+            for (OutgoingChatMessageListener listener : outgoingListeners) {
+                listener.newOutgoingMessage(to, messageBuilder, chat);
+            }
+        }, m -> {
+            return OUTGOING_MESSAGE_FILTER.accept(m);
+        });
 
         Roster roster = Roster.getInstanceFor(connection);
         roster.addRosterListener(new AbstractRosterListener() {
@@ -181,8 +179,8 @@ public final class ChatManager extends Manager {
         });
     }
 
-    private boolean shouldAcceptMessage(Message message) {
-        if (!message.getBodies().isEmpty()) {
+    private boolean shouldAcceptMessage(MessageView message) {
+        if (message.hasExtension(Message.Body.QNAME)) {
             return true;
         }
 

@@ -120,18 +120,10 @@ public final class ChatMarkersManager extends Manager {
 
         chatManager = ChatManager.getInstanceFor(connection);
 
-        connection.addStanzaInterceptor(new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet)
-                    throws
-                    NotConnectedException,
-                    InterruptedException,
-                    SmackException.NotLoggedInException {
-                Message message = (Message) packet;
-                // add a markable extension
-                message.addExtension(ChatMarkersElements.MarkableExtension.INSTANCE);
-            }
-        }, OUTGOING_MESSAGE_FILTER);
+        connection.addMessageInterceptor(mb -> mb.addExtension(ChatMarkersElements.MarkableExtension.INSTANCE),
+                m -> {
+                    return OUTGOING_MESSAGE_FILTER.accept(m);
+            });
 
         connection.addSyncStanzaListener(new StanzaListener() {
             @Override

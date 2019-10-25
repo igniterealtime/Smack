@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus.
+ * Copyright 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.chat2;
+package org.jivesoftware.smack.util;
 
-import org.jivesoftware.smack.packet.MessageBuilder;
+// TODO: Replace with java.util.function.Predicate once Smack's minimum Android SDK level is 24 or higher.
+public interface Predicate<T> {
 
-import org.jxmpp.jid.EntityBareJid;
-
-public interface OutgoingChatMessageListener {
-
-    void newOutgoingMessage(EntityBareJid to, MessageBuilder messageBuilder, Chat chat);
+    boolean test(T t);
 
 }

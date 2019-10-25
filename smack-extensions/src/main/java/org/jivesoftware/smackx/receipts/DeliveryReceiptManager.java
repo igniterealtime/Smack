@@ -38,9 +38,11 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -271,13 +273,7 @@ public final class DeliveryReceiptManager extends Manager {
                     );
                    // @formatter:on
 
-    private static final StanzaListener AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = new StanzaListener() {
-        @Override
-        public void processStanza(Stanza packet) throws NotConnectedException {
-            Message message = (Message) packet;
-            DeliveryReceiptRequest.addTo(message);
-        }
-    };
+    private static final Consumer<MessageBuilder> AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = mb -> DeliveryReceiptRequest.addTo(mb);
 
     /**
      * Enables automatic requests of delivery receipts for outgoing messages of
@@ -288,8 +284,9 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #dontAutoAddDeliveryReceiptRequests()
      */
     public void autoAddDeliveryReceiptRequests() {
-        connection().addStanzaInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER,
-                        MESSAGES_TO_REQUEST_RECEIPTS_FOR);
+        connection().addMessageInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER, m -> {
+            return MESSAGES_TO_REQUEST_RECEIPTS_FOR.accept(m);
+        });
     }
 
     /**
@@ -299,7 +296,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #autoAddDeliveryReceiptRequests()
      */
     public void dontAutoAddDeliveryReceiptRequests() {
-        connection().removeStanzaInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
+        connection().removeMessageInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
     }
 
     /**

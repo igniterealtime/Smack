@@ -51,9 +51,11 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -308,6 +310,15 @@ public final class EntityCapsManager extends Manager {
      */
     private String entityNode = DEFAULT_ENTITY_NODE;
 
+    // Intercept presence packages and add caps data when intended.
+    // XEP-0115 specifies that a client SHOULD include entity capabilities
+    // with every presence notification it sends.
+    private final Consumer<PresenceBuilder> presenceInterceptor = presenceBuilder -> {
+        CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
+        CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
+        presenceBuilder.overrideExtension(caps);
+    };
+
     private EntityCapsManager(XMPPConnection connection) {
         super(connection);
         this.sdm = ServiceDiscoveryManager.getInstanceFor(connection);
@@ -379,23 +390,9 @@ public final class EntityCapsManager extends Manager {
             }
         }, PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
 
-        // Intercept presence packages and add caps data when intended.
-        // XEP-0115 specifies that a client SHOULD include entity capabilities
-        // with every presence notification it sends.
-        StanzaListener packetInterceptor = new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet) {
-                if (!entityCapsEnabled) {
-                    // Be sure to not send stanzas with the caps extension if it's not enabled
-                    packet.removeExtension(CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
-                    return;
-                }
-                CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
-                CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
-                packet.overrideExtension(caps);
-            }
-        };
-        connection.addStanzaInterceptor(packetInterceptor, PresenceTypeFilter.AVAILABLE);
+
+        enableEntityCaps();
+
         // It's important to do this as last action. Since it changes the
         // behavior of the SDM in some ways
         sdm.addEntityCapabilitiesChangedListener(new EntityCapabilitiesChangedListener() {
@@ -424,6 +421,10 @@ public final class EntityCapsManager extends Manager {
     }
 
     public synchronized void enableEntityCaps() {
+        connection().addPresenceInterceptor(presenceInterceptor, p -> {
+            return PresenceTypeFilter.AVAILABLE.accept(p);
+        });
+
         // Add Entity Capabilities (XEP-0115) feature node.
         sdm.addFeature(NAMESPACE);
         updateLocalEntityCaps();
@@ -433,6 +434,8 @@ public final class EntityCapsManager extends Manager {
     public synchronized void disableEntityCaps() {
         entityCapsEnabled = false;
         sdm.removeFeature(NAMESPACE);
+
+        connection().removePresenceInterceptor(presenceInterceptor);
     }
 
     public boolean entityCapsEnabled() {

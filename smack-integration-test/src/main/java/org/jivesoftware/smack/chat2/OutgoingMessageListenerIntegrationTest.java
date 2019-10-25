@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.chat2;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -36,7 +37,8 @@ public class OutgoingMessageListenerIntegrationTest extends AbstractChatIntegrat
         final SimpleResultSyncPoint syncPoint = new SimpleResultSyncPoint();
         final OutgoingChatMessageListener listener = new OutgoingChatMessageListener() {
             @Override
-            public void newOutgoingMessage(EntityBareJid to, Message message, Chat chat) {
+            public void newOutgoingMessage(EntityBareJid to, MessageBuilder messageBuilder, Chat chat) {
+                Message message = messageBuilder.build();
                 if (message.getBody().equals(body)) {
                     syncPoint.signal();
                 }

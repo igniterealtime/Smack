@@ -61,7 +61,8 @@ import org.jxmpp.jid.Jid;
  *
  * @author Matt Tucker
  */
-public final class Presence extends Stanza implements PresenceView, TypedCloneable<Presence> {
+public final class Presence extends MessageOrPresence<PresenceBuilder>
+                implements PresenceView, TypedCloneable<Presence> {
 
     public static final String ELEMENT = "presence";
 
@@ -277,6 +278,7 @@ public final class Presence extends Stanza implements PresenceView, TypedCloneab
         return ELEMENT;
     }
 
+    @Override
     public PresenceBuilder asBuilder() {
         return StanzaBuilder.buildPresenceFrom(this, getStanzaId());
     }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus.
+ * Copyright 2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.chat2;
+package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.packet.MessageBuilder;
+public abstract class MessageOrPresence<MPB extends MessageOrPresenceBuilder<?, ?>> extends Stanza {
 
-import org.jxmpp.jid.EntityBareJid;
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
+    protected MessageOrPresence() {
+    }
 
-public interface OutgoingChatMessageListener {
+    protected MessageOrPresence(StanzaBuilder<?> stanzaBuilder) {
+        super(stanzaBuilder);
+    }
 
-    void newOutgoingMessage(EntityBareJid to, MessageBuilder messageBuilder, Chat chat);
+    protected MessageOrPresence(Stanza other) {
+        super(other);
+    }
+
+    public abstract MPB asBuilder();
 
 }

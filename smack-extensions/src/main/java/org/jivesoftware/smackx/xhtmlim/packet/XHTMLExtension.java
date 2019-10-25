@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -39,6 +41,8 @@ public class XHTMLExtension implements ExtensionElement {
 
     public static final String ELEMENT = "html";
     public static final String NAMESPACE = "http://jabber.org/protocol/xhtml-im";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final List<CharSequence> bodies = new ArrayList<>();
 
@@ -125,7 +129,7 @@ public class XHTMLExtension implements ExtensionElement {
         }
     }
 
-    public static XHTMLExtension from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+    public static XHTMLExtension from(MessageView message) {
+        return message.getExtension(QNAME);
     }
 }

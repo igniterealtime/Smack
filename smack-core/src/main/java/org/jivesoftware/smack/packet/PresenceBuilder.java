@@ -21,7 +21,7 @@ import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.ToStringUtil;
 
-public final class PresenceBuilder extends StanzaBuilder<PresenceBuilder> implements PresenceView {
+public final class PresenceBuilder extends MessageOrPresenceBuilder<Presence, PresenceBuilder> implements PresenceView {
     static final PresenceBuilder EMPTY = new PresenceBuilder(() -> {
         return null;
     });
@@ -102,6 +102,7 @@ public final class PresenceBuilder extends StanzaBuilder<PresenceBuilder> implem
         return this;
     }
 
+    @Override
     public Presence build() {
         return new Presence(this);
     }

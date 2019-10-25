@@ -60,7 +60,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
  *
  * @author Matt Tucker
  */
-public final class Message extends Stanza implements MessageView, TypedCloneable<Message> {
+public final class Message extends MessageOrPresence<MessageBuilder>
+                implements MessageView, TypedCloneable<Message> {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
@@ -534,6 +535,7 @@ public final class Message extends Stanza implements MessageView, TypedCloneable
         return ELEMENT;
     }
 
+    @Override
     public MessageBuilder asBuilder() {
         return StanzaBuilder.buildMessageFrom(this, getStanzaId());
     }
@@ -664,6 +666,7 @@ public final class Message extends Stanza implements MessageView, TypedCloneable
 
         public static final String ELEMENT = "body";
         public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         enum BodyElementNamespace {
             client(StreamOpen.CLIENT_NAMESPACE),
