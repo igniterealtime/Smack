@@ -365,6 +365,48 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     /**
+     * Asserts that the server returns a pending notification to the subscriber
+     * when subscribing to a node that requires authorization
+     *
+     * <p>From XEP-0060 § 6.1.4:</p>
+     * <blockquote>
+     * Because the subscription request may or may not be approved, the service
+     * MUST return a pending notification to the subscriber.
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribeApprovalRequiredGeneratesNotificationTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        final String nodename = "sinttest-subscribe-nodename-" + testRunId;
+        final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
+        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        config.setAccessModel(AccessModel.authorize);
+        try {
+            pubSubManagerOne.createNode( nodename, config );
+        } catch ( XMPPErrorException e ) {
+            throw new TestNotPossibleException( "Access model 'authorize' not supported on the server." );
+        }
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            final Subscription result = subscriberNode.subscribe( subscriber );
+
+            assertEquals( Subscription.State.pending, result.getState() );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
      * Asserts that an empty subscriptions collection is returned when an entity
      * requests its subscriptions from a node that it is not subscribed to.
      *
