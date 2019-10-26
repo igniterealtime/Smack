@@ -16,19 +16,18 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.StandardExtensionElement;
-import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.*;
 
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+import org.jivesoftware.smackx.pubsub.form.FillableSubscribeForm;
+import org.jivesoftware.smackx.pubsub.form.SubscribeForm;
+import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -48,9 +47,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -200,7 +196,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     {
         final String nodename = "sinttest-subscribe-nodename-" + testRunId;
         final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        final FillableConfigureForm config = defaultConfiguration.getFillableForm();
         config.setAccessModel(AccessModel.presence);
         try {
             pubSubManagerOne.createNode( nodename, config );
@@ -246,7 +242,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     {
         final String nodename = "sinttest-subscribe-nodename-" + testRunId;
         final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        final FillableConfigureForm config = defaultConfiguration.getFillableForm();
         config.setAccessModel(AccessModel.roster);
         try {
             pubSubManagerOne.createNode( nodename, config );
@@ -293,7 +289,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     {
         final String nodename = "sinttest-subscribe-nodename-" + testRunId;
         final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        final FillableConfigureForm config = defaultConfiguration.getFillableForm();
         config.setAccessModel(AccessModel.whitelist);
         try {
             pubSubManagerOne.createNode( nodename, config );
@@ -340,7 +336,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     {
         final String nodename = "sinttest-subscribe-nodename-" + testRunId;
         final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        final FillableConfigureForm config = defaultConfiguration.getFillableForm();
         config.setAccessModel(AccessModel.authorize);
         try {
             pubSubManagerOne.createNode( nodename, config );
@@ -387,7 +383,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     {
         final String nodename = "sinttest-subscribe-nodename-" + testRunId;
         final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        final FillableConfigureForm config = defaultConfiguration.getFillableForm();
         config.setAccessModel(AccessModel.authorize);
         try {
             pubSubManagerOne.createNode( nodename, config );
@@ -441,9 +437,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             // Subscribe to the node twice, using different configuration
             final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final SubscribeForm formA = new SubscribeForm( DataForm.Type.submit );
+            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
             formA.setDigestFrequency( 1 );
-            final SubscribeForm formB = new SubscribeForm( DataForm.Type.submit );
+            final FillableSubscribeForm formB = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
             formB.setDigestFrequency( 2 );
 
             final Subscription subscriptionA = subscriberNode.subscribe( subscriber, formA );
@@ -491,9 +487,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             // Subscribe to the node twice, using different configuration
             final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final SubscribeForm formA = new SubscribeForm( DataForm.Type.submit );
+            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
             formA.setDigestFrequency( 1 );
-            final SubscribeForm formB = new SubscribeForm( DataForm.Type.submit );
+            final FillableSubscribeForm formB =new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
             formB.setDigestFrequency( 2 );
 
             final Subscription subscriptionA = subscriberNode.subscribe( subscriber, formA );
@@ -503,6 +499,271 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             final String normalizedRepresentationA = subscriptionA.toXML( XmlEnvironment.EMPTY ).toString();
             final String normalizedRepresentationB = subscriptionB.toXML( XmlEnvironment.EMPTY ).toString();
             assertEquals( normalizedRepresentationA, normalizedRepresentationB );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that one can unsubscribe from a node (when a previous subscription
+     * existed).
+     *
+     * <p>From XEP-0060 § 6.2.2:</p>
+     * <blockquote>
+     * If the request can be successfully processed, the service MUST return an IQ result (...)
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException If an error occurred while creating the node.
+     */
+    @SmackIntegrationTest
+    public void unsubscribeTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException
+    {
+        final String nodename = "sinttest-unsubscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode(nodename);
+
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode( nodename );
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe( subscriber );
+
+            try {
+                subscriberNode.unsubscribe( subscriber.asEntityBareJidString() );
+            }
+            catch ( NoResponseException | XMPPErrorException e ) {
+                throw new AssertionError( "Unsubscribe from a node failed.", e );
+            }
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'bad request' response when not
+     * specifying a subscription ID when unsubscribing from a node to which
+     * more than one subscriptions exist.
+     *
+     * <p>From XEP-0060 § 6.2.3.1:</p>
+     * <blockquote>
+     * If the requesting entity has multiple subscriptions to the node but does
+     * not specify a subscription ID, the service MUST return a
+     * &lt;bad-request/&gt; error (...)
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void unsubscribeNoSubscriptionIDTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        if ( !pubSubManagerOne.getSupportedFeatures().containsFeature( PubSubFeature.multi_subscribe ) ) {
+            throw new TestNotPossibleException( "Feature 'multi-subscribe' not supported on the server." );
+        }
+
+        final String nodename = "sinttest-unsubscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode( nodename );
+
+        try {
+            // Subscribe to the node twice, using different configuration
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            formA.setDigestFrequency( 1 );
+            final FillableSubscribeForm formB = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            formB.setDigestFrequency( 2 );
+
+            subscriberNode.subscribe( subscriber, formA );
+            subscriberNode.subscribe( subscriber, formB );
+
+            try {
+                subscriberNode.unsubscribe( subscriber.asEntityBareJidString() );
+                fail( "The server should have returned a <bad_request/> error, but did not." );
+            }
+            catch ( XMPPErrorException e ) {
+                assertEquals( StanzaError.Condition.bad_request, e.getStanzaError().getCondition() );
+            }
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns an error response when unsubscribing from
+     * a node without having a subscription.
+     *
+     * <p>From XEP-0060 § 6.2.3.2:</p>
+     * <blockquote>
+     * If the value of the 'jid' attribute does not specify an existing
+     * subscriber, the pubsub service MUST return an error stanza
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     */
+    @SmackIntegrationTest
+    public void unsubscribeNoSuchSubscriberTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException
+    {
+        final String nodename = "sinttest-unsubscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode( nodename );
+
+        try {
+            // Subscribe to the node twice, using different configuration
+            final Node subscriberNode = pubSubManagerTwo.getNode( nodename );
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+
+            subscriberNode.unsubscribe( subscriber.asEntityBareJidString() );
+            fail( "The server should have returned an error, but did not." );
+        }
+        catch ( XMPPErrorException e ) {
+            // SHOULD be <unexpected-request/> (but that's not a 'MUST')
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'forbidden' error response when
+     * unsubscribing a JID from a node for which the issuer has no authority.
+     *
+     * <p>From XEP-0060 § 6.2.3.3:</p>
+     * <blockquote>
+     * If the requesting entity is prohibited from unsubscribing the specified
+     * JID, the service MUST return a &lt;forbidden/&gt; error.
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     */
+    @SmackIntegrationTest
+    public void unsubscribeInsufficientPrivilegesTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException
+    {
+        final String nodename = "sinttest-unsubscribe-nodename-" + testRunId;
+        final PubSubManager pubSubManagerThree = PubSubManager.getInstanceFor(conThree, PubSubManager.getPubSubService(conThree));
+        pubSubManagerOne.createNode(nodename);
+
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode( nodename );
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe( subscriber );
+
+            final Node unprivilegedNode = pubSubManagerThree.getNode( nodename );
+            try {
+                unprivilegedNode.unsubscribe( subscriber.asEntityBareJidString() );
+                fail( "The server should have returned a <forbidden/> error, but did not." );
+            }
+            catch ( XMPPErrorException e ) {
+                assertEquals( StanzaError.Condition.forbidden, e.getStanzaError().getCondition() );
+            }
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns an 'item-not-found' error response when
+     * unsubscribing from a node that does not exist.
+     *
+     * <p>From XEP-0060 § 6.2.3.3:</p>
+     * <blockquote>
+     * If the node does not exist, the pubsub service MUST return an
+     * &lt;item-not-found/&gt; error.
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    @SmackIntegrationTest
+    public void unsubscribeNodeDoesNotExistTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    {
+        final String nodename = "sinttest-unsubscribe-nodename-" + testRunId;
+        try {
+            // Smack righteously doesn't facilitate unsubscribing from a non-existing node. Manually crafting stanza:
+            final UnsubscribeExtension ext = new UnsubscribeExtension( conOne.getUser().asEntityBareJid().asEntityBareJidString(), "I-dont-exist", null );
+            final PubSub unsubscribe = PubSub.createPubsubPacket( pubSubManagerOne.getServiceJid(), IQ.Type.set, ext );
+            try {
+                pubSubManagerOne.sendPubsubPacket(unsubscribe);
+                fail( "The server should have returned a <item-not-found/> error, but did not." );
+            }
+            catch ( XMPPErrorException e ) {
+                assertEquals( StanzaError.Condition.item_not_found, e.getStanzaError().getCondition() );
+            }
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'not_acceptable' response when
+     * specifying a non-existing subscription ID when unsubscribing from a node
+     * to which at least one subscription (with an ID) exists.
+     *
+     * <p>From XEP-0060 § 6.2.3.5:</p>
+     * <blockquote>
+     * (...) If the subscriber originally subscribed with a SubID but the
+     * unsubscribe request includes a SubID that is not valid or current for the
+     * subscriber, the service MUST return a &lt;not-acceptable/&gt; error (...)
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void unsubscribeBadSubscriptionIDTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        // Depending on multi-subscribe is a fail-safe way to be sure that subscription IDs will exist.
+        if ( !pubSubManagerOne.getSupportedFeatures().containsFeature( PubSubFeature.multi_subscribe ) ) {
+            throw new TestNotPossibleException( "Feature 'multi-subscribe' not supported on the server." );
+        }
+
+        final String nodename = "sinttest-unsubscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode( nodename );
+
+        try {
+            // Subscribe to the node twice, using different configuration
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            formA.setDigestFrequency( 1 );
+            final FillableSubscribeForm formB = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            formB.setDigestFrequency( 2 );
+
+            subscriberNode.subscribe( subscriber, formA );
+            subscriberNode.subscribe( subscriber, formB );
+
+            try {
+                subscriberNode.unsubscribe( subscriber.asEntityBareJidString(), "this-is-not-an-existing-subscription-id" );
+                fail( "The server should have returned a <not-acceptable/> error, but did not." );
+            }
+            catch ( XMPPErrorException e ) {
+                assertEquals( StanzaError.Condition.not_acceptable, e.getStanzaError().getCondition() );
+            }
         }
         finally {
             pubSubManagerOne.deleteNode( nodename );
