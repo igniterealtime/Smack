@@ -39,6 +39,8 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -109,9 +111,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         pubSubManagerOne.createNode(nodename);
         try {
             // Subscribe to the node, using a different user than the owner of the node.
-            final Node subcriberNode = pubSubManagerTwo.getNode(nodename);
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final Subscription subscription = subcriberNode.subscribe( subscriber );
+            final Subscription subscription = subscriberNode.subscribe( subscriber );
             assertNotNull( subscription );
 
             // Assert that subscription is correctly reported when the subscriber requests its subscriptions.
@@ -122,6 +124,240 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         catch ( PubSubException.NotAPubSubNodeException e )
         {
             throw new AssertionError("The published item was not received by the subscriber.", e);
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'bad request' error to a subscription
+     * request in which the JIDs do not match.
+     *
+     * <p>From XEP-0060 § 6.1.3.1:</p>
+     * <blockquote>
+     * If the specified JID is a bare JID or full JID, the service MUST at a
+     * minimum check the bare JID portion against the bare JID portion of the
+     * 'from' attribute on the received IQ request to make sure that the
+     * requesting entity has the same identity as the JID which is being
+     * requested to be added to the subscriber list.
+     *
+     * If the bare JID portions of the JIDs do not match as described above and
+     * the requesting entity does not have some kind of admin or proxy privilege
+     * as defined by the implementation, the service MUST return a
+     * &lt;bad-request/&gt; error (...)
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XmppStringprepException if the hard-coded test JID cannot be instantiated.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     */
+    @SmackIntegrationTest
+    public void subscribeJIDsDoNotMatchTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, XmppStringprepException, PubSubException.NotAPubSubNodeException
+    {
+        final String nodename = "sinttest-subscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode(nodename);
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = JidCreate.entityBareFrom( "this-jid-does-not-match@example.org" );
+            subscriberNode.subscribe( subscriber );
+            fail( "The server should have returned a <bad-request/> error, but did not." );
+        }
+        catch ( XMPPErrorException e )
+        {
+            assertEquals( StanzaError.Condition.bad_request, e.getStanzaError().getCondition() );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'not-authorized' error to a subscription
+     * request where required presence subscription is missing.
+     *
+     * <p>From XEP-0060 § 6.1.3.2:</p>
+     * <blockquote>
+     * For nodes with an access model of "presence", if the requesting entity is
+     * not subscribed to the owner's presence then the pubsub service MUST
+     * respond with a &lt;not-authorized/&gt; error (...)
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribePresenceSubscriptionRequiredTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        final String nodename = "sinttest-subscribe-nodename-" + testRunId;
+        final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
+        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        config.setAccessModel(AccessModel.presence);
+        try {
+            pubSubManagerOne.createNode( nodename, config );
+        } catch ( XMPPErrorException e ) {
+            throw new TestNotPossibleException( "Access model 'presence' not supported on the server." );
+        }
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe( subscriber );
+            fail( "The server should have returned a <not-authorized/> error, but did not." );
+        }
+        catch ( XMPPErrorException e )
+        {
+            assertEquals( StanzaError.Condition.not_authorized, e.getStanzaError().getCondition() );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'not-authorized' error to a subscription
+     * request where required roster items are missing.
+     *
+     * <p>From XEP-0060 § 6.1.3.3:</p>
+     * <blockquote>
+     * For nodes with an access model of "roster", if the requesting entity is
+     * not in one of the authorized roster groups then the pubsub service MUST
+     * respond with a &lt;not-authorized/&gt; error (...)
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribeNotInRosterGroupTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        final String nodename = "sinttest-subscribe-nodename-" + testRunId;
+        final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
+        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        config.setAccessModel(AccessModel.roster);
+        try {
+            pubSubManagerOne.createNode( nodename, config );
+        } catch ( XMPPErrorException e ) {
+            throw new TestNotPossibleException( "Access model 'roster' not supported on the server." );
+        }
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe( subscriber );
+            fail( "The server should have returned a <not-authorized/> error, but did not." );
+        }
+        catch ( XMPPErrorException e )
+        {
+            assertEquals( StanzaError.Condition.not_authorized, e.getStanzaError().getCondition() );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'not-allowed' error to a subscription
+     * request where required whitelisting is missing.
+     *
+     * <p>From XEP-0060 § 6.1.3.4:</p>
+     * <blockquote>
+     * For nodes with a node access model of "whitelist", if the requesting
+     * entity is not on the whitelist then the service MUST return a
+     * &lt;not-allowed/&gt; error, specifying a pubsub-specific error condition
+     * of &lt;closed-node/&gt;.
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribeNotOnWhitelistTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        final String nodename = "sinttest-subscribe-nodename-" + testRunId;
+        final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
+        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        config.setAccessModel(AccessModel.whitelist);
+        try {
+            pubSubManagerOne.createNode( nodename, config );
+        } catch ( XMPPErrorException e ) {
+            throw new TestNotPossibleException( "Access model 'whitelist' not supported on the server." );
+        }
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe( subscriber );
+            fail( "The server should have returned a <not-allowed/> error, but did not." );
+        }
+        catch ( XMPPErrorException e )
+        {
+            assertEquals( StanzaError.Condition.not_allowed, e.getStanzaError().getCondition() );
+            assertNotNull( e.getStanzaError().getExtension( "closed-node", "http://jabber.org/protocol/pubsub#errors" ));
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns a 'not-authorized' error to a subscription
+     * request when the subscriber already has a pending subscription.
+     *
+     * <p>From XEP-0060 § 6.1.3.7:</p>
+     * <blockquote>
+     * If the requesting entity has a pending subscription, the service MUST
+     * return a &lt;not-authorized/&gt; error to the subscriber, specifying a
+     * pubsub-specific error condition of &lt;pending-subscription/&gt;.
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribePendingSubscriptionTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        final String nodename = "sinttest-subscribe-nodename-" + testRunId;
+        final ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
+        final ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        config.setAccessModel(AccessModel.authorize);
+        try {
+            pubSubManagerOne.createNode( nodename, config );
+        } catch ( XMPPErrorException e ) {
+            throw new TestNotPossibleException( "Access model 'authorize' not supported on the server." );
+        }
+        try {
+            // Subscribe to the node, using a different user than the owner of the node.
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe( subscriber );
+            subscriberNode.subscribe( subscriber );
+            fail( "The server should have returned a <not-authorized/> error, but did not." );
+        }
+        catch ( XMPPErrorException e )
+        {
+            assertEquals( StanzaError.Condition.not_authorized, e.getStanzaError().getCondition() );
+            assertNotNull( e.getStanzaError().getExtension( "pending-subscription", "http://jabber.org/protocol/pubsub#errors" ));
         }
         finally {
             pubSubManagerOne.deleteNode( nodename );
@@ -279,4 +515,6 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             pubSubManagerOne.deleteNode(nodename);
         }
     }
+
+
 }
