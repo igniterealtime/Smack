@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -400,6 +401,108 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             final Subscription result = subscriberNode.subscribe( subscriber );
 
             assertEquals( Subscription.State.pending, result.getState() );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns non-null, unique subscription IDs when
+     * subscribing twice to the same node (with different options).
+     *
+     * <p>From XEP-0060 § 6.1.6:</p>
+     * <blockquote>
+     * If multiple subscriptions for the same JID are allowed, the service MUST
+     * use the 'subid' attribute to differentiate between subscriptions for the
+     * same entity (therefore the SubID MUST be unique for each node+JID
+     * combination and the SubID MUST be present on the &lt;subscription/&gt;
+     * element any time it is sent to the subscriber).
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribeMultipleSubscriptionsTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        if ( !pubSubManagerOne.getSupportedFeatures().containsFeature( PubSubFeature.multi_subscribe ) ) {
+            throw new TestNotPossibleException( "Feature 'multi-subscribe' not supported on the server." );
+        }
+
+        final String nodename = "sinttest-multisubscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode( nodename );
+
+        try {
+            // Subscribe to the node twice, using different configuration
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            final SubscribeForm formA = new SubscribeForm( DataForm.Type.submit );
+            formA.setDigestFrequency( 1 );
+            final SubscribeForm formB = new SubscribeForm( DataForm.Type.submit );
+            formB.setDigestFrequency( 2 );
+
+            final Subscription subscriptionA = subscriberNode.subscribe( subscriber, formA );
+            final Subscription subscriptionB = subscriberNode.subscribe( subscriber, formB );
+
+            assertNotNull( subscriptionA.getId() );
+            assertNotNull( subscriptionB.getId() );
+            assertNotEquals( subscriptionA.getId(), subscriptionB.getId() );
+        }
+        finally {
+            pubSubManagerOne.deleteNode( nodename );
+        }
+    }
+
+    /**
+     * Asserts that the server returns non-null, unique subscription IDs when
+     * subscribing twice to the same node (with different options).
+     *
+     * <p>From XEP-0060 § 6.1.6:</p>
+     * <blockquote>
+     * If the service does not allow multiple subscriptions for the same entity
+     * and it receives an additional subscription request, the service MUST
+     * return the current subscription state (as if the subscription was just
+     * approved).
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be accessed.
+     * @throws TestNotPossibleException if the server does not support the functionality required for this test.
+     */
+    @SmackIntegrationTest
+    public void subscribeMultipleSubscriptionNotSupportedTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException, TestNotPossibleException
+    {
+        if ( pubSubManagerOne.getSupportedFeatures().containsFeature( PubSubFeature.multi_subscribe ) ) {
+            throw new TestNotPossibleException( "Feature 'multi-subscribe' allowed on the server (this test verifies behavior for when it's not)." );
+        }
+
+        final String nodename = "sinttest-multisubscribe-nodename-" + testRunId;
+        pubSubManagerOne.createNode( nodename );
+
+        try {
+            // Subscribe to the node twice, using different configuration
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            final SubscribeForm formA = new SubscribeForm( DataForm.Type.submit );
+            formA.setDigestFrequency( 1 );
+            final SubscribeForm formB = new SubscribeForm( DataForm.Type.submit );
+            formB.setDigestFrequency( 2 );
+
+            final Subscription subscriptionA = subscriberNode.subscribe( subscriber, formA );
+            final Subscription subscriptionB = subscriberNode.subscribe( subscriber, formB );
+
+            // A poor-man's "equal"
+            final String normalizedRepresentationA = subscriptionA.toXML( XmlEnvironment.EMPTY ).toString();
+            final String normalizedRepresentationB = subscriptionB.toXML( XmlEnvironment.EMPTY ).toString();
+            assertEquals( normalizedRepresentationA, normalizedRepresentationB );
         }
         finally {
             pubSubManagerOne.deleteNode( nodename );
