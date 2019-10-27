@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012-2014 Florian Schmaus
+ * Copyright 2012-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.InitExtensions;
-import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.ping.packet.Ping;
 
 import org.junit.Test;
@@ -191,8 +190,6 @@ public class PingTest extends InitExtensions {
     @Test
     public void checkSuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = getAuthenticatedDummyConnection();
-        DiscoverInfo info = new DiscoverInfo();
-        info.addFeature(Ping.NAMESPACE);
 
         // @formatter:off
         String reply =
@@ -213,8 +210,6 @@ public class PingTest extends InitExtensions {
     @Test
     public void checkUnsuccessfulDiscoRequest() throws Exception {
         ThreadedDummyConnection con = getAuthenticatedDummyConnection();
-        DiscoverInfo info = new DiscoverInfo();
-        info.addFeature(Ping.NAMESPACE);
 
         // @formatter:off
         String reply =
