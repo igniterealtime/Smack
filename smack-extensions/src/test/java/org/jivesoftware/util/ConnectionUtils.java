@@ -30,6 +30,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaFactory;
+import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
@@ -77,6 +79,9 @@ public class ConnectionUtils {
         XMPPConnection connection = mock(XMPPConnection.class);
         when(connection.getUser()).thenReturn(initiatorJID);
         when(connection.getXMPPServiceDomain()).thenReturn(xmppServer);
+
+        final StanzaFactory stanzaFactory = new StanzaFactory(new StandardStanzaIdSource());
+        when(connection.getStanzaFactory()).thenReturn(stanzaFactory);
 
         // mock packet collector
         final StanzaCollector collector = mock(StanzaCollector.class);
