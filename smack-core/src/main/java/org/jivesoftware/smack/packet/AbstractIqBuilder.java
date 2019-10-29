@@ -36,21 +36,21 @@ public abstract class AbstractIqBuilder<IB extends AbstractIqBuilder<IB>> extend
         super(stanzaId);
     }
 
-    public static IqBuilder createResponse(IqView request) {
+    public static IqData createResponse(IqView request) {
         return createResponse(request, IQ.ResponseType.result);
     }
 
-    public static IqBuilder createErrorResponse(IqView request) {
+    public static IqData createErrorResponse(IqView request) {
         return createResponse(request, IQ.ResponseType.error);
     }
 
-    protected static IqBuilder createResponse(IqView request, IQ.ResponseType responseType) {
+    protected static IqData createResponse(IqView request, IQ.ResponseType responseType) {
         if (!(request.getType() == IQ.Type.get || request.getType() == IQ.Type.set)) {
             throw new IllegalArgumentException("IQ request must be of type 'set' or 'get'. Original IQ: " + request);
         }
 
-        IqBuilder commonResponseIqData = buildResponse(request, s -> {
-            return StanzaBuilder.buildIq(s);
+        IqData commonResponseIqData = buildResponse(request, s -> {
+            return StanzaBuilder.buildIqData(s);
         });
         commonResponseIqData.ofType(responseType.getType());
 

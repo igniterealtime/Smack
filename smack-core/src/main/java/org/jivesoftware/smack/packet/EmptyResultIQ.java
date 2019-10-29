@@ -18,7 +18,7 @@ package org.jivesoftware.smack.packet;
 
 public class EmptyResultIQ extends IQ {
 
-    EmptyResultIQ(IqBuilder iqBuilder) {
+    EmptyResultIQ(IqData iqBuilder) {
         super(iqBuilder, null, null);
     }
 

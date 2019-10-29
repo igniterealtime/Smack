@@ -46,8 +46,8 @@ public final class StanzaFactory {
         return new PresenceBuilder(presence, stanzaIdSource);
     }
 
-    public IqBuilder buildIqStanza() {
-        return new IqBuilder(stanzaIdSource);
+    public IqData buildIqData() {
+        return new IqData(stanzaIdSource);
     }
 
 }

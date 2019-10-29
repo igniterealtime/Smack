@@ -20,7 +20,7 @@ package org.jivesoftware.smack.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -58,7 +58,7 @@ public abstract class IQProvider<I extends IQ> extends IqProvider<I> {
     }
 
     @Override
-    public final I parse(XmlPullParser parser, int initialDepth, IqBuilder iqData, XmlEnvironment xmlEnvironment)
+    public final I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException {
         // Old-style IQ parsers do not need IqData.
         return parse(parser, initialDepth, xmlEnvironment);

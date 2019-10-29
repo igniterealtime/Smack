@@ -36,7 +36,7 @@ import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Presence;
@@ -543,7 +543,7 @@ public class PacketParserUtils {
         StanzaError error = null;
 
         final String id = parser.getAttributeValue("", "id");
-        IqBuilder iqData = StanzaBuilder.buildIq(id);
+        IqData iqData = StanzaBuilder.buildIqData(id);
 
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
         iqData.to(to);

@@ -29,7 +29,7 @@ public abstract class SimpleIQ extends IQ {
         super(childElementName, childElementNamespace);
     }
 
-    protected SimpleIQ(IqBuilder iqBuilder, String childElementName, String childElementNamespace) {
+    protected SimpleIQ(IqData iqBuilder, String childElementName, String childElementNamespace) {
         super(iqBuilder, childElementName, childElementNamespace);
     }
 

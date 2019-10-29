@@ -18,14 +18,14 @@ package org.jivesoftware.smackx.iot.control.element;
 
 import org.jivesoftware.smack.packet.AbstractIqBuilder;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 
 public class IoTSetResponse extends IQ {
 
     public static final String ELEMENT = "setResponse";
     public static final String NAMESPACE = Constants.IOT_CONTROL_NAMESPACE;
 
-    public IoTSetResponse(IqBuilder iqBuilder) {
+    public IoTSetResponse(IqData iqBuilder) {
         super(iqBuilder, ELEMENT, NAMESPACE);
     }
 

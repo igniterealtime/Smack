@@ -19,7 +19,7 @@ package org.jivesoftware.smack.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -27,12 +27,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
 
-    public final I parse(XmlPullParser parser, IqBuilder iqCommon)
+    public final I parse(XmlPullParser parser, IqData iqCommon)
                     throws XmlPullParserException, IOException, SmackParsingException {
         return parse(parser, iqCommon, null);
     }
 
-    public final I parse(XmlPullParser parser, IqBuilder iqData, XmlEnvironment outerXmlEnvironment)
+    public final I parse(XmlPullParser parser, IqData iqData, XmlEnvironment outerXmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         final XmlEnvironment xmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
@@ -40,7 +40,7 @@ public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
         return parse(parser, initialDepth, iqData, xmlEnvironment);
     }
 
-    public abstract I parse(XmlPullParser parser, int initialDepth, IqBuilder iqData, XmlEnvironment xmlEnvironment)
+    public abstract I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException;
 
 }

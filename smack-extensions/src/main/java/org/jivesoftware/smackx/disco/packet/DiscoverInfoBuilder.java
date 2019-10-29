@@ -23,12 +23,12 @@ import java.util.List;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqBuilder;
-import org.jivesoftware.smack.packet.IqBuilderWithBuild;
+import org.jivesoftware.smack.packet.IqData;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 
-public class DiscoverInfoBuilder extends IqBuilderWithBuild<DiscoverInfoBuilder, DiscoverInfo>
+public class DiscoverInfoBuilder extends IqBuilder<DiscoverInfoBuilder, DiscoverInfo>
         implements DiscoverInfoView {
 
     private final List<Feature> features = new ArrayList<>();
@@ -36,7 +36,7 @@ public class DiscoverInfoBuilder extends IqBuilderWithBuild<DiscoverInfoBuilder,
 
     private String node;
 
-    DiscoverInfoBuilder(IqBuilder iqCommon) {
+    DiscoverInfoBuilder(IqData iqCommon) {
         super(iqCommon);
     }
 

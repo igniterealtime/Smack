@@ -65,7 +65,7 @@ public abstract class IQ extends Stanza implements IqView {
 
     // TODO: Deprecate when stanza builder is ready.
     protected IQ(String childElementName, String childElementNamespace) {
-        this(IqBuilder.EMPTY, childElementName, childElementNamespace);
+        this(IqData.EMPTY, childElementName, childElementNamespace);
     }
 
     protected IQ(AbstractIqBuilder<?> iqBuilder, String childElementName, String childElementNamespace) {

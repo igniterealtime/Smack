@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.ping.packet;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.SimpleIQ;
 
 import org.jxmpp.jid.Jid;
@@ -39,14 +39,14 @@ public class Ping extends SimpleIQ {
     }
 
     public Ping(XMPPConnection connection, Jid to) {
-        this(connection.getStanzaFactory().buildIqStanza(), to);
+        this(connection.getStanzaFactory().buildIqData(), to);
     }
 
-    public Ping(IqBuilder iqBuilder, Jid to) {
+    public Ping(IqData iqBuilder, Jid to) {
         super(iqBuilder.to(to).ofType(IQ.Type.get), ELEMENT, NAMESPACE);
     }
 
-    public Ping(IqBuilder iqBuilder) {
+    public Ping(IqData iqBuilder) {
         super(iqBuilder, ELEMENT, NAMESPACE);
     }
 

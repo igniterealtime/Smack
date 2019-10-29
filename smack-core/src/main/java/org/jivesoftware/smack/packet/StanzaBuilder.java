@@ -289,8 +289,8 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         return new PresenceBuilder(presence, stanzaIdSource);
     }
 
-    public static IqBuilder buildIq(String stanzaId) {
-        return new IqBuilder(stanzaId);
+    public static IqData buildIqData(String stanzaId) {
+        return new IqData(stanzaId);
     }
 
     public static <SB extends StanzaBuilder<?>> SB buildResponse(StanzaView request, Function<SB, String> builderFromStanzaId) {

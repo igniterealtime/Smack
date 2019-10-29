@@ -26,7 +26,7 @@ import java.util.Set;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.StringUtils;
@@ -148,7 +148,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
      *
      * @param feature the future.
      * @return true if the feature is new.
-     * @deprecated use {@link DiscoverInfoBuilder#addFeature(Feature)} instead.
+     * @deprecated use {@link DiscoverInfoBuilder#addFeature(DiscoverInfo.Feature)} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -170,7 +170,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
      * Adds a new identity of the requested entity to the discovered information.
      *
      * @param identity the discovered entity's identity
-     * @deprecated use {@link DiscoverInfoBuilder#addIdentity(Identity)} instead.
+     * @deprecated use {@link DiscoverInfoBuilder#addIdentity(DiscoverInfo.Identity)} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -313,7 +313,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
         return new DiscoverInfoBuilder(connection);
     }
 
-    public static DiscoverInfoBuilder builder(IqBuilder iqData) {
+    public static DiscoverInfoBuilder builder(IqData iqData) {
         return new DiscoverInfoBuilder(iqData);
     }
 
