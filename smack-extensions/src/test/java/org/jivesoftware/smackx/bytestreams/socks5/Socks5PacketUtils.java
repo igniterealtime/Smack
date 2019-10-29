@@ -21,6 +21,7 @@ import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
 import org.jxmpp.jid.Jid;
@@ -88,11 +89,12 @@ public class Socks5PacketUtils {
      * @param to the initiator
      * @return response to an info discovery request
      */
-    public static DiscoverInfo createDiscoverInfo(Jid from, Jid to) {
-        DiscoverInfo discoverInfo = new DiscoverInfo();
-        discoverInfo.setFrom(from);
-        discoverInfo.setTo(to);
-        discoverInfo.setType(IQ.Type.result);
+    public static DiscoverInfoBuilder createDiscoverInfo(Jid from, Jid to) {
+        DiscoverInfoBuilder discoverInfo = DiscoverInfo.builder("disco-1")
+                .from(from)
+                .to(to)
+                .ofType(IQ.Type.result)
+                ;
         return discoverInfo;
     }
 

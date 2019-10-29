@@ -113,7 +113,7 @@ import org.jivesoftware.smack.util.XmppElementUtil;
 public final class ProviderManager {
 
     private static final Map<QName, ExtensionElementProvider<ExtensionElement>> extensionProviders = new ConcurrentHashMap<>();
-    private static final Map<QName, IQProvider<IQ>> iqProviders = new ConcurrentHashMap<>();
+    private static final Map<QName, IqProvider<IQ>> iqProviders = new ConcurrentHashMap<>();
     private static final Map<QName, ExtensionElementProvider<ExtensionElement>> streamFeatureProviders = new ConcurrentHashMap<>();
     private static final Map<QName, NonzaProvider<? extends Nonza>> nonzaProviders = new ConcurrentHashMap<>();
 
@@ -167,7 +167,7 @@ public final class ProviderManager {
      * @param namespace the XML namespace.
      * @return the IQ provider.
      */
-    public static IQProvider<IQ> getIQProvider(String elementName, String namespace) {
+    public static IqProvider<IQ> getIQProvider(String elementName, String namespace) {
         QName key = getQName(elementName, namespace);
         return iqProviders.get(key);
     }
@@ -179,8 +179,8 @@ public final class ProviderManager {
      *
      * @return all IQProvider instances.
      */
-    public static List<IQProvider<IQ>> getIQProviders() {
-        List<IQProvider<IQ>> providers = new ArrayList<>(iqProviders.size());
+    public static List<IqProvider<IQ>> getIQProviders() {
+        List<IqProvider<IQ>> providers = new ArrayList<>(iqProviders.size());
         providers.addAll(iqProviders.values());
         return providers;
     }
@@ -200,10 +200,10 @@ public final class ProviderManager {
         validate(elementName, namespace);
         // First remove existing providers
         QName key = removeIQProvider(elementName, namespace);
-        if (provider instanceof IQProvider) {
-            iqProviders.put(key, (IQProvider<IQ>) provider);
+        if (provider instanceof IqProvider) {
+            iqProviders.put(key, (IqProvider<IQ>) provider);
         } else {
-            throw new IllegalArgumentException("Provider must be an IQProvider");
+            throw new IllegalArgumentException("Provider must be an instance of IqProvider");
         }
     }
 

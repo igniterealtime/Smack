@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
@@ -120,10 +121,12 @@ public abstract class Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverInfo discoverInfo() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        DiscoverInfo info = new DiscoverInfo();
-        info.setTo(pubSubManager.getServiceJid());
-        info.setNode(getId());
-        return pubSubManager.getConnection().createStanzaCollectorAndSend(info).nextResultOrThrow();
+        XMPPConnection connection = pubSubManager.getConnection();
+        DiscoverInfo discoverInfoRequest = DiscoverInfo.builder(connection)
+                .to(pubSubManager.getServiceJid())
+                .setNode(getId())
+                .build();
+        return connection.createStanzaCollectorAndSend(discoverInfoRequest).nextResultOrThrow();
     }
 
     /**

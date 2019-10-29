@@ -289,11 +289,13 @@ public final class PubSubManager extends Manager {
         Node node = nodeMap.get(id);
 
         if (node == null) {
-            DiscoverInfo info = new DiscoverInfo();
-            info.setTo(pubSubService);
-            info.setNode(id);
+            XMPPConnection connection = connection();
+            DiscoverInfo info = DiscoverInfo.builder(connection)
+                    .to(pubSubService)
+                    .setNode(id)
+                    .build();
 
-            DiscoverInfo infoReply = connection().createStanzaCollectorAndSend(info).nextResultOrThrow();
+            DiscoverInfo infoReply = connection.createStanzaCollectorAndSend(info).nextResultOrThrow();
 
             if (infoReply.hasIdentity(PubSub.ELEMENT, "leaf")) {
                 node = new LeafNode(this, id);

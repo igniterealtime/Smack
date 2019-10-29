@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.iot.control.element;
 
+import org.jivesoftware.smack.packet.AbstractIqBuilder;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqBuilder;
-import org.jivesoftware.smack.packet.StanzaBuilder;
 
 public class IoTSetResponse extends IQ {
 
@@ -35,7 +35,7 @@ public class IoTSetResponse extends IQ {
     }
 
     public IoTSetResponse(IoTSetRequest iotSetRequest) {
-        this(StanzaBuilder.buildIqResultFor(iotSetRequest));
+        this(AbstractIqBuilder.createResponse(iotSetRequest));
     }
 
     @Override

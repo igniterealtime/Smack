@@ -47,6 +47,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -159,34 +160,33 @@ public final class ServiceDiscoveryManager extends Manager {
             public IQ handleIQRequest(IQ iqRequest) {
                 DiscoverInfo discoverInfo = (DiscoverInfo) iqRequest;
                 // Answer the client's supported features if the request is of the GET type
-                DiscoverInfo response = new DiscoverInfo();
-                response.setType(IQ.Type.result);
-                response.setTo(discoverInfo.getFrom());
-                response.setStanzaId(discoverInfo.getStanzaId());
-                response.setNode(discoverInfo.getNode());
+                DiscoverInfoBuilder responseBuilder = DiscoverInfoBuilder.buildResponseFor(discoverInfo, IQ.ResponseType.result);
+
                 // Add the client's identity and features only if "node" is null
                 // and if the request was not send to a node. If Entity Caps are
                 // enabled the client's identity and features are may also added
                 // if the right node is chosen
                 if (discoverInfo.getNode() == null) {
-                    addDiscoverInfoTo(response);
+                    addDiscoverInfoTo(responseBuilder);
                 } else {
                     // Disco#info was sent to a node. Check if we have information of the
                     // specified node
                     NodeInformationProvider nodeInformationProvider = getNodeInformationProvider(discoverInfo.getNode());
                     if (nodeInformationProvider != null) {
                         // Node was found. Add node features
-                        response.addFeatures(nodeInformationProvider.getNodeFeatures());
+                        responseBuilder.addFeatures(nodeInformationProvider.getNodeFeatures());
                         // Add node identities
-                        response.addIdentities(nodeInformationProvider.getNodeIdentities());
+                        responseBuilder.addIdentities(nodeInformationProvider.getNodeIdentities());
                         // Add packet extensions
-                        response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
+                        responseBuilder.addExtensions(nodeInformationProvider.getNodePacketExtensions());
                     } else {
                         // Return <item-not-found/> error since specified node was not found
-                        response.setType(IQ.Type.error);
-                        response.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found).build());
+                        responseBuilder.ofType(IQ.Type.error);
+                        responseBuilder.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found).build());
                     }
                 }
+
+                DiscoverInfo response = responseBuilder.build();
                 return response;
             }
         });
@@ -299,7 +299,7 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param response the discover info response packet
      */
-    public synchronized void addDiscoverInfoTo(DiscoverInfo response) {
+    public synchronized void addDiscoverInfoTo(DiscoverInfoBuilder response) {
         // First add the identities of the connection
         response.addIdentities(getIdentities());
 
@@ -307,7 +307,9 @@ public final class ServiceDiscoveryManager extends Manager {
         for (String feature : getFeatures()) {
             response.addFeature(feature);
         }
-        response.addExtension(extendedInfo);
+        if (extendedInfo != null) {
+            response.addExtension(extendedInfo);
+        }
     }
 
     /**
@@ -522,13 +524,15 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public DiscoverInfo discoverInfo(Jid entityID, String node) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        // Discover the entity's info
-        DiscoverInfo disco = new DiscoverInfo();
-        disco.setType(IQ.Type.get);
-        disco.setTo(entityID);
-        disco.setNode(node);
+        XMPPConnection connection = connection();
 
-        Stanza result = connection().createStanzaCollectorAndSend(disco).nextResultOrThrow();
+        // Discover the entity's info
+        DiscoverInfo discoInfoRequest = DiscoverInfo.builder(connection)
+                .to(entityID)
+                .setNode(node)
+                .build();
+
+        Stanza result = connection.createStanzaCollectorAndSend(discoInfoRequest).nextResultOrThrow();
 
         return (DiscoverInfo) result;
     }

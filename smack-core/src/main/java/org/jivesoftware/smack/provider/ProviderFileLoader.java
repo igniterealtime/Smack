@@ -80,8 +80,8 @@ public class ProviderFileLoader implements ProviderLoader {
                                     // an IQ class, add the class object itself, then we'll use
                                     // reflection later to create instances of the class.
                                     // Add the provider to the map.
-                                    if (IQProvider.class.isAssignableFrom(provider)) {
-                                        IQProvider<IQ> iqProvider = (IQProvider<IQ>) provider.getConstructor().newInstance();
+                                    if (IqProvider.class.isAssignableFrom(provider)) {
+                                        IqProvider<IQ> iqProvider = (IqProvider<IQ>) provider.getConstructor().newInstance();
                                         iqProviders.add(new IQProviderInfo(elementName, namespace, iqProvider));
                                     }
                                     else {

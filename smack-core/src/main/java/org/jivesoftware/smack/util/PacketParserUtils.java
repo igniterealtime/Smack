@@ -36,6 +36,7 @@ import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqBuilder;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Presence;
@@ -51,7 +52,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.SmackXmlParser;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -542,9 +543,16 @@ public class PacketParserUtils {
         StanzaError error = null;
 
         final String id = parser.getAttributeValue("", "id");
+        IqBuilder iqData = StanzaBuilder.buildIq(id);
+
         final Jid to = ParserUtils.getJidAttribute(parser, "to");
+        iqData.to(to);
+
         final Jid from = ParserUtils.getJidAttribute(parser, "from");
+        iqData.from(from);
+
         final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
+        iqData.ofType(type);
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -560,9 +568,9 @@ public class PacketParserUtils {
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 default:
-                    IQProvider<IQ> provider = ProviderManager.getIQProvider(elementName, namespace);
+                    IqProvider<IQ> provider = ProviderManager.getIQProvider(elementName, namespace);
                     if (provider != null) {
-                            iqPacket = provider.parse(parser, outerXmlEnvironment);
+                            iqPacket = provider.parse(parser, iqData, outerXmlEnvironment);
                     }
                     // Note that if we reach this code, it is guranteed that the result IQ contained a child element
                     // (RFC 6120 § 8.2.3 6) because otherwhise we would have reached the END_ELEMENT first.
@@ -913,6 +921,18 @@ public class PacketParserUtils {
         }
 
         return new Session.Feature(optional);
+    }
+
+    public static void addExtensionElement(StanzaBuilder<?> stanzaBuilder, XmlPullParser parser, XmlEnvironment outerXmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        ParserUtils.assertAtStartTag(parser);
+        addExtensionElement(stanzaBuilder, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment);
+    }
+
+    public static void addExtensionElement(StanzaBuilder<?> stanzaBuilder, XmlPullParser parser, String elementName,
+            String namespace, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+        ExtensionElement extensionElement = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment);
+        stanzaBuilder.addExtension(extensionElement);
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser, XmlEnvironment outerXmlEnvironment)

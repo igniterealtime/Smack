@@ -49,6 +49,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
 
@@ -145,7 +146,7 @@ public class Socks5ByteStreamManagerTest {
 
         FeatureNotSupportedException e = assertThrows(FeatureNotSupportedException.class, () -> {
             // build empty discover info as reply if targets features are queried
-            DiscoverInfo discoverInfo = new DiscoverInfo();
+            DiscoverInfo discoverInfo = DiscoverInfo.builder("disco-1").build();
             protocol.addResponse(discoverInfo);
 
             // start SOCKS5 Bytestream
@@ -181,11 +182,11 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
         discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items with no proxy items
@@ -233,11 +234,11 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
         discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items containing a proxy item
@@ -252,12 +253,12 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about NOT being a Socks5
         // proxy
-        DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity = new Identity("noproxy", proxyJID.toString(), "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         SmackException e = assertThrows(SmackException.class, () -> {
@@ -294,9 +295,10 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Bytestream.NAMESPACE);
+        DiscoverInfoBuilder discoverInfoBuilder = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        discoverInfoBuilder.addFeature(Bytestream.NAMESPACE);
 
+        DiscoverInfo discoverInfo = discoverInfoBuilder.build();
         // return that SOCKS5 is supported if target is queried
         protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
@@ -313,12 +315,12 @@ public class Socks5ByteStreamManagerTest {
 
         // build discover info for proxy containing information about NOT being a Socks5
         // proxy
-        DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity = new Identity("noproxy", proxyJID.toString(), "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         SmackException e = assertThrows(SmackException.class, () -> {
@@ -376,11 +378,11 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
         discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items containing a proxy item
@@ -394,12 +396,12 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
-        DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity = new Identity("proxy", proxyJID.toString(), "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build a socks5 stream host info containing the address and the port of the
@@ -458,11 +460,11 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
         discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items containing a proxy item
@@ -476,12 +478,12 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
-        DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity = new Identity("proxy", proxyJID.toString(), "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build a socks5 stream host info containing the address and the port of the
@@ -545,11 +547,11 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
-        discoverInfo.addFeature(Bytestream.NAMESPACE);
+        DiscoverInfoBuilder discoverInfoBuilder = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        discoverInfoBuilder.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfoBuilder.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items containing a proxy item
@@ -563,12 +565,12 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
-        DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity = new Identity("proxy", proxyJID.toString(), "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build a socks5 stream host info containing the address and the port of the
@@ -639,11 +641,11 @@ public class Socks5ByteStreamManagerTest {
          */
 
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
         discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items containing a proxy item
@@ -657,12 +659,12 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
-        DiscoverInfo proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity = new Identity("proxy", proxyJID.toString(), "bytestreams");
         proxyInfo.addIdentity(identity);
 
         // return the socks5 bytestream proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build a socks5 stream host info containing the address and the port of the
@@ -765,11 +767,11 @@ public class Socks5ByteStreamManagerTest {
              */
 
             // build discover info that supports the SOCKS5 feature
-            DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+            DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
             discoverInfo.addFeature(Bytestream.NAMESPACE);
 
             // return that SOCKS5 is supported if target is queried
-            protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+            protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                             Verification.requestTypeGET);
 
             // build discover items containing no proxy item
@@ -1009,11 +1011,11 @@ public class Socks5ByteStreamManagerTest {
                     Verification<Bytestream, Bytestream> streamHostUsedVerification, Socks5TestProxy socks5TestProxy)
                     throws XmppStringprepException {
         // build discover info that supports the SOCKS5 feature
-        DiscoverInfo discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
+        DiscoverInfoBuilder discoverInfo = Socks5PacketUtils.createDiscoverInfo(targetJID, initiatorJID);
         discoverInfo.addFeature(Bytestream.NAMESPACE);
 
         // return that SOCKS5 is supported if target is queried
-        protocol.addResponse(discoverInfo, Verification.correspondingSenderReceiver,
+        protocol.addResponse(discoverInfo.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover items containing a proxy item
@@ -1030,22 +1032,22 @@ public class Socks5ByteStreamManagerTest {
          * build discover info for proxy "proxy2.xmpp-server" containing information about being a
          * SOCKS5 proxy
          */
-        DiscoverInfo proxyInfo1 = Socks5PacketUtils.createDiscoverInfo(JidCreate.from("proxy2.xmpp-server"),
+        DiscoverInfoBuilder proxyInfo1 = Socks5PacketUtils.createDiscoverInfo(JidCreate.from("proxy2.xmpp-server"),
                         initiatorJID);
         Identity identity1 = new Identity("proxy", "proxy2.xmpp-server", "bytestreams");
         proxyInfo1.addIdentity(identity1);
 
         // return the SOCKS5 bytestream proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo1, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo1.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         // build discover info for proxy containing information about being a SOCKS5 proxy
-        DiscoverInfo proxyInfo2 = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
+        DiscoverInfoBuilder proxyInfo2 = Socks5PacketUtils.createDiscoverInfo(proxyJID, initiatorJID);
         Identity identity2 = new Identity("proxy", proxyJID.toString(), "bytestreams");
         proxyInfo2.addIdentity(identity2);
 
         // return the SOCKS5 bytestream proxy identity if proxy is queried
-        protocol.addResponse(proxyInfo2, Verification.correspondingSenderReceiver,
+        protocol.addResponse(proxyInfo2.build(), Verification.correspondingSenderReceiver,
                         Verification.requestTypeGET);
 
         /*

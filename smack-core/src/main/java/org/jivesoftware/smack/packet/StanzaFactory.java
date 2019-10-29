@@ -22,6 +22,10 @@ public final class StanzaFactory {
 
     private final StanzaIdSource stanzaIdSource;
 
+    StanzaIdSource getStanzaIdSource() {
+        return stanzaIdSource;
+    }
+
     public StanzaFactory(StanzaIdSource stanzaIdSource) {
         this.stanzaIdSource = stanzaIdSource;
     }

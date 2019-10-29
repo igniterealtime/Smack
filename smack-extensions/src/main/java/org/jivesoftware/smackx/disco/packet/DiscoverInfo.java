@@ -24,7 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqBuilder;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.StringUtils;
@@ -42,18 +44,53 @@ import org.jxmpp.util.XmppStringUtils;
  *
  * @author Gaston Dombiak
  */
-public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
+public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable<DiscoverInfo> {
 
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "http://jabber.org/protocol/disco#info";
 
-    private final List<Feature> features = new LinkedList<>();
+    private final List<Feature> features = new ArrayList<>();
     private final Set<Feature> featuresSet = new HashSet<>();
-    private final List<Identity> identities = new LinkedList<>();
+    private final List<Identity> identities = new ArrayList<>();
     private final Set<String> identitiesSet = new HashSet<>();
     private String node;
     private boolean containsDuplicateFeatures;
 
+    DiscoverInfo(DiscoverInfoBuilder builder, boolean validate) {
+        super(builder, ELEMENT, NAMESPACE);
+
+        features.addAll(builder.getFeatures());
+        identities.addAll(builder.getIdentities());
+        node = builder.getNode();
+
+
+        for (Feature feature : features) {
+            boolean featureIsNew = featuresSet.add(feature);
+            if (!featureIsNew) {
+                containsDuplicateFeatures = true;
+            }
+        }
+
+        for (Identity identity : identities) {
+            identitiesSet.add(identity.getKey());
+        }
+
+        if (!validate) {
+            return;
+        }
+
+        if (containsDuplicateFeatures) {
+            throw new IllegalArgumentException("The disco#info request contains duplicate features.");
+        }
+    }
+
+    /**
+     * Deprecated.
+     *
+     * @deprecated use {@link DiscoverInfoBuilder} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public DiscoverInfo() {
         super(ELEMENT, NAMESPACE);
     }
@@ -67,17 +104,15 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         super(d);
 
         // Set node
-        setNode(d.getNode());
+        node = d.getNode();
 
         // Copy features
-        for (Feature f : d.features) {
-            addFeature(f.clone());
-        }
+        features.addAll(d.features);
+        featuresSet.addAll(d.featuresSet);
 
         // Copy identities
-        for (Identity i : d.identities) {
-            addIdentity(i.clone());
-        }
+        identities.addAll(d.identities);
+        identitiesSet.addAll(d.identitiesSet);
     }
 
     /**
@@ -85,7 +120,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      *
      * @param feature the discovered feature
      * @return true if the feature did not already exist.
+     * @deprecated use {@link DiscoverInfoBuilder#addFeature(String)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public boolean addFeature(String feature) {
         return addFeature(new Feature(feature));
     }
@@ -94,7 +132,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * Adds a collection of features to the packet. Does noting if featuresToAdd is null.
      *
      * @param featuresToAdd TODO javadoc me please
+     * @deprecated use {@link DiscoverInfoBuilder#addFeatures(Collection)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void addFeatures(Collection<String> featuresToAdd) {
         if (featuresToAdd == null) return;
         for (String feature : featuresToAdd) {
@@ -102,6 +143,15 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         }
     }
 
+    /**
+     * Deprecated.
+     *
+     * @param feature the future.
+     * @return true if the feature is new.
+     * @deprecated use {@link DiscoverInfoBuilder#addFeature(Feature)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public boolean addFeature(Feature feature) {
         features.add(feature);
         boolean featureIsNew = featuresSet.add(feature);
@@ -111,11 +161,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         return featureIsNew;
     }
 
-    /**
-     * Returns the discovered features of an XMPP entity.
-     *
-     * @return an unmodifiable list of the discovered features of an XMPP entity
-     */
+    @Override
     public List<Feature> getFeatures() {
         return Collections.unmodifiableList(features);
     }
@@ -124,7 +170,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * Adds a new identity of the requested entity to the discovered information.
      *
      * @param identity the discovered entity's identity
+     * @deprecated use {@link DiscoverInfoBuilder#addIdentity(Identity)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void addIdentity(Identity identity) {
         identities.add(identity);
         identitiesSet.add(identity.getKey());
@@ -134,7 +183,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * Adds identities to the DiscoverInfo stanza.
      *
      * @param identitiesToAdd TODO javadoc me please
+     * @deprecated use {@link DiscoverInfoBuilder#addIdentities(Collection)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void addIdentities(Collection<Identity> identitiesToAdd) {
         if (identitiesToAdd == null) return;
         for (Identity identity : identitiesToAdd) {
@@ -142,11 +194,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         }
     }
 
-    /**
-     * Returns the discovered identities of an XMPP entity.
-     *
-     * @return an unmodifiable list of the discovered identities
-     */
+    @Override
     public List<Identity> getIdentities() {
         return Collections.unmodifiableList(identities);
     }
@@ -180,15 +228,7 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         return res;
     }
 
-    /**
-     * Returns the node attribute that supplements the 'jid' attribute. A node is merely
-     * something that is associated with a JID and for which the JID can provide information.<p>
-     *
-     * Node attributes SHOULD be used only when trying to provide or query information which
-     * is not directly addressable.
-     *
-     * @return the node attribute that supplements the 'jid' attribute
-     */
+    @Override
     public String getNode() {
         return node;
     }
@@ -201,7 +241,10 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
      * is not directly addressable.
      *
      * @param node the node attribute that supplements the 'jid' attribute
+     * @deprecated use {@link DiscoverInfoBuilder#setNode(String)} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.5.
     public void setNode(String node) {
         this.node = StringUtils.requireNullOrNotEmpty(node, "The node can not be the empty string");
     }
@@ -256,9 +299,26 @@ public class DiscoverInfo extends IQ implements TypedCloneable<DiscoverInfo> {
         return containsDuplicateFeatures;
     }
 
+    public DiscoverInfoBuilder asBuilder() {
+        return new DiscoverInfoBuilder(this);
+    }
+
+    // TODO: Deprecate in favor of asBuilder().
     @Override
     public DiscoverInfo clone() {
         return new DiscoverInfo(this);
+    }
+
+    public static DiscoverInfoBuilder builder(XMPPConnection connection) {
+        return new DiscoverInfoBuilder(connection);
+    }
+
+    public static DiscoverInfoBuilder builder(IqBuilder iqData) {
+        return new DiscoverInfoBuilder(iqData);
+    }
+
+    public static DiscoverInfoBuilder builder(String stanzaId) {
+        return new DiscoverInfoBuilder(stanzaId);
     }
 
     /**

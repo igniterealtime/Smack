@@ -68,7 +68,7 @@ public abstract class IQ extends Stanza implements IqView {
         this(IqBuilder.EMPTY, childElementName, childElementNamespace);
     }
 
-    protected IQ(IqBuilder iqBuilder, String childElementName, String childElementNamespace) {
+    protected IQ(AbstractIqBuilder<?> iqBuilder, String childElementName, String childElementNamespace) {
         super(iqBuilder);
 
         type = iqBuilder.type;
@@ -373,6 +373,25 @@ public abstract class IQ extends Stanza implements IqView {
          */
         public static Type fromString(String string) {
             return Type.valueOf(string.toLowerCase(Locale.US));
+        }
+    }
+
+    public enum ResponseType {
+
+        result(Type.result),
+
+        error(Type.error),
+
+        ;
+
+        final Type type;
+
+        ResponseType(Type type) {
+            this.type = type;
+        }
+
+        Type getType() {
+            return type;
         }
     }
 

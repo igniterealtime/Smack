@@ -26,6 +26,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
@@ -33,6 +34,7 @@ import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -55,12 +57,14 @@ public class ConfigureFormTest extends InitExtensions {
     public void getConfigFormWithInsufficientPrivileges() throws XMPPException, SmackException, IOException, InterruptedException {
         ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
-        DiscoverInfo info = new DiscoverInfo();
-        info.setType(Type.result);
-        info.setFrom(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
+        DiscoverInfoBuilder info = DiscoverInfo.builder("disco-result")
+                .ofType(IQ.Type.result)
+                .from(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         Identity ident = new Identity("pubsub", null, "leaf");
         info.addIdentity(ident);
-        con.addIQReply(info);
+
+        DiscoverInfo discoverInfo = info.build();
+        con.addIQReply(discoverInfo);
 
         Node node = mgr.getNode("princely_musings");
 
@@ -84,10 +88,12 @@ public class ConfigureFormTest extends InitExtensions {
     public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
-        DiscoverInfo info = new DiscoverInfo();
+        DiscoverInfoBuilder info = DiscoverInfo.builder("disco-result");
         Identity ident = new Identity("pubsub", null, "leaf");
         info.addIdentity(ident);
-        con.addIQReply(info);
+
+        DiscoverInfo discoverInfo = info.build();
+        con.addIQReply(discoverInfo);
 
         Node node = mgr.getNode("princely_musings");
 

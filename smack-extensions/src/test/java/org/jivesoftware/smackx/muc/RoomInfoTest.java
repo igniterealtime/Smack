@@ -30,8 +30,9 @@ public class RoomInfoTest {
     public void validateRoomWithEmptyForm() {
         DataForm dataForm = new DataForm(DataForm.Type.result);
 
-        DiscoverInfo discoInfo = new DiscoverInfo();
-        discoInfo.addExtension(dataForm);
+        DiscoverInfo discoInfo = DiscoverInfo.builder("disco1")
+                .addExtension(dataForm)
+                .build();
         RoomInfo roomInfo = new RoomInfo(discoInfo);
         assertTrue(roomInfo.getDescription().isEmpty());
         assertTrue(roomInfo.getSubject().isEmpty());
@@ -54,8 +55,9 @@ public class RoomInfoTest {
         occupants.addValue("3");
         dataForm.addField(occupants.build());
 
-        DiscoverInfo discoInfo = new DiscoverInfo();
-        discoInfo.addExtension(dataForm);
+        DiscoverInfo discoInfo = DiscoverInfo.builder("disco1")
+                .addExtension(dataForm)
+                .build();
         RoomInfo roomInfo = new RoomInfo(discoInfo);
         assertEquals("The place for all good witches!", roomInfo.getDescription());
         assertEquals("Spells", roomInfo.getSubject());

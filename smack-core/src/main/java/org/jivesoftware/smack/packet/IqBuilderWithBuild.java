@@ -16,34 +16,30 @@
  */
 package org.jivesoftware.smack.packet;
 
-import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
-import org.jivesoftware.smack.packet.id.StanzaIdSource;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.Objects;
 
-// TODO: Rename to IqData.
-public final class IqBuilder extends AbstractIqBuilder<IqBuilder> {
+// TODO: Rename to IqBuilder.
+public abstract class IqBuilderWithBuild<IB extends IqBuilderWithBuild<IB, I>, I extends IQ>
+                extends AbstractIqBuilder<IB> {
 
-    static final IqBuilder EMPTY = new IqBuilder(StandardStanzaIdSource.DEFAULT);
-
-    IqBuilder(IqBuilder other) {
+    protected IqBuilderWithBuild(AbstractIqBuilder<?> other) {
         super(other);
     }
 
-    IqBuilder(StanzaIdSource stanzaIdSource) {
-        super(stanzaIdSource);
+    protected IqBuilderWithBuild(XMPPConnection connection) {
+        super(connection.getStanzaFactory().getStanzaIdSource());
     }
 
-    IqBuilder(String stanzaId) {
+    protected IqBuilderWithBuild(String stanzaId) {
         super(stanzaId);
     }
 
-    public IqBuilder ofType(IQ.Type type) {
+    public IB ofType(IQ.Type type) {
         this.type = Objects.requireNonNull(type);
         return getThis();
     }
 
-    @Override
-    public IqBuilder getThis() {
-        return this;
-    }
+    public abstract I build();
+
 }

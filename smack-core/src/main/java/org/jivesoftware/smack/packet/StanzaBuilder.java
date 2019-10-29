@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
+import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.ToStringUtil;
@@ -45,6 +45,17 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
     String language;
 
     MultiMap<QName, ExtensionElement> extensionElements = new MultiMap<>();
+
+    protected StanzaBuilder(StanzaBuilder<?> other) {
+        stanzaIdSource = other.stanzaIdSource;
+        stanzaId = other.stanzaId;
+
+        to = other.to;
+        from = other.from;
+        stanzaError = other.stanzaError;
+        language = other.language;
+        extensionElements = other.extensionElements.clone();
+    }
 
     protected StanzaBuilder(StanzaIdSource stanzaIdSource) {
         this.stanzaIdSource = stanzaIdSource;
@@ -282,20 +293,14 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         return new IqBuilder(stanzaId);
     }
 
-    public static IqBuilder buildIqResultFor(IQ request) {
-        if (!(request.getType() == Type.get || request.getType() == Type.set)) {
-            throw new IllegalArgumentException(
-                    "IQ request must be of type 'set' or 'get'. Original IQ: " + request.toXML());
-        }
+    public static <SB extends StanzaBuilder<?>> SB buildResponse(StanzaView request, Function<SB, String> builderFromStanzaId) {
+        SB responseBuilder = builderFromStanzaId.apply(request.getStanzaId());
 
-        return buildIq(request.getStanzaId())
-                        .to(request.getFrom())
-                        .from(request.getTo())
-                        .ofType(IQ.Type.result);
+        responseBuilder.to(request.getFrom())
+            .from(request.getTo())
+            ;
+
+        return responseBuilder;
     }
 
-    public static EmptyResultIQ buildEmptyIqResultFor(IQ request) {
-        IqBuilder iqBuilder = buildIqResultFor(request);
-        return new EmptyResultIQ(iqBuilder);
-    }
 }

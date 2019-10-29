@@ -68,6 +68,8 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoView;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -521,16 +523,19 @@ public final class EntityCapsManager extends Manager {
     private void updateLocalEntityCaps() {
         XMPPConnection connection = connection();
 
-        DiscoverInfo discoverInfo = new DiscoverInfo();
-        discoverInfo.setType(IQ.Type.result);
-        sdm.addDiscoverInfoTo(discoverInfo);
+        DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
+                .ofType(IQ.Type.result);
+        sdm.addDiscoverInfoTo(discoverInfoBuilder);
 
         // getLocalNodeVer() will return a result only after currentCapsVersion is set. Therefore
         // set it first and then call getLocalNodeVer()
-        currentCapsVersion = generateVerificationString(discoverInfo);
+        currentCapsVersion = generateVerificationString(discoverInfoBuilder);
         final String localNodeVer = getLocalNodeVer();
-        discoverInfo.setNode(localNodeVer);
+        discoverInfoBuilder.setNode(localNodeVer);
+
+        final DiscoverInfo discoverInfo = discoverInfoBuilder.build();
         addDiscoverInfoByNode(localNodeVer, discoverInfo);
+
         if (lastLocalCapsVersions.size() > 10) {
             CapsVersionAndHash oldCapsVersion = lastLocalCapsVersions.poll();
             sdm.removeNodeInformationProvider(entityNode + '#' + oldCapsVersion.version);
@@ -630,7 +635,7 @@ public final class EntityCapsManager extends Manager {
         return false;
     }
 
-    protected static CapsVersionAndHash generateVerificationString(DiscoverInfo discoverInfo) {
+    protected static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo) {
         return generateVerificationString(discoverInfo, null);
     }
 
@@ -646,7 +651,7 @@ public final class EntityCapsManager extends Manager {
      * @return The generated verification String or null if the hash is not
      *         supported
      */
-    protected static CapsVersionAndHash generateVerificationString(DiscoverInfo discoverInfo, String hash) {
+    protected static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo, String hash) {
         if (hash == null) {
             hash = DEFAULT_HASH;
         }

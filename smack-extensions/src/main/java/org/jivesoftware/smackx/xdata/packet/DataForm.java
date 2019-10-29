@@ -25,9 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaView;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -43,6 +45,8 @@ public class DataForm implements ExtensionElement {
 
     public static final String NAMESPACE = "jabber:x:data";
     public static final String ELEMENT = "x";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public enum Type {
         /**
@@ -351,12 +355,13 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
-     * Get data form from stanza.
-     * @param packet TODO javadoc me please
+     * Get data form from a stanza.
+     *
+     * @param stanzaView the stanza to get data form from.
      * @return the DataForm or null
      */
-    public static DataForm from(Stanza packet) {
-        return (DataForm) packet.getExtension(ELEMENT, NAMESPACE);
+    public static DataForm from(StanzaView stanzaView) {
+        return (DataForm) stanzaView.getExtension(QNAME);
     }
 
     /**

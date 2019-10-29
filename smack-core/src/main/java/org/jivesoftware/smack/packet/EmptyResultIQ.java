@@ -29,7 +29,7 @@ public class EmptyResultIQ extends IQ {
     }
 
     public EmptyResultIQ(IQ request) {
-        this(StanzaBuilder.buildIqResultFor(request));
+        this(AbstractIqBuilder.createResponse(request));
     }
 
     @Override

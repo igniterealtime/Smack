@@ -34,6 +34,7 @@ import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -97,11 +98,10 @@ public class EntityCapsManagerTest extends InitExtensions {
     }
 
     private static DiscoverInfo createComplexSamplePacket() throws XmppStringprepException {
-        DiscoverInfo di = new DiscoverInfo();
-        di.setFrom(JidCreate.from("benvolio@capulet.lit/230193"));
-        di.setStanzaId("disco1");
-        di.setTo(JidCreate.from("juliet@capulet.lit/chamber"));
-        di.setType(IQ.Type.result);
+        DiscoverInfoBuilder di = DiscoverInfo.builder("disco1");
+        di.from(JidCreate.from("benvolio@capulet.lit/230193"));
+        di.to(JidCreate.from("juliet@capulet.lit/chamber"));
+        di.ofType(IQ.Type.result);
 
         Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
         DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "pc", "Psi 0.11", "en");
@@ -144,15 +144,14 @@ public class EntityCapsManagerTest extends InitExtensions {
         df.addField(ff.build());
 
         di.addExtension(df);
-        return di;
+        return di.build();
     }
 
     private static DiscoverInfo createMalformedDiscoverInfo() throws XmppStringprepException {
-        DiscoverInfo di = new DiscoverInfo();
-        di.setFrom(JidCreate.from("benvolio@capulet.lit/230193"));
-        di.setStanzaId("disco1");
-        di.setTo(JidCreate.from(")juliet@capulet.lit/chamber"));
-        di.setType(IQ.Type.result);
+        DiscoverInfoBuilder di = DiscoverInfo.builder("disco1");
+        di.from("benvolio@capulet.lit/230193");
+        di.to(")juliet@capulet.lit/chamber");
+        di.ofType(IQ.Type.result);
 
         Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
         DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "pc", "Psi 0.11", "en");
@@ -217,7 +216,8 @@ public class EntityCapsManagerTest extends InitExtensions {
 
         di.addExtension(df);
 
-        return di;
+        DiscoverInfo discoverInfo = di.buildWithoutValidiation();
+        return discoverInfo;
     }
 
     public static File createTempDirectory() throws IOException {
