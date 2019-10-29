@@ -28,6 +28,7 @@ import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestUtil.XmlPullParserKind;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 import org.jivesoftware.smackx.usertune.provider.UserTuneProvider;
 

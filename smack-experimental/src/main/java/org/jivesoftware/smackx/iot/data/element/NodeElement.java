@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public class NodeElement extends IoTDataExtensionElement {

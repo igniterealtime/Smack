@@ -33,6 +33,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.Predicate;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 

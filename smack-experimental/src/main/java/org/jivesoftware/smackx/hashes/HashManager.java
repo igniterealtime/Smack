@@ -43,6 +43,7 @@ import java.util.WeakHashMap;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.SecurityUtil;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 

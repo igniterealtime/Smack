@@ -28,6 +28,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+
 import org.jivesoftware.smackx.dox.DnsOverXmppManager;
 import org.jivesoftware.smackx.dox.resolver.minidns.DnsOverXmppMiniDnsResolver;
 

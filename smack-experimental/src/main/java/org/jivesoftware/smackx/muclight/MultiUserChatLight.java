@@ -37,6 +37,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightChangeAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;

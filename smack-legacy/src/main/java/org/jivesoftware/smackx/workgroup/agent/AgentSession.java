@@ -48,6 +48,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.search.ReportedData;
 import org.jivesoftware.smackx.workgroup.MetaData;

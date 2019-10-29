@@ -35,6 +35,7 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+
 import org.jivesoftware.smackx.workgroup.packet.AgentStatus;
 import org.jivesoftware.smackx.workgroup.packet.AgentStatusRequest;
 

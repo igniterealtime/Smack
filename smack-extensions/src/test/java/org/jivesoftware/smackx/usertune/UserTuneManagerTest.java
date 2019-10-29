@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
 import org.junit.Test;

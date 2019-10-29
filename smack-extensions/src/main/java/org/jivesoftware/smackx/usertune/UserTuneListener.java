@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.usertune;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
 import org.jxmpp.jid.BareJid;

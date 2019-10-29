@@ -26,6 +26,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProvider;
 import org.jivesoftware.smackx.xmlelement.element.DataFormsXmlElement;
 

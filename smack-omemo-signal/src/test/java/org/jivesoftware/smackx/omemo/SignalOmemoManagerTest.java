@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
+
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.provider.OmemoVAxolotlProvider;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;

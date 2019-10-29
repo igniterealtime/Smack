@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.colors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.colors.ConsistentColor.Deficiency;
 
 import org.junit.jupiter.api.Test;

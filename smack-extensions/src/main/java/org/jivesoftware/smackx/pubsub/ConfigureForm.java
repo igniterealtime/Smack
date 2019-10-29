@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.util.ParserUtils;
+
 import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;

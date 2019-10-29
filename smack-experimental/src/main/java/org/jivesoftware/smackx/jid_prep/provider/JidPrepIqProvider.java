@@ -23,6 +23,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.jid_prep.element.JidPrepIq;
 
 public class JidPrepIqProvider extends IQProvider<JidPrepIq> {

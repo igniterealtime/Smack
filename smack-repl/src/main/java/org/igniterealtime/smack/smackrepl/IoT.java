@@ -33,6 +33,7 @@ import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.iot.IoTDiscoveryIntegrationTest;
 import org.jivesoftware.smackx.iot.Thing;
 import org.jivesoftware.smackx.iot.data.IoTDataManager;

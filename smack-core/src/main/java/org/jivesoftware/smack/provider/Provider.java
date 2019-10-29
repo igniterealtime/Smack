@@ -23,7 +23,6 @@ import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.ParserUtils;
-
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
