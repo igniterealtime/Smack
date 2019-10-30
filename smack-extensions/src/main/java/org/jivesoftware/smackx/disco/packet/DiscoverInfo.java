@@ -338,14 +338,6 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
         private final String name;
         private final String lang; // 'xml:lang;
 
-        public Identity(Identity identity) {
-            this.category = identity.category;
-            this.type = identity.type;
-            this.key = identity.type;
-            this.name = identity.name;
-            this.lang = identity.lang;
-        }
-
         /**
          * Creates a new identity for an XMPP entity.
          *
