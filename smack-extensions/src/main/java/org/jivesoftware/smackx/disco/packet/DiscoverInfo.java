@@ -330,7 +330,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
      * attributes.
      *
      */
-    public static final class Identity implements Comparable<Identity>, TypedCloneable<Identity> {
+    public static final class Identity implements Comparable<Identity> {
 
         private final String category;
         private final String type;
@@ -510,11 +510,6 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
             } else {
                 return category.compareTo(other.category);
             }
-        }
-
-        @Override
-        public Identity clone() {
-            return new Identity(this);
         }
 
         @Override
