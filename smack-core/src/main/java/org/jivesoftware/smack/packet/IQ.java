@@ -54,8 +54,7 @@ public abstract class IQ extends Stanza implements IqView {
 
     private Type type = Type.get;
 
-    // TODO: This method should be protected!
-    public IQ(IQ iq) {
+    protected IQ(IQ iq) {
         super(iq);
         type = iq.getType();
         this.childElementName = iq.childElementName;
