@@ -130,7 +130,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public String getStanzaId() {
+    public final String getStanzaId() {
         return id;
     }
 
@@ -153,7 +153,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @return true if the stanza ID is set, false otherwise.
      * @since 4.1
      */
-    public boolean hasStanzaIdSet() {
+    public final boolean hasStanzaIdSet() {
         // setStanzaId ensures that the id is either null or not empty,
         // so we can assume that it is set if it's not null.
         return id != null;
@@ -208,7 +208,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public Jid getTo() {
+    public final Jid getTo() {
         return to;
     }
 
@@ -224,7 +224,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public Jid getFrom() {
+    public final Jid getFrom() {
         return from;
     }
 
@@ -241,7 +241,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public StanzaError getError() {
+    public final StanzaError getError() {
         return error;
     }
 
@@ -267,7 +267,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public String getLanguage() {
+    public final String getLanguage() {
         return language;
     }
 
@@ -284,7 +284,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public List<ExtensionElement> getExtensions() {
+    public final List<ExtensionElement> getExtensions() {
         synchronized (extensionElements) {
             // No need to create a new list, values() will already create a new one for us
             return extensionElements.values();
@@ -312,7 +312,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @return a set of all matching extensions.
      * @since 4.1
      */
-    public List<ExtensionElement> getExtensions(String elementName, String namespace) {
+    public final List<ExtensionElement> getExtensions(String elementName, String namespace) {
         requireNotNullNorEmpty(elementName, "elementName must not be null nor empty");
         requireNotNullNorEmpty(namespace, "namespace must not be null nor empty");
         QName key = new QName(namespace, elementName);
@@ -320,7 +320,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public List<ExtensionElement> getExtensions(QName qname) {
+    public final List<ExtensionElement> getExtensions(QName qname) {
         List<ExtensionElement> res;
         synchronized (extensionElements) {
             res = extensionElements.getAll(qname);
@@ -329,7 +329,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     @Override
-    public <E extends ExtensionElement> List<E> getExtensions(Class<E> extensionElementClass) {
+    public final <E extends ExtensionElement> List<E> getExtensions(Class<E> extensionElementClass) {
         synchronized (extensionElements) {
             return XmppElementUtil.getElementsFrom(extensionElements, extensionElementClass);
         }
@@ -344,7 +344,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param namespace the namespace of the extension that is desired.
      * @return the stanza extension with the given namespace.
      */
-    public ExtensionElement getExtension(String namespace) {
+    public final ExtensionElement getExtension(String namespace) {
         return PacketUtil.extensionElementFrom(getExtensions(), null, namespace);
     }
 
@@ -360,7 +360,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
     @SuppressWarnings("unchecked")
-    public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {
+    public final <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }
@@ -390,7 +390,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param extension a stanza extension.
      */
     // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
-    public void addExtension(ExtensionElement extension) {
+    public final void addExtension(ExtensionElement extension) {
         if (extension == null) return;
         QName key = extension.getQName();
         synchronized (extensionElements) {
@@ -411,7 +411,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @since 4.1.2
      */
     // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
-    public ExtensionElement overrideExtension(ExtensionElement extension) {
+    public final ExtensionElement overrideExtension(ExtensionElement extension) {
         if (extension == null) return null;
         synchronized (extensionElements) {
             // Note that we need to use removeExtension(String, String) here. If would use
@@ -429,7 +429,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param extensions a collection of stanza extensions
      */
     // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
-    public void addExtensions(Collection<ExtensionElement> extensions) {
+    public final void addExtensions(Collection<ExtensionElement> extensions) {
         if (extensions == null) return;
         for (ExtensionElement packetExtension : extensions) {
             addExtension(packetExtension);
@@ -446,7 +446,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param namespace TODO javadoc me please
      * @return true if a stanza extension exists, false otherwise.
      */
-    public boolean hasExtension(String elementName, String namespace) {
+    public final boolean hasExtension(String elementName, String namespace) {
         if (elementName == null) {
             return hasExtension(namespace);
         }
@@ -458,7 +458,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
 
     // Overridden in order to avoid an extra copy.
     @Override
-    public boolean hasExtension(String namespace) {
+    public final boolean hasExtension(String namespace) {
         synchronized (extensionElements) {
             for (ExtensionElement packetExtension : extensionElements.values()) {
                 if (packetExtension.getNamespace().equals(namespace)) {
@@ -477,7 +477,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @return the removed stanza extension or null.
      */
     // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
-    public ExtensionElement removeExtension(String elementName, String namespace) {
+    public final ExtensionElement removeExtension(String elementName, String namespace) {
         QName key = new QName(namespace, elementName);
         synchronized (extensionElements) {
             return extensionElements.remove(key);
@@ -493,7 +493,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
-    public ExtensionElement removeExtension(ExtensionElement extension)  {
+    public final ExtensionElement removeExtension(ExtensionElement extension)  {
         QName key = extension.getQName();
         synchronized (extensionElements) {
             List<ExtensionElement> list = extensionElements.getAll(key);
@@ -553,7 +553,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      *
      * @param xml the XmlStringBuilder to append the error to.
      */
-    protected void appendErrorIfExists(XmlStringBuilder xml) {
+    protected final void appendErrorIfExists(XmlStringBuilder xml) {
         StanzaError error = getError();
         if (error != null) {
             xml.append(error);
