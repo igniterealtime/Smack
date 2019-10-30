@@ -535,7 +535,7 @@ public class StringUtils {
         if (cs == null) {
             return null;
         }
-        if (cs.toString().isEmpty()) {
+        if (isEmpty(cs)) {
             throw new IllegalArgumentException(message);
         }
         return cs;
