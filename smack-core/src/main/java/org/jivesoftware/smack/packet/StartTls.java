@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2018 Florian Schmaus
+ * Copyright © 2014-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,9 +52,15 @@ public class StartTls implements Nonza {
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
-        xml.rightAngleBracket();
-        xml.condEmptyElement(required, "required");
-        xml.closeElement(this);
+
+        if (required) {
+            xml.rightAngleBracket();
+            xml.emptyElement("required");
+            xml.closeElement(this);
+        } else {
+            xml.closeEmptyElement();
+        }
+
         return xml;
     }
 
