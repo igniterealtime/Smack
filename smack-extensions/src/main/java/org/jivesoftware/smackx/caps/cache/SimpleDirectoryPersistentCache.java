@@ -127,7 +127,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
      *
      * @param file TODO javadoc me please
      * @param info TODO javadoc me please
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     private static void writeInfoToFile(File file, DiscoverInfo info) throws IOException {
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(file))) {

@@ -56,7 +56,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
         }
         catch (Exception e) {
             e.printStackTrace();
-            fail("An error occured sending the roster");
+            fail("An error occurred sending the roster");
         }
     }
 
@@ -76,7 +76,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
         }
         catch (Exception e) {
             e.printStackTrace();
-            fail("An error occured sending the roster");
+            fail("An error occurred sending the roster");
         }
     }
 
@@ -121,7 +121,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
             }
         }
         catch (Exception e) {
-            fail("An error occured sending the message with the roster");
+            fail("An error occurred sending the message with the roster");
         }
         assertEquals(
             "Number of sent and received entries does not match",
@@ -179,7 +179,7 @@ public class RosterExchangeManagerTest extends SmackTestCase {
             }
         }
         catch (Exception e) {
-            fail("An error occured sending the message with the roster");
+            fail("An error occurred sending the message with the roster");
         }
         assertEquals(
             "Number of sent and received entries does not match",

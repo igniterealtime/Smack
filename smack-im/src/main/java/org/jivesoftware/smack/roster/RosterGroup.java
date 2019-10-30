@@ -165,7 +165,7 @@ public class RosterGroup extends Manager {
      * to receive the updated roster.
      *
      * @param entry a roster entry.
-     * @throws XMPPErrorException if an error occured while trying to add the entry to the group.
+     * @throws XMPPErrorException if an error occurred while trying to add the entry to the group.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.

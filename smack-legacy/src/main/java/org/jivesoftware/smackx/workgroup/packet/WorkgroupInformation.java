@@ -79,8 +79,8 @@ public class WorkgroupInformation implements ExtensionElement {
 
         /**
          * PacketExtensionProvider implementation.
-         * @throws IOException if an I/O error occured.
-         * @throws XmlPullParserException if an error in the XML parser occured.
+         * @throws IOException if an I/O error occurred.
+         * @throws XmlPullParserException if an error in the XML parser occurred.
          */
         @Override
         public WorkgroupInformation parse(XmlPullParser parser,

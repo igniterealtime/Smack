@@ -58,7 +58,7 @@ public class RosterExchangeTest extends SmackTestCase {
         try {
             chat1.sendMessage(msg);
         } catch (Exception e) {
-            fail("An error occured sending the message with the roster");
+            fail("An error occurred sending the message with the roster");
         }
     }
 
@@ -87,7 +87,7 @@ public class RosterExchangeTest extends SmackTestCase {
         try {
             chat1.sendMessage(msg);
         } catch (Exception e) {
-            fail("An error occured sending the message with the roster");
+            fail("An error occurred sending the message with the roster");
         }
         // Wait for 2 seconds for a reply
         Packet packet = chat2.nextResult(2000);
@@ -131,7 +131,7 @@ public class RosterExchangeTest extends SmackTestCase {
         try {
             chat1.sendMessage(msg);
         } catch (Exception e) {
-            fail("An error occured sending the message with the roster");
+            fail("An error occurred sending the message with the roster");
         }
         // Wait for 10 seconds for a reply
         Packet packet = chat2.nextResult(5000);

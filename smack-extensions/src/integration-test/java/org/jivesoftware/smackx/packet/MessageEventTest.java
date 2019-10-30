@@ -64,7 +64,7 @@ public class MessageEventTest extends SmackTestCase {
             Thread.sleep(200);
         }
         catch (Exception e) {
-            fail("An error occured sending the message");
+            fail("An error occurred sending the message");
         }
     }
 
@@ -122,7 +122,7 @@ public class MessageEventTest extends SmackTestCase {
             Thread.sleep(200);
         }
         catch (Exception e) {
-            fail("An error occured sending the message");
+            fail("An error occurred sending the message");
         }
     }
 

@@ -38,8 +38,8 @@ public class MetaDataProvider extends ExtensionElementProvider<MetaData> {
 
     /**
      * PacketExtensionProvider implementation.
-     * @throws IOException if an I/O error occured.
-     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occurred.
+     * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
     public MetaData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {

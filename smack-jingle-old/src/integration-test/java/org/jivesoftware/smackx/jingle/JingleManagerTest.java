@@ -234,7 +234,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "exception", e);
-            fail("An error occured with Jingle");
+            fail("An error occurred with Jingle");
         }
     }
 
@@ -294,7 +294,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "exception", e);
-            fail("An error occured with Jingle");
+            fail("An error occurred with Jingle");
         }
     }
 
@@ -385,7 +385,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "exception", e);
-            fail("An error occured with Jingle");
+            fail("An error occurred with Jingle");
         }
     }
 
@@ -499,7 +499,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "exception", e);
-            fail("An error occured with Jingle");
+            fail("An error occurred with Jingle");
         }
     }
 
@@ -589,7 +589,7 @@ public class JingleManagerTest extends SmackTestCase {
 
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "exception", e);
-            fail("An error occured with Jingle");
+            fail("An error occurred with Jingle");
         }
     }
 
@@ -985,7 +985,7 @@ public class JingleManagerTest extends SmackTestCase {
 //
 //        } catch (Exception e) {
 //            LOGGER.log(Level.WARNING, "exception", e);
-//            fail("An error occured with Jingle");
+//            fail("An error occurred with Jingle");
 //        }
 //    }
 

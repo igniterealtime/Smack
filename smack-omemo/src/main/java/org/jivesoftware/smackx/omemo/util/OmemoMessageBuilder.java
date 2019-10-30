@@ -220,7 +220,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws CorruptedOmemoKeyException if the identityKey of that device is corrupted.
      * @throws UndecidedOmemoIdentityException if the user hasn't yet decided whether to trust that device or not.
      * @throws UntrustedOmemoIdentityException if the user has decided not to trust that device.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     public void addRecipient(OmemoDevice contactsDevice)
             throws NoIdentityKeyException, CorruptedOmemoKeyException, UndecidedOmemoIdentityException,

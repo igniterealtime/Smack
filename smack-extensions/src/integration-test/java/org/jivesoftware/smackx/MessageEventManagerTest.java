@@ -58,7 +58,7 @@ public class MessageEventManagerTest extends SmackTestCase {
         try {
             chat1.sendMessage(msg);
         } catch (Exception e) {
-            fail("An error occured sending the message");
+            fail("An error occurred sending the message");
         }
     }
 
@@ -113,7 +113,7 @@ public class MessageEventManagerTest extends SmackTestCase {
             // Wait a few seconds so that the XMPP client can send any event
             Thread.sleep(200);
         } catch (Exception e) {
-            fail("An error occured sending the message");
+            fail("An error occurred sending the message");
         }
     }
 
@@ -229,7 +229,7 @@ public class MessageEventManagerTest extends SmackTestCase {
                 results.containsAll(resultsExpected));
 
         } catch (Exception e) {
-            fail("An error occured sending the message");
+            fail("An error occurred sending the message");
         }
     }
 

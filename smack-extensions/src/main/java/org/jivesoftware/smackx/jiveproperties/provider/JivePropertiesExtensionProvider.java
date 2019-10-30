@@ -48,8 +48,8 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
      *
      * @param parser the XML parser, positioned at the start of a properties sub-packet.
      * @return a map of the properties.
-     * @throws IOException if an I/O error occured.
-     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occurred.
+     * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
     public JivePropertiesExtension parse(XmlPullParser parser,

@@ -628,7 +628,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
      *
      * @param writer TODO javadoc me please
      * @param enclosingXmlEnvironment the enclosing XML environment.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     public void write(Writer writer, XmlEnvironment enclosingXmlEnvironment) throws IOException {
         try {

@@ -70,7 +70,7 @@ public class AudioMediaSession extends JingleMediaSession implements MediaSessio
      * @return MediaSession TODO javadoc me please
      * @throws NoProcessorException if there is no media processor.
      * @throws UnsupportedFormatException if the format is not supported.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws GeneralSecurityException if there was a geneeral security exception.
      */
     public static MediaSession createSession(String localhost, int localPort, String remoteHost, int remotePort, MediaSessionListener eventHandler, int quality, boolean secure, boolean micOn) throws NoProcessorException, UnsupportedFormatException, IOException, GeneralSecurityException {

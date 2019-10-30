@@ -251,7 +251,7 @@ public final class HttpFileUploadManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     public URL uploadFile(File file, UploadProgressListener listener) throws InterruptedException,
             XMPPException.XMPPErrorException, SmackException, IOException {

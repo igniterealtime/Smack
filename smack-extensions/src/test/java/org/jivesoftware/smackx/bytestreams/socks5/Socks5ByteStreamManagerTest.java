@@ -135,7 +135,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldFailIfTargetDoesNotSupportSocks5()
@@ -163,7 +163,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldFailIfNoSocks5ProxyFound1()
@@ -215,7 +215,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldFailIfNoSocks5ProxyFound2()
@@ -277,7 +277,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldBlacklistNonSocks5Proxies() throws SmackException, InterruptedException, IOException, XMPPException {
@@ -360,7 +360,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldFailIfTargetDoesNotAcceptSocks5Bytestream() throws SmackException, InterruptedException, IOException, XMPPException {
@@ -440,7 +440,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldFailIfTargetUsesInvalidSocks5Proxy()
@@ -622,7 +622,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @Test
     public void shouldNegotiateSocks5BytestreamAndTransferData()
@@ -741,7 +741,7 @@ public class Socks5ByteStreamManagerTest {
      *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws TimeoutException if there was a timeout.
      */
@@ -848,7 +848,7 @@ public class Socks5ByteStreamManagerTest {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      *
      */
     @Test
@@ -934,7 +934,7 @@ public class Socks5ByteStreamManagerTest {
      * should successfully negotiate a SOCKS5 Bytestream via the second SOCKS5 proxy. The second
      * negotiation should run in the same manner if prioritization is disabled.
      *
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.

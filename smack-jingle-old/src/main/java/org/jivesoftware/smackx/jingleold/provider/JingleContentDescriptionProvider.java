@@ -65,8 +65,8 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
      *
      * @param parser the input to parse
      * @return a description element
-     * @throws IOException if an I/O error occured.
-     * @throws XmlPullParserException if an error in the XML parser occured.
+     * @throws IOException if an I/O error occurred.
+     * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
     public JingleContentDescription parse(XmlPullParser parser,

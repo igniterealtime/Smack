@@ -222,7 +222,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * empty array here.
      *
      * @return the initial response or null
-     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws SmackSaslException if a SASL specific error occurred.
      */
     protected abstract byte[] getAuthenticationText() throws SmackSaslException;
 

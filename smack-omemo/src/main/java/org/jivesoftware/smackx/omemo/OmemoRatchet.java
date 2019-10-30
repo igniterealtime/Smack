@@ -66,7 +66,7 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @throws NoRawSessionException when no double ratchet session was found.
      * @throws CryptoFailedException if the OMEMO cryptography failed.
      * @throws UntrustedOmemoIdentityException if the OMEMO identity is not trusted.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     public abstract byte[] doubleRatchetDecrypt(OmemoDevice sender, byte[] encryptedKey)
             throws CorruptedOmemoKeyException, NoRawSessionException, CryptoFailedException,
@@ -88,7 +88,7 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @return tuple of cipher generated from the unpacked message key and the auth-tag
      * @throws CryptoFailedException if decryption using the double ratchet fails
      * @throws NoRawSessionException if we have no session, but the element was NOT a PreKeyMessage
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     CipherAndAuthTag retrieveMessageKeyAndAuthTag(OmemoDevice sender, OmemoElement element) throws CryptoFailedException,
             NoRawSessionException, IOException {

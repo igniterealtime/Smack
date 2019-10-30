@@ -535,7 +535,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      * @throws XMPPException if an error occurs on the XMPP protocol level.
      * @throws SmackException if an error occurs somewhere else besides XMPP protocol level.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @return a reference to this object, to chain <code>connect()</code> with <code>login()</code>.
      * @throws InterruptedException if the calling thread was interrupted.
      */
@@ -575,7 +575,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * login if the previous connection state was logged (authenticated).
      *
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws InterruptedException if the calling thread was interrupted.
      */
@@ -628,7 +628,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param password TODO javadoc me please
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      * @see #login
      */
@@ -646,7 +646,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param resource TODO javadoc me please
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      * @see #login
      */
@@ -873,9 +873,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @return the used SASLMechanism.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws SASLErrorException if a SASL protocol error was returned.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws SmackSaslException if a SASL specific error occurred.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws SmackWrappedException in case of an exception.

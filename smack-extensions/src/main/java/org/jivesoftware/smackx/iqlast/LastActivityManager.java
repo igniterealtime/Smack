@@ -229,7 +229,7 @@ public final class LastActivityManager extends Manager {
      *            the JID of the user.
      * @return the LastActivity stanza of the jid.
      * @throws XMPPErrorException if there was an XMPP error returned.
-     *             thrown if a server error has occured.
+     *             thrown if a server error has occurred.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.

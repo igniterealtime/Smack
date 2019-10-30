@@ -175,9 +175,9 @@ public final class SASLAuthentication {
      * @return the used SASLMechanism.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws SASLErrorException if a SASL protocol error was returned.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws SmackSaslException if a SASL specific error occurred.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws NoResponseException if there was no response from the remote entity.
      */
@@ -233,7 +233,7 @@ public final class SASLAuthentication {
      *
      * @param challenge a base64 encoded string representing the challenge.
      * @param finalChallenge true if this is the last challenge send by the server within the success stanza
-     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws SmackSaslException if a SASL specific error occurred.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
@@ -252,7 +252,7 @@ public final class SASLAuthentication {
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws SmackSaslException if a SASL specific error occured.
+     * @throws SmackSaslException if a SASL specific error occurred.
      */
     void authenticated(Success success) throws InterruptedException, SmackSaslException, NotConnectedException {
         // RFC6120 6.3.10 "At the end of the authentication exchange, the SASL server (the XMPP

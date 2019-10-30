@@ -99,7 +99,7 @@ public class PingTest extends InitExtensions {
      * DummyConnection will not reply so it will timeout.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      */
     @Test
@@ -239,7 +239,7 @@ public class PingTest extends InitExtensions {
      *
      * @return
      * @throws XMPPException if an XMPP protocol error was received.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
      */

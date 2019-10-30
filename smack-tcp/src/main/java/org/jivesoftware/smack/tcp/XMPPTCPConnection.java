@@ -629,7 +629,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws XMPPException if establishing a connection to the server fails.
      * @throws SmackException if the server fails to respond back or if there is anther error.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      */
     private void initConnection() throws IOException, InterruptedException {
@@ -673,7 +673,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * The server has indicated that TLS negotiation can start. We now need to secure the
      * existing plain connection and perform a handshake. This method won't return until the
      * connection has finished the handshake or an error occurred while securing the connection.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws CertificateException
      * @throws NoSuchAlgorithmException if no such algorithm is available.
      * @throws NoSuchProviderException
@@ -809,7 +809,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @throws XMPPException if an error occurs while trying to establish the connection.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      */
     @Override

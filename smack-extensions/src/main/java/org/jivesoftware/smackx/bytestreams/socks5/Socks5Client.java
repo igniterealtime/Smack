@@ -130,7 +130,7 @@ public class Socks5Client {
      * supported by the Socks5Client.
      *
      * @param socket connected to a SOCKS5 proxy
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      * @throws SmackMessageException if there was an error.
      */
     protected void establish(Socket socket) throws IOException, SmackMessageException {

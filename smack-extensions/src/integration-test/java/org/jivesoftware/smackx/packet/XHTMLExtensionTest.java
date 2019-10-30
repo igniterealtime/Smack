@@ -68,7 +68,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
 	    Thread.sleep(200);
 	}
 	catch (Exception e) {
-	    fail("An error occured sending the message with XHTML");
+	    fail("An error occurred sending the message with XHTML");
 	}
     }
 
@@ -101,7 +101,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
 	    chat1.sendMessage(msg);
 	}
 	catch (Exception e) {
-	    fail("An error occured sending the message with XHTML");
+	    fail("An error occurred sending the message with XHTML");
 	}
 	Packet packet = chat2.nextResult(2000);
 	Message message = (Message) packet;
@@ -172,7 +172,7 @@ public class XHTMLExtensionTest extends SmackTestCase {
 	    chat1.sendMessage(msg);
 	}
 	catch (Exception e) {
-	    fail("An error occured sending the message with XHTML");
+	    fail("An error occurred sending the message with XHTML");
 	}
 	Packet packet = chat2.nextResult(2000);
 	int received = 0;

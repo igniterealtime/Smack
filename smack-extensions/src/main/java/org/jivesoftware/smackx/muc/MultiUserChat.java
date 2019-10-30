@@ -1897,7 +1897,7 @@ public class MultiUserChat {
      *
      * @param role the role of the occupant in the room.
      * @return a list of <code>Occupant</code> that have the specified room role.
-     * @throws XMPPErrorException if an error occured while performing the request to the server or you
+     * @throws XMPPErrorException if an error occurred while performing the request to the server or you
      *         don't have enough privileges to get this information.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.

@@ -110,7 +110,7 @@ public final class FileUtils {
      *
      * @param file TODO javadoc me please
      * @return the content of file or null in case of an error
-     * @throws IOException if an I/O error occured.
+     * @throws IOException if an I/O error occurred.
      */
     @SuppressWarnings("DefaultCharset")
     public static String readFileOrThrow(File file) throws IOException {
