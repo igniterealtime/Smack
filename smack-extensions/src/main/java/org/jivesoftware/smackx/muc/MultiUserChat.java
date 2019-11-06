@@ -27,7 +27,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -144,8 +143,6 @@ public class MultiUserChat {
     private final StanzaListener presenceListener;
     private final StanzaListener subjectListener;
 
-    private static final AsyncButOrdered<MultiUserChat> asyncButOrdered = new AsyncButOrdered<>();
-
     private static final StanzaFilter DECLINE_FILTER = new AndFilter(MessageTypeFilter.NORMAL,
                     new StanzaExtensionFilter(MUCUser.ELEMENT, MUCUser.NAMESPACE));
     private final StanzaListener declinesListener;
@@ -168,14 +165,9 @@ public class MultiUserChat {
             public void processStanza(Stanza packet) throws NotConnectedException {
                 final Message message = (Message) packet;
 
-                asyncButOrdered.performAsyncButOrdered(MultiUserChat.this, new Runnable() {
-                    @Override
-                    public void run() {
-                        for (MessageListener listener : messageListeners) {
+                for (MessageListener listener : messageListeners) {
                             listener.processMessage(message);
-                        }
-                    }
-                });
+                }
             }
         };
 
@@ -188,15 +180,10 @@ public class MultiUserChat {
                 // Update the room subject
                 subject = msg.getSubject();
 
-                asyncButOrdered.performAsyncButOrdered(MultiUserChat.this, new Runnable() {
-                    @Override
-                    public void run() {
-                        // Fire event for subject updated listeners
-                        for (SubjectUpdatedListener listener : subjectUpdatedListeners) {
-                            listener.subjectUpdated(msg.getSubject(), from);
-                        }
-                    }
-                });
+                // Fire event for subject updated listeners
+                for (SubjectUpdatedListener listener : subjectUpdatedListeners) {
+                    listener.subjectUpdated(msg.getSubject(), from);
+                }
             }
         };
 
@@ -212,66 +199,61 @@ public class MultiUserChat {
                 final EntityFullJid myRoomJID = myRoomJid;
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
 
-                asyncButOrdered.performAsyncButOrdered(MultiUserChat.this, new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (presence.getType()) {
-                        case available:
-                            Presence oldPresence = occupantsMap.put(from, presence);
-                            if (oldPresence != null) {
-                                // Get the previous occupant's affiliation & role
-                                MUCUser mucExtension = MUCUser.from(oldPresence);
-                                MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
-                                MUCRole oldRole = mucExtension.getItem().getRole();
-                                // Get the new occupant's affiliation & role
-                                mucExtension = MUCUser.from(packet);
-                                MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
-                                MUCRole newRole = mucExtension.getItem().getRole();
-                                // Fire role modification events
-                                checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
-                                // Fire affiliation modification events
-                                checkAffiliationModifications(
-                                    oldAffiliation,
-                                    newAffiliation,
-                                    isUserStatusModification,
-                                    from);
+                switch (presence.getType()) {
+                case available:
+                    Presence oldPresence = occupantsMap.put(from, presence);
+                    if (oldPresence != null) {
+                        // Get the previous occupant's affiliation & role
+                        MUCUser mucExtension = MUCUser.from(oldPresence);
+                        MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
+                        MUCRole oldRole = mucExtension.getItem().getRole();
+                        // Get the new occupant's affiliation & role
+                        mucExtension = MUCUser.from(packet);
+                        MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
+                        MUCRole newRole = mucExtension.getItem().getRole();
+                        // Fire role modification events
+                        checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
+                        // Fire affiliation modification events
+                        checkAffiliationModifications(
+                            oldAffiliation,
+                            newAffiliation,
+                            isUserStatusModification,
+                            from);
+                    }
+                    else {
+                        // A new occupant has joined the room
+                        if (!isUserStatusModification) {
+                            for (ParticipantStatusListener listener : participantStatusListeners) {
+                                listener.joined(from);
                             }
-                            else {
-                                // A new occupant has joined the room
-                                if (!isUserStatusModification) {
-                                    for (ParticipantStatusListener listener : participantStatusListeners) {
-                                        listener.joined(from);
-                                    }
-                                }
-                            }
-                            break;
-                        case unavailable:
-                            occupantsMap.remove(from);
-                            MUCUser mucUser = MUCUser.from(packet);
-                            if (mucUser != null && mucUser.hasStatus()) {
-                                // Fire events according to the received presence code
-                                checkPresenceCode(
-                                    mucUser.getStatus(),
-                                    presence.getFrom().equals(myRoomJID),
-                                    mucUser,
-                                    from);
-                            } else {
-                                // An occupant has left the room
-                                if (!isUserStatusModification) {
-                                    for (ParticipantStatusListener listener : participantStatusListeners) {
-                                        listener.left(from);
-                                    }
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                        }
-                        for (PresenceListener listener : presenceListeners) {
-                            listener.processPresence(presence);
                         }
                     }
-                });
+                    break;
+                case unavailable:
+                    occupantsMap.remove(from);
+                    MUCUser mucUser = MUCUser.from(packet);
+                    if (mucUser != null && mucUser.hasStatus()) {
+                        // Fire events according to the received presence code
+                        checkPresenceCode(
+                            mucUser.getStatus(),
+                            presence.getFrom().equals(myRoomJID),
+                            mucUser,
+                            from);
+                    } else {
+                        // An occupant has left the room
+                        if (!isUserStatusModification) {
+                            for (ParticipantStatusListener listener : participantStatusListeners) {
+                                listener.left(from);
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+                }
+                for (PresenceListener listener : presenceListeners) {
+                    listener.processPresence(presence);
+                }
             }
         };
 
@@ -341,13 +323,13 @@ public class MultiUserChat {
         Presence joinPresence = conf.getJoinPresence(this);
 
         // Setup the messageListeners and presenceListeners *before* the join presence is send.
-        connection.addSyncStanzaListener(messageListener, fromRoomGroupchatFilter);
+        connection.addStanzaListener(messageListener, fromRoomGroupchatFilter);
         StanzaFilter presenceFromRoomFilter = new AndFilter(fromRoomFilter,
                         StanzaTypeFilter.PRESENCE,
                         PossibleFromTypeFilter.ENTITY_FULL_JID);
-        connection.addSyncStanzaListener(presenceListener, presenceFromRoomFilter);
+        connection.addStanzaListener(presenceListener, presenceFromRoomFilter);
         // @formatter:off
-        connection.addSyncStanzaListener(subjectListener,
+        connection.addStanzaListener(subjectListener,
                         new AndFilter(fromRoomFilter,
                                       MessageWithSubjectFilter.INSTANCE,
                                       new NotFilter(MessageTypeFilter.ERROR),
@@ -357,7 +339,7 @@ public class MultiUserChat {
                                       new NotFilter(MessageWithThreadFilter.INSTANCE))
                         );
         // @formatter:on
-        connection.addSyncStanzaListener(declinesListener, new AndFilter(fromRoomFilter, DECLINE_FILTER));
+        connection.addStanzaListener(declinesListener, new AndFilter(fromRoomFilter, DECLINE_FILTER));
         connection.addStanzaSendingListener(presenceInterceptor, new AndFilter(ToMatchesFilter.create(room),
                         StanzaTypeFilter.PRESENCE));
         messageCollector = connection.createStanzaCollector(fromRoomGroupchatFilter);
@@ -2118,10 +2100,10 @@ public class MultiUserChat {
      * connection.
      */
     private void removeConnectionCallbacks() {
-        connection.removeSyncStanzaListener(messageListener);
-        connection.removeSyncStanzaListener(presenceListener);
-        connection.removeSyncStanzaListener(subjectListener);
-        connection.removeSyncStanzaListener(declinesListener);
+        connection.removeStanzaListener(messageListener);
+        connection.removeStanzaListener(presenceListener);
+        connection.removeStanzaListener(subjectListener);
+        connection.removeStanzaListener(declinesListener);
         connection.removeStanzaSendingListener(presenceInterceptor);
         if (messageCollector != null) {
             messageCollector.cancel();
