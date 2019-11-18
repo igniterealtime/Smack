@@ -22,9 +22,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Logger;
-
-import org.jivesoftware.smack.util.CloseableUtil;
 
 /**
  * Socket factory for Socks5 proxy.
@@ -32,7 +29,6 @@ import org.jivesoftware.smack.util.CloseableUtil;
  * @author Atul Aggarwal
  */
 public class Socks5ProxySocketConnection implements ProxySocketConnection {
-    private static final Logger LOGGER = Logger.getLogger(Socks5ProxySocketConnection.class.getName());
 
     private final ProxyInfo proxy;
 
@@ -43,22 +39,19 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     @Override
     public void connect(Socket socket, String host, int port, int timeout)
                     throws IOException {
-        InputStream in = null;
-        OutputStream out = null;
         String proxy_host = proxy.getProxyAddress();
         int proxy_port = proxy.getProxyPort();
         String user = proxy.getProxyUsername();
         String passwd = proxy.getProxyPassword();
 
-        try {
-            socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
-            in = socket.getInputStream();
-            out = socket.getOutputStream();
+        socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
+        InputStream in = socket.getInputStream();
+        OutputStream out = socket.getOutputStream();
 
-            socket.setTcpNoDelay(true);
+        socket.setTcpNoDelay(true);
 
-            byte[] buf = new byte[1024];
-            int index = 0;
+        byte[] buf = new byte[1024];
+        int index = 0;
 
 /*
                    +----+----------+----------+
@@ -81,13 +74,13 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
           o  X'FF' NO ACCEPTABLE METHODS
 */
 
-            buf[index++] = 5;
+        buf[index++] = 5;
 
-            buf[index++] = 2;
-            buf[index++] = 0;           // NO AUTHENTICATION REQUIRED
-            buf[index++] = 2;           // USERNAME/PASSWORD
+        buf[index++] = 2;
+        buf[index++] = 0;           // NO AUTHENTICATION REQUIRED
+        buf[index++] = 2;           // USERNAME/PASSWORD
 
-            out.write(buf, 0, index);
+        out.write(buf, 0, index);
 
 /*
     The server selects from one of the methods given in METHODS, and
@@ -99,17 +92,17 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                          | 1  |   1    |
                          +----+--------+
 */
-            fill(in, buf, 2);
+        fill(in, buf, 2);
 
-            boolean check = false;
-            switch (buf[1] & 0xff) {
-                case 0:                // NO AUTHENTICATION REQUIRED
-                    check = true;
+        boolean check = false;
+        switch (buf[1] & 0xff) {
+            case 0:                // NO AUTHENTICATION REQUIRED
+                check = true;
+                break;
+            case 2:                // USERNAME/PASSWORD
+                if (user == null || passwd == null) {
                     break;
-                case 2:                // USERNAME/PASSWORD
-                    if (user == null || passwd == null) {
-                        break;
-                    }
+                }
 
 /*
    Once the SOCKS V5 server has started, and the client has selected the
@@ -130,20 +123,19 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    PASSWD field that follows. The PASSWD field contains the password
    association with the given UNAME.
 */
-                    index = 0;
-                    buf[index++] = 1;
-                    buf[index++] = (byte) user.length();
-                    byte[] userBytes = user.getBytes(StandardCharsets.UTF_8);
-                    System.arraycopy(userBytes, 0, buf, index,
-                        user.length());
-                    index += user.length();
-                    byte[] passwordBytes = passwd.getBytes(StandardCharsets.UTF_8);
-                    buf[index++] = (byte) passwordBytes.length;
-                    System.arraycopy(passwordBytes, 0, buf, index,
-                        passwd.length());
-                    index += passwd.length();
-
-                    out.write(buf, 0, index);
+                index = 0;
+                buf[index++] = 1;
+                buf[index++] = (byte) user.length();
+                byte[] userBytes = user.getBytes(StandardCharsets.UTF_8);
+                System.arraycopy(userBytes, 0, buf, index,
+                    user.length());
+                index += user.length();
+                byte[] passwordBytes = passwd.getBytes(StandardCharsets.UTF_8);
+                buf[index++] = (byte) passwordBytes.length;
+                System.arraycopy(passwordBytes, 0, buf, index,
+                    passwd.length());
+                index += passwd.length();
+                out.write(buf, 0, index);
 
 /*
    The server verifies the supplied UNAME and PASSWD, and sends the
@@ -159,19 +151,18 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    `failure' (STATUS value other than X'00') status, it MUST close the
    connection.
 */
-                    fill(in, buf, 2);
-                    if (buf[1] == 0) {
-                        check = true;
-                    }
-                    break;
-                default:
-            }
+                fill(in, buf, 2);
+                if (buf[1] == 0) {
+                    check = true;
+                }
+                break;
+            default:
+        }
 
-            if (!check) {
-                CloseableUtil.maybeClose(socket, LOGGER);
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
-                    "fail in SOCKS5 proxy");
-            }
+        if (!check) {
+            throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
+                "fail in SOCKS5 proxy");
+        }
 
 /*
       The SOCKS request is formed as follows:
@@ -199,21 +190,21 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
          order
 */
 
-            index = 0;
-            buf[index++] = 5;
-            buf[index++] = 1;       // CONNECT
-            buf[index++] = 0;
+        index = 0;
+        buf[index++] = 5;
+        buf[index++] = 1;       // CONNECT
+        buf[index++] = 0;
 
-            byte[] hostb = host.getBytes(StandardCharsets.UTF_8);
-            int len = hostb.length;
-            buf[index++] = 3;      // DOMAINNAME
-            buf[index++] = (byte) len;
-            System.arraycopy(hostb, 0, buf, index, len);
-            index += len;
-            buf[index++] = (byte) (port >>> 8);
-            buf[index++] = (byte) (port & 0xff);
+        byte[] hostb = host.getBytes(StandardCharsets.UTF_8);
+        int len = hostb.length;
+        buf[index++] = 3;      // DOMAINNAME
+        buf[index++] = (byte) len;
+        System.arraycopy(hostb, 0, buf, index, len);
+        index += len;
+        buf[index++] = (byte) (port >>> 8);
+        buf[index++] = (byte) (port & 0xff);
 
-            out.write(buf, 0, index);
+        out.write(buf, 0, index);
 
 /*
    The SOCKS request information is sent by the client as soon as it has
@@ -250,35 +241,25 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     o  BND.PORT       server bound port in network octet order
 */
 
-            fill(in, buf, 4);
+        fill(in, buf, 4);
 
-            if (buf[1] != 0) {
-                CloseableUtil.maybeClose(socket, LOGGER);
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
-                    "server returns " + buf[1]);
-            }
+        if (buf[1] != 0) {
+            throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
+                "server returns " + buf[1]);
+        }
 
-            switch (buf[3] & 0xff) {
-                case 1:
-                    fill(in, buf, 6);
-                    break;
-                case 3:
-                    fill(in, buf, 1);
-                    fill(in, buf, (buf[0] & 0xff) + 2);
-                    break;
-                case 4:
-                    fill(in, buf, 18);
-                    break;
-                default:
-            }
-        }
-        catch (RuntimeException e) {
-            throw e;
-        }
-        catch (Exception e) {
-            CloseableUtil.maybeClose(socket, LOGGER);
-            // TODO convert to IOException(e) when minimum Android API level is 9 or higher
-            throw new IOException(e.getLocalizedMessage());
+        switch (buf[3] & 0xff) {
+            case 1:
+                fill(in, buf, 6);
+                break;
+            case 3:
+                fill(in, buf, 1);
+                fill(in, buf, (buf[0] & 0xff) + 2);
+                break;
+            case 4:
+                fill(in, buf, 18);
+                break;
+            default:
         }
     }
 
