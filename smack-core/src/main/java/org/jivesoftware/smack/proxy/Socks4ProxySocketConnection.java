@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.proxy;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,6 +25,8 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+
+import org.jivesoftware.smack.util.OutputStreamUtil;
 
 /**
  * Socket factory for socks4 proxy.
@@ -45,10 +49,11 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
 
         socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
         InputStream in = socket.getInputStream();
+        DataInputStream dis = new DataInputStream(in);
         OutputStream out = socket.getOutputStream();
 
-        byte[] buf = new byte[1024];
-        int index = 0;
+        ByteArrayOutputStream outBuf = new ByteArrayOutputStream();
+        byte[] inBuf;
 
     /*
     1) CONNECT
@@ -68,26 +73,22 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
     of all zero bits.
     */
 
-        buf[index++] = 4;
-        buf[index++] = 1;
+        outBuf.write(4);
+        outBuf.write(1);
 
-        buf[index++] = (byte) (port >>> 8);
-        buf[index++] = (byte) (port & 0xff);
+        outBuf.write(port >>> 8);
+        outBuf.write(port & 0xff);
 
         InetAddress inetAddress = InetAddress.getByName(proxy_host);
         byte[] byteAddress = inetAddress.getAddress();
-        for (int i = 0; i < byteAddress.length; i++) {
-            buf[index++] = byteAddress[i];
-        }
+        outBuf.write(byteAddress);
 
         if (user != null) {
             byte[] userBytes = user.getBytes(StandardCharsets.UTF_8);
-            System.arraycopy(userBytes, 0, buf, index, user.length());
-            index += user.length();
+            outBuf.write(userBytes);
         }
-        buf[index++] = 0;
-        out.write(buf, 0, index);
-        out.flush();
+        outBuf.write(0);
+        OutputStreamUtil.writeResetAndFlush(outBuf, out);
 
     /*
     The SOCKS server checks to see whether such a request should be granted
@@ -116,26 +117,17 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
     The remaining fields are ignored.
     */
 
-        int len = 6;
-        int s = 0;
-        while (s < len) {
-            int i = in.read(buf, s, len - s);
-            if (i <= 0) {
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS4,
-                    "stream is closed");
-            }
-            s += i;
-        }
-        if (buf[0] != 0) {
+        inBuf = new byte[6];
+        dis.readFully(inBuf);
+        if (inBuf[0] != 0) {
             throw new ProxyException(ProxyInfo.ProxyType.SOCKS4,
-                "server returns VN " + buf[0]);
+                "server returns VN " + inBuf[0]);
         }
-        if (buf[1] != 90) {
-            String message = "ProxySOCKS4: server returns CD " + buf[1];
+        if (inBuf[1] != 90) {
+            String message = "ProxySOCKS4: server returns CD " + inBuf[1];
             throw new ProxyException(ProxyInfo.ProxyType.SOCKS4, message);
         }
-        byte[] temp = new byte[2];
-        in.read(temp, 0, 2);
+        inBuf = new byte[2];
+        dis.readFully(inBuf);
     }
-
 }

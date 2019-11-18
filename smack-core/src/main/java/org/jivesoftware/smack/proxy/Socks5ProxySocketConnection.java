@@ -16,12 +16,16 @@
  */
 package org.jivesoftware.smack.proxy;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+
+import org.jivesoftware.smack.util.OutputStreamUtil;
 
 /**
  * Socket factory for Socks5 proxy.
@@ -46,10 +50,11 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
 
         socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
         InputStream in = socket.getInputStream();
+        DataInputStream dis = new DataInputStream(in);
         OutputStream out = socket.getOutputStream();
 
-        byte[] buf = new byte[1024];
-        int index = 0;
+        ByteArrayOutputStream outBuf = new ByteArrayOutputStream();
+        byte[] inBuf;
 
 /*
                    +----+----------+----------+
@@ -72,14 +77,13 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
           o  X'FF' NO ACCEPTABLE METHODS
 */
 
-        buf[index++] = 5;
+        outBuf.write(5);
 
-        buf[index++] = 2;
-        buf[index++] = 0;           // NO AUTHENTICATION REQUIRED
-        buf[index++] = 2;           // USERNAME/PASSWORD
+        outBuf.write(2);
+        outBuf.write(0);           // NO AUTHENTICATION REQUIRED
+        outBuf.write(2);           // USERNAME/PASSWORD
 
-        out.write(buf, 0, index);
-        out.flush();
+        OutputStreamUtil.writeResetAndFlush(outBuf, out);
 
 /*
     The server selects from one of the methods given in METHODS, and
@@ -91,10 +95,11 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
                          | 1  |   1    |
                          +----+--------+
 */
-        fill(in, buf, 2);
+        inBuf = new byte[2];
+        dis.readFully(inBuf);
 
         boolean check = false;
-        switch (buf[1] & 0xff) {
+        switch (inBuf[1] & 0xff) {
             case 0:                // NO AUTHENTICATION REQUIRED
                 check = true;
                 break;
@@ -122,19 +127,16 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    PASSWD field that follows. The PASSWD field contains the password
    association with the given UNAME.
 */
-                index = 0;
-                buf[index++] = 1;
-                buf[index++] = (byte) user.length();
+                outBuf.write(1);
                 byte[] userBytes = user.getBytes(StandardCharsets.UTF_8);
-                System.arraycopy(userBytes, 0, buf, index,
-                    user.length());
-                index += user.length();
+                OutputStreamUtil.writeByteSafe(outBuf, userBytes.length, "Username to long");
+                outBuf.write(userBytes);
+
                 byte[] passwordBytes = passwd.getBytes(StandardCharsets.UTF_8);
-                buf[index++] = (byte) passwordBytes.length;
-                System.arraycopy(passwordBytes, 0, buf, index,
-                    passwd.length());
-                index += passwd.length();
-                out.write(buf, 0, index);
+                OutputStreamUtil.writeByteSafe(outBuf, passwordBytes.length, "Password to long");
+                outBuf.write(passwordBytes);
+
+                OutputStreamUtil.writeResetAndFlush(outBuf, out);
 
 /*
    The server verifies the supplied UNAME and PASSWD, and sends the
@@ -150,8 +152,9 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
    `failure' (STATUS value other than X'00') status, it MUST close the
    connection.
 */
-                fill(in, buf, 2);
-                if (buf[1] == 0) {
+                inBuf = new byte[2];
+                dis.readFully(inBuf);
+                if (inBuf[1] == 0) {
                     check = true;
                 }
                 break;
@@ -189,22 +192,19 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
          order
 */
 
-        index = 0;
-        buf[index++] = 5;
-        buf[index++] = 1;       // CONNECT
-        buf[index++] = 0;
+        outBuf.write(5);
+        outBuf.write(1);       // CONNECT
+        outBuf.write(0);
 
         byte[] hostb = host.getBytes(StandardCharsets.UTF_8);
         int len = hostb.length;
-        buf[index++] = 3;      // DOMAINNAME
-        buf[index++] = (byte) len;
-        System.arraycopy(hostb, 0, buf, index, len);
-        index += len;
-        buf[index++] = (byte) (port >>> 8);
-        buf[index++] = (byte) (port & 0xff);
+        outBuf.write(3);      // DOMAINNAME
+        OutputStreamUtil.writeByteSafe(outBuf, len, "Hostname too long");
+        outBuf.write(hostb);
+        outBuf.write(port >>> 8);
+        outBuf.write(port & 0xff);
 
-        out.write(buf, 0, index);
-        out.flush();
+        OutputStreamUtil.writeResetAndFlush(outBuf, out);
 
 /*
    The SOCKS request information is sent by the client as soon as it has
@@ -241,39 +241,33 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
     o  BND.PORT       server bound port in network octet order
 */
 
-        fill(in, buf, 4);
+        inBuf = new byte[4];
+        dis.readFully(inBuf);
 
-        if (buf[1] != 0) {
+        if (inBuf[1] != 0) {
             throw new ProxyException(ProxyInfo.ProxyType.SOCKS5,
-                "server returns " + buf[1]);
+                "server returns " + inBuf[1]);
         }
 
-        switch (buf[3] & 0xff) {
+        final int addressBytes;
+        // TODO: Use Byte.toUnsignedInt() once Smack's minimum Android SDK level is 26 or higher.
+        final int atyp = inBuf[3] & 0xff;
+        switch (atyp) {
             case 1:
-                fill(in, buf, 6);
+                addressBytes = 4;
                 break;
             case 3:
-                fill(in, buf, 1);
-                fill(in, buf, (buf[0] & 0xff) + 2);
+                byte domainnameLengthByte = dis.readByte();
+                // TODO: Use Byte.toUnsignedInt() once Smack's minimum Android SDK level is 26 or higher.
+                addressBytes = domainnameLengthByte & 0xff;
                 break;
             case 4:
-                fill(in, buf, 18);
+                addressBytes = 16;
                 break;
             default:
+                throw new IOException("Unknown ATYP value: " + atyp);
         }
+        inBuf = new byte[addressBytes + 2];
+        dis.readFully(inBuf);
     }
-
-    private static void fill(InputStream in, byte[] buf, int len)
-      throws IOException {
-        int s = 0;
-        while (s < len) {
-            int i = in.read(buf, s, len - s);
-            if (i <= 0) {
-                throw new ProxyException(ProxyInfo.ProxyType.SOCKS5, "stream " +
-                    "is closed");
-            }
-            s += i;
-        }
-    }
-
 }
