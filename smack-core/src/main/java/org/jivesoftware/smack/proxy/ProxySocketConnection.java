@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2016 Florian Schmaus.
+ * Copyright 2015-2019 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,16 @@ import java.net.Socket;
 
 public interface ProxySocketConnection {
 
+    /**
+     * Initiate a connection to the given host on the given port. Note that the caller is responsible for closing the
+     * socket in case this method throws.
+     *
+     * @param socket the socket to use to initiate the connection to the proxy.
+     * @param host the host to connect to.
+     * @param port the port to connect to.
+     * @param timeout the timeout in milliseconds.
+     * @throws IOException in case an I/O error occurs.
+     */
     void connect(Socket socket, String host, int port, int timeout)
                     throws IOException;
 
