@@ -48,8 +48,6 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         InputStream in = socket.getInputStream();
         OutputStream out = socket.getOutputStream();
 
-        socket.setTcpNoDelay(true);
-
         byte[] buf = new byte[1024];
         int index = 0;
 
@@ -81,6 +79,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         buf[index++] = 2;           // USERNAME/PASSWORD
 
         out.write(buf, 0, index);
+        out.flush();
 
 /*
     The server selects from one of the methods given in METHODS, and
@@ -205,6 +204,7 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         buf[index++] = (byte) (port & 0xff);
 
         out.write(buf, 0, index);
+        out.flush();
 
 /*
    The SOCKS request information is sent by the client as soon as it has

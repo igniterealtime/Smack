@@ -46,7 +46,6 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
         socket.connect(new InetSocketAddress(proxy_host, proxy_port), timeout);
         InputStream in = socket.getInputStream();
         OutputStream out = socket.getOutputStream();
-        socket.setTcpNoDelay(true);
 
         byte[] buf = new byte[1024];
         int index = 0;
@@ -88,6 +87,7 @@ public class Socks4ProxySocketConnection implements ProxySocketConnection {
         }
         buf[index++] = 0;
         out.write(buf, 0, index);
+        out.flush();
 
     /*
     The SOCKS server checks to see whether such a request should be granted
