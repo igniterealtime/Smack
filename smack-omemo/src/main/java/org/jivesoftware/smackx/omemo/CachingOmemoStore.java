@@ -75,7 +75,13 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
         if (persistent != null) {
             return persistent.localDeviceIdsOf(localUser);
         } else {
-            return new TreeSet<>(); //TODO: ?
+            SortedSet<Integer> deviceIds = new TreeSet<>();
+            for (OmemoDevice device : caches.keySet()) {
+                if (device.getJid().equals(localUser)) {
+                    deviceIds.add(device.getDeviceId());
+                }
+            }
+            return deviceIds;
         }
     }
 
