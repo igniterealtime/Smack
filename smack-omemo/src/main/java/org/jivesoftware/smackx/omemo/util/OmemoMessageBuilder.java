@@ -21,15 +21,12 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -128,7 +125,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws InvalidKeyException if the key is invalid.
      * @throws NoSuchAlgorithmException if no such algorithm is available.
      * @throws IllegalBlockSizeException if the input data length is incorrect.
-     * @throws UnsupportedEncodingException if the encoding is not supported.
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
@@ -136,7 +132,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
                                OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> ratchet,
                                String message)
             throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
-            UnsupportedEncodingException, InvalidAlgorithmParameterException {
+            InvalidAlgorithmParameterException {
         this(userDevice, callback, ratchet, generateKey(KEYTYPE, KEYLENGTH), generateIv(), message);
     }
 
@@ -148,7 +144,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param message plaintext message
      * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
-     * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      * @throws InvalidKeyException if the key is invalid.
      * @throws BadPaddingException if the input data is not padded properly.
@@ -248,7 +243,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Assemble an OmemoMessageElement from the current state of the builder.
      *
-     * @return OmemoMessageElement TODO javadoc me please
+     * @return OMEMO element
      */
     public OmemoElement finish() {
         OmemoHeaderElement_VAxolotl header = new OmemoHeaderElement_VAxolotl(
@@ -276,7 +271,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Generate a 12 byte initialization vector for AES encryption.
      *
-     * @return iv initialization vector
+     * @return initialization vector
      */
     public static byte[] generateIv() {
         SecureRandom random = new SecureRandom();

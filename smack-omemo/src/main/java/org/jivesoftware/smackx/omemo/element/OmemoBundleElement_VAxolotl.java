@@ -21,8 +21,9 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_
 import java.util.HashMap;
 
 /**
- * OMEMO device bundle as described here:
- * https://xmpp.org/extensions/xep-0384.html#usecases-announcing (Example 3).
+ * OMEMO device bundle as described by the protocol.
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0384.html#usecases-announcing">XEP-0384: OMEMO Encryption (Example 3)</a>.
  *
  * @author Paul Schaub
  */

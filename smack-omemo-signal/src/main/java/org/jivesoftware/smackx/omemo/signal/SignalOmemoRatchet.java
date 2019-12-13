@@ -149,7 +149,6 @@ public class SignalOmemoRatchet
             throw new AssertionError("Signals trust management MUST be disabled.");
         }
 
-        // TODO: Figure out, if this is enough...
         int type = ciphertextMessage.getType() == CiphertextMessage.PREKEY_TYPE ?
                 OmemoElement.TYPE_OMEMO_PREKEY_MESSAGE : OmemoElement.TYPE_OMEMO_MESSAGE;
 

@@ -437,8 +437,9 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
 
     /**
      * Return the {@link KeyCache} object of an {@link OmemoManager}.
-     * @param device TODO javadoc me please
-     * @return
+     *
+     * @param device OMEMO device of which we want to have the cache.
+     * @return key cache of the device
      */
     private KeyCache<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess> getCache(OmemoDevice device) {
         KeyCache<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess> cache = caches.get(device);
@@ -451,11 +452,12 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
 
     /**
      * Cache that stores values for an {@link OmemoManager}.
-     * @param <T_IdKeyPair>
-     * @param <T_IdKey>
-     * @param <T_PreKey>
-     * @param <T_SigPreKey>
-     * @param <T_Sess>
+     *
+     * @param <T_IdKeyPair> type of the identity key pair
+     * @param <T_IdKey> type of the public identity key
+     * @param <T_PreKey> type of a public preKey
+     * @param <T_SigPreKey> type of the public signed preKey
+     * @param <T_Sess> type of the OMEMO session
      */
     private static class KeyCache<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess> {
         private T_IdKeyPair identityKeyPair;

@@ -151,7 +151,7 @@ public final class OmemoManager extends Manager {
      * @param connection XmppConnection.
      * @param deviceId MUST NOT be null and MUST be greater than 0.
      *
-     * @return manager TODO javadoc me please
+     * @return OmemoManager instance for the given connection and deviceId.
      */
     public static synchronized OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) {
         if (deviceId == null || deviceId < 1) {
@@ -182,7 +182,7 @@ public final class OmemoManager extends Manager {
      *
      * @param connection XmppConnection.
      *
-     * @return manager TODO javadoc me please
+     * @return OmemoManager instance for the given connection and a determined deviceId.
      */
     public static synchronized OmemoManager getInstanceFor(XMPPConnection connection) {
         TreeMap<Integer, OmemoManager> managers = INSTANCES.get(connection);
@@ -219,7 +219,8 @@ public final class OmemoManager extends Manager {
 
     /**
      * Return the TrustCallback of this manager.
-     * @return
+     *
+     * @return callback that is used for trust decisions.
      */
     OmemoTrustCallback getTrustCallback() {
         return trustCallback;
@@ -530,10 +531,11 @@ public final class OmemoManager extends Manager {
      *
      * @param multiUserChat MUC
      * @return true if chat supports OMEMO
-     * @throws XMPPException.XMPPErrorException     if
-     * @throws SmackException.NotConnectedException something
-     * @throws InterruptedException                 goes
-     * @throws SmackException.NoResponseException   wrong
+     *
+     * @throws XMPPException.XMPPErrorException     if there was an XMPP protocol level error
+     * @throws SmackException.NotConnectedException if the connection is not connected
+     * @throws InterruptedException                 if the thread is interrupted
+     * @throws SmackException.NoResponseException   if the server does not respond
      */
     public boolean multiUserChatSupportsOmemo(MultiUserChat multiUserChat)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
@@ -564,7 +566,8 @@ public final class OmemoManager extends Manager {
     /**
      * Return the fingerprint of our identity key.
      *
-     * @return fingerprint TODO javadoc me please
+     * @return our own OMEMO fingerprint
+     *
      * @throws SmackException.NotLoggedInException if we don't know our bareJid yet.
      * @throws CorruptedOmemoKeyException if our identityKey is corrupted.
      * @throws IOException if an I/O error occurred.
@@ -580,8 +583,10 @@ public final class OmemoManager extends Manager {
 
     /**
      * Get the fingerprint of a contacts device.
+     *
      * @param device contacts OmemoDevice
-     * @return fingerprint TODO javadoc me please
+     * @return fingerprint of the given OMEMO device.
+     *
      * @throws CannotEstablishOmemoSessionException if we have no session yet, and are unable to create one.
      * @throws SmackException.NotLoggedInException if the XMPP connection is not authenticated.
      * @throws CorruptedOmemoKeyException if the copy of the fingerprint we have is corrupted.
@@ -763,7 +768,8 @@ public final class OmemoManager extends Manager {
 
     /**
      * Returns a pseudo random number from the interval [1, Integer.MAX_VALUE].
-     * @return deviceId TODO javadoc me please
+     *
+     * @return a random deviceId.
      */
     public static int randomDeviceId() {
         return new Random().nextInt(Integer.MAX_VALUE - 1) + 1;
@@ -772,7 +778,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the BareJid of the user.
      *
-     * @return bareJid TODO javadoc me please
+     * @return our own bare JID.
      */
     public BareJid getOwnJid() {
         if (ownJid == null && connection().isAuthenticated()) {
@@ -785,7 +791,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the deviceId of this OmemoManager.
      *
-     * @return deviceId TODO javadoc me please
+     * @return this OmemoManagers deviceId.
      */
     public synchronized Integer getDeviceId() {
         return deviceId;
@@ -794,7 +800,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the OmemoDevice of the user.
      *
-     * @return omemoDevice TODO javadoc me please
+     * @return our own OmemoDevice
      */
     public synchronized OmemoDevice getOwnDevice() {
         BareJid jid = getOwnJid();
@@ -926,7 +932,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the OMEMO service object.
      *
-     * @return omemoService TODO javadoc me please
+     * @return the OmemoService object related to this OmemoManager.
      */
     OmemoService<?, ?, ?, ?, ?, ?, ?, ?, ?> getOmemoService() {
         throwIfNoServiceSet();

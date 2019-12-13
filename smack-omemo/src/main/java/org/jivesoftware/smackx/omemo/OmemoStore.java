@@ -184,7 +184,8 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Pack a OmemoBundleElement containing our key material.
      *
      * @param userDevice our OmemoDevice.
-     * @return OmemoBundleElement TODO javadoc me please
+     * @return OMEMO bundle element
+     *
      * @throws CorruptedOmemoKeyException when a key could not be loaded
      * @throws IOException if an I/O error occurred.
      */
@@ -205,7 +206,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
 
     /**
      * Replenish our supply of keys. If we are missing any type of keys, generate them fresh.
-     * @param userDevice TODO javadoc me please
+     *
+     * @param userDevice our own OMEMO device
+     *
      * @throws CorruptedOmemoKeyException if the OMEMO key is corrupted.
      * @throws IOException if an I/O error occurred.
      */
@@ -238,7 +241,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Generate a new IdentityKeyPair. We should always have only one pair and usually keep this for a long time.
      *
-     * @return identityKeyPair TODO javadoc me please
+     * @return a fresh identityKeyPair
      */
     public T_IdKeyPair generateOmemoIdentityKeyPair() {
         return keyUtil().generateOmemoIdentityKeyPair();
@@ -249,7 +252,8 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Return null, if we have no identityKeyPair.
      *
      * @param userDevice our OmemoDevice.
-     * @return identityKeyPair TODO javadoc me please
+     * @return loaded identityKeyPair
+     *
      * @throws CorruptedOmemoKeyException Thrown, if the stored key is damaged (*hands up* not my fault!)
      * @throws IOException if an I/O error occurred.
      */
@@ -277,7 +281,8 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param contactsDevice the device of which we want to load the identityKey.
-     * @return identityKey TODO javadoc me please
+     * @return loaded identityKey
+     *
      * @throws CorruptedOmemoKeyException when the key in question is corrupted and cant be deserialized.
      * @throws IOException if an I/O error occurred.
      */
@@ -453,7 +458,8 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param signedPreKeyId id of the key
-     * @return key TODO javadoc me please
+     * @return loaded signed preKey
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract T_SigPreKey loadOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId) throws IOException;
@@ -476,7 +482,8 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param identityKeyPair identityKeyPair used to sign the preKey
      * @param signedPreKeyId  id that the preKey will have
-     * @return signedPreKey TODO javadoc me please
+     * @return a fresh signedPreKey
+     *
      * @throws CorruptedOmemoKeyException when something goes wrong
      */
     public T_SigPreKey generateOmemoSignedPreKey(T_IdKeyPair identityKeyPair, int signedPreKeyId)
@@ -571,8 +578,9 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Load a list of deviceIds from our own devices.
      *
-     * @param userDevice TODO javadoc me please
+     * @param userDevice our own OMEMO device
      * @return the cached OMEMO device list.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice) throws IOException {
@@ -652,7 +660,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param managerGuard authenticated OmemoManager
      * @param contactsDevice OmemoDevice we want to get the fingerprint from
-     * @return fingerprint TODO javadoc me please
+     * @return fingerprint of the contacts OMEMO device
      *
      * @throws CannotEstablishOmemoSessionException If we have no local copy of the identityKey of the contact
      *                                              and are unable to build a fresh session

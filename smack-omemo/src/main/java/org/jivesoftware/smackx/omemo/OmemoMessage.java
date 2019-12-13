@@ -49,7 +49,7 @@ public class OmemoMessage {
     /**
      * Return the original OmemoElement (&lt;encrypted/&gt;).
      *
-     * @return omemoElement TODO javadoc me please
+     * @return omemoElement of the message
      */
     public OmemoElement getElement() {
         return element;
@@ -58,7 +58,7 @@ public class OmemoMessage {
     /**
      * Return the messageKey (or transported key in case of a KeyTransportMessage).
      *
-     * @return key TODO javadoc me please
+     * @return encryption key that protects the message payload
      */
     public byte[] getKey() {
         return messageKey.clone();
@@ -66,6 +66,7 @@ public class OmemoMessage {
 
     /**
      * Return the initialization vector belonging to the key.
+     *
      * @return initialization vector
      */
     public byte[] getIv() {
@@ -189,7 +190,8 @@ public class OmemoMessage {
 
         /**
          * Return the OmemoDevice which sent the message.
-         * @return senderDevice TODO javadoc me please
+         *
+         * @return OMEMO device that sent the message.
          */
         public OmemoDevice getSenderDevice() {
             return senderDevice;

@@ -107,17 +107,11 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     private static final long MILLIS_PER_HOUR = 1000L * 60 * 60;
 
-    /**
-     * This is a singleton.
-     */
     private static OmemoService<?, ?, ?, ?, ?, ?, ?, ?, ?> INSTANCE;
 
     private OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> omemoStore;
     private final HashMap<OmemoManager, OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>> omemoRatchets = new HashMap<>();
 
-    /**
-     * Create a new OmemoService object. This should only happen once.
-     */
     protected OmemoService() {
     }
 
@@ -229,7 +223,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
-     * Initialize OMEMO functionality for OmemoManager omemoManager.
+     * Initialize OMEMO functionality for the given {@link OmemoManager}.
      *
      * @param managerGuard OmemoManager we'd like to initialize.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -456,7 +450,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         CipherAndAuthTag cipherAndAuthTag = getOmemoRatchet(manager)
                 .retrieveMessageKeyAndAuthTag(senderDevice, omemoElement);
 
-        // Retrieve senders fingerprint. TODO: Find a way to do this without the store.
+        // Retrieve senders fingerprint.
         OmemoFingerprint senderFingerprint;
         try {
             senderFingerprint = getOmemoStoreBackend().getFingerprint(manager.getOwnDevice(), senderDevice);
@@ -489,7 +483,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param contactsDevices set of recipient devices.
      * @param key AES-Key to be transported.
      * @param iv initialization vector to be used with the key.
-     * @return KeyTransportElement TODO javadoc me please
+     *
+     * @return a new key transport element
      *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws UndecidedOmemoIdentityException if the list of recipients contains an undecided device
@@ -598,7 +593,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @param connection authenticated XMPP connection.
      * @param contact BareJid of the contact of which we want to retrieve the device list from.
-     * @return
+     * @return device list
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws PubSubException.NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
@@ -645,9 +641,11 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
+     * Refresh our own device list and publish it to the server.
      *
-     * @param connection TODO javadoc me please
-     * @param userDevice TODO javadoc me please
+     * @param connection XMPPConnection
+     * @param userDevice our OMEMO device
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws PubSubException.NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
@@ -694,8 +692,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * Add our load the deviceList of the user from cache, delete stale devices if needed, add the users device
      * back if necessary, store the refurbished list in cache and return it.
      *
-     * @param userDevice TODO javadoc me please
-     * @return
+     * @param userDevice our own OMEMO device
+     * @return cleaned device list
+     *
      * @throws IOException if an I/O error occurred.
      */
     OmemoCachedDeviceList cleanUpDeviceList(OmemoDevice userDevice) throws IOException {
@@ -853,7 +852,6 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
             try {
                 fingerprint = getOmemoStoreBackend().getFingerprint(userDevice, device);
             } catch (CorruptedOmemoKeyException | NoIdentityKeyException e) {
-                // TODO: Best solution?
                 LOGGER.log(Level.WARNING, "Could not load fingerprint of " + device, e);
                 undecidedDevices.add(device);
                 continue;
@@ -922,7 +920,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * This method ignores {@link OmemoConfiguration#getDeleteStaleDevices()}!
      *
      * In this case, a stale device is one of our devices, from which we haven't received an OMEMO message from
-     * for more than {@link OmemoConfiguration#DELETE_STALE_DEVICE_AFTER_HOURS} hours.
+     * for more than {@link OmemoConfiguration#getDeleteStaleDevicesAfterHours()} hours.
      *
      * @param userDevice our OmemoDevice
      * @return our altered deviceList with stale devices marked as inactive.
@@ -1001,7 +999,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param lastReceipt date of last received message from that device
      * @param maxAgeHours threshold
      *
-     * @return staleness TODO javadoc me please
+     * @return true if the subject device is considered stale
      */
     static boolean isStale(OmemoDevice userDevice, OmemoDevice subject, Date lastReceipt, int maxAgeHours) {
         if (userDevice.equals(subject)) {
@@ -1042,7 +1040,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @param managerGuard authenticated OmemoManager.
      * @param mamQuery Mam archive query
-     * @return list of {@link MessageOrOmemoMessage}s.
+     * @return list of {@link MessageOrOmemoMessage MessageOrOmemoMessages}.
+     *
      * @throws IOException if an I/O error occurred.
      */
     List<MessageOrOmemoMessage> decryptMamQueryResult(OmemoManager.LoggedInOmemoManager managerGuard,
@@ -1326,8 +1325,10 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     /**
      * Send an empty OMEMO message to contactsDevice in order to forward the ratchet.
-     * @param managerGuard TODO javadoc me please
-     * @param contactsDevice TODO javadoc me please
+     *
+     * @param managerGuard OMEMO manager
+     * @param contactsDevice contacts OMEMO device
+     *
      * @throws CorruptedOmemoKeyException if our or their OMEMO key is corrupted.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.

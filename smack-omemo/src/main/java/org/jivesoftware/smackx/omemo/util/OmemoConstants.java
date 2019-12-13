@@ -22,7 +22,6 @@ package org.jivesoftware.smackx.omemo.util;
  */
 public final class OmemoConstants {
 
-    // Constants
     /**
      * Omemo related namespace.
      */

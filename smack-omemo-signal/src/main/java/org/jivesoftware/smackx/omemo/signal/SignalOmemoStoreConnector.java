@@ -87,8 +87,9 @@ public class SignalOmemoStoreConnector
     }
 
     /**
-     * We don't use this.
-     * @return dummy TODO javadoc me please
+     * The OMEMO protocol does not make use of a local registration ID, so we can simply return 0 here.
+     *
+     * @return local registration id.
      */
     @Override
     public int getLocalRegistrationId() {
