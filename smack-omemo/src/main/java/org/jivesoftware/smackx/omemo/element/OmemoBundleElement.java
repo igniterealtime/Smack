@@ -209,15 +209,17 @@ public abstract class OmemoBundleElement implements ExtensionElement {
 
     @Override
     public String toString() {
-        String out = "OmemoBundleElement[\n";
-        out += SIGNED_PRE_KEY_PUB + " " + SIGNED_PRE_KEY_ID + "=" + signedPreKeyId + ": " + signedPreKeyB64 + "\n";
-        out += SIGNED_PRE_KEY_SIG + ": " + signedPreKeySignatureB64 + "\n";
-        out += IDENTITY_KEY + ": " + identityKeyB64 + "\n";
-        out += PRE_KEYS + " (" + preKeysB64.size() + ")\n";
+        StringBuilder sb = new StringBuilder("OmemoBundleElement[\n");
+        sb.append(SIGNED_PRE_KEY_PUB).append(' ').append(SIGNED_PRE_KEY_ID).append('=').append(signedPreKeyId)
+                .append(':').append(signedPreKeyB64).append('\n')
+                .append(SIGNED_PRE_KEY_SIG).append(": ").append(signedPreKeySignatureB64).append('\n')
+                .append(IDENTITY_KEY).append(": ").append(identityKeyB64).append('\n')
+                .append(PRE_KEYS).append(" (").append(preKeysB64.size()).append(")\n");
         for (Map.Entry<Integer, String> e : preKeysB64.entrySet()) {
-            out += PRE_KEY_PUB + " " + PRE_KEY_ID + "=" + e.getKey() + ": " + e.getValue() + "\n";
+            sb.append(PRE_KEY_PUB).append(' ').append(PRE_KEY_ID).append("=").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
         }
-        return out;
+        sb.append("]");
+        return sb.toString();
     }
 
     @Override
