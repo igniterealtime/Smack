@@ -277,9 +277,12 @@ public final class OmemoManager extends Manager {
     /**
      * Return a set of all OMEMO capable devices of a contact.
      * Note, that this method does not explicitly refresh the device list of the contact, so it might be outdated.
+     *
      * @see #requestDeviceListUpdateFor(BareJid)
+     *
      * @param contact contact we want to get a set of device of.
      * @return set of known devices of that contact.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public Set<OmemoDevice> getDevicesOf(BareJid contact) throws IOException {
@@ -300,6 +303,7 @@ public final class OmemoManager extends Manager {
      * @param recipient recipients bareJid
      * @param message text to encrypt
      * @return encrypted message
+     *
      * @throws CryptoFailedException                when something crypto related fails
      * @throws UndecidedOmemoIdentityException      When there are undecided devices
      * @throws InterruptedException if the calling thread was interrupted.
@@ -323,6 +327,7 @@ public final class OmemoManager extends Manager {
      * @param recipients recipients barejids
      * @param message text to encrypt
      * @return encrypted message.
+     *
      * @throws CryptoFailedException    When something crypto related fails
      * @throws UndecidedOmemoIdentityException  When there are undecided devices.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -349,6 +354,7 @@ public final class OmemoManager extends Manager {
      * @param muc multiUserChat
      * @param message message to send
      * @return encrypted message
+     *
      * @throws UndecidedOmemoIdentityException when there are undecided devices.
      * @throws CryptoFailedException if the OMEMO cryptography failed.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
@@ -403,6 +409,7 @@ public final class OmemoManager extends Manager {
      *
      * @param mamQuery The MAM query
      * @return list of decrypted OmemoMessages
+     *
      * @throws SmackException.NotLoggedInException if the Manager is not authenticated.
      * @throws IOException if an I/O error occurred.
      */
@@ -431,6 +438,7 @@ public final class OmemoManager extends Manager {
      * Distrust the fingerprint/OmemoDevice tuple.
      * The fingerprint must be the lowercase, hexadecimal fingerprint of the identityKey of the device and must
      * be of length 64.
+     *
      * @param device device
      * @param fingerprint fingerprint
      */
@@ -446,6 +454,7 @@ public final class OmemoManager extends Manager {
      * Returns true, if the fingerprint/OmemoDevice tuple is trusted, otherwise false.
      * The fingerprint must be the lowercase, hexadecimal fingerprint of the identityKey of the device and must
      * be of length 64.
+     *
      * @param device device
      * @param fingerprint fingerprint
      * @return <code>true</code> if this is a trusted OMEMO identity.
@@ -462,6 +471,7 @@ public final class OmemoManager extends Manager {
      * Returns true, if the fingerprint/OmemoDevice tuple is decided by the user.
      * The fingerprint must be the lowercase, hexadecimal fingerprint of the identityKey of the device and must
      * be of length 64.
+     *
      * @param device device
      * @param fingerprint fingerprint
      * @return <code>true</code> if the trust is decided for the identity.
@@ -479,6 +489,7 @@ public final class OmemoManager extends Manager {
      * secrecy.
      *
      * @param recipient recipient
+     *
      * @throws CorruptedOmemoKeyException           When the used identityKeys are corrupted
      * @throws CryptoFailedException                When something fails with the crypto
      * @throws CannotEstablishOmemoSessionException When we can't establish a session with the recipient
@@ -511,6 +522,7 @@ public final class OmemoManager extends Manager {
      *
      * @param contact contact
      * @return true if contact has at least one OMEMO capable device.
+     *
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
@@ -551,6 +563,7 @@ public final class OmemoManager extends Manager {
      * @param connection XMPPConnection
      * @param server domainBareJid of the server to test
      * @return true if server supports pep
+     *
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -614,6 +627,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return all OmemoFingerprints of active devices of a contact.
      * TODO: Make more fail-safe
+     *
      * @param contact contact
      * @return Map of all active devices of the contact and their fingerprints.
      *
@@ -661,6 +675,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Remove an OmemoMessageListener.
+     *
      * @param listener OmemoMessageListener
      */
     public void removeOmemoMessageListener(OmemoMessageListener listener) {
@@ -678,6 +693,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Remove an OmemoMucMessageListener.
+     *
      * @param listener OmemoMucMessageListener
      */
     public void removeOmemoMucMessageListener(OmemoMucMessageListener listener) {
@@ -688,6 +704,7 @@ public final class OmemoManager extends Manager {
      * Request a deviceList update from contact contact.
      *
      * @param contact contact we want to obtain the deviceList from.
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws PubSubException.NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
@@ -750,6 +767,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Return true, if the given Stanza contains an OMEMO element 'encrypted'.
+     *
      * @param stanza stanza
      * @return true if stanza has extension 'encrypted'
      */
@@ -812,6 +830,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Set the deviceId of the manager to nDeviceId.
+     *
      * @param nDeviceId new deviceId
      */
     synchronized void setDeviceId(int nDeviceId) {

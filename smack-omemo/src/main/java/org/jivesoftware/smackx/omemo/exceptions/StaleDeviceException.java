@@ -42,6 +42,7 @@ public class StaleDeviceException extends Exception {
 
     /**
      * Return the date on which the last OMEMO message sent from the device was received.
+     *
      * @return last messages date
      */
     public Date getLastMessageDate() {
@@ -50,6 +51,7 @@ public class StaleDeviceException extends Exception {
 
     /**
      * Return the date of the last time the deviceId was republished after being inactive/non-existent before.
+     *
      * @return date of last deviceId (re)publication.
      */
     public Date getLastDeviceIdPublicationDate() {
@@ -58,6 +60,7 @@ public class StaleDeviceException extends Exception {
 
     /**
      * Return the stale OMEMO device.
+     *
      * @return stale device
      */
     public OmemoDevice getDevice() {

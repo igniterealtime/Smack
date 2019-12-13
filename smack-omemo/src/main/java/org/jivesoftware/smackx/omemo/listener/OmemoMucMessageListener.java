@@ -23,12 +23,14 @@ import org.jivesoftware.smackx.omemo.OmemoMessage;
 
 /**
  * Listener interface that allows implementations to receive decrypted OMEMO MUC messages.
+ *
  * @author Paul Schaub
  */
 public interface OmemoMucMessageListener {
 
     /**
      * Gets called whenever an OMEMO message has been received in a MultiUserChat and successfully decrypted.
+     *
      * @param muc MultiUserChat the message was sent in
      * @param stanza Original Stanza
      * @param decryptedOmemoMessage decrypted Omemo message

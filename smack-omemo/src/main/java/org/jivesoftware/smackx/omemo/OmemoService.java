@@ -98,6 +98,7 @@ import org.jxmpp.jid.Jid;
  * @param <T_ECPub>     Elliptic Curve PublicKey class
  * @param <T_Bundle>    Bundle class
  * @param <T_Ciph>      Cipher class
+ *
  * @author Paul Schaub
  */
 public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>
@@ -113,10 +114,12 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     private final HashMap<OmemoManager, OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph>> omemoRatchets = new HashMap<>();
 
     protected OmemoService() {
+
     }
 
     /**
      * Return the singleton instance of this class. When no instance is set, throw an IllegalStateException instead.
+     *
      * @return instance.
      */
     public static OmemoService<?, ?, ?, ?, ?, ?, ?, ?, ?> getInstance() {
@@ -226,6 +229,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * Initialize OMEMO functionality for the given {@link OmemoManager}.
      *
      * @param managerGuard OmemoManager we'd like to initialize.
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws CorruptedOmemoKeyException if the OMEMO key is corrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
@@ -266,6 +270,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param managerGuard Logged in OmemoManager
      * @param contactsDevice OmemoDevice of the contact
      * @return ratchet update message
+     *
      * @throws NoSuchAlgorithmException if AES algorithms are not supported on this system.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
@@ -428,6 +433,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     /**
      * Decrypt an OMEMO message.
+     *
      * @param managerGuard authenticated OmemoManager.
      * @param senderJid BareJid of the sender.
      * @param omemoElement omemoElement.
@@ -477,6 +483,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     /**
      * Create an OMEMO KeyTransportElement.
+     *
      * @see <a href="https://xmpp.org/extensions/xep-0384.html#usecases-keysend">XEP-0384: Sending a key</a>.
      *
      * @param managerGuard Initialized OmemoManager.
@@ -572,9 +579,11 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     /**
      * Publish the given OMEMO bundle to the server using PubSub.
+     *
      * @param connection our connection.
      * @param userDevice our device
      * @param bundle the bundle we want to publish
+     *
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -625,8 +634,10 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     /**
      * Publish the given device list to the server.
+     *
      * @param connection authenticated XMPP connection.
      * @param deviceList users deviceList.
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
@@ -758,6 +769,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param connection authenticated XMPP connection
      * @param userDevice our OmemoDevice
      * @param contactsDevice OmemoDevice of a contact.
+     *
      * @throws CannotEstablishOmemoSessionException if we cannot establish a session (because of missing bundle etc.)
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -794,6 +806,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     /**
      * Build sessions with all devices from the set, we don't have a session with yet.
      * Return the set of all devices we have a session with afterwards.
+     *
      * @param connection authenticated XMPP connection
      * @param userDevice our OmemoDevice
      * @param devices set of devices we may want to build a session with if necessary
@@ -841,6 +854,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param callback OmemoTrustCallback to query the trust decisions from
      * @param devices set of OmemoDevices
      * @return set of OmemoDevices which contains all devices from the set devices, which are undecided
+     *
      * @throws IOException if an I/O error occurred.
      */
     private Set<OmemoDevice> getUndecidedDevices(OmemoDevice userDevice, OmemoTrustCallback callback, Set<OmemoDevice> devices) throws IOException {
@@ -871,6 +885,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param userDevice our OmemoDevice.
      * @param contactsDevice OmemoDevice of the contact.
      * @return true if userDevice has session with contactsDevice.
+     *
      * @throws IOException if an I/O error occurred.
      */
     private boolean hasSession(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
@@ -883,6 +898,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param omemoManager our OmemoManager
      * @param contactsBundle bundle of the contact
      * @param contactsDevice OmemoDevice of the contact
+     *
      * @throws CorruptedOmemoKeyException if the OMEMO key is corrupted.
      */
     protected abstract void processBundle(OmemoManager omemoManager,
@@ -895,6 +911,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @param userDevice our OmemoDevice
      * @return true if rotation is necessary
+     *
      * @throws IOException if an I/O error occurred.
      */
     private boolean shouldRotateSignedPreKey(OmemoDevice userDevice) throws IOException {
@@ -924,6 +941,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @param userDevice our OmemoDevice
      * @return our altered deviceList with stale devices marked as inactive.
+     *
      * @throws IOException if an I/O error occurred.
      */
     private OmemoCachedDeviceList deleteStaleDevices(OmemoDevice userDevice) throws IOException {
@@ -944,6 +962,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param contact subjects BareJid.
      * @param contactsDeviceList subjects deviceList.
      * @return copy of subjects deviceList with stale devices marked as inactive.
+     *
      * @throws IOException if an I/O error occurred.
      */
     private OmemoCachedDeviceList removeStaleDevicesFromDeviceList(OmemoDevice userDevice,
@@ -1220,6 +1239,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param stanza stanza
      * @param managerGuard authenticated OmemoManager
      * @return decrypted OmemoMessage or null
+     *
      * @throws IOException if an I/O error occurred.
      */
     OmemoMessage.Received decryptStanza(Stanza stanza, OmemoManager.LoggedInOmemoManager managerGuard) throws IOException {
@@ -1301,6 +1321,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @param managerGuard authenticated OmemoManager.
      * @param brokenDevice device which session broke.
+     *
      * @throws IOException if an I/O error occurred.
      */
     private void repairBrokenSessionWithPreKeyMessage(OmemoManager.LoggedInOmemoManager managerGuard,
@@ -1356,6 +1377,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
 
     /**
      * Return the joined MUC with EntityBareJid jid, or null if its not a room and/or not joined.
+     *
      * @param connection xmpp connection
      * @param jid jid (presumably) of the MUC
      * @return MultiUserChat or null if not a MUC.
@@ -1379,6 +1401,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * Publish a new DeviceList with just our device in it.
      *
      * @param managerGuard authenticated OmemoManager.
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.

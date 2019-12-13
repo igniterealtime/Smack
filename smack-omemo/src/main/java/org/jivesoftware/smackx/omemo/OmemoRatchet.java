@@ -86,6 +86,7 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @param element omemoElement
      * @return tuple of cipher generated from the unpacked message key and the auth-tag
+     *
      * @throws CryptoFailedException if decryption using the double ratchet fails
      * @throws NoRawSessionException if we have no session, but the element was NOT a PreKeyMessage
      * @throws IOException if an I/O error occurred.
@@ -154,6 +155,7 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param element omemoElement containing a payload.
      * @param cipherAndAuthTag cipher and authentication tag.
      * @return decrypted plain text.
+     *
      * @throws CryptoFailedException if decryption using AES key fails.
      */
     static String decryptMessageElement(OmemoElement element, CipherAndAuthTag cipherAndAuthTag)

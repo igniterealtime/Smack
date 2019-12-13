@@ -53,6 +53,7 @@ import org.jxmpp.jid.BareJid;
  * @param <T_ECPub>     Elliptic Curve PublicKey class
  * @param <T_Bundle>    Bundle class
  * @param <T_Ciph>      Cipher class
+ *
  * @author Paul Schaub
  */
 public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
@@ -68,6 +69,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Returns a sorted set of all the deviceIds, the localUser has had data stored under in the store.
      * Basically this returns the deviceIds of all "accounts" of localUser, which are known to the store.
+     *
      * @param localUser BareJid of the user.
      * @return set of deviceIds with available data.
      */
@@ -79,6 +81,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice    our current device.
      * @param id            deviceId to check for.
      * @return true if list did not contain our id, else false
+     *
      * @throws IOException if an I/O error occurred.
      */
     boolean isAvailableDeviceId(OmemoDevice userDevice, int id) throws IOException {
@@ -103,6 +106,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact Contact we received the list from.
      * @param list    List we received.
+     *
      * @throws IOException if an I/O error occurred.
      */
     OmemoCachedDeviceList mergeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoDeviceListElement list) throws IOException {
@@ -133,6 +137,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * The old signed PreKey should be kept for around a month or so (look it up in the XEP).
      *
      * @param userDevice our OmemoDevice.
+     *
      * @throws CorruptedOmemoKeyException when our identityKey is invalid.
      * @throws IOException if an I/O error occurred.
      * @throws IllegalStateException when our IdentityKeyPair is null.
@@ -163,6 +168,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Remove the oldest signedPreKey until there are only MAX_NUMBER_OF_STORED_SIGNED_PREKEYS left.
      *
      * @param userDevice our OmemoDevice.
+     *
      * @throws IOException if an I/O error occurred.
      */
     private void removeOldSignedPreKeys(OmemoDevice userDevice) throws IOException {
@@ -266,12 +272,14 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param identityKeyPair identityKeyPair
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeOmemoIdentityKeyPair(OmemoDevice userDevice, T_IdKeyPair identityKeyPair) throws IOException;
 
     /**
      * Remove the identityKeyPair of a user.
+     *
      * @param userDevice our device.
      */
     public abstract void removeOmemoIdentityKeyPair(OmemoDevice userDevice);
@@ -295,6 +303,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice device.
      * @param contactsKey    identityKey belonging to the contactsDevice.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeOmemoIdentityKey(OmemoDevice userDevice, OmemoDevice contactsDevice, T_IdKey contactsKey) throws IOException;
@@ -314,6 +323,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our omemoDevice.
      * @param contactsDevice device of which we want to set the message counter.
      * @param counter counter value.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) throws IOException;
@@ -326,6 +336,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our omemoDevice
      * @param contactsDevice device of which we want to get the message counter.
      * @return counter value.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract int loadOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
@@ -336,6 +347,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice omemoManager of our device.
      * @param contactsDevice device in question
      * @param date date of the last received message
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException;
@@ -346,6 +358,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice device in question
      * @return date if existent, null
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
@@ -357,6 +370,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice
      * @param contactsDevice OmemoDevice in question
      * @param date date of the last publication after not being published
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException;
@@ -368,6 +382,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice
      * @param contactsDevice OmemoDevice in question
      * @return date of the last publication after not being published
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
@@ -377,6 +392,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param date date
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) throws IOException;
@@ -386,6 +402,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @return date if existent, otherwise null
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) throws IOException;
@@ -408,6 +425,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param preKeyId id of the key to be loaded
      * @return loaded preKey
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract T_PreKey loadOmemoPreKey(OmemoDevice userDevice, int preKeyId) throws IOException;
@@ -418,6 +436,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param preKeyId id of the key
      * @param preKey   key
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeOmemoPreKey(OmemoDevice userDevice, int preKeyId, T_PreKey preKey) throws IOException;
@@ -427,6 +446,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param preKeyHashMap HashMap of preKeys
+     *
      * @throws IOException if an I/O error occurred.
      */
     public void storeOmemoPreKeys(OmemoDevice userDevice, TreeMap<Integer, T_PreKey> preKeyHashMap) throws IOException {
@@ -449,6 +469,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @return Map containing our preKeys
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException;
@@ -473,6 +494,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @return HashMap of our singedPreKeys
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException;
@@ -497,6 +519,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param signedPreKeyId id of the signedPreKey
      * @param signedPreKey   the key itself
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeOmemoSignedPreKey(OmemoDevice userDevice, int signedPreKeyId, T_SigPreKey signedPreKey) throws IOException;
@@ -515,6 +538,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice device whose session we want to load
      * @return crypto related session
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract T_Sess loadRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException;
@@ -525,6 +549,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact BareJid of the contact we want to get all sessions from
      * @return TreeMap of deviceId and sessions of the contact
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException;
@@ -535,6 +560,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice  OmemoDevice whose session we want to store
      * @param session session
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeRawSession(OmemoDevice userDevice, OmemoDevice contactsDevice, T_Sess session) throws IOException;
@@ -571,6 +597,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact contact we want to get the deviceList of
      * @return CachedDeviceList of the contact
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract OmemoCachedDeviceList loadCachedDeviceList(OmemoDevice userDevice, BareJid contact) throws IOException;
@@ -594,6 +621,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contact    Contact
      * @param contactsDeviceList list of the contacts devices' ids.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public abstract void storeCachedDeviceList(OmemoDevice userDevice,
@@ -640,6 +668,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param userDevice our OmemoDevice.
      * @param contactsDevice OmemoDevice we want to have the fingerprint for.
      * @return fingerprint of the userDevices IdentityKey.
+     *
      * @throws CorruptedOmemoKeyException if the IdentityKey is corrupted.
      * @throws NoIdentityKeyException if no IdentityKey for contactsDevice has been found locally.
      * @throws IOException if an I/O error occurred.

@@ -140,9 +140,11 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Encrypt the message with the aes key.
      * Move the AuthTag from the end of the cipherText to the end of the messageKey afterwards.
      * This prevents an attacker which compromised one recipient device to switch out the cipherText for other recipients.
+     *
      * @see <a href="https://conversations.im/omemo/audit.pdf">OMEMO security audit</a>.
      *
      * @param message plaintext message
+     *
      * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      * @throws InvalidKeyException if the key is invalid.
@@ -210,6 +212,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Add a new recipient device to the message.
      *
      * @param contactsDevice device of the recipient
+     *
      * @throws NoIdentityKeyException if we have no identityKey of that device. Can be fixed by fetching and
      *                                processing the devices bundle.
      * @throws CorruptedOmemoKeyException if the identityKey of that device is corrupted.
@@ -260,6 +263,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param keyType Key Type
      * @param keyLength Key Length in bit
      * @return new AES key
+     *
      * @throws NoSuchAlgorithmException if no such algorithm is available.
      */
     public static byte[] generateKey(String keyType, int keyLength) throws NoSuchAlgorithmException {

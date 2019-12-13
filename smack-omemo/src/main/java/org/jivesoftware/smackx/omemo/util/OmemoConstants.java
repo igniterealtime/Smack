@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo.util;
 
 /**
  * Some constants related to OMEMO.
+ *
  * @author Paul Schaub
  */
 public final class OmemoConstants {
