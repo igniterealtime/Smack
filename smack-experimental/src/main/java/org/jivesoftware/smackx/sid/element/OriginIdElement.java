@@ -101,4 +101,25 @@ public class OriginIdElement extends StableAndUniqueIdElement {
                 .attribute(ATTR_ID, getId())
                 .closeEmptyElement();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        if (!(other instanceof OriginIdElement)) {
+            return false;
+        }
+
+        OriginIdElement otherId = (OriginIdElement) other;
+        return getId().equals(otherId.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }
