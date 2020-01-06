@@ -216,9 +216,9 @@ public abstract class OmemoBundleElement implements ExtensionElement {
                 .append(IDENTITY_KEY).append(": ").append(identityKeyB64).append('\n')
                 .append(PRE_KEYS).append(" (").append(preKeysB64.size()).append(")\n");
         for (Map.Entry<Integer, String> e : preKeysB64.entrySet()) {
-            sb.append(PRE_KEY_PUB).append(' ').append(PRE_KEY_ID).append("=").append(e.getKey()).append(": ").append(e.getValue()).append("\n");
+            sb.append(PRE_KEY_PUB).append(' ').append(PRE_KEY_ID).append('=').append(e.getKey()).append(": ").append(e.getValue()).append('\n');
         }
-        sb.append("]");
+        sb.append(']');
         return sb.toString();
     }
 

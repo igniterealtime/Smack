@@ -152,8 +152,8 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws IllegalBlockSizeException if the input data length is incorrect.
      */
     private void setMessage(String message)
-                    throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-                    InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         if (message == null) {
             return;
         }
@@ -199,7 +199,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
 
         if (cipherTextWithoutAuthTag.length != cipherText.length - 16) {
             throw new IllegalArgumentException("Length of cipherTextWithoutAuthTag must be length of cipherText " +
-            "- length of AuthTag (16)");
+                    "- length of AuthTag (16)");
         }
 
         // Move auth tag from cipherText to messageKey

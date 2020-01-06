@@ -316,9 +316,9 @@ public final class OmemoManager extends Manager {
             throws CryptoFailedException, UndecidedOmemoIdentityException,
             InterruptedException, SmackException.NotConnectedException,
             SmackException.NoResponseException, SmackException.NotLoggedInException, IOException {
-            Set<BareJid> recipients = new HashSet<>();
-            recipients.add(recipient);
-            return encrypt(recipients, message);
+        Set<BareJid> recipients = new HashSet<>();
+        recipients.add(recipient);
+        return encrypt(recipients, message);
     }
 
     /**
@@ -506,8 +506,8 @@ public final class OmemoManager extends Manager {
             CryptoFailedException, CannotEstablishOmemoSessionException, IOException {
         XMPPConnection connection = connection();
         MessageBuilder message = connection.getStanzaFactory()
-                        .buildMessageStanza()
-                        .to(recipient.getJid());
+                .buildMessageStanza()
+                .to(recipient.getJid());
 
         OmemoElement element = getOmemoService().createRatchetUpdateElement(new LoggedInOmemoManager(this), recipient);
         message.addExtension(element);
@@ -751,8 +751,8 @@ public final class OmemoManager extends Manager {
      */
     public synchronized void rotateSignedPreKey()
             throws CorruptedOmemoKeyException, SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
-                    SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException,
-                    IOException, PubSubException.NotALeafNodeException {
+            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException,
+            IOException, PubSubException.NotALeafNodeException {
         if (!connection().isAuthenticated()) {
             throw new SmackException.NotLoggedInException();
         }
@@ -1037,7 +1037,7 @@ public final class OmemoManager extends Manager {
                     OmemoDeviceListElement receivedDeviceList = (OmemoDeviceListElement) payloadItem.getPayload();
                     try {
                         getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from,
-                                        receivedDeviceList);
+                                receivedDeviceList);
 
                         if (!from.asBareJid().equals(getOwnJid())) {
                             continue;
@@ -1046,8 +1046,8 @@ public final class OmemoManager extends Manager {
                         deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
                     } catch (IOException e) {
                         LOGGER.log(Level.SEVERE,
-                                        "IOException while processing OMEMO PEP device updates. Message: " + message,
-                                        e);
+                                "IOException while processing OMEMO PEP device updates. Message: " + message,
+                                e);
                         continue;
                     }
                     final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);

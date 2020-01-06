@@ -1141,8 +1141,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     OmemoBundleElement bundleElement = getOmemoStoreBackend().packOmemoBundle(userDevice);
                     publishBundle(manager.getConnection(), userDevice, bundleElement);
                 } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException
-                                | SmackException.NotConnectedException | XMPPException.XMPPErrorException
-                                | NotALeafNodeException e) {
+                        | SmackException.NotConnectedException | XMPPException.XMPPErrorException
+                        | NotALeafNodeException e) {
                     LOGGER.log(Level.WARNING, "Could not republish replenished bundle.", e);
                 }
             }
@@ -1224,8 +1224,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     OmemoBundleElement bundleElement = getOmemoStoreBackend().packOmemoBundle(userDevice);
                     publishBundle(manager.getConnection(), userDevice, bundleElement);
                 } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException
-                                | SmackException.NotConnectedException | XMPPException.XMPPErrorException
-                                | NotALeafNodeException e) {
+                        | SmackException.NotConnectedException | XMPPException.XMPPErrorException
+                        | NotALeafNodeException e) {
                     LOGGER.log(Level.WARNING, "Could not republish replenished bundle.", e);
                 }
             }
@@ -1307,8 +1307,8 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
                     OmemoBundleElement bundleElement = getOmemoStoreBackend().packOmemoBundle(userDevice);
                     publishBundle(manager.getConnection(), userDevice, bundleElement);
                 } catch (CorruptedOmemoKeyException | InterruptedException | SmackException.NoResponseException
-                                | SmackException.NotConnectedException | XMPPException.XMPPErrorException
-                                | NotALeafNodeException e) {
+                        | SmackException.NotConnectedException | XMPPException.XMPPErrorException
+                        | NotALeafNodeException e) {
                     LOGGER.log(Level.WARNING, "Could not republish replenished bundle.", e);
                 }
             }
