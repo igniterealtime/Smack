@@ -42,21 +42,16 @@ import org.jivesoftware.smack.SmackException.SecurityNotPossibleException;
 
 public class TLSUtils {
 
-    public static final String SSL = "SSL";
     public static final String TLS = "TLS";
-    public static final String PROTO_SSL3 = SSL + "v3";
     public static final String PROTO_TLSV1 = TLS + "v1";
     public static final String PROTO_TLSV1_1 = TLS + "v1.1";
     public static final String PROTO_TLSV1_2 = TLS + "v1.2";
+    public static final String PROTO_TLSV1_3 = TLS + "v1.3";
 
     /**
-     * Enable only TLS. Connections created with the given ConnectionConfiguration will only support TLS.
+     * Enable only TLS. Connections created with the given ConnectionConfiguration will only support TLS 1.3, TLS 1.2.
      * <p>
-     * According to the <a
-     * href="https://raw.githubusercontent.com/stpeter/manifesto/master/manifesto.txt">Encrypted
-     * XMPP Manifesto</a>, TLSv1.2 shall be deployed, providing fallback support for SSLv3 and
-     * TLSv1.1. This method goes one step beyond and upgrades the handshake to use TLSv1 or better.
-     * This method requires the underlying OS to support all of TLSv1.2 , 1.1 and 1.0.
+     * According to RFC 8600 messages MUST be carried over TLS (minimally TLS 1.2 and preferably TLS 1.3)
      * </p>
      *
      * @param builder the configuration builder to apply this setting to
@@ -65,18 +60,14 @@ public class TLSUtils {
      * @return the given builder
      */
     public static <B extends ConnectionConfiguration.Builder<B, ?>> B setTLSOnly(B builder) {
-        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1 });
+        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_3, PROTO_TLSV1_2 });
         return builder;
     }
 
     /**
-     * Enable only TLS and SSLv3. Connections created with the given ConnectionConfiguration will
-     * only support TLS and SSLv3.
+     * Enable only TLS. Connections created with the given ConnectionConfiguration will support TLS 1.0, 1.1, 1.2, 1.3
      * <p>
-     * According to the <a
-     * href="https://raw.githubusercontent.com/stpeter/manifesto/master/manifesto.txt">Encrypted
-     * XMPP Manifesto</a>, TLSv1.2 shall be deployed, providing fallback support for SSLv3 and
-     * TLSv1.1.
+     * Only for support of very old servers. TLS 1.0, TLS 1.1 should not be used anymore.
      * </p>
      *
      * @param builder the configuration builder to apply this setting to
@@ -84,8 +75,8 @@ public class TLSUtils {
      *
      * @return the given builder
      */
-    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setSSLv3AndTLSOnly(B builder) {
-        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1, PROTO_SSL3 });
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setTLSOld(B builder) {
+        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_3, PROTO_TLSV1_2, PROTO_TLSV1_1, PROTO_TLSV1 });
         return builder;
     }
 
