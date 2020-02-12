@@ -135,6 +135,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
@@ -2340,16 +2341,16 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             context = SSLContext.getInstance("TLS");
 
             final SecureRandom secureRandom = new java.security.SecureRandom();
-            X509TrustManager customTrustManager = config.getCustomX509TrustManager();
+            X509TrustManager trustManager = config.getCustomX509TrustManager();
+            if (trustManager == null) {
+                trustManager = TLSUtils.getDefaultX509TrustManager(ks);
+            }
 
             if (daneVerifier != null) {
                 // User requested DANE verification.
-                daneVerifier.init(context, kms, customTrustManager, secureRandom);
+                daneVerifier.init(context, kms, trustManager, secureRandom);
             } else {
-                TrustManager[] customTrustManagers = null;
-                if (customTrustManager != null) {
-                    customTrustManagers = new TrustManager[] { customTrustManager };
-                }
+                TrustManager[] customTrustManagers = new TrustManager[] { trustManager };
                 context.init(kms, customTrustManagers, secureRandom);
             }
         }

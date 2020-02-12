@@ -17,6 +17,8 @@
 package org.jivesoftware.smack.util;
 
 import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -34,6 +36,7 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -239,5 +242,23 @@ public class TLSUtils {
         public X509Certificate[] getAcceptedIssuers() {
             return new X509Certificate[0];
         }
+    }
+
+    public static X509TrustManager getDefaultX509TrustManager(KeyStore keyStore) {
+        String defaultAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+        TrustManagerFactory trustManagerFactory;
+        try {
+            trustManagerFactory = TrustManagerFactory.getInstance(defaultAlgorithm);
+            trustManagerFactory.init(keyStore);
+        } catch (NoSuchAlgorithmException | KeyStoreException e) {
+            throw new AssertionError(e);
+        }
+
+        for (TrustManager trustManager : trustManagerFactory.getTrustManagers()) {
+            if (trustManager instanceof X509TrustManager) {
+                return (X509TrustManager) trustManager;
+            }
+        }
+        throw new AssertionError("No trust manager for the default algorithm " + defaultAlgorithm + " found");
     }
 }
