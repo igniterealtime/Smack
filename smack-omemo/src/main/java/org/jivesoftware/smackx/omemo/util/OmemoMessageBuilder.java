@@ -274,13 +274,13 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     }
 
     /**
-     * Generate a 16 byte initialization vector for AES encryption.
+     * Generate a 12 byte initialization vector for AES encryption.
      *
-     * @return iv TODO javadoc me please
+     * @return iv initialization vector
      */
     public static byte[] generateIv() {
         SecureRandom random = new SecureRandom();
-        byte[] iv = new byte[16];
+        byte[] iv = new byte[12];
         random.nextBytes(iv);
         return iv;
     }
