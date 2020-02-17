@@ -19,9 +19,12 @@ package org.jivesoftware.smackx.offline;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
@@ -58,19 +61,31 @@ import org.jivesoftware.smackx.xdata.Form;
  *
  * @author Gaston Dombiak
  */
-public class OfflineMessageManager {
+public final class OfflineMessageManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(OfflineMessageManager.class.getName());
 
     private static final String namespace = "http://jabber.org/protocol/offline";
 
-    private final XMPPConnection connection;
+    private static final Map<XMPPConnection, OfflineMessageManager> INSTANCES = new WeakHashMap<>();
 
     private static final StanzaFilter PACKET_FILTER = new AndFilter(new StanzaExtensionFilter(
                     new OfflineMessageInfo()), StanzaTypeFilter.MESSAGE);
 
-    public OfflineMessageManager(XMPPConnection connection) {
-        this.connection = connection;
+    private ServiceDiscoveryManager serviceDiscoveryManager;
+
+    private OfflineMessageManager(XMPPConnection connection) {
+        super(connection);
+        this.serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+    }
+
+    public static synchronized OfflineMessageManager getInstanceFor(XMPPConnection connection) {
+        OfflineMessageManager manager = INSTANCES.get(connection);
+        if (manager == null) {
+            manager = new OfflineMessageManager(connection);
+            INSTANCES.put(connection, manager);
+        }
+        return manager;
     }
 
     /**
@@ -85,7 +100,7 @@ public class OfflineMessageManager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean supportsFlexibleRetrieval() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).serverSupportsFeature(namespace);
+        return serviceDiscoveryManager.serverSupportsFeature(namespace);
     }
 
     /**
@@ -99,8 +114,7 @@ public class OfflineMessageManager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public int getMessageCount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(null,
-                namespace);
+        DiscoverInfo info = serviceDiscoveryManager.discoverInfo(null, namespace);
         Form extendedInfo = Form.getFormFrom(info);
         if (extendedInfo != null) {
             String value = extendedInfo.getField("number_of_messages").getFirstValue();
@@ -124,8 +138,7 @@ public class OfflineMessageManager {
      */
     public List<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<OfflineMessageHeader> answer = new ArrayList<>();
-        DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(connection).discoverItems(
-                null, namespace);
+        DiscoverItems items = serviceDiscoveryManager.discoverItems(null, namespace);
         for (DiscoverItems.Item item : items.getItems()) {
             answer.add(new OfflineMessageHeader(item));
         }
@@ -165,8 +178,8 @@ public class OfflineMessageManager {
             }
         });
         int pendingNodes = nodes.size();
-        try (StanzaCollector messageCollector = connection.createStanzaCollector(messageFilter)) {
-            connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        try (StanzaCollector messageCollector = connection().createStanzaCollector(messageFilter)) {
+            connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
             // Collect the received offline messages
             Message message;
             do {
@@ -199,11 +212,11 @@ public class OfflineMessageManager {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setFetch(true);
 
-        StanzaCollector resultCollector = connection.createStanzaCollectorAndSend(request);
+        StanzaCollector resultCollector = connection().createStanzaCollectorAndSend(request);
         StanzaCollector.Configuration messageCollectorConfiguration = StanzaCollector.newConfiguration().setStanzaFilter(PACKET_FILTER).setCollectorToReset(resultCollector);
 
         List<Message> messages;
-        try (StanzaCollector messageCollector = connection.createStanzaCollector(messageCollectorConfiguration)) {
+        try (StanzaCollector messageCollector = connection().createStanzaCollector(messageCollectorConfiguration)) {
             resultCollector.nextResultOrThrow();
             // Be extra safe, cancel the message collector right here so that it does not collector
             // other messages that eventually match (although I've no idea how this could happen in
@@ -237,7 +250,7 @@ public class OfflineMessageManager {
             item.setAction("remove");
             request.addItem(item);
         }
-        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 
     /**
@@ -253,6 +266,6 @@ public class OfflineMessageManager {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setType(IQ.Type.set);
         request.setPurge(true);
-        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 }
