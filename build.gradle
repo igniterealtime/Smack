@@ -680,7 +680,7 @@ def getAndroidRuntimeJar() {
 	if (androidJar.isFile()) {
 		return androidJar
 	} else {
-		throw new Exception("Can't find android.jar for $androidApiLevel API. Please install corresponding SDK platform package")
+		throw new Exception("Can't find android.jar for API level ${androidApiLevel}. Please install corresponding SDK platform package")
 	}
 }
 
