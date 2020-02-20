@@ -45,7 +45,7 @@ public class Base32 {
         }
 
     };
-    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ2345678";
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
     public static StringEncoder<String> getStringEncoder() {
         return base32Stringencoder;
