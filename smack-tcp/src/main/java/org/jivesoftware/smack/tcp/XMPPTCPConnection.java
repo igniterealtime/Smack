@@ -606,6 +606,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 try {
                     proxyInfo.getProxySocketConnection().connect(socket, host, port, timeout);
                 } catch (IOException e) {
+                    CloseableUtil.maybeClose(socket, LOGGER);
                     hostAddress.setException(e);
                     failedAddresses.add(hostAddress);
                     continue;
