@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.receipts;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;

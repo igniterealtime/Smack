@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.xhtmlim.provider;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;

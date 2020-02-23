@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.parsing;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 

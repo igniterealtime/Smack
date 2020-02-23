@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.igniterealtime.smack.inttest.unittest;
 import static org.igniterealtime.smack.inttest.SmackIntegrationTestUnitTestUtil.getFrameworkForUnitTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -43,14 +44,9 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResult;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class SmackIntegrationTestFrameworkUnitTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     private static boolean beforeClassInvoked;
     private static boolean afterClassInvoked;
@@ -68,10 +64,10 @@ public class SmackIntegrationTestFrameworkUnitTest {
     @Test
     public void throwsRuntimeExceptionsTest() throws KeyManagementException, NoSuchAlgorithmException, SmackException,
                     IOException, XMPPException, InterruptedException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        expectedException.expect(RuntimeException.class);
-        expectedException.expectMessage(ThrowsRuntimeExceptionDummyTest.RUNTIME_EXCEPTION_MESSAGE);
         DummySmackIntegrationTestFramework sinttest = getFrameworkForUnitTest(ThrowsRuntimeExceptionDummyTest.class);
-        sinttest.run();
+        assertThrows(RuntimeException.class, () -> {
+            sinttest.run();
+        });
     }
 
     public static class ThrowsRuntimeExceptionDummyTest extends AbstractSmackIntegrationTest {

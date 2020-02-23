@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.pubsub.provider;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
