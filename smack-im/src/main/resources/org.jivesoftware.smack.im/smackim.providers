@@ -1,18 +1,19 @@
 <?xml version="1.0"?> 
 <smackProviders>
 
+    <!-- RFC-6121: Extensible Messaging and Presence Protocol (XMPP): Instant Messaging and Presence -->
     <iqProvider>
         <elementName>query</elementName>
         <namespace>jabber:iq:roster</namespace>
         <className>org.jivesoftware.smack.roster.provider.RosterPacketProvider</className>
     </iqProvider>
-
     <streamFeatureProvider>
         <elementName>sub</elementName>
         <namespace>urn:xmpp:features:pre-approval</namespace>
         <className>org.jivesoftware.smack.roster.provider.SubscriptionPreApprovalStreamFeatureProvider</className>
     </streamFeatureProvider>
 
+    <!-- XEP-0237: Roster Versioning -->
     <streamFeatureProvider>
         <elementName>ver</elementName>
         <namespace>urn:xmpp:features:rosterver</namespace>

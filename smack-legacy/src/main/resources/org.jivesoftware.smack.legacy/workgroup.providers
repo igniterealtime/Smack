@@ -1,7 +1,8 @@
 <?xml version="1.0"?> 
 <!-- Providers for workgroup extensions -->
-<smackProviders> 
-    <!-- Fastpath providers -->
+<smackProviders>
+
+    <!-- XEP-0142: Workgroup Queues -->
     <iqProvider>
         <elementName>offer</elementName>
         <namespace>http://jabber.org/protocol/workgroup</namespace>
@@ -117,8 +118,8 @@
         <className>org.jivesoftware.smackx.workgroup.ext.history.ChatMetadata$Provider</className>
     </iqProvider>
 <!--
-	
-	org.jivesoftware.smackx.workgroup.site is missing ... 
+
+    org.jivesoftware.smackx.workgroup.site is missing ...
 
     <iqProvider>
         <elementName>site-user</elementName>

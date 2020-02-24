@@ -2,426 +2,442 @@
 <!-- Providers file for default Smack extensions -->
 <smackProviders> 
 
-    <!-- Private Data Storage -->
-    <iqProvider> 
-        <elementName>query</elementName>
-        <namespace>jabber:iq:private</namespace>
-        <className>org.jivesoftware.smackx.iqprivate.PrivateDataManager$PrivateDataIQProvider</className>
-    </iqProvider>
-
-    <!-- Time -->
-    <iqProvider> 
-        <elementName>time</elementName>
-        <namespace>urn:xmpp:time</namespace>
-        <className>org.jivesoftware.smackx.time.provider.TimeProvider</className>
-    </iqProvider>
-
-    <!-- XEP-0085: Chat State -->
-    <extensionProvider>
-        <elementName>active</elementName>
-        <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-        <elementName>composing</elementName>
-        <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-        <elementName>paused</elementName>
-        <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-        <elementName>inactive</elementName>
-        <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-        <elementName>gone</elementName>
-        <namespace>http://jabber.org/protocol/chatstates</namespace>
-        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
-    </extensionProvider>
-    
-    <!-- XHTML -->
-    <extensionProvider>
-        <elementName>html</elementName>
-        <namespace>http://jabber.org/protocol/xhtml-im</namespace>
-        <className>org.jivesoftware.smackx.xhtmlim.provider.XHTMLExtensionProvider</className>
-    </extensionProvider>
-
-    <!-- Group Chat Invitations -->
-    <extensionProvider>
-        <elementName>x</elementName>
-        <namespace>jabber:x:conference</namespace>
-        <className>org.jivesoftware.smackx.muc.packet.GroupChatInvitation$Provider</className>
-    </extensionProvider>	
-
-    <!-- Service Discovery # Items -->
-    <iqProvider> 
-        <elementName>query</elementName> 
-        <namespace>http://jabber.org/protocol/disco#items</namespace> 
-        <className>org.jivesoftware.smackx.disco.provider.DiscoverItemsProvider</className> 
-    </iqProvider>
-
-    <!-- Service Discovery # Info -->
-    <iqProvider>
-        <elementName>query</elementName>
-        <namespace>http://jabber.org/protocol/disco#info</namespace>
-        <className>org.jivesoftware.smackx.disco.provider.DiscoverInfoProvider</className>
-    </iqProvider>
-
-    <!-- Data Forms-->
+    <!-- XEP-0004: Data Forms-->
     <extensionProvider>
         <elementName>x</elementName>
         <namespace>jabber:x:data</namespace>
         <className>org.jivesoftware.smackx.xdata.provider.DataFormProvider</className>
     </extensionProvider>
 
-    <!-- MUC User -->
-    <extensionProvider>
-        <elementName>x</elementName>
-        <namespace>http://jabber.org/protocol/muc#user</namespace>
-        <className>org.jivesoftware.smackx.muc.provider.MUCUserProvider</className>
-    </extensionProvider>
-
-    <!-- MUC Admin -->
-    <iqProvider> 
-        <elementName>query</elementName> 
-        <namespace>http://jabber.org/protocol/muc#admin</namespace> 
-        <className>org.jivesoftware.smackx.muc.provider.MUCAdminProvider</className> 
-    </iqProvider>
-
-    <!-- MUC Owner -->
-    <iqProvider> 
-        <elementName>query</elementName> 
-        <namespace>http://jabber.org/protocol/muc#owner</namespace> 
-        <className>org.jivesoftware.smackx.muc.provider.MUCOwnerProvider</className> 
-    </iqProvider>
-
-    <!-- Delayed Delivery -->
-    <extensionProvider>
-        <elementName>x</elementName>
-        <namespace>jabber:x:delay</namespace>
-        <className>org.jivesoftware.smackx.delay.provider.LegacyDelayInformationProvider</className>
-    </extensionProvider>
-    
-    <extensionProvider>
-    	<elementName>delay</elementName>
-        <namespace>urn:xmpp:delay</namespace>
-        <className>org.jivesoftware.smackx.delay.provider.DelayInformationProvider</className>
-    </extensionProvider>
-
-    <!-- Version -->
+    <!-- XEP-0012: Last Activity -->
     <iqProvider>
         <elementName>query</elementName>
-        <namespace>jabber:iq:version</namespace>
-        <className>org.jivesoftware.smackx.iqversion.provider.VersionProvider</className>
+        <namespace>jabber:iq:last</namespace>
+        <className>org.jivesoftware.smackx.iqlast.packet.LastActivity$Provider</className>
     </iqProvider>
 
-    <!-- VCard -->
-    <iqProvider>
-        <elementName>vCard</elementName>
-        <namespace>vcard-temp</namespace>
-        <className>org.jivesoftware.smackx.vcardtemp.provider.VCardProvider</className> 
-    </iqProvider>
-
-    <!-- Offline Message Requests -->
+    <!-- XEP-0013: Flexible Offline Message Retrieval -->
     <iqProvider>
         <elementName>offline</elementName>
         <namespace>http://jabber.org/protocol/offline</namespace>
         <className>org.jivesoftware.smackx.offline.packet.OfflineMessageRequest$Provider</className>
     </iqProvider>
-
-    <!-- Offline Message Indicator -->
     <extensionProvider>
         <elementName>offline</elementName>
         <namespace>http://jabber.org/protocol/offline</namespace>
         <className>org.jivesoftware.smackx.offline.packet.OfflineMessageInfo$Provider</className>
     </extensionProvider>
 
-    <!-- Last Activity -->
+    <!-- XEP-0016: Privacy Lists -->
     <iqProvider>
         <elementName>query</elementName>
-        <namespace>jabber:iq:last</namespace>
-        <className>org.jivesoftware.smackx.iqlast.packet.LastActivity$Provider</className> 
+        <namespace>jabber:iq:privacy</namespace>
+        <className>org.jivesoftware.smackx.privacy.provider.PrivacyProvider</className>
     </iqProvider>
 
-    <!-- User Search -->
+    <!-- XEP-0030: Service Discovery -->
     <iqProvider>
         <elementName>query</elementName>
-        <namespace>jabber:iq:search</namespace>
-        <className>org.jivesoftware.smackx.search.UserSearch$Provider</className>
+        <namespace>http://jabber.org/protocol/disco#items</namespace>
+        <className>org.jivesoftware.smackx.disco.provider.DiscoverItemsProvider</className>
     </iqProvider>
-
-    <!-- SharedGroupsInfo -->
     <iqProvider>
-        <elementName>sharedgroup</elementName>
-        <namespace>http://www.jivesoftware.org/protocol/sharedgroup</namespace>
-        <className>org.jivesoftware.smackx.sharedgroups.packet.SharedGroupsInfo$Provider</className>
+        <elementName>query</elementName>
+        <namespace>http://jabber.org/protocol/disco#info</namespace>
+        <className>org.jivesoftware.smackx.disco.provider.DiscoverInfoProvider</className>
     </iqProvider>
 
-    <!-- XEP-33: Extended Stanza Addressing -->
+    <!-- XEP-0033: Extended Stanza Addressing -->
     <extensionProvider>
         <elementName>addresses</elementName>
         <namespace>http://jabber.org/protocol/address</namespace>
         <className>org.jivesoftware.smackx.address.provider.MultipleAddressesProvider</className>
     </extensionProvider>
 
-    <!-- FileTransfer -->
+    <!-- XEP-0045: Multi-User Chat -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>http://jabber.org/protocol/muc#user</namespace>
+        <className>org.jivesoftware.smackx.muc.provider.MUCUserProvider</className>
+    </extensionProvider>
     <iqProvider>
-    	<elementName>si</elementName>
-    	<namespace>http://jabber.org/protocol/si</namespace>
-    	<className>org.jivesoftware.smackx.si.provider.StreamInitiationProvider</className>
+        <elementName>query</elementName>
+        <namespace>http://jabber.org/protocol/muc#admin</namespace>
+        <className>org.jivesoftware.smackx.muc.provider.MUCAdminProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>http://jabber.org/protocol/muc#owner</namespace>
+        <className>org.jivesoftware.smackx.muc.provider.MUCOwnerProvider</className>
     </iqProvider>
 
+    <!-- XEP-0047: In-Band Bytestreams -->
     <iqProvider>
-    	<elementName>query</elementName>
-    	<namespace>http://jabber.org/protocol/bytestreams</namespace>
-    	<className>org.jivesoftware.smackx.bytestreams.socks5.provider.BytestreamsProvider</className>
+        <elementName>open</elementName>
+        <namespace>http://jabber.org/protocol/ibb</namespace>
+        <className>org.jivesoftware.smackx.bytestreams.ibb.provider.OpenIQProvider</className>
     </iqProvider>
-
-    <iqProvider>
-    	<elementName>open</elementName>
-    	<namespace>http://jabber.org/protocol/ibb</namespace>
-    	<className>org.jivesoftware.smackx.bytestreams.ibb.provider.OpenIQProvider</className>
-    </iqProvider>
-
     <iqProvider>
       <elementName>data</elementName>
       <namespace>http://jabber.org/protocol/ibb</namespace>
       <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider$IQProvider</className>
     </iqProvider>
-
     <iqProvider>
-    	<elementName>close</elementName>
-    	<namespace>http://jabber.org/protocol/ibb</namespace>
-    	<className>org.jivesoftware.smackx.bytestreams.ibb.provider.CloseIQProvider</className>
+        <elementName>close</elementName>
+        <namespace>http://jabber.org/protocol/ibb</namespace>
+        <className>org.jivesoftware.smackx.bytestreams.ibb.provider.CloseIQProvider</className>
     </iqProvider>
-
     <extensionProvider>
         <elementName>data</elementName>
         <namespace>http://jabber.org/protocol/ibb</namespace>
         <className>org.jivesoftware.smackx.bytestreams.ibb.provider.DataPacketProvider$PacketExtensionProvider</className>
     </extensionProvider>
 
-    <!-- Ad-Hoc Command -->
+    <!-- XEP-0049: Private Data Storage -->
+    <iqProvider> 
+        <elementName>query</elementName>
+        <namespace>jabber:iq:private</namespace>
+        <className>org.jivesoftware.smackx.iqprivate.PrivateDataManager$PrivateDataIQProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0050: Ad-Hoc Commands -->
     <iqProvider>
         <elementName>command</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider</className>
     </iqProvider>
-
     <extensionProvider>
         <elementName>bad-action</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$BadActionError</className>
     </extensionProvider>
-
     <extensionProvider>
         <elementName>malformed-actionn</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$MalformedActionError</className>
     </extensionProvider>
-
     <extensionProvider>
         <elementName>bad-locale</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$BadLocaleError</className>
     </extensionProvider>
-
     <extensionProvider>
         <elementName>bad-payload</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$BadPayloadError</className>
     </extensionProvider>
-
     <extensionProvider>
         <elementName>bad-sessionid</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$BadSessionIDError</className>
     </extensionProvider>
-
     <extensionProvider>
         <elementName>session-expired</elementName>
         <namespace>http://jabber.org/protocol/commands</namespace>
         <className>org.jivesoftware.smackx.commands.provider.AdHocCommandDataProvider$SessionExpiredError</className>
     </extensionProvider>
 
-    <!-- SHIM -->
+    <!-- XEP-0054: VCard-Temp -->
+    <iqProvider>
+        <elementName>vCard</elementName>
+        <namespace>vcard-temp</namespace>
+        <className>org.jivesoftware.smackx.vcardtemp.provider.VCardProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0055: Jabber Search -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:search</namespace>
+        <className>org.jivesoftware.smackx.search.UserSearch$Provider</className>
+    </iqProvider>
+
+   <!-- XEP-0059: Result Set Management (RSM) -->
+   <extensionProvider>
+       <elementName>set</elementName>
+       <namespace>http://jabber.org/protocol/rsm</namespace>
+       <className>org.jivesoftware.smackx.rsm.provider.RSMSetProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0060: Publish-Subscribe -->
+    <iqProvider>
+        <elementName>pubsub</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.PubSubProvider</className>
+    </iqProvider>
     <extensionProvider>
-    	<elementName>headers</elementName>
+        <elementName>create</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>items</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.ItemsProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>item</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.ItemProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>subscriptions</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SubscriptionsProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>subscription</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SubscriptionProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>affiliations</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.AffiliationsProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>affiliation</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.AffiliationProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>options</elementName>
+        <namespace>http://jabber.org/protocol/pubsub</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
+    </extensionProvider>
+    <!-- XEP-0060: pubsub#owner -->
+    <extensionProvider>
+        <elementName>affiliation</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.AffiliationProvider</className>
+    </extensionProvider>
+    <iqProvider>
+        <elementName>pubsub</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.PubSubProvider</className>
+    </iqProvider>
+    <extensionProvider>
+        <elementName>configure</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>default</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>subscriptions</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SubscriptionsProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>subscription</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SubscriptionProvider</className>
+    </extensionProvider>
+    <!-- XEP-0060: pubsub#event -->
+    <extensionProvider>
+        <elementName>event</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.EventProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>configuration</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.ConfigEventProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>delete</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>options</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>items</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.ItemsProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>item</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.ItemProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>retract</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.RetractEventProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>purge</elementName>
+        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
+        <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0065: SOCKS5 Bytestreams -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>http://jabber.org/protocol/bytestreams</namespace>
+        <className>org.jivesoftware.smackx.bytestreams.socks5.provider.BytestreamsProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0071: XHTML-IM -->
+    <extensionProvider>
+        <elementName>html</elementName>
+        <namespace>http://jabber.org/protocol/xhtml-im</namespace>
+        <className>org.jivesoftware.smackx.xhtmlim.provider.XHTMLExtensionProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0077: In-Band Registration -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:register</namespace>
+        <className>org.jivesoftware.smackx.iqregister.provider.RegistrationProvider</className>
+    </iqProvider>
+    <streamFeatureProvider>
+        <elementName>register</elementName>
+        <namespace>http://jabber.org/features/iq-register</namespace>
+        <className>org.jivesoftware.smackx.iqregister.provider.RegistrationStreamFeatureProvider</className>
+    </streamFeatureProvider>
+
+    <!-- XEP-0079: Advanced Message Processing -->
+    <extensionProvider>
+        <elementName>amp</elementName>
+        <namespace>http://jabber.org/protocol/amp</namespace>
+        <className>org.jivesoftware.smackx.amp.provider.AMPExtensionProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0080: User Location -->
+    <extensionProvider>
+        <elementName>geoloc</elementName>
+        <namespace>http://jabber.org/protocol/geoloc</namespace>
+        <className>org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0085: Chat State Notifications -->
+    <extensionProvider>
+        <elementName>active</elementName>
+        <namespace>http://jabber.org/protocol/chatstates</namespace>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>composing</elementName>
+        <namespace>http://jabber.org/protocol/chatstates</namespace>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>paused</elementName>
+        <namespace>http://jabber.org/protocol/chatstates</namespace>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>inactive</elementName>
+        <namespace>http://jabber.org/protocol/chatstates</namespace>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+        <elementName>gone</elementName>
+        <namespace>http://jabber.org/protocol/chatstates</namespace>
+        <className>org.jivesoftware.smackx.chatstates.provider.ChatStateExtensionProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0091: Legacy Delayed Delivery -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:delay</namespace>
+        <className>org.jivesoftware.smackx.delay.provider.LegacyDelayInformationProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0092: Software Version -->
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>jabber:iq:version</namespace>
+        <className>org.jivesoftware.smackx.iqversion.provider.VersionProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0096: SI File Transfer -->
+    <iqProvider>
+        <elementName>si</elementName>
+        <namespace>http://jabber.org/protocol/si</namespace>
+        <className>org.jivesoftware.smackx.si.provider.StreamInitiationProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0107: User Mood -->
+    <extensionProvider>
+        <elementName>mood</elementName>
+        <namespace>http://jabber.org/protocol/mood</namespace>
+        <className>org.jivesoftware.smackx.mood.provider.MoodProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0115: Entity Capabilities -->
+    <extensionProvider>
+        <elementName>c</elementName>
+        <namespace>http://jabber.org/protocol/caps</namespace>
+        <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
+    </extensionProvider>
+    <streamFeatureProvider>
+        <elementName>c</elementName>
+        <namespace>http://jabber.org/protocol/caps</namespace>
+        <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
+    </streamFeatureProvider>
+
+    <!-- XEP-0118: User Tune -->
+    <extensionProvider>
+        <elementName>tune</elementName>
+        <namespace>http://jabber.org/protocol/tune</namespace>
+        <className>org.jivesoftware.smackx.usertune.provider.UserTuneProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0131: Stanza Headers and Internet Metadata (SHIM) -->
+    <extensionProvider>
+        <elementName>headers</elementName>
         <namespace>http://jabber.org/protocol/shim</namespace>
         <className>org.jivesoftware.smackx.shim.provider.HeadersProvider</className>
     </extensionProvider>
-
     <extensionProvider>
-    	<elementName>header</elementName>
+        <elementName>header</elementName>
         <namespace>http://jabber.org/protocol/shim</namespace>
         <className>org.jivesoftware.smackx.shim.provider.HeaderProvider</className>
     </extensionProvider>
 
-    <!-- XEP-0060 pubsub -->
+    <!-- XEP-0166: Jingle -->
     <iqProvider>
-        <elementName>pubsub</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.PubSubProvider</className>
+      <elementName>jingle</elementName>
+      <namespace>urn:xmpp:jingle:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleProvider</className>
     </iqProvider>
-
     <extensionProvider>
-    	<elementName>create</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
+      <elementName>out-of-order</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
     </extensionProvider>
-
     <extensionProvider>
-    	<elementName>items</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.ItemsProvider</className>
+      <elementName>unknown-session</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
     </extensionProvider>
-
     <extensionProvider>
-    	<elementName>item</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.ItemProvider</className>
+      <elementName>unsupported-content</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
     </extensionProvider>
-
     <extensionProvider>
-    	<elementName>subscriptions</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.SubscriptionsProvider</className>
+      <elementName>unsupported-transports</elementName>
+      <namespace>urn:xmpp:jingle:errors:1</namespace>
+      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
     </extensionProvider>
 
-    <extensionProvider>
-    	<elementName>subscription</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.SubscriptionProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>affiliations</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.AffiliationsProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>affiliation</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.AffiliationProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>options</elementName>
-        <namespace>http://jabber.org/protocol/pubsub</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
-    </extensionProvider>
-	
-    <!-- XEP-0060 pubsub#owner -->
-
-	<extensionProvider>
-    	<elementName>affiliation</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.AffiliationProvider</className>
-    </extensionProvider>
-
-    <iqProvider>
-        <elementName>pubsub</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.PubSubProvider</className>
-    </iqProvider>
-
-    <extensionProvider>
-    	<elementName>configure</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>default</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
-    </extensionProvider>
-
-	<extensionProvider>
-		<elementName>subscriptions</elementName>
-		<namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-		<className>org.jivesoftware.smackx.pubsub.provider.SubscriptionsProvider</className>
-	</extensionProvider>
-
-	<extensionProvider>
-		<elementName>subscription</elementName>
-		<namespace>http://jabber.org/protocol/pubsub#owner</namespace>
-		<className>org.jivesoftware.smackx.pubsub.provider.SubscriptionProvider</className>
-	</extensionProvider>
-
-    <!-- XEP-0060 pubsub#event -->
-    <extensionProvider>
-    	<elementName>event</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.EventProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>configuration</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.ConfigEventProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>delete</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>options</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.FormNodeProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>items</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.ItemsProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>item</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.ItemProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>retract</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.RetractEventProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-    	<elementName>purge</elementName>
-        <namespace>http://jabber.org/protocol/pubsub#event</namespace>
-        <className>org.jivesoftware.smackx.pubsub.provider.SimpleNodeProvider</className>
-    </extensionProvider>
-
-    <!-- Nick Exchange -->
+    <!-- XEP-0172: User Nickname -->
     <extensionProvider>
         <elementName>nick</elementName>
         <namespace>http://jabber.org/protocol/nick</namespace>
         <className>org.jivesoftware.smackx.nick.provider.NickProvider</className>
     </extensionProvider>
 
-    <!-- Attention -->
-    <extensionProvider>
-        <elementName>attention</elementName>
-        <namespace>urn:xmpp:attention:0</namespace>
-        <className>org.jivesoftware.smackx.attention.packet.AttentionExtension$Provider</className>
-    </extensionProvider>
-
-    <!-- XEP-0184 Message Delivery Receipts -->
+    <!-- XEP-0184: Message Delivery Receipts -->
     <extensionProvider>
         <elementName>received</elementName>
         <namespace>urn:xmpp:receipts</namespace>
@@ -433,96 +449,7 @@
         <className>org.jivesoftware.smackx.receipts.DeliveryReceiptRequest$Provider</className>
     </extensionProvider>
 
-    <!-- XEP-0115 Entity Capabilities -->
-    <extensionProvider>
-        <elementName>c</elementName>
-        <namespace>http://jabber.org/protocol/caps</namespace>
-        <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
-    </extensionProvider>
-
-    <streamFeatureProvider>
-        <elementName>c</elementName>
-        <namespace>http://jabber.org/protocol/caps</namespace>
-        <className>org.jivesoftware.smackx.caps.provider.CapsExtensionProvider</className>
-    </streamFeatureProvider>
-
-   	<!-- XEP-0297 Stanza Forwarding -->
- 	<extensionProvider>
- 	 	<elementName>forwarded</elementName>
- 	 	<namespace>urn:xmpp:forward:0</namespace>
-		<className>org.jivesoftware.smackx.forward.provider.ForwardedProvider</className>
-	</extensionProvider>
-
-    <!-- Ping (XEP-199) Manager -->
-    <iqProvider>
-        <elementName>ping</elementName>
-        <namespace>urn:xmpp:ping</namespace>
-        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
-    </iqProvider>
-
-    <!-- Privacy -->
-    <iqProvider>
-        <elementName>query</elementName>
-        <namespace>jabber:iq:privacy</namespace>
-        <className>org.jivesoftware.smackx.privacy.provider.PrivacyProvider</className>
-    </iqProvider>
-
-    <!-- XEP-0079 Advanced Message Processing -->
-    <extensionProvider>
-        <elementName>amp</elementName>
-        <namespace>http://jabber.org/protocol/amp</namespace>
-        <className>org.jivesoftware.smackx.amp.provider.AMPExtensionProvider</className>
-    </extensionProvider>
-
-    <!-- JiveProperties -->
-    <extensionProvider>
-        <elementName>properties</elementName>
-        <namespace>http://www.jivesoftware.com/xmlns/xmpp/properties</namespace>
-        <className>org.jivesoftware.smackx.jiveproperties.provider.JivePropertiesExtensionProvider</className>
-    </extensionProvider>
-
-    <!-- XEP-0077: In-Band Registration -->
-    <iqProvider>
-        <elementName>query</elementName>
-        <namespace>jabber:iq:register</namespace>
-        <className>org.jivesoftware.smackx.iqregister.provider.RegistrationProvider</className>
-    </iqProvider>
-
-    <streamFeatureProvider>
-        <elementName>register</elementName>
-        <namespace>http://jabber.org/features/iq-register</namespace>
-        <className>org.jivesoftware.smackx.iqregister.provider.RegistrationStreamFeatureProvider</className>
-    </streamFeatureProvider>
-
-   <!-- XEP-0059: Result Set Management -->
-   <extensionProvider>
-       <elementName>set</elementName>
-       <namespace>http://jabber.org/protocol/rsm</namespace>
-       <className>org.jivesoftware.smackx.rsm.provider.RSMSetProvider</className>
-    </extensionProvider>
-    
-    <!-- XEP-0080: User Location -->
-    <extensionProvider>
-    	<elementName>geoloc</elementName>
-    	<namespace>http://jabber.org/protocol/geoloc</namespace>
-    	<className>org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider</className>
-    </extensionProvider>
-
-    <!-- XEP-0308: Last Message Correction -->
-    <extensionProvider>
-        <elementName>replace</elementName>
-        <namespace>urn:xmpp:message-correct:0</namespace>
-        <className>org.jivesoftware.smackx.message_correct.provider.MessageCorrectProvider</className>
-    </extensionProvider>
-
-    <!-- XEP-0319: Last User Interaction in Presence -->
-    <extensionProvider>
-        <elementName>idle</elementName>
-        <namespace>urn:xmpp:idle:1</namespace>
-        <className>org.jivesoftware.smackx.last_interaction.provider.IdleProvider</className>
-    </extensionProvider>
-
-     <!-- XEP-0191 Blocking Command -->
+    <!-- XEP-0191: Blocking Command -->
     <iqProvider>
         <elementName>blocklist</elementName>
         <namespace>urn:xmpp:blocking</namespace>
@@ -543,7 +470,35 @@
         <namespace>urn:xmpp:blocking:errors</namespace>
         <className>org.jivesoftware.smackx.blocking.provider.BlockedErrorExtensionProvider</className>
     </extensionProvider>
-    
+
+    <!-- XEP-0199: XMPP Ping -->
+    <iqProvider>
+        <elementName>ping</elementName>
+        <namespace>urn:xmpp:ping</namespace>
+        <className>org.jivesoftware.smackx.ping.provider.PingProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0202: Entity Time -->
+    <iqProvider>
+        <elementName>time</elementName>
+        <namespace>urn:xmpp:time</namespace>
+        <className>org.jivesoftware.smackx.time.provider.TimeProvider</className>
+    </iqProvider>
+
+    <!-- XEP-0203: Delayed Delivery -->
+    <extensionProvider>
+        <elementName>delay</elementName>
+        <namespace>urn:xmpp:delay</namespace>
+        <className>org.jivesoftware.smackx.delay.provider.DelayInformationProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0224: Attention -->
+    <extensionProvider>
+        <elementName>attention</elementName>
+        <namespace>urn:xmpp:attention:0</namespace>
+        <className>org.jivesoftware.smackx.attention.packet.AttentionExtension$Provider</className>
+    </extensionProvider>
+
     <!-- XEP-0231: Bits of Binary -->
     <iqProvider>
         <elementName>data</elementName>
@@ -551,49 +506,46 @@
         <className>org.jivesoftware.smackx.bob.provider.BoBIQProvider</className>
     </iqProvider>
 
-    <!-- XEP-0166: Jingle -->
+    <!-- XEP-0249: Group Chat Invitations -->
+    <extensionProvider>
+        <elementName>x</elementName>
+        <namespace>jabber:x:conference</namespace>
+        <className>org.jivesoftware.smackx.muc.packet.GroupChatInvitation$Provider</className>
+    </extensionProvider>
+
+    <!-- XEP-0297: Stanza Forwarding -->
+    <extensionProvider>
+        <elementName>forwarded</elementName>
+        <namespace>urn:xmpp:forward:0</namespace>
+        <className>org.jivesoftware.smackx.forward.provider.ForwardedProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0308: Last Message Correction -->
+    <extensionProvider>
+        <elementName>replace</elementName>
+        <namespace>urn:xmpp:message-correct:0</namespace>
+        <className>org.jivesoftware.smackx.message_correct.provider.MessageCorrectProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0319: Last User Interaction in Presence -->
+    <extensionProvider>
+        <elementName>idle</elementName>
+        <namespace>urn:xmpp:idle:1</namespace>
+        <className>org.jivesoftware.smackx.last_interaction.provider.IdleProvider</className>
+    </extensionProvider>
+
+    <!-- JiveProperties -->
+    <extensionProvider>
+        <elementName>properties</elementName>
+        <namespace>http://www.jivesoftware.com/xmlns/xmpp/properties</namespace>
+        <className>org.jivesoftware.smackx.jiveproperties.provider.JivePropertiesExtensionProvider</className>
+    </extensionProvider>
+
+    <!-- SharedGroupsInfo -->
     <iqProvider>
-      <elementName>jingle</elementName>
-      <namespace>urn:xmpp:jingle:1</namespace>
-      <className>org.jivesoftware.smackx.jingle.provider.JingleProvider</className>
+        <elementName>sharedgroup</elementName>
+        <namespace>http://www.jivesoftware.org/protocol/sharedgroup</namespace>
+        <className>org.jivesoftware.smackx.sharedgroups.packet.SharedGroupsInfo$Provider</className>
     </iqProvider>
-
-    <extensionProvider>
-      <elementName>out-of-order</elementName>
-      <namespace>urn:xmpp:jingle:errors:1</namespace>
-      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-      <elementName>unknown-session</elementName>
-      <namespace>urn:xmpp:jingle:errors:1</namespace>
-      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-      <elementName>unsupported-content</elementName>
-      <namespace>urn:xmpp:jingle:errors:1</namespace>
-      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
-    </extensionProvider>
-
-    <extensionProvider>
-      <elementName>unsupported-transports</elementName>
-      <namespace>urn:xmpp:jingle:errors:1</namespace>
-      <className>org.jivesoftware.smackx.jingle.provider.JingleErrorProvider</className>
-    </extensionProvider>
-
-    <!-- XEP-0107: User Mood -->
-    <extensionProvider>
-          <elementName>mood</elementName>
-          <namespace>http://jabber.org/protocol/mood</namespace>
-          <className>org.jivesoftware.smackx.mood.provider.MoodProvider</className>
-        </extensionProvider>
-
-    <!-- XEP-0118: User Tune -->
-    <extensionProvider>
-        <elementName>tune</elementName>
-        <namespace>http://jabber.org/protocol/tune</namespace>
-        <className>org.jivesoftware.smackx.usertune.provider.UserTuneProvider</className>
-    </extensionProvider>
 
 </smackProviders>
