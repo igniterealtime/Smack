@@ -23,6 +23,13 @@ Currently supported XEPs of smack-tcp
 |---------------------------------------------|--------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------|
 | [Stream Management](streammanagement.md)    | [XEP-0198](https://xmpp.org/extensions/xep-0198.html)  | n/a       | Allows active management of an XML Stream between two XMPP entities (stanza acknowledgement, stream resumption). |
 
+Currently supported XEPs of smack-im
+------------------------------------
+
+| Name                                        | XEP                                                    | Version   | Description |
+|---------------------------------------------|--------------------------------------------------------|-----------|-----------------------------------|--
+| Roster Versioning                           | [XEP-0237](https://xmpp.org/extensions/xep-0237.html)  | n/a       | Efficient roster synchronization. |
+
 Smack Extensions and currently supported XEPs of smack-extensions
 -----------------------------------------------------------------
 
@@ -52,17 +59,19 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Chat State Notifications                    | [XEP-0085](https://xmpp.org/extensions/xep-0085.html)  | n/a       | Communicating the status of a user in a chat session. |
 | [Time Exchange](time.md)                    | [XEP-0090](https://xmpp.org/extensions/xep-0090.html)  | n/a       | Allows local time information to be shared between users. |
 | Software Version                            | [XEP-0092](https://xmpp.org/extensions/xep-0092.html)  | n/a       | Retrieve and announce the software application of an XMPP entity. |
-| Stream Initation                            | [XEP-0095](https://xmpp.org/extensions/xep-0095.html)  | n/a       | Initiating a data stream between any two XMPP entities. |
+| Stream Initiation                           | [XEP-0095](https://xmpp.org/extensions/xep-0095.html)  | n/a       | Initiating a data stream between any two XMPP entities. |
 | [SI File Transfer](filetransfer.md)         | [XEP-0096](https://xmpp.org/extensions/xep-0096.html)  | n/a       | Transfer files between two users over XMPP. |
 | User Mood                                   | [XEP-0107](https://xmpp.org/extensions/xep-0107.html)  | 1.2.1     | Communicate the users current mood. |
 | [Entity Capabilities](caps.md)              | [XEP-0115](https://xmpp.org/extensions/xep-0115.html)  | n/a       | Broadcasting and dynamic discovery of entity capabilities. |
 | User Tune                                   | [XEP-0118](https://xmpp.org/extensions/xep-0118.html)  | n/a       | Defines a payload format for communicating information about music to which a user is listening. |
 | Data Forms Validation                       | [XEP-0122](https://xmpp.org/extensions/xep-0122.html)  | n/a       | Enables an application to specify additional validation guidelines . |
+| Stanza Headers and Internet Metadata (SHIM) | [XEP-0131](https://xmpp.org/extensions/xep-0131.html)  | 1.2       | Add Metadata Headers to Stanzas. |
 | Service Administration                      | [XEP-0133](https://xmpp.org/extensions/xep-0133.html)  | n/a       | Recommended best practices for service-level administration of servers and components using Ad-Hoc Commands. |
 | Stream Compression                          | [XEP-0138](https://xmpp.org/extensions/xep-0138.html)  | n/a       | Support for optional compression of the XMPP stream.
 | Data Forms Layout                           | [XEP-0141](https://xmpp.org/extensions/xep-0141.html)  | n/a       | Enables an application to specify form layouts. |
 | Personal Eventing Protocol                  | [XEP-0163](https://xmpp.org/extensions/xep-0163.html)  | n/a       | Using the XMPP publish-subscribe protocol to broadcast state change events associated with an XMPP account. |
 | [Jingle](jingle.html)                       | [XEP-0166](https://xmpp.org/extensions/xep-0166.html)  | n/a       | Initiate and manage sessions between two XMPP entities. |
+| User Nickname                               | [XEP-0172](https://xmpp.org/extensions/xep-0172.html)  | n/a       | Communicate user nicknames. |
 | Message Delivery Receipts                   | [XEP-0184](https://xmpp.org/extensions/xep-0184.html)  | n/a       | Extension for message delivery receipts. The sender can request notification that the message has been delivered. |
 | [Blocking Command](blockingcommand.md)      | [XEP-0191](https://xmpp.org/extensions/xep-0191.html)  | n/a       | Communications blocking that is intended to be simpler than privacy lists (XEP-0016). |
 | XMPP Ping                                   | [XEP-0199](https://xmpp.org/extensions/xep-0199.html)  | n/a       | Sending application-level pings over XML streams.
@@ -73,6 +82,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Attention                                   | [XEP-0224](https://xmpp.org/extensions/xep-0224.html)  | n/a       | Getting attention of another user. |
 | Bits of Binary                              | [XEP-0231](https://xmpp.org/extensions/xep-0231.html)  | n/a       | Including or referring to small bits of binary data in an XML stanza. |
 | Best Practices for Resource Locking         | [XEP-0296](https://xmpp.org/extensions/xep-0296.html)  | n/a       | Specifies best practices to be followed by Jabber/XMPP clients about when to lock into, and unlock away from, resources. |
+| Stanza Forwarding                           | [XEP-0297](https://xmpp.org/extensions/xep-0297.html)  | n/a       | Allows forwarding of Stanzas. |
 | Last Message Correction                     | [XEP-0308](https://xmpp.org/extensions/xep-0308.html)  | n/a       | Provides a method for indicating that a message is a correction of the last sent message. |
 | Last User Interaction in Presence           | [XEP-0319](https://xmpp.org/extensions/xep-0319.html)  | n/a       | Communicate time of last user interaction via XMPP presence notifications. |
 | Data Forms Geolocation Element              | [XEP-0350](https://xmpp.org/extensions/xep-0350.html)  | n/a       | Allows to include XEP-0080 gelocation data in XEP-0004 data forms.  |
@@ -102,6 +112,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | Stable and Unique Stanza IDs                              | [XEP-0359](https://xmpp.org/extensions/xep-0359.html)  | 0.5.0     | This specification describes unique and stable IDs for messages. |
 | HTTP File Upload                                          | [XEP-0363](https://xmpp.org/extensions/xep-0363.html)  | 0.3.1     | Protocol to request permissions to upload a file to an HTTP server and get a shareable URL. |
 | References                                                | [XEP-0372](https://xmpp.org/extensions/xep-0363.html)  | 0.2.0     | Add references like mentions or external data to stanzas. |
+| Explicit Message Encryption                               | [XEP-0380](https://xmpp.org/extensions/xep-0380.html)  | 0.3.0     | Mark a message as explicitly encrypted. |
 | [OpenPGP for XMPP](ox.md)                                 | [XEP-0373](https://xmpp.org/extensions/xep-0373.html)  | 0.3.2     | Utilize OpenPGP to exchange encrypted and signed content. |
 | [OpenPGP for XMPP: Instant Messaging](ox-im.md)           | [XEP-0374](https://xmpp.org/extensions/xep-0374.html)  | 0.2.0     | OpenPGP encrypted Instant Messaging. |
 | [Spoiler Messages](spoiler.md)                            | [XEP-0382](https://xmpp.org/extensions/xep-0382.html)  | 0.2.0     | Indicate that the body of a message should be treated as a spoiler. |
