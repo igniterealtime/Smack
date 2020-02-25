@@ -24,7 +24,6 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Stanza;
-
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
@@ -46,8 +45,6 @@ import org.jxmpp.jid.Jid;
  */
 public class IBBTransferNegotiator extends StreamNegotiator {
 
-    private final InBandBytestreamManager manager;
-
     /**
      * The default constructor for the In-Band Bytestream Negotiator.
      *
@@ -55,13 +52,12 @@ public class IBBTransferNegotiator extends StreamNegotiator {
      */
     protected IBBTransferNegotiator(XMPPConnection connection) {
         super(connection);
-        this.manager = InBandBytestreamManager.getByteStreamManager(connection);
     }
 
     @Override
     public OutputStream createOutgoingStream(String streamID, Jid initiator,
                     Jid target) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        InBandBytestreamSession session = this.manager.establishSession(target, streamID);
+        InBandBytestreamSession session = InBandBytestreamManager.getByteStreamManager(connection()).establishSession(target, streamID);
         session.setCloseBothStreamsEnabled(true);
         return session.getOutputStream();
     }
@@ -73,7 +69,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          * In-Band Bytestream initiation listener must ignore next in-band bytestream request with
          * given session ID
          */
-        this.manager.ignoreBytestreamRequestOnce(initiation.getSessionID());
+      InBandBytestreamManager.getByteStreamManager(connection()).ignoreBytestreamRequestOnce(initiation.getSessionID());
 
         Stanza streamInitiation = initiateIncomingStream(connection(), initiation);
         return negotiateIncomingStream(streamInitiation);
@@ -86,7 +82,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
          * the In-Band Bytestream initiation listener must ignore the next
          * In-Band Bytestream request with the given session ID
          */
-        this.manager.ignoreBytestreamRequestOnce(streamID);
+      InBandBytestreamManager.getByteStreamManager(connection()).ignoreBytestreamRequestOnce(streamID);
     }
 
     @Override
@@ -97,7 +93,7 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     @Override
     InputStream negotiateIncomingStream(Stanza streamInitiation) throws NotConnectedException, InterruptedException {
         // build In-Band Bytestream request
-        InBandBytestreamRequest request = new ByteStreamRequest(this.manager,
+        InBandBytestreamRequest request = new ByteStreamRequest(InBandBytestreamManager.getByteStreamManager(connection()),
                         (Open) streamInitiation);
 
         // always accept the request
