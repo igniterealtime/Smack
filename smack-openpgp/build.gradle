@@ -1,10 +1,6 @@
 description = """\
 Smack API for XEP-0373: OpenPGP for XMPP."""
 
-repositories {
-	mavenCentral()
-}
-
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
