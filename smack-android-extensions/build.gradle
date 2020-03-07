@@ -6,4 +6,7 @@ Extra Smack extensions for Android."""
 dependencies {
 	compile project(':smack-android')
 	compile project(':smack-extensions')
+
+	// Add the Android jar to the Eclipse .classpath.
+	compileClasspath files(androidBootClasspath)
 }
