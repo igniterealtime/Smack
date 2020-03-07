@@ -1,3 +1,7 @@
+description="""
+Smack API for XEP-0384: OMEMO Encryption
+"""
+
 dependencies {
 	compile project(":smack-im")
 	compile project(":smack-extensions")

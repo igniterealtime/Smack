@@ -1,5 +1,6 @@
-apply plugin: 'checkstyle'
-apply plugin: 'maven'
+description="""
+Smack API for XEP-0384: OMEMO Encryption using libsignal
+"""
 
 dependencies {
 	compile project(":smack-im")
