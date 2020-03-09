@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2016 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -29,6 +32,8 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -44,6 +49,8 @@ import org.jivesoftware.smack.SmackException.SecurityNotPossibleException;
 
 
 public class TLSUtils {
+
+    private static final Logger LOGGER = Logger.getLogger(TLSUtils.class.getName());
 
     public static final String SSL = "SSL";
     public static final String TLS = "TLS";
@@ -260,5 +267,22 @@ public class TLSUtils {
             }
         }
         throw new AssertionError("No trust manager for the default algorithm " + defaultAlgorithm + " found");
+    }
+
+    private static final File DEFAULT_TRUSTSTORE_PATH;
+
+    static {
+        String javaHome = System.getProperty("java.home");
+        String defaultTruststorePath = javaHome + File.separator + "lib" + File.separator + "security" + File.separator + "cacerts";
+        DEFAULT_TRUSTSTORE_PATH = new File(defaultTruststorePath);
+    }
+
+    public static FileInputStream getDefaultTruststoreStreamIfPossible() {
+        try {
+            return new FileInputStream(DEFAULT_TRUSTSTORE_PATH);
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.WARNING, "Could not open default truststore at " + DEFAULT_TRUSTSTORE_PATH, e);
+            return null;
+        }
     }
 }

@@ -2304,7 +2304,28 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         ks = null;
                     }
                 } else {
-                    ks.load(null, null);
+                    InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                    try {
+                        // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
+                        // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
+                        char[] password = "changeit".toCharArray();
+                        try {
+                            ks.load(stream, password);
+                        } finally {
+                            stream.close();
+                        }
+                    } catch (IOException e) {
+                        LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
+
+                        ks = KeyStore.getInstance("jks");
+                        // Open the stream again, so that we read it from the beginning.
+                        stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                        try {
+                            ks.load(stream, null);
+                        } finally {
+                            stream.close();
+                        }
+                    }
                 }
             }
 
