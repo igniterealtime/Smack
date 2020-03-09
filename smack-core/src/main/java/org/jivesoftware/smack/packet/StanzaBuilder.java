@@ -162,6 +162,14 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         return getThis();
     }
 
+    public final B addOptExtensions(Collection<? extends ExtensionElement> extensionElements) {
+        if (extensionElements == null) {
+            return getThis();
+        }
+
+        return addExtensions(extensionElements);
+    }
+
     public final B addExtensions(Collection<? extends ExtensionElement> extensionElements) {
         for (ExtensionElement extensionElement : extensionElements) {
             addExtension(extensionElement);

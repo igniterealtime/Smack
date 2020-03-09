@@ -178,7 +178,7 @@ public final class ServiceDiscoveryManager extends Manager {
                         // Add node identities
                         responseBuilder.addIdentities(nodeInformationProvider.getNodeIdentities());
                         // Add packet extensions
-                        responseBuilder.addExtensions(nodeInformationProvider.getNodePacketExtensions());
+                        responseBuilder.addOptExtensions(nodeInformationProvider.getNodePacketExtensions());
                     } else {
                         // Return <item-not-found/> error since specified node was not found
                         responseBuilder.ofType(IQ.Type.error);
