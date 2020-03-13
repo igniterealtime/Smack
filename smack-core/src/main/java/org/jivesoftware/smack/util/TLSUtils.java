@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -283,6 +286,53 @@ public class TLSUtils {
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.WARNING, "Could not open default truststore at " + DEFAULT_TRUSTSTORE_PATH, e);
             return null;
+        }
+    }
+
+    enum DefaultTrustStoreType {
+        jks,
+        unknown,
+        no_default,
+    }
+
+    private static final int JKS_MAGIC = 0xfeedfeed;
+    private static final int JKS_VERSION_1 = 1;
+    private static final int JKS_VERSION_2 = 2;
+
+    public static DefaultTrustStoreType getDefaultTruststoreType() throws IOException {
+        try (InputStream inputStream = getDefaultTruststoreStreamIfPossible()) {
+            if (inputStream == null) {
+                return DefaultTrustStoreType.no_default;
+            }
+
+            DataInputStream dis = new DataInputStream(inputStream);
+            int magic = dis.readInt();
+            int version = dis.readInt();
+
+            if (magic == JKS_MAGIC && (version == JKS_VERSION_1 || version == JKS_VERSION_2)) {
+                return DefaultTrustStoreType.jks;
+            }
+        }
+
+        return DefaultTrustStoreType.unknown;
+    }
+
+    /**
+     * Tries to determine if the default truststore type is of type jks and sets the javax.net.ssl.trustStoreType system
+     * property to 'JKS' if so. This is meant as workaround in situations where the default truststore type is (still)
+     * 'jks' but we run on a newer JRE/JDK which uses PKCS#12 as type. See for example <a href="https://bugs.gentoo.org/712290">Gentoo bug #712290</a>.
+     */
+    public static void setDefaultTrustStoreTypeToJksIfRequired() {
+        DefaultTrustStoreType defaultTrustStoreType;
+        try {
+            defaultTrustStoreType = getDefaultTruststoreType();
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Could not set keystore type to jks if required", e);
+            return;
+        }
+
+        if (defaultTrustStoreType == DefaultTrustStoreType.jks) {
+            System.setProperty("javax.net.ssl.trustStoreType", "JKS");
         }
     }
 }
