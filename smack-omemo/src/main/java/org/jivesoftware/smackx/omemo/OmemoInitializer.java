@@ -17,9 +17,6 @@
 package org.jivesoftware.smackx.omemo;
 
 import org.jivesoftware.smack.initializer.UrlInitializer;
-import org.jivesoftware.smack.util.SecurityUtil;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Initializer class that registers omemo providers.
@@ -28,12 +25,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  */
 @SuppressWarnings("unused")
 public class OmemoInitializer extends UrlInitializer {
-
-    static {
-        // Remove any BC providers and add a fresh one.
-        // This is done, since older Android versions ship with a crippled BC provider.
-        SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class);
-    }
 
     @Override
     protected String getProvidersUri() {

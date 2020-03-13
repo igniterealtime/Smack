@@ -18,9 +18,12 @@ package org.jivesoftware.smackx.hashes;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.security.Security;
+
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,6 +32,10 @@ import org.junit.jupiter.api.Test;
  * sha3-224sum -l, sha3-256sum -l, sha3-384sum -l, sha3-512sum -l, b2sum -l 160, b2sum -l 256, b2sum -l 384, b2sum -l 512 }
  */
 public class HashTest extends SmackTestSuite {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     private static final String testString =     "Hello World!";
     private static final String md5sum =         "ed076287532e86365e841e92bfc50d8c";

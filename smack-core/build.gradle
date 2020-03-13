@@ -24,6 +24,7 @@ dependencies {
 	testCompile "org.assertj:assertj-core:3.11.1"
 	testCompile "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:1.2'
+	testCompile 'org.bouncycastle:bcprov-jdk15on:1.64'
 }
 
 class CreateFileTask extends DefaultTask {

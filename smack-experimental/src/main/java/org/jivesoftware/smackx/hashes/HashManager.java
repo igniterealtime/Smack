@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Paul Schaub, 2019 Florian Schmaus
+ * Copyright © 2017 Paul Schaub, 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,12 +42,9 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.util.SecurityUtil;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * Manager that can be used to determine support for hash functions. By default the Manager announces support for
@@ -56,12 +53,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
  * <a href="https://xmpp.org/extensions/xep-0300.html#recommendations">https://xmpp.org/extensions/xep-0300.html#recommendations</a>.
  */
 public final class HashManager extends Manager {
-
-    static {
-        // Remove any BC providers and add a fresh one.
-        // This is done, since older Android versions ship with a crippled BC provider.
-        SecurityUtil.ensureProviderAtFirstPosition(BouncyCastleProvider.class);
-    }
 
     public static final String PREFIX_NS_ALGO = "urn:xmpp:hash-function-text-names:";
 

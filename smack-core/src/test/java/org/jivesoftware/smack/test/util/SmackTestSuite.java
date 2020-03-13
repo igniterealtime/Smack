@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
  */
 package org.jivesoftware.smack.test.util;
 
+import java.security.Security;
 import java.util.Base64;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * The SmackTestSuite takes care of initializing Smack for the unit tests. For example the Base64
@@ -52,5 +55,7 @@ public class SmackTestSuite {
             }
 
         });
+
+        Security.addProvider(new BouncyCastleProvider());
     }
 }
