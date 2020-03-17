@@ -28,12 +28,14 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -41,10 +43,11 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-
+import org.jivesoftware.smackx.commands.AdHocCommandManager;
+import org.jivesoftware.smackx.commands.RemoteCommand;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
@@ -172,6 +175,7 @@ public final class MamManager extends Manager {
 
     private static final Map<XMPPConnection, Map<Jid, MamManager>> INSTANCES = new WeakHashMap<>();
 
+    private static final String ADVANCED_CONFIG_NAMESPACE = "urn:xmpp:mam#configure";
     /**
      * Get a MamManager for the MAM archive of the local entity (the "user") of the given connection.
      *
@@ -216,10 +220,13 @@ public final class MamManager extends Manager {
 
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
+    private final AdHocCommandManager adHocCommandManager;
+
     private MamManager(XMPPConnection connection, Jid archiveAddress) {
         super(connection);
         this.archiveAddress = archiveAddress;
         serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        adHocCommandManager = AdHocCommandManager.getAddHocCommandsManager(connection);
     }
 
     /**
@@ -712,6 +719,25 @@ public final class MamManager extends Manager {
         // Note that this may return 'null' but SDM's supportsFeature() does the right thing™ then.
         Jid archiveAddress = getArchiveAddress();
         return serviceDiscoveryManager.supportsFeature(archiveAddress, MamElements.NAMESPACE);
+    }
+
+    public boolean isAdvancedConfigurationSupported(Jid jid) throws InterruptedException, XMPPException, SmackException {
+        DiscoverItems discoverItems = adHocCommandManager.discoverCommands(jid);
+        for (DiscoverItems.Item item : discoverItems.getItems()) {
+            if (item.getNode().equals(ADVANCED_CONFIG_NAMESPACE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public RemoteCommand getAdvancedConfigurationCommand(Jid jid) throws InterruptedException, XMPPException, SmackException {
+        DiscoverItems discoverItems = adHocCommandManager.discoverCommands(jid);
+        for (DiscoverItems.Item item : discoverItems.getItems()) {
+            if (item.getNode().equals(ADVANCED_CONFIG_NAMESPACE))
+                return adHocCommandManager.getRemoteCommand(jid, item.getNode());
+        }
+        throw new SmackException.FeatureNotSupportedException(ADVANCED_CONFIG_NAMESPACE, jid);
     }
 
     private static DataForm getNewMamForm() {
