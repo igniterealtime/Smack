@@ -18,7 +18,7 @@ Getting started
 
 Start with having a look at the **[Documentation]** and the **[Javadoc]**.
 
-Instructions how to use Smack in your Java or Android project are provided in the [Smack Readme and Upgrade Guide](https://igniterealtime.org/projects/smack/readme).
+Instructions on how to use Smack in your Java or Android project are provided in the [Smack Readme and Upgrade Guide](https://igniterealtime.org/projects/smack/readme).
 
 Professional Services
 ---------------------
