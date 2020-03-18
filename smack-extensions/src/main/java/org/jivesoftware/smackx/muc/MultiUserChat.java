@@ -239,12 +239,12 @@ public class MultiUserChat {
                             presence.getFrom().equals(myRoomJID),
                             mucUser,
                             from);
-                    } else {
-                        // An occupant has left the room
-                        if (!isUserStatusModification) {
-                            for (ParticipantStatusListener listener : participantStatusListeners) {
-                                listener.left(from);
-                            }
+                    }
+
+                    // An occupant has left the room
+                    if (!isUserStatusModification) {
+                        for (ParticipantStatusListener listener : participantStatusListeners) {
+                            listener.left(from);
                         }
                     }
                     break;
