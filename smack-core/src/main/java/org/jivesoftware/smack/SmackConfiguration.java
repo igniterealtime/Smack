@@ -244,18 +244,6 @@ public final class SmackConfiguration {
      * Get compression handlers.
      *
      * @return a list of compression handlers.
-     * @deprecated use {@link #getCompressionHandlers()} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.4.
-    public static List<XMPPInputOutputStream> getCompresionHandlers() {
-        return getCompressionHandlers();
-    }
-
-    /**
-     * Get compression handlers.
-     *
-     * @return a list of compression handlers.
      */
     public static List<XMPPInputOutputStream> getCompressionHandlers() {
         List<XMPPInputOutputStream> res = new ArrayList<>(compressionHandlers.size());

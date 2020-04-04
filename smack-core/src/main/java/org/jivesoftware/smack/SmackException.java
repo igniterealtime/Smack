@@ -98,13 +98,6 @@ public abstract class SmackException extends Exception {
             return new NoResponseException(sb.toString());
         }
 
-        @Deprecated
-        // TODO: Remove in Smack 4.4.
-        public static NoResponseException newWith(long timeout,
-                StanzaCollector collector) {
-            return newWith(timeout, collector.getStanzaFilter(), false);
-        }
-
         public static NoResponseException newWith(long timeout,
                         StanzaCollector collector, boolean stanzaCollectorCancelled) {
             return newWith(timeout, collector.getStanzaFilter(), stanzaCollectorCancelled);
