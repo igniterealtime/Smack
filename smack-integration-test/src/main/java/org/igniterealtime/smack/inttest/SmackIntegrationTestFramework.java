@@ -33,6 +33,7 @@ import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -728,13 +729,8 @@ public class SmackIntegrationTestFramework {
                 .append(method.getName())
                 .append(" (")
                 .append(testType.name());
-            final String SUBDESCRIPTION_DELIMITER = ", ";
-            sb.append(SUBDESCRIPTION_DELIMITER);
-
-            for (String subdescripton : subdescriptons) {
-                sb.append(subdescripton).append(SUBDESCRIPTION_DELIMITER);
-            }
-            sb.setLength(sb.length() - SUBDESCRIPTION_DELIMITER.length());
+            sb.append(", ");
+            StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
             sb.append(')');
 
             stringCache = sb.toString();
