@@ -67,6 +67,7 @@ SMACK_EXCEPTIONS[CorruptedOmemoKeyException]="if the OMEMO key is corrupted."
 SMACK_EXCEPTIONS[CryptoFailedException]="if the OMEMO cryptography failed."
 SMACK_EXCEPTIONS[CannotEstablishOmemoSessionException]="if no OMEMO session could be established."
 SMACK_EXCEPTIONS[UntrustedOmemoIdentityException]="if the OMEMO identity is not trusted."
+SMACK_EXCEPTIONS[FailedNonzaException]="if an XMPP protocol failure was received."
 
 MODE=""
 
