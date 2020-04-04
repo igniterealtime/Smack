@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus.
+ * Copyright 2018-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,12 @@ package org.jivesoftware.smack.util;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jivesoftware.smack.util.DNSUtil.DomainType;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
 import org.junit.Test;
 
 public class DnsUtilTest {
-
-    @Test
-    public void simpleDomainTypeTest() {
-        DomainType client = DomainType.client;
-        assertEquals(DNSUtil.XMPP_CLIENT_DNS_SRV_PREFIX, client.srvPrefix.ace);
-
-        DomainType server = DomainType.server;
-        assertEquals(DNSUtil.XMPP_SERVER_DNS_SRV_PREFIX, server.srvPrefix.ace);
-    }
 
     private static final SmackDaneProvider DNS_UTIL_TEST_DANE_PROVIDER = new SmackDaneProvider() {
         @Override

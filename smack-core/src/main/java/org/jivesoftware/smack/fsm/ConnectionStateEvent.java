@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,37 @@
  */
 package org.jivesoftware.smack.fsm;
 
-import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.State;
-import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.TransitionFailureResult;
-import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.TransitionImpossibleReason;
-import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.TransitionSuccessResult;
+import org.jivesoftware.smack.fsm.StateDescriptorGraph.GraphVertex;
 
 public class ConnectionStateEvent {
 
-    private final StateDescriptor stateDescriptor;
+    private final StateDescriptor currentStateDescriptor;
+    private final StateDescriptor successorStateDescriptor;
 
     private final long timestamp;
 
-    protected ConnectionStateEvent(StateDescriptor stateDescriptor) {
-        this.stateDescriptor = stateDescriptor;
+    public ConnectionStateEvent(StateDescriptor currentStateDescriptor) {
+        this(currentStateDescriptor, null);
+    }
+
+    public ConnectionStateEvent(StateDescriptor currentStateDescriptor, StateDescriptor successorStateDescriptor) {
+        this.currentStateDescriptor = currentStateDescriptor;
+        this.successorStateDescriptor = successorStateDescriptor;
         this.timestamp = System.currentTimeMillis();
     }
 
     public StateDescriptor getStateDescriptor() {
-        return stateDescriptor;
+        return currentStateDescriptor;
     }
 
     @Override
     public String toString() {
-        return  stateDescriptor.getStateName() + ' ' + getClass().getSimpleName();
+        if (successorStateDescriptor == null) {
+            return getClass().getSimpleName() + ": " + currentStateDescriptor.getStateName();
+        } else {
+            return currentStateDescriptor.getStateName() + ' ' + getClass().getSimpleName() + ' '
+                            + successorStateDescriptor.getStateName();
+        }
     }
 
     public long getTimestamp() {
@@ -46,22 +54,22 @@ public class ConnectionStateEvent {
     }
 
     public static class StateRevertBackwardsWalk extends ConnectionStateEvent {
-        StateRevertBackwardsWalk(State state) {
+        public StateRevertBackwardsWalk(State state) {
             super(state.getStateDescriptor());
         }
     }
 
     public static class FinalStateReached extends ConnectionStateEvent {
-        FinalStateReached(State state) {
+        public FinalStateReached(State state) {
             super(state.getStateDescriptor());
         }
     }
 
     public static class TransitionNotPossible extends ConnectionStateEvent {
-        private final TransitionImpossibleReason transitionImpossibleReason;
+        private final StateTransitionResult.TransitionImpossible transitionImpossibleReason;
 
-        TransitionNotPossible(State state, TransitionImpossibleReason reason) {
-            super(state.getStateDescriptor());
+        public TransitionNotPossible(State currentState, State successorState, StateTransitionResult.TransitionImpossible reason) {
+            super(currentState.getStateDescriptor(), successorState.getStateDescriptor());
             this.transitionImpossibleReason = reason;
         }
 
@@ -72,16 +80,16 @@ public class ConnectionStateEvent {
     }
 
     public static class AboutToTransitionInto extends ConnectionStateEvent {
-        AboutToTransitionInto(State state) {
-            super(state.getStateDescriptor());
+        public AboutToTransitionInto(State currentState, State successorState) {
+            super(currentState.getStateDescriptor(), successorState.getStateDescriptor());
         }
     }
 
     public static class TransitionFailed extends ConnectionStateEvent {
-        private final TransitionFailureResult transitionFailedReason;
+        private final StateTransitionResult.Failure transitionFailedReason;
 
-        TransitionFailed(State state, TransitionFailureResult transitionFailedReason) {
-            super(state.getStateDescriptor());
+        public TransitionFailed(State currentState, State failedSuccessorState, StateTransitionResult.Failure transitionFailedReason) {
+            super(currentState.getStateDescriptor(), failedSuccessorState.getStateDescriptor());
             this.transitionFailedReason = transitionFailedReason;
         }
 
@@ -91,10 +99,16 @@ public class ConnectionStateEvent {
         }
     }
 
-    public static class SuccessfullyTransitionedInto extends ConnectionStateEvent {
-        private final TransitionSuccessResult transitionSuccessResult;
+    public static class TransitionIgnoredDueCycle extends ConnectionStateEvent {
+        public TransitionIgnoredDueCycle(GraphVertex<State> currentStateVertex, GraphVertex<State> successorStateVertexCausingCycle) {
+            super(currentStateVertex.getElement().getStateDescriptor(), successorStateVertexCausingCycle.getElement().getStateDescriptor());
+        }
+    }
 
-        SuccessfullyTransitionedInto(State state, TransitionSuccessResult transitionSuccessResult) {
+    public static class SuccessfullyTransitionedInto extends ConnectionStateEvent {
+        private final StateTransitionResult.Success transitionSuccessResult;
+
+        public SuccessfullyTransitionedInto(State state, StateTransitionResult.Success transitionSuccessResult) {
             super(state.getStateDescriptor());
             this.transitionSuccessResult = transitionSuccessResult;
         }

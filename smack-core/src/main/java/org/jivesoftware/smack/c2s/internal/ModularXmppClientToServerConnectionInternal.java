@@ -1,0 +1,125 @@
+/**
+ *
+ * Copyright 2020 Florian Schmaus
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jivesoftware.smack.c2s.internal;
+
+import java.io.IOException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.util.ListIterator;
+import java.util.Queue;
+
+import org.jivesoftware.smack.AbstractXMPPConnection.SmackTlsContext;
+import org.jivesoftware.smack.SmackException.ConnectionUnexpectedTerminatedException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackReactor;
+import org.jivesoftware.smack.SmackReactor.ChannelSelectedCallback;
+import org.jivesoftware.smack.XMPPException.FailedNonzaException;
+import org.jivesoftware.smack.XmppInputOutputFilter;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
+import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
+import org.jivesoftware.smack.debugger.SmackDebugger;
+import org.jivesoftware.smack.fsm.ConnectionStateEvent;
+import org.jivesoftware.smack.packet.Nonza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.Consumer;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
+public abstract class ModularXmppClientToServerConnectionInternal {
+
+    private final SmackReactor reactor;
+
+    public final ModularXmppClientToServerConnection connection;
+
+    public final SmackDebugger smackDebugger;
+
+    public final Queue<TopLevelStreamElement> outgoingElementsQueue;
+
+    public ModularXmppClientToServerConnectionInternal(ModularXmppClientToServerConnection connection, SmackReactor reactor,
+                    SmackDebugger smackDebugger, Queue<TopLevelStreamElement> outgoingElementsQueue) {
+        this.connection = connection;
+        this.reactor = reactor;
+        this.smackDebugger = smackDebugger;
+        this.outgoingElementsQueue = outgoingElementsQueue;
+    }
+
+    public SelectionKey registerWithSelector(SelectableChannel channel, int ops, ChannelSelectedCallback callback)
+                    throws ClosedChannelException {
+        return reactor.registerWithSelector(channel, ops, callback);
+    }
+
+    public void setInterestOps(SelectionKey selectionKey, int interestOps) {
+        reactor.setInterestOps(selectionKey, interestOps);
+    }
+
+    public final void withSmackDebugger(Consumer<SmackDebugger> smackDebuggerConsumer) {
+        if (smackDebugger == null) {
+            return;
+        }
+
+        smackDebuggerConsumer.accept(smackDebugger);
+    }
+
+    public abstract XmlEnvironment getOutgoingStreamXmlEnvironment();
+
+    // TODO: The incomingElement parameter was previously of type TopLevelStreamElement, but I believe it has to be
+    // of type string. But would this also work for BOSH or WebSocket?
+    public abstract void parseAndProcessElement(String wrappedCompleteIncomingElement);
+
+    public abstract void notifyConnectionError(Exception e);
+
+    public abstract void onStreamOpen(XmlPullParser parser);
+
+    public abstract void onStreamClosed();
+
+    public abstract void fireFirstLevelElementSendListeners(TopLevelStreamElement element);
+
+    public abstract void invokeConnectionStateMachineListener(ConnectionStateEvent connectionStateEvent);
+
+    public abstract void addXmppInputOutputFilter(XmppInputOutputFilter xmppInputOutputFilter);
+
+    public abstract ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterBeginIterator();
+
+    public abstract ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterEndIterator();
+
+    public abstract void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
+                    ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException;
+
+    public abstract SmackTlsContext getSmackTlsContext()
+                    throws KeyManagementException, NoSuchAlgorithmException, CertificateException, IOException,
+                    UnrecoverableKeyException, KeyStoreException, NoSuchProviderException;
+
+    public abstract <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
+                    Class<SN> successNonzaClass, Class<FN> failedNonzaClass)
+                    throws NoResponseException, NotConnectedException, FailedNonzaException, InterruptedException;
+
+    public abstract void asyncGo(Runnable runnable);
+
+    public abstract Exception getCurrentConnectionException();
+
+    public abstract void setCompressionEnabled(boolean compressionEnabled);
+
+    public abstract void setTransport(XmppClientToServerTransport xmppTransport);
+}

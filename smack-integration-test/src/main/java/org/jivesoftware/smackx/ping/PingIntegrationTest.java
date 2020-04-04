@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import org.jxmpp.jid.Jid;
 
 public class PingIntegrationTest extends AbstractSmackIntegrationTest {
 
-    public PingIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public PingIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 

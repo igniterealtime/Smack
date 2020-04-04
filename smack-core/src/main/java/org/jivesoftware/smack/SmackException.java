@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,15 @@
  */
 package org.jivesoftware.smack;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.c2s.XmppClientToServerTransport.LookupConnectionEndpointsFailed;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.rce.RemoteConnectionEndpoint;
+import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
+import org.jivesoftware.smack.util.rce.RemoteConnectionException;
 
 import org.jxmpp.jid.Jid;
 
@@ -90,6 +94,7 @@ public abstract class SmackException extends Exception {
         public static NoResponseException newWith(XMPPConnection connection, String waitingFor) {
             final StringBuilder sb = getWaitingFor(connection);
             sb.append(" While waiting for ").append(waitingFor);
+            sb.append(" [").append(connection).append(']');
             return new NoResponseException(sb.toString());
         }
 
@@ -264,45 +269,112 @@ public abstract class SmackException extends Exception {
         }
     }
 
+    public abstract static class ConnectionException extends SmackException {
+
+        private static final long serialVersionUID = 1L;
+
+        protected ConnectionException(Throwable wrappedThrowable) {
+            super(wrappedThrowable);
+        }
+
+        protected ConnectionException(String message) {
+            super(message);
+        }
+
+    }
+
+    public static final class GenericConnectionException extends ConnectionException {
+
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Deprecated, do not use.
+         *
+         * @param wrappedThrowable the wrapped throwable.
+         */
+        @Deprecated
+        public GenericConnectionException(Throwable wrappedThrowable) {
+            super(wrappedThrowable);
+        }
+    }
+
     /**
-     * ConnectionException is thrown if Smack is unable to connect to all hosts of a given XMPP
-     * service. The failed hosts can be retrieved with
-     * {@link ConnectionException#getFailedAddresses()}, which will have the exception causing the
-     * connection failure set and retrievable with {@link HostAddress#getExceptions()}.
+     * This exception is thrown if Smack is unable to connect to all hosts of a given XMPP
+     * service. The connection exceptions can be retrieved with
+     * {@link EndpointConnectionException#getConnectionExceptions()}, which will have the exception causing the
+     * connection failure set and retrievable with {@link RemoteConnectionException#getException()}.
      */
-    public static class ConnectionException extends SmackException {
+    public static final class EndpointConnectionException extends ConnectionException {
 
         /**
          *
          */
-        private static final long serialVersionUID = 1686944201672697996L;
+        private static final long serialVersionUID = 1;
 
-        private final List<HostAddress> failedAddresses;
+        private final List<RemoteConnectionEndpointLookupFailure> lookupFailures;
+        private final List<? extends RemoteConnectionException<?>> connectionExceptions;
 
-        public ConnectionException(Throwable wrappedThrowable) {
-            super(wrappedThrowable);
-            failedAddresses = new ArrayList<>(0);
-        }
-
-        private ConnectionException(String message, List<HostAddress> failedAddresses) {
+        private EndpointConnectionException(String message, List<RemoteConnectionEndpointLookupFailure> lookupFailures,
+                        List<? extends RemoteConnectionException<?>> connectionExceptions) {
             super(message);
-            this.failedAddresses = failedAddresses;
+            // At least one list must contain an entry.
+            assert !lookupFailures.isEmpty() || !connectionExceptions.isEmpty();
+            this.lookupFailures = lookupFailures;
+            this.connectionExceptions = connectionExceptions;
         }
 
-        public static ConnectionException from(List<HostAddress> failedAddresses) {
-            final String DELIMITER = ", ";
-            StringBuilder sb = new StringBuilder("The following addresses failed: ");
-            for (HostAddress hostAddress : failedAddresses) {
-                sb.append(hostAddress.getErrorMessage());
-                sb.append(DELIMITER);
+        public static EndpointConnectionException from(List<RemoteConnectionEndpointLookupFailure> lookupFailures,
+                        List<? extends RemoteConnectionException<?>> connectionExceptions) {
+            StringBuilder sb = new StringBuilder(256);
+
+            if (!lookupFailures.isEmpty()) {
+                sb.append("Could not lookup the following endpoints: ");
+                StringUtils.appendTo(lookupFailures, sb);
             }
-            // Remove the last delimiter
-            sb.setLength(sb.length() - DELIMITER.length());
-            return new ConnectionException(sb.toString(), failedAddresses);
+
+            if (!connectionExceptions.isEmpty()) {
+                sb.append("The following addresses failed: ");
+                StringUtils.appendTo(connectionExceptions, sb, rce -> sb.append(rce.getErrorMessage()));
+            }
+
+            return new EndpointConnectionException(sb.toString(), lookupFailures, connectionExceptions);
         }
 
-        public List<HostAddress> getFailedAddresses() {
-            return failedAddresses;
+        public List<RemoteConnectionEndpointLookupFailure> getLookupFailures() {
+            return lookupFailures;
+        }
+
+        public List<? extends RemoteConnectionException<? extends RemoteConnectionEndpoint>> getConnectionExceptions() {
+            return connectionExceptions;
+        }
+    }
+
+    public static final class NoEndpointsDiscoveredException extends ConnectionException {
+
+        private static final long serialVersionUID = 1L;
+
+        private final List<LookupConnectionEndpointsFailed> lookupFailures;
+
+        private NoEndpointsDiscoveredException(String message, List<LookupConnectionEndpointsFailed> lookupFailures) {
+            super(message);
+            this.lookupFailures = Collections.unmodifiableList(lookupFailures);
+        }
+
+        public List<LookupConnectionEndpointsFailed> getLookupFailures() {
+            return lookupFailures;
+        }
+
+        public static NoEndpointsDiscoveredException from(List<LookupConnectionEndpointsFailed> lookupFailures) {
+            StringBuilder sb = new StringBuilder();
+
+            if (lookupFailures.isEmpty()) {
+                sb.append("No endpoint lookup finished within the timeout");
+            } else {
+                sb.append("Not endpoints could be discovered due the following lookup failures: ");
+                StringUtils.appendTo(lookupFailures, sb);
+            }
+
+            return new NoEndpointsDiscoveredException(sb.toString(), lookupFailures);
         }
     }
 

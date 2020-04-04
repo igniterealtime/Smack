@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,4 +20,7 @@ public interface Function<R, T> {
 
     R apply(T t);
 
+    static <T> Function<T, T> identity() {
+        return t -> t;
+    }
 }

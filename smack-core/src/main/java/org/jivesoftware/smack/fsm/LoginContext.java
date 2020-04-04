@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,11 @@ import org.jxmpp.jid.parts.Resourcepart;
 
 // TODO: At one point SASL authzid should be part of this.
 public class LoginContext {
-    final String username;
-    final String password;
-    final Resourcepart resource;
+    public final String username;
+    public final String password;
+    public final Resourcepart resource;
 
-    LoginContext(String username, String password, Resourcepart resource) {
+    public LoginContext(String username, String password, Resourcepart resource) {
         this.username = username;
         this.password = password;
         this.resource = resource;

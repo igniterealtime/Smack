@@ -1,0 +1,48 @@
+description = """\
+Full Smack library for Java SE."""
+
+dependencies {
+	api project(':smack-bosh')
+	api project(':smack-debug')
+	api project(':smack-experimental')
+	api project(':smack-extensions')
+	api project(':smack-java7')
+	api project(':smack-legacy')
+	api project(':smack-omemo')
+	api project(':smack-omemo-signal')
+	api project(':smack-openpgp')
+	api project(':smack-resolver-minidns')
+	api project(':smack-resolver-minidns-dox')
+	api project(':smack-tcp')
+
+	testImplementation project(path: ":smack-core", configuration: "testRuntime")
+}
+
+task printModularXmppClientToServerConnectionStateGraph(type: JavaExec) {
+	classpath sourceSets.main.runtimeClasspath
+	main 'org.jivesoftware.smack.full.ModularXmppClientToServerConnectionTool'
+}
+
+task generateModularXmppClientToServerConnectionStateGraph(type: JavaExec) {
+	// TODO: Filter out all files which do not contain the String
+	// StateDescriptor.
+	inputs.files file('..').listFiles().findAll {it.name.endsWith('.java')}
+	outputs.files 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.dot'
+	classpath sourceSets.main.runtimeClasspath
+	main 'org.jivesoftware.smack.full.ModularXmppClientToServerConnectionTool'
+	args outputs.files
+}
+
+task convertModularXmppClientToServerConnectionStateGraphDotToPng(type: Exec) {
+	dependsOn generateModularXmppClientToServerConnectionStateGraph
+	inputs.files 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.dot'
+	outputs.files 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.png'
+
+	executable 'dot'
+	args "-Tpng", "-o", "${outputs.files.first()}",  "${inputs.files.first()}"
+}
+
+task cleanGenerateFiles(type: Delete) {
+	delete 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.dot', 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.png'
+}
+clean.dependsOn cleanGenerateFiles

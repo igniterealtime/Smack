@@ -26,12 +26,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.bind2.Bind2ModuleDescriptor;
 import org.jivesoftware.smack.compress.provider.CompressedProvider;
 import org.jivesoftware.smack.compress.provider.FailureProvider;
+import org.jivesoftware.smack.compression.CompressionModuleDescriptor;
 import org.jivesoftware.smack.compression.Java7ZlibInputOutputStream;
 import org.jivesoftware.smack.compression.XmppCompressionManager;
 import org.jivesoftware.smack.compression.zlib.ZlibXmppCompressionFactory;
 import org.jivesoftware.smack.initializer.SmackInitializer;
+import org.jivesoftware.smack.isr.InstantStreamResumptionModuleDescriptor;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smack.provider.BindIQProvider;
@@ -135,6 +138,10 @@ public final class SmackInitialization {
         ProviderManager.addNonzaProvider(TlsFailureProvider.INSTANCE);
         ProviderManager.addNonzaProvider(CompressedProvider.INSTANCE);
         ProviderManager.addNonzaProvider(FailureProvider.INSTANCE);
+
+        SmackConfiguration.addModule(Bind2ModuleDescriptor.class);
+        SmackConfiguration.addModule(CompressionModuleDescriptor.class);
+        SmackConfiguration.addModule(InstantStreamResumptionModuleDescriptor.class);
 
         SmackConfiguration.smackInitialized = true;
     }

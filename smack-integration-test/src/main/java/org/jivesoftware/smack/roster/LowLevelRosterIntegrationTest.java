@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2019 Florian Schmaus
+ * Copyright 2016-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.jxmpp.jid.FullJid;
 
 public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public LowLevelRosterIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public LowLevelRosterIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 

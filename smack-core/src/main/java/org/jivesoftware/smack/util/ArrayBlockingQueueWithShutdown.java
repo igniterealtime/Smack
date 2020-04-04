@@ -163,15 +163,20 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
     /**
      * Start the queue. Newly created instances will be started automatically, thus this only needs
      * to be called after {@link #shutdown()}.
+     *
+     * @return <code>true</code> if the queues was shutdown before, <code>false</code> if not.
      */
-    public void start() {
+    public boolean start() {
+        boolean previousIsShutdown;
         lock.lock();
         try {
+            previousIsShutdown = isShutdown;
             isShutdown = false;
         }
         finally {
             lock.unlock();
         }
+        return previousIsShutdown;
     }
 
     /**

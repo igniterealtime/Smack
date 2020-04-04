@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2018 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,9 @@ import javax.net.ssl.SSLContext;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
+import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.debugger.EnhancedDebugger;
@@ -94,80 +96,90 @@ public final class Configuration {
 
     public final Set<String> disabledTests;
 
+    public final String defaultConnectionNickname;
+
+    public final Set<String> enabledConnections;
+
+    public final Set<String> disabledConnections;
+
     public final Set<String> testPackages;
 
     public final ConnectionConfigurationBuilderApplier configurationApplier;
 
-    private Configuration(DomainBareJid service, String serviceTlsPin, SecurityMode securityMode, int replyTimeout,
-                    Debugger debugger, String accountOneUsername, String accountOnePassword, String accountTwoUsername,
-                    String accountTwoPassword, String accountThreeUsername, String accountThreePassword, Set<String> enabledTests, Set<String> disabledTests,
-                    Set<String> testPackages, String adminAccountUsername, String adminAccountPassword)
-                    throws KeyManagementException, NoSuchAlgorithmException {
-        this.service = Objects.requireNonNull(service,
+    public final boolean verbose;
+
+    private Configuration(Configuration.Builder builder) throws KeyManagementException, NoSuchAlgorithmException {
+        service = Objects.requireNonNull(builder.service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
-        this.serviceTlsPin = serviceTlsPin;
+        serviceTlsPin = builder.serviceTlsPin;
         if (serviceTlsPin != null) {
             tlsContext = Java7Pinning.forPin(serviceTlsPin);
         } else {
             tlsContext = null;
         }
-        this.securityMode = securityMode;
-        if (replyTimeout > 0) {
-            this.replyTimeout = replyTimeout;
+        securityMode = builder.securityMode;
+        if (builder.replyTimeout > 0) {
+            replyTimeout = builder.replyTimeout;
         } else {
-            this.replyTimeout = 60000;
+            replyTimeout = 60000;
         }
-        this.debugger = debugger;
-        if (StringUtils.isNotEmpty(adminAccountUsername, adminAccountPassword)) {
+        debugger = builder.debugger;
+        if (StringUtils.isNotEmpty(builder.adminAccountUsername, builder.adminAccountPassword)) {
             accountRegistration = AccountRegistration.serviceAdministration;
         }
-        else if (StringUtils.isNotEmpty(accountOneUsername, accountOnePassword, accountTwoUsername, accountTwoPassword,
-                        accountThreeUsername, accountThreePassword)) {
+        else if (StringUtils.isNotEmpty(builder.accountOneUsername, builder.accountOnePassword,
+                        builder.accountTwoUsername, builder.accountTwoPassword, builder.accountThreeUsername,
+                        builder.accountThreePassword)) {
             accountRegistration = AccountRegistration.disabled;
         }
         else {
             accountRegistration = AccountRegistration.inBandRegistration;
         }
 
-        this.adminAccountUsername = adminAccountUsername;
-        this.adminAccountPassword = adminAccountPassword;
+        this.adminAccountUsername = builder.adminAccountUsername;
+        this.adminAccountPassword = builder.adminAccountPassword;
 
-        boolean accountOnePasswordSet = StringUtils.isNotEmpty(accountOnePassword);
-        if (accountOnePasswordSet != StringUtils.isNotEmpty(accountTwoPassword) ||
-                accountOnePasswordSet != StringUtils.isNotEmpty(accountThreePassword)) {
+        boolean accountOnePasswordSet = StringUtils.isNotEmpty(builder.accountOnePassword);
+        if (accountOnePasswordSet != StringUtils.isNotEmpty(builder.accountTwoPassword) ||
+                accountOnePasswordSet != StringUtils.isNotEmpty(builder.accountThreePassword)) {
             // Ensure the invariant that either all main accounts have a password set, or none.
             throw new IllegalArgumentException();
         }
 
-        this.accountOneUsername = accountOneUsername;
-        this.accountOnePassword = accountOnePassword;
-        this.accountTwoUsername = accountTwoUsername;
-        this.accountTwoPassword = accountTwoPassword;
-        this.accountThreeUsername = accountThreeUsername;
-        this.accountThreePassword = accountThreePassword;
-        this.enabledTests = enabledTests;
-        this.disabledTests = disabledTests;
-        this.testPackages = testPackages;
+        this.accountOneUsername = builder.accountOneUsername;
+        this.accountOnePassword = builder.accountOnePassword;
+        this.accountTwoUsername = builder.accountTwoUsername;
+        this.accountTwoPassword = builder.accountTwoPassword;
+        this.accountThreeUsername = builder.accountThreeUsername;
+        this.accountThreePassword = builder.accountThreePassword;
+        this.enabledTests = builder.enabledTests;
+        this.disabledTests = builder.disabledTests;
+        this.defaultConnectionNickname = builder.defaultConnectionNickname;
+        this.enabledConnections = builder.enabledConnections;
+        this.disabledConnections = builder.disabledConnections;
+        this.testPackages = builder.testPackages;
 
-        this.configurationApplier = builder -> {
+        this.configurationApplier = b -> {
             if (tlsContext != null) {
-                builder.setCustomSSLContext(tlsContext);
+                b.setCustomSSLContext(tlsContext);
             }
-            builder.setSecurityMode(securityMode);
-            builder.setXmppDomain(service);
+            b.setSecurityMode(securityMode);
+            b.setXmppDomain(service);
 
             switch (debugger) {
             case enhanced:
-                builder.setDebuggerFactory(EnhancedDebugger.Factory.INSTANCE);
+                b.setDebuggerFactory(EnhancedDebugger.Factory.INSTANCE);
                 break;
             case console:
-                builder.setDebuggerFactory(ConsoleDebugger.Factory.INSTANCE);
+                b.setDebuggerFactory(ConsoleDebugger.Factory.INSTANCE);
                 break;
             case none:
                 // Nothing to do :).
                 break;
             }
         };
+
+        this.verbose = builder.verbose;
     }
 
     public boolean isAccountRegistrationPossible() {
@@ -210,7 +222,15 @@ public final class Configuration {
 
         private Set<String> disabledTests;
 
+        private String defaultConnectionNickname;
+
+        private Set<String> enabledConnections;
+
+        private Set<String> disabledConnections;
+
         private Set<String> testPackages;
+
+        private boolean verbose;
 
         private Builder() {
         }
@@ -324,6 +344,21 @@ public final class Configuration {
             return this;
         }
 
+        public Builder setDefaultConnection(String defaultConnectionNickname) {
+            this.defaultConnectionNickname = defaultConnectionNickname;
+            return this;
+        }
+
+        public Builder setEnabledConnections(String enabledConnectionsString) {
+            enabledConnections = split(enabledConnectionsString);
+            return this;
+        }
+
+        public Builder setDisabledConnections(String disabledConnectionsString) {
+            disabledConnections = split(disabledConnectionsString);
+            return this;
+        }
+
         public Builder addTestPackages(String testPackagesString) {
             if (testPackagesString != null) {
                 String[] testPackagesArray = testPackagesString.split(",");
@@ -350,10 +385,22 @@ public final class Configuration {
             return this;
         }
 
+        public Builder setVerbose(boolean verbose) {
+            this.verbose = verbose;
+            return this;
+        }
+
+        public Builder setVerbose(String verboseBooleanString) {
+            if (verboseBooleanString == null) {
+                return this;
+            }
+
+            boolean verbose = ParserUtils.parseXmlBoolean(verboseBooleanString);
+            return setVerbose(verbose);
+        }
+
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
-            return new Configuration(service, serviceTlsPin, securityMode, replyTimeout, debugger, accountOneUsername,
-                            accountOnePassword, accountTwoUsername, accountTwoPassword, accountThreeUsername, accountThreePassword, enabledTests, disabledTests,
-                            testPackages, adminAccountUsername, adminAccountPassword);
+            return new Configuration(this);
         }
     }
 
@@ -414,9 +461,14 @@ public final class Configuration {
         builder.setDebugger(properties.getProperty("debugger"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
         builder.setDisabledTests(properties.getProperty("disabledTests"));
+        builder.setDefaultConnection(properties.getProperty("defaultConnection"));
+        builder.setEnabledConnections(properties.getProperty("enabledConnections"));
+        builder.setDisabledConnections(properties.getProperty("disabledConnections"));
 
         builder.addTestPackages(properties.getProperty("testPackages"));
         builder.addTestPackages(testPackages);
+
+        builder.setVerbose(properties.getProperty("verbose"));
 
         return builder.build();
     }
@@ -437,23 +489,36 @@ public final class Configuration {
         return null;
     }
 
-    private static Set<String> getTestSetFrom(String string) {
-        if (string == null) {
+    private static Set<String> split(String input) {
+        return split(input, Function.identity());
+    }
+
+    private static Set<String> split(String input, Function<String, String> transformer) {
+        if (input == null) {
             return null;
         }
-        String[] stringArray = string.split(",");
-        Set<String> res = new HashSet<>(stringArray.length);
-        for (String s : stringArray) {
-            res.add(getFullTestStringFrom(s));
+
+        String[] inputArray = input.split(",");
+        Set<String> res = new HashSet<>(inputArray.length);
+        for (String s : inputArray) {
+            s = transformer.apply(s);
+            boolean newElement = res.add(s);
+            if (!newElement) {
+                throw new IllegalArgumentException("The argument '" + s + "' was already provided.");
+            }
         }
+
         return res;
     }
 
-    private static String getFullTestStringFrom(String string) {
-        string = string.trim();
-        if (string.startsWith("smackx.") || string.startsWith("smack.")) {
-            string = "org.jivesoftware." + string;
-        }
-        return string;
+    private static Set<String> getTestSetFrom(String input) {
+        return split(input, s -> {
+            s = s.trim();
+            if (s.startsWith("smackx.") || s.startsWith("smack.")) {
+                s = "org.jivesoftware." + s;
+            }
+            return s;
+        });
     }
+
 }

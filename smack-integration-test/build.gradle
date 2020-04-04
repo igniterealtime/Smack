@@ -7,13 +7,7 @@ mainClassName = 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework'
 applicationDefaultJvmArgs = ["-enableassertions"]
 
 dependencies {
-	compile project(':smack-java7')
-	compile project(':smack-tcp')
-	compile project(':smack-extensions')
-	compile project(':smack-experimental')
-	compile project(':smack-omemo')
-	compile project(':smack-openpgp')
-	compile project(':smack-debug')
+	api project(':smack-java8-full')
 	compile 'org.reflections:reflections:0.9.11'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
 	compile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"

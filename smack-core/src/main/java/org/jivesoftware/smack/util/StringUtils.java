@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -467,10 +467,24 @@ public class StringUtils {
         return sb;
     }
 
+    public static void appendTo(Collection<? extends Object> collection, StringBuilder sb) {
+        appendTo(collection, ", ", sb);
+    }
+
+    public static <O extends Object> void appendTo(Collection<O> collection, StringBuilder sb,
+                    Consumer<O> appendFunction) {
+        appendTo(collection, ", ", sb, appendFunction);
+    }
+
     public static void appendTo(Collection<? extends Object> collection, String delimiter, StringBuilder sb) {
-        for (Iterator<? extends Object> it = collection.iterator(); it.hasNext();) {
-            Object cs = it.next();
-            sb.append(cs);
+        appendTo(collection, delimiter, sb, o -> sb.append(o));
+    }
+
+    public static <O extends Object> void appendTo(Collection<O> collection, String delimiter, StringBuilder sb,
+                    Consumer<O> appendFunction) {
+        for (Iterator<O> it = collection.iterator(); it.hasNext();) {
+            O cs = it.next();
+            appendFunction.accept(cs);
             if (it.hasNext()) {
                 sb.append(delimiter);
             }
@@ -564,5 +578,17 @@ public class StringUtils {
 
     public static String deleteXmlWhitespace(String string) {
         return XML_WHITESPACE.matcher(string).replaceAll("");
+    }
+
+    public static Appendable appendHeading(Appendable appendable, String heading) throws IOException {
+        return appendHeading(appendable, heading, '-');
+    }
+
+    public static Appendable appendHeading(Appendable appendable, String heading, char underlineChar) throws IOException {
+        appendable.append(heading).append('\n');
+        for (int i = 0; i < heading.length(); i++) {
+            appendable.append(underlineChar);
+        }
+        return appendable.append('\n');
     }
 }

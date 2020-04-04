@@ -41,7 +41,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
  * Then Bob fetches his Mam archive and decrypts the result.
  */
 public class OmemoMamDecryptionTest extends AbstractTwoUsersOmemoIntegrationTest {
-    public OmemoMamDecryptionTest(SmackIntegrationTestEnvironment<?> environment)
+    public OmemoMamDecryptionTest(SmackIntegrationTestEnvironment environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, TestNotPossibleException {
         super(environment);

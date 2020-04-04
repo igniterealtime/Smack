@@ -35,7 +35,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 
 public class ReadOnlyDeviceIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
-    public ReadOnlyDeviceIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, TestNotPossibleException {
+    public ReadOnlyDeviceIntegrationTest(SmackIntegrationTestEnvironment environment) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException, TestNotPossibleException {
         super(environment);
     }
 

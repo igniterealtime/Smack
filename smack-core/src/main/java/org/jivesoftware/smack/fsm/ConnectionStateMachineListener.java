@@ -16,9 +16,11 @@
  */
 package org.jivesoftware.smack.fsm;
 
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
+
 // TODO: Mark as java.lang.FunctionalInterface once Smack's minimum Android API level is 24 or higher.
 public interface ConnectionStateMachineListener {
 
-    void onConnectionStateEvent(ConnectionStateEvent connectionStateEvent, AbstractXmppStateMachineConnection connection);
+    void onConnectionStateEvent(ConnectionStateEvent connectionStateEvent, ModularXmppClientToServerConnection connection);
 
 }

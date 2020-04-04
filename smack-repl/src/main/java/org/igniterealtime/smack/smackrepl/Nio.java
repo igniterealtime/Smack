@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * This file is part of smack-repl.
  *
@@ -20,20 +20,27 @@
  */
 package org.igniterealtime.smack.smackrepl;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
+import org.jivesoftware.smack.compression.CompressionModuleDescriptor;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream.FlushMethod;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
-import org.jivesoftware.smack.tcp.XmppNioTcpConnection;
+import org.jivesoftware.smack.sm.StreamManagementModuleDescriptor;
+import org.jivesoftware.smack.tcp.XmppTcpTransportModuleDescriptor;
 
 import org.jxmpp.util.XmppDateTime;
 
@@ -48,10 +55,11 @@ public class Nio {
     public static void doNio(String username, String password, String service)
             throws SmackException, IOException, XMPPException, InterruptedException {
         boolean useTls = true;
+        boolean useStreamMangement = false;
         boolean useCompression = true;
         boolean useFullFlush = true;
         boolean javaNetDebug = false;
-        boolean smackDebug = false;
+        boolean smackDebug = true;
 
         if (useFullFlush) {
             XMPPInputOutputStream.setFlushMethod(FlushMethod.FULL_FLUSH);
@@ -75,15 +83,29 @@ public class Nio {
             smackDebuggerFactory = null;
         }
 
-        XMPPTCPConnectionConfiguration configuration = XMPPTCPConnectionConfiguration.builder()
+        ModularXmppClientToServerConnectionConfiguration.Builder configurationBuilder = ModularXmppClientToServerConnectionConfiguration.builder()
                 .setUsernameAndPassword(username, password)
                 .setXmppDomain(service)
                 .setDebuggerFactory(smackDebuggerFactory)
-                .setCompressionEnabled(useCompression)
                 .setSecurityMode(securityMode)
-                .build();
+                .removeAllModules()
+                .addModule(XmppTcpTransportModuleDescriptor.class);
 
-        XmppNioTcpConnection connection = new XmppNioTcpConnection(configuration);
+        if (useCompression) {
+            configurationBuilder.addModule(CompressionModuleDescriptor.class);
+            configurationBuilder.setCompressionEnabled(true);
+        }
+        if (useStreamMangement) {
+            configurationBuilder.addModule(StreamManagementModuleDescriptor.class);
+        }
+
+        ModularXmppClientToServerConnectionConfiguration configuration = configurationBuilder.build();
+
+        PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8)));
+        configuration.printStateGraphInDotFormat(printWriter, false);
+        printWriter.flush();
+
+        ModularXmppClientToServerConnection connection = new ModularXmppClientToServerConnection(configuration);
 
         connection.setReplyTimeout(5 * 60 * 1000);
 
@@ -105,7 +127,7 @@ public class Nio {
 
         connection.disconnect();
 
-        XmppNioTcpConnection.Stats connectionStats = connection.getStats();
+        ModularXmppClientToServerConnection.Stats connectionStats = connection.getStats();
 
         // CHECKSTYLE:OFF
         System.out.println("NIO successfully finished, yeah!\n" + connectionStats);

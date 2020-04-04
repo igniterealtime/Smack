@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final PubSubManager pubSubManagerOne;
 
-    public PubSubIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
+    public PubSubIntegrationTest(SmackIntegrationTestEnvironment environment)
                     throws TestNotPossibleException, NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         super(environment);

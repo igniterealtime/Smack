@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2018-2019 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final MamManager mamManagerConTwo;
 
-    public MamIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws NoResponseException,
+    public MamIntegrationTest(SmackIntegrationTestEnvironment environment) throws NoResponseException,
             XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException, NotLoggedInException {
         super(environment);
 

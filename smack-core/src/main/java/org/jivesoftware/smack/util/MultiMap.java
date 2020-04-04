@@ -123,17 +123,26 @@ public class MultiMap<K, V> implements TypedCloneable<MultiMap<K, V>> {
     }
 
     public boolean put(K key, V value) {
+        return putInternal(key, list -> list.add(value));
+    }
+
+    public boolean putFirst(K key, V value) {
+        return putInternal(key, list -> list.add(0, value));
+    }
+
+    private boolean putInternal(K key, Consumer<List<V>> valueListConsumer) {
         boolean keyExisted;
         List<V> list = map.get(key);
         if (list == null) {
             list = new ArrayList<>(ENTRY_LIST_SIZE);
-            list.add(value);
             map.put(key, list);
             keyExisted = false;
         } else {
-            list.add(value);
             keyExisted = true;
         }
+
+        valueListConsumer.accept(list);
+
         return keyExisted;
     }
 

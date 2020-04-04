@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2019 Florian Schmaus
+ * Copyright 2013-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smack.util.dns.javax;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -34,10 +33,10 @@ import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
-import org.jivesoftware.smack.util.dns.HostAddress;
-import org.jivesoftware.smack.util.dns.SRVRecord;
+import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
 
 import org.minidns.dnsname.DnsName;
+import org.minidns.record.SRV;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
@@ -84,9 +83,8 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<SRVRecord> lookupSRVRecords0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        List<SRVRecord> res = null;
-
+    protected List<SRV> lookupSrvRecords0(DnsName name, List<RemoteConnectionEndpointLookupFailure> lookupFailures,
+                    DnssecMode dnssecMode) {
         Attribute srvAttribute;
         try {
             Attributes dnsLookup = dirContext.getAttributes(name.ace, new String[] { "SRV" });
@@ -97,14 +95,16 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
             LOGGER.log(Level.FINEST, "No DNS SRV RR found for " + name, e);
             return null;
         } catch (NamingException e) {
-            LOGGER.log(Level.WARNING, "Exception while resolving DNS SRV RR for " + name, e);
+            RemoteConnectionEndpointLookupFailure failure = new RemoteConnectionEndpointLookupFailure.DnsLookupFailure(
+                            name, e);
+            lookupFailures.add(failure);
             return null;
         }
 
+        List<SRV> res = new ArrayList<>();
         try {
             @SuppressWarnings("unchecked")
             NamingEnumeration<String> srvRecords = (NamingEnumeration<String>) srvAttribute.getAll();
-            res = new ArrayList<>();
             while (srvRecords.hasMore()) {
                 String srvRecordString = srvRecords.next();
                 String[] srvRecordEntries = srvRecordString.split(" ");
@@ -118,19 +118,15 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
                 if (srvTarget.length() > 0 && srvTarget.charAt(srvTarget.length() - 1) == '.') {
                     srvTarget = srvTarget.substring(0, srvTarget.length() - 1);
                 }
-                DnsName host = DnsName.from(srvTarget);
 
-                List<InetAddress> hostAddresses = lookupHostAddress0(host, failedAddresses, dnssecMode);
-                if (shouldContinue(name, host, hostAddresses)) {
-                    continue;
-                }
-
-                SRVRecord srvRecord = new SRVRecord(host, port, priority, weight, hostAddresses);
+                SRV srvRecord = new SRV(priority, weight, port, srvTarget);
                 res.add(srvRecord);
             }
         }
         catch (NamingException e) {
-            LOGGER.log(Level.SEVERE, "Exception while resolving DNS SRV RR for" + name, e);
+            RemoteConnectionEndpointLookupFailure failure = new RemoteConnectionEndpointLookupFailure.DnsLookupFailure(
+                            name, e);
+            lookupFailures.add(failure);
         }
 
         return res;

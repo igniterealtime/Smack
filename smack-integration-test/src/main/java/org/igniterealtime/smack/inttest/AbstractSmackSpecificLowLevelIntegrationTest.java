@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,19 +28,22 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 public abstract class AbstractSmackSpecificLowLevelIntegrationTest<C extends AbstractXMPPConnection>
         extends AbstractSmackLowLevelIntegrationTest {
 
-    private final SmackIntegrationTestEnvironment<?> environment;
+    private final SmackIntegrationTestEnvironment environment;
 
     protected final Class<C> connectionClass;
 
     private final XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> connectionDescriptor;
 
-    public AbstractSmackSpecificLowLevelIntegrationTest(SmackIntegrationTestEnvironment<?> environment,
+    public AbstractSmackSpecificLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment,
             Class<C> connectionClass) {
         super(environment);
         this.environment = environment;
         this.connectionClass = connectionClass;
 
         connectionDescriptor = environment.connectionManager.getConnectionDescriptorFor(connectionClass);
+        if (connectionDescriptor == null) {
+            throw new IllegalStateException("No connection descriptor for " + connectionClass + " known");
+        }
     }
 
     public Class<C> getConnectionClass() {

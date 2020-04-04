@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2019 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,6 +86,7 @@ import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.filter.IQReplyFilter;
@@ -136,7 +136,6 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
-import org.jivesoftware.smack.util.dns.HostAddress;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -150,8 +149,6 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
-import org.minidns.dnsname.DnsName;
-
 
 /**
  * This abstract class is commonly used as super class for XMPP connection mechanisms like TCP and BOSH. Hence it
@@ -394,7 +391,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     /**
      * The used port to establish the connection to
      */
-    protected int port;
+    protected UInt16 port;
 
     /**
      * Flag that indicates if the user is currently authenticated with the server.
@@ -484,7 +481,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public int getPort() {
-        return port;
+        final UInt16 port = this.port;
+        if (port == null) {
+            return -1;
+        }
+
+        return port.intValue();
     }
 
     @Override
@@ -525,6 +527,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
         tlsHandled.init();
+        closingStreamReceived.init();
     }
 
     /**
@@ -778,38 +781,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private DomainBareJid xmppServiceDomain;
 
-    protected List<HostAddress> hostAddresses;
-
-    /**
-     * Populates {@link #hostAddresses} with the resolved addresses or with the configured host address. If no host
-     * address was configured and all lookups failed, for example with NX_DOMAIN, then {@link #hostAddresses} will be
-     * populated with the empty list.
-     *
-     * @return a list of host addresses where DNS (SRV) RR resolution failed.
-     */
-    protected List<HostAddress> populateHostAddresses() {
-        List<HostAddress> failedAddresses = new LinkedList<>();
-        if (config.hostAddress != null) {
-            hostAddresses = new ArrayList<>(1);
-            HostAddress hostAddress = new HostAddress(config.port, config.hostAddress);
-            hostAddresses.add(hostAddress);
-        }
-        else if (config.host != null) {
-            hostAddresses = new ArrayList<>(1);
-            HostAddress hostAddress = DNSUtil.getDNSResolver().lookupHostAddress(config.host, config.port, failedAddresses, config.getDnssecMode());
-            if (hostAddress != null) {
-                hostAddresses.add(hostAddress);
-            }
-        } else {
-            // N.B.: Important to use config.serviceName and not AbstractXMPPConnection.serviceName
-            DnsName dnsName = DnsName.from(config.getXMPPServiceDomain());
-            hostAddresses = DNSUtil.resolveXMPPServiceDomain(dnsName, failedAddresses, config.getDnssecMode());
-        }
-        // Either the populated host addresses are not empty *or* there must be at least one failed address.
-        assert !hostAddresses.isEmpty() || !failedAddresses.isEmpty();
-        return failedAddresses;
-    }
-
     protected Lock getConnectionLock() {
         return connectionLock;
     }
@@ -980,6 +951,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             tlsHandled.reportGenericFailure(smackWrappedException);
             saslFeatureReceived.reportGenericFailure(smackWrappedException);
             lastFeaturesReceived.reportGenericFailure(smackWrappedException);
+            closingStreamReceived.reportFailure(smackWrappedException);
             // TODO From XMPPTCPConnection. Was called in Smack 4.3 where notifyConnectionError() was part of
             // XMPPTCPConnection. Create delegation method?
             // maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
@@ -2180,6 +2152,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected static void asyncGo(Runnable runnable) {
         CACHED_EXECUTOR_SERVICE.execute(runnable);
+    }
+
+    protected final SmackReactor getReactor() {
+        return SMACK_REACTOR;
     }
 
     protected static ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit) {

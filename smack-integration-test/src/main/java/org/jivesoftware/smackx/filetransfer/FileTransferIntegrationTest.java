@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
     private final FileTransferManager ftManagerOne;
     private final FileTransferManager ftManagerTwo;
 
-    public FileTransferIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public FileTransferIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         ftManagerOne = FileTransferManager.getInstanceFor(conOne);
         ftManagerTwo = FileTransferManager.getInstanceFor(conTwo);

@@ -38,7 +38,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
     private final UserTuneManager utm1;
     private final UserTuneManager utm2;
 
-    public UserTuneIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws NotLoggedInException {
+    public UserTuneIntegrationTest(SmackIntegrationTestEnvironment environment) throws NotLoggedInException {
         super(environment);
         utm1 = UserTuneManager.getInstanceFor(conOne);
         utm2 = UserTuneManager.getInstanceFor(conTwo);

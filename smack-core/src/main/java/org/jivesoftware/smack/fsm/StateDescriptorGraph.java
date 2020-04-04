@@ -30,7 +30,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.DisconnectedStateDescriptor;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.DisconnectedStateDescriptor;
+import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.MultiMap;
 
@@ -134,7 +135,7 @@ public class StateDescriptorGraph {
 
         // The preference graph is the graph where the precedence information of all successors is stored, which we will
         // topologically sort to find out which successor we should try first. It is a further new graph we use solely in
-        // this step for every node. The graph is representent as map. There is no special marker for the initial node
+        // this step for every node. The graph is represented as map. There is no special marker for the initial node
         // as it is not required for the topological sort performed later.
         Map<Class<? extends StateDescriptor>, GraphVertex<Class<? extends StateDescriptor>>> preferenceGraph = new HashMap<>(numSuccessors);
 
@@ -171,7 +172,8 @@ public class StateDescriptorGraph {
             }
         }
 
-        // Perform a topological sort which returns the state descriptor classes in their priority.
+        // Perform a topological sort which returns the state descriptor classes sorted by their priority. Highest
+        // priority state descriptors first.
         List<GraphVertex<Class<? extends StateDescriptor>>> sortedSuccessors = topologicalSort(preferenceGraph.values());
 
         // Handle the successor nodes which have not preference information available. Simply append them to the end of
@@ -222,19 +224,19 @@ public class StateDescriptorGraph {
         return initialNode;
     }
 
-    private static GraphVertex<AbstractXmppStateMachineConnection.State> convertToStateGraph(GraphVertex<StateDescriptor> stateDescriptorVertex,
-                    AbstractXmppStateMachineConnection connection, Map<StateDescriptor, GraphVertex<AbstractXmppStateMachineConnection.State>> handledStateDescriptors) {
+    private static GraphVertex<State> convertToStateGraph(GraphVertex<StateDescriptor> stateDescriptorVertex,
+                    ModularXmppClientToServerConnectionInternal connectionInternal, Map<StateDescriptor, GraphVertex<State>> handledStateDescriptors) {
         StateDescriptor stateDescriptor = stateDescriptorVertex.getElement();
-        GraphVertex<AbstractXmppStateMachineConnection.State> stateVertex = handledStateDescriptors.get(stateDescriptor);
+        GraphVertex<State> stateVertex = handledStateDescriptors.get(stateDescriptor);
         if (stateVertex != null) {
             return stateVertex;
         }
 
-        AbstractXmppStateMachineConnection.State state = stateDescriptor.constructState(connection);
+        State state = stateDescriptor.constructState(connectionInternal);
         stateVertex = new GraphVertex<>(state);
         handledStateDescriptors.put(stateDescriptor, stateVertex);
         for (GraphVertex<StateDescriptor> successorStateDescriptorVertex : stateDescriptorVertex.getOutgoingEdges()) {
-            GraphVertex<AbstractXmppStateMachineConnection.State> successorStateVertex = convertToStateGraph(successorStateDescriptorVertex, connection, handledStateDescriptors);
+            GraphVertex<State> successorStateVertex = convertToStateGraph(successorStateDescriptorVertex, connectionInternal, handledStateDescriptors);
             // It is important that we keep the order of the edges. This should do it.
             stateVertex.addOutgoingEdge(successorStateVertex);
         }
@@ -242,10 +244,10 @@ public class StateDescriptorGraph {
         return stateVertex;
     }
 
-    static GraphVertex<AbstractXmppStateMachineConnection.State> convertToStateGraph(GraphVertex<StateDescriptor> initialStateDescriptor,
-                    AbstractXmppStateMachineConnection connection) {
-        Map<StateDescriptor, GraphVertex<AbstractXmppStateMachineConnection.State>> handledStateDescriptors = new HashMap<>();
-        GraphVertex<AbstractXmppStateMachineConnection.State> initialState = convertToStateGraph(initialStateDescriptor, connection,
+    public static GraphVertex<State> convertToStateGraph(GraphVertex<StateDescriptor> initialStateDescriptor,
+                    ModularXmppClientToServerConnectionInternal connectionInternal) {
+        Map<StateDescriptor, GraphVertex<State>> handledStateDescriptors = new HashMap<>();
+        GraphVertex<State> initialState = convertToStateGraph(initialStateDescriptor, connectionInternal,
                         handledStateDescriptors);
         return initialState;
     }

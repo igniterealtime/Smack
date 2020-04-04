@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.GenericConnectionException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -136,6 +136,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         this.config = config;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void connectInternal() throws SmackException, InterruptedException {
         done = false;
@@ -177,7 +178,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     .setAttribute(BodyQName.createWithPrefix(XMPP_BOSH_NS, "version", "xmpp"), "1.0")
                     .build());
         } catch (Exception e) {
-            throw new ConnectionException(e);
+            throw new GenericConnectionException(e);
         }
 
         // Wait for the response from the server

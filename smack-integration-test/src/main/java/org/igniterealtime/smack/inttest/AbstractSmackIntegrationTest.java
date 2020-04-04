@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2018 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
 
     protected final List<XMPPConnection> connections;
 
-    public AbstractSmackIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public AbstractSmackIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         this.connection = this.conOne = environment.conOne;
         this.conTwo = environment.conTwo;

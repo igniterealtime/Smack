@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub, 2019 Florian Schmaus.
+ * Copyright 2018 Paul Schaub, 2019-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
     private final MoodManager mm1;
     private final MoodManager mm2;
 
-    public MoodIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public MoodIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         mm1 = MoodManager.getInstanceFor(conOne);
         mm2 = MoodManager.getInstanceFor(conTwo);

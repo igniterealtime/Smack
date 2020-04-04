@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2018 Florian Schmaus
+ * Copyright 2013-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,16 @@ package org.jivesoftware.smack.util.dns;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
+import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
 
 import org.minidns.dnsname.DnsName;
+import org.minidns.record.SRV;
 
 /**
  * Implementations of this interface define a class that is capable of resolving DNS addresses.
@@ -43,25 +46,25 @@ public abstract class DNSResolver {
 
     /**
      * Gets a list of service records for the specified service.
+     *
      * @param name The symbolic name of the service.
-     * @param failedAddresses list of failed addresses.
+     * @param lookupFailures list of exceptions that occurred during lookup.
      * @param dnssecMode security mode.
      * @return The list of SRV records mapped to the service name.
      */
-    public final List<SRVRecord> lookupSRVRecords(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public final Collection<SRV> lookupSrvRecords(DnsName name,
+                    List<RemoteConnectionEndpointLookupFailure> lookupFailures, DnssecMode dnssecMode) {
         checkIfDnssecRequestedAndSupported(dnssecMode);
-        return lookupSRVRecords0(name, failedAddresses, dnssecMode);
+        return lookupSrvRecords0(name, lookupFailures, dnssecMode);
     }
 
-    protected abstract List<SRVRecord> lookupSRVRecords0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode);
+    protected abstract Collection<SRV> lookupSrvRecords0(DnsName name,
+                    List<RemoteConnectionEndpointLookupFailure> lookupFailures, DnssecMode dnssecMode);
 
-    public final HostAddress lookupHostAddress(DnsName name, int port, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    public final List<InetAddress> lookupHostAddress(DnsName name,
+                    List<RemoteConnectionEndpointLookupFailure> lookupFailures, DnssecMode dnssecMode) {
         checkIfDnssecRequestedAndSupported(dnssecMode);
-        List<InetAddress> inetAddresses = lookupHostAddress0(name, failedAddresses, dnssecMode);
-        if (inetAddresses == null || inetAddresses.isEmpty()) {
-            return null;
-        }
-        return new HostAddress(name, port, inetAddresses);
+        return lookupHostAddress0(name, lookupFailures, dnssecMode);
     }
 
     /**
@@ -74,11 +77,11 @@ public abstract class DNSResolver {
      * </p>
      *
      * @param name the DNS name to lookup
-     * @param failedAddresses a list with the failed addresses
+     * @param lookupFailures list of exceptions that occurred during lookup.
      * @param dnssecMode the selected DNSSEC mode
      * @return A list, either empty or non-empty, or <code>null</code>
      */
-    protected List<InetAddress> lookupHostAddress0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
+    protected List<InetAddress> lookupHostAddress0(DnsName name, List<RemoteConnectionEndpointLookupFailure> lookupFailures, DnssecMode dnssecMode) {
         // Default implementation of a DNS name lookup for A/AAAA records. It is assumed that this method does never
         // support DNSSEC. Subclasses are free to override this method.
         if (dnssecMode != DnssecMode.disabled) {
@@ -89,14 +92,14 @@ public abstract class DNSResolver {
         try {
             inetAddressArray = InetAddress.getAllByName(name.toString());
         } catch (UnknownHostException e) {
-            failedAddresses.add(new HostAddress(name, e));
+            lookupFailures.add(new RemoteConnectionEndpointLookupFailure.DnsLookupFailure(name, e));
             return null;
         }
 
         return Arrays.asList(inetAddressArray);
     }
 
-    protected final boolean shouldContinue(CharSequence name, CharSequence hostname, List<InetAddress> hostAddresses) {
+    protected static boolean shouldContinue(CharSequence name, CharSequence hostname, List<InetAddress> hostAddresses) {
         if (hostAddresses == null) {
             return true;
         }

@@ -64,6 +64,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
 import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
+import org.jivesoftware.smack.SmackException.EndpointConnectionException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -78,6 +79,7 @@ import org.jivesoftware.smack.XMPPException.StreamErrorException;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.compress.packet.Compressed;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
@@ -105,6 +107,8 @@ import org.jivesoftware.smack.sm.packet.StreamManagement.Resumed;
 import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
 import org.jivesoftware.smack.sm.predicates.Predicate;
 import org.jivesoftware.smack.sm.provider.ParseStreamManagement;
+import org.jivesoftware.smack.tcp.rce.RemoteXmppTcpConnectionEndpoints;
+import org.jivesoftware.smack.tcp.rce.Rfc6120TcpRemoteConnectionEndpoint;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.CloseableUtil;
@@ -112,7 +116,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.dns.HostAddress;
+import org.jivesoftware.smack.util.rce.RemoteConnectionException;
 import org.jivesoftware.smack.xml.SmackXmlParser;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -556,19 +560,23 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void connectUsingConfiguration() throws ConnectionException, IOException, InterruptedException {
-        List<HostAddress> failedAddresses = populateHostAddresses();
+        RemoteXmppTcpConnectionEndpoints.Result<Rfc6120TcpRemoteConnectionEndpoint> result = RemoteXmppTcpConnectionEndpoints.lookup(config);
+
+        List<RemoteConnectionException<Rfc6120TcpRemoteConnectionEndpoint>> connectionExceptions = new ArrayList<>();
+
         SocketFactory socketFactory = config.getSocketFactory();
         ProxyInfo proxyInfo = config.getProxyInfo();
         int timeout = config.getConnectTimeout();
         if (socketFactory == null) {
             socketFactory = SocketFactory.getDefault();
         }
-        for (HostAddress hostAddress : hostAddresses) {
-            Iterator<InetAddress> inetAddresses;
-            String host = hostAddress.getHost();
-            int port = hostAddress.getPort();
+        for (Rfc6120TcpRemoteConnectionEndpoint endpoint : result.discoveredRemoteConnectionEndpoints) {
+            Iterator<? extends InetAddress> inetAddresses;
+            String host = endpoint.getHost().toString();
+            UInt16 portUint16 = endpoint.getPort();
+            int port = portUint16.intValue();
             if (proxyInfo == null) {
-                inetAddresses = hostAddress.getInetAddresses().iterator();
+                inetAddresses = endpoint.getInetAddresses().iterator();
                 assert inetAddresses.hasNext();
 
                 innerloop: while (inetAddresses.hasNext()) {
@@ -584,7 +592,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     try {
                         socket = socketFuture.getOrThrow();
                     } catch (IOException e) {
-                        hostAddress.setException(inetAddress, e);
+                        RemoteConnectionException<Rfc6120TcpRemoteConnectionEndpoint> rce = new RemoteConnectionException<>(
+                                        endpoint, inetAddress, e);
+                        connectionExceptions.add(rce);
                         if (inetAddresses.hasNext()) {
                             continue innerloop;
                         } else {
@@ -594,34 +604,36 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     LOGGER.finer("Established TCP connection to " + inetSocketAddress);
                     // We found a host to connect to, return here
                     this.host = host;
-                    this.port = port;
+                    this.port = portUint16;
                     return;
                 }
-                failedAddresses.add(hostAddress);
             } else {
+                // TODO: Move this into the inner-loop above. There appears no reason why we should not try a proxy
+                // connection to every inet address of each connection endpoint.
                 socket = socketFactory.createSocket();
-                StringUtils.requireNotNullNorEmpty(host, "Host of HostAddress " + hostAddress + " must not be null when using a Proxy");
+                StringUtils.requireNotNullNorEmpty(host, "Host of endpoint " + endpoint + " must not be null when using a Proxy");
                 final String hostAndPort = host + " at port " + port;
                 LOGGER.finer("Trying to establish TCP connection via Proxy to " + hostAndPort);
                 try {
                     proxyInfo.getProxySocketConnection().connect(socket, host, port, timeout);
                 } catch (IOException e) {
                     CloseableUtil.maybeClose(socket, LOGGER);
-                    hostAddress.setException(e);
-                    failedAddresses.add(hostAddress);
+                    RemoteConnectionException<Rfc6120TcpRemoteConnectionEndpoint> rce = new RemoteConnectionException<>(endpoint, null, e);
+                    connectionExceptions.add(rce);
                     continue;
                 }
                 LOGGER.finer("Established TCP connection to " + hostAndPort);
                 // We found a host to connect to, return here
                 this.host = host;
-                this.port = port;
+                this.port = portUint16;
                 return;
             }
         }
+
         // There are no more host addresses to try
         // throw an exception and report all tried
         // HostAddresses in the exception
-        throw ConnectionException.from(failedAddresses);
+        throw EndpointConnectionException.from(result.lookupFailures, connectionExceptions);
     }
 
     /**
@@ -815,7 +827,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException {
-        closingStreamReceived.init();
         // Establishes the TCP connection to the server and does setup the reader and writer. Throws an exception if
         // there is an error establishing the connection
         connectUsingConfiguration();
@@ -1125,6 +1136,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
             catch (Exception e) {
+                // TODO: Move the call closingStreamReceived.reportFailure(e) into notifyConnectionError?
                 closingStreamReceived.reportFailure(e);
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed. It can not be ignored if it

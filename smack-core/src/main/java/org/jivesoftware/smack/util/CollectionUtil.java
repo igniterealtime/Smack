@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@ package org.jivesoftware.smack.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class CollectionUtil {
 
@@ -55,5 +57,12 @@ public class CollectionUtil {
             return null;
         }
         return new ArrayList<>(collection);
+    }
+
+    public static <T> Set<T> newSetWith(Collection<? extends T> collection) {
+        if (collection == null) {
+            return null;
+        }
+        return new HashSet<>(collection);
     }
 }

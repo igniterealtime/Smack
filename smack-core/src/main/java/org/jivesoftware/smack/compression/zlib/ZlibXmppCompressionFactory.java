@@ -230,6 +230,11 @@ public final class ZlibXmppCompressionFactory extends XmppCompressionFactory {
         public Stats getStats() {
             return new Stats(this);
         }
+
+        @Override
+        public String getFilterName() {
+            return "Compression (zlib)";
+        }
     }
 
     public static final class Stats {

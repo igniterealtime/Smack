@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public abstract class AbstractSmackIntTest {
 
     protected final Configuration sinttestConfiguration;
 
-    protected AbstractSmackIntTest(SmackIntegrationTestEnvironment<?> environment) {
+    protected AbstractSmackIntTest(SmackIntegrationTestEnvironment environment) {
         this.testRunId = environment.testRunId;
         this.sinttestConfiguration = environment.configuration;
         this.timeout = environment.configuration.replyTimeout;

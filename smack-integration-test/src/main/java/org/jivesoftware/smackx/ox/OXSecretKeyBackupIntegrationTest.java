@@ -98,7 +98,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
-    public OXSecretKeyBackupIntegrationTest(SmackIntegrationTestEnvironment<?> environment)
+    public OXSecretKeyBackupIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws XMPPException.XMPPErrorException, TestNotPossibleException, SmackException.NotConnectedException,
             InterruptedException, SmackException.NoResponseException {
         super(environment);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2019 Florian Schmaus
+ * Copyright 2013-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     private final ServiceDiscoveryManager sdmOne;
     private final ServiceDiscoveryManager sdmTwo;
 
-    public EntityCapsTest(SmackIntegrationTestEnvironment<?> environment) {
+    public EntityCapsTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         ecmTwo = EntityCapsManager.getInstanceFor(environment.conTwo);
         sdmOne = ServiceDiscoveryManager.getInstanceFor(environment.conOne);

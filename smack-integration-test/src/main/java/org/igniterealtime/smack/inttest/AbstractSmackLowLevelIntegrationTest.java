@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.jxmpp.jid.DomainBareJid;
 
 public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmackIntTest {
 
-    private final SmackIntegrationTestEnvironment<?> environment;
+    private final SmackIntegrationTestEnvironment environment;
 
     /**
      * The configuration
@@ -40,7 +40,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
 
     protected final DomainBareJid service;
 
-    protected AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    protected AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         this.environment = environment;
         this.configuration = environment.configuration;

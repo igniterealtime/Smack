@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
-import org.jivesoftware.smack.fsm.AbstractXmppStateMachineConnection.State;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
+import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 
 public abstract class StateDescriptor {
 
@@ -34,15 +34,13 @@ public abstract class StateDescriptor {
         notImplemented,
     }
 
-    private static final Logger LOGGER = Logger.getLogger(StateDescriptor.class.getName());
-
     private final String stateName;
     private final int xepNum;
     private final String rfcSection;
     private final Set<Property> properties;
 
-    private final Class<? extends AbstractXmppStateMachineConnection.State> stateClass;
-    private final Constructor<? extends AbstractXmppStateMachineConnection.State> stateClassConstructor;
+    private final Class<? extends State> stateClass;
+    private final Constructor<? extends State> stateClassConstructor;
 
     private final Set<Class<? extends StateDescriptor>> successors = new HashSet<>();
 
@@ -53,36 +51,36 @@ public abstract class StateDescriptor {
     private final Set<Class<? extends StateDescriptor>> inferiorTo = new HashSet<>();
 
     protected StateDescriptor() {
-        this(AbstractXmppStateMachineConnection.NoOpState.class, (Property) null);
+        this(NoOpState.class, (Property) null);
     }
 
     protected StateDescriptor(Property... properties) {
-        this(AbstractXmppStateMachineConnection.NoOpState.class, properties);
+        this(NoOpState.class, properties);
     }
 
-    protected StateDescriptor(Class<? extends AbstractXmppStateMachineConnection.State> stateClass) {
+    protected StateDescriptor(Class<? extends State> stateClass) {
         this(stateClass, -1, null, Collections.emptySet());
     }
 
-    protected StateDescriptor(Class<? extends AbstractXmppStateMachineConnection.State> stateClass, Property... properties) {
+    protected StateDescriptor(Class<? extends State> stateClass, Property... properties) {
         this(stateClass, -1, null, new HashSet<>(Arrays.asList(properties)));
     }
 
-    protected StateDescriptor(Class<? extends AbstractXmppStateMachineConnection.State> stateClass, int xepNum) {
+    protected StateDescriptor(Class<? extends State> stateClass, int xepNum) {
         this(stateClass, xepNum, null, Collections.emptySet());
     }
 
-    protected StateDescriptor(Class<? extends AbstractXmppStateMachineConnection.State> stateClass, int xepNum,
+    protected StateDescriptor(Class<? extends State> stateClass, int xepNum,
                     Property... properties) {
         this(stateClass, xepNum, null, new HashSet<>(Arrays.asList(properties)));
     }
 
-    protected StateDescriptor(Class<? extends AbstractXmppStateMachineConnection.State> stateClass, String rfcSection) {
+    protected StateDescriptor(Class<? extends State> stateClass, String rfcSection) {
         this(stateClass, -1, rfcSection, Collections.emptySet());
     }
 
     @SuppressWarnings("unchecked")
-    private StateDescriptor(Class<? extends AbstractXmppStateMachineConnection.State> stateClass, int xepNum,
+    private StateDescriptor(Class<? extends State> stateClass, int xepNum,
                     String rfcSection, Set<Property> properties) {
         this.stateClass = stateClass;
         if (rfcSection != null && xepNum > 0) {
@@ -92,26 +90,32 @@ public abstract class StateDescriptor {
         this.rfcSection = rfcSection;
         this.properties = properties;
 
-        Constructor<? extends AbstractXmppStateMachineConnection.State> selectedConstructor = null;
+        Constructor<? extends State> selectedConstructor = null;
         Constructor<?>[] constructors = stateClass.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
             Class<?>[] parameterTypes = constructor.getParameterTypes();
-            if (parameterTypes.length != 2) {
-                LOGGER.warning("Invalid State class constructor: " + constructor);
+            if (parameterTypes.length != 3) {
                 continue;
             }
-            if (!AbstractXmppStateMachineConnection.class.isAssignableFrom(parameterTypes[0])) {
+            if (!ModularXmppClientToServerConnection.class.isAssignableFrom(parameterTypes[0])) {
+                continue;
+            }
+            if (!StateDescriptor.class.isAssignableFrom(parameterTypes[1])) {
+                continue;
+            }
+            if (!ModularXmppClientToServerConnectionInternal.class.isAssignableFrom(parameterTypes[2])) {
                 continue;
             }
             selectedConstructor = (Constructor<? extends State>) constructor;
             break;
         }
 
-        if (selectedConstructor == null) {
-            throw new IllegalArgumentException();
-        }
         stateClassConstructor = selectedConstructor;
-        stateClassConstructor.setAccessible(true);
+        if (stateClassConstructor != null) {
+            stateClassConstructor.setAccessible(true);
+        } else {
+            // TODO: Add validation check that if stateClassConstructor is 'null' the cosntructState() method is overriden.
+        }
 
         String className = getClass().getSimpleName();
         stateName = className.replaceFirst("StateDescriptor", "");
@@ -121,7 +125,7 @@ public abstract class StateDescriptor {
         addAndCheckNonExistent(successors, successor);
     }
 
-    protected void addPredeccessor(Class<? extends StateDescriptor> predeccessor) {
+    public void addPredeccessor(Class<? extends StateDescriptor> predeccessor) {
         addAndCheckNonExistent(predecessors, predeccessor);
     }
 
@@ -189,7 +193,7 @@ public abstract class StateDescriptor {
         return referenceCache;
     }
 
-    public Class<? extends AbstractXmppStateMachineConnection.State> getStateClass() {
+    public Class<? extends State> getStateClass() {
         return stateClass;
     }
 
@@ -205,9 +209,12 @@ public abstract class StateDescriptor {
         return properties.contains(Property.finalState);
     }
 
-    protected final AbstractXmppStateMachineConnection.State constructState(AbstractXmppStateMachineConnection connection) {
+    protected State constructState(ModularXmppClientToServerConnectionInternal connectionInternal) {
+        ModularXmppClientToServerConnection connection = connectionInternal.connection;
         try {
-            return stateClassConstructor.newInstance(connection, this);
+            // If stateClassConstructor is null here, then you probably forgot to override the the
+            // StateDescriptor.constructState() method?
+            return stateClassConstructor.newInstance(connection, this, connectionInternal);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                         | InvocationTargetException e) {
             throw new IllegalStateException(e);

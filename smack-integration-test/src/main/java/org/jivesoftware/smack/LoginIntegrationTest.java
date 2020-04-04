@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
 public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public LoginIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public LoginIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 

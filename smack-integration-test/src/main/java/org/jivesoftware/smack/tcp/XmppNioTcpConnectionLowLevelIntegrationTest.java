@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,21 +22,22 @@ import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 
 import org.igniterealtime.smack.inttest.AbstractSmackSpecificLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
-public class XmppNioTcpConnectionLowLevelIntegrationTest extends AbstractSmackSpecificLowLevelIntegrationTest<XmppNioTcpConnection> {
+public class XmppNioTcpConnectionLowLevelIntegrationTest extends AbstractSmackSpecificLowLevelIntegrationTest<ModularXmppClientToServerConnection> {
 
-    public XmppNioTcpConnectionLowLevelIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
-        super(environment, XmppNioTcpConnection.class);
+    public XmppNioTcpConnectionLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
+        super(environment, ModularXmppClientToServerConnection.class);
     }
 
     @SmackIntegrationTest
     public void testDisconnectAfterConnect() throws KeyManagementException, NoSuchAlgorithmException, SmackException,
             IOException, XMPPException, InterruptedException {
-        XmppNioTcpConnection connection = getSpecificUnconnectedConnection();
+        ModularXmppClientToServerConnection connection = getSpecificUnconnectedConnection();
 
         connection.connect();
 

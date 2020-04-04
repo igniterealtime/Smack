@@ -72,7 +72,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     public static class ThrowsRuntimeExceptionDummyTest extends AbstractSmackIntegrationTest {
 
-        public ThrowsRuntimeExceptionDummyTest(SmackIntegrationTestEnvironment<?> environment) {
+        public ThrowsRuntimeExceptionDummyTest(SmackIntegrationTestEnvironment environment) {
             super(environment);
         }
 
@@ -103,7 +103,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
         public static final String DESCRIPTIVE_TEXT = "I'm not fatal";
 
-        public ThrowsNonFatalExceptionDummyTest(SmackIntegrationTestEnvironment<?> environment) {
+        public ThrowsNonFatalExceptionDummyTest(SmackIntegrationTestEnvironment environment) {
             super(environment);
         }
 
@@ -131,7 +131,7 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
     public static class BeforeAfterClassTest extends AbstractSmackIntegrationTest {
 
-        public BeforeAfterClassTest(SmackIntegrationTestEnvironment<?> environment) {
+        public BeforeAfterClassTest(SmackIntegrationTestEnvironment environment) {
             super(environment);
         }
 

@@ -13,3 +13,4 @@
   * [Debugging with Smack](debugging.md)
 
   * [Smack Extensions Manual](extensions/index.md)
+  * [Smack's Modular Connection Architecture](connection-modules.md)

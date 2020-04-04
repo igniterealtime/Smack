@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2018-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModuleDescriptor;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.ReflectionDebuggerFactory;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
@@ -379,4 +381,19 @@ public final class SmackConfiguration {
         return defaultConcurrencyLevelLimit;
     }
 
+    private static final Set<Class<? extends ModularXmppClientToServerConnectionModuleDescriptor>> KNOWN_MODULES = new HashSet<>();
+
+    public static boolean addModule(Class<? extends ModularXmppClientToServerConnectionModuleDescriptor> moduleDescriptor) {
+        synchronized (KNOWN_MODULES) {
+            return KNOWN_MODULES.add(moduleDescriptor);
+        }
+    }
+
+    public static void addAllKnownModulesTo(ModularXmppClientToServerConnectionConfiguration.Builder builder) {
+        synchronized (KNOWN_MODULES) {
+            for (Class<? extends ModularXmppClientToServerConnectionModuleDescriptor> moduleDescriptor : KNOWN_MODULES) {
+                builder.addModule(moduleDescriptor);
+            }
+        }
+    }
 }

@@ -55,7 +55,7 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
     };
 
 
-    public ChatStateIntegrationTest(SmackIntegrationTestEnvironment<?> environment) {
+    public ChatStateIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 

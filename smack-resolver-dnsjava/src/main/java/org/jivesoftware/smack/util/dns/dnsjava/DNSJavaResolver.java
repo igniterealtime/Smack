@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2018 Florian Schmaus
+ * Copyright 2013-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smack.util.dns.dnsjava;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +23,10 @@ import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
-import org.jivesoftware.smack.util.dns.HostAddress;
-import org.jivesoftware.smack.util.dns.SRVRecord;
+import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
 
 import org.minidns.dnsname.DnsName;
+import org.minidns.record.SRV;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.TextParseException;
@@ -50,21 +49,26 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
-    protected List<SRVRecord> lookupSRVRecords0(DnsName name, List<HostAddress> failedAddresses, DnssecMode dnssecMode) {
-        List<SRVRecord> res = new ArrayList<>();
-
+    protected List<SRV> lookupSrvRecords0(DnsName name, List<RemoteConnectionEndpointLookupFailure> lookupFailures,
+                    DnssecMode dnssecMode) {
         Lookup lookup;
         try {
             lookup = new Lookup(name.ace, Type.SRV);
         }
         catch (TextParseException e) {
-            throw new IllegalStateException(e);
+            RemoteConnectionEndpointLookupFailure failure = new RemoteConnectionEndpointLookupFailure.DnsLookupFailure(
+                            name, e);
+            lookupFailures.add(failure);
+            return null;
         }
 
         Record[] recs = lookup.run();
-        if (recs == null)
-            return res;
+        if (recs == null) {
+            // TODO: When does this happen? Do we want/need to record a lookup failure?
+            return null;
+        }
 
+        List<SRV> res = new ArrayList<>();
         for (Record record : recs) {
             org.xbill.DNS.SRVRecord srvRecord = (org.xbill.DNS.SRVRecord) record;
             if (srvRecord != null && srvRecord.getTarget() != null) {
@@ -73,12 +77,7 @@ public class DNSJavaResolver extends DNSResolver implements SmackInitializer {
                 int priority = srvRecord.getPriority();
                 int weight = srvRecord.getWeight();
 
-                List<InetAddress> hostAddresses = lookupHostAddress0(host, failedAddresses, dnssecMode);
-                if (shouldContinue(name, host, hostAddresses)) {
-                    continue;
-                }
-
-                SRVRecord r = new SRVRecord(host, port, priority, weight, hostAddresses);
+                SRV r = new SRV(priority, weight, port, host);
                 res.add(r);
             }
         }

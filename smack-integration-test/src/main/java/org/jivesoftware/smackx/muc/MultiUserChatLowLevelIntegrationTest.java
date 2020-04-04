@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 
 public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public MultiUserChatLowLevelIntegrationTest(SmackIntegrationTestEnvironment<?> environment) throws Exception {
+    public MultiUserChatLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) throws Exception {
         super(environment);
         AbstractXMPPConnection connection = getConnectedConnection();
         try {

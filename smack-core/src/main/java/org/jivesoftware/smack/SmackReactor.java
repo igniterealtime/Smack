@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public class SmackReactor {
         setReactorThreadCount(DEFAULT_REACTOR_THREAD_COUNT);
     }
 
-    SelectionKey registerWithSelector(SelectableChannel channel, int ops, ChannelSelectedCallback callback)
+    public SelectionKey registerWithSelector(SelectableChannel channel, int ops, ChannelSelectedCallback callback)
             throws ClosedChannelException {
         SelectionKeyAttachment selectionKeyAttachment = new SelectionKeyAttachment(callback);
 
@@ -129,7 +129,7 @@ public class SmackReactor {
         }
     }
 
-    void setInterestOps(SelectionKey selectionKey, int interestOps) {
+    public void setInterestOps(SelectionKey selectionKey, int interestOps) {
         SetInterestOps setInterestOps = new SetInterestOps(selectionKey, interestOps);
         pendingSetInterestOps.add(setInterestOps);
         selector.wakeup();

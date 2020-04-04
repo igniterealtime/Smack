@@ -58,24 +58,28 @@ debugger=console
 
 ### Framework properties
 
-| Name                 |                                           |
-|----------------------|-------------------------------------------|
-| service              | XMPP service to run the tests on          |
-| serviceTlsPin        | TLS Pin (used by [java-pinning](https://github.com/Flowdalic/java-pinning))            |
-| securityMode         | Either 'required' or 'disabled'           |
-| replyTimeout         | In milliseconds                           |
-| adminAccountUsername | Username of the XEP-0133 Admin account    |
-| adminAccountPassword | Password of the XEP-0133 Admin account    |
-| accountOneUsername   | Username of the first XMPP account        |
-| accountOnePassword   | Password of the first XMPP account        |
-| accountTwoUsername   | Username of the second XMPP account       |
-| accountTwoPassword   | Password of the second XMPP account       |
-| accountThreeUsername | Username of the third XMPP account        |
-| accountThreePassword | Password of the third XMPP account        |
-| debugger             | 'console' for console debugger, 'enhanced' for the enhanced debugger  |
-| enabledTests         | List of enabled tests                     |
-| disabledTests        | List of disabled tests                    |
-| testPackages         | List of packages with tests               |
+| Name                 | Description                                                                 |
+|----------------------|-----------------------------------------------------------------------------|
+| service              | XMPP service to run the tests on                                            |
+| serviceTlsPin        | TLS Pin (used by [java-pinning](https://github.com/Flowdalic/java-pinning)) |
+| securityMode         | Either 'required' or 'disabled'                                             |
+| replyTimeout         | In milliseconds                                                             |
+| adminAccountUsername | Username of the XEP-0133 Admin account                                      |
+| adminAccountPassword | Password of the XEP-0133 Admin account                                      |
+| accountOneUsername   | Username of the first XMPP account                                          |
+| accountOnePassword   | Password of the first XMPP account                                          |
+| accountTwoUsername   | Username of the second XMPP account                                         |
+| accountTwoPassword   | Password of the second XMPP account                                         |
+| accountThreeUsername | Username of the third XMPP account                                          |
+| accountThreePassword | Password of the third XMPP account                                          |
+| debugger             | 'console' for console debugger, 'enhanced' for the enhanced debugger        |
+| enabledTests         | List of enabled tests                                                       |
+| disabledTests        | List of disabled tests                                                      |
+| defaultConnection    | Nickname of the default connection                                          |
+| enabledConnections   | List of enabled connection's nicknames                                      |
+| disabledConnections  | List of disabled connection's nicknames                                     |
+| testPackages         | List of packages with tests                                                 |
+| verbose              | If `true` set output to verbose                                             |
 
 ### Where to place the properties file
 
@@ -98,6 +102,10 @@ The base class that integration tests need to subclass.
 ### `AbstractSmackLowLevelIntegrationTest`
 
 Allows low level integration test, i.e. ever test method will have its on exclusive XMPPTCPConnection instances.
+
+### `AbstractSmackSpecificLowLevelIntegrationTest`
+
+Operates, like `AbstractSmackLowLevelIntegrationTest` on its own `XMPPConnection` instances, but is limited to a particular type of `XMPPConnection`.
 
 ### `IntegrationTestEnvironment`
 

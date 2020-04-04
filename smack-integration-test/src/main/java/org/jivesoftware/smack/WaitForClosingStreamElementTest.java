@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 
 public class WaitForClosingStreamElementTest extends AbstractSmackLowLevelIntegrationTest {
 
-    public WaitForClosingStreamElementTest(SmackIntegrationTestEnvironment<?> environment) {
+    public WaitForClosingStreamElementTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 

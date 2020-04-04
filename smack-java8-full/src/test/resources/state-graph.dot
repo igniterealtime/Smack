@@ -1,0 +1,36 @@
+digraph {
+  "Disconnected" -> "LookupRemoteConnectionEndpoints";
+  "LookupRemoteConnectionEndpoints" -> "EstablishingTcpConnection";
+  "EstablishingTcpConnection" -> "EstablishTls (RFC 6120 § 5)" [xlabel="1"];
+  "EstablishTls (RFC 6120 § 5)" -> "ConnectedButUnauthenticated";
+  "ConnectedButUnauthenticated" -> "Bind2 (XEP-0386)" [xlabel="1"];
+  "Bind2 (XEP-0386)" -> "AuthenticatedAndResourceBound";
+  "AuthenticatedAndResourceBound" -> "Shutdown" [xlabel="1"];
+  "Shutdown" -> "CloseConnection";
+  "CloseConnection" -> "Disconnected";
+  "AuthenticatedAndResourceBound" -> "InstantShutdown" [xlabel="2"];
+  "InstantShutdown" -> "CloseConnection";
+"AuthenticatedAndResourceBound" [ style=filled ]
+"Bind2 (XEP-0386)" [ style=dashed ]
+  "ConnectedButUnauthenticated" -> "InstantStreamResumption (XEP-0397)" [xlabel="2"];
+  "InstantStreamResumption (XEP-0397)" -> "AuthenticatedAndResourceBound";
+"InstantStreamResumption (XEP-0397)" [ style=dashed ]
+  "ConnectedButUnauthenticated" -> "SaslAuthentication (RFC 6120 § 6)" [xlabel="3"];
+  "SaslAuthentication (RFC 6120 § 6)" -> "AuthenticatedButUnbound";
+  "AuthenticatedButUnbound" -> "Compression (XEP-0138)" [xlabel="1"];
+  "Compression (XEP-0138)" -> "AuthenticatedButUnbound";
+  "AuthenticatedButUnbound" -> "ResumeStream (XEP-0198)" [xlabel="2"];
+  "ResumeStream (XEP-0198)" -> "AuthenticatedAndResourceBound";
+"ResumeStream (XEP-0198)" [ style=dashed ]
+  "AuthenticatedButUnbound" -> "ResourceBinding (RFC 6120 § 7)" [xlabel="3"];
+  "ResourceBinding (RFC 6120 § 7)" -> "EnableStreamManagement (XEP-0198)" [xlabel="1"];
+  "EnableStreamManagement (XEP-0198)" -> "AuthenticatedAndResourceBound";
+"EnableStreamManagement (XEP-0198)" [ style=dashed ]
+  "ResourceBinding (RFC 6120 § 7)" -> "AuthenticatedAndResourceBound" [xlabel="2"];
+"AuthenticatedButUnbound" [ style=bold ]
+  "ConnectedButUnauthenticated" -> "Shutdown" [xlabel="4"];
+  "ConnectedButUnauthenticated" -> "InstantShutdown" [xlabel="5"];
+"ConnectedButUnauthenticated" [ style=filled ]
+  "EstablishingTcpConnection" -> "ConnectedButUnauthenticated" [xlabel="2"];
+"Disconnected" [ style=filled ]
+}

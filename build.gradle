@@ -14,6 +14,8 @@ buildscript {
 plugins {
     id 'ru.vyarus.animalsniffer' version '1.5.0'
 	id 'net.ltgt.errorprone' version '1.1.1'
+	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
+	id 'com.dorongold.task-tree' version '1.5'
 }
 
 apply plugin: 'org.kordamp.gradle.markdown'
@@ -288,14 +290,7 @@ configure (junit4Projects) {
 	}
 }
 
-task copyAllJavadocDocFiles(type: Copy) {
-	from javadocAllProjects.collect { project ->
-		"${project.projectDir}/src/javadoc" }
-	into javadocAllDir
-	include '**/doc-files/*.*'
-}
-
-task javadocAll(type: Javadoc, dependsOn: copyAllJavadocDocFiles) {
+task javadocAll(type: Javadoc) {
 	source javadocAllProjects.collect {project ->
 		project.sourceSets.main.allJava.findAll {
 			// Filter out symbolic links to avoid
@@ -324,6 +319,25 @@ task javadocAll(type: Javadoc, dependsOn: copyAllJavadocDocFiles) {
 		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
 		] as String[]
 		overview = "$projectDir/resources/javadoc-overview.html"
+	}
+
+	// Finally copy the javadoc doc-files from the subprojects, which
+	// are potentially generated, to the javadocAll directory. Note
+	// that we use a copy *method* and not a *task* because the inputs
+	// of copy tasks is determined within the configuration phase. And
+	// since some of the inputs are generated, they will not get
+	// picked up if we used a copy method. See also
+	// https://stackoverflow.com/a/40518516/194894
+	doLast {
+		copy {
+			javadocAllProjects.each {
+				from ("${it.projectDir}/src/javadoc") {
+					include '**/doc-files/*.*'
+				}
+			}
+
+			into javadocAllDir
+		}
 	}
 }
 
@@ -494,31 +508,25 @@ subprojects {
 	}
 
 	// Work around https://github.com/gradle/gradle/issues/4046
-	javadoc.dependsOn('copyJavadocDocFiles')
 	task copyJavadocDocFiles(type: Copy) {
 		from('src/javadoc')
 		into 'build/docs/javadoc'
 		include '**/doc-files/*.*'
 	}
+	javadoc.dependsOn copyJavadocDocFiles
 
-	// If this subproject has a Makefile then make copyJavadocDocFiles
-	// and the root project's javadocAll task dependend on
-	// generateFiles.
-	if (file("$projectDir/Makefile").exists()) {
-		copyJavadocDocFiles.dependsOn('generateFiles')
-		rootProject.copyAllJavadocDocFiles.dependsOn("${project.name}:generateFiles")
-		task generateFiles(type: Exec) {
-			workingDir projectDir
-			commandLine 'make'
-		}
+	// Make sure root projects 'javadocAll' depends on the
+	// subproject's javadoc, to ensure that all all doc-files/ are
+	// generated and up-to-date. Obviously this means that the
+	// javadocAll task will also create the individual javadoc's of the
+	// subprojects.
+	javadocAll.dependsOn javadoc
+}
 
-		clean.dependsOn('cleanGeneratedFiles')
-		rootProject.clean.dependsOn("${project.name}:cleanGeneratedFiles")
-		task cleanGeneratedFiles(type: Exec) {
-			workingDir projectDir
-			commandLine 'make', 'clean'
-		}
-	}
+// The smack-java8-full project generates the dot and png files of the
+// current state graph. Ensure they are generated before copied.
+configure (project(':smack-java8-full')) {
+	copyJavadocDocFiles.dependsOn convertModularXmppClientToServerConnectionStateGraphDotToPng
 }
 
 configure (androidProjects + androidBootClasspathProjects) {

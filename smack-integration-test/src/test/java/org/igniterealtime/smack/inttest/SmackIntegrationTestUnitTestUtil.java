@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ public class SmackIntegrationTestUnitTestUtil {
         Configuration configuration = Configuration.builder()
                         .setService(JidTestUtil.DOMAIN_BARE_JID_1)
                         .setUsernamesAndPassword("dummy1", "dummy1pass", "dummy2", "dummy2pass", "dummy3", "dummy3pass")
-                        .addEnabledTest(unitTest).build();
+                        .setDefaultConnection(DummySmackIntegrationTestFramework.DUMMY_CONNECTION_NICKNAME)
+                        .addEnabledTest(unitTest)
+                        .build();
         // @formatter:on
         try {
             return new DummySmackIntegrationTestFramework(configuration);
