@@ -356,11 +356,9 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      *
      * @param elementName the XML element name of the extension. (May be null)
      * @param namespace the XML element namespace of the extension.
-     * @param <PE> type of the ExtensionElement.
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
-    @SuppressWarnings("unchecked")
-    public final <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {
+    public final ExtensionElement getExtension(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }
@@ -369,14 +367,13 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
         if (packetExtension == null) {
             return null;
         }
-        return (PE) packetExtension;
+        return packetExtension;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public final <E extends ExtensionElement> E getExtension(QName qname) {
+    public final ExtensionElement getExtension(QName qname) {
         synchronized (extensionElements) {
-            return (E) extensionElements.getFirst(qname);
+            return extensionElements.getFirst(qname);
         }
     }
 

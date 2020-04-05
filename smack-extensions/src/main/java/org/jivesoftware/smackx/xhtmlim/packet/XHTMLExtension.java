@@ -130,6 +130,6 @@ public class XHTMLExtension implements ExtensionElement {
     }
 
     public static XHTMLExtension from(MessageView message) {
-        return message.getExtension(QNAME);
+        return message.getExtension(XHTMLExtension.class);
     }
 }

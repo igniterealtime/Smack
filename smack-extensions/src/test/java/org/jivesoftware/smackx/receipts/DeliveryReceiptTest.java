@@ -62,7 +62,7 @@ public class DeliveryReceiptTest extends InitExtensions {
         parser = PacketParserUtils.getParserFor(control);
         Message p = PacketParserUtils.parseMessage(parser);
 
-        DeliveryReceiptRequest drr = p.getExtension(DeliveryReceiptRequest.ELEMENT, DeliveryReceipt.NAMESPACE);
+        DeliveryReceiptRequest drr = p.getExtension(DeliveryReceiptRequest.class);
         assertNotNull(drr);
 
         assertTrue(DeliveryReceiptManager.hasDeliveryReceiptRequest(p));

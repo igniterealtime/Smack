@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Fernando Ramirez, 2018 Florian Schmaus
+ * Copyright © 2016 Fernando Ramirez, 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.chat_markers.element;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -46,11 +48,11 @@ public class ChatMarkersElements {
     public static final class MarkableExtension implements ExtensionElement {
 
         public static final MarkableExtension INSTANCE = new MarkableExtension();
-
         /**
          * markable element.
          */
         public static final String ELEMENT = ChatMarkersState.markable.toString();
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private MarkableExtension() {
         }
@@ -73,7 +75,7 @@ public class ChatMarkersElements {
         }
 
         public static MarkableExtension from(Message message) {
-            return (MarkableExtension) message.getExtension(ELEMENT, NAMESPACE);
+            return message.getExtension(MarkableExtension.class);
         }
     }
 
@@ -116,6 +118,7 @@ public class ChatMarkersElements {
          * received element.
          */
         public static final String ELEMENT = ChatMarkersState.received.toString();
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public ReceivedExtension(String id) {
             super(id);
@@ -132,7 +135,7 @@ public class ChatMarkersElements {
         }
 
         public static ReceivedExtension from(Message message) {
-            return (ReceivedExtension) message.getExtension(ELEMENT, NAMESPACE);
+            return message.getExtension(ReceivedExtension.class);
         }
     }
 
@@ -150,6 +153,7 @@ public class ChatMarkersElements {
          * displayed element.
          */
         public static final String ELEMENT = ChatMarkersState.displayed.toString();
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public DisplayedExtension(String id) {
             super(id);
@@ -166,7 +170,7 @@ public class ChatMarkersElements {
         }
 
         public static DisplayedExtension from(Message message) {
-            return (DisplayedExtension) message.getExtension(ELEMENT, NAMESPACE);
+            return message.getExtension(DisplayedExtension.class);
         }
     }
 
@@ -184,6 +188,7 @@ public class ChatMarkersElements {
          * acknowledged element.
          */
         public static final String ELEMENT = ChatMarkersState.acknowledged.toString();
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public AcknowledgedExtension(String id) {
             super(id);
@@ -200,7 +205,7 @@ public class ChatMarkersElements {
         }
 
         public static AcknowledgedExtension from(Message message) {
-            return (AcknowledgedExtension) message.getExtension(ELEMENT, NAMESPACE);
+            return message.getExtension(AcknowledgedExtension.class);
         }
     }
 

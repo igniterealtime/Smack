@@ -101,7 +101,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
             @Override
             public void verify(Message request, IQ response) {
                 DataPacketExtension dpe = request.getExtension(
-                                DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE);
+                                DataPacketExtension.class);
                 assertEquals(lastSeq++, dpe.getSeq());
             }
 

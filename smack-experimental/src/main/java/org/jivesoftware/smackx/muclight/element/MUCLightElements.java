@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -44,6 +46,7 @@ public abstract class MUCLightElements {
 
         public static final String ELEMENT = DataForm.ELEMENT;
         public static final String NAMESPACE = MultiUserChatLight.NAMESPACE + MultiUserChatLight.AFFILIATIONS;
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final HashMap<Jid, MUCLightAffiliation> affiliations;
         private final String prevVersion;
@@ -112,7 +115,7 @@ public abstract class MUCLightElements {
         }
 
         public static AffiliationsChangeExtension from(Message message) {
-            return message.getExtension(AffiliationsChangeExtension.ELEMENT, AffiliationsChangeExtension.NAMESPACE);
+            return message.getExtension(AffiliationsChangeExtension.class);
         }
 
     }
@@ -230,7 +233,7 @@ public abstract class MUCLightElements {
         }
 
         public static ConfigurationsChangeExtension from(Message message) {
-            return message.getExtension(ConfigurationsChangeExtension.ELEMENT, ConfigurationsChangeExtension.NAMESPACE);
+            return (ConfigurationsChangeExtension) message.getExtension(ConfigurationsChangeExtension.ELEMENT, ConfigurationsChangeExtension.NAMESPACE);
         }
 
     }

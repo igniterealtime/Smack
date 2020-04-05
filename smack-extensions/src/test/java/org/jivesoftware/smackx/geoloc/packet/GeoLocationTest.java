@@ -117,8 +117,7 @@ public class GeoLocationTest extends InitExtensions {
         Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationMessageString);
         assertNotNull(messageWithGeoLocation);
 
-        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.ELEMENT,
-                        GeoLocation.NAMESPACE);
+        GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
         assertNotNull(geoLocation);
         assertNotNull(geoLocation.toXML());
 

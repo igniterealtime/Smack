@@ -150,7 +150,7 @@ public class ExplicitMessageEncryptionElement implements ExtensionElement {
     }
 
     public static ExplicitMessageEncryptionElement from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(ExplicitMessageEncryptionElement.class);
     }
 
     /**

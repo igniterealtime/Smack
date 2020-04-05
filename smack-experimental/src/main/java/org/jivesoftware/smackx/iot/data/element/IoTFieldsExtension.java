@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -30,6 +32,7 @@ public class IoTFieldsExtension implements ExtensionElement {
 
     public static final String ELEMENT = "fields";
     public static final String NAMESPACE = Constants.IOT_SENSORDATA_NAMESPACE;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final int seqNr;
     private final boolean done;
@@ -88,6 +91,6 @@ public class IoTFieldsExtension implements ExtensionElement {
     }
 
     public static IoTFieldsExtension from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(IoTFieldsExtension.class);
     }
 }

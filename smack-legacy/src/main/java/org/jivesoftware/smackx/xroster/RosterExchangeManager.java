@@ -84,7 +84,7 @@ public class RosterExchangeManager {
             @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
-                RosterExchange rosterExchange = message.getExtension(ELEMENT, NAMESPACE);
+                RosterExchange rosterExchange = (RosterExchange) message.getExtension(ELEMENT, NAMESPACE);
                 // Fire event for roster exchange listeners
                 fireRosterExchangeListeners(message.getFrom(), rosterExchange.getRosterEntries());
             }

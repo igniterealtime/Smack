@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public final class NoCopyHint extends MessageProcessingHint {
     }
 
     public static NoCopyHint from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return (NoCopyHint) message.getExtension(ELEMENT, NAMESPACE);
     }
 
     public static boolean hasHint(Message message) {

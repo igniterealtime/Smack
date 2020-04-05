@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.muc.packet;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -67,6 +69,8 @@ public class GroupChatInvitation implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "jabber:x:conference";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final String roomAddress;
 
@@ -128,7 +132,7 @@ public class GroupChatInvitation implements ExtensionElement {
      * @return the GroupChatInvitation or null
      */
     public static GroupChatInvitation from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(GroupChatInvitation.class);
     }
 
     public static class Provider extends ExtensionElementProvider<GroupChatInvitation> {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.iot.provisioning.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -25,6 +27,7 @@ import org.jxmpp.jid.BareJid;
 public class Unfriend implements ExtensionElement {
     public static final String ELEMENT = "UNFRIEND";
     public static final String NAMESPACE = Constants.IOT_PROVISIONING_NAMESPACE;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final BareJid jid;
 
@@ -55,6 +58,6 @@ public class Unfriend implements ExtensionElement {
     }
 
     public static Unfriend from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(Unfriend.class);
     }
 }

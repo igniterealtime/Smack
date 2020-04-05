@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.gcm.packet;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -33,6 +35,7 @@ public class GcmPacketExtension extends AbstractJsonPacketExtension {
 
     public static final String ELEMENT = "gcm";
     public static final String NAMESPACE = "google:mobile:data";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public GcmPacketExtension(String json) {
         super(json);
@@ -55,6 +58,6 @@ public class GcmPacketExtension extends AbstractJsonPacketExtension {
      * @return the GCM stanza extension or null.
      */
     public static GcmPacketExtension from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(GcmPacketExtension.class);
     }
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public final class StoreHint extends MessageProcessingHint {
     }
 
     public static StoreHint from(MessageView message) {
-        return message.getExtension(QNAME);
+        return message.getExtension(StoreHint.class);
     }
 
     public static boolean hasHint(MessageView message) {

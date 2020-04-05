@@ -535,8 +535,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                 public void processStanza(Stanza packet) {
                     // get data packet extension
                     DataPacketExtension data = packet.getExtension(
-                                    DataPacketExtension.ELEMENT,
-                                    DataPacketExtension.NAMESPACE);
+                                    DataPacketExtension.class);
 
                     // check if encoded data is valid
                     if (data.getDecodedData() == null) {
@@ -590,8 +589,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             } else {
                 // stanza contains data packet extension
                 data = packet.getExtension(
-                        DataPacketExtension.ELEMENT,
-                        DataPacketExtension.NAMESPACE);
+                        DataPacketExtension.class);
                 if (data == null) {
                     return false;
                 }

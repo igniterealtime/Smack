@@ -533,7 +533,7 @@ public class Workgroup {
 
             else {
                 // Check if a room invitation was sent and if the sender is the workgroup
-                MUCUser mucUser = msg.getExtension("x", "http://jabber.org/protocol/muc#user");
+                MUCUser mucUser = MUCUser.from(msg);
                 MUCUser.Invite invite = mucUser != null ? mucUser.getInvite() : null;
                 if (invite != null && workgroupJID.equals(invite.getFrom())) {
                     String sessionID = null;

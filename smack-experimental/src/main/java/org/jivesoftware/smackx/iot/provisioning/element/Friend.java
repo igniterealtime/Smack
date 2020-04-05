@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.iot.provisioning.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.Objects;
@@ -27,6 +29,7 @@ public class Friend implements ExtensionElement {
 
     public static final String ELEMENT = "friend";
     public static final String NAMESPACE = Constants.IOT_PROVISIONING_NAMESPACE;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final BareJid friend;
 
@@ -57,6 +60,6 @@ public class Friend implements ExtensionElement {
     }
 
     public static Friend from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(Friend.class);
     }
 }

@@ -555,7 +555,7 @@ public final class OpenPgpManager extends Manager {
                     Async.go(new Runnable() {
                         @Override
                         public void run() {
-                            OpenPgpElement element = message.getExtension(OpenPgpElement.ELEMENT, OpenPgpElement.NAMESPACE);
+                            OpenPgpElement element = message.getExtension(OpenPgpElement.class);
                             if (element == null) {
                                 // Message does not contain an OpenPgpElement -> discard
                                 return;

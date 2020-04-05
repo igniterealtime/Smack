@@ -37,7 +37,7 @@ public class NodeUtils {
      * @return The configuration form
      */
     public static ConfigureForm getFormFromPacket(Stanza packet, PubSubElementType elem) {
-        FormNode config = packet.getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
+        FormNode config = (FormNode) packet.getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
         Form formReply = config.getForm();
         return new ConfigureForm(formReply);
     }

@@ -114,9 +114,9 @@ public class CarbonExtension implements ExtensionElement {
      * @return a Carbon if available, null otherwise.
      */
     public static CarbonExtension from(Message msg) {
-        CarbonExtension cc = msg.getExtension(Direction.received.name(), NAMESPACE);
+        CarbonExtension cc = (CarbonExtension) msg.getExtension(Direction.received.name(), NAMESPACE);
         if (cc == null)
-            cc = msg.getExtension(Direction.sent.name(), NAMESPACE);
+            cc = (CarbonExtension) msg.getExtension(Direction.sent.name(), NAMESPACE);
         return cc;
     }
 

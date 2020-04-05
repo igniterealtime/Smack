@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.delay;
 
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -34,6 +36,7 @@ public class DelayInformationManager {
 
     public static final String LEGACY_DELAYED_DELIVERY_NAMESPACE = "jabber:x:delay";
     public static final String LEGACY_DELAYED_DELIVERY_ELEMENT = "x";
+    public static final QName QNAME = new QName(LEGACY_DELAYED_DELIVERY_NAMESPACE, LEGACY_DELAYED_DELIVERY_ELEMENT);
 
 
     /**
@@ -57,7 +60,7 @@ public class DelayInformationManager {
      * @return the Delayed Delivery information or <code>null</code>
      */
     public static DelayInformation getLegacyDelayInformation(Stanza packet) {
-        return packet.getExtension(LEGACY_DELAYED_DELIVERY_ELEMENT, LEGACY_DELAYED_DELIVERY_NAMESPACE);
+        return packet.getExtension(DelayInformation.class);
     }
 
     /**

@@ -61,7 +61,7 @@ public interface StanzaView extends XmlLangElement {
      */
     StanzaError getError();
 
-    <E extends ExtensionElement> E getExtension(QName qname);
+    ExtensionElement getExtension(QName qname);
 
     default boolean hasExtension(QName qname) {
         return getExtension(qname) != null;

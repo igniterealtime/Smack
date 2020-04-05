@@ -20,6 +20,8 @@ package org.jivesoftware.smackx.address.packet;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -34,6 +36,7 @@ public class MultipleAddresses implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/address";
     public static final String ELEMENT = "addresses";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public enum Type {
         bcc,

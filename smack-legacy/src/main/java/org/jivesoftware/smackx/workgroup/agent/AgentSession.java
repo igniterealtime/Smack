@@ -784,7 +784,7 @@ public class AgentSession {
             }
 
             // QueueOverview packet extensions contain basic information about a queue.
-            QueueOverview queueOverview = presence.getExtension(QueueOverview.ELEMENT_NAME, QueueOverview.NAMESPACE);
+            QueueOverview queueOverview = (QueueOverview) presence.getExtension(QueueOverview.ELEMENT_NAME, QueueOverview.NAMESPACE);
             if (queueOverview != null) {
                 if (queueOverview.getStatus() == null) {
                     queue.setStatus(WorkgroupQueue.Status.CLOSED);
@@ -803,7 +803,7 @@ public class AgentSession {
 
             // QueueDetails packet extensions contain information about the users in
             // a queue.
-            QueueDetails queueDetails = packet.getExtension(QueueDetails.ELEMENT_NAME, QueueDetails.NAMESPACE);
+            QueueDetails queueDetails = (QueueDetails) packet.getExtension(QueueDetails.ELEMENT_NAME, QueueDetails.NAMESPACE);
             if (queueDetails != null) {
                 queue.setUsers(queueDetails.getUsers());
                 // Fire event.
@@ -812,7 +812,7 @@ public class AgentSession {
             }
 
             // Notify agent packets gives an overview of agent activity in a queue.
-            StandardExtensionElement notifyAgents = presence.getExtension("notify-agents", "http://jabber.org/protocol/workgroup");
+            StandardExtensionElement notifyAgents = (StandardExtensionElement) presence.getExtension("notify-agents", "http://jabber.org/protocol/workgroup");
             if (notifyAgents != null) {
                 int currentChats = Integer.parseInt(notifyAgents.getFirstElement("current-chats", "http://jabber.org/protocol/workgroup").getText());
                 int maxChats = Integer.parseInt(notifyAgents.getFirstElement("max-chats", "http://jabber.org/protocol/workgroup").getText());
@@ -827,20 +827,19 @@ public class AgentSession {
             Message message = (Message) packet;
 
             // Check if a room invitation was sent and if the sender is the workgroup
-            MUCUser mucUser = message.getExtension("x",
-                    "http://jabber.org/protocol/muc#user");
+            MUCUser mucUser = MUCUser.from(message);
             MUCUser.Invite invite = mucUser != null ? mucUser.getInvite() : null;
             if (invite != null && workgroupJID.equals(invite.getFrom())) {
                 String sessionID = null;
                 Map<String, List<String>> metaData = null;
 
-                SessionID sessionIDExt = message.getExtension(SessionID.ELEMENT_NAME,
+                SessionID sessionIDExt = (SessionID) message.getExtension(SessionID.ELEMENT_NAME,
                         SessionID.NAMESPACE);
                 if (sessionIDExt != null) {
                     sessionID = sessionIDExt.getSessionID();
                 }
 
-                MetaData metaDataExt = message.getExtension(MetaData.ELEMENT_NAME,
+                MetaData metaDataExt = (MetaData) message.getExtension(MetaData.ELEMENT_NAME,
                         MetaData.NAMESPACE);
                 if (metaDataExt != null) {
                     metaData = metaDataExt.getMetaData();

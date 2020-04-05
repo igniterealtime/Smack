@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -38,6 +40,8 @@ public class DataPacketExtension implements ExtensionElement {
      * The XMPP namespace of the In-Band Bytestream.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/ibb";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /* unique session ID identifying this In-Band Bytestream */
     private final String sessionID;

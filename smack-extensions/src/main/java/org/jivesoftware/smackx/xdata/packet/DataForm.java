@@ -361,7 +361,7 @@ public class DataForm implements ExtensionElement {
      * @return the DataForm or null
      */
     public static DataForm from(StanzaView stanzaView) {
-        return (DataForm) stanzaView.getExtension(QNAME);
+        return stanzaView.getExtension(DataForm.class);
     }
 
     /**

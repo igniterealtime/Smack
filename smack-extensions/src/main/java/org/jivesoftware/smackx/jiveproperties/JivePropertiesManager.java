@@ -95,7 +95,7 @@ public class JivePropertiesManager {
      */
     public static Object getProperty(StanzaView packet, String name) {
         Object res = null;
-        JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.QNAME);
+        JivePropertiesExtension jpe = packet.getExtension(JivePropertiesExtension.class);
         if (jpe != null) {
             res = jpe.getProperty(name);
         }

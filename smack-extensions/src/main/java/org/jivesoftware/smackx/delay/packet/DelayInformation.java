@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.delay.packet;
 
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -39,6 +41,7 @@ import org.jxmpp.util.XmppDateTime;
 public class DelayInformation implements ExtensionElement {
     public static final String ELEMENT = "delay";
     public static final String NAMESPACE = "urn:xmpp:delay";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final Date stamp;
     private final String from;
@@ -129,6 +132,6 @@ public class DelayInformation implements ExtensionElement {
      * @return the DelayInformation or null
      */
     public static DelayInformation from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(DelayInformation.class);
     }
 }

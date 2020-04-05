@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.json.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.Stanza;
 
 /**
@@ -27,6 +29,7 @@ public class JsonPacketExtension extends AbstractJsonPacketExtension {
 
     public static final String ELEMENT = "json";
     public static final String NAMESPACE = "urn:xmpp:json:0";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public JsonPacketExtension(String json) {
         super(json);
@@ -49,6 +52,6 @@ public class JsonPacketExtension extends AbstractJsonPacketExtension {
      * @return the JSON stanza extension or null.
      */
     public static JsonPacketExtension from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(JsonPacketExtension.class);
     }
 }

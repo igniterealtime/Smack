@@ -159,8 +159,7 @@ public class OfflineMessageManager {
         StanzaFilter messageFilter = new AndFilter(PACKET_FILTER, new StanzaFilter() {
             @Override
             public boolean accept(Stanza packet) {
-                OfflineMessageInfo info = packet.getExtension("offline",
-                        namespace);
+                OfflineMessageInfo info = packet.getExtension(OfflineMessageInfo.class);
                 return nodes.contains(info.getNode());
             }
         });

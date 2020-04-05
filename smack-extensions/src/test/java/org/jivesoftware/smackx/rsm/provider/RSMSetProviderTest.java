@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class RSMSetProviderTest extends InitExtensions {
         // @formatter:on
 
         IQ iqWithRsm = PacketParserUtils.parseStanza(rsmset);
-        RSMSet rsm = iqWithRsm.getExtension(RSMSet.ELEMENT, RSMSet.NAMESPACE);
+        RSMSet rsm = iqWithRsm.getExtension(RSMSet.class);
         assertNotNull(rsm);
         assertEquals("aftervalue", rsm.getAfter());
         assertEquals("beforevalue", rsm.getBefore());

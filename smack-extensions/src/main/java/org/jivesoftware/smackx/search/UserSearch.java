@@ -204,7 +204,7 @@ public class UserSearch extends SimpleIQ {
                 done = true;
             }
         }
-        if (search.getExtension("x", "jabber:x:data") == null) {
+        if (search.getExtension(DataForm.class) == null) {
             search.addExtension(dataForm);
         }
     }

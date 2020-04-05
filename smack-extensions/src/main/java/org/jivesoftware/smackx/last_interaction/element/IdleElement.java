@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.last_interaction.element;
 
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.Objects;
@@ -27,6 +29,7 @@ public class IdleElement implements ExtensionElement {
 
     public static final String NAMESPACE = "urn:xmpp:idle:1";
     public static final String ELEMENT = "idle";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
     public static final String ATTR_SINCE = "since";
 
     private final Date since;
@@ -70,7 +73,7 @@ public class IdleElement implements ExtensionElement {
      * @return idleElement from presence or null
      */
     public static IdleElement fromPresence(Presence presence) {
-        return presence.getExtension(ELEMENT, NAMESPACE);
+        return presence.getExtension(IdleElement.class);
     }
 
     /**

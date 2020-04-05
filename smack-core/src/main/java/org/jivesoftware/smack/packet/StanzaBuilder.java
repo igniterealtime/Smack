@@ -211,10 +211,9 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         return stanzaError;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public final <E extends ExtensionElement> E getExtension(QName qname) {
-        return (E) extensionElements.getFirst(qname);
+    public final ExtensionElement getExtension(QName qname) {
+        return extensionElements.getFirst(qname);
     }
 
     @Override

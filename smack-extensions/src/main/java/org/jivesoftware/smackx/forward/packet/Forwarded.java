@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
@@ -36,6 +38,7 @@ import org.jivesoftware.smackx.delay.packet.DelayInformation;
 public class Forwarded implements ExtensionElement {
     public static final String NAMESPACE = "urn:xmpp:forward:0";
     public static final String ELEMENT = "forwarded";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final DelayInformation delay;
     private final Stanza forwardedPacket;
@@ -115,7 +118,7 @@ public class Forwarded implements ExtensionElement {
      * @return the Forwarded extension or null
      */
     public static Forwarded from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(Forwarded.class);
     }
 
     /**

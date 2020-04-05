@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
@@ -41,6 +43,7 @@ public class MUCUser implements ExtensionElement {
 
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = MUCInitialPresence.NAMESPACE + "#user";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final Set<Status> statusCodes = new HashSet<>(4);
 
@@ -236,7 +239,7 @@ public class MUCUser implements ExtensionElement {
      * @return the MUCUser PacketExtension or {@code null}
      */
     public static MUCUser from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(MUCUser.class);
     }
 
     /**

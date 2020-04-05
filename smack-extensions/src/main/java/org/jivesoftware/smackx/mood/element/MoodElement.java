@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.mood.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.Message;
@@ -36,6 +38,8 @@ public class MoodElement implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/mood";
     public static final String ELEMENT = "mood";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
     public static final String ELEM_TEXT = "text";
 
     private final MoodSubjectElement mood;
@@ -136,7 +140,7 @@ public class MoodElement implements ExtensionElement {
      * @return {@link MoodElement} or null.
      */
     public static MoodElement fromMessage(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(MoodElement.class);
     }
 
     /**

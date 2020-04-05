@@ -213,6 +213,6 @@ public class JivePropertiesExtension implements ExtensionElement {
      * @since 4.2
      */
     public static JivePropertiesExtension from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(JivePropertiesExtension.class);
     }
 }

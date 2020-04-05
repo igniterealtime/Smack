@@ -203,7 +203,7 @@ public class MultipleRecipientManager {
      *         if none was found.
      */
     public static MultipleRecipientInfo getMultipleRecipientInfo(Stanza packet) {
-        MultipleAddresses extension = packet.getExtension(MultipleAddresses.ELEMENT, MultipleAddresses.NAMESPACE);
+        MultipleAddresses extension = packet.getExtension(MultipleAddresses.class);
         return extension == null ? null : new MultipleRecipientInfo(extension);
     }
 

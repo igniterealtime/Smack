@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.Message.Thread;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.Objects;

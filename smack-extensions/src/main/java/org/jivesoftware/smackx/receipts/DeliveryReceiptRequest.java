@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.receipts;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
@@ -35,6 +37,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  */
 public class DeliveryReceiptRequest implements ExtensionElement {
     public static final String ELEMENT = "request";
+    public static final String NAMESPACE = DeliveryReceipt.NAMESPACE;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     @Override
     public String getElementName() {
@@ -70,7 +74,7 @@ public class DeliveryReceiptRequest implements ExtensionElement {
      * @return the {@link DeliveryReceiptRequest} extension or {@code null}
      */
     public static DeliveryReceiptRequest from(Stanza packet) {
-        return packet.getExtension(ELEMENT, DeliveryReceipt.NAMESPACE);
+        return packet.getExtension(DeliveryReceiptRequest.class);
     }
 
     /**

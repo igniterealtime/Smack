@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.usertune.element;
 
 import java.net.URI;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -35,6 +37,7 @@ public final class UserTuneElement implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/tune";
     public static final String ELEMENT = "tune";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final String artist;
     private final UInt16 length;
@@ -116,11 +119,11 @@ public final class UserTuneElement implements ExtensionElement {
     }
 
     public static boolean hasUserTuneElement(Message message) {
-        return message.hasExtension(ELEMENT, NAMESPACE);
+        return message.hasExtension(UserTuneElement.class);
     }
 
     public static UserTuneElement from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(UserTuneElement.class);
     }
 
     @Override

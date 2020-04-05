@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.message_correct.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.StringUtils;
@@ -43,6 +45,8 @@ public class MessageCorrectExtension implements ExtensionElement {
      * extension.
      */
     public static final String NAMESPACE = "urn:xmpp:message-correct:0";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * The id tag of a 'message correct' extension.
@@ -81,7 +85,7 @@ public class MessageCorrectExtension implements ExtensionElement {
     }
 
     public static MessageCorrectExtension from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(MessageCorrectExtension.class);
     }
 
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2014 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.caps.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -26,6 +28,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class CapsExtension implements ExtensionElement {
     public static final String NAMESPACE = "http://jabber.org/protocol/caps";
     public static final String ELEMENT = "c";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final String node, ver, hash;
 
@@ -77,6 +80,6 @@ public class CapsExtension implements ExtensionElement {
     }
 
     public static CapsExtension from(Stanza stanza) {
-        return stanza.getExtension(ELEMENT, NAMESPACE);
+        return stanza.getExtension(CapsExtension.class);
     }
 }

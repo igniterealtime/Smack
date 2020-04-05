@@ -274,7 +274,7 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
     }
 
     public static GeoLocation from(Message message) {
-        return message.getExtension(ELEMENT, NAMESPACE);
+        return message.getExtension(GeoLocation.class);
     }
 
     public static GeoLocation from(FormField formField) {

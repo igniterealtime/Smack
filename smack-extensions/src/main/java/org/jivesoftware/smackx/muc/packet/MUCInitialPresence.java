@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.muc.packet;
 
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
@@ -42,6 +44,7 @@ public class MUCInitialPresence implements ExtensionElement {
 
     public static final String ELEMENT = "x";
     public static final String NAMESPACE = "http://jabber.org/protocol/muc";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     // TODO make those fields final once deprecated setter methods have been removed.
     private String password;
@@ -156,7 +159,7 @@ public class MUCInitialPresence implements ExtensionElement {
      * @return the MUCInitialPresence PacketExtension or {@code null}
      */
     public static MUCInitialPresence from(Stanza packet) {
-        return packet.getExtension(ELEMENT, NAMESPACE);
+        return packet.getExtension(MUCInitialPresence.class);
     }
 
     /**

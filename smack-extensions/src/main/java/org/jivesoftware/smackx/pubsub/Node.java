@@ -656,7 +656,7 @@ public abstract class Node {
 
 
     private static List<String> getSubscriptionIds(Stanza packet) {
-        HeadersExtension headers = packet.getExtension("headers", "http://jabber.org/protocol/shim");
+        HeadersExtension headers = packet.getExtension(HeadersExtension.class);
         List<String> values = null;
 
         if (headers != null) {
@@ -686,7 +686,7 @@ public abstract class Node {
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public void processStanza(Stanza packet) {
-            EventElement event = packet.getExtension("event", PubSubNamespace.event.getXmlns());
+            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.event.getXmlns());
             ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
             // TODO: Use AsyncButOrdered (with Node as Key?)
@@ -710,7 +710,7 @@ public abstract class Node {
         @Override
         public void processStanza(Stanza packet) {
 // CHECKSTYLE:OFF
-            EventElement event = packet.getExtension("event", PubSubNamespace.event.getXmlns());
+            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.event.getXmlns());
 
             List<ExtensionElement> extList = event.getExtensions();
 
@@ -749,7 +749,7 @@ public abstract class Node {
 
         @Override
         public void processStanza(Stanza packet) {
-            EventElement event = packet.getExtension("event", PubSubNamespace.event.getXmlns());
+            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.event.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
             // TODO: Use AsyncButOrdered (with Node as Key?)
