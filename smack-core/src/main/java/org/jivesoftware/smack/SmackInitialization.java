@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2016 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,12 @@ import org.jivesoftware.smack.compression.zlib.ZlibXmppCompressionFactory;
 import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.isr.InstantStreamResumptionModuleDescriptor;
 import org.jivesoftware.smack.packet.Bind;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.BodyElementProvider;
+import org.jivesoftware.smack.provider.MessageSubjectElementProvider;
+import org.jivesoftware.smack.provider.MessageThreadElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.provider.SaslChallengeProvider;
 import org.jivesoftware.smack.provider.SaslFailureProvider;
@@ -130,6 +133,8 @@ public final class SmackInitialization {
 
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
         ProviderManager.addExtensionProvider(Body.ELEMENT, Body.NAMESPACE, new BodyElementProvider());
+        ProviderManager.addExtensionProvider(Message.Thread.ELEMENT, Message.Thread.NAMESPACE, new MessageThreadElementProvider());
+        ProviderManager.addExtensionProvider(Message.Subject.ELEMENT, Message.Subject.NAMESPACE, new MessageSubjectElementProvider());
 
         ProviderManager.addNonzaProvider(SaslChallengeProvider.INSTANCE);
         ProviderManager.addNonzaProvider(SaslSuccessProvider.INSTANCE);

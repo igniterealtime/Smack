@@ -336,7 +336,9 @@ public class ChatConnectionTest {
             jid = JidTestUtil.DUMMY_AT_EXAMPLE_ORG;
         }
         chatMsg.from(jid);
-        chatMsg.setThread(threadId);
+        if (threadId != null) {
+            chatMsg.setThread(threadId);
+        }
         return chatMsg;
     }
 

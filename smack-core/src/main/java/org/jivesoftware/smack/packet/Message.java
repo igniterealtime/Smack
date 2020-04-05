@@ -26,9 +26,11 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.packet.Message.Thread;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -67,7 +69,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     public static final String BODY = "body";
 
     private Type type;
-    private String thread = null;
 
     /**
      * Creates a new, "normal" message.
@@ -150,7 +151,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     Message(MessageBuilder messageBuilder) {
         super(messageBuilder);
         type = messageBuilder.type;
-        thread = messageBuilder.thread;
     }
 
     /**
@@ -165,7 +165,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     public Message(Message other) {
         super(other);
         this.type = other.type;
-        this.thread = other.thread;
     }
 
     @Override
@@ -502,7 +501,11 @@ public final class Message extends MessageOrPresence<MessageBuilder>
      * @return the thread id of the message, or <code>null</code> if it doesn't exist.
      */
     public String getThread() {
-        return thread;
+        Message.Thread thread = getExtension(Message.Thread.class);
+        if (thread == null) {
+            return null;
+        }
+        return thread.getThread();
     }
 
     /**
@@ -515,7 +518,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     @Deprecated
     // TODO: Remove when stanza builder is ready.
     public void setThread(String thread) {
-        this.thread = thread;
+        addExtension(new Message.Thread(thread));
     }
 
     private String determineLanguage(String language) {
@@ -559,7 +562,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
         buf.optAttribute("type", type);
         buf.rightAngleBracket();
 
-        buf.optElement("thread", thread);
         // Append the error subpacket if the message type is an error.
         if (type == Type.error) {
             appendErrorIfExists(buf);
@@ -752,6 +754,60 @@ public final class Message extends MessageOrPresence<MessageBuilder>
             return xml;
         }
 
+    }
+
+    @SuppressWarnings("JavaLangClash")
+    public static class Thread implements ExtensionElement {
+        public static final String ELEMENT = "thread";
+        public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
+        public static final String PARENT_ATTRIBUTE_NAME = "parent";
+
+        private final String thread;
+        private final String parent;
+
+        public Thread(String thread) {
+            this(thread, null);
+        }
+
+        public Thread(String thread, String parent) {
+            this.thread = StringUtils.requireNotNullNorEmpty(thread, "thread must not be null nor empty");
+            this.parent = StringUtils.requireNullOrNotEmpty(parent, "parent must be null or not empty");
+        }
+
+        public String getThread() {
+            return thread;
+        }
+
+        public String getParent() {
+            return parent;
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
+        }
+
+        @Override
+        public QName getQName() {
+            return QNAME;
+        }
+
+        @Override
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.optAttribute(PARENT_ATTRIBUTE_NAME, parent);
+            xml.rightAngleBracket();
+            xml.escape(thread);
+            xml.closeElement(this);
+            return xml;
+        }
     }
 
     /**

@@ -179,7 +179,6 @@ public class PacketParserUtils {
         // Parse sub-elements. We include extra logic to make sure the values
         // are only read once. This is because it's possible for the names to appear
         // in arbitrary sub-elements.
-        String thread = null;
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
@@ -187,18 +186,6 @@ public class PacketParserUtils {
                 String elementName = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (elementName) {
-                case "subject":
-                    String xmlLangSubject = ParserUtils.getXmlLang(parser);
-                    String subject = parseElementText(parser);
-
-                    Message.Subject subjectExtensionElement = new Message.Subject(xmlLangSubject, subject);
-                    message.addExtension(subjectExtensionElement);
-                    break;
-                case "thread":
-                    if (thread == null) {
-                        thread = parser.nextText();
-                    }
-                    break;
                 case "error":
                     message.setError(parseError(parser, messageXmlEnvironment));
                     break;
@@ -216,8 +203,6 @@ public class PacketParserUtils {
             default: // fall out
             }
         }
-
-        message.setThread(thread);
 
         // TODO check for duplicate body elements. This means we need to check for duplicate xml:lang pairs and for
         // situations where we have a body element with an explicit xml lang set and once where the value is inherited

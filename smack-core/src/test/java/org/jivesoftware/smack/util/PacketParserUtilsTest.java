@@ -223,6 +223,7 @@ public class PacketParserUtilsTest {
 
         // message has default language, subject has no language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -239,10 +240,11 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertNull(message.getSubject(otherLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has non-default language, subject has no language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -258,10 +260,11 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().isEmpty());
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has no language, subject has no language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -276,10 +279,11 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getSubject(null));
         assertNull(message.getSubject(otherLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has no language, subject has default language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -295,10 +299,11 @@ public class PacketParserUtilsTest {
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertNull(message.getSubject(otherLanguage));
 
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has no language, subject has non-default language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -315,10 +320,11 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has default language, subject has non-default language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -336,10 +342,11 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
         assertEquals(otherLanguage, message.getSubject(otherLanguage));
         assertNull(message.getSubject(defaultLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has non-default language, subject has default language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -357,7 +364,7 @@ public class PacketParserUtilsTest {
         assertTrue(message.getSubjectLanguages().contains(defaultLanguage));
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
         assertNull(message.getSubject(otherLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
     }
 
@@ -523,6 +530,7 @@ public class PacketParserUtilsTest {
 
         // message has default language, first subject no language, second subject other language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -544,10 +552,11 @@ public class PacketParserUtilsTest {
         assertEquals(2, message.getSubjects().size());
         assertEquals(1, message.getSubjectLanguages().size());
         assertTrue(message.getSubjectLanguages().contains(otherLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         // message has non-default language, first subject no language, second subject default language
         control = XMLBuilder.create("message")
+            .ns(StreamOpen.CLIENT_NAMESPACE)
             .a("from", "romeo@montague.lit/orchard")
             .a("to", "juliet@capulet.lit/balcony")
             .a("id", "zid615d9")
@@ -569,7 +578,7 @@ public class PacketParserUtilsTest {
         assertEquals(2, message.getSubjects().size());
         assertEquals(1, message.getSubjectLanguages().size());
         assertTrue(message.getSubjectLanguages().contains(defaultLanguage));
-        assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
+        assertXmlSimilar(control, message.toXML());
 
         /*
         // message has no language, first subject no language, second subject default language

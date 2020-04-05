@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,6 @@ public final class MessageBuilder extends MessageOrPresenceBuilder<Message, Mess
 
     Message.Type type;
 
-    String thread;
-
     MessageBuilder(Message message, String stanzaId) {
         super(message, stanzaId);
         copyFromMessage(message);
@@ -51,13 +49,11 @@ public final class MessageBuilder extends MessageOrPresenceBuilder<Message, Mess
 
     private void copyFromMessage(Message message) {
         type = message.getType();
-        thread = message.getThread();
     }
 
     @Override
     protected void addStanzaSpecificAttributes(ToStringUtil.Builder builder) {
         builder.addValue("type", type)
-               .addValue("thread", thread)
                ;
     }
 
@@ -67,7 +63,11 @@ public final class MessageBuilder extends MessageOrPresenceBuilder<Message, Mess
     }
 
     public MessageBuilder setThread(String thread) {
-        this.thread = thread;
+        return setThread(thread, null);
+    }
+
+    public MessageBuilder setThread(String thread, String parent) {
+        addExtension(new Message.Thread(thread, parent));
         return getThis();
     }
 
