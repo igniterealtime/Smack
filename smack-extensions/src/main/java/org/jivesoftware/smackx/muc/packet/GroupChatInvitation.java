@@ -116,17 +116,6 @@ public class GroupChatInvitation implements ExtensionElement {
     }
 
     /**
-     * Deprecated.
-     * @param packet TODO javadoc me please
-     * @return the GroupChatInvitation or null
-     * @deprecated use {@link #from(Stanza)} instead
-     */
-    @Deprecated
-    public static GroupChatInvitation getFrom(Stanza packet) {
-        return from(packet);
-    }
-
-    /**
      * Get the group chat invitation from the given stanza.
      * @param packet TODO javadoc me please
      * @return the GroupChatInvitation or null
