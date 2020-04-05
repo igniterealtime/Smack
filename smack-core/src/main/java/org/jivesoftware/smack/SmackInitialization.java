@@ -37,7 +37,6 @@ import org.jivesoftware.smack.initializer.SmackInitializer;
 import org.jivesoftware.smack.isr.InstantStreamResumptionModuleDescriptor;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Message.Body;
 import org.jivesoftware.smack.provider.BindIQProvider;
 import org.jivesoftware.smack.provider.BodyElementProvider;
 import org.jivesoftware.smack.provider.MessageSubjectElementProvider;
@@ -132,7 +131,7 @@ public final class SmackInitialization {
         SASLAuthentication.registerSASLMechanism(new SASLAnonymous());
 
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
-        ProviderManager.addExtensionProvider(Body.ELEMENT, Body.NAMESPACE, new BodyElementProvider());
+        ProviderManager.addExtensionProvider(Message.Body.ELEMENT, Message.Body.NAMESPACE, new BodyElementProvider());
         ProviderManager.addExtensionProvider(Message.Thread.ELEMENT, Message.Thread.NAMESPACE, new MessageThreadElementProvider());
         ProviderManager.addExtensionProvider(Message.Subject.ELEMENT, Message.Subject.NAMESPACE, new MessageSubjectElementProvider());
 
