@@ -61,6 +61,20 @@ public class TLSUtils {
     public static final String PROTO_TLSV1 = TLS + "v1";
     public static final String PROTO_TLSV1_1 = TLS + "v1.1";
     public static final String PROTO_TLSV1_2 = TLS + "v1.2";
+    public static final String PROTO_TLSV1_3 = TLS + "v1.3";
+
+    /**
+     * Enable the recommended TLS protocols.
+     *
+     * @param builder the configuration builder to apply this setting to
+     * @param <B> Type of the ConnectionConfiguration builder.
+     *
+     * @return the given builder
+     */
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setEnabledTlsProtocolsToRecommended(B builder) {
+        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_3, PROTO_TLSV1_2 });
+        return builder;
+    }
 
     /**
      * Enable only TLS. Connections created with the given ConnectionConfiguration will only support TLS.
@@ -76,7 +90,10 @@ public class TLSUtils {
      * @param <B> Type of the ConnectionConfiguration builder.
      *
      * @return the given builder
+     * @deprecated use {@link #setEnabledTlsProtocolsToRecommended(org.jivesoftware.smack.ConnectionConfiguration.Builder)} instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public static <B extends ConnectionConfiguration.Builder<B, ?>> B setTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1 });
         return builder;
@@ -96,7 +113,10 @@ public class TLSUtils {
      * @param <B> Type of the ConnectionConfiguration builder.
      *
      * @return the given builder
+     * @deprecated use {@link #setEnabledTlsProtocolsToRecommended(org.jivesoftware.smack.ConnectionConfiguration.Builder)} instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public static <B extends ConnectionConfiguration.Builder<B, ?>> B setSSLv3AndTLSOnly(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1, PROTO_SSL3 });
         return builder;
