@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,10 @@ public interface StanzaView extends XmlLangElement {
 
     default boolean hasExtension(QName qname) {
         return getExtension(qname) != null;
+    }
+
+    default boolean hasExtension(Class<? extends ExtensionElement> extensionElementClass) {
+        return getExtension(extensionElementClass) != null;
     }
 
     /**
