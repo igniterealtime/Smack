@@ -246,17 +246,6 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     /**
-     * Add a right angle bracket '&gt;'.
-     *
-     * @return a reference to this object
-     * @deprecated use {@link #rightAngleBracket()} instead
-     */
-    @Deprecated
-    public XmlStringBuilder rightAngelBracket() {
-        return rightAngleBracket();
-    }
-
-    /**
      * Does nothing if value is null.
      *
      * @param name TODO javadoc me please
