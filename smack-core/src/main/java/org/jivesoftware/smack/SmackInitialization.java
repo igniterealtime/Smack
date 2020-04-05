@@ -56,7 +56,6 @@ import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
-
 public final class SmackInitialization {
     static final String SMACK_VERSION;
 
