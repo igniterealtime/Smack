@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.geoloc.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
 
@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
 
 public class GeoLocationProviderTest extends InitExtensions {

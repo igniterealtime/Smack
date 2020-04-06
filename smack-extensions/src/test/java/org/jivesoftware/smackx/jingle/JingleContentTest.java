@@ -16,33 +16,38 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNotSame;
-import static junit.framework.TestCase.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test the JingleContent class.
  */
 public class JingleContentTest extends SmackTestSuite {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void emptyBuilderThrowsTest() {
         JingleContent.Builder builder = JingleContent.getBuilder();
-        builder.build();
+        assertThrows(IllegalArgumentException.class, () -> {
+            builder.build();
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void onlyCreatorBuilderThrowsTest() {
         JingleContent.Builder builder = JingleContent.getBuilder();
         builder.setCreator(JingleContent.Creator.initiator);
-        builder.build();
+        assertThrows(IllegalArgumentException.class, () -> {
+            builder.build();
+        });
     }
 
     @Test

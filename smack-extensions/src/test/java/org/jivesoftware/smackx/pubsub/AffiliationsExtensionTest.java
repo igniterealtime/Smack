@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.jivesoftware.smackx.pubsub.Affiliation.Type;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.xml.sax.SAXException;

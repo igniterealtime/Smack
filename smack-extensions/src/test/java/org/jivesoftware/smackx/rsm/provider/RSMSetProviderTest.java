@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.rsm.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -25,7 +25,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RSMSetProviderTest extends InitExtensions {
 

@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.jiveproperties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -25,18 +25,18 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JivePropertiesExtensionTest extends InitExtensions {
 
-    @Before
+    @BeforeEach
     public void setUp() {
         JivePropertiesManager.setJavaObjectEnabled(true);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         JivePropertiesManager.setJavaObjectEnabled(false);
     }

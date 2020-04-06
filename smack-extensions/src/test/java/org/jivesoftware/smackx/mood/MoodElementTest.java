@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.mood;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNull;
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
@@ -29,7 +30,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.mood.provider.MoodProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MoodElementTest extends SmackTestSuite {
 
@@ -51,9 +52,11 @@ public class MoodElementTest extends SmackTestSuite {
         assertEquals(xml, parsed.toXML().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void illegalArgumentsTest() {
-        new MoodElement(null, "Text alone is not allowed.");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new MoodElement(null, "Text alone is not allowed.");
+        });
     }
 
     @Test
@@ -71,13 +74,15 @@ public class MoodElementTest extends SmackTestSuite {
         assertEquals(empty.toXML().toString(), emptyParsed.toXML().toString());
     }
 
-    @Test(expected = XmlPullParserException.class)
+    @Test
     public void unknownMoodValueExceptionTest() throws Exception {
         String xml =
                 "<mood xmlns='http://jabber.org/protocol/mood'>" +
                     "<unknown/>" +
                 "</mood>";
         XmlPullParser parser = TestUtils.getParser(xml);
-        MoodProvider.INSTANCE.parse(parser);
+        assertThrows(XmlPullParserException.class, () -> {
+            MoodProvider.INSTANCE.parse(parser);
+        });
     }
 }

@@ -16,15 +16,15 @@
  */
 package org.jivesoftware.smackx.time.provider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.time.packet.Time;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TimeProviderTest {
 

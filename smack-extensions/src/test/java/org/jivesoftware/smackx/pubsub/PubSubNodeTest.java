@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
 

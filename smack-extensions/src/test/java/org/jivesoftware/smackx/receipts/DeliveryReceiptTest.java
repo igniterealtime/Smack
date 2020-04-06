@@ -18,10 +18,10 @@ package org.jivesoftware.smackx.receipts;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Properties;
 
@@ -38,7 +38,7 @@ import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 
 public class DeliveryReceiptTest extends InitExtensions {

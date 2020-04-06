@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.caps.provider;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 

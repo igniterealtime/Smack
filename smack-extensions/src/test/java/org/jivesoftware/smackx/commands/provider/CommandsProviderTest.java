@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.commands.provider;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
@@ -26,7 +26,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class CommandsProviderTest {
 

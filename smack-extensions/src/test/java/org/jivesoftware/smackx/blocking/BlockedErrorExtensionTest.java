@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockedErrorExtension;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BlockedErrorExtensionTest {
 

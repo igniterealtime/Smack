@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.pubsub;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -30,9 +30,9 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Item validation test.
@@ -42,7 +42,7 @@ import org.junit.Test;
 public class ItemValidationTest extends InitExtensions {
     private ThreadedDummyConnection connection;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // Uncomment this to enable debug output
         // SmackConfiguration.DEBUG = true;
@@ -52,7 +52,7 @@ public class ItemValidationTest extends InitExtensions {
         connection.login();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         if (connection != null)
             connection.disconnect();

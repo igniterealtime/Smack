@@ -25,7 +25,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class GetBlockingListTest {

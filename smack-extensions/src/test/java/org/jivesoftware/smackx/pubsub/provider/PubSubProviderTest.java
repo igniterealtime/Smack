@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.pubsub.provider;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ import org.jivesoftware.smackx.pubsub.Subscription;
 import org.jivesoftware.smackx.pubsub.SubscriptionsExtension;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PubSubProviderTest {
 

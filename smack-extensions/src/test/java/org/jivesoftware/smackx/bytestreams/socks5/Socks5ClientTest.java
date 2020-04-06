@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.bytestreams.socks5;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,9 +32,9 @@ import org.jivesoftware.smack.util.NetworkUtil;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.JidTestUtil;
 
@@ -57,7 +57,7 @@ public class Socks5ClientTest {
      *
      * @throws Exception should not happen
      */
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         // create SOCKS5 proxy server socket
         serverSocket = NetworkUtil.getSocketOnLoopback();
@@ -333,7 +333,7 @@ public class Socks5ClientTest {
      *
      * @throws Exception should not happen
      */
-    @After
+    @AfterEach
     public void cleanup() throws Exception {
         // Avoid NPE if serverSocket could not get created for whateve reason.
         if (serverSocket != null) {

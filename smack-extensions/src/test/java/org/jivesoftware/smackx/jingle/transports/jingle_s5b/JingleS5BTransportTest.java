@@ -16,11 +16,12 @@
  */
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.UnknownHostException;
 
@@ -33,7 +34,7 @@ import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTr
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.provider.JingleS5BTransportProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -178,30 +179,36 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals(candidateActivated, candidateActivatedTransport.toXML().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void candidateBuilderInvalidPortTest() {
-        JingleS5BTransportCandidate.getBuilder().setPort(-5);
+        assertThrows(IllegalArgumentException.class, () -> {
+            JingleS5BTransportCandidate.getBuilder().setPort(-5);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void candidateBuilderInvalidPriorityTest() {
-        JingleS5BTransportCandidate.getBuilder().setPriority(-1000);
+        assertThrows(IllegalArgumentException.class, () -> {
+            JingleS5BTransportCandidate.getBuilder().setPriority(-1000);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void transportCandidateIllegalPriorityTest() throws XmppStringprepException, UnknownHostException {
         FullJid jid = JidCreate.fullFrom("test@test.test/test");
-        @SuppressWarnings("unused")
-        JingleS5BTransportCandidate candidate = new JingleS5BTransportCandidate(
-                "cid", "localhost", jid, 5555, -30, JingleS5BTransportCandidate.Type.proxy);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new JingleS5BTransportCandidate(
+                    "cid", "localhost", jid, 5555, -30, JingleS5BTransportCandidate.Type.proxy);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void transportCandidateIllegalPortTest() throws XmppStringprepException, UnknownHostException {
         FullJid jid = JidCreate.fullFrom("test@test.test/test");
-        @SuppressWarnings("unused")
-        JingleS5BTransportCandidate candidate = new JingleS5BTransportCandidate(
-                "cid", "host", jid, -5555, 30, JingleS5BTransportCandidate.Type.proxy);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new JingleS5BTransportCandidate(
+                    "cid", "host", jid, -5555, 30, JingleS5BTransportCandidate.Type.proxy);
+        });
     }
 
     @Test
@@ -221,8 +228,10 @@ public class JingleS5BTransportTest extends SmackTestSuite {
         assertEquals(streamHost.toXML().toString(), candidate.getStreamHost().toXML().toString());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void typeFromIllegalStringTest() {
-        JingleS5BTransportCandidate.Type.fromString("illegal-type");
+        assertThrows(IllegalArgumentException.class, () -> {
+            JingleS5BTransportCandidate.Type.fromString("illegal-type");
+        });
     }
 }

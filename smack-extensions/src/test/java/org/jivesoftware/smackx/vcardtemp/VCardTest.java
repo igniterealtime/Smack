@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.vcardtemp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class VCardTest extends InitExtensions {
 

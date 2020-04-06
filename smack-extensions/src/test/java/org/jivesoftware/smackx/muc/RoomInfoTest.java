@@ -16,14 +16,14 @@
  */
 package org.jivesoftware.smackx.muc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RoomInfoTest {
     @Test

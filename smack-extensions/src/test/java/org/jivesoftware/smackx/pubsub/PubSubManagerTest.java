@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
@@ -26,7 +26,7 @@ import org.jivesoftware.smack.XMPPException;
 
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;

@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class BoBIQTest extends SmackTestSuite {

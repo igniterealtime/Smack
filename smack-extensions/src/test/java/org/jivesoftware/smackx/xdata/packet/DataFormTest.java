@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.xdata.packet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Text;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for DataForm reading and parsing.

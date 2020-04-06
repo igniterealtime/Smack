@@ -23,8 +23,8 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -37,7 +37,7 @@ public class JingleUtilTest extends SmackTestSuite {
     private XMPPConnection connection;
     private JingleUtil jutil;
 
-    @Before
+    @BeforeEach
     public void setup() {
         connection = new DummyConnection(
                 DummyConnection.getDummyConfigurationBuilder()

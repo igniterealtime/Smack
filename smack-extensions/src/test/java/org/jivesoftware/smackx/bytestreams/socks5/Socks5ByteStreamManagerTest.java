@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.bytestreams.socks5;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverItems.Item;
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
 import org.jivesoftware.util.Verification;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
@@ -611,8 +611,7 @@ public class Socks5ByteStreamManagerTest {
         // initiator can't connect to proxy because it is not running
         protocol.verifyAll();
         Throwable actualCause = e.getCause();
-        assertEquals("Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause),
-                        TimeoutException.class, actualCause.getClass());
+        assertEquals(TimeoutException.class, actualCause.getClass(), "Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause));
     }
 
     /**

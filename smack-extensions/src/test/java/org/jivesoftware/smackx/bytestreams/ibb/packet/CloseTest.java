@@ -17,7 +17,8 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
 
@@ -27,7 +28,7 @@ import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smackx.InitExtensions;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 /**
@@ -37,14 +38,18 @@ import org.jxmpp.jid.impl.JidCreate;
  */
 public class CloseTest extends InitExtensions {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArguments1() {
-        new Close(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Close(null);
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArguments2() {
-        new Close("");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Close("");
+        });
     }
 
     @Test
