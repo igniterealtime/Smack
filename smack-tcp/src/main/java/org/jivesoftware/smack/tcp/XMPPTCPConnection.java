@@ -1152,6 +1152,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     protected class PacketWriter {
         public static final int QUEUE_SIZE = XMPPTCPConnection.QUEUE_SIZE;
+        public static final int UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE = 1024;
+        public static final int UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK = (int) (0.3 * UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE);
 
         private final String threadName = "Smack Writer (" + getConnectionCounter() + ')';
 
@@ -1337,7 +1339,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         // The client needs to add messages to the unacknowledged stanzas queue
                         // right after it sent 'enabled'. Stanza will be added once
                         // unacknowledgedStanzas is not null.
-                        unacknowledgedStanzas = new ArrayBlockingQueue<>(QUEUE_SIZE);
+                        unacknowledgedStanzas = new ArrayBlockingQueue<>(UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE);
                     }
                     maybeAddToUnacknowledgedStanzas(packet);
 
@@ -1439,9 +1441,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             // packet order is not stable at this point (sendStanzaInternal() can be
             // called concurrently).
             if (unacknowledgedStanzas != null && stanza != null) {
-                // If the unacknowledgedStanza queue is nearly full, request an new ack
+                // If the unacknowledgedStanza queue reaching its high water mark, request an new ack
                 // from the server in order to drain it
-                if (unacknowledgedStanzas.size() == 0.8 * XMPPTCPConnection.QUEUE_SIZE) {
+                if (unacknowledgedStanzas.size() == UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK) {
                     writer.write(AckRequest.INSTANCE.toXML().toString());
                     writer.flush();
                 }
