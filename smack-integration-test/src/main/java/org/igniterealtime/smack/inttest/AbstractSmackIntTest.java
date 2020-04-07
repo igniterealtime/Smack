@@ -61,14 +61,13 @@ public abstract class AbstractSmackIntTest {
         }
     }
 
-    @SuppressWarnings("ThreadPriorityCheck")
     protected void waitUntilTrue(Condition condition) throws TimeoutException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final long deadline = System.currentTimeMillis() + timeout;
         do {
             if (condition.evaluate()) {
                 return;
             }
-            Thread.yield();
+            Thread.sleep(15);
         } while (System.currentTimeMillis() <= deadline);
         throw new TimeoutException("Timeout waiting for condition to become true. Timeout was " + timeout + " ms.");
     }
