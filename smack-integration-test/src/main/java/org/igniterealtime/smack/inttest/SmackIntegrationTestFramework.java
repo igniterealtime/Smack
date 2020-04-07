@@ -57,6 +57,9 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
+import org.jivesoftware.smack.util.dns.dnsjava.DNSJavaResolver;
+import org.jivesoftware.smack.util.dns.javax.JavaxResolver;
+import org.jivesoftware.smack.util.dns.minidns.MiniDnsResolver;
 
 import org.jivesoftware.smackx.debugger.EnhancedDebuggerWindow;
 import org.jivesoftware.smackx.iqregister.AccountManager;
@@ -149,6 +152,19 @@ public class SmackIntegrationTestFramework {
     public synchronized TestRunResult run()
             throws KeyManagementException, NoSuchAlgorithmException, SmackException, IOException, XMPPException,
             InterruptedException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        // The DNS resolver is not really a per sinttest run setting. It is not even a per connection setting. Instead
+        // it is a global setting, but we treat it like a per sinttest run setting.
+        switch (config.dnsResolver) {
+        case minidns:
+            MiniDnsResolver.setup();
+            break;
+        case javax:
+            JavaxResolver.setup();
+            break;
+        case dnsjava:
+            DNSJavaResolver.setup();
+            break;
+        }
         testRunResult = new TestRunResult();
 
         // Create a connection manager *after* we created the testRunId (in testRunResult).

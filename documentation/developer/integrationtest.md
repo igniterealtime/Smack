@@ -80,6 +80,7 @@ debugger=console
 | disabledConnections  | List of disabled connection's nicknames                                     |
 | testPackages         | List of packages with tests                                                 |
 | verbose              | If `true` set output to verbose                                             |
+| dnsResolver          | One of 'minidns', 'javax' or 'dnsjava'. Defaults to 'minidns'.              |
 
 ### Where to place the properties file
 

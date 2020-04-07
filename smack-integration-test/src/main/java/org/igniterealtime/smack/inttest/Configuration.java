@@ -62,6 +62,12 @@ public final class Configuration {
         enhanced,
     }
 
+    public enum DnsResolver {
+        minidns,
+        javax,
+        dnsjava,
+    }
+
     public final DomainBareJid service;
 
     public final String serviceTlsPin;
@@ -107,6 +113,8 @@ public final class Configuration {
     public final ConnectionConfigurationBuilderApplier configurationApplier;
 
     public final boolean verbose;
+
+    public final DnsResolver dnsResolver;
 
     private Configuration(Configuration.Builder builder) throws KeyManagementException, NoSuchAlgorithmException {
         service = Objects.requireNonNull(builder.service,
@@ -180,6 +188,8 @@ public final class Configuration {
         };
 
         this.verbose = builder.verbose;
+
+        this.dnsResolver = builder.dnsResolver;
     }
 
     public boolean isAccountRegistrationPossible() {
@@ -231,6 +241,8 @@ public final class Configuration {
         private Set<String> testPackages;
 
         private boolean verbose;
+
+        private DnsResolver dnsResolver = DnsResolver.minidns;
 
         private Builder() {
         }
@@ -399,6 +411,20 @@ public final class Configuration {
             return setVerbose(verbose);
         }
 
+        public Builder setDnsResolver(DnsResolver dnsResolver) {
+            this.dnsResolver = Objects.requireNonNull(dnsResolver);
+            return this;
+        }
+
+        public Builder setDnsResolver(String dnsResolverString) {
+            if (dnsResolverString == null) {
+                return this;
+            }
+
+            DnsResolver dnsResolver = DnsResolver.valueOf(dnsResolverString);
+            return setDnsResolver(dnsResolver);
+        }
+
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
             return new Configuration(this);
         }
@@ -469,6 +495,8 @@ public final class Configuration {
         builder.addTestPackages(testPackages);
 
         builder.setVerbose(properties.getProperty("verbose"));
+
+        builder.setDnsResolver(properties.getProperty("dnsResolver"));
 
         return builder.build();
     }

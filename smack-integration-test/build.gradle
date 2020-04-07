@@ -8,6 +8,7 @@ applicationDefaultJvmArgs = ["-enableassertions"]
 
 dependencies {
 	api project(':smack-java8-full')
+	api project(':smack-resolver-dnsjava')
 	compile 'org.reflections:reflections:0.9.11'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
 	compile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
