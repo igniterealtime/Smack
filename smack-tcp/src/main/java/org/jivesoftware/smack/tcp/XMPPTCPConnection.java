@@ -1446,6 +1446,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 if (unacknowledgedStanzas.size() == UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK) {
                     writer.write(AckRequest.INSTANCE.toXML().toString());
                 }
+
                 try {
                     // It is important the we put the stanza in the unacknowledged stanza
                     // queue before we put it on the wire
