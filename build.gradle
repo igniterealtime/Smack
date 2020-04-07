@@ -134,6 +134,12 @@ allprojects {
 		junitVersion = '5.6.0'
 		powerMockVersion = '2.0.2'
 		commonsIoVersion = '2.6'
+		if (project.hasProperty("useSonatype")) {
+			useSonatype = project.getProperty("useSonatype").toBoolean()
+		} else {
+			// Default to true
+			useSonatype = true
+		}
 	}
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = JavaVersion.VERSION_1_8
@@ -457,12 +463,27 @@ subprojects {
 			}
 		}
 		repositories {
-			maven {
-				url isSnapshot ? sonatypeSnapshotUrl : sonatypeStagingUrl
-				if (sonatypeCredentialsAvailable) {
+			if (sonatypeCredentialsAvailable && useSonatype) {
+				maven {
+					url isSnapshot ? sonatypeSnapshotUrl : sonatypeStagingUrl
 					credentials {
 						username = sonatypeUsername
 						password = sonatypePassword
+					}
+				}
+			}
+			// Use
+			// gradle publish -P customRepoUrl=https://www.igniterealtime.org/archiva/repository/maven -P customRepoUsername=bamboo -P customRepoPassword=hidden -P useSonatype=false
+			// to deploy to this repo.
+			if (project.hasProperty("customRepoUrl")) {
+				maven {
+					name 'customRepo'
+					url customRepoUrl
+					if (project.hasProperty("customRepoUsername")) {
+						credentials {
+							username customRepoUsername
+							password customRepoPassword
+						}
 					}
 				}
 			}
