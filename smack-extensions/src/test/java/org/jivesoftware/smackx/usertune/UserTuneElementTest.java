@@ -32,7 +32,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 import org.jivesoftware.smackx.usertune.provider.UserTuneProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 

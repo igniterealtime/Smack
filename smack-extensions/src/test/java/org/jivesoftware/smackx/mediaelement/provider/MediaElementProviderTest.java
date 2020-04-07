@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.mediaelement.provider;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.List;

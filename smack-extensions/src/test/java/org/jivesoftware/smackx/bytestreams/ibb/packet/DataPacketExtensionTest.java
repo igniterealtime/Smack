@@ -17,8 +17,9 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
@@ -26,7 +27,7 @@ import java.util.Properties;
 import org.jivesoftware.smackx.InitExtensions;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the DataPacketExtension class.
@@ -35,29 +36,39 @@ import org.junit.Test;
  */
 public class DataPacketExtensionTest extends InitExtensions {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArgument1() {
-        new DataPacketExtension(null, 0, "data");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new DataPacketExtension(null, 0, "data");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArgument2() {
-        new DataPacketExtension("", 0, "data");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new DataPacketExtension("", 0, "data");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArgument3() {
-        new DataPacketExtension("sessionID", -1, "data");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new DataPacketExtension("sessionID", -1, "data");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArgument4() {
-        new DataPacketExtension("sessionID", 70000, "data");
+        assertThrows(IllegalArgumentException.class, () -> {
+            new DataPacketExtension("sessionID", 70000, "data");
+        });
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArgument5() {
-        new DataPacketExtension("sessionID", 0, null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new DataPacketExtension("sessionID", 0, null);
+        });
     }
 
     @Test

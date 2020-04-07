@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageCorrectExtensionTest {
 

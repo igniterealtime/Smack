@@ -16,8 +16,9 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Configure form test.
@@ -84,8 +85,8 @@ public class ConfigureFormTest extends InitExtensions {
         }
     }
 
-    @Test(expected = SmackException.class)
-    public void getConfigFormWithTimeout() throws XMPPException, SmackException, InterruptedException {
+    @Test
+    public void getConfigFormWithTimeout() throws XMPPException, InterruptedException {
         ThreadedDummyConnection con = new ThreadedDummyConnection();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         DiscoverInfoBuilder info = DiscoverInfo.builder("disco-result");
@@ -95,12 +96,15 @@ public class ConfigureFormTest extends InitExtensions {
         DiscoverInfo discoverInfo = info.build();
         con.addIQReply(discoverInfo);
 
-        Node node = mgr.getNode("princely_musings");
+        assertThrows(SmackException.class, () -> {
+            // TODO: This method should not throw any exception but currently does.
+            Node node = mgr.getNode("princely_musings");
 
-        SmackConfiguration.setDefaultReplyTimeout(100);
-        con.setTimeout();
+            SmackConfiguration.setDefaultReplyTimeout(100);
+            con.setTimeout();
 
-        node.getNodeConfiguration();
+            node.getNodeConfiguration();
+        });
     }
 
     @Test

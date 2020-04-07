@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class JingleProviderTest {
 

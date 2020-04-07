@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.mood;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -31,7 +31,7 @@ import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.mood.provider.MoodProvider;
 import org.jivesoftware.smackx.mood.provider.SimpleMoodConcretisationProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test checks, if extending XEP-0107: User Mood using custom mood concretisations works.

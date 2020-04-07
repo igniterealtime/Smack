@@ -30,7 +30,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class XHTMLExtensionProviderTest {
     public static final String XHTML_EXTENSION_SAMPLE_RESOURCE_NAME = "xhtml.xml";

@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.amp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,15 +30,15 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 import org.jivesoftware.smackx.amp.provider.AMPExtensionProvider;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class AMPExtensionTest {
 
     private InputStream CORRECT_SENDING_STANZA_STREAM;
     private InputStream INCORRECT_RECEIVING_STANZA_STREAM;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         CORRECT_SENDING_STANZA_STREAM = getClass().getResourceAsStream("correct_stanza_test.xml");
         INCORRECT_RECEIVING_STANZA_STREAM = getClass().getResourceAsStream("incorrect_stanza_test.xml");

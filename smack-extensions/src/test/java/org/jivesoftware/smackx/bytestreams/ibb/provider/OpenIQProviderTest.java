@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Properties;
 
@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaTyp
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for the OpenIQProvider class.

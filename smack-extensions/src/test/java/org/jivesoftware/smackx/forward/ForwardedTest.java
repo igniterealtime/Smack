@@ -18,8 +18,9 @@ package org.jivesoftware.smackx.forward;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jivesoftware.smack.test.util.CharSequenceEquals.equalsCharSequence;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
 
@@ -31,7 +32,7 @@ import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ForwardedTest {
 
@@ -94,7 +95,7 @@ public class ForwardedTest {
         assertEquals("forwarded", parser.getName());
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void forwardedEmptyTest() throws Exception {
         XmlPullParser parser;
         String control;
@@ -104,6 +105,8 @@ public class ForwardedTest {
             .asString(outputProperties);
 
         parser = PacketParserUtils.getParserFor(control);
-        new ForwardedProvider().parse(parser);
+        assertThrows(Exception.class, () -> {
+            new ForwardedProvider().parse(parser);
+        });
     }
 }

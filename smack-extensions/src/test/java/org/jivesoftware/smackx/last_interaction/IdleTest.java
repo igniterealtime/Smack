@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.last_interaction;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Date;
 
@@ -31,7 +31,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.last_interaction.element.IdleElement;
 import org.jivesoftware.smackx.last_interaction.provider.IdleProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
 
 public class IdleTest extends SmackTestSuite {

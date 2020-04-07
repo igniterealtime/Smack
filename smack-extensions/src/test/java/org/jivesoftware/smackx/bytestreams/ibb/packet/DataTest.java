@@ -17,7 +17,8 @@
 package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import java.util.Properties;
@@ -29,7 +30,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.InitExtensions;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
 /**
@@ -39,9 +40,11 @@ import org.jxmpp.jid.impl.JidCreate;
  */
 public class DataTest extends InitExtensions {
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotInstantiateWithInvalidArgument() {
-        new Data(null);
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Data(null);
+        });
     }
 
     @Test

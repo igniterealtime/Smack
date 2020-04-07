@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 
 import org.jivesoftware.smack.SmackException;
@@ -36,8 +37,8 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
 import org.jivesoftware.util.Verification;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 
@@ -65,7 +66,7 @@ public class InBandBytestreamManagerTest extends InitExtensions {
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @Before
+    @BeforeEach
     public void setup() throws XMPPException, SmackException, InterruptedException {
 
         // build protocol verifier
@@ -130,10 +131,12 @@ public class InBandBytestreamManagerTest extends InitExtensions {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotAllowTooBigDefaultBlockSize() {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
-        byteStreamManager.setDefaultBlockSize(1000000);
+        assertThrows(IllegalArgumentException.class, () -> {
+            byteStreamManager.setDefaultBlockSize(1000000);
+        });
     }
 
     @Test
@@ -143,10 +146,12 @@ public class InBandBytestreamManagerTest extends InitExtensions {
         assertEquals(1024, byteStreamManager.getDefaultBlockSize());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldNotAllowTooBigMaximumBlockSize() {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
-        byteStreamManager.setMaximumBlockSize(1000000);
+        assertThrows(IllegalArgumentException.class, () -> {
+            byteStreamManager.setMaximumBlockSize(1000000);
+        });
     }
 
     @Test
