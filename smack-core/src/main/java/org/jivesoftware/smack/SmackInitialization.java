@@ -107,7 +107,7 @@ public final class SmackInitialization {
         }
 
         // Add the Java7 compression handler first, since it's preferred
-        SmackConfiguration.compressionHandlers.add(new Java7ZlibInputOutputStream());
+        SmackConfiguration.addCompressionHandler(new Java7ZlibInputOutputStream());
 
         XmppCompressionManager.registerXmppCompressionFactory(ZlibXmppCompressionFactory.INSTANCE);
 
