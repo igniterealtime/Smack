@@ -59,7 +59,6 @@ allprojects {
 			':smack-android',
 			':smack-android-extensions',
 			':smack-bosh',
-			':smack-compression-jzlib',
 			':smack-debug',
 			':smack-debug-slf4j',
 			':smack-java7',
