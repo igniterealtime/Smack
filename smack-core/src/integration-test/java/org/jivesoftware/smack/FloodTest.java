@@ -25,6 +25,7 @@ import org.jivesoftware.smack.filter.ThreadFilter;
  *
  * @author Gaston Dombiak
  */
+// sinttest candidate
 public class FloodTest extends SmackTestCase {
 
     public FloodTest(String arg0) {

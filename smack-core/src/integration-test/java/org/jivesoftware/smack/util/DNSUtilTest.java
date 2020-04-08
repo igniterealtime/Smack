@@ -16,6 +16,7 @@ import org.jivesoftware.smack.util.dns.JavaxResolver;
 import org.jivesoftware.smack.util.dns.SRVRecord;
 import org.junit.Test;
 
+// minidns candidate?
 public class DNSUtilTest {
     private static final String igniterealtimeDomain = "igniterealtime.org";
     private static final String igniterealtimeXMPPServer = "xmpp." + igniterealtimeDomain;

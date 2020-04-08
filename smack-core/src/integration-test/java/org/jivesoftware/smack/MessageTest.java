@@ -27,6 +27,7 @@ import org.jivesoftware.smack.test.SmackTestCase;
  *
  * @author Gaston Dombiak
  */
+// sinttest candidate
 public class MessageTest extends SmackTestCase {
 
     public MessageTest(String arg0) {

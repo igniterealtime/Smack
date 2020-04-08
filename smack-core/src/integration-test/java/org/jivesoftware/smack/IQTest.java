@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.packet.Version;
  *
  * @author Gaston Dombiak
  */
+// sinttest candidate
 public class IQTest extends SmackTestCase {
 
     public IQTest(String arg0) {
