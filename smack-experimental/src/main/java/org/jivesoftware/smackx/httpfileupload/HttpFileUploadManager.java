@@ -264,7 +264,7 @@ public final class HttpFileUploadManager extends Manager {
         final long fileSize = file.length();
         // Construct the FileInputStream first to make sure we can actually read the file.
         final FileInputStream fis = new FileInputStream(file);
-        upload(listener, fileSize, fis, slot);
+        upload(fis, fileSize, slot, listener);
         return slot.getGetUrl();
     }
 
@@ -308,7 +308,7 @@ public final class HttpFileUploadManager extends Manager {
         Objects.requireNonNull(fileName, "Filename Stream cannot be null");
         Objects.requireNonNull(fileSize, "Filesize Stream cannot be null");
         final Slot slot = requestSlot(fileName, fileSize, "application/octet-stream");
-        upload(listener, fileSize, inputStream, slot);
+        upload(inputStream, fileSize, slot, listener);
         return slot.getGetUrl();
     }
 
@@ -431,8 +431,7 @@ public final class HttpFileUploadManager extends Manager {
         setTlsContext(sslContext);
     }
 
-    private void upload(UploadProgressListener listener, long fileSize, InputStream iStream, Slot slot) throws IOException {
-
+    private void upload(InputStream iStream, long fileSize, Slot slot, UploadProgressListener listener) throws IOException {
         final URL putUrl = slot.getPutUrl();
 
         final HttpURLConnection urlConnection = (HttpURLConnection) putUrl.openConnection();
