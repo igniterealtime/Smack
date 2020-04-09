@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2018 Florian Schmaus
+ * Copyright 2013-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.jivesoftware.smack.compression;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
@@ -41,23 +39,7 @@ import java.util.zip.InflaterInputStream;
  * @author Florian Schmaus
  */
 public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
-    private static final Method method;
-    private static final boolean supported;
     private static final int compressionLevel = Deflater.DEFAULT_COMPRESSION;
-
-    private static final int SYNC_FLUSH_INT = 2;
-    private static final int FULL_FLUSH_INT = 3;
-
-    static {
-        Method m = null;
-        try {
-            m = Deflater.class.getMethod("deflate", byte[].class, int.class, int.class, int.class);
-        } catch (SecurityException e) {
-        } catch (NoSuchMethodException e) {
-        }
-        method = m;
-        supported = method != null;
-    }
 
     public Java7ZlibInputOutputStream() {
         super("zlib");
@@ -65,7 +47,7 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
 
     @Override
     public boolean isSupported() {
-        return supported;
+        return true;
     }
 
     @Override
@@ -101,29 +83,23 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
     @Override
     public OutputStream getOutputStream(OutputStream outputStream) {
         final int flushMethodInt;
-        if (flushMethod == FlushMethod.SYNC_FLUSH) {
-            flushMethodInt = SYNC_FLUSH_INT;
-        } else {
-            flushMethodInt = FULL_FLUSH_INT;
+        switch (flushMethod) {
+        case SYNC_FLUSH:
+            flushMethodInt = Deflater.SYNC_FLUSH;
+            break;
+        case FULL_FLUSH:
+            flushMethodInt = Deflater.FULL_FLUSH;
+            break;
+        default:
+            throw new AssertionError();
         }
+
         return new DeflaterOutputStream(outputStream, new Deflater(compressionLevel)) {
             @Override
             public void flush() throws IOException {
-                if (!supported) {
-                    super.flush();
-                    return;
-                }
-                try {
-                    int count;
-                    while ((count = (Integer) method.invoke(def, buf, 0, buf.length, flushMethodInt)) != 0) {
-                        out.write(buf, 0, count);
-                    }
-                } catch (IllegalArgumentException e) {
-                    throw new IOException("Can't flush");
-                } catch (IllegalAccessException e) {
-                    throw new IOException("Can't flush");
-                } catch (InvocationTargetException e) {
-                    throw new IOException("Can't flush");
+                int count;
+                while ((count = def.deflate(buf, 0, buf.length, flushMethodInt)) > 0) {
+                    out.write(buf, 0, count);
                 }
                 super.flush();
             }
