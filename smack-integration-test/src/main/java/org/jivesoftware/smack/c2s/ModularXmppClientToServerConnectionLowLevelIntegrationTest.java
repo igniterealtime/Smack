@@ -21,7 +21,10 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.igniterealtime.smack.inttest.AbstractSmackSpecificLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTest;
@@ -43,4 +46,11 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
         connection.disconnect();
     }
 
+    @SmackIntegrationTest
+    public void testDisconnectNeverConnected()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        ModularXmppClientToServerConnection connection = getSpecificUnconnectedConnection();
+
+        connection.disconnect();
+    }
 }
