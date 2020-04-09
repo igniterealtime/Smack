@@ -561,30 +561,6 @@ public final class MamManager extends Manager {
         return new MamQueryPage(cancelledResultCollector, mamFinIQ);
     }
 
-    /**
-     * MAM query result class.
-     *
-     */
-    @Deprecated
-    @SuppressWarnings("UnusedVariable")
-    public static final class MamQueryResult {
-        public final List<Forwarded> forwardedMessages;
-        public final MamFinIQ mamFin;
-        private final String node;
-        private final DataForm form;
-
-        private MamQueryResult(MamQuery mamQuery) {
-            this(mamQuery.mamQueryPage.forwardedMessages, mamQuery.mamQueryPage.mamFin, mamQuery.node, mamQuery.form);
-        }
-
-        private MamQueryResult(List<Forwarded> forwardedMessages, MamFinIQ mamFin, String node, DataForm form) {
-            this.forwardedMessages = forwardedMessages;
-            this.mamFin = mamFin;
-            this.node = node;
-            this.form = form;
-        }
-    }
-
     public final class MamQuery {
         private final String node;
         private final DataForm form;
