@@ -769,7 +769,7 @@ public final class MamManager extends Manager {
     /**
      * Update the preferences in the server.
      *
-     * @param mamPrefs TODO javadoc me please
+     * @param mamPrefs the MAM preferences to set the archive to
      * @return the currently active preferences after the operation.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
