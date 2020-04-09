@@ -769,34 +769,6 @@ public final class MamManager extends Manager {
     /**
      * Update the preferences in the server.
      *
-     * @param alwaysJids TODO javadoc me please
-     *            is the list of JIDs that should always have messages to/from
-     *            archived in the user's store
-     * @param neverJids TODO javadoc me please
-     *            is the list of JIDs that should never have messages to/from
-     *            archived in the user's store
-     * @param defaultBehavior TODO javadoc me please
-     *            can be "roster", "always", "never" (see XEP-0313)
-     * @return the MAM preferences result
-     * @throws NoResponseException if there was no response from the remote entity.
-     * @throws XMPPErrorException if there was an XMPP error returned.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @throws NotLoggedInException if the XMPP connection is not authenticated.
-     * @deprecated use {@link #updateArchivingPreferences(MamPrefs)} instead.
-     */
-    @Deprecated
-    public MamPrefsResult updateArchivingPreferences(List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior)
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
-            NotLoggedInException {
-        Objects.requireNonNull(defaultBehavior, "Default behavior must be set");
-        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(alwaysJids, neverJids, defaultBehavior);
-        return queryMamPrefs(mamPrefIQ);
-    }
-
-    /**
-     * Update the preferences in the server.
-     *
      * @param mamPrefs TODO javadoc me please
      * @return the currently active preferences after the operation.
      * @throws NoResponseException if there was no response from the remote entity.
