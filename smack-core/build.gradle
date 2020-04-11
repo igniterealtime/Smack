@@ -24,7 +24,7 @@ dependencies {
 	testCompile "org.assertj:assertj-core:3.11.1"
 	testCompile "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
 	testCompile 'com.jamesmurty.utils:java-xmlbuilder:1.2'
-	testCompile 'org.bouncycastle:bcprov-jdk15on:1.64'
+	testCompile 'org.bouncycastle:bcprov-jdk15on:1.65'
 	testCompile 'com.google.guava:guava:28.2-jre'
 	testCompile 'org.jgrapht:jgrapht-io:1.3.1'
 }
