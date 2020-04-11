@@ -2154,6 +2154,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         CACHED_EXECUTOR_SERVICE.execute(runnable);
     }
 
+    @SuppressWarnings("static-method")
     protected final SmackReactor getReactor() {
         return SMACK_REACTOR;
     }
