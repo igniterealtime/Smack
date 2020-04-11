@@ -143,6 +143,7 @@ public final class EnhancedDebuggerWindow {
         debugger.tabbedPane.setName("XMPPConnection_" + tabbedPane.getComponentCount());
         tabbedPane.add(debugger.tabbedPane, tabbedPane.getComponentCount() - 1);
         tabbedPane.setIconAt(tabbedPane.indexOfComponent(debugger.tabbedPane), connectionCreatedIcon);
+        tabbedPane.setSelectedIndex(tabbedPane.indexOfComponent(debugger.tabbedPane));
         frame.setTitle(
                 "Smack Debug Window -- Total connections: " + (tabbedPane.getComponentCount() - 1));
         // Keep the added debugger for later access
