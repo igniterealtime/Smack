@@ -87,10 +87,14 @@ public interface StanzaView extends XmlLangElement {
         return false;
     }
 
-    @SuppressWarnings("unchecked")
     default <E extends ExtensionElement> E getExtension(Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);
-        return (E) getExtension(qname);
+        ExtensionElement extensionElement = getExtension(qname);
+        if (!extensionElementClass.isInstance(extensionElement)) {
+            return null;
+        }
+
+        return extensionElementClass.cast(extensionElement);
     }
 
     /**
