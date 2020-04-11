@@ -31,7 +31,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
-import org.jivesoftware.smack.util.NetworkUtil;
+import org.jivesoftware.smack.test.util.NetworkUtil;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 

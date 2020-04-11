@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.test.util.Whitebox;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
@@ -35,7 +36,6 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
 import org.mockito.ArgumentCaptor;
-import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the InitiationListener class.
@@ -66,7 +66,7 @@ public class InitiationListenerTest extends InitExtensions {
         byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         // get the InitiationListener from InBandByteStreamManager
-        initiationListener = Whitebox.getInternalState(byteStreamManager, InitiationListener.class);
+        initiationListener = Whitebox.getInternalState(byteStreamManager, "initiationListener", InitiationListener.class);
 
         // create a In-Band Bytestream open packet
         initBytestream = new Open(sessionID, 4096);

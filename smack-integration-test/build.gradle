@@ -20,7 +20,7 @@ dependencies {
 	compile 'junit:junit:4.12'
 	// Add Junit 5 API for e.g. assertThrows()
 	implementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testFixturesApi(testFixtures(project(":smack-core")))
 	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 }
 

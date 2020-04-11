@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.test.util.Whitebox;
 
 import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
@@ -31,7 +32,6 @@ import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
 import org.mockito.ArgumentCaptor;
-import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the CloseListener class.
@@ -59,7 +59,7 @@ public class CloseListenerTest extends InitExtensions {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         // get the CloseListener from InBandByteStreamManager
-        CloseListener closeListener = Whitebox.getInternalState(byteStreamManager,
+        CloseListener closeListener = Whitebox.getInternalState(byteStreamManager, "closeListener",
                         CloseListener.class);
 
         Close close = new Close("unknownSessionId");

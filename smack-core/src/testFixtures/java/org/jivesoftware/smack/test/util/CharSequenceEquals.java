@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.jivesoftware.smack.test.util;
 
 import org.hamcrest.Description;
-import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -40,7 +39,6 @@ public class CharSequenceEquals extends TypeSafeMatcher<CharSequence> {
         return charSequenceString.equals(itemString);
     }
 
-    @Factory
     public static Matcher<CharSequence> equalsCharSequence(CharSequence charSequence) {
         return new CharSequenceEquals(charSequence);
     }

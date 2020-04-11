@@ -6,5 +6,6 @@ Usually XEPs in the state 'retracted', 'rejected', 'deprecated',
 dependencies {
 	compile project(':smack-core')
 	compile project(':smack-extensions')
-	testCompile project(path: ":smack-core", configuration: "testRuntime")
+
+	testFixturesApi(testFixtures(project(":smack-core")))
 }

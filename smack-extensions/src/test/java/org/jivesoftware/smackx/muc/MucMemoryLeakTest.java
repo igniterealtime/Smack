@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.muc;
 
+import org.jivesoftware.smack.test.util.MemoryLeakTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.MemoryLeakTestUtil;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

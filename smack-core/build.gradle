@@ -10,10 +10,19 @@ dependencies {
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
 	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
 	compile "org.minidns:minidns-core:$miniDnsVersion"
-	testCompile project(':smack-xmlparser-stax')
-	testCompile project(':smack-xmlparser-xpp3')
-	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
-	testCompile "org.xmlunit:xmlunit-core:$xmlUnitVersion"
+
+	testFixturesImplementation project(':smack-xmlparser-stax')
+	testFixturesImplementation project(':smack-xmlparser-xpp3')
+
+	// Bouncy Castle is setup by SmackTestSuite. We deliberately use
+	// 'implementation' here since there is no need to shadow it
+	// outside of the fixtures compilation classpath. That is, no test
+	// should ever setup Bouncy Castle as security provider explicitly.
+	testFixturesImplementation 'org.bouncycastle:bcprov-jdk15on:1.64'
+	testFixturesImplementation 'org.apache.commons:commons-lang3:3.10'
+
+	testFixturesApi "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
+	testFixturesApi "org.xmlunit:xmlunit-core:$xmlUnitVersion"
 	// Explictily add assertj-core which is a dependency of
 	// xmlunit-assertj, but gradle fails to resolves it with:
 	// Execution failed for task ':smack-core:compileTestJava'.
@@ -21,12 +30,9 @@ dependencies {
 	//    > Could not find org.assertj:assertj-core:.
 	//		 Required by:
 	//			 project :smack-core > org.xmlunit:xmlunit-assertj:2.6.2
-	testCompile "org.assertj:assertj-core:3.11.1"
-	testCompile "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
-	testCompile 'com.jamesmurty.utils:java-xmlbuilder:1.2'
-	testCompile 'org.bouncycastle:bcprov-jdk15on:1.64'
-	testCompile 'com.google.guava:guava:28.2-jre'
-	testCompile 'org.jgrapht:jgrapht-io:1.3.1'
+	testFixturesApi "org.assertj:assertj-core:3.11.1"
+	testFixturesApi "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
+	testFixturesApi 'org.hamcrest:hamcrest-library:2.2'
 }
 
 class CreateFileTask extends DefaultTask {

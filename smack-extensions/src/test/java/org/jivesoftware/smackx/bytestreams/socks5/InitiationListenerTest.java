@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.test.util.Whitebox;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamRequest;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
@@ -37,7 +38,6 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
 import org.mockito.ArgumentCaptor;
-import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the InitiationListener class.
@@ -75,7 +75,7 @@ public class InitiationListenerTest {
         byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
 
         // get the InitiationListener from Socks5ByteStreamManager
-        initiationListener = Whitebox.getInternalState(byteStreamManager, InitiationListener.class);
+        initiationListener = Whitebox.getInternalState(byteStreamManager, "initiationListener", InitiationListener.class);
 
         // create a SOCKS5 Bytestream initiation packet
         initBytestream = Socks5PacketUtils.createBytestreamInitiation(initiatorJID, targetJID,

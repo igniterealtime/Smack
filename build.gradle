@@ -24,6 +24,7 @@ apply from: 'version.gradle'
 
 allprojects {
 	apply plugin: 'java-library'
+	apply plugin: 'java-test-fixtures'
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	apply plugin: 'jacoco'
@@ -130,7 +131,6 @@ allprojects {
 			':smack-openpgp',
 		].collect { project(it) }
 		junitVersion = '5.6.0'
-		powerMockVersion = '2.0.2'
 		commonsIoVersion = '2.6'
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
@@ -266,9 +266,15 @@ allprojects {
 	}
 
 	dependencies {
-		testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+		testFixturesApi "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 		testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
 		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
+		// The smack-extensions subproject uses mockito in its fest
+		// fixtures, and we want to have mockito also available in
+		// test, so we use API here.
+		testFixturesApi "org.mockito:mockito-core:3.3.3"
+		testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 
 		errorprone 'com.google.errorprone:error_prone_core:2.3.3'
 		errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
@@ -282,9 +288,6 @@ allprojects {
 configure (junit4Projects) {
 	dependencies {
 		testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
-		testImplementation "org.powermock:powermock-module-junit4:$powerMockVersion"
-		testImplementation "org.powermock:powermock-module-junit4-rule:$powerMockVersion"
-		testImplementation "org.powermock:powermock-api-mockito2:$powerMockVersion"
 	}
 }
 

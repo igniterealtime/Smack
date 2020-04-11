@@ -9,5 +9,5 @@ dependencies {
 	api "xpp3:xpp3_min:$xpp3Version"
 	implementation "xpp3:xpp3:$xpp3Version"
 	api project(':smack-xmlparser')
-	testCompile project(path: ":smack-xmlparser", configuration: "testRuntime")
+	//testCompile project(path: ":smack-xmlparser", configuration: "testRuntime")
 }
