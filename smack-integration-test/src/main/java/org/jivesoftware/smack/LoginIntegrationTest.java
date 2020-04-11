@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.sasl.SASLError;
 import org.jivesoftware.smack.sasl.SASLErrorException;
+import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
@@ -57,13 +58,11 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
         AbstractXMPPConnection connection = getUnconnectedConnection();
         connection.connect();
 
-        try {
-            connection.login(nonExistentUserString, invalidPassword);
-            fail("Exception expected");
-        }
-        catch (SASLErrorException e) {
-            assertEquals(SASLError.not_authorized, e.getSASLFailure().getSASLError());
-        }
+        SASLErrorException saslErrorException = assertThrows(SASLErrorException.class,
+                        () -> connection.login(nonExistentUserString, invalidPassword));
+
+        SaslNonza.SASLFailure saslFailure = saslErrorException.getSASLFailure();
+        assertEquals(SASLError.not_authorized, saslFailure.getSASLError());
     }
 
 }
