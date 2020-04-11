@@ -123,7 +123,6 @@ allprojects {
 		androidJavadocOffline = { getAndroidJavadocOffline() }
 		junit4Projects = [
 			':smack-core',
-			':smack-extensions',
 			':smack-im',
 			':smack-integration-test',
 			':smack-omemo',
