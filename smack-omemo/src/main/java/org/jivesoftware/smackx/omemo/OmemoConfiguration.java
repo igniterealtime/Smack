@@ -30,7 +30,7 @@ public final class OmemoConfiguration {
      * Set to true, in order to ignore read-only devices.
      *
      * @param ignore ignore read-only devices
-     * @see <a href="example.com">Blog Post explaining the danger of read-only devices. TODO: Add URL </a>
+     * @see <a href="https://blog.jabberhead.tk/2019/12/13/pitfalls-for-omemo-implementations-part-1-inactive-devices/">Blog Post explaining the danger of read-only devices.</a>
      */
     public static void setIgnoreReadOnlyDevices(boolean ignore) {
         IGNORE_READ_ONLY_DEVICES = ignore;
@@ -40,7 +40,7 @@ public final class OmemoConfiguration {
      * Return true, if the client should stop encrypting messages to a read-only device.
      *
      * @return true if read-only devices should get ignored after a certain amount of unanswered messages.
-     * @see <a href="example.com">Blog Post explaining the danger of read-only devices. TODO: Add URL </a>
+     * @see <a href="https://blog.jabberhead.tk/2019/12/13/pitfalls-for-omemo-implementations-part-1-inactive-devices/">Blog Post explaining the danger of read-only devices.</a>
      */
     public static boolean getIgnoreReadOnlyDevices() {
         return IGNORE_READ_ONLY_DEVICES;
@@ -53,7 +53,7 @@ public final class OmemoConfiguration {
      * This threshold is used to prevent read-only devices from weakening forward secrecy.
      *
      * @param maxReadOnlyMessageCount maximum number of allowed messages to a read-only device.
-     * @see <a href="example.com">Blog Post explaining the danger of read-only devices. TODO: Add URL </a>
+     * @see <a href="https://blog.jabberhead.tk/2019/12/13/pitfalls-for-omemo-implementations-part-1-inactive-devices/">Blog Post explaining the danger of read-only devices.</a>
      */
     public static void setMaxReadOnlyMessageCount(int maxReadOnlyMessageCount) {
         if (maxReadOnlyMessageCount <= 0) {
@@ -69,7 +69,7 @@ public final class OmemoConfiguration {
      * This threshold is used to prevent read-only devices from weakening forward secrecy.
      *
      * @return maximum number of allowed messages to a read-only device.
-     * @see <a href="example.com">Blog Post explaining the danger of read-only devices. TODO: Add URL </a>
+     * @see <a href="https://blog.jabberhead.tk/2019/12/13/pitfalls-for-omemo-implementations-part-1-inactive-devices/">Blog Post explaining the danger of read-only devices.</a>
      */
     public static int getMaxReadOnlyMessageCount() {
         return MAX_READ_ONLY_MESSAGE_COUNT;

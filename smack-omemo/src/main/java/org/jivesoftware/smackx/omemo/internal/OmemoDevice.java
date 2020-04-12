@@ -43,7 +43,7 @@ public class OmemoDevice {
     /**
      * Return the BareJid of the device owner.
      *
-     * @return bareJid TODO javadoc me please
+     * @return bare JID of the device owner.
      */
     public BareJid getJid() {
         return this.jid;
@@ -52,7 +52,7 @@ public class OmemoDevice {
     /**
      * Return the OMEMO device Id of the device.
      *
-     * @return deviceId TODO javadoc me please
+     * @return OMEMO device ID.
      */
     public int getDeviceId() {
         return this.deviceId;

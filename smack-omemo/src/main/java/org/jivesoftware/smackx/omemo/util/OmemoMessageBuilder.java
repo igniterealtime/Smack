@@ -21,15 +21,12 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -128,7 +125,6 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws InvalidKeyException if the key is invalid.
      * @throws NoSuchAlgorithmException if no such algorithm is available.
      * @throws IllegalBlockSizeException if the input data length is incorrect.
-     * @throws UnsupportedEncodingException if the encoding is not supported.
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      */
     public OmemoMessageBuilder(OmemoDevice userDevice,
@@ -136,7 +132,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
                                OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> ratchet,
                                String message)
             throws NoSuchPaddingException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException,
-            UnsupportedEncodingException, InvalidAlgorithmParameterException {
+            InvalidAlgorithmParameterException {
         this(userDevice, callback, ratchet, generateKey(KEYTYPE, KEYLENGTH), generateIv(), message);
     }
 
@@ -144,19 +140,20 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Encrypt the message with the aes key.
      * Move the AuthTag from the end of the cipherText to the end of the messageKey afterwards.
      * This prevents an attacker which compromised one recipient device to switch out the cipherText for other recipients.
+     *
      * @see <a href="https://conversations.im/omemo/audit.pdf">OMEMO security audit</a>.
      *
      * @param message plaintext message
+     *
      * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
-     * @throws NoSuchProviderException
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      * @throws InvalidKeyException if the key is invalid.
      * @throws BadPaddingException if the input data is not padded properly.
      * @throws IllegalBlockSizeException if the input data length is incorrect.
      */
     private void setMessage(String message)
-                    throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-                    InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
+            InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         if (message == null) {
             return;
         }
@@ -202,7 +199,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
 
         if (cipherTextWithoutAuthTag.length != cipherText.length - 16) {
             throw new IllegalArgumentException("Length of cipherTextWithoutAuthTag must be length of cipherText " +
-            "- length of AuthTag (16)");
+                    "- length of AuthTag (16)");
         }
 
         // Move auth tag from cipherText to messageKey
@@ -215,6 +212,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Add a new recipient device to the message.
      *
      * @param contactsDevice device of the recipient
+     *
      * @throws NoIdentityKeyException if we have no identityKey of that device. Can be fixed by fetching and
      *                                processing the devices bundle.
      * @throws CorruptedOmemoKeyException if the identityKey of that device is corrupted.
@@ -248,7 +246,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Assemble an OmemoMessageElement from the current state of the builder.
      *
-     * @return OmemoMessageElement TODO javadoc me please
+     * @return OMEMO element
      */
     public OmemoElement finish() {
         OmemoHeaderElement_VAxolotl header = new OmemoHeaderElement_VAxolotl(
@@ -265,6 +263,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param keyType Key Type
      * @param keyLength Key Length in bit
      * @return new AES key
+     *
      * @throws NoSuchAlgorithmException if no such algorithm is available.
      */
     public static byte[] generateKey(String keyType, int keyLength) throws NoSuchAlgorithmException {
@@ -276,7 +275,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
     /**
      * Generate a 12 byte initialization vector for AES encryption.
      *
-     * @return iv initialization vector
+     * @return initialization vector
      */
     public static byte[] generateIv() {
         SecureRandom random = new SecureRandom();

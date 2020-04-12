@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.omemo;
 import org.jivesoftware.smack.initializer.UrlInitializer;
 
 /**
- * Initializer class that registers omemo providers.
+ * Initializer class that registers OMEMO providers.
  *
  * @author Paul Schaub
  */

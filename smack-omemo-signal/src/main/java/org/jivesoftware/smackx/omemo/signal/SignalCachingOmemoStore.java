@@ -44,6 +44,7 @@ public class SignalCachingOmemoStore extends CachingOmemoStore<IdentityKeyPair, 
     /**
      * Create a new SignalCachingOmemoStore as a caching layer around a persisting OmemoStore
      * (eg. a SignalFileBasedOmemoStore).
+     *
      * @param wrappedStore other store implementation that gets wrapped
      */
     public SignalCachingOmemoStore(OmemoStore<IdentityKeyPair, IdentityKey, PreKeyRecord, SignedPreKeyRecord,

@@ -79,7 +79,8 @@ public class CannotEstablishOmemoSessionException extends Exception {
     /**
      * Return true, if there is at least one recipient, which would not be able to decipher the message on any of
      * their devices.
-     * @return boolean TODO javadoc me please
+     *
+     * @return true if the exception requires to be thrown
      */
     public boolean requiresThrowing() {
         for (Map.Entry<BareJid, HashMap<OmemoDevice, Throwable>> entry : failures.entrySet()) {

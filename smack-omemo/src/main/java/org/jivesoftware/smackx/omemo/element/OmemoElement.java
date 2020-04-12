@@ -55,7 +55,7 @@ public abstract class OmemoElement implements ExtensionElement {
     /**
      * Return the payload of the message.
      *
-     * @return payload TODO javadoc me please
+     * @return encrypted payload of the message.
      */
     public byte[] getPayload() {
         if (payload == null) {
