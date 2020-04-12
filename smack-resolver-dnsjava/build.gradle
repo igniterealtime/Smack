@@ -4,5 +4,5 @@ Use dnsjava for DNS SRV lookups."""
 
 dependencies {
 	compile project(':smack-core')
-	compile 'dnsjava:dnsjava:[2.1,2.2)'
+	compile 'dnsjava:dnsjava:[3.0.0,3.0.9999]'
 }
