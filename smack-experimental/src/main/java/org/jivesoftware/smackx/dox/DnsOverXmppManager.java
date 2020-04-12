@@ -60,7 +60,7 @@ public final class DnsOverXmppManager extends Manager {
 
     private static DnsOverXmppResolver defaultResolver;
 
-    public void setDefaultDnsOverXmppResolver(DnsOverXmppResolver resolver) {
+    public static void setDefaultDnsOverXmppResolver(DnsOverXmppResolver resolver) {
         defaultResolver = resolver;
     }
 
