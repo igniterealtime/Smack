@@ -369,6 +369,22 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
         return packetExtension;
     }
 
+    /**
+     * This method is deprecated. Use preferably {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)}.
+     *
+     * @param <E> the type to cast to.
+     * @param elementName the XML element name of the extension. (May be null)
+     * @param namespace the XML element namespace of the extension.
+     * @return the extension, or <code>null</code> if it doesn't exist.
+     * @deprecated use {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)} isntead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @SuppressWarnings("unchecked")
+    @Deprecated
+    public final <E extends ExtensionElement> E getExtension(String elementName, String namespace) {
+        return (E) getExtensionElement(elementName, namespace);
+    }
+
     @Override
     public final ExtensionElement getExtension(QName qname) {
         synchronized (extensionElements) {
