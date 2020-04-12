@@ -32,6 +32,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate;
@@ -66,7 +67,7 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
                 case START_ELEMENT: {
                     switch (name) {
 
-                        case JingleS5BTransportCandidate.ELEMENT:
+                        case JingleContentTransportCandidate.ELEMENT:
                             cb = JingleS5BTransportCandidate.getBuilder();
                             cb.setCandidateId(parser.getAttributeValue(null, ATTR_CID));
                             cb.setHost(parser.getAttributeValue(null, ATTR_HOST));
