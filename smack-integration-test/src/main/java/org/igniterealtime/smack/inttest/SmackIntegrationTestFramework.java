@@ -746,8 +746,10 @@ public class SmackIntegrationTestFramework {
                 .append(method.getName())
                 .append(" (")
                 .append(testType.name());
-            sb.append(", ");
-            StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
+            if (subdescriptons != null) {
+                sb.append(", ");
+                StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
+            }
             sb.append(')');
 
             stringCache = sb.toString();
