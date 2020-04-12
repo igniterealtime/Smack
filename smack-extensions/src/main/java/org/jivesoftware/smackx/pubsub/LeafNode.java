@@ -236,7 +236,6 @@ public class LeafNode extends Node {
      * @throws NoResponseException if there was no response from the remote entity.
      * @deprecated use {@link #publish(Item)} instead.
      */
-    @SuppressWarnings("unchecked")
     @Deprecated
     public <T extends Item> void send(T item) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         publish(item);
