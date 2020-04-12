@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import org.jivesoftware.smackx.InitExtensions;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Henning Staib
  */
-public class DataPacketExtensionTest extends InitExtensions {
+public class DataPacketExtensionTest extends SmackTestSuite {
 
     @Test
     public void shouldNotInstantiateWithInvalidArgument1() {

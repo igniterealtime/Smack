@@ -30,18 +30,18 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptManager.AutoReceiptMode;
 
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 
-public class DeliveryReceiptTest extends InitExtensions {
+public class DeliveryReceiptTest extends SmackTestSuite {
 
     private static Properties outputProperties = new Properties();
     static {

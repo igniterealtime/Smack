@@ -24,10 +24,10 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
 import org.junit.jupiter.api.AfterEach;
@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
  * @author Robin Collier
  *
  */
-public class ItemValidationTest extends InitExtensions {
+public class ItemValidationTest extends SmackTestSuite {
     private ThreadedDummyConnection connection;
 
     @BeforeEach

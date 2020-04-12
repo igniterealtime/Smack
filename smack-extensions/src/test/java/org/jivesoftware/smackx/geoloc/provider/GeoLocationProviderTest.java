@@ -23,15 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import java.net.URI;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
 
-public class GeoLocationProviderTest extends InitExtensions {
+public class GeoLocationProviderTest extends SmackTestSuite {
 
     @Test
     public void testGeoLocationProviderWithNoDatumSet() throws Exception {

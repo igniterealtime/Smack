@@ -24,9 +24,9 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.time.packet.Time;
 
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ import org.jxmpp.util.XmppDateTime;
  *
  * @author Ishan Khanna
  */
-public class GeoLocationTest extends InitExtensions {
+public class GeoLocationTest extends SmackTestSuite {
 
     @Test
     public void negativeTimezoneTest() {

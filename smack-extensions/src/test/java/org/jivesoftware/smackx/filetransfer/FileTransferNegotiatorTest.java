@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 import org.junit.jupiter.api.AfterEach;
@@ -30,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;
 
-public class FileTransferNegotiatorTest extends InitExtensions {
+public class FileTransferNegotiatorTest extends SmackTestSuite {
     private DummyConnection connection;
 
     @BeforeEach

@@ -21,13 +21,13 @@ import java.lang.reflect.Method;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.BeforeAll;
 
-public class MamTest extends InitExtensions {
+public class MamTest extends SmackTestSuite {
 
     protected static XMPPConnection connection;
     protected static String queryId;

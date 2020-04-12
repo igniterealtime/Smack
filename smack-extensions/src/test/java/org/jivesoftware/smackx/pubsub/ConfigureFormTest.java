@@ -31,8 +31,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
  * @author Robin Collier
  *
  */
-public class ConfigureFormTest extends InitExtensions {
+public class ConfigureFormTest extends SmackTestSuite {
     @Test
     public void checkChildrenAssocPolicy() {
         ConfigureForm form = new ConfigureForm(DataForm.Type.submit);

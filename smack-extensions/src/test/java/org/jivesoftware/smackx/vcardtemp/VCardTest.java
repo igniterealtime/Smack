@@ -21,15 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
 import org.junit.jupiter.api.Test;
 
-public class VCardTest extends InitExtensions {
+public class VCardTest extends SmackTestSuite {
 
     @Test
     public void testParseFullVCardIQStanza() throws Throwable {
