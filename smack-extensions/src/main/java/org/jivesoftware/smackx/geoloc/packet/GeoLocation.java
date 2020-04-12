@@ -48,6 +48,8 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
+    public static final GeoLocation EMPTY_GEO_LOCATION = GeoLocation.builder().build();
+
     private static final Logger LOGGER = Logger.getLogger(GeoLocation.class.getName());
 
     private final Double accuracy;
@@ -264,6 +266,10 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         return NAMESPACE;
     }
 
+    /**
+     * Returns a new instance of {@link Builder}.
+     * @return Builder
+     */
     public static Builder builder() {
         return new GeoLocation.Builder();
     }
@@ -273,14 +279,35 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         return true;
     }
 
+    /**
+     * Returns the first GeoLocation, or <code>null</code> if it doesn't exist in {@link Message}.
+     * <br>
+     * @param message The Message stanza containing GeoLocation
+     * @return GeoLocation
+     */
     public static GeoLocation from(Message message) {
         return message.getExtension(GeoLocation.class);
     }
 
+    /**
+     * Returns the first GeoLocation, or <code>null</code> if it doesn't exist in {@link FormField}.
+     * <br>
+     * @param formField the Formfield containing GeoLocation
+     * @return GeoLocation
+     */
     public static GeoLocation from(FormField formField) {
         return (GeoLocation) formField.getFormFieldChildElement(QNAME);
     }
 
+    /**
+     * This class defines a builder class for {@link GeoLocation}.
+     * <br>
+     * {@link GeoLocation} instance can be obtained using {@link #build()} method as follows.<br><br>
+     * <code>GeoLocation.Builder builder = GeoLocation.builder(); <br>
+     *       GeoLocation geoLocation = builder.build();</code>
+     *  <br><br>
+     *  To set GeoLocation parameters, use their respective setters.
+     */
     public static class Builder {
 
         private Double accuracy;
@@ -308,133 +335,285 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         private String tzo;
         private URI uri;
 
+        /**
+         * Sets accuracy of horizontal GPS error in meters.
+         *
+         * @param accuracy accuracy in meters
+         * @return Builder
+         */
         public Builder setAccuracy(Double accuracy) {
             this.accuracy = accuracy;
             return this;
         }
 
+        /**
+         * Sets Altitude in meters above or below sea level.
+         *
+         * @param alt altitude in meters
+         * @return Builder
+         */
         public Builder setAlt(Double alt) {
             this.alt = alt;
             return this;
         }
 
+        /**
+         * Sets Vertical GPS error in meters.
+         *
+         * @param altAccuracy altAccuracy in meters
+         * @return Builder
+         */
         public Builder setAltAccuracy(Double altAccuracy) {
             this.altAccuracy = altAccuracy;
             return this;
         }
 
+        /**
+         * Sets a named area such as a campus or neighborhood.
+         *
+         * @param area the named area
+         * @return Builder
+         */
         public Builder setArea(String area) {
             this.area = area;
             return this;
         }
 
+        /**
+         * Sets GPS bearing (direction in which the entity is heading<br>
+         * to reach its next waypoint), measured in decimal degrees,<br>
+         * relative to true north.
+         *
+         * @param bearing bearing in decimal degrees
+         * @return Builder
+         */
         public Builder setBearing(Double bearing) {
             this.bearing = bearing;
             return this;
         }
 
+        /**
+         * Sets a specific building on a street or in an area.
+         *
+         * @param building name of the building
+         * @return Builder
+         */
         public Builder setBuilding(String building) {
             this.building = building;
             return this;
         }
 
+        /**
+         * Sets the nation where the user is located.
+         *
+         * @param country user's country of location
+         * @return Builder
+         */
         public Builder setCountry(String country) {
             this.country = country;
             return this;
         }
 
+        /**
+         * Sets The ISO 3166 two-letter country code.
+         *
+         * @param countryCode two-letter country code
+         * @return Builder
+         */
         public Builder setCountryCode(String countryCode) {
             this.countryCode = countryCode;
             return this;
         }
 
+        /**
+         * Sets GPS Datum.
+         *
+         * @param datum GPS datum
+         * @return Builder
+         */
         public Builder setDatum(String datum) {
             this.datum = datum;
             return this;
         }
 
+        /**
+         * Sets A natural-language name for or description of the location.
+         *
+         * @param description description of the location
+         * @return Builder
+         */
         public Builder setDescription(String description) {
             this.description = description;
             return this;
         }
 
+        /**
+         * Sets Horizontal GPS error in arc minutes;<br>
+         * this element is deprecated in favor of accuracy.
+         *
+         * @param error error in arc minutes
+         * @return Builder
+         */
         public Builder setError(Double error) {
             this.error = error;
             return this;
         }
 
+        /**
+         * Sets a particular floor in a building.
+         *
+         * @param floor floor in a building
+         * @return Builder
+         */
         public Builder setFloor(String floor) {
             this.floor = floor;
             return this;
         }
 
+        /**
+         * Sets Latitude in decimal degrees North.
+         *
+         * @param lat latitude in decimal degrees
+         * @return Builder
+         */
         public Builder setLat(Double lat) {
             this.lat = lat;
             return this;
         }
 
+        /**
+         * Sets Locality within the administrative region,<br>
+         * such as a town or city.
+         *
+         * @param locality locality in a region
+         * @return Builder
+         */
         public Builder setLocality(String locality) {
             this.locality = locality;
             return this;
         }
 
+        /**
+         * Sets Longitude in decimal degrees East.
+         *
+         * @param lon longitude in decimal degrees
+         * @return Builder
+         */
         public Builder setLon(Double lon) {
             this.lon = lon;
             return this;
         }
 
+        /**
+         * Sets PostalCode used for postal delivery.
+         *
+         * @param postalcode code for postal delivery
+         * @return Builder
+         */
         public Builder setPostalcode(String postalcode) {
             this.postalcode = postalcode;
             return this;
         }
 
+        /**
+         * Sets an administrative region of the nation,<br>
+         * such as a state or province.
+         *
+         * @param region an administrative region
+         * @return Builder
+         */
         public Builder setRegion(String region) {
             this.region = region;
             return this;
         }
 
+        /**
+         * Sets a particular room in a building.
+         *
+         * @param room room inside a building
+         * @return Builder
+         */
         public Builder setRoom(String room) {
             this.room = room;
             return this;
         }
 
+        /**
+         * Sets Speed at which the entity is moving, in meters per second.
+         *
+         * @param speed speed in meters per second
+         * @return Builder
+         */
         public Builder setSpeed(Double speed) {
             this.speed = speed;
             return this;
         }
 
+        /**
+         * Sets a thoroughfare within the locality, or a crossing of two thoroughfares.
+         *
+         * @param street name of the street
+         * @return Builder
+         */
         public Builder setStreet(String street) {
             this.street = street;
             return this;
         }
 
+        /**
+         * Sets a catch-all element that captures any other information about the location.
+         *
+         * @param text distinctive feature about the location
+         * @return Builder
+         */
         public Builder setText(String text) {
             this.text = text;
             return this;
         }
 
+        /**
+         * Sets UTC timestamp specifying the moment when the reading was taken.
+         *
+         * @param timestamp timestamp of the reading
+         * @return Builder
+         */
         public Builder setTimestamp(Date timestamp) {
             this.timestamp = timestamp;
             return this;
         }
 
+        /**
+         * Sets the time zone offset from UTC for the current location.
+         *
+         * @param tzo time zone offset
+         * @return Builder
+         */
         public Builder setTzo(String tzo) {
             this.tzo = tzo;
             return this;
         }
 
+        /**
+         * Sets URI or URL pointing to information about the location.
+         *
+         * @param uri uri to the location
+         * @return Builder
+         */
         public Builder setUri(URI uri) {
             this.uri = uri;
             return this;
         }
 
+        /**
+         * This method is called to build {@link GeoLocation} from the Builder.
+         *
+         * @return GeoLocation
+         */
         public GeoLocation build() {
 
             return new GeoLocation(accuracy, alt, altAccuracy, area, bearing, building, country, countryCode, datum, description,
                             error, floor, lat, locality, lon, postalcode, region, room, speed, street, text, timestamp,
                             tzo, uri);
         }
-
     }
-
 }

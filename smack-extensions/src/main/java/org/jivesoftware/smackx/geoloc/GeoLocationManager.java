@@ -16,9 +16,13 @@
  */
 package org.jivesoftware.smackx.geoloc;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -26,21 +30,52 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider;
-import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pep.PepListener;
+import org.jivesoftware.smackx.pep.PepManager;
+import org.jivesoftware.smackx.pubsub.EventElement;
+import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
-import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProviderManager;
 
+import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
+/**
+ * Entry point for Smacks API for XEP-0080: User Location.
+ * <br>
+ * To publish a UserLocation, please use {@link #sendGeolocation(GeoLocation)} method. This will publish the node.
+ * <br>
+ * To stop publishing a UserLocation, please use {@link #stopPublishingGeolocation()} method. This will send a disble publishing signal.
+ * <br>
+ * To add a {@link GeoLocationListener} in order to remain updated with other users GeoLocation, use {@link #addGeoLocationListener(GeoLocationListener)} method.
+ * <br>
+ * To link a GeoLocation with {@link Message}, use `message.addExtension(geoLocation)`.
+ * <br>
+ * An example for illustration is provided inside GeoLocationTest inside the test package.
+ * <br>
+ * @see <a href="https://xmpp.org/extensions/xep-0080.html">
+ *     XEP-0080: User Location</a>
+ */
 public final class GeoLocationManager extends Manager {
 
+    public static final String GEOLOCATION_NODE = "http://jabber.org/protocol/geoloc";
+    public static final String GEOLOCATION_NOTIFY = GEOLOCATION_NODE + "+notify";
+
     private static final Map<XMPPConnection, GeoLocationManager> INSTANCES = new WeakHashMap<>();
+
+    private static boolean ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT = true;
+
+    private final Set<GeoLocationListener> geoLocationListeners = new CopyOnWriteArraySet<>();
+    private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<BareJid>();
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
+    private final PepManager pepManager;
 
     static {
         FormFieldChildElementProviderManager.addFormFieldChildElementProvider(
@@ -52,11 +87,6 @@ public final class GeoLocationManager extends Manager {
                 getInstanceFor(connection);
             }
         });
-    }
-
-    public GeoLocationManager(XMPPConnection connection) {
-        super(connection);
-
     }
 
     /**
@@ -73,6 +103,36 @@ public final class GeoLocationManager extends Manager {
             INSTANCES.put(connection, geoLocationManager);
         }
         return geoLocationManager;
+    }
+
+    private GeoLocationManager(XMPPConnection connection) {
+        super(connection);
+        pepManager = PepManager.getInstanceFor(connection);
+        pepManager.addPepListener(new PepListener() {
+
+            @Override
+            public void eventReceived(EntityBareJid from, EventElement event, Message message) {
+                if (!GEOLOCATION_NODE.equals(event.getEvent().getNode())) {
+                    return;
+                }
+
+                final BareJid contact = from.asBareJid();
+                asyncButOrdered.performAsyncButOrdered(contact, () -> {
+                    ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
+                    List<ExtensionElement> items = itemsExtension.getExtensions();
+                    @SuppressWarnings("unchecked")
+                    PayloadItem<GeoLocation> payload = (PayloadItem<GeoLocation>) items.get(0);
+                    GeoLocation geoLocation = payload.getPayload();
+                    for (GeoLocationListener listener : geoLocationListeners) {
+                        listener.onGeoLocationUpdated(contact, geoLocation, message);
+                    }
+                });
+            }
+        });
+        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        if (ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT) {
+            enableUserLocationNotifications();
+        }
     }
 
     public void sendGeoLocationToJid(GeoLocation geoLocation, Jid jid) throws InterruptedException,
@@ -111,7 +171,7 @@ public final class GeoLocationManager extends Manager {
      */
     public void sendGeolocation(GeoLocation geoLocation)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        getNode().publish(new PayloadItem<GeoLocation>(geoLocation));
+        pepManager.publish(GeoLocation.NAMESPACE, new PayloadItem<GeoLocation>(geoLocation));
     }
 
     /**
@@ -125,13 +185,25 @@ public final class GeoLocationManager extends Manager {
      */
     public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        GeoLocation emptyGeolocation = new GeoLocation.Builder().build();
-        getNode().publish(new PayloadItem<GeoLocation>(emptyGeolocation));
+        pepManager.publish(GeoLocation.NAMESPACE, new PayloadItem<GeoLocation>(GeoLocation.EMPTY_GEO_LOCATION));
     }
 
-    private LeafNode getNode()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        return PubSubManager.getInstanceFor(connection()).getOrCreateLeafNode(GeoLocation.NAMESPACE);
+    public void setGeoLocationNotificationsEnabledByDefault(boolean bool) {
+        ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT = bool;
     }
 
+    public void enableUserLocationNotifications() {
+        serviceDiscoveryManager.addFeature(GEOLOCATION_NOTIFY);
+    }
+
+    public void disableGeoLocationNotifications() {
+        serviceDiscoveryManager.removeFeature(GEOLOCATION_NOTIFY);
+    }
+
+    public boolean addGeoLocationListener(GeoLocationListener geoLocationListener) {
+        return geoLocationListeners.add(geoLocationListener);
+    }
+    public boolean removeGeoLocationListener(GeoLocationListener geoLocationListener) {
+        return geoLocationListeners.remove(geoLocationListener);
+    }
 }
