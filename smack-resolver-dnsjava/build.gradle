@@ -1,7 +1,6 @@
 description = """\
 DNS SRV with dnsjava
-Use dnsjava for DNS SRV lookups. For platforms that don't provide the
-javax.naming API (e.g. Android)."""
+Use dnsjava for DNS SRV lookups."""
 
 dependencies {
 	compile project(':smack-core')
