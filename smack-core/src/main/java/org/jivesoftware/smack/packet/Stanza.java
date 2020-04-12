@@ -352,6 +352,10 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * Returns the first extension that matches the specified element name and
      * namespace, or <code>null</code> if it doesn't exist. Extensions are
      * are arbitrary XML elements in standard XMPP stanzas.
+     * <p>
+     * Note that it is recommended to use {@link #getExtension(Class)} instead of this method.
+     * The {@link #getExtension(Class)} is more robust, as it is type safe.
+     * </p>
      *
      * @param elementName the XML element name of the extension.
      * @param namespace the XML element namespace of the extension.
