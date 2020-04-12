@@ -49,7 +49,6 @@ import org.jivesoftware.smackx.commands.RemoteCommand;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamFinIQ;
