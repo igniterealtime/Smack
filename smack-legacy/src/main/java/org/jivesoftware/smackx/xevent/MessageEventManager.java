@@ -82,7 +82,7 @@ public final class MessageEventManager extends Manager {
             @Override
             public void processStanza(Stanza packet) {
                 Message message = (Message) packet;
-                MessageEvent messageEvent = (MessageEvent) message.getExtension("x", "jabber:x:event");
+                MessageEvent messageEvent = (MessageEvent) message.getExtensionElement("x", "jabber:x:event");
                 if (messageEvent.isMessageEventRequest()) {
                     // Fire event for requests of message events
                     for (String eventType : messageEvent.getEventTypes())

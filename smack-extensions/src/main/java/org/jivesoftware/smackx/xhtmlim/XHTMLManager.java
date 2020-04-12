@@ -89,7 +89,7 @@ public class XHTMLManager {
      * @return a boolean indicating whether the message is an XHTML message
      */
     public static boolean isXHTMLMessage(Message message) {
-        return message.getExtension(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE) != null;
+        return message.getExtensionElement(XHTMLExtension.ELEMENT, XHTMLExtension.NAMESPACE) != null;
     }
 
     /**

@@ -338,7 +338,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     /**
      * Returns the first extension of this stanza that has the given namespace.
      * <p>
-     * When possible, use {@link #getExtension(String, String)} instead.
+     * When possible, use {@link #getExtensionElement(String, String)} instead.
      * </p>
      *
      * @param namespace the namespace of the extension that is desired.
@@ -358,7 +358,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param namespace the XML element namespace of the extension.
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
-    public final ExtensionElement getExtension(String elementName, String namespace) {
+    public final ExtensionElement getExtensionElement(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }

@@ -515,8 +515,8 @@ public class Workgroup {
         if (packet instanceof Message) {
             Message msg = (Message) packet;
             // Check to see if the user left the queue.
-            ExtensionElement pe = msg.getExtension("depart-queue", "http://jabber.org/protocol/workgroup");
-            ExtensionElement queueStatus = msg.getExtension("queue-status", "http://jabber.org/protocol/workgroup");
+            ExtensionElement pe = msg.getExtensionElement("depart-queue", "http://jabber.org/protocol/workgroup");
+            ExtensionElement queueStatus = msg.getExtensionElement("queue-status", "http://jabber.org/protocol/workgroup");
 
             if (pe != null) {
                 fireQueueDepartedEvent();
@@ -539,13 +539,13 @@ public class Workgroup {
                     String sessionID = null;
                     Map<String, List<String>> metaData = null;
 
-                    pe = msg.getExtension(SessionID.ELEMENT_NAME,
+                    pe = msg.getExtensionElement(SessionID.ELEMENT_NAME,
                             SessionID.NAMESPACE);
                     if (pe != null) {
                         sessionID = ((SessionID) pe).getSessionID();
                     }
 
-                    pe = msg.getExtension(MetaData.ELEMENT_NAME,
+                    pe = msg.getExtensionElement(MetaData.ELEMENT_NAME,
                             MetaData.NAMESPACE);
                     if (pe != null) {
                         metaData = ((MetaData) pe).getMetaData();

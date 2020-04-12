@@ -44,7 +44,7 @@ public class SpoilerTest extends SmackTestSuite {
         Message message = StanzaBuilder.buildMessage().build();
         SpoilerElement.addSpoiler(message);
 
-        SpoilerElement empty = (SpoilerElement) message.getExtension(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
+        SpoilerElement empty = (SpoilerElement) message.getExtensionElement(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
 
         assertNull(empty.getHint());
         assertNull(empty.getLanguage());
@@ -63,7 +63,7 @@ public class SpoilerTest extends SmackTestSuite {
         Message message = StanzaBuilder.buildMessage().build();
         SpoilerElement.addSpoiler(message, "Love story end");
 
-        SpoilerElement withHint = (SpoilerElement) message.getExtension(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
+        SpoilerElement withHint = (SpoilerElement) message.getExtensionElement(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
 
         assertEquals("Love story end", withHint.getHint());
         assertNull(withHint.getLanguage());
@@ -83,7 +83,7 @@ public class SpoilerTest extends SmackTestSuite {
         Message message = StanzaBuilder.buildMessage().build();
         SpoilerElement.addSpoiler(message, "de", "Der Kuchen ist eine Lüge!");
 
-        SpoilerElement i18nHint = (SpoilerElement) message.getExtension(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
+        SpoilerElement i18nHint = (SpoilerElement) message.getExtensionElement(SpoilerElement.ELEMENT, SpoilerManager.NAMESPACE_0);
 
         assertEquals("Der Kuchen ist eine Lüge!", i18nHint.getHint());
         assertEquals("de", i18nHint.getLanguage());

@@ -1051,7 +1051,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         for (Message message : mamQuery.getMessages()) {
             if (OmemoManager.stanzaContainsOmemoElement(message)) {
                 OmemoElement element =
-                        (OmemoElement) message.getExtension(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL);
+                        (OmemoElement) message.getExtensionElement(OmemoElement.NAME_ENCRYPTED, OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL);
                 // Decrypt OMEMO messages
                 try {
                     OmemoMessage.Received omemoMessage = decryptMessage(managerGuard, message.getFrom().asBareJid(), element);
@@ -1080,7 +1080,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         // Avoid the ratchet being manipulated and the bundle being published multiple times simultaneously
         synchronized (manager) {
             OmemoDevice userDevice = manager.getOwnDevice();
-            OmemoElement element = (OmemoElement) carbonCopy.getExtension(OmemoElement.NAME_ENCRYPTED, OmemoElement_VAxolotl.NAMESPACE);
+            OmemoElement element = (OmemoElement) carbonCopy.getExtensionElement(OmemoElement.NAME_ENCRYPTED, OmemoElement_VAxolotl.NAMESPACE);
             if (element == null) {
                 return;
             }
@@ -1137,7 +1137,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         // Avoid the ratchet being manipulated and the bundle being published multiple times simultaneously
         synchronized (manager) {
             OmemoDevice userDevice = manager.getOwnDevice();
-            OmemoElement element = (OmemoElement) stanza.getExtension(OmemoElement.NAME_ENCRYPTED, OmemoElement_VAxolotl.NAMESPACE);
+            OmemoElement element = (OmemoElement) stanza.getExtensionElement(OmemoElement.NAME_ENCRYPTED, OmemoElement_VAxolotl.NAMESPACE);
             if (element == null) {
                 return;
             }
@@ -1228,7 +1228,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         // Avoid the ratchet being manipulated and the bundle being published multiple times simultaneously
         synchronized (manager) {
             OmemoDevice userDevice = manager.getOwnDevice();
-            OmemoElement element = (OmemoElement) stanza.getExtension(OmemoElement.NAME_ENCRYPTED, OmemoElement_VAxolotl.NAMESPACE);
+            OmemoElement element = (OmemoElement) stanza.getExtensionElement(OmemoElement.NAME_ENCRYPTED, OmemoElement_VAxolotl.NAMESPACE);
             if (element == null) {
                 return null;
             }

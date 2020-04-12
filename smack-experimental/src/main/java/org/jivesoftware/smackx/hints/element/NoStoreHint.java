@@ -48,7 +48,7 @@ public final class NoStoreHint extends MessageProcessingHint {
     }
 
     public static NoStoreHint from(Message message) {
-        return (NoStoreHint) message.getExtension(ELEMENT, NAMESPACE);
+        return (NoStoreHint) message.getExtensionElement(ELEMENT, NAMESPACE);
     }
 
     public static boolean hasHint(Message message) {

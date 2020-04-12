@@ -233,7 +233,7 @@ public abstract class MUCLightElements {
         }
 
         public static ConfigurationsChangeExtension from(Message message) {
-            return (ConfigurationsChangeExtension) message.getExtension(ConfigurationsChangeExtension.ELEMENT, ConfigurationsChangeExtension.NAMESPACE);
+            return (ConfigurationsChangeExtension) message.getExtensionElement(ConfigurationsChangeExtension.ELEMENT, ConfigurationsChangeExtension.NAMESPACE);
         }
 
     }

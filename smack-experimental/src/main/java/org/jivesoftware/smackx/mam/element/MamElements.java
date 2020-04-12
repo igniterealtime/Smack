@@ -140,7 +140,7 @@ public class MamElements {
         }
 
         public static MamResultExtension from(Message message) {
-            return (MamResultExtension) message.getExtension(ELEMENT, NAMESPACE);
+            return (MamResultExtension) message.getExtensionElement(ELEMENT, NAMESPACE);
         }
 
     }

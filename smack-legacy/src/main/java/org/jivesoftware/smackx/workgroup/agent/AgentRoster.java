@@ -317,7 +317,7 @@ public class AgentRoster {
             // for a particular user a map with the presence packets saved for each resource.
             if (presence.getType() == Presence.Type.available) {
                 // Ignore the presence packet unless it has an agent status extension.
-                AgentStatus agentStatus = (AgentStatus) presence.getExtension(
+                AgentStatus agentStatus = (AgentStatus) presence.getExtensionElement(
                         AgentStatus.ELEMENT_NAME, AgentStatus.NAMESPACE);
                 if (agentStatus == null) {
                     return;

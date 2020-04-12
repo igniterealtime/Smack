@@ -48,7 +48,7 @@ public final class NoCopyHint extends MessageProcessingHint {
     }
 
     public static NoCopyHint from(Message message) {
-        return (NoCopyHint) message.getExtension(ELEMENT, NAMESPACE);
+        return (NoCopyHint) message.getExtensionElement(ELEMENT, NAMESPACE);
     }
 
     public static boolean hasHint(Message message) {

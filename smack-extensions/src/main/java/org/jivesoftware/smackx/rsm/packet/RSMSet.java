@@ -151,7 +151,7 @@ public class RSMSet implements ExtensionElement {
     }
 
     public static RSMSet from(Stanza packet) {
-        return (RSMSet) packet.getExtension(ELEMENT, NAMESPACE);
+        return (RSMSet) packet.getExtensionElement(ELEMENT, NAMESPACE);
     }
 
     public static RSMSet newAfter(String after) {
