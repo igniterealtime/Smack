@@ -57,7 +57,7 @@ public class MoodProvider extends ExtensionElementProvider<MoodElement> {
 
                     if (!MoodElement.NAMESPACE.equals(namespace)) {
                         LOGGER.log(Level.FINE, "Foreign namespace " + namespace + " detected. Try to find suitable MoodConcretisationProvider.");
-                        MoodConcretisationProvider<?> provider = (MoodConcretisationProvider) ProviderManager.getExtensionProvider(name, namespace);
+                        MoodConcretisationProvider<?> provider = (MoodConcretisationProvider<?>) ProviderManager.getExtensionProvider(name, namespace);
                         if (provider != null) {
                             concretisation = provider.parse(parser);
                         } else {

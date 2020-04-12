@@ -430,7 +430,7 @@ public class OpenPgpPubSubUtil {
             // Get access to the PubSubManager's nodeMap
             Field field = pubSubManager.getClass().getDeclaredField("nodeMap");
             field.setAccessible(true);
-            Map<String, Node> nodeMap = (Map) field.get(pubSubManager);
+            Map<String, Node> nodeMap = (Map<String, Node>) field.get(pubSubManager);
 
             // Check, if the node already exists
             Node existingNode = nodeMap.get(nodeName);

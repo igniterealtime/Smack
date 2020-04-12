@@ -91,7 +91,7 @@ public final class MoodManager extends Manager {
                     @Override
                     public void run() {
                         ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                        PayloadItem<?> payload = (PayloadItem) items.getItems().get(0);
+                        PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
                         MoodElement mood = (MoodElement) payload.getPayload();
 
                         for (MoodListener listener : moodListeners) {

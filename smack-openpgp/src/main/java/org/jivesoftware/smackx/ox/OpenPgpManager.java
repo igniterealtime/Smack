@@ -512,7 +512,7 @@ public final class OpenPgpManager extends Manager {
                     @Override
                     public void run() {
                         ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                        PayloadItem<?> payload = (PayloadItem) items.getItems().get(0);
+                        PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
                         PublicKeysListElement listElement = (PublicKeysListElement) payload.getPayload();
 
                         processPublicKeysListElement(from, listElement);
