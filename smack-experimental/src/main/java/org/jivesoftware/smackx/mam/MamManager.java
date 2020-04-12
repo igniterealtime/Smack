@@ -43,6 +43,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.commands.AdHocCommandManager;
 import org.jivesoftware.smackx.commands.RemoteCommand;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
