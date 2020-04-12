@@ -16,7 +16,7 @@
  */
 package org.igniterealtime.smack.inttest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.KeyManagementException;
@@ -26,7 +26,7 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.tcp.XmppTcpTransportModuleDescriptor;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class SmackIntegrationTestXmppConnectionManagerTest {

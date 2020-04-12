@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,15 @@
  */
 package org.igniterealtime.smack.inttest.util;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
 import org.jivesoftware.smack.util.Async;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ResultSyncPointTest {
 
@@ -44,7 +45,7 @@ public class ResultSyncPointTest {
         assertEquals(result, receivedResult);
     }
 
-    @Test(expected = TestException.class)
+    @Test
     public void exceptionTestResultSyncPoint() throws Exception {
         final CyclicBarrier barrier = new CyclicBarrier(2);
         final ResultSyncPoint<String, TestException> rsp = new ResultSyncPoint<>();
@@ -56,7 +57,7 @@ public class ResultSyncPointTest {
             }
         });
         barrier.await();
-        rsp.waitForResult(60 * 1000);
+        assertThrows(TestException.class, () -> rsp.waitForResult(60 * 1000));
     }
 
     private static class TestException extends Exception {

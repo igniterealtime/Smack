@@ -25,10 +25,10 @@ import org.jivesoftware.smackx.chatstates.ChatStateListener;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.junit.After;
 
 public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -83,7 +83,7 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
         activeSyncPoint.waitForResult(timeout);
     }
 
-    @After
+    @AfterClass
     public void cleanup() {
         ChatStateManager manTwo = ChatStateManager.getInstance(conTwo);
         manTwo.removeChatStateListener(composingListener);

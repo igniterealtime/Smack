@@ -16,20 +16,19 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 /**
  * Abstract OMEMO integration test framing, which creates and initializes two OmemoManagers (for conOne and conTwo).
@@ -51,7 +50,6 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
         alice = OmemoManagerSetupHelper.prepareOmemoManager(conOne);
         bob = OmemoManagerSetupHelper.prepareOmemoManager(conTwo);
 
-        LOGGER.log(Level.FINE, "Alice: " + alice.getOwnDevice() + " Bob: " + bob.getOwnDevice());
         assertFalse(alice.getDeviceId().equals(bob.getDeviceId()));
 
         // Subscribe presences

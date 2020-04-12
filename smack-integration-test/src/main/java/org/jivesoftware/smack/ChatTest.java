@@ -19,9 +19,9 @@ package org.jivesoftware.smack;
 
 import static org.jivesoftware.smackx.jiveproperties.JivePropertiesManager.addProperty;
 import static org.jivesoftware.smackx.jiveproperties.JivePropertiesManager.getProperty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Date;
 
@@ -34,10 +34,10 @@ import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 
 /**
  * Tests for Chat Manager and for Chat Manager Listener.
@@ -87,33 +87,33 @@ public class ChatTest extends AbstractSmackIntegrationTest {
         newChat.sendMessage(msg);
 
         Message msg2 = collector.nextResult(2000);
-        assertNotNull("No message was received", msg2);
-        assertEquals("Subjects are different", msg.getSubject(), msg2.getSubject());
-        assertEquals("Bodies are different", msg.getBody(), msg2.getBody());
+        assertNotNull(msg2, "No message was received");
+        assertEquals(msg.getSubject(), msg2.getSubject(), "Subjects are different");
+        assertEquals(msg.getBody(), msg2.getBody(), "Bodies are different");
         assertEquals(
-               "favoriteColors are different",
                getProperty(msg, "favoriteColor"),
-               getProperty(msg2, "favoriteColor"));
+               getProperty(msg2, "favoriteColor"),
+               "favoriteColors are different");
         assertEquals(
-               "ages are different",
                getProperty(msg, "age"),
-               getProperty(msg2, "age"));
+               getProperty(msg2, "age"),
+               "ages are different");
         assertEquals(
-               "distances are different",
                getProperty(msg, "distance"),
-               getProperty(msg2, "distance"));
+               getProperty(msg2, "distance"),
+               "distances are different");
         assertEquals(
-               "weights are different",
                getProperty(msg, "weight"),
-               getProperty(msg2, "weight"));
+               getProperty(msg2, "weight"),
+               "weights are different");
         assertEquals(
-               "males are different",
                getProperty(msg, "male"),
-               getProperty(msg2, "male"));
+               getProperty(msg2, "male"),
+               "males are different");
         assertEquals(
-               "birthdates are different",
                getProperty(msg, "birthdate"),
-               getProperty(msg2, "birthdate"));
+               getProperty(msg2, "birthdate"),
+               "birthdates are different");
     }
 
     @SuppressWarnings("deprecation")
@@ -131,7 +131,7 @@ public class ChatTest extends AbstractSmackIntegrationTest {
             chatManagerOne.addChatListener(listener);
             chatManagerOne.createChat(conTwo.getUser());
 
-            assertTrue("TestChatManagerListener wasn't invoked", invoked);
+            assertTrue(invoked, "TestChatManagerListener wasn't invoked");
         }
         finally {
             chatManagerOne.removeChatListener(listener);

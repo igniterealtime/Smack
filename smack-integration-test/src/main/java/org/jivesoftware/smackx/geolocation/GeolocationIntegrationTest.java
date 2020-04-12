@@ -24,18 +24,17 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.geoloc.GeoLocationListener;
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-
-import org.junit.AfterClass;
-
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.util.XmppDateTime;
 

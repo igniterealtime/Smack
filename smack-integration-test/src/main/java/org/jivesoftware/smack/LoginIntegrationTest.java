@@ -29,8 +29,8 @@ import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 
 public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 

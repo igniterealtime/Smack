@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -26,9 +26,9 @@ import org.jivesoftware.smack.packet.MessageBuilder;
 
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 
 /**
  * Simple OMEMO message encryption integration test.
@@ -85,8 +85,8 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
             b2 = bob.getOmemoService().getOmemoStoreBackend().packOmemoBundle(bob.getOwnDevice());
         }
 
-        assertEquals("Alice sent bob a preKeyMessage, so her bundle MUST still be the same.", a1, a1_);
-        assertNotEquals("Bob just received a preKeyMessage from alice, so his bundle must have changed.", b1, b2);
+        assertEquals(a1, a1_, "Alice sent bob a preKeyMessage, so her bundle MUST still be the same.");
+        assertNotEquals(b1, b2, "Bob just received a preKeyMessage from alice, so his bundle must have changed.");
 
         // Message B -> A
         final String body3 = "The german words for 'leek' and 'wimp' are the same.";
@@ -103,9 +103,9 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
         OmemoBundleElement a1__ = alice.getOmemoService().getOmemoStoreBackend().packOmemoBundle(alice.getOwnDevice());
         OmemoBundleElement b2_ = bob.getOmemoService().getOmemoStoreBackend().packOmemoBundle(bob.getOwnDevice());
 
-        assertEquals("Since alice initiated the session with bob, at no time he sent a preKeyMessage, " +
-                "so her bundle MUST still be the same.", a1_, a1__);
-        assertEquals("Bob changed his bundle earlier, but at this point his bundle must be equal to " +
-                "after the first change.", b2, b2_);
+        assertEquals(a1_, a1__, "Since alice initiated the session with bob, at no time he sent a preKeyMessage, " +
+                "so her bundle MUST still be the same.");
+        assertEquals(b2, b2_, "Bob changed his bundle earlier, but at this point his bundle must be equal to " +
+                "after the first change.");
     }
 }
