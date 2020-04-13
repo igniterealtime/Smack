@@ -84,6 +84,8 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             public void onPepEvent(EntityBareJid jid, GeoLocation geoLocation, String id, Message message) {
                 if (geoLocation.equals(geoLocation1)) {
                     geoLocationReceived.signal();
+                } else {
+                    geoLocationReceived.signalFailure("Received non matching GeoLocation");
                 }
             }
         };
