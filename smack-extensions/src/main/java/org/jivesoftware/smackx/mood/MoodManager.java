@@ -17,9 +17,7 @@
 package org.jivesoftware.smackx.mood;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -28,20 +26,13 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.provider.ProviderManager;
 
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.mood.provider.MoodConcretisationProvider;
-import org.jivesoftware.smackx.pep.PepListener;
+import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.pep.PepManager;
-import org.jivesoftware.smackx.pubsub.EventElement;
-import org.jivesoftware.smackx.pubsub.ItemsExtension;
-import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
-import org.jivesoftware.smackx.pubsub.PubSubManager;
-
-import org.jxmpp.jid.EntityBareJid;
 
 /**
  * Entry point for Smacks API for XEP-0107: User Mood.
@@ -49,8 +40,8 @@ import org.jxmpp.jid.EntityBareJid;
  * To set a mood, please use one of the {@link #setMood(Mood)} methods. This will publish the users mood to a pubsub
  * node.<br>
  * <br>
- * In order to get updated about other users moods, register a {@link MoodListener} at
- * {@link #addMoodListener(MoodListener)}. That listener will get updated about any incoming mood updates of contacts.<br>
+ * In order to get updated about other users moods, register a {@link PepEventListener} at
+ * {@link #addMoodListener(PepEventListener)}. That listener will get updated about any incoming mood updates of contacts.<br>
  * <br>
  * To stop publishing the users mood, refer to {@link #clearMood()}.<br>
  * <br>
@@ -66,32 +57,15 @@ import org.jxmpp.jid.EntityBareJid;
 public final class MoodManager extends Manager {
 
     public static final String MOOD_NODE = "http://jabber.org/protocol/mood";
-    public static final String MOOD_NOTIFY = MOOD_NODE + "+notify";
 
     private static final Map<XMPPConnection, MoodManager> INSTANCES = new WeakHashMap<>();
 
-    private final Set<MoodListener> moodListeners = new CopyOnWriteArraySet<>();
-    private PubSubManager pubSubManager;
+    private final PepManager pepManager;
 
     private MoodManager(XMPPConnection connection) {
         super(connection);
-        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(MOOD_NOTIFY);
-        PepManager.getInstanceFor(connection).addPepListener(new PepListener() {
-            @Override
-            public void eventReceived(final EntityBareJid from, final EventElement event, final Message message) {
-                if (!MOOD_NODE.equals(event.getEvent().getNode())) {
-                    return;
-                }
 
-                ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
-                MoodElement mood = (MoodElement) payload.getPayload();
-
-                for (MoodListener listener : moodListeners) {
-                    listener.onMoodUpdated(from, mood, message);
-                }
-            }
-        });
+        pepManager = PepManager.getInstanceFor(connection);
     }
 
     public static synchronized MoodManager getInstanceFor(XMPPConnection connection) {
@@ -138,12 +112,7 @@ public final class MoodManager extends Manager {
     private void publishMood(MoodElement moodElement)
             throws SmackException.NotLoggedInException, InterruptedException, PubSubException.NotALeafNodeException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
-        if (pubSubManager == null) {
-            pubSubManager = PubSubManager.getInstanceFor(getAuthenticatedConnectionOrThrow(), connection().getUser().asBareJid());
-        }
-
-        LeafNode node = pubSubManager.getOrCreateLeafNode(MOOD_NODE);
-        node.publish(new PayloadItem<>(moodElement));
+        pepManager.publish(MOOD_NODE, new PayloadItem<>(moodElement));
     }
 
     private static MoodElement buildMood(Mood mood, MoodConcretisation concretisation, String text) {
@@ -161,11 +130,11 @@ public final class MoodManager extends Manager {
         message.addExtension(element);
     }
 
-    public void addMoodListener(MoodListener listener) {
-        moodListeners.add(listener);
+    public boolean addMoodListener(PepEventListener<MoodElement> listener) {
+        return pepManager.addPepEventListener(MOOD_NODE, MoodElement.class, listener);
     }
 
-    public void removeMoodListener(MoodListener listener) {
-        moodListeners.remove(listener);
+    public boolean removeMoodListener(PepEventListener<MoodElement> listener) {
+        return pepManager.removePepEventListener(listener);
     }
 }

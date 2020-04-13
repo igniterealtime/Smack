@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2019 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@
 
 package org.jivesoftware.smackx.pep;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
@@ -33,13 +36,19 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.jidtype.AbstractJidTypeFilter.JidType;
 import org.jivesoftware.smack.filter.jidtype.FromJidTypeFilter;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.MultiMap;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.Item;
+import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
@@ -70,6 +79,8 @@ import org.jxmpp.jid.EntityBareJid;
  */
 public final class PepManager extends Manager {
 
+    private static final Logger LOGGER = Logger.getLogger(PepManager.class.getName());
+
     private static final Map<XMPPConnection, PepManager> INSTANCES = new WeakHashMap<>();
 
     public static synchronized PepManager getInstanceFor(XMPPConnection connection) {
@@ -81,6 +92,7 @@ public final class PepManager extends Manager {
         return pepManager;
     }
 
+    // TODO: Filter only for event extensions with <items/> as child.
     private static final StanzaFilter FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER = new AndFilter(
             new FromJidTypeFilter(JidType.BareJid),
             EventExtensionFilter.INSTANCE);
@@ -89,7 +101,13 @@ public final class PepManager extends Manager {
 
     private final AsyncButOrdered<EntityBareJid> asyncButOrdered = new AsyncButOrdered<>();
 
+    private final ServiceDiscoveryManager serviceDiscoveryManager;
+
     private final PubSubManager pepPubSubManager;
+
+    private final MultiMap<String, PepEventListenerCoupling<? extends ExtensionElement>> pepEventListeners = new MultiMap<>();
+
+    private final Map<PepEventListener<?>, PepEventListenerCoupling<?>> listenerToCouplingMap = new HashMap<>();
 
     /**
      * Creates a new PEP exchange manager.
@@ -98,6 +116,10 @@ public final class PepManager extends Manager {
      */
     private PepManager(XMPPConnection connection) {
         super(connection);
+
+        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
+        pepPubSubManager = PubSubManager.getInstanceFor(connection, null);
+
         StanzaListener packetListener = new StanzaListener() {
             @Override
             public void processStanza(Stanza stanza) {
@@ -106,11 +128,41 @@ public final class PepManager extends Manager {
                 assert event != null;
                 final EntityBareJid from = message.getFrom().asEntityBareJidIfPossible();
                 assert from != null;
+
                 asyncButOrdered.performAsyncButOrdered(from, new Runnable() {
                     @Override
                     public void run() {
+                        ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
+                        String node = itemsExtension.getNode();
+
                         for (PepListener listener : pepListeners) {
                             listener.eventReceived(from, event, message);
+                        }
+
+                        List<PepEventListenerCoupling<? extends ExtensionElement>> nodeListeners;
+                        synchronized (pepEventListeners) {
+                            nodeListeners = pepEventListeners.getAll(node);
+                            if (nodeListeners.isEmpty()) {
+                                return;
+                            }
+
+                            // Make a copy of the list. Note that it is important to do this within the synchronized
+                            // block.
+                            nodeListeners = CollectionUtil.newListWith(nodeListeners);
+                        }
+
+                        for (PepEventListenerCoupling<? extends ExtensionElement> listener : nodeListeners) {
+                            // TODO: Can there be more than one item?
+                            List<? extends NamedElement> items = itemsExtension.getItems();
+                            for (NamedElement namedElementItem : items) {
+                                Item item = (Item) namedElementItem;
+                                String id = item.getId();
+                                @SuppressWarnings("unchecked")
+                                PayloadItem<ExtensionElement> payloadItem = (PayloadItem<ExtensionElement>) item;
+                                ExtensionElement payload = payloadItem.getPayload();
+
+                                listener.invoke(from, payload, id, message);
+                            }
                         }
                     }
                 });
@@ -118,8 +170,76 @@ public final class PepManager extends Manager {
         };
         // TODO Add filter to check if from supports PubSub as per xep163 2 2.4
         connection.addSyncStanzaListener(packetListener, FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER);
+    }
 
-        pepPubSubManager = PubSubManager.getInstanceFor(connection, null);
+    private static final class PepEventListenerCoupling<E extends ExtensionElement> {
+        private final String node;
+        private final Class<E> extensionElementType;
+        private final PepEventListener<E> pepEventListener;
+
+        private PepEventListenerCoupling(String node, Class<E> extensionElementType,
+                        PepEventListener<E> pepEventListener) {
+            this.node = node;
+            this.extensionElementType = extensionElementType;
+            this.pepEventListener = pepEventListener;
+        }
+
+        private void invoke(EntityBareJid from, ExtensionElement payload, String id, Message carrierMessage) {
+            if (!extensionElementType.isInstance(payload)) {
+                LOGGER.warning("Ignoring " + payload + " from " + carrierMessage + " as it is not of type "
+                                + extensionElementType);
+                return;
+            }
+
+            E extensionElementPayload = extensionElementType.cast(payload);
+            pepEventListener.onPepEvent(from, extensionElementPayload, id, carrierMessage);
+        }
+    }
+
+    public <E extends ExtensionElement> boolean addPepEventListener(String node, Class<E> extensionElementType,
+                    PepEventListener<E> pepEventListener) {
+        PepEventListenerCoupling<E> pepEventListenerCoupling = new PepEventListenerCoupling<>(node,
+                        extensionElementType, pepEventListener);
+
+        synchronized (pepEventListeners) {
+            if (listenerToCouplingMap.containsKey(pepEventListener)) {
+                return false;
+            }
+            listenerToCouplingMap.put(pepEventListener, pepEventListenerCoupling);
+            /*
+             * TODO: Replace the above with the below using putIfAbsent() if Smack's minimum required Android SDK level
+             * is 24 or higher. PepEventListenerCoupling<?> currentPepEventListenerCoupling =
+             * listenerToCouplingMap.putIfAbsent(pepEventListener, pepEventListenerCoupling); if
+             * (currentPepEventListenerCoupling != null) { return false; }
+             */
+
+            boolean listenerForNodeExisted = pepEventListeners.put(node, pepEventListenerCoupling);
+            if (!listenerForNodeExisted) {
+                serviceDiscoveryManager.addFeature(node + PubSubManager.PLUS_NOTIFY);
+            }
+        }
+        return true;
+    }
+
+    public boolean removePepEventListener(PepEventListener<?> pepEventListener) {
+        synchronized (pepEventListeners) {
+            PepEventListenerCoupling<?> pepEventListenerCoupling = listenerToCouplingMap.remove(pepEventListener);
+            if (pepEventListenerCoupling == null) {
+                return false;
+            }
+
+            String node = pepEventListenerCoupling.node;
+
+            boolean mappingExisted = pepEventListeners.removeOne(node, pepEventListenerCoupling);
+            assert mappingExisted;
+
+            if (!pepEventListeners.containsKey(pepEventListenerCoupling.node)) {
+                // This was the last listener for the node. Remove the +notify feature.
+                serviceDiscoveryManager.removeFeature(node + PubSubManager.PLUS_NOTIFY);
+            }
+        }
+
+        return true;
     }
 
     public PubSubManager getPepPubSubManager() {
@@ -127,8 +247,7 @@ public final class PepManager extends Manager {
     }
 
     /**
-     * Adds a listener to PEPs. The listener will be fired anytime PEP events
-     * are received from remote XMPP clients.
+     * Adds a listener to PEPs. The listener will be fired anytime PEP events are received from remote XMPP clients.
      *
      * @param pepListener a roster exchange listener.
      * @return true if pepListener was added.
@@ -176,8 +295,8 @@ public final class PepManager extends Manager {
         // @formatter:on
     };
 
-    public boolean isSupported() throws NoResponseException, XMPPErrorException,
-                    NotConnectedException, InterruptedException {
+    public boolean isSupported()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         XMPPConnection connection = connection();
         ServiceDiscoveryManager serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         BareJid localBareJid = connection.getUser().asBareJid();

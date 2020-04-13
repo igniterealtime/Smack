@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar.
+ * Copyright 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.geoloc;
+package org.jivesoftware.smackx.pep;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 
 import org.jxmpp.jid.EntityBareJid;
 
-public interface GeoLocationListener {
-    void onGeoLocationUpdated(EntityBareJid jid, GeoLocation geoLocation, Message message);
+public interface PepEventListener<E extends ExtensionElement> {
+
+    void onPepEvent(EntityBareJid from, E event, String id, Message carrierMessage);
+
 }

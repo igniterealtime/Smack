@@ -69,6 +69,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
  */
 public final class PubSubManager extends Manager {
 
+    public static final String PLUS_NOTIFY = "+notify";
+
     public static final String AUTO_CREATE_FEATURE = "http://jabber.org/protocol/pubsub#auto-create";
 
     private static final Logger LOGGER = Logger.getLogger(PubSubManager.class.getName());

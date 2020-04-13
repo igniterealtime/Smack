@@ -16,11 +16,8 @@
  */
 package org.jivesoftware.smackx.geoloc;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -29,30 +26,26 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider;
-import org.jivesoftware.smackx.pep.PepListener;
+import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.pep.PepManager;
-import org.jivesoftware.smackx.pubsub.EventElement;
-import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProviderManager;
 
-import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
 /**
  * Entry point for Smacks API for XEP-0080: User Location.
  * <br>
- * To publish a UserLocation, please use {@link #sendGeolocation(GeoLocation)} method. This will publish the node.
+ * To publish a UserLocation, please use {@link #publishGeoLocation(GeoLocation)} method. This will publish the node.
  * <br>
  * To stop publishing a UserLocation, please use {@link #stopPublishingGeolocation()} method. This will send a disble publishing signal.
  * <br>
- * To add a {@link GeoLocationListener} in order to remain updated with other users GeoLocation, use {@link #addGeoLocationListener(GeoLocationListener)} method.
+ * To add a {@link PepEventListener} in order to remain updated with other users GeoLocation, use {@link #addGeoLocationListener(PepEventListener)} method.
  * <br>
  * To link a GeoLocation with {@link Message}, use `message.addExtension(geoLocation)`.
  * <br>
@@ -63,15 +56,10 @@ import org.jxmpp.jid.Jid;
  */
 public final class GeoLocationManager extends Manager {
 
-    public static final String GEOLOCATION_NODE = "http://jabber.org/protocol/geoloc";
-    public static final String GEOLOCATION_NOTIFY = GEOLOCATION_NODE + "+notify";
+    public static final String GEOLOCATION_NODE = GeoLocation.NAMESPACE;
 
     private static final Map<XMPPConnection, GeoLocationManager> INSTANCES = new WeakHashMap<>();
 
-    private static boolean ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT = true;
-
-    private final Set<GeoLocationListener> geoLocationListeners = new CopyOnWriteArraySet<>();
-    private final ServiceDiscoveryManager serviceDiscoveryManager;
     private final PepManager pepManager;
 
     static {
@@ -105,28 +93,6 @@ public final class GeoLocationManager extends Manager {
     private GeoLocationManager(XMPPConnection connection) {
         super(connection);
         pepManager = PepManager.getInstanceFor(connection);
-        pepManager.addPepListener(new PepListener() {
-
-            @Override
-            public void eventReceived(EntityBareJid from, EventElement event, Message message) {
-                if (!GEOLOCATION_NODE.equals(event.getEvent().getNode())) {
-                    return;
-                }
-
-                ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
-                List<ExtensionElement> items = itemsExtension.getExtensions();
-                @SuppressWarnings("unchecked")
-                PayloadItem<GeoLocation> payload = (PayloadItem<GeoLocation>) items.get(0);
-                GeoLocation geoLocation = payload.getPayload();
-                for (GeoLocationListener listener : geoLocationListeners) {
-                    listener.onGeoLocationUpdated(from, geoLocation, message);
-                }
-            }
-        });
-        serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        if (ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT) {
-            enableUserLocationNotifications();
-        }
     }
 
     public void sendGeoLocationToJid(GeoLocation geoLocation, Jid jid) throws InterruptedException,
@@ -154,18 +120,18 @@ public final class GeoLocationManager extends Manager {
     }
 
     /**
-     * Send geolocation through the PubSub node.
+     * Publish the user's geographic location through the Personal Eventing Protocol (PEP).
      *
-     * @param geoLocation TODO javadoc me please
+     * @param geoLocation the geographic location to publish.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      */
-    public void sendGeolocation(GeoLocation geoLocation)
+    public void publishGeoLocation(GeoLocation geoLocation)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        pepManager.publish(GeoLocation.NAMESPACE, new PayloadItem<GeoLocation>(geoLocation));
+        pepManager.publish(GEOLOCATION_NODE, new PayloadItem<GeoLocation>(geoLocation));
     }
 
     /**
@@ -179,25 +145,14 @@ public final class GeoLocationManager extends Manager {
      */
     public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        pepManager.publish(GeoLocation.NAMESPACE, new PayloadItem<GeoLocation>(GeoLocation.EMPTY_GEO_LOCATION));
+        pepManager.publish(GEOLOCATION_NODE, new PayloadItem<GeoLocation>(GeoLocation.EMPTY_GEO_LOCATION));
     }
 
-    public static void setGeoLocationNotificationsEnabledByDefault(boolean bool) {
-        ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT = bool;
+    public boolean addGeoLocationListener(PepEventListener<GeoLocation> listener) {
+        return pepManager.addPepEventListener(GEOLOCATION_NODE, GeoLocation.class, listener);
     }
 
-    public void enableUserLocationNotifications() {
-        serviceDiscoveryManager.addFeature(GEOLOCATION_NOTIFY);
-    }
-
-    public void disableGeoLocationNotifications() {
-        serviceDiscoveryManager.removeFeature(GEOLOCATION_NOTIFY);
-    }
-
-    public boolean addGeoLocationListener(GeoLocationListener geoLocationListener) {
-        return geoLocationListeners.add(geoLocationListener);
-    }
-    public boolean removeGeoLocationListener(GeoLocationListener geoLocationListener) {
-        return geoLocationListeners.remove(geoLocationListener);
+    public boolean removeGeoLocationListener(PepEventListener<GeoLocation> listener) {
+        return pepManager.removePepEventListener(listener);
     }
 }

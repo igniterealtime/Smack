@@ -25,9 +25,9 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 
-import org.jivesoftware.smackx.geoloc.GeoLocationListener;
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+import org.jivesoftware.smackx.pep.PepEventListener;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -79,10 +79,10 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
         final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
-        final GeoLocationListener geoLocationListener = new GeoLocationListener() {
+        final PepEventListener<GeoLocation> geoLocationListener = new PepEventListener<GeoLocation>() {
 
             @Override
-            public void onGeoLocationUpdated(EntityBareJid jid, GeoLocation geoLocation, Message message) {
+            public void onPepEvent(EntityBareJid jid, GeoLocation geoLocation, String id, Message message) {
                 if (geoLocation.equals(geoLocation1)) {
                     geoLocationReceived.signal();
                 }
@@ -92,7 +92,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         glm2.addGeoLocationListener(geoLocationListener);
 
         try {
-            glm1.sendGeolocation(geoLocation1);
+            glm1.publishGeoLocation(geoLocation1);
             geoLocationReceived.waitForResult(timeout);
         } finally {
             glm2.removeGeoLocationListener(geoLocationListener);

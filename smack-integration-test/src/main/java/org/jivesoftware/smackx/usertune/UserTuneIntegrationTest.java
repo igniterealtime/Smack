@@ -23,6 +23,7 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -61,9 +62,9 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint userTuneReceived = new SimpleResultSyncPoint();
 
-        final UserTuneListener userTuneListener = new UserTuneListener() {
+        final PepEventListener<UserTuneElement> userTuneListener = new PepEventListener<UserTuneElement>() {
             @Override
-            public void onUserTuneUpdated(EntityBareJid jid, UserTuneElement userTuneElement, Message message) {
+            public void onPepEvent(EntityBareJid jid, UserTuneElement userTuneElement, String id, Message message) {
                 if (userTuneElement.equals(userTuneElement1)) {
                     userTuneReceived.signal();
                 }

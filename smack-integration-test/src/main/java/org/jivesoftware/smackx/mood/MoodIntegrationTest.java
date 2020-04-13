@@ -19,6 +19,9 @@ package org.jivesoftware.smackx.mood;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
+import org.jivesoftware.smackx.mood.element.MoodElement;
+import org.jivesoftware.smackx.pep.PepEventListener;
+
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
@@ -43,7 +46,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
 
-        final MoodListener moodListener = (jid, moodElement, message) -> {
+        final PepEventListener<MoodElement> moodListener = (jid, moodElement, id, message) -> {
             if (moodElement.getMood() == Mood.satisfied) {
                 moodReceived.signal();
             }

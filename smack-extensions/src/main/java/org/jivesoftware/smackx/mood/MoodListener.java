@@ -24,6 +24,6 @@ import org.jxmpp.jid.EntityBareJid;
 
 public interface MoodListener {
 
-    void onMoodUpdated(EntityBareJid from, MoodElement moodElement, Message message);
+    void onMoodUpdated(EntityBareJid from, MoodElement moodElement, String id, Message message);
 
 }
