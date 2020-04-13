@@ -188,7 +188,7 @@ public final class GeoLocationManager extends Manager {
         pepManager.publish(GeoLocation.NAMESPACE, new PayloadItem<GeoLocation>(GeoLocation.EMPTY_GEO_LOCATION));
     }
 
-    public void setGeoLocationNotificationsEnabledByDefault(boolean bool) {
+    public static void setGeoLocationNotificationsEnabledByDefault(boolean bool) {
         ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT = bool;
     }
 
