@@ -61,7 +61,6 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
                                             .setCountry("India")
                                             .setCountryCode("IN")
                                             .setDescription("My Description")
-                                            .setError(90d)
                                             .setFloor("top")
                                             .setLat(25.098345d)
                                             .setLocality("awesome")
