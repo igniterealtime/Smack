@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.util.EqualsUtil;
+import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.xdata.FormField;
@@ -247,6 +249,70 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
     @Override
     public String getNamespace() {
         return NAMESPACE;
+    }
+
+    private final HashCode.Cache hashCodeCache = new HashCode.Cache();
+
+    @Override
+    public int hashCode() {
+        return hashCodeCache.getHashCode(c ->
+            c
+            .append(accuracy)
+            .append(alt)
+            .append(altAccuracy)
+            .append(area)
+            .append(bearing)
+            .append(building)
+            .append(country)
+            .append(countryCode)
+            .append(datum)
+            .append(description)
+            .append(error)
+            .append(floor)
+            .append(lat)
+            .append(locality)
+            .append(lon)
+            .append(postalcode)
+            .append(region)
+            .append(room)
+            .append(speed)
+            .append(street)
+            .append(text)
+            .append(timestamp)
+            .append(tzo)
+            .append(uri)
+        );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return EqualsUtil.equals(this, obj, (e, o) -> {
+            e
+            .append(accuracy, o.accuracy)
+            .append(altAccuracy, o.altAccuracy)
+            .append(area, o.area)
+            .append(bearing, o.bearing)
+            .append(building, o.building)
+            .append(country, o.country)
+            .append(countryCode, o.countryCode)
+            .append(datum, o.datum)
+            .append(description, o.description)
+            .append(error, o.error)
+            .append(floor, o.floor)
+            .append(lat, o.lat)
+            .append(locality, o.locality)
+            .append(lon, o.lon)
+            .append(postalcode, o.postalcode)
+            .append(region, o.region)
+            .append(room, o.room)
+            .append(speed, o.speed)
+            .append(street, o.street)
+            .append(text, o.text)
+            .append(timestamp, o.timestamp)
+            .append(tzo, o.tzo)
+            .append(uri, o.uri)
+            ;
+        });
     }
 
     /**
