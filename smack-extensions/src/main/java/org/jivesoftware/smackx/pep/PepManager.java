@@ -52,7 +52,7 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
-import org.jivesoftware.smackx.pubsub.filter.EventExtensionFilter;
+import org.jivesoftware.smackx.pubsub.filter.EventItemsExtensionFilter;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -92,10 +92,9 @@ public final class PepManager extends Manager {
         return pepManager;
     }
 
-    // TODO: Filter only for event extensions with <items/> as child.
     private static final StanzaFilter FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER = new AndFilter(
             new FromJidTypeFilter(JidType.BareJid),
-            EventExtensionFilter.INSTANCE);
+            EventItemsExtensionFilter.INSTANCE);
 
     private final Set<PepListener> pepListeners = new CopyOnWriteArraySet<>();
 
