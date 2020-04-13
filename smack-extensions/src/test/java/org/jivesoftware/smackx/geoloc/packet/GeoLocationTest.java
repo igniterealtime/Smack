@@ -121,6 +121,7 @@ public class GeoLocationTest extends SmackTestSuite {
         assertNotNull(geoLocation);
         assertNotNull(geoLocation.toXML());
 
+        @SuppressWarnings("deprecation")
         GeoLocation constructedGeoLocation = GeoLocation.builder().setAccuracy(23d).setAlt(1000d).setAltAccuracy(10d).setArea("Delhi").setBearing(
                         10d).setBuilding("Small Building").setCountry("India").setCountryCode("IN").setDescription(
                         "My Description").setError(90d).setFloor("top").setLat(25.098345d).setLocality("awesome").setLon(

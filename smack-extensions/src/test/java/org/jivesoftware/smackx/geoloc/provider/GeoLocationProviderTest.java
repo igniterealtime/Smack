@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.geoloc.provider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
 
@@ -82,7 +81,9 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         assertEquals("IN", geoLocation.getCountryCode());
         assertEquals("WGS84", geoLocation.getDatum());
         assertEquals("My Description", geoLocation.getDescription());
-        assertNull(geoLocation.getError());
+        @SuppressWarnings("deprecation")
+        Double error = geoLocation.getError();
+        assertEquals(90, error);
         assertEquals("top", geoLocation.getFloor());
         assertEquals((Double) 25.098345d, geoLocation.getLat());
         assertEquals("awesome", geoLocation.getLocality());
@@ -150,7 +151,9 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         assertEquals("IN", geoLocation.getCountryCode());
         assertEquals("Test Datum", geoLocation.getDatum());
         assertEquals("My Description", geoLocation.getDescription());
-        assertNull(geoLocation.getError());
+        @SuppressWarnings("deprecation")
+        Double error = geoLocation.getError();
+        assertEquals(90, error);
         assertEquals("top", geoLocation.getFloor());
         assertEquals((Double) 25.098345d, geoLocation.getLat());
         assertEquals("awesome", geoLocation.getLocality());
@@ -183,7 +186,9 @@ public class GeoLocationProviderTest extends SmackTestSuite {
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
 
-        assertEquals((Double) 90d, geoLocation.getError());
+        @SuppressWarnings("deprecation")
+        Double error = geoLocation.getError();
+        assertEquals((Double) 90d, error);
     }
 
     @Test
@@ -223,8 +228,9 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
 
         assertEquals((Double) 90d, geoLocation.getAccuracy());
-        assertNull(geoLocation.getError());
-
+        @SuppressWarnings("deprecation")
+        Double error = geoLocation.getError();
+        assertEquals(100, error);
     }
 
 }

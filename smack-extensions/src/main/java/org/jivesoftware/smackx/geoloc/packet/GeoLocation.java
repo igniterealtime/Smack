@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019 Florian Schmaus
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,11 @@ package org.jivesoftware.smackx.geoloc.packet;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.xdata.FormField;
@@ -49,8 +46,6 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public static final GeoLocation EMPTY_GEO_LOCATION = GeoLocation.builder().build();
-
-    private static final Logger LOGGER = Logger.getLogger(GeoLocation.class.getName());
 
     private final Double accuracy;
     private final Double alt;
@@ -77,50 +72,31 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
     private final String tzo;
     private final URI uri;
 
-    private GeoLocation(Double accuracy, Double alt, Double altAccuracy, String area, Double bearing, String building, String country,
-                    String countryCode, String datum, String description, Double error, String floor, Double lat,
-                    String locality, Double lon, String postalcode, String region, String room, Double speed,
-                    String street, String text, Date timestamp, String tzo, URI uri) {
-        this.accuracy = accuracy;
-        this.alt = alt;
-        this.altAccuracy = altAccuracy;
-        this.area = area;
-        this.bearing = bearing;
-        this.building = building;
-        this.country = country;
-        this.countryCode = countryCode;
-
-        // If datum is not included, receiver MUST assume WGS84; receivers MUST implement WGS84; senders MAY use another
-        // datum, but it is not recommended.
-
-        if (StringUtils.isNullOrEmpty(datum)) {
-            datum = "WGS84";
-        }
-
-        this.datum = datum;
-        this.description = description;
-
-        // error element is deprecated in favor of accuracy
-        if (accuracy != null) {
-            error = null;
-            LOGGER.log(Level.WARNING,
-                            "Error and accuracy set. Ignoring error as it is deprecated in favor of accuracy");
-        }
-
-        this.error = error;
-        this.floor = floor;
-        this.lat = lat;
-        this.locality = locality;
-        this.lon = lon;
-        this.postalcode = postalcode;
-        this.region = region;
-        this.room = room;
-        this.speed = speed;
-        this.street = street;
-        this.text = text;
-        this.timestamp = timestamp;
-        this.tzo = tzo;
-        this.uri = uri;
+    private GeoLocation(Builder builder) {
+        accuracy = builder.accuracy;
+        alt = builder.alt;
+        altAccuracy = builder.altAccuracy;
+        area = builder.area;
+        bearing = builder.bearing;
+        building = builder.building;
+        country = builder.country;
+        countryCode = builder.countryCode;
+        datum = builder.datum;
+        description = builder.description;
+        error = builder.error;
+        floor = builder.floor;
+        lat = builder.lat;
+        locality = builder.locality;
+        lon = builder.lon;
+        postalcode = builder.postalcode;
+        region = builder.region;
+        room = builder.room;
+        speed = builder.speed;
+        street = builder.street;
+        text = builder.text;
+        timestamp = builder.timestamp;
+        tzo = builder.tzo;
+        uri = builder.uri;
     }
 
     public Double getAccuracy() {
@@ -163,6 +139,13 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         return description;
     }
 
+    /**
+     * Get the error.
+     *
+     * @return the error.
+     * @deprecated use {@link #getAccuracy()} instead.
+     */
+    @Deprecated
     public Double getError() {
         return error;
     }
@@ -318,7 +301,11 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         private String building;
         private String country;
         private String countryCode;
-        private String datum;
+
+        // If datum is not included, receiver MUST assume WGS84; receivers MUST implement WGS84; senders MAY use another
+        // datum, but it is not recommended.
+        private String datum = "WGS84";
+
         private String description;
         private Double error;
         private String floor;
@@ -453,7 +440,9 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
          *
          * @param error error in arc minutes
          * @return Builder
+         * @deprecated use {@link #setAccuracy(Double)} instead.
          */
+        @Deprecated
         public Builder setError(Double error) {
             this.error = error;
             return this;
@@ -610,10 +599,7 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
          * @return GeoLocation
          */
         public GeoLocation build() {
-
-            return new GeoLocation(accuracy, alt, altAccuracy, area, bearing, building, country, countryCode, datum, description,
-                            error, floor, lat, locality, lon, postalcode, region, room, speed, street, text, timestamp,
-                            tzo, uri);
+            return new GeoLocation(this);
         }
     }
 }
