@@ -33,8 +33,8 @@ import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smack.filter.jidtype.AbstractJidTypeFilter.JidType;
 import org.jivesoftware.smack.filter.jidtype.FromJidTypeFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -92,8 +92,11 @@ public final class PepManager extends Manager {
         return pepManager;
     }
 
-    private static final StanzaFilter FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER = new AndFilter(
-            new FromJidTypeFilter(JidType.BareJid),
+    // TODO: Ideally PepManager would re-use PubSubManager for this. But the functionality in PubSubManager does not yet
+    // exist.
+    private static final StanzaFilter PEP_EVENTS_FILTER = new AndFilter(
+            MessageTypeFilter.HEADLINE,
+            FromJidTypeFilter.ENTITY_BARE_JID,
             EventItemsExtensionFilter.INSTANCE);
 
     private final Set<PepListener> pepListeners = new CopyOnWriteArraySet<>();
@@ -168,7 +171,7 @@ public final class PepManager extends Manager {
             }
         };
         // TODO Add filter to check if from supports PubSub as per xep163 2 2.4
-        connection.addSyncStanzaListener(packetListener, FROM_BARE_JID_WITH_EVENT_EXTENSION_FILTER);
+        connection.addSyncStanzaListener(packetListener, PEP_EVENTS_FILTER);
     }
 
     private static final class PepEventListenerCoupling<E extends ExtensionElement> {
