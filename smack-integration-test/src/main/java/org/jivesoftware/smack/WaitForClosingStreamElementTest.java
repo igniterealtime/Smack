@@ -43,6 +43,7 @@ public class WaitForClosingStreamElementTest extends AbstractSmackLowLevelIntegr
         if (failureException != null) {
             throw new AssertionError("Sync poing yielded failure exception", failureException);
         }
-        assertTrue(closingStreamReceived.wasSuccessful());
+        boolean closingStreamReceivedSuccessful = closingStreamReceived.wasSuccessful();
+        assertTrue(closingStreamReceivedSuccessful);
     }
 }
