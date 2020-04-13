@@ -746,7 +746,7 @@ public class SmackIntegrationTestFramework {
                 .append(method.getName())
                 .append(" (")
                 .append(testType.name());
-            if (subdescriptons != null) {
+            if (subdescriptons != null && subdescriptons.length > 0) {
                 sb.append(", ");
                 StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
             }
