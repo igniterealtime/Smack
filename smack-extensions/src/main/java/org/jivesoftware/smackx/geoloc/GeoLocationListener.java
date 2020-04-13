@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.geoloc;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 public interface GeoLocationListener {
-    void onGeoLocationUpdated(BareJid jid, GeoLocation geoLocation, Message message);
+    void onGeoLocationUpdated(EntityBareJid jid, GeoLocation geoLocation, Message message);
 }

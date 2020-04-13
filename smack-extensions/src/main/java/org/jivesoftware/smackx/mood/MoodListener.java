@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub.
+ * Copyright 2018 Paul Schaub, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@ import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.mood.element.MoodElement;
 
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 public interface MoodListener {
 
-    void onMoodUpdated(BareJid jid, Message message, MoodElement moodElement);
+    void onMoodUpdated(EntityBareJid from, MoodElement moodElement, Message message);
+
 }

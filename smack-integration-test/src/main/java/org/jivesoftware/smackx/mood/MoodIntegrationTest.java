@@ -43,7 +43,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
 
-        final MoodListener moodListener = (jid, message, moodElement) -> {
+        final MoodListener moodListener = (jid, moodElement, message) -> {
             if (moodElement.getMood() == Mood.satisfied) {
                 moodReceived.signal();
             }

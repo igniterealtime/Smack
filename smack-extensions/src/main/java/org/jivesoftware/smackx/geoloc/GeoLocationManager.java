@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez 2019 Florian Schmaus
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -43,7 +42,6 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProviderManager;
 
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 
@@ -73,7 +71,6 @@ public final class GeoLocationManager extends Manager {
     private static boolean ENABLE_USER_LOCATION_NOTIFICATIONS_BY_DEFAULT = true;
 
     private final Set<GeoLocationListener> geoLocationListeners = new CopyOnWriteArraySet<>();
-    private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<BareJid>();
     private final ServiceDiscoveryManager serviceDiscoveryManager;
     private final PepManager pepManager;
 
@@ -116,17 +113,14 @@ public final class GeoLocationManager extends Manager {
                     return;
                 }
 
-                final BareJid contact = from.asBareJid();
-                asyncButOrdered.performAsyncButOrdered(contact, () -> {
-                    ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
-                    List<ExtensionElement> items = itemsExtension.getExtensions();
-                    @SuppressWarnings("unchecked")
-                    PayloadItem<GeoLocation> payload = (PayloadItem<GeoLocation>) items.get(0);
-                    GeoLocation geoLocation = payload.getPayload();
-                    for (GeoLocationListener listener : geoLocationListeners) {
-                        listener.onGeoLocationUpdated(contact, geoLocation, message);
-                    }
-                });
+                ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
+                List<ExtensionElement> items = itemsExtension.getExtensions();
+                @SuppressWarnings("unchecked")
+                PayloadItem<GeoLocation> payload = (PayloadItem<GeoLocation>) items.get(0);
+                GeoLocation geoLocation = payload.getPayload();
+                for (GeoLocationListener listener : geoLocationListeners) {
+                    listener.onGeoLocationUpdated(from, geoLocation, message);
+                }
             }
         });
         serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);

@@ -31,7 +31,7 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -63,7 +63,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
 
         final UserTuneListener userTuneListener = new UserTuneListener() {
             @Override
-            public void onUserTuneUpdated(BareJid jid, Message message, UserTuneElement userTuneElement) {
+            public void onUserTuneUpdated(EntityBareJid jid, UserTuneElement userTuneElement, Message message) {
                 if (userTuneElement.equals(userTuneElement1)) {
                     userTuneReceived.signal();
                 }

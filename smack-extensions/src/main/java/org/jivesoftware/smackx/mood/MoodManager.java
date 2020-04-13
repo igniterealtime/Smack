@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub.
+ * Copyright 2018 Paul Schaub, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
  */
 package org.jivesoftware.smackx.mood;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -42,7 +41,6 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
 
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -72,8 +70,7 @@ public final class MoodManager extends Manager {
 
     private static final Map<XMPPConnection, MoodManager> INSTANCES = new WeakHashMap<>();
 
-    private final Set<MoodListener> moodListeners = new HashSet<>();
-    private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<>();
+    private final Set<MoodListener> moodListeners = new CopyOnWriteArraySet<>();
     private PubSubManager pubSubManager;
 
     private MoodManager(XMPPConnection connection) {
@@ -86,19 +83,13 @@ public final class MoodManager extends Manager {
                     return;
                 }
 
-                final BareJid contact = from.asBareJid();
-                asyncButOrdered.performAsyncButOrdered(contact, new Runnable() {
-                    @Override
-                    public void run() {
-                        ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                        PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
-                        MoodElement mood = (MoodElement) payload.getPayload();
+                ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
+                PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
+                MoodElement mood = (MoodElement) payload.getPayload();
 
-                        for (MoodListener listener : moodListeners) {
-                            listener.onMoodUpdated(contact, message, mood);
-                        }
-                    }
-                });
+                for (MoodListener listener : moodListeners) {
+                    listener.onMoodUpdated(from, mood, message);
+                }
             }
         });
     }
@@ -170,11 +161,11 @@ public final class MoodManager extends Manager {
         message.addExtension(element);
     }
 
-    public synchronized void addMoodListener(MoodListener listener) {
+    public void addMoodListener(MoodListener listener) {
         moodListeners.add(listener);
     }
 
-    public synchronized void removeMoodListener(MoodListener listener) {
+    public void removeMoodListener(MoodListener listener) {
         moodListeners.remove(listener);
     }
 }

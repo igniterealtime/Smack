@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Aditya Borikar.
+ * Copyright 2019 Aditya Borikar, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@ import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 
 public interface UserTuneListener {
 
-    void onUserTuneUpdated(BareJid jid, Message message, UserTuneElement userTuneElement);
+    void onUserTuneUpdated(EntityBareJid jid, UserTuneElement userTuneElement, Message message);
+
 }

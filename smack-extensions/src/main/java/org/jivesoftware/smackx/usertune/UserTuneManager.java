@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -41,7 +40,6 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
-import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -70,7 +68,6 @@ public final class UserTuneManager extends Manager {
     private static boolean ENABLE_USER_TUNE_NOTIFICATIONS_BY_DEFAULT = true;
 
     private final Set<UserTuneListener> userTuneListeners = new CopyOnWriteArraySet<>();
-    private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<>();
     private final ServiceDiscoveryManager serviceDiscoveryManager;
     private final PepManager pepManager;
 
@@ -93,18 +90,15 @@ public final class UserTuneManager extends Manager {
                     return;
                 }
 
-                final BareJid contact = from.asBareJid();
-                asyncButOrdered.performAsyncButOrdered(contact, () -> {
-                    ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
-                    List<ExtensionElement> items = itemsExtension.getExtensions();
-                    @SuppressWarnings("unchecked")
-                    PayloadItem<UserTuneElement> payload = (PayloadItem<UserTuneElement>) items.get(0);
-                    UserTuneElement tune = payload.getPayload();
+                ItemsExtension itemsExtension = (ItemsExtension) event.getEvent();
+                List<ExtensionElement> items = itemsExtension.getExtensions();
+                @SuppressWarnings("unchecked")
+                PayloadItem<UserTuneElement> payload = (PayloadItem<UserTuneElement>) items.get(0);
+                UserTuneElement tune = payload.getPayload();
 
-                    for (UserTuneListener listener : userTuneListeners) {
-                        listener.onUserTuneUpdated(contact, message, tune);
-                    }
-                });
+                for (UserTuneListener listener : userTuneListeners) {
+                    listener.onUserTuneUpdated(from, tune, message);
+                }
             }
         });
         serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);

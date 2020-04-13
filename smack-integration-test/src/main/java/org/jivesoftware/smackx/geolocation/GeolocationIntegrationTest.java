@@ -35,7 +35,7 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.jxmpp.jid.BareJid;
+import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppDateTime;
 
 public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
@@ -82,7 +82,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         final GeoLocationListener geoLocationListener = new GeoLocationListener() {
 
             @Override
-            public void onGeoLocationUpdated(BareJid jid, GeoLocation geoLocation, Message message) {
+            public void onGeoLocationUpdated(EntityBareJid jid, GeoLocation geoLocation, Message message) {
                 if (geoLocation.equals(geoLocation1)) {
                     geoLocationReceived.signal();
                 }
