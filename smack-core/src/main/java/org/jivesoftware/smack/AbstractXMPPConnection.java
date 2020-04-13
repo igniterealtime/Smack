@@ -527,7 +527,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         saslFeatureReceived.init();
         lastFeaturesReceived.init();
         tlsHandled.init();
-        closingStreamReceived.init();
+        // TODO: We do not init() closingStreamReceived here, as the integration tests use it to check if we waited for
+        // it.
     }
 
     /**
@@ -549,6 +550,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Reset the connection state
         initState();
+        closingStreamReceived.init();
         streamId = null;
 
         try {
