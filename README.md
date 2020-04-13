@@ -1,7 +1,7 @@
 Smack
 =====
 
-[![Build Status](https://travis-ci.org/igniterealtime/Smack.svg?branch=master)](https://travis-ci.org/igniterealtime/Smack)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smack/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smack)  [![Link to XMPP chat smack@conference.igniterealtime.org](https://inverse.chat/badge.svg?room=smack@conference.igniterealtime.org)](https://inverse.chat/#converse/room?jid=smack@conference.igniterealtime.org)
+[![Build Status](https://api.travis-ci.com/igniterealtime/Smack.svg?branch=master)](https://travis-ci.com/github/igniterealtime/Smack)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smack/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smack)  [![Link to XMPP chat smack@conference.igniterealtime.org](https://inverse.chat/badge.svg?room=smack@conference.igniterealtime.org)](https://inverse.chat/#converse/room?jid=smack@conference.igniterealtime.org)
 
 About
 -----
