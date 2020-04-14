@@ -10,6 +10,6 @@ dependencies {
 
 	compile 'org.pgpainless:pgpainless-core:0.0.1-alpha7'
 
-	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testFixturesApi(testFixtures(project(":smack-core")))
 	testCompile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
 }

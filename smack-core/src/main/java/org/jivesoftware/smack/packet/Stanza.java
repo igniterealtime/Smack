@@ -338,7 +338,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     /**
      * Returns the first extension of this stanza that has the given namespace.
      * <p>
-     * When possible, use {@link #getExtension(String, String)} instead.
+     * When possible, use {@link #getExtensionElement(String, String)} instead.
      * </p>
      *
      * @param namespace the namespace of the extension that is desired.
@@ -350,15 +350,18 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
 
     /**
      * Returns the first extension that matches the specified element name and
-     * namespace, or <code>null</code> if it doesn't exist. If the provided elementName is null,
-     * only the namespace is matched. Extensions are
+     * namespace, or <code>null</code> if it doesn't exist. Extensions are
      * are arbitrary XML elements in standard XMPP stanzas.
+     * <p>
+     * Note that it is recommended to use {@link #getExtension(Class)} instead of this method.
+     * The {@link #getExtension(Class)} is more robust, as it is type safe.
+     * </p>
      *
-     * @param elementName the XML element name of the extension. (May be null)
+     * @param elementName the XML element name of the extension.
      * @param namespace the XML element namespace of the extension.
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
-    public final ExtensionElement getExtension(String elementName, String namespace) {
+    public final ExtensionElement getExtensionElement(String elementName, String namespace) {
         if (namespace == null) {
             return null;
         }
@@ -368,6 +371,22 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
             return null;
         }
         return packetExtension;
+    }
+
+    /**
+     * This method is deprecated. Use preferably {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)}.
+     *
+     * @param <E> the type to cast to.
+     * @param elementName the XML element name of the extension. (May be null)
+     * @param namespace the XML element namespace of the extension.
+     * @return the extension, or <code>null</code> if it doesn't exist.
+     * @deprecated use {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)} isntead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @SuppressWarnings("unchecked")
+    @Deprecated
+    public final <E extends ExtensionElement> E getExtension(String elementName, String namespace) {
+        return (E) getExtensionElement(elementName, namespace);
     }
 
     @Override

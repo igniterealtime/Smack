@@ -17,10 +17,10 @@
 package org.igniterealtime.smack.inttest.unittest;
 
 import static org.igniterealtime.smack.inttest.SmackIntegrationTestUnitTestUtil.getFrameworkForUnitTest;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -38,25 +38,27 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.DummySmackIntegrationTestFramework;
 import org.igniterealtime.smack.inttest.FailedTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResult;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SmackIntegrationTestFrameworkUnitTest {
 
     private static boolean beforeClassInvoked;
     private static boolean afterClassInvoked;
 
-    @BeforeClass
+    @BeforeAll
     public static void prepareSinttestUnitTest() {
         SmackIntegrationTestFramework.SINTTEST_UNIT_TEST = true;
     }
 
-    @AfterClass
+    @AfterAll
     public static void disallowSinntestUnitTest() {
         SmackIntegrationTestFramework.SINTTEST_UNIT_TEST = false;
     }
@@ -125,8 +127,8 @@ public class SmackIntegrationTestFrameworkUnitTest {
         DummySmackIntegrationTestFramework sinttest = getFrameworkForUnitTest(BeforeAfterClassTest.class);
         sinttest.run();
 
-        assertTrue("A before class method should have been executed to this time", beforeClassInvoked);
-        assertTrue("A after class method should have been executed to this time", afterClassInvoked);
+        assertTrue(beforeClassInvoked, "A before class method should have been executed to this time");
+        assertTrue(afterClassInvoked, "A after class method should have been executed to this time");
     }
 
     public static class BeforeAfterClassTest extends AbstractSmackIntegrationTest {
@@ -147,8 +149,8 @@ public class SmackIntegrationTestFrameworkUnitTest {
 
         @SmackIntegrationTest
         public void test() {
-            assertTrue("A before class method should have been executed to this time", beforeClassInvoked);
-            assertFalse("A after class method shouldn't have been executed to this time", afterClassInvoked);
+            assertTrue(beforeClassInvoked, "A before class method should have been executed to this time");
+            assertFalse(afterClassInvoked, "A after class method shouldn't have been executed to this time");
         }
     }
 }

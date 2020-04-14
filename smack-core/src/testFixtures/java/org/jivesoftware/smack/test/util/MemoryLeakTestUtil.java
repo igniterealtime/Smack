@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.util;
+package org.jivesoftware.smack.test.util;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.ref.PhantomReference;
@@ -129,7 +129,7 @@ public class MemoryLeakTestUtil {
         }
 
         Reference<?> reference = referenceQueue.poll();
-        assertNull("Reference queue is not empty when it should be", reference);
+        assertNull(reference, "Reference queue is not empty when it should be");
     }
 
     private static void assertReferencesQueueIsEmpty(ReferenceQueue<?> referenceQueue) {

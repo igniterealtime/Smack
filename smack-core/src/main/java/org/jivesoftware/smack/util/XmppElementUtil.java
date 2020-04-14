@@ -49,7 +49,7 @@ public class XmppElementUtil {
             namespace = (String) fullyQualifiedElement.getField("NAMESPACE").get(null);
         }
         catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            throw new IllegalArgumentException("The class" + fullyQualifiedElement + " has no ELEMENT, NAMSEPACE or QNAME member. Consider adding QNAME", e);
+            throw new IllegalArgumentException("The class" + fullyQualifiedElement + " has no ELEMENT, NAMESPACE or QNAME member. Consider adding QNAME", e);
         }
 
         return new QName(namespace, element);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus.
+ * Copyright 2019-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,12 @@ public final class EqualsUtil {
         @SuppressWarnings("unchecked")
         Class<T> thisObjectClass = (Class<T>) thisObject.getClass();
         if (thisObjectClass != other.getClass()) {
+            return false;
+        }
+
+        int thisHashCode = thisObject.hashCode();
+        int otherHashCode = other.hashCode();
+        if (thisHashCode != otherHashCode) {
             return false;
         }
 

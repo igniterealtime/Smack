@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo.element;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -78,10 +79,14 @@ public abstract class OmemoDeviceListElement implements ExtensionElement {
 
     @Override
     public final String toString() {
-        String out = "OmemoDeviceListElement[";
+        StringBuilder sb = new StringBuilder("OmemoDeviceListElement[");
+        Iterator<Integer> iterator = deviceIds.iterator();
         for (int i : deviceIds) {
-            out += i + ",";
+            sb.append(i);
+            if (iterator.hasNext()) {
+                sb.append(',');
+            }
         }
-        return out.substring(0, out.length() - 1) + "]";
+        return sb.append(']').toString();
     }
 }

@@ -686,7 +686,7 @@ public abstract class Node {
         @Override
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public void processStanza(Stanza packet) {
-            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.event.getXmlns());
+            EventElement event = (EventElement) packet.getExtensionElement("event", PubSubNamespace.event.getXmlns());
             ItemsExtension itemsElem = (ItemsExtension) event.getEvent();
             ItemPublishEvent eventItems = new ItemPublishEvent(itemsElem.getNode(), itemsElem.getItems(), getSubscriptionIds(packet), DelayInformationManager.getDelayTimestamp(packet));
             // TODO: Use AsyncButOrdered (with Node as Key?)
@@ -710,7 +710,7 @@ public abstract class Node {
         @Override
         public void processStanza(Stanza packet) {
 // CHECKSTYLE:OFF
-            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.event.getXmlns());
+            EventElement event = (EventElement) packet.getExtensionElement("event", PubSubNamespace.event.getXmlns());
 
             List<ExtensionElement> extList = event.getExtensions();
 
@@ -749,7 +749,7 @@ public abstract class Node {
 
         @Override
         public void processStanza(Stanza packet) {
-            EventElement event = (EventElement) packet.getExtension("event", PubSubNamespace.event.getXmlns());
+            EventElement event = (EventElement) packet.getExtensionElement("event", PubSubNamespace.event.getXmlns());
             ConfigurationEvent config = (ConfigurationEvent) event.getEvent();
 
             // TODO: Use AsyncButOrdered (with Node as Key?)

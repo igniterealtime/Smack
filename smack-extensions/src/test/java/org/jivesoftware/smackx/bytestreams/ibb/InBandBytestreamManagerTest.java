@@ -29,8 +29,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
@@ -47,7 +47,7 @@ import org.jxmpp.jid.JidTestUtil;
  *
  * @author Henning Staib
  */
-public class InBandBytestreamManagerTest extends InitExtensions {
+public class InBandBytestreamManagerTest extends SmackTestSuite {
 
     // settings
     private static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;

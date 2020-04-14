@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2020 Florian Schmaus
  *
  * This file is part of smack-repl.
  *
@@ -20,7 +20,7 @@
  */
 package org.igniterealtime.smack.smackrepl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SmackReplTest {
     /**

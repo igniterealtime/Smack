@@ -45,6 +45,7 @@ import org.jxmpp.jid.BareJid;
 
 /**
  * Like a rocket!
+ * Implementation of the {@link OmemoStore} class that uses plain files for storage.
  *
  * @author Paul Schaub
  */
@@ -514,7 +515,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     /**
      * Delete a directory with all subdirectories.
-     * @param root TODO javadoc me please
+     * @param root directory to be deleted
      */
     public static void deleteDirectory(File root) {
         File[] currList;

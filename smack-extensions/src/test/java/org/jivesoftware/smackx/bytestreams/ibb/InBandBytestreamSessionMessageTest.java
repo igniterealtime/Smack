@@ -32,9 +32,10 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.test.util.Whitebox;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -46,7 +47,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
-import org.powermock.reflect.Whitebox;
 
 /**
  * Test for InBandBytestreamSession.
@@ -55,7 +55,7 @@ import org.powermock.reflect.Whitebox;
  *
  * @author Henning Staib
  */
-public class InBandBytestreamSessionMessageTest extends InitExtensions {
+public class InBandBytestreamSessionMessageTest extends SmackTestSuite {
 
     // settings
     private static final EntityFullJid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
@@ -262,7 +262,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, "dataPacketListener", StanzaListener.class);
 
         // build invalid packet with out of order sequence
         String base64Data = Base64.encode("Data");
@@ -303,7 +303,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, "dataPacketListener", StanzaListener.class);
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {
@@ -349,7 +349,7 @@ public class InBandBytestreamSessionMessageTest extends InitExtensions {
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
         InputStream inputStream = session.getInputStream();
-        StanzaListener listener = Whitebox.getInternalState(inputStream, StanzaListener.class);
+        StanzaListener listener = Whitebox.getInternalState(inputStream, "dataPacketListener", StanzaListener.class);
 
         // verify data packet and notify listener
         for (int i = 0; i < controlData.length / blockSize; i++) {

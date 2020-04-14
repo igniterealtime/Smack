@@ -23,8 +23,9 @@ import static org.mockito.Mockito.verify;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.test.util.Whitebox;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Data;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.DataPacketExtension;
 
@@ -32,14 +33,13 @@ import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
 import org.mockito.ArgumentCaptor;
-import org.powermock.reflect.Whitebox;
 
 /**
  * Test for the CloseListener class.
  *
  * @author Henning Staib
  */
-public class DataListenerTest extends InitExtensions {
+public class DataListenerTest extends SmackTestSuite {
 
     private static final Jid initiatorJID = JidTestUtil.DUMMY_AT_EXAMPLE_ORG_SLASH_DUMMYRESOURCE;
     private static final Jid targetJID = JidTestUtil.FULL_JID_1_RESOURCE_1;
@@ -60,7 +60,7 @@ public class DataListenerTest extends InitExtensions {
         InBandBytestreamManager byteStreamManager = InBandBytestreamManager.getByteStreamManager(connection);
 
         // get the DataListener from InBandByteStreamManager
-        DataListener dataListener = Whitebox.getInternalState(byteStreamManager,
+        DataListener dataListener = Whitebox.getInternalState(byteStreamManager, "dataListener",
                         DataListener.class);
 
         DataPacketExtension dpe = new DataPacketExtension("unknownSessionID", 0, "Data");

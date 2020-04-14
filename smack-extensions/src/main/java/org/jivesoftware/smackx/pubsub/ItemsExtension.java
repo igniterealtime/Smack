@@ -135,6 +135,7 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
      *
      * @return List of {@link Item}, {@link RetractItem}, or null
      */
+    // TODO: Shouldn't this return List<Item>? Why is RetractItem not a subtype of item?
     public List<? extends NamedElement> getItems() {
         return items;
     }

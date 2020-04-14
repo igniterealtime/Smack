@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez 2019 Florian Schmaus
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +30,37 @@ import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.geoloc.provider.GeoLocationProvider;
-import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pep.PepEventListener;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
-import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProviderManager;
 
 import org.jxmpp.jid.Jid;
 
+/**
+ * Entry point for Smacks API for XEP-0080: User Location.
+ * <br>
+ * To publish a UserLocation, please use {@link #publishGeoLocation(GeoLocation)} method. This will publish the node.
+ * <br>
+ * To stop publishing a UserLocation, please use {@link #stopPublishingGeolocation()} method. This will send a disble publishing signal.
+ * <br>
+ * To add a {@link PepEventListener} in order to remain updated with other users GeoLocation, use {@link #addGeoLocationListener(PepEventListener)} method.
+ * <br>
+ * To link a GeoLocation with {@link Message}, use `message.addExtension(geoLocation)`.
+ * <br>
+ * An example for illustration is provided inside GeoLocationTest inside the test package.
+ * <br>
+ * @see <a href="https://xmpp.org/extensions/xep-0080.html">
+ *     XEP-0080: User Location</a>
+ */
 public final class GeoLocationManager extends Manager {
 
+    public static final String GEOLOCATION_NODE = GeoLocation.NAMESPACE;
+
     private static final Map<XMPPConnection, GeoLocationManager> INSTANCES = new WeakHashMap<>();
+
+    private final PepManager pepManager;
 
     static {
         FormFieldChildElementProviderManager.addFormFieldChildElementProvider(
@@ -52,11 +72,6 @@ public final class GeoLocationManager extends Manager {
                 getInstanceFor(connection);
             }
         });
-    }
-
-    public GeoLocationManager(XMPPConnection connection) {
-        super(connection);
-
     }
 
     /**
@@ -73,6 +88,11 @@ public final class GeoLocationManager extends Manager {
             INSTANCES.put(connection, geoLocationManager);
         }
         return geoLocationManager;
+    }
+
+    private GeoLocationManager(XMPPConnection connection) {
+        super(connection);
+        pepManager = PepManager.getInstanceFor(connection);
     }
 
     public void sendGeoLocationToJid(GeoLocation geoLocation, Jid jid) throws InterruptedException,
@@ -100,18 +120,18 @@ public final class GeoLocationManager extends Manager {
     }
 
     /**
-     * Send geolocation through the PubSub node.
+     * Publish the user's geographic location through the Personal Eventing Protocol (PEP).
      *
-     * @param geoLocation TODO javadoc me please
+     * @param geoLocation the geographic location to publish.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      */
-    public void sendGeolocation(GeoLocation geoLocation)
+    public void publishGeoLocation(GeoLocation geoLocation)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        getNode().publish(new PayloadItem<GeoLocation>(geoLocation));
+        pepManager.publish(GEOLOCATION_NODE, new PayloadItem<GeoLocation>(geoLocation));
     }
 
     /**
@@ -125,13 +145,14 @@ public final class GeoLocationManager extends Manager {
      */
     public void stopPublishingGeolocation()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        GeoLocation emptyGeolocation = new GeoLocation.Builder().build();
-        getNode().publish(new PayloadItem<GeoLocation>(emptyGeolocation));
+        pepManager.publish(GEOLOCATION_NODE, new PayloadItem<GeoLocation>(GeoLocation.EMPTY_GEO_LOCATION));
     }
 
-    private LeafNode getNode()
-            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, NotALeafNodeException {
-        return PubSubManager.getInstanceFor(connection()).getOrCreateLeafNode(GeoLocation.NAMESPACE);
+    public boolean addGeoLocationListener(PepEventListener<GeoLocation> listener) {
+        return pepManager.addPepEventListener(GEOLOCATION_NODE, GeoLocation.class, listener);
     }
 
+    public boolean removeGeoLocationListener(PepEventListener<GeoLocation> listener) {
+        return pepManager.removePepEventListener(listener);
+    }
 }

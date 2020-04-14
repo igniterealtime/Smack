@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.caps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -45,11 +45,11 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 
 public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
@@ -169,7 +169,8 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         DiscoverInfo info = sdmOne.discoverInfo(conTwo.getUser());
         // that discovery should cause a disco#info
         assertTrue(discoInfoSend.get());
-        assertTrue("The info response '" + info + "' does not contain the expected feature '" + dummyFeature + '\'', info.containsFeature(dummyFeature));
+        assertTrue(info.containsFeature(dummyFeature),
+                        "The info response '" + info + "' does not contain the expected feature '" + dummyFeature + '\'');
         discoInfoSend.set(false);
 
         // discover that

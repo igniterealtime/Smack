@@ -17,19 +17,20 @@
 package org.jivesoftware.smackx.nick;
 
 import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.nick.packet.Nick;
 import org.jivesoftware.smackx.nick.provider.NickProvider;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -41,14 +42,16 @@ public class NickTest {
 
     @Test
     public void disallowEmptyNickTest() {
-        assertThrows("Empty String as argument MUST cause IllegalArgumentException.",
-                IllegalArgumentException.class, () -> new Nick(""));
+        assertThrows(IllegalArgumentException.class,
+                        () -> new Nick(""),
+                        "Empty String as argument MUST cause IllegalArgumentException.");
     }
 
     @Test
     public void disallowNullNickTest() {
-        assertThrows("Null argument MUST cause IllegalArgumentException.",
-                IllegalArgumentException.class, () -> new Nick(null));
+        assertThrows(IllegalArgumentException.class,
+                        () -> new Nick(null),
+                        "Null argument MUST cause IllegalArgumentException.");
     }
 
 

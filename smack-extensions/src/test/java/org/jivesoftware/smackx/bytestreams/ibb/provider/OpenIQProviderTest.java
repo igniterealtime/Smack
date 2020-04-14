@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Properties;
 
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author Henning Staib
  */
-public class OpenIQProviderTest extends InitExtensions {
+public class OpenIQProviderTest extends SmackTestSuite {
 
     private static final Properties outputProperties = new Properties();
     {

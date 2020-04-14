@@ -69,6 +69,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
  */
 public final class PubSubManager extends Manager {
 
+    public static final String PLUS_NOTIFY = "+notify";
+
     public static final String AUTO_CREATE_FEATURE = "http://jabber.org/protocol/pubsub#auto-create";
 
     private static final Logger LOGGER = Logger.getLogger(PubSubManager.class.getName());
@@ -503,7 +505,7 @@ public final class PubSubManager extends Manager {
      */
     public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Stanza reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS), null);
-        SubscriptionsExtension subElem = (SubscriptionsExtension) reply.getExtension(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
+        SubscriptionsExtension subElem = (SubscriptionsExtension) reply.getExtensionElement(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
         return subElem.getSubscriptions();
     }
 

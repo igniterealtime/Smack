@@ -22,15 +22,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
 
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.jupiter.api.Test;
 
-public class LastActivityTest extends InitExtensions {
+public class LastActivityTest extends SmackTestSuite {
 
     @Test
     public void checkProvider() throws Exception {

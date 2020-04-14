@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.bytestreams.socks5;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import org.jivesoftware.smack.util.NetworkUtil;
+import org.jivesoftware.smack.test.util.NetworkUtil;
 
 /**
  * Simple SOCKS5 proxy for testing purposes. It is almost the same as the Socks5Proxy class but the

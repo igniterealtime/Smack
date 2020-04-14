@@ -20,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
 import org.junit.jupiter.api.Test;
 
-public class RSMSetProviderTest extends InitExtensions {
+public class RSMSetProviderTest extends SmackTestSuite {
 
     @Test
     public void testRsmSetProvider() throws Exception {

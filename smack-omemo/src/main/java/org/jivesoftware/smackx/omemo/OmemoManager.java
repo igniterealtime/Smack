@@ -151,7 +151,7 @@ public final class OmemoManager extends Manager {
      * @param connection XmppConnection.
      * @param deviceId MUST NOT be null and MUST be greater than 0.
      *
-     * @return manager TODO javadoc me please
+     * @return OmemoManager instance for the given connection and deviceId.
      */
     public static synchronized OmemoManager getInstanceFor(XMPPConnection connection, Integer deviceId) {
         if (deviceId == null || deviceId < 1) {
@@ -182,7 +182,7 @@ public final class OmemoManager extends Manager {
      *
      * @param connection XmppConnection.
      *
-     * @return manager TODO javadoc me please
+     * @return OmemoManager instance for the given connection and a determined deviceId.
      */
     public static synchronized OmemoManager getInstanceFor(XMPPConnection connection) {
         TreeMap<Integer, OmemoManager> managers = INSTANCES.get(connection);
@@ -219,7 +219,8 @@ public final class OmemoManager extends Manager {
 
     /**
      * Return the TrustCallback of this manager.
-     * @return
+     *
+     * @return callback that is used for trust decisions.
      */
     OmemoTrustCallback getTrustCallback() {
         return trustCallback;
@@ -276,9 +277,12 @@ public final class OmemoManager extends Manager {
     /**
      * Return a set of all OMEMO capable devices of a contact.
      * Note, that this method does not explicitly refresh the device list of the contact, so it might be outdated.
+     *
      * @see #requestDeviceListUpdateFor(BareJid)
+     *
      * @param contact contact we want to get a set of device of.
      * @return set of known devices of that contact.
+     *
      * @throws IOException if an I/O error occurred.
      */
     public Set<OmemoDevice> getDevicesOf(BareJid contact) throws IOException {
@@ -299,6 +303,7 @@ public final class OmemoManager extends Manager {
      * @param recipient recipients bareJid
      * @param message text to encrypt
      * @return encrypted message
+     *
      * @throws CryptoFailedException                when something crypto related fails
      * @throws UndecidedOmemoIdentityException      When there are undecided devices
      * @throws InterruptedException if the calling thread was interrupted.
@@ -311,9 +316,9 @@ public final class OmemoManager extends Manager {
             throws CryptoFailedException, UndecidedOmemoIdentityException,
             InterruptedException, SmackException.NotConnectedException,
             SmackException.NoResponseException, SmackException.NotLoggedInException, IOException {
-            Set<BareJid> recipients = new HashSet<>();
-            recipients.add(recipient);
-            return encrypt(recipients, message);
+        Set<BareJid> recipients = new HashSet<>();
+        recipients.add(recipient);
+        return encrypt(recipients, message);
     }
 
     /**
@@ -322,6 +327,7 @@ public final class OmemoManager extends Manager {
      * @param recipients recipients barejids
      * @param message text to encrypt
      * @return encrypted message.
+     *
      * @throws CryptoFailedException    When something crypto related fails
      * @throws UndecidedOmemoIdentityException  When there are undecided devices.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -348,6 +354,7 @@ public final class OmemoManager extends Manager {
      * @param muc multiUserChat
      * @param message message to send
      * @return encrypted message
+     *
      * @throws UndecidedOmemoIdentityException when there are undecided devices.
      * @throws CryptoFailedException if the OMEMO cryptography failed.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
@@ -402,6 +409,7 @@ public final class OmemoManager extends Manager {
      *
      * @param mamQuery The MAM query
      * @return list of decrypted OmemoMessages
+     *
      * @throws SmackException.NotLoggedInException if the Manager is not authenticated.
      * @throws IOException if an I/O error occurred.
      */
@@ -430,6 +438,7 @@ public final class OmemoManager extends Manager {
      * Distrust the fingerprint/OmemoDevice tuple.
      * The fingerprint must be the lowercase, hexadecimal fingerprint of the identityKey of the device and must
      * be of length 64.
+     *
      * @param device device
      * @param fingerprint fingerprint
      */
@@ -445,6 +454,7 @@ public final class OmemoManager extends Manager {
      * Returns true, if the fingerprint/OmemoDevice tuple is trusted, otherwise false.
      * The fingerprint must be the lowercase, hexadecimal fingerprint of the identityKey of the device and must
      * be of length 64.
+     *
      * @param device device
      * @param fingerprint fingerprint
      * @return <code>true</code> if this is a trusted OMEMO identity.
@@ -461,6 +471,7 @@ public final class OmemoManager extends Manager {
      * Returns true, if the fingerprint/OmemoDevice tuple is decided by the user.
      * The fingerprint must be the lowercase, hexadecimal fingerprint of the identityKey of the device and must
      * be of length 64.
+     *
      * @param device device
      * @param fingerprint fingerprint
      * @return <code>true</code> if the trust is decided for the identity.
@@ -478,6 +489,7 @@ public final class OmemoManager extends Manager {
      * secrecy.
      *
      * @param recipient recipient
+     *
      * @throws CorruptedOmemoKeyException           When the used identityKeys are corrupted
      * @throws CryptoFailedException                When something fails with the crypto
      * @throws CannotEstablishOmemoSessionException When we can't establish a session with the recipient
@@ -494,8 +506,8 @@ public final class OmemoManager extends Manager {
             CryptoFailedException, CannotEstablishOmemoSessionException, IOException {
         XMPPConnection connection = connection();
         MessageBuilder message = connection.getStanzaFactory()
-                        .buildMessageStanza()
-                        .to(recipient.getJid());
+                .buildMessageStanza()
+                .to(recipient.getJid());
 
         OmemoElement element = getOmemoService().createRatchetUpdateElement(new LoggedInOmemoManager(this), recipient);
         message.addExtension(element);
@@ -510,6 +522,7 @@ public final class OmemoManager extends Manager {
      *
      * @param contact contact
      * @return true if contact has at least one OMEMO capable device.
+     *
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
@@ -530,10 +543,11 @@ public final class OmemoManager extends Manager {
      *
      * @param multiUserChat MUC
      * @return true if chat supports OMEMO
-     * @throws XMPPException.XMPPErrorException     if
-     * @throws SmackException.NotConnectedException something
-     * @throws InterruptedException                 goes
-     * @throws SmackException.NoResponseException   wrong
+     *
+     * @throws XMPPException.XMPPErrorException     if there was an XMPP protocol level error
+     * @throws SmackException.NotConnectedException if the connection is not connected
+     * @throws InterruptedException                 if the thread is interrupted
+     * @throws SmackException.NoResponseException   if the server does not respond
      */
     public boolean multiUserChatSupportsOmemo(MultiUserChat multiUserChat)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
@@ -549,6 +563,7 @@ public final class OmemoManager extends Manager {
      * @param connection XMPPConnection
      * @param server domainBareJid of the server to test
      * @return true if server supports pep
+     *
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -564,7 +579,8 @@ public final class OmemoManager extends Manager {
     /**
      * Return the fingerprint of our identity key.
      *
-     * @return fingerprint TODO javadoc me please
+     * @return our own OMEMO fingerprint
+     *
      * @throws SmackException.NotLoggedInException if we don't know our bareJid yet.
      * @throws CorruptedOmemoKeyException if our identityKey is corrupted.
      * @throws IOException if an I/O error occurred.
@@ -580,8 +596,10 @@ public final class OmemoManager extends Manager {
 
     /**
      * Get the fingerprint of a contacts device.
+     *
      * @param device contacts OmemoDevice
-     * @return fingerprint TODO javadoc me please
+     * @return fingerprint of the given OMEMO device.
+     *
      * @throws CannotEstablishOmemoSessionException if we have no session yet, and are unable to create one.
      * @throws SmackException.NotLoggedInException if the XMPP connection is not authenticated.
      * @throws CorruptedOmemoKeyException if the copy of the fingerprint we have is corrupted.
@@ -609,6 +627,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return all OmemoFingerprints of active devices of a contact.
      * TODO: Make more fail-safe
+     *
      * @param contact contact
      * @return Map of all active devices of the contact and their fingerprints.
      *
@@ -656,6 +675,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Remove an OmemoMessageListener.
+     *
      * @param listener OmemoMessageListener
      */
     public void removeOmemoMessageListener(OmemoMessageListener listener) {
@@ -673,6 +693,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Remove an OmemoMucMessageListener.
+     *
      * @param listener OmemoMucMessageListener
      */
     public void removeOmemoMucMessageListener(OmemoMucMessageListener listener) {
@@ -683,6 +704,7 @@ public final class OmemoManager extends Manager {
      * Request a deviceList update from contact contact.
      *
      * @param contact contact we want to obtain the deviceList from.
+     *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws PubSubException.NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
@@ -729,8 +751,8 @@ public final class OmemoManager extends Manager {
      */
     public synchronized void rotateSignedPreKey()
             throws CorruptedOmemoKeyException, SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
-                    SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException,
-                    IOException, PubSubException.NotALeafNodeException {
+            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException,
+            IOException, PubSubException.NotALeafNodeException {
         if (!connection().isAuthenticated()) {
             throw new SmackException.NotLoggedInException();
         }
@@ -745,6 +767,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Return true, if the given Stanza contains an OMEMO element 'encrypted'.
+     *
      * @param stanza stanza
      * @return true if stanza has extension 'encrypted'
      */
@@ -763,7 +786,8 @@ public final class OmemoManager extends Manager {
 
     /**
      * Returns a pseudo random number from the interval [1, Integer.MAX_VALUE].
-     * @return deviceId TODO javadoc me please
+     *
+     * @return a random deviceId.
      */
     public static int randomDeviceId() {
         return new Random().nextInt(Integer.MAX_VALUE - 1) + 1;
@@ -772,7 +796,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the BareJid of the user.
      *
-     * @return bareJid TODO javadoc me please
+     * @return our own bare JID.
      */
     public BareJid getOwnJid() {
         if (ownJid == null && connection().isAuthenticated()) {
@@ -785,7 +809,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the deviceId of this OmemoManager.
      *
-     * @return deviceId TODO javadoc me please
+     * @return this OmemoManagers deviceId.
      */
     public synchronized Integer getDeviceId() {
         return deviceId;
@@ -794,7 +818,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the OmemoDevice of the user.
      *
-     * @return omemoDevice TODO javadoc me please
+     * @return our own OmemoDevice
      */
     public synchronized OmemoDevice getOwnDevice() {
         BareJid jid = getOwnJid();
@@ -806,6 +830,7 @@ public final class OmemoManager extends Manager {
 
     /**
      * Set the deviceId of the manager to nDeviceId.
+     *
      * @param nDeviceId new deviceId
      */
     synchronized void setDeviceId(int nDeviceId) {
@@ -926,7 +951,7 @@ public final class OmemoManager extends Manager {
     /**
      * Return the OMEMO service object.
      *
-     * @return omemoService TODO javadoc me please
+     * @return the OmemoService object related to this OmemoManager.
      */
     OmemoService<?, ?, ?, ?, ?, ?, ?, ?, ?> getOmemoService() {
         throwIfNoServiceSet();
@@ -1012,7 +1037,7 @@ public final class OmemoManager extends Manager {
                     OmemoDeviceListElement receivedDeviceList = (OmemoDeviceListElement) payloadItem.getPayload();
                     try {
                         getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from,
-                                        receivedDeviceList);
+                                receivedDeviceList);
 
                         if (!from.asBareJid().equals(getOwnJid())) {
                             continue;
@@ -1021,8 +1046,8 @@ public final class OmemoManager extends Manager {
                         deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
                     } catch (IOException e) {
                         LOGGER.log(Level.SEVERE,
-                                        "IOException while processing OMEMO PEP device updates. Message: " + message,
-                                        e);
+                                "IOException while processing OMEMO PEP device updates. Message: " + message,
+                                e);
                         continue;
                     }
                     final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);

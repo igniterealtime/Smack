@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,40 +21,6 @@ import java.util.Collection;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 public class PacketUtil {
-
-    /**
-     * Get a extension element from a collection.
-     * @param collection TODO javadoc me please
-     * @param element TODO javadoc me please
-     * @param namespace TODO javadoc me please
-     * @param <PE> the type of the extension element.
-     * @return the extension element
-     * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead.
-     */
-    @Deprecated
-    public static <PE extends ExtensionElement> PE packetExtensionfromCollection(
-            Collection<ExtensionElement> collection, String element,
-            String namespace) {
-        return extensionElementFrom(collection, element, namespace);
-    }
-
-    /**
-     * Get a extension element from a collection.
-     *
-     * @param collection Collection of ExtensionElements.
-     * @param element name of the targeted ExtensionElement.
-     * @param namespace namespace of the targeted ExtensionElement.
-     * @param <PE> Type of the ExtensionElement
-     *
-     * @return the extension element
-     * @deprecated use {@link #extensionElementFrom(Collection, String, String)} instead
-     */
-    @Deprecated
-    public static <PE extends ExtensionElement> PE packetExtensionFromCollection(
-                    Collection<ExtensionElement> collection, String element,
-                    String namespace) {
-        return extensionElementFrom(collection, element, namespace);
-    }
 
     /**
      * Get a extension element from a collection.

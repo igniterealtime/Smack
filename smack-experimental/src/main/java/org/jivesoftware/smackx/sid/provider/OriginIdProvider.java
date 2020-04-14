@@ -21,6 +21,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
+import org.jivesoftware.smackx.sid.element.StableAndUniqueIdElement;
 
 public class OriginIdProvider extends ExtensionElementProvider<OriginIdElement> {
 
@@ -32,6 +33,6 @@ public class OriginIdProvider extends ExtensionElementProvider<OriginIdElement> 
 
     @Override
     public OriginIdElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
-        return new OriginIdElement(parser.getAttributeValue(null, OriginIdElement.ATTR_ID));
+        return new OriginIdElement(parser.getAttributeValue(null, StableAndUniqueIdElement.ATTR_ID));
     }
 }

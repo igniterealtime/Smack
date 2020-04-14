@@ -15,7 +15,8 @@ dependencies {
 	api project(':smack-resolver-minidns-dox')
 	api project(':smack-tcp')
 
-	testImplementation project(path: ":smack-core", configuration: "testRuntime")
+	testImplementation 'com.google.guava:guava:28.2-jre'
+	testImplementation 'org.jgrapht:jgrapht-io:1.3.1'
 }
 
 task printModularXmppClientToServerConnectionStateGraph(type: JavaExec) {

@@ -56,6 +56,7 @@ public class UntrustedOmemoIdentityException extends Exception {
 
     /**
      * Return the device which sent the message.
+     *
      * @return omemoDevice.
      */
     public OmemoDevice getDevice() {

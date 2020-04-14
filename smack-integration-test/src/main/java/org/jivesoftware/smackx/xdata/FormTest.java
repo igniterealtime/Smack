@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.xdata;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaCollector;
@@ -31,8 +30,8 @@ import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
-import org.igniterealtime.smack.inttest.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 
 /**
  * Tests the DataForms extensions.
@@ -109,23 +108,17 @@ public class FormTest extends AbstractSmackIntegrationTest {
 
             // Get the message with the form to fill out
             Message msg2 = collector2.nextResult();
-            assertNotNull("Message not found", msg2);
+            assertNotNull(msg2, "Message not found");
             // Retrieve the form to fill out
             Form formToRespond = Form.getFormFrom(msg2);
             assertNotNull(formToRespond);
             assertNotNull(formToRespond.getField("name"));
             assertNotNull(formToRespond.getField("description"));
             // Obtain the form to send with the replies
-            Form completedForm = formToRespond.createAnswerForm();
+            final Form completedForm = formToRespond.createAnswerForm();
             assertNotNull(completedForm.getField("hidden_var"));
             // Check that a field of type String does not accept booleans
-            try {
-                completedForm.setAnswer("name", true);
-                fail("A boolean value was set to a field of type String");
-            }
-            catch (IllegalArgumentException e) {
-                // This exception is expected.
-            }
+            assertThrows(IllegalArgumentException.class, () -> completedForm.setAnswer("name", true));
             completedForm.setAnswer("name", "Credit card number invalid");
             completedForm.setAnswer(
                 "description",
@@ -146,18 +139,18 @@ public class FormTest extends AbstractSmackIntegrationTest {
 
             // Get the message with the completed form
             Message msg3 = collector.nextResult();
-            assertNotNull("Message not found", msg3);
+            assertNotNull(msg3, "Message not found");
             // Retrieve the completed form
-            completedForm = Form.getFormFrom(msg3);
-            assertNotNull(completedForm);
-            assertNotNull(completedForm.getField("name"));
-            assertNotNull(completedForm.getField("description"));
+            final Form completedForm2 = Form.getFormFrom(msg3);
+            assertNotNull(completedForm2);
+            assertNotNull(completedForm2.getField("name"));
+            assertNotNull(completedForm2.getField("description"));
             assertEquals(
-                 completedForm.getField("name").getValues().get(0).toString(),
+                 completedForm2.getField("name").getValues().get(0).toString(),
                 "Credit card number invalid");
-            assertNotNull(completedForm.getField("time"));
-            assertNotNull(completedForm.getField("age"));
-            assertEquals("The age is bad", "20", completedForm.getField("age").getValues().get(0).toString());
+            assertNotNull(completedForm2.getField("time"));
+            assertNotNull(completedForm2.getField("age"));
+            assertEquals("20", completedForm2.getField("age").getValues().get(0).toString(), "The age is bad");
 
         }
         finally {

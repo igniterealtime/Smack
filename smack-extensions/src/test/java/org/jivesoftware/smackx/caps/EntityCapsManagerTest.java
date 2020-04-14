@@ -26,11 +26,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.caps.cache.EntityCapsPersistentCache;
 import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -43,7 +43,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 
-public class EntityCapsManagerTest extends InitExtensions {
+public class EntityCapsManagerTest extends SmackTestSuite {
 
     /**
      * <a href="http://xmpp.org/extensions/xep-0115.html#ver-gen-complex">XEP-

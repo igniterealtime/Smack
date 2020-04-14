@@ -3,5 +3,5 @@ Smack XML parser using Stax."""
 
 dependencies {
 	compile project(':smack-xmlparser')
-	testCompile project(path: ":smack-xmlparser", configuration: "testRuntime")
+	//testCompile project(path: ":smack-xmlparser", configuration: "testRuntime")
 }

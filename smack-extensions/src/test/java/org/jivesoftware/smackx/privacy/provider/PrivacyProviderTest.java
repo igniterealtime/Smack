@@ -23,15 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
 import org.junit.jupiter.api.Test;
 
-public class PrivacyProviderTest extends InitExtensions {
+public class PrivacyProviderTest extends SmackTestSuite {
 
     @Test
     public void parsePrivacyList() throws Exception {

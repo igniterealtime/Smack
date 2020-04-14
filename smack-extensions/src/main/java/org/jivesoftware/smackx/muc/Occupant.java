@@ -53,7 +53,7 @@ public class Occupant {
     }
 
     Occupant(Presence presence) {
-        MUCUser mucUser = (MUCUser) presence.getExtension("x",
+        MUCUser mucUser = (MUCUser) presence.getExtensionElement("x",
                 "http://jabber.org/protocol/muc#user");
         MUCItem item = mucUser.getItem();
         this.jid = item.getJid();

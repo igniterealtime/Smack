@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2015-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.igniterealtime.smack.inttest.annotations;
 
-import org.jivesoftware.smack.extensions.ExtensionsInitializer;
-import org.jivesoftware.smack.test.util.SmackTestSuite;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class InitExtensions extends SmackTestSuite {
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface SmackIntegrationTest {
 
-    static {
-        new ExtensionsInitializer().initialize();
-    }
+    boolean onlyDefaultConnectionType() default false;
+
+    int connectionCount() default -1;
 
 }

@@ -24,8 +24,7 @@ import java.util.Properties;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-
-import org.jivesoftware.smackx.InitExtensions;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import com.jamesmurty.utils.XMLBuilder;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ import org.jxmpp.jid.impl.JidCreate;
  *
  * @author Henning Staib
  */
-public class CloseTest extends InitExtensions {
+public class CloseTest extends SmackTestSuite {
 
     @Test
     public void shouldNotInstantiateWithInvalidArguments1() {

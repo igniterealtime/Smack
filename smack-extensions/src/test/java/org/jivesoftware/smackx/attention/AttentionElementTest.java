@@ -20,7 +20,7 @@ import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
 
 import org.jivesoftware.smackx.attention.packet.AttentionExtension;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class AttentionElementTest {
 

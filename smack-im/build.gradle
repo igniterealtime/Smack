@@ -7,5 +7,5 @@ Roster, Chat and other functionality."""
 // sourceSet.test of the core subproject
 dependencies {
 	compile project(':smack-core')
-	testCompile project(path: ":smack-core", configuration: "testRuntime")
+	testImplementation(testFixtures(project(":smack-core")))
 }

@@ -65,8 +65,9 @@ import org.jivesoftware.smackx.debugger.EnhancedDebuggerWindow;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.MethodParameterScanner;
@@ -745,8 +746,10 @@ public class SmackIntegrationTestFramework {
                 .append(method.getName())
                 .append(" (")
                 .append(testType.name());
-            sb.append(", ");
-            StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
+            if (subdescriptons != null && subdescriptons.length > 0) {
+                sb.append(", ");
+                StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
+            }
             sb.append(')');
 
             stringCache = sb.toString();

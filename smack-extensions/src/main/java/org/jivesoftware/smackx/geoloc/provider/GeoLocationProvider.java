@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019 Florian Schmaus
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
                     builder.setDescription(parser.nextText());
                     break;
                 case "error":
-                    builder.setError(ParserUtils.getDoubleFromNextText(parser));
+                    parseError(builder, parser);
                     break;
                 case "floor":
                     builder.setFloor(parser.nextText());
@@ -134,6 +134,12 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
         }
 
         return builder.build();
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void parseError(GeoLocation.Builder builder, XmlPullParser parser) throws XmlPullParserException, IOException {
+        double error = ParserUtils.getDoubleFromNextText(parser);
+        builder.setError(error);
     }
 
     public static class GeoLocationFormFieldChildElementProvider extends FormFieldChildElementProvider<GeoLocation> {

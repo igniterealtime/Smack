@@ -51,7 +51,7 @@ public class PubSub extends IQ {
 
     @SuppressWarnings("unchecked")
     public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem) {
-        return (PE) getExtension(elem.getElementName(), elem.getNamespace().getXmlns());
+        return (PE) getExtensionElement(elem.getElementName(), elem.getNamespace().getXmlns());
     }
 
     /**

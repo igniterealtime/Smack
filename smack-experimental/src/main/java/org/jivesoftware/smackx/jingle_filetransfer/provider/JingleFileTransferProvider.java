@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
 import org.jivesoftware.smackx.jingle.provider.JingleContentDescriptionProvider;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
@@ -101,7 +102,7 @@ public class JingleFileTransferProvider
                         builder = JingleFileTransferChild.getBuilder();
                         break;
 
-                    case JingleFileTransfer.ELEMENT:
+                    case JingleContentDescription.ELEMENT:
                         return new JingleFileTransfer(payloads);
                 }
                 break;

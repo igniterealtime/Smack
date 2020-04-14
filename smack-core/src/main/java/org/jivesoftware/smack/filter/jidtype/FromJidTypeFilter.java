@@ -28,6 +28,8 @@ import org.jxmpp.jid.Jid;
  */
 public class FromJidTypeFilter extends AbstractJidTypeFilter {
 
+    public static final FromJidTypeFilter ENTITY_BARE_JID = new FromJidTypeFilter(JidType.EntityBareJid);
+
     public FromJidTypeFilter(JidType jidType) {
         super(jidType);
     }

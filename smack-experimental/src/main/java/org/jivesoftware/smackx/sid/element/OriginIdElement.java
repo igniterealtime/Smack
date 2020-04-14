@@ -82,7 +82,7 @@ public class OriginIdElement extends StableAndUniqueIdElement {
      * @return origin-id element
      */
     public static OriginIdElement getOriginId(Message message) {
-        return (OriginIdElement) message.getExtension(OriginIdElement.ELEMENT, StableUniqueStanzaIdManager.NAMESPACE);
+        return (OriginIdElement) message.getExtensionElement(OriginIdElement.ELEMENT, StableUniqueStanzaIdManager.NAMESPACE);
     }
 
     @Override

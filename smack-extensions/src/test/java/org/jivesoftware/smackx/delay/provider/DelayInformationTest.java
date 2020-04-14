@@ -31,11 +31,11 @@ import java.util.TimeZone;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.InitExtensions;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
@@ -43,7 +43,7 @@ import com.jamesmurty.utils.XMLBuilder;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
 
-public class DelayInformationTest extends InitExtensions {
+public class DelayInformationTest extends SmackTestSuite {
 
     private static final Calendar calendar = new GregorianCalendar(2002, 9 - 1, 10, 23, 8, 25);
     private static Properties outputProperties = new Properties();
