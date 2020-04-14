@@ -102,7 +102,7 @@ The base class that integration tests need to subclass.
 
 ### `AbstractSmackLowLevelIntegrationTest`
 
-Allows low level integration test, i.e. ever test method will have its on exclusive XMPPTCPConnection instances.
+Allows low level integration test, i.e. every test method will have its own exclusive XMPPTCPConnection instances.
 
 ### `AbstractSmackSpecificLowLevelIntegrationTest`
 
