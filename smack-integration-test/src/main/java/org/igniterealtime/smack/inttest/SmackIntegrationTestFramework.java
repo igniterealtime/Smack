@@ -171,7 +171,7 @@ public class SmackIntegrationTestFramework {
         // Create a connection manager *after* we created the testRunId (in testRunResult).
         this.connectionManager = new XmppConnectionManager(this);
 
-        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting");
+        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting\nSmack version: " + SmackConfiguration.getVersion());
         if (config.debugger != Configuration.Debugger.none) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
