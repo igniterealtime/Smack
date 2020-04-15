@@ -292,6 +292,12 @@
       <className>org.jivesoftware.smackx.dox.provider.DnsIqProvider</className>
     </iqProvider>
 
+    <!-- XEP-0422: Message Fastening -->
+    <extensionProvider>
+      <elementName>apply-to</elementName>
+      <namespace>urn:xmpp:fasten:0</namespace>
+      <className>org.jivesoftware.smackx.message_fastening.provider.FasteningElementProvider</className>
+    </extensionProvider>
 
     <!-- XEP-xxxx: Multi-User Chat Light -->
     <iqProvider>

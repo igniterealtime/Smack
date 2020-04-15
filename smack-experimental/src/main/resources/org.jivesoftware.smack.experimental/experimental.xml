@@ -8,5 +8,6 @@
 		<className>org.jivesoftware.smackx.eme.ExplicitMessageEncryptionManager</className>
         <className>org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager</className>
         <className>org.jivesoftware.smackx.xmlelement.DataFormsXmlElementManager</className>
+        <className>org.jivesoftware.smackx.message_fastening.MessageFasteningManager</className>
     </startupClasses>
 </smack>
