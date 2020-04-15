@@ -51,7 +51,7 @@ public final class MessageFasteningManager extends Manager {
 
     public static final String NAMESPACE = "urn:xmpp:fasten:0";
 
-    private static boolean ENABLED_BY_DEFAULT = true;
+    private static boolean ENABLED_BY_DEFAULT = false;
 
     private static final WeakHashMap<XMPPConnection, MessageFasteningManager> INSTANCES = new WeakHashMap<>();
 
