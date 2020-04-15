@@ -43,7 +43,7 @@ public class TestKeys {
     /**
      * Public key of xmpp:juliet@capulet.lit.
      */
-    public static final String JULIET_PUB = "" +
+    public static final String JULIET_PUB =
             "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
             "\n" +
             "mQENBFrxov4BCAChZwPrBxxIlwzpieR5T2pnaOZLWH0WqSON6rVjvfbJHWdDi3Th\n" +
@@ -66,7 +66,7 @@ public class TestKeys {
     /**
      * Private key of xmpp:juliet@capulet.lit.
      */
-    public static final String JULIET_PRIV = "" +
+    public static final String JULIET_PRIV =
             "-----BEGIN PGP PRIVATE KEY BLOCK-----\n" +
             "\n" +
             "lQOYBFrxov4BCAChZwPrBxxIlwzpieR5T2pnaOZLWH0WqSON6rVjvfbJHWdDi3Th\n" +
@@ -104,7 +104,7 @@ public class TestKeys {
     /**
      * Public key of xmpp:romeo@montague.lit.
      */
-    public static final String ROMEO_PUB = "" +
+    public static final String ROMEO_PUB =
             "-----BEGIN PGP PUBLIC KEY BLOCK-----\n" +
             "\n" +
             "mQENBFrxopkBCADiYg/+mEObXgxuMW6/LFKpEyaJK9pBMgutuxnYZ9PXWZmOhDIT\n" +
@@ -127,7 +127,7 @@ public class TestKeys {
     /**
      * Private key of xmpp:romeo@montague.lit.
      */
-    public static final String ROMEO_PRIV = "" +
+    public static final String ROMEO_PRIV =
             "-----BEGIN PGP PRIVATE KEY BLOCK-----\n" +
             "\n" +
             "lQOYBFrxopkBCADiYg/+mEObXgxuMW6/LFKpEyaJK9pBMgutuxnYZ9PXWZmOhDIT\n" +

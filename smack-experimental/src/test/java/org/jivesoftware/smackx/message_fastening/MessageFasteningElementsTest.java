@@ -57,7 +57,7 @@ public class MessageFasteningElementsTest {
      */
     @Test
     public void fasteningElementSerializationTest() {
-        String xml = "" +
+        String xml =
                 "<apply-to xmlns='urn:xmpp:fasten:0' id='origin-id-1'>" +
                 "    <i-like-this xmlns='urn:example:like'/>" +
                 "</apply-to>";
@@ -73,7 +73,7 @@ public class MessageFasteningElementsTest {
     @ParameterizedTest
     @EnumSource(SmackTestUtil.XmlPullParserKind.class)
     public void fasteningDeserializationTest(SmackTestUtil.XmlPullParserKind parserKind) throws XmlPullParserException, IOException, SmackParsingException {
-        String xml = "" +
+        String xml =
                 "<apply-to xmlns='urn:xmpp:fasten:0' id='origin-id-1'>" +
                 "    <i-like-this xmlns='urn:example:like'/>" +
                 "    <external name='custom' element-namespace='urn:example:custom'/>" +
@@ -102,7 +102,7 @@ public class MessageFasteningElementsTest {
 
     @Test
     public void fasteningDeserializationClearTest() throws XmlPullParserException, IOException, SmackParsingException {
-        String xml = "" +
+        String xml =
                 "<apply-to xmlns='urn:xmpp:fasten:0' id='origin-id-1' clear='true'>" +
                 "    <i-like-this xmlns='urn:example:like'/>" +
                 "</apply-to>";
@@ -114,7 +114,7 @@ public class MessageFasteningElementsTest {
 
     @Test
     public void fasteningElementWithExternalElementsTest() {
-        String xml = "" +
+        String xml =
                 "<apply-to xmlns='urn:xmpp:fasten:0' id='origin-id-2'>" +
                 "    <external name='body'/>" +
                 "    <external name='custom' element-namespace='urn:example:custom'/>" +
