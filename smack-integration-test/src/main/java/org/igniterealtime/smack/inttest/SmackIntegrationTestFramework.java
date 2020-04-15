@@ -227,6 +227,11 @@ public class SmackIntegrationTestFramework {
         try {
             runTests(classes);
         }
+        catch (Throwable t) {
+            // Log the thrown Throwable to prevent it being shadowed in case the finally block below also throws.
+            LOGGER.log(Level.SEVERE, "Unexpected abort because runTests() threw throwable", t);
+            throw t;
+        }
         finally {
             // Ensure that the accounts are deleted and disconnected before we continue
             connectionManager.disconnectAndCleanup();
