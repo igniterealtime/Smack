@@ -410,6 +410,7 @@ public class MUCUser implements ExtensionElement {
         public static final Status NEW_NICKNAME_303 = Status.create(303);
         public static final Status KICKED_307 = Status.create(307);
         public static final Status REMOVED_AFFIL_CHANGE_321 = Status.create(321);
+        public static final Status REMOVED_FOR_TECHNICAL_REASONS_333 = Status.create(333);
 
         private final Integer code;
 
