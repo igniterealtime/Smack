@@ -233,6 +233,9 @@ public class MultiUserChat {
                     occupantsMap.remove(from);
                     MUCUser mucUser = MUCUser.from(packet);
                     if (mucUser != null && mucUser.hasStatus()) {
+                        if (isUserStatusModification) {
+                            userHasLeft();
+                        }
                         // Fire events according to the received presence code
                         checkPresenceCode(
                             mucUser.getStatus(),
@@ -2438,9 +2441,6 @@ public class MultiUserChat {
         if (statusCodes.contains(Status.KICKED_307)) {
             // Check if this occupant was kicked
             if (isUserModification) {
-                // Reset occupant information.
-                userHasLeft();
-
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.kicked(mucUser.getItem().getActor(), mucUser.getItem().getReason());
                 }
@@ -2455,15 +2455,9 @@ public class MultiUserChat {
         if (statusCodes.contains(Status.BANNED_301)) {
             // Check if this occupant was banned
             if (isUserModification) {
-                joined = false;
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.banned(mucUser.getItem().getActor(), mucUser.getItem().getReason());
                 }
-
-                // Reset occupant information.
-                occupantsMap.clear();
-                myRoomJid = null;
-                userHasLeft();
             }
             else {
                 for (ParticipantStatusListener listener : participantStatusListeners) {
@@ -2475,15 +2469,9 @@ public class MultiUserChat {
         if (statusCodes.contains(Status.REMOVED_AFFIL_CHANGE_321)) {
             // Check if this occupant's membership was revoked
             if (isUserModification) {
-                joined = false;
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.membershipRevoked();
                 }
-
-                // Reset occupant information.
-                occupantsMap.clear();
-                myRoomJid = null;
-                userHasLeft();
             }
         }
         // A occupant has changed his nickname in the room
@@ -2498,11 +2486,6 @@ public class MultiUserChat {
             for (UserStatusListener listener : userStatusListeners) {
                 listener.roomDestroyed(alternateMUC, mucUser.getDestroy().getReason());
             }
-
-            // Reset occupant information.
-            occupantsMap.clear();
-            myRoomJid = null;
-            userHasLeft();
         }
     }
 
