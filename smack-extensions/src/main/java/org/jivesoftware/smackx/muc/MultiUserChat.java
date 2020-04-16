@@ -236,7 +236,7 @@ public class MultiUserChat {
                         // Fire events according to the received presence code
                         checkPresenceCode(
                             mucUser.getStatus(),
-                            presence.getFrom().equals(myRoomJID),
+                            isUserStatusModification,
                             mucUser,
                             from);
                     } else {
