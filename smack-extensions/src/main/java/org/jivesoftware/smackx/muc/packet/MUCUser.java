@@ -420,10 +420,14 @@ public class MUCUser implements ExtensionElement {
         }
 
         public static Status create(Integer i) {
-            Status status = statusMap.get(i);
-            if (status == null) {
-                status = new Status(i);
-                statusMap.put(i, status);
+            Status status;
+            // TODO: Use computeIfAbsent once Smack's minimum required Android SDK level is 24 or higher.
+            synchronized (statusMap) {
+                status = statusMap.get(i);
+                if (status == null) {
+                    status = new Status(i);
+                    statusMap.put(i, status);
+                }
             }
             return status;
         }
