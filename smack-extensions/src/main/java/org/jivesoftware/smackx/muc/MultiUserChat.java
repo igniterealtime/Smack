@@ -149,7 +149,6 @@ public class MultiUserChat {
 
     private String subject;
     private EntityFullJid myRoomJid;
-    private boolean joined = false;
     private StanzaCollector messageCollector;
 
     MultiUserChat(XMPPConnection connection, EntityBareJid room, MultiUserChatManager multiUserChatManager) {
@@ -386,8 +385,6 @@ public class MultiUserChat {
         Resourcepart receivedNickname = presence.getFrom().getResourceOrThrow();
         setNickname(receivedNickname);
 
-        joined = true;
-
         // Update the list of joined rooms
         multiUserChatManager.addJoinedRoom(room);
         return presence;
@@ -439,7 +436,7 @@ public class MultiUserChat {
     public synchronized MucCreateConfigFormHandle create(Resourcepart nickname) throws NoResponseException,
                     XMPPErrorException, InterruptedException, MucAlreadyJoinedException,
                     NotConnectedException, MissingMucCreationAcknowledgeException, NotAMucServiceException {
-        if (joined) {
+        if (isJoined()) {
             throw new MucAlreadyJoinedException();
         }
 
@@ -494,7 +491,7 @@ public class MultiUserChat {
      */
     public synchronized MucCreateConfigFormHandle createOrJoin(MucEnterConfiguration mucEnterConfiguration)
                     throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
-        if (joined) {
+        if (isJoined()) {
             throw new MucAlreadyJoinedException();
         }
 
@@ -665,7 +662,7 @@ public class MultiUserChat {
         throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
         // If we've already joined the room, leave it before joining under a new
         // nickname.
-        if (joined) {
+        if (isJoined()) {
             try {
                 leaveSync();
             }
@@ -683,7 +680,7 @@ public class MultiUserChat {
      * @return true if currently in the multi user chat room.
      */
     public boolean isJoined() {
-        return joined;
+        return myRoomJid != null;
     }
 
     /**
@@ -1138,7 +1135,7 @@ public class MultiUserChat {
         Objects.requireNonNull(nickname, "Nickname must not be null or blank.");
         // Check that we already have joined the room before attempting to change the
         // nickname.
-        if (!joined) {
+        if (!isJoined()) {
             throw new MucNotJoinedException(this);
         }
         final EntityFullJid jid = JidCreate.entityFullFrom(room, nickname);
@@ -1181,11 +1178,6 @@ public class MultiUserChat {
             throw new MucNotJoinedException(this);
         }
 
-        // Check that we already have joined the room before attempting to change the
-        // availability status.
-        if (!joined) {
-            throw new MucNotJoinedException(this);
-        }
         // We change the availability status by sending a presence packet to the room with the
         // new presence status and mode
         Presence joinPresence = connection.getStanzaFactory().buildPresenceStanza()
@@ -2122,7 +2114,6 @@ public class MultiUserChat {
         // to call leave() in order to resync the state. And leave() requires the nickname to send the unsubscribe
         // presence.
         occupantsMap.clear();
-        joined = false;
         myRoomJid = null;
         // Update the list of joined rooms
         multiUserChatManager.removeJoinedRoom(room);
