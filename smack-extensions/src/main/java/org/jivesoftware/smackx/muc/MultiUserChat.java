@@ -2120,6 +2120,7 @@ public class MultiUserChat {
         // presence.
         occupantsMap.clear();
         joined = false;
+        myRoomJid = null;
         // Update the list of joined rooms
         multiUserChatManager.removeJoinedRoom(room);
         removeConnectionCallbacks();
