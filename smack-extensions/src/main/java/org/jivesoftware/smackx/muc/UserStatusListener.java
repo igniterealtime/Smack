@@ -17,11 +17,21 @@
 
 package org.jivesoftware.smackx.muc;
 
+import org.jivesoftware.smack.packet.Presence;
+
+import org.jivesoftware.smackx.muc.packet.MUCUser;
+
 import org.jxmpp.jid.Jid;
 
 /**
- * A listener that is fired anytime your participant's status in a room is changed, such as the
- * user being kicked, banned, or granted admin permissions or the room is destroyed.
+ * A listener that is fired anytime your participant's status in a room is changed, such as the user being kicked,
+ * banned, or granted admin permissions or the room is destroyed.
+ * <p>
+ * Note that the methods {@link #kicked(Jid, String)}, {@link #banned(Jid, String)} and
+ * {@link #roomDestroyed(MultiUserChat, String)} will be called before the generic {@link #removed(MUCUser, Presence)}
+ * callback will be invoked. The generic {@link #removed(MUCUser, Presence)} callback will be invoked every time the user
+ * was removed from the MUC involuntarily. It is hence the recommended callback to listen for and act upon.
+ * </p>
  *
  * @author Gaston Dombiak
  */
@@ -33,6 +43,7 @@ public interface UserStatusListener {
      *
      * @param actor the moderator that kicked your user from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick you from the room.
+     * @see #removed(MUCUser, Presence)
      */
      void kicked(Jid actor, String reason);
 
@@ -58,10 +69,21 @@ public interface UserStatusListener {
      *
      * @param actor the administrator that banned your user (e.g. user@host.org).
      * @param reason the reason provided by the administrator to banned you.
+     * @see #removed(MUCUser, Presence)
      */
      void banned(Jid actor, String reason);
 
-    /**
+     /**
+      * Called when a user is involuntarily removed from the room.
+      *
+      * @param mucUser the optional muc#user extension element
+      * @param presence the carrier presence
+      * @since 4.5
+      */
+     default void removed(MUCUser mucUser, Presence presence) {
+     };
+
+     /**
      * Called when an administrator grants your user membership to the room. This means that you
      * will be able to join the members-only room.
      *
@@ -128,6 +150,7 @@ public interface UserStatusListener {
      *
      * @param alternateMUC an alternate MultiUserChat, may be null.
      * @param reason the reason why the room was closed, may be null.
+     * @see #removed(MUCUser, Presence)
      */
      void roomDestroyed(MultiUserChat alternateMUC, String reason);
 

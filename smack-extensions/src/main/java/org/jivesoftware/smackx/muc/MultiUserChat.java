@@ -265,6 +265,11 @@ public class MultiUserChat {
                             }
                         }
                     }
+                    if (isUserStatusModification) {
+                        for (UserStatusListener listener : userStatusListeners) {
+                            listener.removed(mucUser, presence);
+                        }
+                    }
                     break;
                 default:
                     break;
