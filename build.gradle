@@ -113,7 +113,6 @@ allprojects {
 			':smack-jingle-old',
 			':smack-legacy',
 			':smack-omemo',
-			':smack-tcp',
 		].collect{ project(it) }
 		// Lazily evaluate the Android bootClasspath and offline
 		// Javadoc using a closure, so that targets which do not
