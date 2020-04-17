@@ -732,10 +732,6 @@ public class MultiUserChat {
         // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
         // state does not reflect the actual state.
 
-        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
-        // throw.
-        userHasLeft();
-
         final EntityFullJid myRoomJid = this.myRoomJid;
         if (myRoomJid == null) {
             throw new MucNotJoinedException(this);
@@ -756,6 +752,10 @@ public class MultiUserChat {
                                         new AndFilter(fromRoomFilter, PresenceTypeFilter.ERROR)
                                     )
                                 );
+
+        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
+        // throw.
+        userHasLeft();
 
         Presence reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
 
