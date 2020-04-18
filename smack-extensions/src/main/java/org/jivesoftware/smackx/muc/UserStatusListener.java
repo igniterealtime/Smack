@@ -78,7 +78,7 @@ public interface UserStatusListener {
       *
       * @param mucUser the optional muc#user extension element
       * @param presence the carrier presence
-      * @since 4.5
+      * @since 4.4.0
       */
      default void removed(MUCUser mucUser, Presence presence) {
      };

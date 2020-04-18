@@ -133,7 +133,7 @@ public final class MucEnterConfiguration {
          *
          * @param presenceBuilderConsumer a consumer which will be passed the presence build.
          * @return a reference to this builder.
-         * @since 4.5
+         * @since 4.4.0
          */
         public Builder withPresence(Consumer<? super PresenceBuilder> presenceBuilderConsumer) {
             presenceBuilderConsumer.accept(joinPresenceBuilder);
