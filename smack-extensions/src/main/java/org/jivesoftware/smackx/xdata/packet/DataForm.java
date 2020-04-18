@@ -20,6 +20,7 @@ package org.jivesoftware.smackx.xdata.packet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -304,6 +305,20 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
+     * Return the form type from the hidden form type field.
+     *
+     * @return the form type or <code>null</code> if this form has none set.
+     * @since 4.4.0
+     */
+    public String getFormType() {
+        FormField formTypeField = getHiddenFormTypeField();
+        if (formTypeField == null) {
+            return null;
+        }
+        return formTypeField.getFirstValue();
+    }
+
+    /**
      * Returns the hidden FORM_TYPE field or null if this data form has none.
      *
      * @return the hidden FORM_TYPE field or null.
@@ -362,6 +377,56 @@ public class DataForm implements ExtensionElement {
      */
     public static DataForm from(StanzaView stanzaView) {
         return stanzaView.getExtension(DataForm.class);
+    }
+
+    /**
+     * Get the data form with the given form type from a stanza view.
+     *
+     * @param stanzaView the stanza view to retrieve the data form from
+     * @param formType the form type
+     * @return the retrieved data form or <code>null</code> if there is no matching one
+     * @since 4.4.0
+     */
+    public static DataForm from(StanzaView stanzaView, String formType) {
+        List<DataForm> dataForms = stanzaView.getExtensions(DataForm.class);
+        return from(dataForms, formType);
+    }
+
+    /**
+     * Return the first matching data form with the given form type from the given collection of data forms.
+     *
+     * @param dataForms the collection of data forms
+     * @param formType the form type to match for
+     * @return the first matching data form or <code>null</code> if there is none
+     * @since 4.4.0
+     */
+    public static DataForm from(Collection<DataForm> dataForms, String formType) {
+       for (DataForm dataForm : dataForms) {
+           if (formType.equals(dataForm.getFormType())) {
+               return dataForm;
+           }
+       }
+       return null;
+    }
+
+    /**
+     * Remove the first matching data form with the given form type from the given collection.
+     *
+     * @param dataForms the collection of data forms
+     * @param formType the form type to match for
+     * @return the removed data form or <code>null</code> if there was none removed
+     * @since 4.4.0
+     */
+    public static DataForm remove(Collection<DataForm> dataForms, String formType) {
+        Iterator<DataForm> it = dataForms.iterator();
+        while (it.hasNext()) {
+            DataForm dataForm = it.next();
+            if (formType.equals(dataForm.getFormType())) {
+                it.remove();
+                return dataForm;
+            }
+        }
+        return null;
     }
 
     /**
