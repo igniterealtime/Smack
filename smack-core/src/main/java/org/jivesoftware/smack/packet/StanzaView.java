@@ -106,5 +106,12 @@ public interface StanzaView extends XmlLangElement {
 
     List<ExtensionElement> getExtensions(QName qname);
 
+    /**
+     * Return all extension elements of the given type. Returns the empty list if there a none.
+     *
+     * @param <E> the type of extension elements.
+     * @param extensionElementClass the class of the type of extension elements.
+     * @return a list of extension elements of that type, which may be empty.
+     */
     <E extends ExtensionElement> List<E> getExtensions(Class<E> extensionElementClass);
 }
