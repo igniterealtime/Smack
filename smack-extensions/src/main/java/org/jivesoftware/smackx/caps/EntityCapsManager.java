@@ -548,7 +548,7 @@ public final class EntityCapsManager extends Manager {
         final List<Identity> identities = new LinkedList<>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(localNodeVer, new AbstractNodeInformationProvider() {
             List<String> features = sdm.getFeatures();
-            List<ExtensionElement> packetExtensions = sdm.getExtendedInfoAsList();
+            List<DataForm> packetExtensions = sdm.getExtendedInfo();
             @Override
             public List<String> getNodeFeatures() {
                 return features;
@@ -558,7 +558,7 @@ public final class EntityCapsManager extends Manager {
                 return identities;
             }
             @Override
-            public List<ExtensionElement> getNodePacketExtensions() {
+            public List<DataForm> getNodePacketExtensions() {
                 return packetExtensions;
             }
         });

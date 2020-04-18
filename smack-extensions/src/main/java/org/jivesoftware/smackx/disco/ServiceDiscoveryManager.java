@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018-2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@ import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -88,7 +88,7 @@ public final class ServiceDiscoveryManager extends Manager {
     private static final Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
     private final Set<String> features = new HashSet<>();
-    private DataForm extendedInfo = null;
+    private List<DataForm> extendedInfos = new ArrayList<>(2);
     private final Map<String, NodeInformationProvider> nodeInformationProviders = new ConcurrentHashMap<>();
 
     // Create a new ServiceDiscoveryManager on every established connection
@@ -307,9 +307,8 @@ public final class ServiceDiscoveryManager extends Manager {
         for (String feature : getFeatures()) {
             response.addFeature(feature);
         }
-        if (extendedInfo != null) {
-            response.addExtension(extendedInfo);
-        }
+
+        response.addExtensions(extendedInfos);
     }
 
     /**
@@ -427,25 +426,59 @@ public final class ServiceDiscoveryManager extends Manager {
      * configure the extended info before logging to the server so that the
      * information is already available if it is required upon login.
      *
-     * @param info TODO javadoc me please
-     *            the data form that contains the extend service discovery
+     * @param info the data form that contains the extend service discovery
      *            information.
+     * @deprecated use {@link #addExtendedInfo(DataForm)} instead.
      */
+    // TODO: Remove in Smack 4.5
+    @Deprecated
     public synchronized void setExtendedInfo(DataForm info) {
-      extendedInfo = info;
-      // Notify others of a state change of SDM. In order to keep the state consistent, this
-      // method is synchronized
-      renewEntityCapsVersion();
+        addExtendedInfo(info);
     }
 
     /**
-     * Returns the data form that is set as extended information for this Service Discovery instance (XEP-0128).
+     * Registers extended discovery information of this XMPP entity. When this
+     * client is queried for its information this data form will be returned as
+     * specified by XEP-0128.
+     * <p>
      *
-     * @see <a href="http://xmpp.org/extensions/xep-0128.html">XEP-128: Service Discovery Extensions</a>
-     * @return the data form
+     * Since no stanza is actually sent to the server it is safe to perform this
+     * operation before logging to the server. In fact, you may want to
+     * configure the extended info before logging to the server so that the
+     * information is already available if it is required upon login.
+     *
+     * @param extendedInfo the data form that contains the extend service discovery information.
+     * @return the old data form which got replaced (if any)
+     * @since 4.4.0
      */
-    public DataForm getExtendedInfo() {
-        return extendedInfo;
+    public DataForm addExtendedInfo(DataForm extendedInfo) {
+        String formType = extendedInfo.getFormType();
+        StringUtils.requireNotNullNorEmpty(formType, "The data form must have a form type set");
+
+        DataForm removedDataForm;
+        synchronized (this) {
+            removedDataForm = DataForm.remove(extendedInfos, formType);
+
+            extendedInfos.add(extendedInfo);
+
+            // Notify others of a state change of SDM. In order to keep the state consistent, this
+            // method is synchronized
+            renewEntityCapsVersion();
+        }
+        return removedDataForm;
+    }
+
+    /**
+     * Remove the extended discovery information of the given form type.
+     *
+     * @param formType the type of the data form with the extended discovery information to remove.
+     * @since 4.4.0
+     */
+    public synchronized void removeExtendedInfo(String formType) {
+        DataForm removedForm = DataForm.remove(extendedInfos, formType);
+        if (removedForm != null) {
+            renewEntityCapsVersion();
+        }
     }
 
     /**
@@ -454,13 +487,21 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @return the data form as List of PacketExtensions
      */
-    public List<ExtensionElement> getExtendedInfoAsList() {
-        List<ExtensionElement> res = null;
-        if (extendedInfo != null) {
-            res = new ArrayList<>(1);
-            res.add(extendedInfo);
-        }
-        return res;
+    public synchronized List<DataForm> getExtendedInfo() {
+        return CollectionUtil.newListWith(extendedInfos);
+    }
+
+    /**
+     * Returns the data form as List of PacketExtensions, or null if no data form is set.
+     * This representation is needed by some classes (e.g. EntityCapsManager, NodeInformationProvider)
+     *
+     * @return the data form as List of PacketExtensions
+     * @deprecated use {@link #getExtendedInfo()} instead.
+     */
+    // TODO: Remove in Smack 4.5
+    @Deprecated
+    public List<DataForm> getExtendedInfoAsList() {
+        return getExtendedInfo();
     }
 
     /**
@@ -471,10 +512,13 @@ public final class ServiceDiscoveryManager extends Manager {
      * operation before logging to the server.
      */
     public synchronized void removeExtendedInfo() {
-       extendedInfo = null;
-       // Notify others of a state change of SDM. In order to keep the state consistent, this
-       // method is synchronized
-       renewEntityCapsVersion();
+        int extendedInfosCount = extendedInfos.size();
+        extendedInfos.clear();
+        if (extendedInfosCount > 0) {
+            // Notify others of a state change of SDM. In order to keep the state consistent, this
+            // method is synchronized
+            renewEntityCapsVersion();
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public abstract class AbstractNodeInformationProvider implements NodeInformation
     }
 
     @Override
-    public List<ExtensionElement> getNodePacketExtensions() {
+    public List<? extends ExtensionElement> getNodePacketExtensions() {
         return null;
     }
 

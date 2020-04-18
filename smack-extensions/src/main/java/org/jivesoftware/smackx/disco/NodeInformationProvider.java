@@ -68,5 +68,5 @@ public interface NodeInformationProvider {
      *
      * @return a list of the stanza extensions defined in the node.
      */
-    List<ExtensionElement> getNodePacketExtensions();
+    List<? extends ExtensionElement> getNodePacketExtensions();
 }
