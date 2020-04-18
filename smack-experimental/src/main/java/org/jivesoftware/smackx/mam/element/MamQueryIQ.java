@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus and Fernando Ramirez
+ * Copyright © 2016-2020 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.mam.element;
 
 import org.jivesoftware.smack.packet.IQ;
 
-import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -88,11 +87,11 @@ public class MamQueryIQ extends IQ {
         this.dataForm = dataForm;
 
         if (dataForm != null) {
-            FormField field = dataForm.getHiddenFormTypeField();
-            if (field == null) {
+            String formType = dataForm.getFormType();
+            if (formType == null) {
                 throw new IllegalArgumentException("If a data form is given it must posses a hidden form type field");
             }
-            if (!field.getValues().get(0).toString().equals(MamElements.NAMESPACE)) {
+            if (!formType.equals(MamElements.NAMESPACE)) {
                 throw new IllegalArgumentException(
                         "Value of the hidden form type field must be '" + MamElements.NAMESPACE + "'");
             }
