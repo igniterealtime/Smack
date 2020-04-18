@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.caps;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -664,8 +665,6 @@ public final class EntityCapsManager extends Manager {
         // be "broken" implementation in the wild, so we *always* transform to lowercase.
         hash = hash.toLowerCase(Locale.US);
 
-        DataForm extendedInfo =  DataForm.from(discoverInfo);
-
         // 1. Initialize an empty string S ('sb' in this method).
         StringBuilder sb = new StringBuilder(); // Use StringBuilder as we don't
                                                 // need thread-safe StringBuffer
@@ -705,50 +704,47 @@ public final class EntityCapsManager extends Manager {
             sb.append('<');
         }
 
-        // only use the data form for calculation is it has a hidden FORM_TYPE
-        // field
-        // see XEP-0115 5.4 step 3.6
-        if (extendedInfo != null && extendedInfo.hasHiddenFormTypeField()) {
-            synchronized (extendedInfo) {
-                // 6. If the service discovery information response includes
-                // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
-                // by the XML character data of the <value/> element).
-                SortedSet<FormField> fs = new TreeSet<>(new Comparator<FormField>() {
-                    @Override
-                    public int compare(FormField f1, FormField f2) {
-                        return f1.getVariable().compareTo(f2.getVariable());
-                    }
-                });
+        List<DataForm> extendedInfos = discoverInfo.getExtensions(DataForm.class);
+        for (DataForm extendedInfo : extendedInfos) {
+            if (!extendedInfo.hasHiddenFormTypeField()) {
+                // Only use the data form for calculation is it has a hidden FORM_TYPE field.
+                // See XEP-0115 5.4 step 3.f
+                continue;
+            }
 
-                FormField ft = null;
-
-                for (FormField f : extendedInfo.getFields()) {
-                    if (!f.getVariable().equals("FORM_TYPE")) {
-                        fs.add(f);
-                    } else {
-                        ft = f;
-                    }
+            // 6. If the service discovery information response includes
+            // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
+            // by the XML character data of the <value/> element).
+            SortedSet<FormField> fs = new TreeSet<>(new Comparator<FormField>() {
+                @Override
+                public int compare(FormField f1, FormField f2) {
+                    return f1.getVariable().compareTo(f2.getVariable());
                 }
+            });
 
-                // Add FORM_TYPE values
-                if (ft != null) {
-                    formFieldValuesToCaps(ft.getValues(), sb);
-                }
-
-                // 7. 3. For each field other than FORM_TYPE:
-                // 1. Append the value of the "var" attribute, followed by the
-                // '<' character.
-                // 2. Sort values by the XML character data of the <value/>
-                // element.
-                // 3. For each <value/> element, append the XML character data,
-                // followed by the '<' character.
-                for (FormField f : fs) {
-                    sb.append(f.getVariable());
-                    sb.append('<');
-                    formFieldValuesToCaps(f.getValues(), sb);
+            for (FormField f : extendedInfo.getFields()) {
+                if (!f.getVariable().equals("FORM_TYPE")) {
+                    fs.add(f);
                 }
             }
+
+            // Add FORM_TYPE values
+            formFieldValuesToCaps(Collections.singletonList(extendedInfo.getFormType()), sb);
+
+            // 7. 3. For each field other than FORM_TYPE:
+            // 1. Append the value of the "var" attribute, followed by the
+            // '<' character.
+            // 2. Sort values by the XML character data of the <value/>
+            // element.
+            // 3. For each <value/> element, append the XML character data,
+            // followed by the '<' character.
+            for (FormField f : fs) {
+                sb.append(f.getVariable());
+                sb.append('<');
+                formFieldValuesToCaps(f.getValues(), sb);
+            }
         }
+
         // 8. Ensure that S is encoded according to the UTF-8 encoding (RFC
         // 3269).
         // 9. Compute the verification string by hashing S using the algorithm
