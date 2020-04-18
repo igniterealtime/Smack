@@ -445,7 +445,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param extensions a collection of stanza extensions
      */
     // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
-    public final void addExtensions(Collection<ExtensionElement> extensions) {
+    public final void addExtensions(Collection<? extends ExtensionElement> extensions) {
         if (extensions == null) return;
         for (ExtensionElement packetExtension : extensions) {
             addExtension(packetExtension);
