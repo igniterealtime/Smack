@@ -138,7 +138,7 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
 
         OpenPgpV4Fingerprint decryptionFingerprint = decrypted.getMetadata().getDecryptionFingerprint();
         assertTrue(bobSelf.getSecretKeys().contains(decryptionFingerprint.getKeyId()));
-        assertTrue(decrypted.getMetadata().getVerifiedSignaturesFingerprints().contains(aliceFingerprint));
+        assertTrue(decrypted.getMetadata().getVerifiedSignatureKeyFingerprints().contains(aliceFingerprint));
 
         assertEquals(OpenPgpMessage.State.signcrypt, decrypted.getState());
         SigncryptElement decryptedSignCrypt = (SigncryptElement) decrypted.getOpenPgpContentElement();
@@ -158,7 +158,7 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
 
         decryptionFingerprint = decrypted.getMetadata().getDecryptionFingerprint();
         assertTrue(bobSelf.getSecretKeys().contains(decryptionFingerprint.getKeyId()));
-        assertTrue(decrypted.getMetadata().getVerifiedSignaturesFingerprints().isEmpty());
+        assertTrue(decrypted.getMetadata().getVerifiedSignatureKeyFingerprints().isEmpty());
 
         assertEquals(OpenPgpMessage.State.crypt, decrypted.getState());
         CryptElement decryptedCrypt = (CryptElement) decrypted.getOpenPgpContentElement();
@@ -177,7 +177,7 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
         decrypted = bobProvider.decryptAndOrVerify(encrypted.getElement(), bobSelf, aliceForBob);
 
         assertNull(decrypted.getMetadata().getDecryptionFingerprint());
-        assertTrue(decrypted.getMetadata().getVerifiedSignaturesFingerprints().contains(aliceFingerprint));
+        assertTrue(decrypted.getMetadata().getVerifiedSignatureKeyFingerprints().contains(aliceFingerprint));
 
         assertEquals(OpenPgpMessage.State.sign, decrypted.getState());
         SignElement decryptedSign = (SignElement) decrypted.getOpenPgpContentElement();
