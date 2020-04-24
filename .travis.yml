@@ -4,8 +4,7 @@ android:
   components:
     - android-19
 jdk:
-  - oraclejdk8
-  - openjdk9
+  - openjdk8
   - openjdk11
 
 before_cache:

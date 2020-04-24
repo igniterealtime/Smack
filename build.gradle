@@ -122,9 +122,11 @@ allprojects {
 			// Default to true
 			useSonatype = true
 		}
+		javaCompatilibity = JavaVersion.VERSION_1_8
+		javaMajor = javaCompatilibity.getMajorVersion()
 	}
 	group = 'org.igniterealtime.smack'
-	sourceCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = javaCompatilibity
 	targetCompatibility = sourceCompatibility
 	version = shortVersion
 	if (isSnapshot) {
@@ -244,7 +246,19 @@ allprojects {
 			options.addStringOption('Xwerror', '-quiet')
 		}
 	}
-	tasks.withType(Javadoc) {
+
+	if (JavaVersion.current().isJava9Compatible()) {
+		tasks.withType(Javadoc) {
+			options.addStringOption('-release', javaMajor)
+		}
+		tasks.withType(JavaCompile) {
+			options.compilerArgs.addAll([
+				'--release', javaMajor,
+			])
+		}
+	}
+
+tasks.withType(Javadoc) {
 		options.charSet = "UTF-8"
 		options.encoding = 'UTF-8'
 	}
@@ -290,16 +304,10 @@ task javadocAll(type: Javadoc) {
 		project.sourceSets.main.compileClasspath})
 	classpath += files(androidBootClasspath)
 	options {
-		// Add source compatiblitiy statement to work around bug in JDK 11
-		// See
-		// - https://bugs.openjdk.java.net/browse/JDK-8217177
-		// - http://hg.openjdk.java.net/jdk/jdk/rev/8ce4083fc831
-		// - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=920020
-		source = sourceCompatibility
 		linkSource = true
 		use = true
 		links = [
-		"https://docs.oracle.com/javase/${sourceCompatibility.getMajorVersion()}/docs/api/",
+		"https://docs.oracle.com/javase/${javaMajor}/docs/api/",
 		"https://jxmpp.org/releases/$jxmppVersion/javadoc/",
 		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
 		] as String[]
