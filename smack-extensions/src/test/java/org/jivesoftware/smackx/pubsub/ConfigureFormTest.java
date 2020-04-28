@@ -79,23 +79,25 @@ public class ConfigureFormTest extends SmackTestSuite {
     }
 
     @Test
-    public void getConfigFormWithTimeout() throws XMPPException, InterruptedException {
-        ThreadedDummyConnection con = new ThreadedDummyConnection();
+    public void getConfigFormWithTimeout() throws XMPPException, InterruptedException, SmackException, IOException {
+        ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
         PubSubManager mgr = new PubSubManager(con, PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
-        DiscoverInfoBuilder info = DiscoverInfo.builder("disco-result");
+        DiscoverInfoBuilder info = DiscoverInfo.builder("disco-result")
+                                               .ofType(IQ.Type.result)
+                                               .from(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
+
         Identity ident = new Identity("pubsub", null, "leaf");
         info.addIdentity(ident);
 
         DiscoverInfo discoverInfo = info.build();
         con.addIQReply(discoverInfo);
 
+        Node node = mgr.getNode("princely_musings");
+
+        SmackConfiguration.setDefaultReplyTimeout(100);
+        con.setTimeout();
+
         assertThrows(SmackException.class, () -> {
-            // TODO: This method should not throw any exception but currently does.
-            Node node = mgr.getNode("princely_musings");
-
-            SmackConfiguration.setDefaultReplyTimeout(100);
-            con.setTimeout();
-
             node.getNodeConfiguration();
         });
     }
