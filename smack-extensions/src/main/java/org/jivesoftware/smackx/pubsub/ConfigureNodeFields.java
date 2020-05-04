@@ -177,20 +177,6 @@ public enum ConfigureNodeFields {
     publish_model,
 
     /**
-     * The specific multi-user chat rooms to specify for replyroom.
-     *
-     * <p><b>Value: List of JIDs as Strings</b></p>
-     */
-    replyroom,
-
-    /**
-     * The specific JID(s) to specify for replyto.
-     *
-     * <p><b>Value: List of JIDs as Strings</b></p>
-     */
-    replyto,
-
-    /**
      * The roster group(s) allowed to subscribe and retrieve items.
      *
      * <p><b>Value: List of strings</b></p>

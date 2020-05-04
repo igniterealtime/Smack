@@ -495,44 +495,6 @@ public class ConfigureForm extends Form {
     }
 
     /**
-     * List of the multi user chat rooms that are specified as reply rooms.
-     *
-     * @return The reply room JID's
-     */
-    public List<String> getReplyRoom() {
-        return getFieldValues(ConfigureNodeFields.replyroom);
-    }
-
-    /**
-     * Sets the multi user chat rooms that are specified as reply rooms.
-     *
-     * @param replyRooms The multi user chat room to use as reply rooms
-     */
-    public void setReplyRoom(List<String> replyRooms)  {
-        addField(ConfigureNodeFields.replyroom, FormField.Type.list_multi);
-        setAnswer(ConfigureNodeFields.replyroom.getFieldName(), replyRooms);
-    }
-
-    /**
-     * Gets the specific JID's for reply to.
-     *
-     * @return The JID's
-     */
-    public List<String> getReplyTo() {
-        return getFieldValues(ConfigureNodeFields.replyto);
-    }
-
-    /**
-     * Sets the specific JID's for reply to.
-     *
-     * @param replyTos The JID's to reply to
-     */
-    public void setReplyTo(List<String> replyTos) {
-        addField(ConfigureNodeFields.replyto, FormField.Type.list_multi);
-        setAnswer(ConfigureNodeFields.replyto.getFieldName(), replyTos);
-    }
-
-    /**
      * Gets the roster groups that are allowed to subscribe and retrieve items.
      *
      * @return The roster groups
