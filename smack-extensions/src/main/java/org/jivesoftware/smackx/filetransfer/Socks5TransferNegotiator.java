@@ -88,8 +88,8 @@ public class Socks5TransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public String[] getNamespaces() {
-        return new String[] { Bytestream.NAMESPACE };
+    public String getNamespace() {
+        return Bytestream.NAMESPACE;
     }
 
     @Override

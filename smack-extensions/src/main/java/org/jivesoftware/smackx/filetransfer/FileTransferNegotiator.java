@@ -239,12 +239,7 @@ public final class FileTransferNegotiator extends Manager {
             throw new FileTransferException.NoAcceptableTransferMechanisms();
         }
 
-        if (isByteStream && isIBB) {
-            return new FaultTolerantNegotiator(connection(),
-                    byteStreamTransferManager,
-                    inbandTransferManager);
-        }
-        else if (isByteStream) {
+        if (isByteStream) {
             return byteStreamTransferManager;
         }
         else {
@@ -355,11 +350,7 @@ public final class FileTransferNegotiator extends Manager {
             throw new FileTransferException.NoAcceptableTransferMechanisms();
         }
 
-        if (isByteStream && isIBB) {
-            return new FaultTolerantNegotiator(connection(),
-                    byteStreamTransferManager, inbandTransferManager);
-        }
-        else if (isByteStream) {
+        if (isByteStream) {
             return byteStreamTransferManager;
         }
         else {

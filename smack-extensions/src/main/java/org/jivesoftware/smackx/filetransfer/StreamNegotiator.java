@@ -69,11 +69,11 @@ public abstract class StreamNegotiator extends Manager {
      * initiator.
      *
      * @param streamInitiationOffer The offer from the stream initiator to connect for a stream.
-     * @param namespaces            The namespace that relates to the accepted means of transfer.
+     * @param namespace            The namespace that relates to the accepted means of transfer.
      * @return The response to be forwarded to the initiator.
      */
     protected static StreamInitiation createInitiationAccept(
-            StreamInitiation streamInitiationOffer, String[] namespaces) {
+            StreamInitiation streamInitiationOffer, String namespace) {
         StreamInitiation response = new StreamInitiation();
         response.setTo(streamInitiationOffer.getFrom());
         response.setFrom(streamInitiationOffer.getTo());
@@ -83,9 +83,7 @@ public abstract class StreamNegotiator extends Manager {
         DataForm form = new DataForm(DataForm.Type.submit);
         FormField.Builder field = FormField.builder(
                 FileTransferNegotiator.STREAM_DATA_FIELD_NAME);
-        for (String namespace : namespaces) {
-            field.addValue(namespace);
-        }
+        field.addValue(namespace);
         form.addField(field.build());
 
         response.setFeatureNegotiationForm(form);
@@ -95,7 +93,7 @@ public abstract class StreamNegotiator extends Manager {
     protected final IQ initiateIncomingStream(final XMPPConnection connection, StreamInitiation initiation)
                     throws NoResponseException, XMPPErrorException, NotConnectedException {
         final StreamInitiation response = createInitiationAccept(initiation,
-                getNamespaces());
+                getNamespace());
 
         newStreamInitiation(initiation.getFrom(), initiation.getSessionID());
 
@@ -182,7 +180,7 @@ public abstract class StreamNegotiator extends Manager {
      * @return Returns the XMPP namespace reserved for this particular type of
      *         file transfer.
      */
-    public abstract String[] getNamespaces();
+    public abstract String getNamespace();
 
     public static void signal(String eventKey, IQ eventValue) {
         initationSetEvents.signalEvent(eventKey, eventValue);

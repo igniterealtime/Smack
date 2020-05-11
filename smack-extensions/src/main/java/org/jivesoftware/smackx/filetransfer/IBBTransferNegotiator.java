@@ -90,8 +90,8 @@ public class IBBTransferNegotiator extends StreamNegotiator {
     }
 
     @Override
-    public String[] getNamespaces() {
-        return new String[] { DataPacketExtension.NAMESPACE };
+    public String getNamespace() {
+        return DataPacketExtension.NAMESPACE;
     }
 
     @Override
