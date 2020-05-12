@@ -95,7 +95,7 @@ public final class PepManager extends Manager {
     // TODO: Ideally PepManager would re-use PubSubManager for this. But the functionality in PubSubManager does not yet
     // exist.
     private static final StanzaFilter PEP_EVENTS_FILTER = new AndFilter(
-            MessageTypeFilter.HEADLINE,
+            MessageTypeFilter.NORMAL_OR_HEADLINE,
             FromJidTypeFilter.ENTITY_BARE_JID,
             EventItemsExtensionFilter.INSTANCE);
 
