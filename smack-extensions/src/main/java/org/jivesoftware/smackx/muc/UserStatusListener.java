@@ -45,7 +45,8 @@ public interface UserStatusListener {
      * @param reason the reason provided by the actor to kick you from the room.
      * @see #removed(MUCUser, Presence)
      */
-     void kicked(Jid actor, String reason);
+    default void kicked(Jid actor, String reason) {
+    }
 
     /**
      * Called when a moderator grants voice to your user. This means that you were a visitor in
@@ -53,7 +54,8 @@ public interface UserStatusListener {
      * all occupants.
      *
      */
-     void voiceGranted();
+    default void voiceGranted() {
+    }
 
     /**
      * Called when a moderator revokes voice from your user. This means that you were a
@@ -61,7 +63,8 @@ public interface UserStatusListener {
      * messages to the room occupants.
      *
      */
-     void voiceRevoked();
+    default void voiceRevoked() {
+    }
 
     /**
      * Called when an administrator or owner banned your user from the room. This means that you
@@ -71,7 +74,8 @@ public interface UserStatusListener {
      * @param reason the reason provided by the administrator to banned you.
      * @see #removed(MUCUser, Presence)
      */
-     void banned(Jid actor, String reason);
+    default void banned(Jid actor, String reason) {
+    }
 
      /**
       * Called when a user is involuntarily removed from the room.
@@ -81,21 +85,23 @@ public interface UserStatusListener {
       * @since 4.4.0
       */
      default void removed(MUCUser mucUser, Presence presence) {
-     };
+     }
 
      /**
      * Called when an administrator grants your user membership to the room. This means that you
      * will be able to join the members-only room.
      *
      */
-     void membershipGranted();
+    default void membershipGranted() {
+    }
 
     /**
      * Called when an administrator revokes your user membership to the room. This means that you
      * will not be able to join the members-only room.
      *
      */
-     void membershipRevoked();
+    default void membershipRevoked() {
+    }
 
     /**
      * Called when an administrator grants moderator privileges to your user. This means that you
@@ -103,7 +109,8 @@ public interface UserStatusListener {
      * subject plus all the partcipants privileges.
      *
      */
-     void moderatorGranted();
+    default void moderatorGranted() {
+    }
 
     /**
      * Called when an administrator revokes moderator privileges from your user. This means that
@@ -111,7 +118,8 @@ public interface UserStatusListener {
      * modify room's subject plus all the partcipants privileges.
      *
      */
-     void moderatorRevoked();
+    default void moderatorRevoked() {
+    }
 
     /**
      * Called when an owner grants to your user ownership on the room. This means that you
@@ -119,7 +127,8 @@ public interface UserStatusListener {
      * functions.
      *
      */
-     void ownershipGranted();
+    default void ownershipGranted() {
+    }
 
     /**
      * Called when an owner revokes from your user ownership on the room. This means that you
@@ -127,7 +136,8 @@ public interface UserStatusListener {
      * administrative functions.
      *
      */
-     void ownershipRevoked();
+    default void ownershipRevoked() {
+    }
 
     /**
      * Called when an owner grants administrator privileges to your user. This means that you
@@ -135,7 +145,8 @@ public interface UserStatusListener {
      * list.
      *
      */
-     void adminGranted();
+    default void adminGranted() {
+    }
 
     /**
      * Called when an owner revokes administrator privileges from your user. This means that you
@@ -143,7 +154,8 @@ public interface UserStatusListener {
      * moderator list.
      *
      */
-     void adminRevoked();
+    default void adminRevoked() {
+    }
 
     /**
      * Called when the room is destroyed.
@@ -152,6 +164,7 @@ public interface UserStatusListener {
      * @param reason the reason why the room was closed, may be null.
      * @see #removed(MUCUser, Presence)
      */
-     void roomDestroyed(MultiUserChat alternateMUC, String reason);
+    default void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+    }
 
 }

@@ -27,7 +27,10 @@ import org.jxmpp.jid.Jid;
  * some of the methods.
  *
  * @author Gaston Dombiak
+ * @deprecated use {@link UserStatusListener} instead.
  */
+// TODO: Remove in Smack 4.5.
+@Deprecated
 public class DefaultUserStatusListener implements UserStatusListener {
 
     @Override
