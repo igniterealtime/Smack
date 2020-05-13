@@ -51,6 +51,17 @@ public interface ParticipantStatusListener {
     }
 
     /**
+     * Called when a participant is parted for whatever reason. This callback is always invoked if a participant
+     * parted the room, either voluntarily or involuntarily. Prior this callback, a callback with a more specific
+     * reason for the removal, like {@link #left(EntityFullJid)} may be invoked.
+     *
+     * @param participant the participant that was removed from the room.
+     * @since 4.4
+     */
+    default void parted(EntityFullJid participant) {
+    }
+
+    /**
      * Called when a room participant has been kicked from the room. This means that the kicked
      * participant is no longer participating in the room.
      *

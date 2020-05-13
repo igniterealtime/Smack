@@ -271,6 +271,10 @@ public class MultiUserChat {
                         for (UserStatusListener listener : userStatusListeners) {
                             listener.removed(mucUser, presence);
                         }
+                    } else {
+                        for (ParticipantStatusListener listener : participantStatusListeners) {
+                            listener.parted(from);
+                        }
                     }
                     break;
                 default:
