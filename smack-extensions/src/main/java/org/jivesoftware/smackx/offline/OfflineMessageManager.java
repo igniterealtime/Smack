@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.offline.packet.OfflineMessageInfo;
 import org.jivesoftware.smackx.offline.packet.OfflineMessageRequest;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * The OfflineMessageManager helps manage offline messages even before the user has sent an
@@ -115,12 +115,12 @@ public final class OfflineMessageManager extends Manager {
      */
     public int getMessageCount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo info = serviceDiscoveryManager.discoverInfo(null, namespace);
-        Form extendedInfo = Form.getFormFrom(info);
-        if (extendedInfo != null) {
-            String value = extendedInfo.getField("number_of_messages").getFirstValue();
-            return Integer.parseInt(value);
+        DataForm dataForm = DataForm.from(info, namespace);
+        if (dataForm == null) {
+            return 0;
         }
-        return 0;
+        String numberOfMessagesString = dataForm.getField("number_of_messages").getFirstValue();
+        return Integer.parseInt(numberOfMessagesString);
     }
 
     /**

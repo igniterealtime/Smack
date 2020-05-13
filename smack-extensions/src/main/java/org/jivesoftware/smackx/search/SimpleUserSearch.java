@@ -24,8 +24,8 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * SimpleUserSearch is used to support the non-dataform type of XEP 55. This provides
@@ -39,14 +39,14 @@ class SimpleUserSearch extends IQ {
     public static final String ELEMENT = UserSearch.ELEMENT;
     public static final String NAMESPACE = UserSearch.NAMESPACE;
 
-    private Form form;
+    private DataForm form;
     private ReportedData data;
 
     SimpleUserSearch() {
         super(ELEMENT, NAMESPACE);
     }
 
-    public void setForm(Form form) {
+    public void setForm(DataForm form) {
         this.form = form;
     }
 
@@ -65,7 +65,7 @@ class SimpleUserSearch extends IQ {
         StringBuilder buf = new StringBuilder();
 
         if (form == null) {
-            form = Form.getFormFrom(this);
+            form = DataForm.from(this);
         }
 
         if (form == null) {
@@ -73,7 +73,7 @@ class SimpleUserSearch extends IQ {
         }
 
         for (FormField field : form.getFields()) {
-            String name = field.getVariable();
+            String name = field.getFieldName();
             String value = getSingleValue(field);
             if (value.trim().length() > 0) {
                 buf.append('<').append(name).append('>').append(value).append("</").append(name).append('>');

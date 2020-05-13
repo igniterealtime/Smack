@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smackx.pubsub.form.SubscribeForm;
+
 /**
  * Defines the possible valid presence states for node subscription via
  * {@link SubscribeForm#getShowValues()}.

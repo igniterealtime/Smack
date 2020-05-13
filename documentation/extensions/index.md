@@ -51,6 +51,7 @@ Smack Extensions and currently supported XEPs of smack-extensions
 | Result Set Management                       | [XEP-0059](https://xmpp.org/extensions/xep-0059.html)  | n/a       | Page through and otherwise manage the receipt of large result sets |
 | [PubSub](pubsub.md)                         | [XEP-0060](https://xmpp.org/extensions/xep-0060.html)  | n/a       | Generic publish and subscribe functionality. |
 | SOCKS5 Bytestreams                          | [XEP-0065](https://xmpp.org/extensions/xep-0065.html)  | n/a       | Out-of-band bytestream between any two XMPP entities. |
+| Field Standardization for Data Forms        | [XEP-0068](https://xmpp.org/extensions/xep-0068.html)  | n/a       | Standardized field variables used in the context of jabber:x:data forms. |
 | [XHTML-IM](xhtml.md)                        | [XEP-0071](https://xmpp.org/extensions/xep-0071.html)  | n/a       | Allows send and receiving formatted messages using XHTML. |
 | In-Band Registration                        | [XEP-0077](https://xmpp.org/extensions/xep-0077.html)  | n/a       | In-band registration with XMPP services. |
 | Advanced Message Processing                 | [XEP-0079](https://xmpp.org/extensions/xep-0079.html)  | n/a       | Enables entities to request, and servers to perform, advanced processing of XMPP message stanzas. |

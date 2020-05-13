@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.pubsub;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
 
 /**

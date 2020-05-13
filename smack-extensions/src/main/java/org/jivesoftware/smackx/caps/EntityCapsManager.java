@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2019 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
@@ -49,7 +51,6 @@ import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
@@ -601,7 +602,7 @@ public final class EntityCapsManager extends Manager {
             return false;
 
         // step 3.5 check for well-formed packet extensions
-        if (verifyPacketExtensions(info))
+        if (!verifyPacketExtensions(info))
             return false;
 
         String calculatedVer = generateVerificationString(info, hash).version;
@@ -613,27 +614,29 @@ public final class EntityCapsManager extends Manager {
     }
 
     /**
+     * Verify that the given discovery info is not ill-formed.
      *
-     * @param info TODO javadoc me please
-     * @return true if the stanza extensions is ill-formed
+     * @param info the discovery info to verify.
+     * @return true if the stanza extensions is not ill-formed
      */
-    protected static boolean verifyPacketExtensions(DiscoverInfo info) {
-        List<FormField> foundFormTypes = new LinkedList<>();
-        for (ExtensionElement pe : info.getExtensions()) {
-            if (pe.getNamespace().equals(DataForm.NAMESPACE)) {
-                DataForm df = (DataForm) pe;
-                for (FormField f : df.getFields()) {
-                    if (f.getVariable().equals("FORM_TYPE")) {
-                        for (FormField fft : foundFormTypes) {
-                            if (f.equals(fft))
-                                return true;
-                        }
-                        foundFormTypes.add(f);
-                    }
-                }
+    private static boolean verifyPacketExtensions(DiscoverInfo info) {
+        Set<String> foundFormTypes = new HashSet<>();
+        List<DataForm> dataForms = info.getExtensions(DataForm.class);
+        for (DataForm dataForm : dataForms) {
+            FormField formFieldTypeField = dataForm.getHiddenFormTypeField();
+            if (formFieldTypeField == null) {
+                continue;
+            }
+
+            String type = formFieldTypeField.getFirstValue();
+            boolean noDuplicate = foundFormTypes.add(type);
+            if (!noDuplicate) {
+                // Ill-formed extension: duplicate forms (by form field type string).
+                return false;
             }
         }
-        return false;
+
+        return true;
     }
 
     protected static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo) {
@@ -718,12 +721,12 @@ public final class EntityCapsManager extends Manager {
             SortedSet<FormField> fs = new TreeSet<>(new Comparator<FormField>() {
                 @Override
                 public int compare(FormField f1, FormField f2) {
-                    return f1.getVariable().compareTo(f2.getVariable());
+                    return f1.getFieldName().compareTo(f2.getFieldName());
                 }
             });
 
             for (FormField f : extendedInfo.getFields()) {
-                if (!f.getVariable().equals("FORM_TYPE")) {
+                if (!f.getFieldName().equals("FORM_TYPE")) {
                     fs.add(f);
                 }
             }
@@ -739,7 +742,7 @@ public final class EntityCapsManager extends Manager {
             // 3. For each <value/> element, append the XML character data,
             // followed by the '<' character.
             for (FormField f : fs) {
-                sb.append(f.getVariable());
+                sb.append(f.getFieldName());
                 sb.append('<');
                 formFieldValuesToCaps(f.getValues(), sb);
             }
@@ -763,7 +766,7 @@ public final class EntityCapsManager extends Manager {
         return new CapsVersionAndHash(version, hash);
     }
 
-    private static void formFieldValuesToCaps(List<CharSequence> i, StringBuilder sb) {
+    private static void formFieldValuesToCaps(List<? extends CharSequence> i, StringBuilder sb) {
         SortedSet<CharSequence> fvs = new TreeSet<>();
         fvs.addAll(i);
         for (CharSequence fv : fvs) {

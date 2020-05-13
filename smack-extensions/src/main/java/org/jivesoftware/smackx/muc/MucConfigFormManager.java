@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,18 @@ import java.util.List;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.FilledForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.util.JidUtil;
 
 /**
- * Multi-User Chat configuration form manager is used to fill out and submit a {@link Form} used to
+ * Multi-User Chat configuration form manager is used to fill out and submit a {@link FilledForm} used to
  * configure rooms.
  * <p>
  * Room configuration needs either be done right after the room is created and still locked. Or at
@@ -43,12 +44,17 @@ import org.jxmpp.jid.util.JidUtil;
  * </p>
  * <p>
  * The manager may not provide all possible configuration options. If you want direct access to the
- * configuraiton form, use {@link MultiUserChat#getConfigurationForm()} and
- * {@link MultiUserChat#sendConfigurationForm(Form)}.
+ * configuration form, use {@link MultiUserChat#getConfigurationForm()} and
+ * {@link MultiUserChat#sendConfigurationForm(FillableForm)}.
  * </p>
  */
 public class MucConfigFormManager {
-    /**
+
+    private static final String HASH_ROOMCONFIG = "#roomconfig";
+
+    public static final String FORM_TYPE = MultiUserChatConstants.NAMESPACE + HASH_ROOMCONFIG;
+
+                    /**
      * The constant String {@value}.
      *
      * @see <a href="http://xmpp.org/extensions/xep-0045.html#owner">XEP-0045 § 10. Owner Use Cases</a>
@@ -73,7 +79,7 @@ public class MucConfigFormManager {
     public static final String MUC_ROOMCONFIG_ROOMSECRET = "muc#roomconfig_roomsecret";
 
     private final MultiUserChat multiUserChat;
-    private final Form answerForm;
+    private final FillableForm answerForm;
     private final List<Jid> owners;
 
     /**
@@ -94,20 +100,13 @@ public class MucConfigFormManager {
 
         // Set the answer form
         Form configForm = multiUserChat.getConfigurationForm();
-        this.answerForm = configForm.createAnswerForm();
-        // Add the default answers to the form to submit
-        for (FormField field : configForm.getFields()) {
-            if (field.getType() == FormField.Type.hidden
-                            || StringUtils.isNullOrEmpty(field.getVariable())) {
-                continue;
-            }
-            answerForm.setDefaultAnswer(field.getVariable());
-        }
+        this.answerForm = configForm.getFillableForm();
 
         // Set the local variables according to the fields found in the answer form
-        if (answerForm.hasField(MUC_ROOMCONFIG_ROOMOWNERS)) {
+        FormField roomOwnersFormField = answerForm.getDataForm().getField(MUC_ROOMCONFIG_ROOMOWNERS);
+        if (roomOwnersFormField != null) {
             // Set 'owners' to the currently configured owners
-            List<CharSequence> ownerStrings = answerForm.getField(MUC_ROOMCONFIG_ROOMOWNERS).getValues();
+            List<? extends CharSequence> ownerStrings = roomOwnersFormField.getValues();
             owners = new ArrayList<>(ownerStrings.size());
             JidUtil.jidsFrom(ownerStrings, owners, null);
         }
@@ -244,7 +243,7 @@ public class MucConfigFormManager {
     }
 
     /**
-     * Submit the configuration as {@link Form} to the room.
+     * Submit the configuration as {@link FilledForm} to the room.
      *
      * @throws NoResponseException if there was no response from the room.
      * @throws XMPPErrorException if there was an XMPP error returned.

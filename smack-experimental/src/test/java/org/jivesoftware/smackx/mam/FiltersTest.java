@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2018 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.jxmpp.util.XmppDateTime;
 public class FiltersTest extends MamTest {
 
     private static String getMamXMemberWith(List<String> fieldsNames, List<? extends CharSequence> fieldsValues) {
-        String xml = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
+        String xml = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>" + "<value>"
                 + MamElements.NAMESPACE + "</value>" + "</field>";
 
         for (int i = 0; i < fieldsNames.size() && i < fieldsValues.size(); i++) {

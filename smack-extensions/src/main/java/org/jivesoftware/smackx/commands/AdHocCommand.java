@@ -24,7 +24,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
 
@@ -188,13 +189,8 @@ public abstract class AdHocCommand {
      * @return the form of the current stage to fill out or the result of the
      *         execution.
      */
-    public Form getForm() {
-        if (data.getForm() == null) {
-            return null;
-        }
-        else {
-            return new Form(data.getForm());
-        }
+    public DataForm getForm() {
+        return data.getForm();
     }
 
     /**
@@ -205,8 +201,8 @@ public abstract class AdHocCommand {
      * @param form the form of the current stage to fill out or the result of the
      *      execution.
      */
-    protected void setForm(Form form) {
-        data.setForm(form.getDataFormToSend());
+    protected void setForm(DataForm form) {
+        data.setForm(form);
     }
 
     /**
@@ -234,7 +230,7 @@ public abstract class AdHocCommand {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public abstract void next(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
+    public abstract void next(FillableForm response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Completes the command execution with the information provided in the
@@ -250,7 +246,7 @@ public abstract class AdHocCommand {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public abstract void complete(Form response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
+    public abstract void complete(FillableForm response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Goes to the previous stage. The requester is asking to re-send the

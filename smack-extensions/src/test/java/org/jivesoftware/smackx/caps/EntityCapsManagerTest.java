@@ -36,6 +36,8 @@ import org.jivesoftware.smackx.caps.cache.SimpleDirectoryPersistentCache;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextMultiFormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.Test;
@@ -97,6 +99,49 @@ public class EntityCapsManagerTest extends SmackTestSuite {
         assertEquals(di.toXML().toString(), restored_di.toXML().toString());
     }
 
+    private static DataForm createSampleSoftwareInfoDataForm() {
+        DataForm.Builder df = DataForm.builder(DataForm.Type.result);
+
+        {
+            TextSingleFormField.Builder ff = FormField.builder("os");
+            ff.setValue("Mac");
+            df.addField(ff.build());
+        }
+
+        {
+            TextSingleFormField.Builder ff = FormField.hiddenBuilder("FORM_TYPE");
+            ff.setValue("urn:xmpp:dataforms:softwareinfo");
+            df.addField(ff.build());
+        }
+
+        {
+            TextMultiFormField.Builder ff = FormField.textMultiBuilder("ip_version");
+            ff.addValue("ipv4");
+            ff.addValue("ipv6");
+            df.addField(ff.build());
+        }
+
+        {
+            TextSingleFormField.Builder ff = FormField.builder("os_version");
+            ff.setValue("10.5.1");
+            df.addField(ff.build());
+        }
+
+        {
+            TextSingleFormField.Builder ff = FormField.builder("software");
+            ff.setValue("Psi");
+            df.addField(ff.build());
+        }
+
+        {
+            TextSingleFormField.Builder ff = FormField.builder("software_version");
+            ff.setValue("0.11");
+            df.addField(ff.build());
+        }
+
+        return df.build();
+    }
+
     private static DiscoverInfo createComplexSamplePacket() throws XmppStringprepException {
         DiscoverInfoBuilder di = DiscoverInfo.builder("disco1");
         di.from(JidCreate.from("benvolio@capulet.lit/230193"));
@@ -115,35 +160,8 @@ public class EntityCapsManagerTest extends SmackTestSuite {
         di.addFeature("http://jabber.org/protocol/muc");
         di.addFeature("http://jabber.org/protocol/disco#info");
 
-        DataForm df = new DataForm(DataForm.Type.result);
-
-        FormField.Builder ff = FormField.builder("os");
-        ff.addValue("Mac");
-        df.addField(ff.build());
-
-        ff = FormField.builder("FORM_TYPE");
-        ff.setType(FormField.Type.hidden);
-        ff.addValue("urn:xmpp:dataforms:softwareinfo");
-        df.addField(ff.build());
-
-        ff = FormField.builder("ip_version");
-        ff.addValue("ipv4");
-        ff.addValue("ipv6");
-        df.addField(ff.build());
-
-        ff = FormField.builder("os_version");
-        ff.addValue("10.5.1");
-        df.addField(ff.build());
-
-        ff = FormField.builder("software");
-        ff.addValue("Psi");
-        df.addField(ff.build());
-
-        ff = FormField.builder("software_version");
-        ff.addValue("0.11");
-        df.addField(ff.build());
-
-        di.addExtension(df);
+        DataForm softwareInfoDataForm = createSampleSoftwareInfoDataForm();
+        di.addExtension(softwareInfoDataForm);
         return di.build();
     }
 
@@ -171,50 +189,8 @@ public class EntityCapsManagerTest extends SmackTestSuite {
         // Failure 2: Duplicate features
         di.addFeature("http://jabber.org/protocol/disco#info");
 
-        DataForm df = new DataForm(DataForm.Type.result);
-
-        FormField.Builder ff = FormField.builder("os");
-        ff.addValue("Mac");
-        df.addField(ff.build());
-
-        ff = FormField.builder("FORM_TYPE");
-        ff.setType(FormField.Type.hidden);
-        ff.addValue("urn:xmpp:dataforms:softwareinfo");
-        df.addField(ff.build());
-
-        ff = FormField.builder("ip_version");
-        ff.addValue("ipv4");
-        ff.addValue("ipv6");
-        df.addField(ff.build());
-
-        ff = FormField.builder("os_version");
-        ff.addValue("10.5.1");
-        df.addField(ff.build());
-
-        ff = FormField.builder("software");
-        ff.addValue("Psi");
-        df.addField(ff.build());
-
-        ff = FormField.builder("software_version");
-        ff.addValue("0.11");
-        df.addField(ff.build());
-
-        di.addExtension(df);
-
-        // Failure 3: Another service discovery information form with the same
-        // FORM_TYPE
-        df = new DataForm(DataForm.Type.result);
-
-        ff = FormField.builder("FORM_TYPE");
-        ff.setType(FormField.Type.hidden);
-        ff.addValue("urn:xmpp:dataforms:softwareinfo");
-        df.addField(ff.build());
-
-        ff = FormField.builder("software");
-        ff.addValue("smack");
-        df.addField(ff.build());
-
-        di.addExtension(df);
+        DataForm softwareInfoDataForm = createSampleSoftwareInfoDataForm();
+        di.addExtension(softwareInfoDataForm);
 
         DiscoverInfo discoverInfo = di.buildWithoutValidiation();
         return discoverInfo;

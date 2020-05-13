@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.MultiMap;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -43,10 +44,14 @@ import org.jxmpp.util.XmppDateTime;
  * Represents a field of a form. The field could be used to represent a question to complete,
  * a completed question or a data returned from a search. The exact interpretation of the field
  * depends on the context where the field is used.
+ * <p>
+ * Fields have a name, which is stored in the 'var' attribute of the field's XML representation.
+ * Field instances of all types, except of type "fixed" must have a name.
+ * </p>
  *
  * @author Gaston Dombiak
  */
-public final class FormField implements FullyQualifiedElement {
+public abstract class FormField implements FullyQualifiedElement {
 
     public static final String ELEMENT = "field";
 
@@ -154,7 +159,7 @@ public final class FormField implements FullyQualifiedElement {
     /**
      * The field's name. Put as value in the 'var' attribute of &lt;field/&gt;.
      */
-    private final String variable;
+    private final String fieldName;
 
     private final String label;
 
@@ -168,8 +173,6 @@ public final class FormField implements FullyQualifiedElement {
      * The following four fields are cache values which are represented as child elements of </form> and hence also
      * appear in formFieldChildElements.
      */
-    private final List<Option> options;
-    private final List<CharSequence> values;
     private final String description;
     private final boolean required;
 
@@ -181,22 +184,8 @@ public final class FormField implements FullyQualifiedElement {
         return formFieldChildElementsMap.asUnmodifiableMultiMap();
     }
 
-    private FormField(String value) {
-        variable = FORM_TYPE;
-        type = Type.hidden;
-        label = null;
-        required = false;
-        description = null;
-
-        formFieldChildElements = Collections.singletonList(new Value(value));
-        values = Collections.singletonList(value);
-        options = Collections.emptyList();
-
-        formFieldChildElementsMap = createChildElementsMap();
-    }
-
-    private FormField(Builder builder) {
-        variable = builder.variable;
+    protected FormField(Builder<?, ?> builder) {
+        fieldName = builder.fieldName;
         label = builder.label;
         type = builder.type;
         if (builder.formFieldChildElements != null) {
@@ -205,32 +194,21 @@ public final class FormField implements FullyQualifiedElement {
             formFieldChildElements = Collections.emptyList();
         }
 
-        if (variable == null && type != Type.fixed) {
+        if (fieldName == null && type != Type.fixed) {
             throw new IllegalArgumentException("The variable can only be null if the form is of type fixed");
         }
 
         String description = null;
         boolean requiredElementAsChild = false;
-        ArrayList<Option> options = new ArrayList<>(formFieldChildElements.size());
         ArrayList<CharSequence> values = new ArrayList<>(formFieldChildElements.size());
         for (FormFieldChildElement formFieldChildElement : formFieldChildElements) {
-            if (formFieldChildElement instanceof Value) {
-                Value value = (Value) formFieldChildElement;
-                values.add(value.getValue());
-            } else if (formFieldChildElement instanceof Option) {
-                Option option = (Option) formFieldChildElement;
-                options.add(option);
-            } else if (formFieldChildElement instanceof Description) {
+            if (formFieldChildElement instanceof Description) {
                 description = ((Description) formFieldChildElement).getDescription();
-            // Required is a singleton instance.
-            } else if (formFieldChildElement == Required.INSTANCE) {
+            } else if (formFieldChildElement instanceof Required) {
                 requiredElementAsChild = true;
             }
         }
-        options.trimToSize();
         values.trimToSize();
-        this.options = Collections.unmodifiableList(options);
-        this.values = Collections.unmodifiableList(values);
         this.description = description;
 
         required = requiredElementAsChild;
@@ -263,16 +241,6 @@ public final class FormField implements FullyQualifiedElement {
     }
 
     /**
-     * Returns a List of the available options that the user has in order to answer
-     * the question.
-     *
-     * @return List of the available options.
-     */
-    public List<Option> getOptions() {
-        return options;
-    }
-
-    /**
      * Returns true if the question must be answered in order to complete the questionnaire.
      *
      * @return true if the question must be answered in order to complete the questionnaire.
@@ -301,10 +269,11 @@ public final class FormField implements FullyQualifiedElement {
      *
      * @return a List of the default values or answered values of the question.
      */
-    public List<CharSequence> getValues() {
-        synchronized (values) {
-            return Collections.unmodifiableList(new ArrayList<>(values));
-        }
+    public abstract List<? extends CharSequence> getValues();
+
+    public boolean hasValueSet() {
+        List<?> values = getValues();
+        return !values.isEmpty();
     }
 
     /**
@@ -316,7 +285,7 @@ public final class FormField implements FullyQualifiedElement {
      * @since 4.3
      */
     public List<String> getValuesAsString() {
-        List<CharSequence> valuesAsCharSequence = getValues();
+        List<? extends CharSequence> valuesAsCharSequence = getValues();
         List<String> res = new ArrayList<>(valuesAsCharSequence.size());
         for (CharSequence value : valuesAsCharSequence) {
             res.add(value.toString());
@@ -331,16 +300,12 @@ public final class FormField implements FullyQualifiedElement {
      * @since 4.3
      */
     public String getFirstValue() {
-        CharSequence firstValue;
-
-        synchronized (values) {
-            if (values.isEmpty()) {
-                return null;
-            }
-            firstValue = values.get(0);
+        List<? extends CharSequence> values = getValues();
+        if (values.isEmpty()) {
+            return null;
         }
 
-        return firstValue.toString();
+        return values.get(0).toString();
     }
 
     /**
@@ -367,9 +332,26 @@ public final class FormField implements FullyQualifiedElement {
      * </p>
      *
      * @return the field's name.
+     * @deprecated use {@link #getFieldName()} instead.
      */
+    // TODO: Remove in Smack 4.5
+    @Deprecated
     public String getVariable() {
-        return variable;
+        return getFieldName();
+    }
+
+    /**
+     * Returns the field's name, also known as the variable name in case this is an filled out answer form.
+     * <p>
+     * According to XEP-4 § 3.2 the variable name (the 'var' attribute)
+     * "uniquely identifies the field in the context of the form" (if the field is not of type 'fixed', in which case
+     * the field "MAY possess a 'var' attribute")
+     * </p>
+     *
+     * @return the field's name.
+     */
+    public String getFieldName() {
+        return fieldName;
     }
 
     public FormFieldChildElement getFormFieldChildElement(QName qname) {
@@ -378,6 +360,10 @@ public final class FormField implements FullyQualifiedElement {
 
     public List<FormFieldChildElement> getFormFieldChildElements(QName qname) {
         return formFieldChildElementsMap.getAll(qname);
+    }
+
+    public List<FormFieldChildElement> getFormFieldChildElements() {
+        return formFieldChildElements;
     }
 
     @Override
@@ -395,28 +381,43 @@ public final class FormField implements FullyQualifiedElement {
         return QNAME;
     }
 
-    public Builder buildAnswer() {
-        return asBuilder().resetValues();
-    }
+    protected transient List<FullyQualifiedElement> extraXmlChildElements;
 
-    public Builder asBuilder() {
-        return new Builder(this);
+    protected void populateExtraXmlChildElements() {
+        List<? extends CharSequence> values = getValues();
+        extraXmlChildElements = new ArrayList<>(values.size());
+        for (CharSequence value : values) {
+            extraXmlChildElements.add(new Value(value));
+        }
     }
 
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+    public final XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+        return toXML(enclosingNamespace, true);
+    }
+
+    public final XmlStringBuilder toXML(XmlEnvironment enclosingNamespace, boolean includeType) {
         XmlStringBuilder buf = new XmlStringBuilder(this, enclosingNamespace);
         // Add attributes
         buf.optAttribute("label", getLabel());
-        buf.optAttribute("var", getVariable());
-        // If no 'type' is specified, the default is "text-single";
-        buf.attribute("type", getType(), Type.text_single);
+        buf.optAttribute("var", getFieldName());
 
-        if (formFieldChildElements.isEmpty()) {
+        if (includeType) {
+            // If no 'type' is specified, the default is "text-single";
+            buf.attribute("type", getType(), Type.text_single);
+        }
+
+        if (extraXmlChildElements == null) {
+            // If extraXmlChildElements is null, see if they should be populated.
+            populateExtraXmlChildElements();
+        }
+
+        if (formFieldChildElements.isEmpty() && extraXmlChildElements == null) {
             buf.closeEmptyElement();
         } else {
             buf.rightAngleBracket();
 
+            buf.optAppend(extraXmlChildElements);
             buf.append(formFieldChildElements);
 
             buf.closeElement(this);
@@ -443,70 +444,113 @@ public final class FormField implements FullyQualifiedElement {
         return toXML().toString().hashCode();
     }
 
-    public static FormField hiddenFormType(String value) {
-        return new FormField(value);
+    public static BooleanFormField.Builder booleanBuilder(String fieldName) {
+        return new BooleanFormField.Builder(fieldName);
     }
 
-    public static Builder builder(String fieldName) {
-        return builder().setFieldName(fieldName);
+    public static TextSingleFormField.Builder fixedBuilder() {
+        return fixedBuilder(null);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static TextSingleFormField.Builder fixedBuilder(String fieldName) {
+        return new TextSingleFormField.Builder(fieldName, Type.fixed);
     }
 
-    public static final class Builder {
-        private String variable;
+    public static TextSingleFormField.Builder hiddenBuilder(String fieldName) {
+        return new TextSingleFormField.Builder(fieldName, Type.hidden);
+    }
+
+    public static JidMultiFormField.Builder jidMultiBuilder(String fieldName) {
+        return new JidMultiFormField.Builder(fieldName);
+    }
+
+    public static JidSingleFormField.Builder jidSingleBuilder(String fieldName) {
+        return new JidSingleFormField.Builder(fieldName);
+    }
+
+    public static ListMultiFormField.Builder listMultiBuilder(String fieldName) {
+        return new ListMultiFormField.Builder(fieldName);
+    }
+
+    public static ListSingleFormField.Builder listSingleBuilder(String fieldName) {
+        return new ListSingleFormField.Builder(fieldName);
+    }
+
+    public static TextMultiFormField.Builder textMultiBuilder(String fieldName) {
+        return new TextMultiFormField.Builder(fieldName);
+    }
+
+    public static TextSingleFormField.Builder textPrivateBuilder(String fieldName) {
+        return new TextSingleFormField.Builder(fieldName, Type.text_private);
+    }
+
+    public static TextSingleFormField.Builder textSingleBuilder(String fieldName) {
+        return new TextSingleFormField.Builder(fieldName, Type.text_single);
+    }
+
+    public static TextSingleFormField.Builder builder(String fieldName) {
+        return textSingleBuilder(fieldName);
+    }
+
+    public static TextSingleFormField buildHiddenFormType(String formType) {
+        return hiddenBuilder(FORM_TYPE).setValue(formType).build();
+    }
+
+    public <F extends FormField> F ifPossibleAs(Class<F> formFieldClass) {
+        if (formFieldClass.isInstance(this)) {
+            return formFieldClass.cast(this);
+        }
+        return null;
+    }
+
+    public <F extends FormField> F ifPossibleAsOrThrow(Class<F> formFieldClass) {
+        F field = ifPossibleAs(formFieldClass);
+        if (field == null) {
+            throw new IllegalArgumentException();
+        }
+        return field;
+    }
+
+    public TextSingleFormField asHiddenFormTypeFieldIfPossible() {
+        TextSingleFormField textSingleFormField = ifPossibleAs(TextSingleFormField.class);
+        if (textSingleFormField == null) {
+            return null;
+        }
+        if (getType() != Type.hidden) {
+            return null;
+        }
+        if (!getFieldName().equals(FORM_TYPE)) {
+            return null;
+        }
+        return textSingleFormField;
+    }
+
+    public abstract static class Builder<F extends FormField, B extends Builder<?, ?>> {
+        private final String fieldName;
+        private final Type type;
 
         private String label;
-
-        private Type type;
 
         private List<FormFieldChildElement> formFieldChildElements;
 
         private boolean disallowType;
         private boolean disallowFurtherFormFieldChildElements;
 
-        private Builder() {
+        protected Builder(String fieldName, Type type) {
+            if (StringUtils.isNullOrEmpty(fieldName) && type != Type.fixed) {
+                throw new IllegalArgumentException("Fields of type " + type + " must have a field name set");
+            }
+            this.fieldName = fieldName;
+            this.type = type;
         }
 
-        private Builder(FormField formField) {
-            variable = formField.variable;
+        protected Builder(FormField formField) {
+            // TODO: Is this still correct?
+            fieldName = formField.fieldName;
             label = formField.label;
             type = formField.type;
             // Create a new modifiable list.
             formFieldChildElements = CollectionUtil.newListWith(formField.formFieldChildElements);
-        }
-
-        public Builder setFieldName(String fieldName) {
-            return setVariable(fieldName);
-        }
-
-        public Builder setVariable(String variable) {
-            this.variable = variable;
-            return this;
-        }
-
-        /**
-         * Sets an indicative of the format for the data to answer.
-         *
-         * @param type an indicative of the format for the data to answer.
-         * @return a reference to this builder.
-         * @see Type
-         */
-        public Builder setType(Type type) {
-            final Type oldType = this.type;
-
-            this.type = type;
-
-            try {
-                checkFormFieldChildElementsConsistency();
-            } catch (IllegalArgumentException e) {
-                this.type = oldType;
-                throw e;
-            }
-
-            return this;
         }
 
         /**
@@ -520,10 +564,10 @@ public final class FormField implements FullyQualifiedElement {
          * @param description provides extra clarification about the question.
          * @return a reference to this builder.
          */
-        public Builder setDescription(String description) {
+        public B setDescription(String description) {
             Description descriptionElement = new Description(description);
-            setOnlyElement(descriptionElement, Description.class);
-            return this;
+            setOnlyElement(descriptionElement);
+            return getThis();
         }
 
         /**
@@ -533,9 +577,18 @@ public final class FormField implements FullyQualifiedElement {
          * @param label the label of the question.
          * @return a reference to this builder.
          */
-        public Builder setLabel(String label) {
-            this.label = label;
-            return this;
+        public B setLabel(String label) {
+            this.label = StringUtils.requireNotNullNorEmpty(label, "label must not be null or empty");
+            return getThis();
+        }
+
+        /**
+         * Sets if the question must be answered in order to complete the questionnaire.
+         *
+         * @return a reference to this builder.
+         */
+        public B setRequired() {
+            return setRequired(true);
         }
 
         /**
@@ -544,91 +597,63 @@ public final class FormField implements FullyQualifiedElement {
          * @param required if the question must be answered in order to complete the questionnaire.
          * @return a reference to this builder.
          */
-        public Builder setRequired(boolean required) {
-            setOnlyElement(Required.INSTANCE, Required.class);
-            return this;
-        }
-
-        /**
-         * Adds a default value to the question if the question is part of a form to fill out.
-         * Otherwise, adds an answered value to the question.
-         *
-         * @param value a default value or an answered value of the question.
-         * @return a reference to this builder.
-         */
-        public Builder addValue(CharSequence value) {
-            return addFormFieldChildElement(new Value(value));
-        }
-
-        /**
-         * Adds the given Date as XEP-0082 formated string by invoking {@link #addValue(CharSequence)} after the date
-         * instance was formated.
-         *
-         * @param date the date instance to add as XEP-0082 formated string.
-         * @return a reference to this builder.
-         */
-        public Builder addValue(Date date) {
-            String dateString = XmppDateTime.formatXEP0082Date(date);
-            return addValue(dateString);
-        }
-
-        /**
-         * Adds a default values to the question if the question is part of a form to fill out.
-         * Otherwise, adds an answered values to the question.
-         *
-         * @param values default values or an answered values of the question.
-         * @return a reference to this builder.
-         */
-        public Builder addValues(Collection<? extends CharSequence> values) {
-            for (CharSequence value : values) {
-                addValue(value);
+        public B setRequired(boolean required) {
+            if (required) {
+                setOnlyElement(Required.INSTANCE);
             }
-            return this;
+            return getThis();
         }
 
-        public Builder addOption(String option) {
-            return addOption(new Option(option));
+        public B addFormFieldChildElements(Collection<? extends FormFieldChildElement> formFieldChildElements) {
+            for (FormFieldChildElement formFieldChildElement : formFieldChildElements) {
+                addFormFieldChildElement(formFieldChildElement);
+            }
+            return getThis();
         }
 
-        /**
-         * Adds an available options to the question that the user has in order to answer
-         * the question.
-         *
-         * @param option a new available option for the question.
-         * @return a reference to this builder.
-         */
-        public Builder addOption(Option option) {
-            return addFormFieldChildElement(option);
-        }
-
-        public Builder addFormFieldChildElement(FormFieldChildElement formFieldChildElement) {
+        @SuppressWarnings("ModifyCollectionInEnhancedForLoop")
+        public B addFormFieldChildElement(FormFieldChildElement newFormFieldChildElement) {
             if (disallowFurtherFormFieldChildElements) {
                 throw new IllegalArgumentException();
             }
 
-            if (formFieldChildElement.requiresNoTypeSet() && type != null) {
-                throw new IllegalArgumentException("Elements of type " + formFieldChildElement.getClass()
+            if (newFormFieldChildElement.requiresNoTypeSet() && type != null) {
+                throw new IllegalArgumentException("Elements of type " + newFormFieldChildElement.getClass()
                                 + " can only be added to form fields where no type is set");
             }
 
             ensureThatFormFieldChildElementsIsSet();
 
-            if (!formFieldChildElements.isEmpty() && formFieldChildElement.isExclusiveElement()) {
-                throw new IllegalArgumentException("Elements of type " + formFieldChildElement.getClass()
+            if (!formFieldChildElements.isEmpty() && newFormFieldChildElement.isExclusiveElement()) {
+                throw new IllegalArgumentException("Elements of type " + newFormFieldChildElement.getClass()
                                 + " must be the only child elements of a form field.");
             }
 
-            disallowType = disallowType || formFieldChildElement.requiresNoTypeSet();
-            disallowFurtherFormFieldChildElements = formFieldChildElement.isExclusiveElement();
+            disallowType = disallowType || newFormFieldChildElement.requiresNoTypeSet();
+            disallowFurtherFormFieldChildElements = newFormFieldChildElement.isExclusiveElement();
 
-            formFieldChildElements.add(formFieldChildElement);
+            formFieldChildElements.add(newFormFieldChildElement);
 
-            return this;
+            for (FormFieldChildElement formFieldChildElement : formFieldChildElements) {
+                try {
+                    formFieldChildElement.checkConsistency(this);
+                } catch (IllegalArgumentException e) {
+                    // Remove the newly added form field child element if there it causes inconsistency.
+                    formFieldChildElements.remove(newFormFieldChildElement);
+                    throw e;
+                }
+            }
+
+            return getThis();
         }
 
-        public Builder resetValues() {
+        protected abstract void resetInternal();
+
+        public B reset() {
+            resetInternal();
+
             if (formFieldChildElements == null) {
-                return this;
+                return getThis();
             }
 
             // TODO: Use Java' stream API once Smack's minimum Android SDK level is 24 or higher.
@@ -642,12 +667,10 @@ public final class FormField implements FullyQualifiedElement {
 
             disallowType = disallowFurtherFormFieldChildElements = false;
 
-            return this;
+            return getThis();
         }
 
-        public FormField build() {
-            return new FormField(this);
-        }
+        public abstract F build();
 
         public Type getType() {
             return type;
@@ -659,7 +682,8 @@ public final class FormField implements FullyQualifiedElement {
             }
         }
 
-        private <E extends FormFieldChildElement> void setOnlyElement(E element, Class<E> elementClass) {
+        private <E extends FormFieldChildElement> void setOnlyElement(E element) {
+            Class<?> elementClass = element.getClass();
             ensureThatFormFieldChildElementsIsSet();
             for (int i = 0; i < formFieldChildElements.size(); i++) {
                 if (formFieldChildElements.get(i).getClass().equals(elementClass)) {
@@ -668,18 +692,10 @@ public final class FormField implements FullyQualifiedElement {
                 }
             }
 
-            formFieldChildElements.add(0, element);
+            addFormFieldChildElement(element);
         }
 
-        private void checkFormFieldChildElementsConsistency() {
-            if (formFieldChildElements == null) {
-                return;
-            }
-
-            for (FormFieldChildElement formFiledChildElement : formFieldChildElements) {
-                formFiledChildElement.checkConsistency(this);
-            }
-        }
+        public abstract B getThis();
     }
 
     /**
@@ -689,11 +705,11 @@ public final class FormField implements FullyQualifiedElement {
     }
 
     /**
-     * Represents the available option of a given FormField.
+     * Represents the available options of a {@link ListSingleFormField} and {@link ListMultiFormField}.
      *
      * @author Gaston Dombiak
      */
-    public static final class Option extends StandardFormFieldChildElement {
+    public static final class Option implements FullyQualifiedElement {
 
         public static final String ELEMENT = "option";
 
@@ -876,7 +892,7 @@ public final class FormField implements FullyQualifiedElement {
         }
     }
 
-    public static class Value extends StandardFormFieldChildElement {
+    public static class Value implements FullyQualifiedElement {
 
         public static final String ELEMENT = "value";
 

@@ -18,12 +18,13 @@ package org.jivesoftware.smackx.pubsub;
 
 import java.net.URL;
 
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
+import org.jivesoftware.smackx.xdata.form.FilledForm;
 
 /**
  * This enumeration represents all the fields of a node configuration form.  This enumeration
  * is not required when using the {@link ConfigureForm} to configure nodes, but may be helpful
- * for generic UI's using only a {@link Form} for configuration.
+ * for generic UI's using only a {@link FilledForm} for configuration.
  *
  * @author Robin Collier
  */

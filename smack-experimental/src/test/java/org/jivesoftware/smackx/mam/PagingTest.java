@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 public class PagingTest extends MamTest {
 
     private static final String pagingStanza = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
-            + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
+            + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>"
             + "<value>urn:xmpp:mam:1</value>" + "</field>" + "</x>" + "<set xmlns='http://jabber.org/protocol/rsm'>"
             + "<max>10</max>" + "</set>" + "</query>" + "</iq>";
 

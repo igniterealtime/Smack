@@ -46,11 +46,12 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
-import org.jivesoftware.smackx.xdata.Form;
-import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
@@ -255,16 +256,18 @@ public final class PubSubManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public Node createNode(String nodeId, Form config) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Node createNode(String nodeId, FillableConfigureForm config) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = PubSub.createPubsubPacket(pubSubService, Type.set, new NodeExtension(PubSubElementType.CREATE, nodeId));
         boolean isLeafNode = true;
 
         if (config != null) {
-            request.addExtension(new FormNode(FormNodeType.CONFIGURE, config));
-            FormField nodeTypeField = config.getField(ConfigureNodeFields.node_type.getFieldName());
-
-            if (nodeTypeField != null)
-                isLeafNode = nodeTypeField.getValues().get(0).toString().equals(NodeType.leaf.toString());
+            DataForm submitForm = config.getDataFormToSubmit();
+            request.addExtension(new FormNode(FormNodeType.CONFIGURE, submitForm));
+            NodeType nodeType = config.getNodeType();
+            // Note that some implementations do to have the pubsub#node_type field in their defauilt configuration,
+            // which I believe to be a bug. However, since PubSub specifies the default node type to be 'leaf' we assume
+            // leaf if the field does not exist.
+            isLeafNode = nodeType == null || nodeType == NodeType.leaf;
         }
 
         // Errors will cause exceptions in getReply, so it only returns

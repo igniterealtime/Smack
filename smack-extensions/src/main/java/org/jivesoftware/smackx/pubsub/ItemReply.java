@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
+
 /**
- * These are the options for the node configuration setting {@link ConfigureForm#setItemReply(ItemReply)},
+ * These are the options for the node configuration setting {@link FillableConfigureForm#setItemReply(ItemReply)},
  * which defines who should receive replies to items.
  *
  * @author Robin Collier

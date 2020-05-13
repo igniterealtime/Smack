@@ -23,7 +23,8 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
 
@@ -80,8 +81,8 @@ public class RemoteCommand extends AdHocCommand {
     }
 
     @Override
-    public void complete(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        executeAction(Action.complete, form);
+    public void complete(FillableForm form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        executeAction(Action.complete, form.getDataFormToSubmit());
     }
 
     @Override
@@ -100,13 +101,13 @@ public class RemoteCommand extends AdHocCommand {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void execute(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        executeAction(Action.execute, form);
+    public void execute(FillableForm form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        executeAction(Action.execute, form.getDataFormToSubmit());
     }
 
     @Override
-    public void next(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        executeAction(Action.next, form);
+    public void next(FillableForm form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        executeAction(Action.next, form.getDataFormToSubmit());
     }
 
     @Override
@@ -130,7 +131,7 @@ public class RemoteCommand extends AdHocCommand {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    private void executeAction(Action action, Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    private void executeAction(Action action, DataForm form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO: Check that all the required fields of the form were filled, if
         // TODO: not throw the corresponding exception. This will make a faster response,
         // TODO: since the request is stopped before it's sent.
@@ -140,10 +141,7 @@ public class RemoteCommand extends AdHocCommand {
         data.setNode(getNode());
         data.setSessionID(sessionID);
         data.setAction(action);
-
-        if (form != null) {
-            data.setForm(form.getDataFormToSend());
-        }
+        data.setForm(form);
 
         AdHocCommandData responseData = null;
         try {

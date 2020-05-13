@@ -75,7 +75,8 @@ import org.jivesoftware.smackx.workgroup.packet.Transcript;
 import org.jivesoftware.smackx.workgroup.packet.Transcripts;
 import org.jivesoftware.smackx.workgroup.settings.GenericSettings;
 import org.jivesoftware.smackx.workgroup.settings.SearchSettings;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
@@ -573,7 +574,7 @@ public class AgentSession {
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public ReportedData searchTranscripts(Form completedForm) throws XMPPException, SmackException, InterruptedException {
+    public ReportedData searchTranscripts(FillableForm completedForm) throws XMPPException, SmackException, InterruptedException {
         return transcriptSearchManager.submitSearch(workgroupJID.asDomainBareJid(),
                 completedForm);
     }

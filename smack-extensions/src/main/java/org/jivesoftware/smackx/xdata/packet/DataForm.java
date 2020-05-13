@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ package org.jivesoftware.smackx.xdata.packet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,17 +32,26 @@ import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StanzaView;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 
 /**
  * Represents a form that could be use for gathering data as well as for reporting data
  * returned from a search.
+ * <p>
+ * Note that unlike many other things in XMPP, the order of the form fields is actually
+ * Important in data forms.
+ * </p>
  *
  * @author Gaston Dombiak
  */
-public class DataForm implements ExtensionElement {
+public final class DataForm implements ExtensionElement {
 
     public static final String NAMESPACE = "jabber:x:data";
     public static final String ELEMENT = "x";
@@ -76,16 +85,29 @@ public class DataForm implements ExtensionElement {
         }
     }
 
-    private Type type;
-    private String title;
-    private final List<String> instructions = new ArrayList<>();
-    private ReportedData reportedData;
-    private final List<Item> items = new ArrayList<>();
-    private final Map<String, FormField> fields = new LinkedHashMap<>();
-    private final List<Element> extensionElements = new ArrayList<>();
+    private final Type type;
+    private final String title;
+    private final List<String> instructions;
+    private final ReportedData reportedData;
+    private final List<Item> items;
+    private final List<FormField> fields;
+    private final Map<String, FormField> fieldsMap;
+    private final List<Element> extensionElements;
 
-    public DataForm(Type type) {
-        this.type = type;
+    private DataForm(Builder builder) {
+        type = builder.type;
+        title = builder.title;
+        instructions = CollectionUtil.cloneAndSeal(builder.instructions);
+        reportedData = builder.reportedData;
+        items = CollectionUtil.cloneAndSeal(builder.items);
+        fields = CollectionUtil.cloneAndSeal(builder.fields);
+        fieldsMap = CollectionUtil.cloneAndSeal(builder.fieldsMap);
+        extensionElements = CollectionUtil.cloneAndSeal(builder.extensionElements);
+
+        // Ensure that the types of the form fields of every data form is known by registering such fields.
+        if (type == Type.form) {
+            FormFieldRegistry.register(this);
+        }
     }
 
     /**
@@ -117,9 +139,7 @@ public class DataForm implements ExtensionElement {
      * @return a List of the list of instructions that explain how to fill out the form.
      */
     public List<String> getInstructions() {
-        synchronized (instructions) {
-            return Collections.unmodifiableList(new ArrayList<>(instructions));
-        }
+        return instructions;
     }
 
     /**
@@ -137,9 +157,7 @@ public class DataForm implements ExtensionElement {
      * @return a List of the items returned from a search.
      */
     public List<Item> getItems() {
-        synchronized (items) {
-            return Collections.unmodifiableList(new ArrayList<>(items));
-        }
+        return items;
     }
 
     /**
@@ -148,46 +166,29 @@ public class DataForm implements ExtensionElement {
      * @return a List of the fields that are part of the form.
      */
     public List<FormField> getFields() {
-        synchronized (fields) {
-            return new ArrayList<>(fields.values());
-        }
+        return fields;
     }
 
     /**
      * Return the form field with the given variable name or null.
      *
-     * @param variableName TODO javadoc me please
+     * @param fieldName the name of the field (the value of the 'var' (variable) attribute)
      * @return the form field or null.
      * @since 4.1
      */
-    public FormField getField(String variableName) {
-        synchronized (fields) {
-            return fields.get(variableName);
-        }
-    }
-
-    public FormField replaceField(FormField field) {
-        String fieldVariableName = field.getVariable();
-
-        synchronized (fields) {
-            if (!fields.containsKey(fieldVariableName)) {
-                throw new IllegalArgumentException("No field with the name " + fieldVariableName + " exists");
-            }
-            return fields.put(fieldVariableName, field);
-        }
+    public FormField getField(String fieldName) {
+        return fieldsMap.get(fieldName);
     }
 
     /**
      * Check if a form field with the given variable name exists.
      *
-     * @param variableName TODO javadoc me please
+     * @param fieldName the name of the field.
      * @return true if a form field with the variable name exists, false otherwise.
      * @since 4.2
      */
-    public boolean hasField(String variableName) {
-        synchronized (fields) {
-            return fields.containsKey(variableName);
-        }
+    public boolean hasField(String fieldName) {
+        return fieldsMap.containsKey(fieldName);
     }
 
     @Override
@@ -200,108 +201,8 @@ public class DataForm implements ExtensionElement {
         return NAMESPACE;
     }
 
-    /**
-     * Sets the description of the data. It is similar to the title on a web page or an X window.
-     * You can put a &lt;title/&gt; on either a form to fill out, or a set of data results.
-     *
-     * @param title description of the data.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     * Sets the list of instructions that explain how to fill out the form and what the form is
-     * about. The dataform could include multiple instructions since each instruction could not
-     * contain newlines characters.
-     *
-     * @param instructions list of instructions that explain how to fill out the form.
-     */
-    public void setInstructions(List<String> instructions) {
-        synchronized (this.instructions) {
-            this.instructions.clear();
-            this.instructions.addAll(instructions);
-        }
-    }
-
-    /**
-     * Sets the fields that will be returned from a search.
-     *
-     * @param reportedData the fields that will be returned from a search.
-     */
-    public void setReportedData(ReportedData reportedData) {
-        this.reportedData = reportedData;
-    }
-
-    /**
-     * Adds a new field as part of the form.
-     *
-     * @param field the field to add to the form.
-     */
-    public void addField(FormField field) {
-        String fieldVariableName = field.getVariable();
-        // Form field values must be unique unless they are of type 'fixed', in
-        // which case their variable name may be 'null', and therefore could
-        // appear multiple times within the same form.
-        if (fieldVariableName != null && hasField(fieldVariableName)) {
-            throw new IllegalArgumentException("This data form already contains a form field with the variable name '"
-                            + fieldVariableName + "'");
-        }
-        synchronized (fields) {
-            fields.put(fieldVariableName, field);
-        }
-    }
-
-    /**
-     * Add the given fields to this form.
-     *
-     * @param fieldsToAdd TODO javadoc me please
-     * @return true if a field was overridden.
-     * @since 4.3.0
-     */
-    public boolean addFields(Collection<FormField> fieldsToAdd) {
-        boolean fieldOverridden = false;
-        synchronized (fields) {
-            for (FormField field : fieldsToAdd) {
-                FormField previousField = fields.put(field.getVariable(), field);
-                if (previousField != null) {
-                    fieldOverridden = true;
-                }
-            }
-        }
-        return fieldOverridden;
-    }
-
-    /**
-     * Adds a new instruction to the list of instructions that explain how to fill out the form
-     * and what the form is about. The dataform could include multiple instructions since each
-     * instruction could not contain newlines characters.
-     *
-     * @param instruction the new instruction that explain how to fill out the form.
-     */
-    public void addInstruction(String instruction) {
-        synchronized (instructions) {
-            instructions.add(instruction);
-        }
-    }
-
-    /**
-     * Adds a new item returned from a search.
-     *
-     * @param item the item returned from a search.
-     */
-    public void addItem(Item item) {
-        synchronized (items) {
-            items.add(item);
-        }
-    }
-
-    public void addExtensionElement(Element element) {
-        extensionElements.add(element);
-    }
-
     public List<Element> getExtensionElements() {
-        return Collections.unmodifiableList(extensionElements);
+        return extensionElements;
     }
 
     /**
@@ -324,12 +225,12 @@ public class DataForm implements ExtensionElement {
      * @return the hidden FORM_TYPE field or null.
      * @since 4.1
      */
-    public FormField getHiddenFormTypeField() {
+    public TextSingleFormField getHiddenFormTypeField() {
         FormField field = getField(FormField.FORM_TYPE);
-        if (field != null && field.getType() == FormField.Type.hidden) {
-            return field;
+        if (field == null) {
+            return null;
         }
-        return null;
+        return field.asHiddenFormTypeFieldIfPossible();
     }
 
     /**
@@ -348,25 +249,31 @@ public class DataForm implements ExtensionElement {
         buf.attribute("type", getType());
         buf.rightAngleBracket();
 
+        xmlEnvironment = buf.getXmlEnvironment();
+
         buf.optElement("title", getTitle());
         for (String instruction : getInstructions()) {
             buf.element("instructions", instruction);
         }
         // Append the list of fields returned from a search
-        if (getReportedData() != null) {
-            buf.append(getReportedData().toXML());
-        }
+        buf.optElement(getReportedData());
         // Loop through all the items returned from a search and append them to the string buffer
-        for (Item item : getItems()) {
-            buf.append(item.toXML());
-        }
+        buf.append(getItems());
+
         // Add all form fields.
-        buf.append(getFields());
-        for (Element element : extensionElements) {
-            buf.append(element.toXML());
+        // We do not need to include the type for data forms of the type submit.
+        boolean includeType = getType() != Type.submit;
+        for (FormField formField : getFields()) {
+            buf.append(formField.toXML(xmlEnvironment, includeType));
         }
+
+        buf.append(getExtensionElements());
         buf.closeElement(this);
         return buf;
+    }
+
+    public Builder asBuilder() {
+        return new Builder(this);
     }
 
     /**
@@ -376,7 +283,7 @@ public class DataForm implements ExtensionElement {
      * @return the DataForm or null
      */
     public static DataForm from(StanzaView stanzaView) {
-        return stanzaView.getExtension(DataForm.class);
+        return from(stanzaView, null);
     }
 
     /**
@@ -388,6 +295,9 @@ public class DataForm implements ExtensionElement {
      * @since 4.4.0
      */
     public static DataForm from(StanzaView stanzaView, String formType) {
+        if (formType == null) {
+            return stanzaView.getExtension(DataForm.class);
+        }
         List<DataForm> dataForms = stanzaView.getExtensions(DataForm.class);
         return from(dataForms, formType);
     }
@@ -430,19 +340,213 @@ public class DataForm implements ExtensionElement {
     }
 
     /**
+     * Get a new data form builder with the form type set to {@link Type#submit}.
+     *
+     * @return a new data form builder.
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(Type type) {
+        return new Builder(type);
+    }
+
+    public static final class Builder {
+        private Type type;
+        private String title;
+        private List<String> instructions;
+        private ReportedData reportedData;
+        private List<Item> items;
+        private List<FormField> fields = new ArrayList<>();
+        private Map<String, FormField> fieldsMap = new HashMap<>();
+        private List<Element> extensionElements;
+
+        private Builder() {
+            this(Type.submit);
+        }
+
+        private Builder(Type type) {
+            this.type = type;
+        }
+
+        private Builder(DataForm dataForm) {
+            type = dataForm.getType();
+            title = dataForm.getTitle();
+            instructions = dataForm.getInstructions();
+            reportedData = dataForm.getReportedData();
+            items = CollectionUtil.newListWith(dataForm.getItems());
+            fields = CollectionUtil.newListWith(dataForm.getFields());
+            fieldsMap = new HashMap<>(dataForm.fieldsMap);
+            extensionElements = CollectionUtil.newListWith(dataForm.getExtensionElements());
+        }
+
+        public Builder setType(Type type) {
+            this.type = Objects.requireNonNull(type);
+            return this;
+        }
+
+        /**
+         * Sets the description of the data. It is similar to the title on a web page or an X window.
+         * You can put a &lt;title/&gt; on either a form to fill out, or a set of data results.
+         *
+         * @param title description of the data.
+         * @return a reference to this builder.
+         */
+        public Builder setTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        /**
+         * Adds a new field as part of the form.
+         *
+         * @param field the field to add to the form.
+         * @return a reference to this builder.
+         */
+        public Builder addField(FormField field) {
+            String fieldName = field.getFieldName();
+            if (fieldName != null) {
+                if (fieldsMap.containsKey(fieldName)) {
+                    throw new IllegalArgumentException("A field with the name " + fieldName + " already exists");
+                }
+
+                fieldsMap.put(fieldName, field);
+            }
+            fields.add(field);
+
+            return this;
+        }
+
+        /**
+         * Add the given fields to this form.
+         *
+         * @param fieldsToAdd TODO javadoc me please
+         * @return a reference to this builder.
+         */
+        public Builder addFields(Collection<? extends FormField> fieldsToAdd) {
+            for (FormField field : fieldsToAdd) {
+                String fieldName = field.getFieldName();
+                if (fieldsMap.containsKey(fieldName)) {
+                    throw new IllegalArgumentException("A field with the name " + fieldName + " already exists");
+                }
+            }
+            for (FormField field : fieldsToAdd) {
+                String fieldName = field.getFieldName();
+                if (fieldName != null) {
+                    fieldsMap.put(fieldName, field);
+                }
+                fields.add(field);
+            }
+            return this;
+        }
+
+        public Builder removeField(String fieldName) {
+            FormField field = fieldsMap.remove(fieldName);
+            if (field != null) {
+                fields.remove(field);
+            }
+            return this;
+        }
+
+        public Builder setFormType(String formType) {
+            FormField formField = FormField.buildHiddenFormType(formType);
+            return addField(formField);
+        }
+
+        public Builder setInstructions(String instructions) {
+            return setInstructions(StringUtils.splitLinesPortable(instructions));
+        }
+
+        /**
+         * Sets the list of instructions that explain how to fill out the form and what the form is
+         * about. The dataform could include multiple instructions since each instruction could not
+         * contain newlines characters.
+         *
+         * @param instructions list of instructions that explain how to fill out the form.
+         * @return a reference to this builder.
+         */
+        public Builder setInstructions(List<String> instructions) {
+            this.instructions = instructions;
+            return this;
+        }
+
+        /**
+         * Adds a new instruction to the list of instructions that explain how to fill out the form
+         * and what the form is about. The dataform could include multiple instructions since each
+         * instruction could not contain newlines characters.
+         *
+         * @param instruction the new instruction that explain how to fill out the form.
+         * @return a reference to this builder.
+         */
+        public Builder addInstruction(String instruction) {
+            if (instructions == null) {
+                instructions = new ArrayList<>();
+            }
+            instructions.add(instruction);
+            return this;
+        }
+
+        /**
+         * Adds a new item returned from a search.
+         *
+         * @param item the item returned from a search.
+         * @return a reference to this builder.
+         */
+        public Builder addItem(Item item) {
+            items.add(item);
+            return this;
+        }
+
+        /**
+         * Sets the fields that will be returned from a search.
+         *
+         * @param reportedData the fields that will be returned from a search.
+         * @return a reference to this builder.
+         */
+        public Builder setReportedData(ReportedData reportedData) {
+            this.reportedData = reportedData;
+            return this;
+        }
+
+        public Builder addExtensionElement(Element element) {
+            if (extensionElements == null) {
+                extensionElements = new ArrayList<>();
+            }
+            extensionElements.add(element);
+            return this;
+        }
+
+        public DataForm build() {
+            return new DataForm(this);
+        }
+    }
+
+    /**
      *
      * Represents the fields that will be returned from a search. This information is useful when
      * you try to use the jabber:iq:search namespace to return dynamic form information.
      *
      * @author Gaston Dombiak
      */
-    public static class ReportedData {
+    public static class ReportedData implements ExtensionElement {
         public static final String ELEMENT = "reported";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-        private List<FormField> fields = new ArrayList<>();
+        private final List<? extends FormField> fields;
 
-        public ReportedData(List<FormField> fields) {
-            this.fields = fields;
+        public ReportedData(List<? extends FormField> fields) {
+            this.fields = Collections.unmodifiableList(fields);
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
         }
 
         /**
@@ -450,20 +554,19 @@ public class DataForm implements ExtensionElement {
          *
          * @return the fields returned from a search.
          */
-        public List<FormField> getFields() {
-            return Collections.unmodifiableList(new ArrayList<>(fields));
+        public List<? extends FormField> getFields() {
+            return fields;
         }
 
-        public CharSequence toXML() {
-            XmlStringBuilder buf = new XmlStringBuilder();
-            buf.openElement(ELEMENT);
-            // Loop through all the form items and append them to the string buffer
-            for (FormField field : getFields()) {
-                buf.append(field.toXML());
-            }
-            buf.closeElement(ELEMENT);
-            return buf;
+        @Override
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.rightAngleBracket();
+            xml.append(getFields());
+            xml.closeElement(this);
+            return xml;
         }
+
     }
 
     /**
@@ -472,13 +575,24 @@ public class DataForm implements ExtensionElement {
      *
      * @author Gaston Dombiak
      */
-    public static class Item {
+    public static class Item implements ExtensionElement {
         public static final String ELEMENT = "item";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-        private List<FormField> fields = new ArrayList<>();
+        private final List<? extends FormField> fields;
 
-        public Item(List<FormField> fields) {
-            this.fields = fields;
+        public Item(List<? extends FormField> fields) {
+            this.fields = Collections.unmodifiableList(fields);
+        }
+
+        @Override
+        public String getElementName() {
+            return ELEMENT;
+        }
+
+        @Override
+        public String getNamespace() {
+            return NAMESPACE;
         }
 
         /**
@@ -486,19 +600,17 @@ public class DataForm implements ExtensionElement {
          *
          * @return the fields that define the data that goes with the item.
          */
-        public List<FormField> getFields() {
-            return Collections.unmodifiableList(new ArrayList<>(fields));
+        public List<? extends FormField> getFields() {
+            return fields;
         }
 
-        public CharSequence toXML() {
-            XmlStringBuilder buf = new XmlStringBuilder();
-            buf.openElement(ELEMENT);
-            // Loop through all the form items and append them to the string buffer
-            for (FormField field : getFields()) {
-                buf.append(field.toXML());
-            }
-            buf.closeElement(ELEMENT);
-            return buf;
+        @Override
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+            XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+            xml.rightAngleBracket();
+            xml.append(getFields());
+            xml.closeElement(this);
+            return xml;
         }
     }
 }

@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.filetransfer.FileTransferException.NoAcceptableTr
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethodsOfferedException;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
@@ -189,7 +190,7 @@ public final class FileTransferNegotiator extends Manager {
     public StreamNegotiator selectStreamNegotiator(
             FileTransferRequest request) throws NotConnectedException, NoStreamMethodsOfferedException, NoAcceptableTransferMechanisms, InterruptedException {
         StreamInitiation si = request.getStreamInitiation();
-        FormField streamMethodField = getStreamMethodField(si
+        ListSingleFormField streamMethodField = getStreamMethodField(si
                 .getFeatureNegotiationForm());
 
         if (streamMethodField == null) {
@@ -216,11 +217,11 @@ public final class FileTransferNegotiator extends Manager {
         return selectedStreamNegotiator;
     }
 
-    private static FormField getStreamMethodField(DataForm form) {
-        return form.getField(STREAM_DATA_FIELD_NAME);
+    private static ListSingleFormField getStreamMethodField(DataForm form) {
+        return (ListSingleFormField) form.getField(STREAM_DATA_FIELD_NAME);
     }
 
-    private StreamNegotiator getNegotiator(final FormField field)
+    private StreamNegotiator getNegotiator(final ListSingleFormField field)
             throws NoAcceptableTransferMechanisms {
         String variable;
         boolean isByteStream = false;
@@ -359,16 +360,15 @@ public final class FileTransferNegotiator extends Manager {
     }
 
     private static DataForm createDefaultInitiationForm() {
-        DataForm form = new DataForm(DataForm.Type.form);
-        FormField.Builder fieldBuilder = FormField.builder();
-        fieldBuilder.setFieldName(STREAM_DATA_FIELD_NAME)
-        .setType(FormField.Type.list_single);
+        DataForm.Builder form = DataForm.builder()
+                        .setType(DataForm.Type.form);
+        ListSingleFormField.Builder fieldBuilder = FormField.listSingleBuilder(STREAM_DATA_FIELD_NAME);
 
         if (!IBB_ONLY) {
             fieldBuilder.addOption(Bytestream.NAMESPACE);
         }
         fieldBuilder.addOption(DataPacketExtension.NAMESPACE);
         form.addField(fieldBuilder.build());
-        return form;
+        return form.build();
     }
 }

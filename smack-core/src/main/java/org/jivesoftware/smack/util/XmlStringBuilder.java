@@ -77,6 +77,10 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
                 .build();
     }
 
+    public XmlEnvironment getXmlEnvironment() {
+        return effectiveXmlEnvironment;
+    }
+
     public XmlStringBuilder escapedElement(String name, String escapedContent) {
         assert escapedContent != null;
         openElement(name);
@@ -489,6 +493,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public XmlStringBuilder optAppend(Element element) {
         if (element != null) {
             append(element.toXML(effectiveXmlEnvironment));
+        }
+        return this;
+    }
+
+    public XmlStringBuilder optAppend(Collection<? extends Element> elements) {
+        if (elements != null) {
+            append(elements);
         }
         return this;
     }

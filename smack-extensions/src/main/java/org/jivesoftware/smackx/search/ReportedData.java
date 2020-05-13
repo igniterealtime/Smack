@@ -66,7 +66,7 @@ public class ReportedData {
     private ReportedData(DataForm dataForm) {
         // Add the columns to the report based on the reported data fields
         for (FormField field : dataForm.getReportedData().getFields()) {
-            columns.add(new Column(field.getLabel(), field.getVariable(), field.getType()));
+            columns.add(new Column(field.getLabel(), field.getFieldName(), field.getType()));
         }
 
         // Add the rows to the report based on the form's items
@@ -76,7 +76,7 @@ public class ReportedData {
                 // The field is created with all the values of the data form's field
                 List<CharSequence> values = new ArrayList<>();
                 values.addAll(field.getValues());
-                fieldList.add(new Field(field.getVariable(), values));
+                fieldList.add(new Field(field.getFieldName(), values));
             }
             rows.add(new Row(fieldList));
         }

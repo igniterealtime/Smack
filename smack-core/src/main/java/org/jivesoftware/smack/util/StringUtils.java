@@ -20,8 +20,10 @@ package org.jivesoftware.smack.util;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -590,5 +592,12 @@ public class StringUtils {
             appendable.append(underlineChar);
         }
         return appendable.append('\n');
+    }
+
+    public static final String PORTABLE_NEWLINE_REGEX = "\\r?\\n";
+
+    public static List<String> splitLinesPortable(String input) {
+        String[] lines = input.split(PORTABLE_NEWLINE_REGEX);
+        return Arrays.asList(lines);
     }
 }

@@ -37,14 +37,14 @@ import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
 import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.AccessModel;
-import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.LeafNode;
 import org.jivesoftware.smackx.pubsub.Node;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubManager;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
 
 import org.jxmpp.jid.BareJid;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
@@ -101,7 +101,7 @@ public class OpenPgpPubSubUtil {
             SmackException.NoResponseException {
         ConfigureForm current = node.getNodeConfiguration();
         if (current.getAccessModel() != accessModel) {
-            ConfigureForm updateConfig = new ConfigureForm(DataForm.Type.submit);
+            FillableConfigureForm updateConfig = current.getFillableForm();
             updateConfig.setAccessModel(accessModel);
             node.sendConfigurationForm(updateConfig);
         }

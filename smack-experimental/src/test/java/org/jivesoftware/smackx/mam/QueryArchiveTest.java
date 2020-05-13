@@ -41,7 +41,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class QueryArchiveTest extends MamTest {
 
     private static final String mamSimpleQueryIQ = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
-            + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>" + "<value>"
+            + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>" + "<value>"
             + MamElements.NAMESPACE + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
 
     private static final String mamQueryResultExample = "<message to='hag66@shakespeare.lit/pda' from='coven@chat.shakespeare.lit' id='iasd207'>"

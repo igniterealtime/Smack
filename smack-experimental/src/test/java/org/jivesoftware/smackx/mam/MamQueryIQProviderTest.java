@@ -85,7 +85,7 @@ public class MamQueryIQProviderTest {
         assertEquals(fields2.get(1).getType(), FormField.Type.jid_single);
         assertEquals(fields2.get(2).getType(), FormField.Type.text_single);
         assertEquals(fields2.get(2).getValues(), new ArrayList<>());
-        assertEquals(fields2.get(4).getVariable(), "urn:example:xmpp:free-text-search");
+        assertEquals(fields2.get(4).getFieldName(), "urn:example:xmpp:free-text-search");
     }
 
 }

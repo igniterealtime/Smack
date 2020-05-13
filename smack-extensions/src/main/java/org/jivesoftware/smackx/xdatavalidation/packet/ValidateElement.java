@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet, 2019 Florian Schmaus
+ * Copyright 2014 Anno van Vliet, 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.xdatavalidation.packet;
 
+import java.math.BigInteger;
+
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.datatypes.UInt32;
@@ -24,6 +26,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import org.jivesoftware.smackx.xdata.AbstractSingleStringValueFormField;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormFieldChildElement;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -135,7 +138,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
      * @param formFieldBuilder the builder used to construct the form field.
      */
     @Override
-    public abstract void checkConsistency(FormField.Builder formFieldBuilder);
+    public abstract void checkConsistency(FormField.Builder<?, ?> formFieldBuilder);
 
     public static ValidateElement from(FormField formField) {
         return (ValidateElement) formField.getFormFieldChildElement(QNAME);
@@ -166,7 +169,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
         }
 
         @Override
-        public void checkConsistency(FormField.Builder formField) {
+        public void checkConsistency(FormField.Builder<?, ?> formField) {
             checkListRangeConsistency(formField);
             if (formField.getType() != null) {
                 switch (formField.getType()) {
@@ -209,7 +212,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
         }
 
         @Override
-        public void checkConsistency(FormField.Builder formField) {
+        public void checkConsistency(FormField.Builder<?, ?> formField) {
             checkListRangeConsistency(formField);
             if (formField.getType() != null) {
                 switch (formField.getType()) {
@@ -277,7 +280,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
         }
 
         @Override
-        public void checkConsistency(FormField.Builder formField) {
+        public void checkConsistency(FormField.Builder<?, ?> formField) {
             checkNonMultiConsistency(formField, METHOD);
             if (getDatatype().equals(ValidateElement.DATATYPE_XS_STRING)) {
                 throw new ValidationConsistencyException(String.format(
@@ -286,6 +289,38 @@ public abstract class ValidateElement implements FormFieldChildElement {
             }
         }
 
+        @Override
+        public void validate(FormField formField) {
+            AbstractSingleStringValueFormField singleValueFormField = formField.ifPossibleAs(AbstractSingleStringValueFormField.class);
+            if (singleValueFormField == null) {
+                // We currently only implement validation for single value fields.
+                return;
+            }
+            String valueString = singleValueFormField.getValue();
+
+            switch (getDatatype()) {
+            case "xs:int":
+            case "xs:integer":
+                BigInteger value = new BigInteger(valueString);
+
+                String minString = getMin();
+                if (minString != null) {
+                    BigInteger min = new BigInteger(minString);
+                    if (value.compareTo(min) < 0) {
+                        throw new IllegalArgumentException("The provided value " + valueString + " is lower than the allowed minimum of " + minString);
+                    }
+                }
+
+                String maxString = getMax();
+                if (maxString != null) {
+                    BigInteger max = new BigInteger(maxString);
+                    if (value.compareTo(max) > 0) {
+                        throw new IllegalArgumentException("The provided value " + valueString + " is higher than the allowed maximum of " + maxString);
+                    }
+                }
+                break;
+            }
+        }
     }
 
     /**
@@ -327,7 +362,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
         }
 
         @Override
-        public void checkConsistency(FormField.Builder formField) {
+        public void checkConsistency(FormField.Builder<?, ?> formField) {
             checkNonMultiConsistency(formField, METHOD);
         }
 
@@ -408,7 +443,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
      *
      * @param formField TODO javadoc me please
      */
-    protected void checkListRangeConsistency(FormField.Builder formField) {
+    protected void checkListRangeConsistency(FormField.Builder<?, ?> formField) {
         ListRange listRange = getListRange();
         if (listRange == null) {
             return;
@@ -426,7 +461,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
      * @param formField TODO javadoc me please
      * @param method TODO javadoc me please
      */
-    protected void checkNonMultiConsistency(FormField.Builder formField, String method) {
+    protected void checkNonMultiConsistency(FormField.Builder<?, ?> formField, String method) {
         checkListRangeConsistency(formField);
         if (formField.getType() != null) {
             switch (formField.getType()) {

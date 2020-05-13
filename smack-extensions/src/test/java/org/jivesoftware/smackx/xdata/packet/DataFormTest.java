@@ -43,43 +43,42 @@ import org.junit.jupiter.api.Test;
  *
  */
 public class DataFormTest extends SmackTestSuite {
-    private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'/></x>";
-    private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'/><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
-    private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
+    private static final String TEST_OUTPUT_1 = "<x xmlns='jabber:x:data' type='form'><instructions>InstructionTest1</instructions><field var='testField1'/></x>";
+    private static final String TEST_OUTPUT_2 = "<x xmlns='jabber:x:data' type='form'><instructions>InstructionTest1</instructions><field var='testField1'/><page xmlns='http://jabber.org/protocol/xdata-layout' label='Label'><fieldref var='testField1'/><section label='section Label'><text>SectionText</text></section><text>PageText</text></page></x>";
+    private static final String TEST_OUTPUT_3 = "<x xmlns='jabber:x:data' type='form'><instructions>InstructionTest1</instructions><field var='testField1'><validate xmlns='http://jabber.org/protocol/xdata-validate' datatype='xs:integer'><range min='1111' max='9999'/></validate></field></x>";
 
     private static final DataFormProvider pr = new DataFormProvider();
 
     @Test
     public void test() throws Exception {
         // Build a Form.
-        DataForm df = new DataForm(DataForm.Type.submit);
+        DataForm.Builder df = DataForm.builder(DataForm.Type.form);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
         FormField field = FormField.builder("testField1").build();
         df.addField(field);
 
-        assertNotNull(df.toXML());
-        String output = df.toXML().toString();
+        DataForm dataForm = df.build();
+        String output = dataForm.toXML().toString();
         assertEquals(TEST_OUTPUT_1, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
 
-        df = pr.parse(parser);
+        dataForm = pr.parse(parser);
 
-        assertNotNull(df);
-        assertNotNull(df.getFields());
-        assertEquals(1 , df.getFields().size());
-        assertEquals(1 , df.getInstructions().size());
+        assertNotNull(dataForm);
+        assertNotNull(dataForm.getFields());
+        assertEquals(1 , dataForm.getFields().size());
+        assertEquals(1 , dataForm.getInstructions().size());
 
-        assertNotNull(df.toXML());
-        output = df.toXML().toString();
+        output = dataForm.toXML().toString();
         assertEquals(TEST_OUTPUT_1, output);
     }
 
     @Test
     public void testLayout() throws Exception {
         // Build a Form.
-        DataForm df = new DataForm(DataForm.Type.submit);
+        DataForm.Builder df = DataForm.builder(DataForm.Type.form);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
         FormField field = FormField.builder("testField1").build();
@@ -95,67 +94,62 @@ public class DataFormTest extends SmackTestSuite {
 
         df.addExtensionElement(layout);
 
-
-        assertNotNull(df.toXML());
-        String output = df.toXML().toString();
+        DataForm dataForm = df.build();
+        String output = dataForm.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
 
-        df = pr.parse(parser);
+        dataForm = pr.parse(parser);
 
-        assertNotNull(df);
-        assertNotNull(df.getExtensionElements());
-        assertEquals(1 , df.getExtensionElements().size());
-        Element element = df.getExtensionElements().get(0);
+        assertNotNull(dataForm.getExtensionElements());
+        assertEquals(1 , dataForm.getExtensionElements().size());
+        Element element = dataForm.getExtensionElements().get(0);
         assertNotNull(element);
         layout = (DataLayout) element;
 
         assertEquals(3 , layout.getPageLayout().size());
 
-        assertNotNull(df.toXML());
-        output = df.toXML().toString();
+        output = dataForm.toXML().toString();
         assertEquals(TEST_OUTPUT_2, output);
     }
 
     @Test
     public void testValidation() throws Exception {
         // Build a Form.
-        DataForm df = new DataForm(DataForm.Type.submit);
+        DataForm.Builder df = DataForm.builder(DataForm.Type.form);
         String instruction = "InstructionTest1";
         df.addInstruction(instruction);
-        FormField.Builder fieldBuilder = FormField.builder("testField1");
+        FormField.Builder<?, ?> fieldBuilder = FormField.builder("testField1");
 
         ValidateElement dv = new RangeValidateElement("xs:integer", "1111", "9999");
         fieldBuilder.addFormFieldChildElement(dv);
 
         df.addField(fieldBuilder.build());
 
-        assertNotNull(df.toXML());
-        String output = df.toXML().toString();
+        DataForm dataForm = df.build();
+        String output = dataForm.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
 
         XmlPullParser parser = PacketParserUtils.getParserFor(output);
 
-        df = pr.parse(parser);
+        dataForm = pr.parse(parser);
 
-        assertNotNull(df);
-        assertNotNull(df.getFields());
-        assertEquals(1 , df.getFields().size());
-        Element element = ValidateElement.from(df.getFields().get(0));
+        assertNotNull(dataForm.getFields());
+        assertEquals(1 , dataForm.getFields().size());
+        Element element = ValidateElement.from(dataForm.getFields().get(0));
         assertNotNull(element);
         dv = (ValidateElement) element;
 
         assertEquals("xs:integer" , dv.getDatatype());
 
-        assertNotNull(df.toXML());
-        output = df.toXML().toString();
+        output = dataForm.toXML().toString();
         assertEquals(TEST_OUTPUT_3, output);
     }
 
     @Test
     public void testFixedField() throws Exception {
-        final String formWithFixedField = "<x xmlns='jabber:x:data' type='submit'><instructions>InstructionTest1</instructions><field type='fixed'></field></x>";
+        final String formWithFixedField = "<x xmlns='jabber:x:data' type='form'><instructions>InstructionTest1</instructions><field type='fixed'><value>Fixed field value</value></field></x>";
         DataForm df = pr.parse(PacketParserUtils.getParserFor(formWithFixedField));
         assertEquals(Type.fixed, df.getFields().get(0).getType());
     }

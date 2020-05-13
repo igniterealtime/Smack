@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software. 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,10 @@ import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.muc.packet.MUCUser.Status;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
@@ -533,8 +535,8 @@ public class MultiUserChat {
      * instant room, use {@link #makeInstant()}.
      * <p>
      * For advanced configuration options, use {@link MultiUserChat#getConfigurationForm()}, get the answer form with
-     * {@link Form#createAnswerForm()}, fill it out and send it back to the room with
-     * {@link MultiUserChat#sendConfigurationForm(Form)}.
+     * {@link Form#getFillableForm()}, fill it out and send it back to the room with
+     * {@link MultiUserChat#sendConfigurationForm(FillableForm)}.
      * </p>
      */
     public class MucCreateConfigFormHandle {
@@ -552,7 +554,7 @@ public class MultiUserChat {
          */
         public void makeInstant() throws NoResponseException, XMPPErrorException, NotConnectedException,
                         InterruptedException {
-            sendConfigurationForm(new Form(DataForm.Type.submit));
+            sendConfigurationForm(null);
         }
 
         /**
@@ -804,7 +806,8 @@ public class MultiUserChat {
         iq.setType(IQ.Type.get);
 
         IQ answer = connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
-        return Form.getFormFrom(answer);
+        DataForm dataForm = DataForm.from(answer, MucConfigFormManager.FORM_TYPE);
+        return new Form(dataForm);
     }
 
     /**
@@ -817,11 +820,19 @@ public class MultiUserChat {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void sendConfigurationForm(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void sendConfigurationForm(FillableForm form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        final DataForm dataForm;
+        if (form != null) {
+            dataForm = form.getDataFormToSubmit();
+        } else {
+            // Instant room, cf. XEP-0045 § 10.1.2
+            dataForm = DataForm.builder().build();
+        }
+
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
-        iq.addExtension(form.getDataFormToSend());
+        iq.addExtension(dataForm);
 
         connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
     }
@@ -849,7 +860,8 @@ public class MultiUserChat {
         reg.setTo(room);
 
         IQ result = connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
-        return Form.getFormFrom(result);
+        DataForm dataForm = DataForm.from(result);
+        return new Form(dataForm);
     }
 
     /**
@@ -869,11 +881,11 @@ public class MultiUserChat {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void sendRegistrationForm(Form form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void sendRegistrationForm(FillableForm form) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Registration reg = new Registration();
         reg.setType(IQ.Type.set);
         reg.setTo(room);
-        reg.addExtension(form.getDataFormToSend());
+        reg.addExtension(form.getDataFormToSubmit());
 
         connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
     }
@@ -1247,19 +1259,17 @@ public class MultiUserChat {
      * @since 4.1
      */
     public void requestVoice() throws NotConnectedException, InterruptedException {
-        DataForm form = new DataForm(DataForm.Type.submit);
-        FormField.Builder formTypeField = FormField.builder(FormField.FORM_TYPE);
-        formTypeField.addValue(MUCInitialPresence.NAMESPACE + "#request");
-        form.addField(formTypeField.build());
-        FormField.Builder requestVoiceField = FormField.builder("muc#role");
-        requestVoiceField.setType(FormField.Type.text_single);
+        DataForm.Builder form = DataForm.builder()
+                        .setFormType(MUCInitialPresence.NAMESPACE + "#request");
+
+        TextSingleFormField.Builder requestVoiceField = FormField.textSingleBuilder("muc#role");
         requestVoiceField.setLabel("Requested role");
-        requestVoiceField.addValue("participant");
+        requestVoiceField.setValue("participant");
         form.addField(requestVoiceField.build());
 
         Message message = connection.getStanzaFactory().buildMessageStanza()
                 .to(room)
-                .addExtension(form)
+                .addExtension(form.build())
                 .build();
         connection.sendStanza(message);
     }

@@ -16,9 +16,11 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
+
 /**
  * Determines who may publish to a node.  Denotes possible values
- * for {@link ConfigureForm#setPublishModel(PublishModel)}.
+ * for {@link FillableConfigureForm#setPublishModel(PublishModel)}.
  *
  * @author Robin Collier
  */

@@ -278,8 +278,9 @@ public final class MamManager extends Manager {
             if (dataForm != null) {
                 return dataForm;
             }
-            dataForm = getNewMamForm();
-            dataForm.addFields(formFields.values());
+            DataForm.Builder dataFormBuilder = getNewMamForm();
+            dataFormBuilder.addFields(formFields.values());
+            dataForm = dataFormBuilder.build();
             return dataForm;
         }
 
@@ -330,7 +331,7 @@ public final class MamManager extends Manager {
                 }
 
                 FormField formField = getWithFormField(withJid);
-                formFields.put(formField.getVariable(), formField);
+                formFields.put(formField.getFieldName(), formField);
 
                 return this;
             }
@@ -341,9 +342,9 @@ public final class MamManager extends Manager {
                 }
 
                 FormField formField = FormField.builder(FORM_FIELD_START)
-                                .addValue(start)
+                                .setValue(start)
                                 .build();
-                formFields.put(formField.getVariable(), formField);
+                formFields.put(formField.getFieldName(), formField);
 
                 FormField endFormField = formFields.get(FORM_FIELD_END);
                 if (endFormField != null) {
@@ -369,9 +370,9 @@ public final class MamManager extends Manager {
                 }
 
                 FormField formField = FormField.builder(FORM_FIELD_END)
-                    .addValue(end)
+                    .setValue(end)
                     .build();
-                formFields.put(formField.getVariable(), formField);
+                formFields.put(formField.getFieldName(), formField);
 
                 FormField startFormField = formFields.get(FORM_FIELD_START);
                 if (startFormField != null) {
@@ -418,7 +419,7 @@ public final class MamManager extends Manager {
             }
 
             public Builder withAdditionalFormField(FormField formField) {
-                formFields.put(formField.getVariable(), formField);
+                formFields.put(formField.getFieldName(), formField);
                 return this;
             }
 
@@ -483,7 +484,7 @@ public final class MamManager extends Manager {
 
     private static FormField getWithFormField(Jid withJid) {
         return FormField.builder(FORM_FIELD_WITH)
-                        .addValue(withJid.toString())
+                        .setValue(withJid.toString())
                         .build();
     }
 
@@ -718,9 +719,9 @@ public final class MamManager extends Manager {
         throw new SmackException.FeatureNotSupportedException(ADVANCED_CONFIG_NODE, archiveAddress);
     }
 
-    private static DataForm getNewMamForm() {
-        FormField field = FormField.hiddenFormType(MamElements.NAMESPACE);
-        DataForm form = new DataForm(DataForm.Type.submit);
+    private static DataForm.Builder getNewMamForm() {
+        FormField field = FormField.buildHiddenFormType(MamElements.NAMESPACE);
+        DataForm.Builder form = DataForm.builder();
         form.addField(field);
         return form;
     }

@@ -18,10 +18,10 @@ package org.jivesoftware.smackx.pubsub.util;
 
 import org.jivesoftware.smack.packet.Stanza;
 
-import org.jivesoftware.smackx.pubsub.ConfigureForm;
 import org.jivesoftware.smackx.pubsub.FormNode;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * Utility for extracting information from packets.
@@ -38,7 +38,7 @@ public class NodeUtils {
      */
     public static ConfigureForm getFormFromPacket(Stanza packet, PubSubElementType elem) {
         FormNode config = (FormNode) packet.getExtensionElement(elem.getElementName(), elem.getNamespace().getXmlns());
-        Form formReply = config.getForm();
-        return new ConfigureForm(formReply);
+        DataForm dataForm = config.getForm();
+        return new ConfigureForm(dataForm);
     }
 }

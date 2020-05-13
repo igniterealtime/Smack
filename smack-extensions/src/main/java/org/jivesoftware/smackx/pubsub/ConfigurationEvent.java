@@ -22,6 +22,8 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 
+import org.jivesoftware.smackx.pubsub.form.FilledConfigureForm;
+
 /**
  * Represents the <b>configuration</b> element of a PubSub message event which
  * associates a configuration form to the node which was configured.  The form
@@ -30,18 +32,18 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Robin Collier
  */
 public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketExtension {
-    private ConfigureForm form;
+    private final FilledConfigureForm form;
 
     public ConfigurationEvent(String nodeId) {
-        super(PubSubElementType.CONFIGURATION, nodeId);
+        this(nodeId, null);
     }
 
-    public ConfigurationEvent(String nodeId, ConfigureForm configForm) {
+    public ConfigurationEvent(String nodeId, FilledConfigureForm configForm) {
         super(PubSubElementType.CONFIGURATION, nodeId);
         form = configForm;
     }
 
-    public ConfigureForm getConfiguration() {
+    public FilledConfigureForm getConfiguration() {
         return form;
     }
 
@@ -50,6 +52,6 @@ public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketE
         if (getConfiguration() == null)
             return Collections.emptyList();
         else
-            return Arrays.asList((ExtensionElement) getConfiguration().getDataFormToSend());
+            return Arrays.asList((ExtensionElement) getConfiguration().getDataForm());
     }
 }

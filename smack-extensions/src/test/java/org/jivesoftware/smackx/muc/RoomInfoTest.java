@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ import org.junit.jupiter.api.Test;
 public class RoomInfoTest {
     @Test
     public void validateRoomWithEmptyForm() {
-        DataForm dataForm = new DataForm(DataForm.Type.result);
+        DataForm dataForm = DataForm.builder(DataForm.Type.result).build();
 
         DiscoverInfo discoInfo = DiscoverInfo.builder("disco1")
                 .addExtension(dataForm)
@@ -41,22 +42,22 @@ public class RoomInfoTest {
 
     @Test
     public void validateRoomWithForm() {
-        DataForm dataForm = new DataForm(DataForm.Type.result);
+        DataForm.Builder dataForm = DataForm.builder(DataForm.Type.result);
 
-        FormField.Builder desc = FormField.builder("muc#roominfo_description");
-        desc.addValue("The place for all good witches!");
+        TextSingleFormField.Builder desc = FormField.builder("muc#roominfo_description");
+        desc.setValue("The place for all good witches!");
         dataForm.addField(desc.build());
 
-        FormField.Builder subject = FormField.builder("muc#roominfo_subject");
-        subject.addValue("Spells");
+        TextSingleFormField.Builder subject = FormField.builder("muc#roominfo_subject");
+        subject.setValue("Spells");
         dataForm.addField(subject.build());
 
-        FormField.Builder occupants = FormField.builder("muc#roominfo_occupants");
-        occupants.addValue("3");
+        TextSingleFormField.Builder occupants = FormField.builder("muc#roominfo_occupants");
+        occupants.setValue("3");
         dataForm.addField(occupants.build());
 
         DiscoverInfo discoInfo = DiscoverInfo.builder("disco1")
-                .addExtension(dataForm)
+                .addExtension(dataForm.build())
                 .build();
         RoomInfo roomInfo = new RoomInfo(discoInfo);
         assertEquals("The place for all good witches!", roomInfo.getDescription());

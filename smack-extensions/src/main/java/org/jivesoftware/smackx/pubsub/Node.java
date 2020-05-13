@@ -37,6 +37,10 @@ import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 import org.jivesoftware.smackx.pubsub.SubscriptionsExtension.SubscriptionsNamespace;
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
+import org.jivesoftware.smackx.pubsub.form.FillableSubscribeForm;
+import org.jivesoftware.smackx.pubsub.form.SubscribeForm;
 import org.jivesoftware.smackx.pubsub.listener.ItemDeleteListener;
 import org.jivesoftware.smackx.pubsub.listener.ItemEventListener;
 import org.jivesoftware.smackx.pubsub.listener.NodeConfigListener;
@@ -45,7 +49,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 import org.jivesoftware.smackx.pubsub.util.NodeUtils;
 import org.jivesoftware.smackx.shim.packet.Header;
 import org.jivesoftware.smackx.shim.packet.HeadersExtension;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -81,7 +85,7 @@ public abstract class Node {
     }
     /**
      * Returns a configuration form, from which you can create an answer form to be submitted
-     * via the {@link #sendConfigurationForm(Form)}.
+     * via the {@link #sendConfigurationForm(FillableConfigureForm)}.
      *
      * @return the configuration form
      * @throws XMPPErrorException if there was an XMPP error returned.
@@ -97,17 +101,17 @@ public abstract class Node {
     }
 
     /**
-     * Update the configuration with the contents of the new {@link Form}.
+     * Update the configuration with the contents of the new {@link FillableConfigureForm}.
      *
-     * @param submitForm TODO javadoc me please
+     * @param configureForm the filled node configuration form with the nodes new configuration.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void sendConfigurationForm(Form submitForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void sendConfigurationForm(FillableConfigureForm configureForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
-                        getId(), submitForm));
+                        getId(), configureForm.getDataFormToSubmit()));
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
     }
 
@@ -454,9 +458,10 @@ public abstract class Node {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public Subscription subscribe(Jid jid, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Subscription subscribe(Jid jid, FillableSubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        DataForm submitForm = subForm.getDataFormToSubmit();
         PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
-        request.addExtension(new FormNode(FormNodeType.OPTIONS, subForm));
+        request.addExtension(new FormNode(FormNodeType.OPTIONS, submitForm));
         PubSub reply = sendPubsubPacket(request);
         return reply.getExtension(PubSubElementType.SUBSCRIPTION);
     }
@@ -483,11 +488,11 @@ public abstract class Node {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws IllegalArgumentException if the provided string is not a valid JID.
-     * @deprecated use {@link #subscribe(Jid, SubscribeForm)} instead.
+     * @deprecated use {@link #subscribe(Jid, FillableSubscribeForm)} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
-    public Subscription subscribe(String jidString, SubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public Subscription subscribe(String jidString, FillableSubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Jid jid;
         try {
             jid = JidCreate.from(jidString);
@@ -529,7 +534,7 @@ public abstract class Node {
 
     /**
      * Returns a SubscribeForm for subscriptions, from which you can create an answer form to be submitted
-     * via the {@link #sendConfigurationForm(Form)}.
+     * via the {@link #sendConfigurationForm(FillableConfigureForm)}.
      *
      * @param jid TODO javadoc me please
      *

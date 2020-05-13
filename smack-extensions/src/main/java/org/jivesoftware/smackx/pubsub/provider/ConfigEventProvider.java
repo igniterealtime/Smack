@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 
 import org.jivesoftware.smackx.pubsub.ConfigurationEvent;
-import org.jivesoftware.smackx.pubsub.ConfigureForm;
+import org.jivesoftware.smackx.pubsub.form.FilledConfigureForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -38,6 +38,6 @@ public class ConfigEventProvider extends EmbeddedExtensionProvider<Configuration
         if (content.size() == 0)
             return new ConfigurationEvent(attMap.get("node"));
         else
-            return new ConfigurationEvent(attMap.get("node"), new ConfigureForm((DataForm) content.iterator().next()));
+            return new ConfigurationEvent(attMap.get("node"), new FilledConfigureForm((DataForm) content.iterator().next()));
     }
 }

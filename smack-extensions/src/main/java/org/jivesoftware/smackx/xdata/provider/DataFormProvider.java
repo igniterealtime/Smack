@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.xdata.provider;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -29,15 +30,27 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
+import org.jivesoftware.smackx.xdata.AbstractMultiFormField;
+import org.jivesoftware.smackx.xdata.AbstractSingleStringValueFormField;
+import org.jivesoftware.smackx.xdata.BooleanFormField;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormFieldChildElement;
+import org.jivesoftware.smackx.xdata.FormFieldWithOptions;
+import org.jivesoftware.smackx.xdata.JidMultiFormField;
+import org.jivesoftware.smackx.xdata.JidSingleFormField;
+import org.jivesoftware.smackx.xdata.ListMultiFormField;
+import org.jivesoftware.smackx.xdata.ListSingleFormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider;
+
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 
 /**
  * The DataFormProvider parses DataForm packets.
@@ -53,7 +66,11 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     @Override
     public DataForm parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
-        DataForm dataForm = new DataForm(dataFormType);
+        DataForm.Builder dataForm = DataForm.builder();
+        dataForm.setType(dataFormType);
+
+        String formType = null;
+
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
@@ -69,15 +86,24 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     dataForm.setTitle(parser.nextText());
                     break;
                 case "field":
-                    FormField formField = parseField(parser, elementXmlEnvironment);
+                    FormField formField = parseField(parser, elementXmlEnvironment, formType, dataFormType);
+
+                    TextSingleFormField hiddenFormTypeField = formField.asHiddenFormTypeFieldIfPossible();
+                    if (hiddenFormTypeField != null) {
+                        if (formType != null) {
+                            throw new SmackParsingException("Multiple hidden form type fields");
+                        }
+                        formType = hiddenFormTypeField.getValue();
+                    }
+
                     dataForm.addField(formField);
                     break;
                 case "item":
-                    DataForm.Item item = parseItem(parser, elementXmlEnvironment);
+                    DataForm.Item item = parseItem(parser, elementXmlEnvironment, formType, dataFormType);
                     dataForm.addItem(item);
                     break;
                 case "reported":
-                    DataForm.ReportedData reported = parseReported(parser, elementXmlEnvironment);
+                    DataForm.ReportedData reported = parseReported(parser, elementXmlEnvironment, formType, dataFormType);
                     dataForm.setReportedData(reported);
                     break;
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
@@ -104,38 +130,52 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 break;
             }
         }
-        return dataForm;
+        return dataForm.build();
     }
 
-    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType, DataForm.Type dataFormType)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
 
-        final String var = parser.getAttributeValue("", "var");
-        final FormField.Type type = FormField.Type.fromString(parser.getAttributeValue("", "type"));
+        final String fieldName = parser.getAttributeValue("var");
+        final String label = parser.getAttributeValue("", "label");
 
-        final FormField.Builder builder = FormField.builder();
-        builder.setType(type);
-        if (type != FormField.Type.fixed) {
-            builder.setVariable(var);
+        FormField.Type type = null;
+        {
+            String fieldTypeString = parser.getAttributeValue("type");
+            if (fieldTypeString != null) {
+                type = FormField.Type.fromString(fieldTypeString);
+            }
         }
-        String label = parser.getAttributeValue("", "label");
-        if (StringUtils.isNotEmpty(label)) {
-            builder.setLabel(label);
-        }
+
+        List<FormField.Value> values = new ArrayList<>();
+        List<FormField.Option> options = new ArrayList<>();
+        List<FormFieldChildElement> childElements = new ArrayList<>();
+        boolean required = false;
 
         outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
+            XmlPullParser.TagEvent eventType = parser.nextTag();
             switch (eventType) {
             case START_ELEMENT:
                 QName qname = parser.getQName();
-                FormFieldChildElementProvider<?> provider = FormFieldChildElementProviderManager.getFormFieldChildElementProvider(
-                                qname);
-                if (provider != null) {
-                    FormFieldChildElement formFieldChildElement = provider.parse(parser, XmlEnvironment.from(parser, xmlEnvironment));
-                    builder.addFormFieldChildElement(formFieldChildElement);
+                if (qname.equals(FormField.Value.QNAME)) {
+                    FormField.Value value = parseValue(parser);
+                    values.add(value);
+                } else if (qname.equals(FormField.Option.QNAME)) {
+                    FormField.Option option = parseOption(parser);
+                    options.add(option);
+                } else if (qname.equals(FormField.Required.QNAME)) {
+                    required = true;
                 } else {
-                    LOGGER.warning("Unknown form field child element " + qname + " ignored");
+                    FormFieldChildElementProvider<?> provider = FormFieldChildElementProviderManager.getFormFieldChildElementProvider(
+                                    qname);
+                    if (provider == null) {
+                        LOGGER.warning("Unknown form field child element " + qname + " ignored");
+                        continue;
+                    }
+                    FormFieldChildElement formFieldChildElement = provider.parse(parser,
+                                    XmlEnvironment.from(parser, xmlEnvironment));
+                    childElements.add(formFieldChildElement);
                 }
                 break;
             case END_ELEMENT:
@@ -143,16 +183,128 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     break outerloop;
                 }
                 break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
-                break;
             }
         }
+
+        if (type == null) {
+            if (dataFormType == DataForm.Type.submit) {
+                // If the data form is of type submit, and no type was explicitly provided, then we need to lookup the
+                // field's type in the registry.
+                type = FormFieldRegistry.lookup(formType, fieldName);
+                if (type == null) {
+                    throw new SmackParsingException("Field of name '" + fieldName + "' (and FORM_TYPE '" + formType
+                                    + "') not registered");
+                }
+            } else {
+                // As per XEP-0004, text-single is the default form field type.
+                type = FormField.Type.text_single;
+            }
+        }
+
+        FormField.Builder<?, ?> builder;
+        switch (type) {
+        case bool:
+            builder = parseBooleanFormField(fieldName, values);
+            break;
+        case fixed:
+            builder = parseSingleKindFormField(FormField.fixedBuilder(fieldName), values);
+            break;
+        case hidden:
+            builder = parseSingleKindFormField(FormField.hiddenBuilder(fieldName), values);
+            break;
+        case jid_multi:
+            JidMultiFormField.Builder jidMultiBuilder = FormField.jidMultiBuilder(fieldName);
+            for (FormField.Value value : values) {
+                Jid jid = JidCreate.from(value.getValue());
+                jidMultiBuilder.addValue(jid);
+            }
+            builder = jidMultiBuilder;
+            break;
+        case jid_single:
+            ensureAtMostSingleValue(type, values);
+            JidSingleFormField.Builder jidSingleBuilder = FormField.jidSingleBuilder(fieldName);
+            if (!values.isEmpty()) {
+                CharSequence jidCharSequence = values.get(0).getValue();
+                Jid jid = JidCreate.from(jidCharSequence);
+                jidSingleBuilder.setValue(jid);
+            }
+            builder = jidSingleBuilder;
+            break;
+        case list_multi:
+            ListMultiFormField.Builder listMultiBuilder = FormField.listMultiBuilder(fieldName);
+            addOptionsToBuilder(options, listMultiBuilder);
+            builder = parseMultiKindFormField(listMultiBuilder, values);
+            break;
+        case list_single:
+            ListSingleFormField.Builder listSingleBuilder = FormField.listSingleBuilder(fieldName);
+            addOptionsToBuilder(options, listSingleBuilder);
+            builder = parseSingleKindFormField(listSingleBuilder, values);
+            break;
+        case text_multi:
+            builder = parseMultiKindFormField(FormField.textMultiBuilder(fieldName), values);
+            break;
+        case text_private:
+            builder = parseSingleKindFormField(FormField.textPrivateBuilder(fieldName), values);
+            break;
+        case text_single:
+            builder = parseSingleKindFormField(FormField.textSingleBuilder(fieldName), values);
+            break;
+        default:
+            // Should never happen, as we cover all types in the switch/case.
+            throw new AssertionError("Unknown type " + type);
+        }
+
+
+        switch (type) {
+        case list_multi:
+        case list_single:
+            break;
+        default:
+            if (!options.isEmpty()) {
+                throw new SmackParsingException("Form fields of type " + type + " must not have options. This one had "
+                                + options.size());
+            }
+            break;
+        }
+
+        if (label != null) {
+            builder.setLabel(label);
+        }
+        builder.setRequired(required);
+        builder.addFormFieldChildElements(childElements);
 
         return builder.build();
     }
 
-    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+    private static FormField.Builder<?, ?> parseBooleanFormField(String fieldName, List<FormField.Value> values) throws SmackParsingException {
+        BooleanFormField.Builder builder = FormField.booleanBuilder(fieldName);
+        if (values.size() == 1) {
+            String value = values.get(0).getValue().toString();
+            builder.setValue(value);
+        }
+        return builder;
+    }
+
+    private static AbstractSingleStringValueFormField.Builder<?, ?> parseSingleKindFormField(
+                    AbstractSingleStringValueFormField.Builder<?, ?> builder, List<FormField.Value> values)
+                    throws SmackParsingException {
+        ensureAtMostSingleValue(builder.getType(), values);
+        if (values.size() == 1) {
+            String value = values.get(0).getValue().toString();
+            builder.setValue(value);
+        }
+        return builder;
+    }
+
+    private static AbstractMultiFormField.Builder<?, ?> parseMultiKindFormField(AbstractMultiFormField.Builder<?, ?> builder,
+                    List<FormField.Value> values) {
+        for (FormField.Value value : values) {
+            builder.addValue(value.getValue());
+        }
+        return builder;
+    }
+
+    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType, DataForm.Type dataFormType)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<>();
@@ -163,7 +315,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment));
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), formType, dataFormType);
                     fields.add(field);
                     break;
                 }
@@ -178,7 +330,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return new DataForm.Item(fields);
     }
 
-    private static DataForm.ReportedData parseReported(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+    private static DataForm.ReportedData parseReported(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType, DataForm.Type dataFormType)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<>();
@@ -189,7 +341,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment));
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), formType, dataFormType);
                     fields.add(field);
                     break;
                 }
@@ -204,4 +356,45 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return new DataForm.ReportedData(fields);
     }
 
+    public static FormField.Value parseValue(XmlPullParser parser) throws IOException, XmlPullParserException {
+        String value = parser.nextText();
+        return new FormField.Value(value);
+    }
+
+    public static FormField.Option parseOption(XmlPullParser parser) throws IOException, XmlPullParserException {
+        int initialDepth = parser.getDepth();
+        FormField.Option option = null;
+        String label = parser.getAttributeValue("", "label");
+        outerloop: while (true) {
+            XmlPullParser.TagEvent eventType = parser.nextTag();
+            switch (eventType) {
+            case START_ELEMENT:
+                String name = parser.getName();
+                switch (name) {
+                case "value":
+                    option = new FormField.Option(label, parser.nextText());
+                    break;
+                }
+                break;
+            case END_ELEMENT:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
+            }
+        }
+        return option;
+    }
+
+    private static void ensureAtMostSingleValue(FormField.Type type, List<FormField.Value> values) throws SmackParsingException {
+        if (values.size() > 1) {
+            throw new SmackParsingException(type + " fields can have at most one value, this one had " + values.size());
+        }
+    }
+
+    private static void addOptionsToBuilder(Collection<FormField.Option> options, FormFieldWithOptions.Builder<?> builder) {
+        for (FormField.Option option : options) {
+            builder.addOption(option);
+        }
+    }
 }

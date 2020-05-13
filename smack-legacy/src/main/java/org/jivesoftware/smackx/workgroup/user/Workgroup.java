@@ -56,8 +56,10 @@ import org.jivesoftware.smackx.workgroup.settings.ChatSettings;
 import org.jivesoftware.smackx.workgroup.settings.OfflineSettings;
 import org.jivesoftware.smackx.workgroup.settings.SoundSettings;
 import org.jivesoftware.smackx.workgroup.settings.WorkgroupProperties;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
@@ -247,7 +249,7 @@ public class Workgroup {
      * this method will throw an IllegalStateException if the user is already in the queue.<p>
      *
      * Some servers may be configured to require certain meta-data in order to
-     * join the queue. In that case, the {@link #joinQueue(Form)} method should be
+     * join the queue. In that case, the {@link #joinQueue(FillableForm)} method should be
      * used instead of this method so that meta-data may be passed in.<p>
      *
      * The server tracks the conversations that a user has with agents over time. By
@@ -255,7 +257,7 @@ public class Workgroup {
      * possible. For example, when the user is logged in anonymously using a web client.
      * In that case the user ID might be a randomly generated value put into a persistent
      * cookie or a username obtained via the session. A userID can be explicitly
-     * passed in by using the {@link #joinQueue(Form, Jid)} method. When specified,
+     * passed in by using the {@link #joinQueue(DataForm, Jid)} method. When specified,
      * that userID will be used instead of the user's JID to track conversations. The
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
@@ -293,7 +295,7 @@ public class Workgroup {
      * possible. For example, when the user is logged in anonymously using a web client.
      * In that case the user ID might be a randomly generated value put into a persistent
      * cookie or a username obtained via the session. A userID can be explicitly
-     * passed in by using the {@link #joinQueue(Form, Jid)} method. When specified,
+     * passed in by using the {@link #joinQueue(DataForm, Jid)} method. When specified,
      * that userID will be used instead of the user's JID to track conversations. The
      * server will ignore a manually specified userID if the user's connection to the server
      * is not anonymous.
@@ -305,8 +307,8 @@ public class Workgroup {
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void joinQueue(Form answerForm) throws XMPPException, SmackException, InterruptedException {
-        joinQueue(answerForm, null);
+    public void joinQueue(FillableForm answerForm) throws XMPPException, SmackException, InterruptedException {
+        joinQueue(answerForm.getDataFormToSubmit(), null);
     }
 
     /**
@@ -345,7 +347,7 @@ public class Workgroup {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void joinQueue(Form answerForm, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public void joinQueue(DataForm answerForm, Jid userID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // If already in the queue ignore the join request.
         if (inQueue) {
             throw new IllegalStateException("Already in queue " + workgroupJID);
@@ -400,18 +402,17 @@ public class Workgroup {
         }
 
         // Build dataform from metadata
-        Form form = new Form(DataForm.Type.submit);
+        DataForm.Builder form = DataForm.builder();
         Iterator<String> iter = metadata.keySet().iterator();
         while (iter.hasNext()) {
             String name = iter.next();
             String value = metadata.get(name).toString();
 
-            FormField.Builder field = FormField.builder(name);
-            field.setType(FormField.Type.text_single);
+            TextSingleFormField.Builder field = FormField.builder(name);
+            field.setValue(value);
             form.addField(field.build());
-            form.setAnswer(name, value);
         }
-        joinQueue(form, userID);
+        joinQueue(form.build(), userID);
     }
 
     /**
@@ -569,14 +570,14 @@ public class Workgroup {
         private final Jid userID;
         private final DataForm form;
 
-        private JoinQueuePacket(EntityBareJid workgroup, Form answerForm, Jid userID) {
+        private JoinQueuePacket(EntityBareJid workgroup, DataForm answerForm, Jid userID) {
             super("join-queue", "http://jabber.org/protocol/workgroup");
             this.userID = userID;
 
             setTo(workgroup);
             setType(IQ.Type.set);
 
-            form = answerForm.getDataFormToSend();
+            form = answerForm;
             addExtension(form);
         }
 
@@ -772,6 +773,6 @@ public class Workgroup {
 
         WorkgroupForm response = connection.createStanzaCollectorAndSend(
                         workgroupForm).nextResultOrThrow();
-        return Form.getFormFrom(response);
+        return Form.from(response);
     }
 }

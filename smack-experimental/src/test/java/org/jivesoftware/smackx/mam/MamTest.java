@@ -49,7 +49,8 @@ public class MamTest extends SmackTestSuite {
             IllegalArgumentException, InvocationTargetException {
         Method methodGetNewMamForm = MamManager.class.getDeclaredMethod("getNewMamForm");
         methodGetNewMamForm.setAccessible(true);
-        return (DataForm) methodGetNewMamForm.invoke(mamManager);
+        DataForm.Builder dataFormBuilder = (DataForm.Builder) methodGetNewMamForm.invoke(mamManager);
+        return dataFormBuilder.build();
     }
 
 }

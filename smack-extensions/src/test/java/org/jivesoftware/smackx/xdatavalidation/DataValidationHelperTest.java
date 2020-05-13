@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.JidSingleFormField;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.BasicValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.ListRange;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.OpenValidateElement;
@@ -37,8 +38,7 @@ public class DataValidationHelperTest {
 
     @Test
     public void testCheckConsistencyFormFieldBasicValidateElement() {
-        FormField.Builder field = FormField.builder("var")
-                        .setType(FormField.Type.jid_single);
+        JidSingleFormField.Builder field = FormField.jidSingleBuilder("var");
         BasicValidateElement element = new BasicValidateElement(null);
         ValidationConsistencyException vce = assertThrows(ValidationConsistencyException.class,
                         () -> element.checkConsistency(field));
@@ -52,15 +52,14 @@ public class DataValidationHelperTest {
         vce = assertThrows(ValidationConsistencyException.class, () -> element.checkConsistency(field));
         assertEquals("Field type is not of type 'list-multi' while a 'list-range' is defined.", vce.getMessage());
 
-        FormField.Builder fieldListMulti = field.setType(FormField.Type.list_multi);
+        FormField.Builder<?, ?> fieldListMulti = FormField.listMultiBuilder("var");
         element.checkConsistency(fieldListMulti);
     }
 
 
     @Test
     public void testCheckConsistencyFormFieldOpenValidateElement() {
-        FormField.Builder field = FormField.builder("var")
-                        .setType(FormField.Type.hidden);
+        FormField.Builder<?, ?> field = FormField.hiddenBuilder("var");
         OpenValidateElement element = new OpenValidateElement(null);
         ValidationConsistencyException e = assertThrows(ValidationConsistencyException.class,
                         () -> element.checkConsistency(field));
@@ -69,8 +68,7 @@ public class DataValidationHelperTest {
 
     @Test
     public void testCheckConsistencyFormFieldRangeValidateElement() {
-        FormField.Builder field = FormField.builder("var")
-                        .setType(FormField.Type.text_multi);
+        FormField.Builder<?, ?> field = FormField.textMultiBuilder("var");
         RangeValidateElement element = new RangeValidateElement("xs:integer", null,  "99");
         ValidationConsistencyException e = assertThrows(ValidationConsistencyException.class,
                         () -> element.checkConsistency(field));
@@ -79,8 +77,7 @@ public class DataValidationHelperTest {
 
     @Test
     public void testCheckConsistencyFormFieldRegexValidateElement() {
-        FormField.Builder field = FormField.builder("var")
-                        .setType(FormField.Type.list_multi);
+        FormField.Builder<?, ?> field = FormField.listMultiBuilder("var");
         RegexValidateElement element = new RegexValidateElement(null, ".*");
         ValidationConsistencyException e = assertThrows(ValidationConsistencyException.class,
                         () -> element.checkConsistency(field));

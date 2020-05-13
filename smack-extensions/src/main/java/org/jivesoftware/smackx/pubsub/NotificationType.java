@@ -16,9 +16,11 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
+
 /**
  * Specify the delivery style for event notifications.  Denotes possible values
- * for {@link ConfigureForm#setNotificationType(NotificationType)}.
+ * for {@link FillableConfigureForm#setNotificationType(NotificationType)}.
  *
  * @author Timothy Pitt
  */

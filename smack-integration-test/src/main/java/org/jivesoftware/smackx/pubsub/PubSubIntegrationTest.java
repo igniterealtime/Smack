@@ -27,6 +27,9 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.StanzaError;
 
+import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
+import org.jivesoftware.smackx.pubsub.form.FillableConfigureForm;
+
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -64,7 +67,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     public void transientNotificationOnlyNodeWithoutItemTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final String nodename = "sinttest-transient-notificationonly-withoutitem-nodename-" + testRunId;
         ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        FillableConfigureForm config = defaultConfiguration.getFillableForm();
         // Configure the node as "Notification-Only Node".
         config.setDeliverPayloads(false);
         // Configure the node as "transient" (set persistent_items to 'false')
@@ -107,7 +110,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         final String itemId = "sinttest-transient-notificationonly-withitem-itemid-" + testRunId;
 
         ConfigureForm defaultConfiguration = pubSubManagerOne.getDefaultConfiguration();
-        ConfigureForm config = new ConfigureForm(defaultConfiguration.createAnswerForm());
+        FillableConfigureForm config = defaultConfiguration.getFillableForm();
         // Configure the node as "Notification-Only Node".
         config.setDeliverPayloads(false);
         // Configure the node as "transient" (set persistent_items to 'false')

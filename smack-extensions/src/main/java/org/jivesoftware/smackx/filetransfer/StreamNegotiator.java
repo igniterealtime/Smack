@@ -33,6 +33,7 @@ import org.jivesoftware.smack.util.EventManger.Callback;
 
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
@@ -80,13 +81,13 @@ public abstract class StreamNegotiator extends Manager {
         response.setType(IQ.Type.result);
         response.setStanzaId(streamInitiationOffer.getStanzaId());
 
-        DataForm form = new DataForm(DataForm.Type.submit);
-        FormField.Builder field = FormField.builder(
+        DataForm.Builder form = DataForm.builder();
+        ListSingleFormField.Builder field = FormField.listSingleBuilder(
                 FileTransferNegotiator.STREAM_DATA_FIELD_NAME);
-        field.addValue(namespace);
+        field.setValue(namespace);
         form.addField(field.build());
 
-        response.setFeatureNegotiationForm(form);
+        response.setFeatureNegotiationForm(form.build());
         return response;
     }
 

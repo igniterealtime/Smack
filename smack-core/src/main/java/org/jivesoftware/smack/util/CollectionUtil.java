@@ -18,9 +18,12 @@ package org.jivesoftware.smack.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CollectionUtil {
@@ -57,6 +60,20 @@ public class CollectionUtil {
             return null;
         }
         return new ArrayList<>(collection);
+    }
+
+    public static <T> List<T> cloneAndSeal(Collection<? extends T> collection) {
+        if (collection == null) {
+            return Collections.emptyList();
+        }
+
+        ArrayList<T> clone = newListWith(collection);
+        return Collections.unmodifiableList(clone);
+    }
+
+    public static <K, V> Map<K, V> cloneAndSeal(Map<K, V> map) {
+        Map<K, V> clone = new HashMap<>(map);
+        return Collections.unmodifiableMap(clone);
     }
 
     public static <T> Set<T> newSetWith(Collection<? extends T> collection) {

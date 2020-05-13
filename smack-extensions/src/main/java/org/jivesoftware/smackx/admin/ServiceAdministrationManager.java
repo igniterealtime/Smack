@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2019 Florian Schmaus
+ * Copyright 2016-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.commands.AdHocCommandManager;
 import org.jivesoftware.smackx.commands.RemoteCommand;
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
@@ -72,7 +72,7 @@ public class ServiceAdministrationManager extends Manager {
         RemoteCommand command = addUser();
         command.execute();
 
-        Form answerForm = command.getForm().createAnswerForm();
+        FillableForm answerForm = new FillableForm(command.getForm());
 
         answerForm.setAnswer("accountjid", userJid);
         answerForm.setAnswer("password", password);
@@ -101,7 +101,7 @@ public class ServiceAdministrationManager extends Manager {
         RemoteCommand command = deleteUser();
         command.execute();
 
-        Form answerForm = command.getForm().createAnswerForm();
+        FillableForm answerForm = new FillableForm(command.getForm());
 
         answerForm.setAnswer("accountjids", jidsToDelete);
 

@@ -37,7 +37,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.Test;
 
@@ -47,12 +46,6 @@ import org.junit.jupiter.api.Test;
  *
  */
 public class ConfigureFormTest extends SmackTestSuite {
-    @Test
-    public void checkChildrenAssocPolicy() {
-        ConfigureForm form = new ConfigureForm(DataForm.Type.submit);
-        form.setChildrenAssociationPolicy(ChildrenAssociationPolicy.owners);
-        assertEquals(ChildrenAssociationPolicy.owners, form.getChildrenAssociationPolicy());
-    }
 
     @Test
     public void getConfigFormWithInsufficientPrivileges() throws XMPPException, SmackException, IOException, InterruptedException {
@@ -105,15 +98,6 @@ public class ConfigureFormTest extends SmackTestSuite {
 
             node.getNodeConfiguration();
         });
-    }
-
-    @Test
-    public void checkNotificationType() {
-        ConfigureForm form = new ConfigureForm(DataForm.Type.submit);
-        form.setNotificationType(NotificationType.normal);
-        assertEquals(NotificationType.normal, form.getNotificationType());
-        form.setNotificationType(NotificationType.headline);
-        assertEquals(NotificationType.headline, form.getNotificationType());
     }
 
 }

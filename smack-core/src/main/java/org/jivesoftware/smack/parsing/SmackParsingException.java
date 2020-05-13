@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,10 @@ public class SmackParsingException extends Exception {
 
     protected SmackParsingException(Exception exception) {
         super(exception);
+    }
+
+    public SmackParsingException(String message) {
+        super(message);
     }
 
     public static class SmackTextParseException extends SmackParsingException {

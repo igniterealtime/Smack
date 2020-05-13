@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,11 @@ public interface FormFieldChildElement extends FullyQualifiedElement {
         return false;
     }
 
-    default void checkConsistency(FormField.Builder formFieldBuilder) throws IllegalArgumentException {
+    default void checkConsistency(FormField.Builder<?, ?> formFieldBuilder) throws IllegalArgumentException {
         // Does nothing per default.
     }
 
+    default void validate(FormField formField) throws IllegalArgumentException {
+        // Does nothing per default.
+    }
 }

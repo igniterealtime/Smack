@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2018-2019 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,17 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.Test;
+import org.jxmpp.jid.JidTestUtil;
 
 public class RetrieveFormFieldsTest extends MamTest {
 
     private static final String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamElements.NAMESPACE
             + "' queryid='testid'></query>" + "</iq>";
 
-    private static final String additionalFieldsStanza = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE' type='hidden'>"
+    private static final String additionalFieldsStanza = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>"
             + "<value>" + MamElements.NAMESPACE + "</value>" + "</field>"
             + "<field var='urn:example:xmpp:free-text-search'>" + "<value>Hi</value>" + "</field>"
-            + "<field var='urn:example:xmpp:stanza-content' type='jid-single'>" + "<value>Hi2</value>" + "</field>"
+            + "<field var='urn:example:xmpp:stanza-content'>" + "<value>one@exampleone.org</value>" + "</field>"
             + "</x>";
 
     @Test
@@ -51,13 +52,11 @@ public class RetrieveFormFieldsTest extends MamTest {
     @Test
     public void checkAddAdditionalFieldsStanza() throws Exception {
         FormField field1 = FormField.builder("urn:example:xmpp:free-text-search")
-                        .setType(FormField.Type.text_single)
-                        .addValue("Hi")
+                        .setValue("Hi")
                         .build();
 
-        FormField field2 = FormField.builder("urn:example:xmpp:stanza-content")
-                        .setType(FormField.Type.jid_single)
-                        .addValue("Hi2")
+        FormField field2 = FormField.jidSingleBuilder("urn:example:xmpp:stanza-content")
+                        .setValue(JidTestUtil.BARE_JID_1)
                         .build();
 
         MamQueryArgs mamQueryArgs = MamQueryArgs.builder()

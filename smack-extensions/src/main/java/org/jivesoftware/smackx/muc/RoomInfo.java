@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
-import org.jivesoftware.smackx.xdata.Form;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
@@ -130,7 +130,7 @@ public class RoomInfo {
     /**
      * The rooms extended configuration form;
      */
-    private final Form form;
+    private final DataForm form;
 
     RoomInfo(DiscoverInfo info) {
         final Jid from = info.getFrom();
@@ -166,7 +166,7 @@ public class RoomInfo {
         URL logs = null;
         String pubsub = null;
         // Get the information based on the discovered extended information
-        form = Form.getFormFrom(info);
+        form = DataForm.from(info);
         if (form != null) {
             FormField descField = form.getField("muc#roominfo_description");
             if (descField != null && !descField.getValues().isEmpty()) {
@@ -191,7 +191,7 @@ public class RoomInfo {
 
             FormField contactJidField = form.getField("muc#roominfo_contactjid");
             if (contactJidField != null && !contactJidField.getValues().isEmpty()) {
-                List<CharSequence> contactJidValues = contactJidField.getValues();
+                List<? extends CharSequence> contactJidValues = contactJidField.getValues();
                 contactJid = JidUtil.filterEntityBareJidList(JidUtil.jidSetFrom(contactJidValues));
             }
 
@@ -420,7 +420,7 @@ public class RoomInfo {
      *      href="http://xmpp.org/extensions/xep-0045.html#disco-roominfo">XEP-45:
      *      Multi User Chat - 6.5 Querying for Room Information</a>
      */
-    public Form getForm() {
+    public DataForm getForm() {
         return form;
     }
 

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smackx.xdata.Form;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
  * Generic stanza extension which represents any PubSub form that is
@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.xdata.Form;
  * @author Robin Collier
  */
 public class FormNode extends NodeExtension {
-    private final Form configForm;
+    private final DataForm configForm;
 
     /**
      * Create a {@link FormNode} which contains the specified form.
@@ -35,7 +35,7 @@ public class FormNode extends NodeExtension {
      * @param formType The type of form being sent
      * @param submitForm The form
      */
-    public FormNode(FormNodeType formType, Form submitForm) {
+    public FormNode(FormNodeType formType, DataForm submitForm) {
         super(formType.getNodeElement());
 
         if (submitForm == null)
@@ -51,7 +51,7 @@ public class FormNode extends NodeExtension {
      * @param nodeId The node the form is associated with
      * @param submitForm The form
      */
-    public FormNode(FormNodeType formType, String nodeId, Form submitForm) {
+    public FormNode(FormNodeType formType, String nodeId, DataForm submitForm) {
         super(formType.getNodeElement(), nodeId);
 
         if (submitForm == null)
@@ -64,7 +64,7 @@ public class FormNode extends NodeExtension {
      *
      * @return The form
      */
-    public Form getForm() {
+    public DataForm getForm() {
         return configForm;
     }
 
@@ -84,7 +84,7 @@ public class FormNode extends NodeExtension {
             }
             else
                 builder.append('>');
-            builder.append(configForm.getDataFormToSend().toXML());
+            builder.append(configForm.toXML());
             builder.append("</");
             builder.append(getElementName() + '>');
             return builder.toString();
