@@ -37,7 +37,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that has just joined the room
      * (e.g. room@conference.jabber.org/nick).
      */
-    void joined(EntityFullJid participant);
+    default void joined(EntityFullJid participant) {
+    }
 
     /**
      * Called when a room occupant has left the room on its own. This means that the occupant was
@@ -46,7 +47,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that has left the room on its own.
      * (e.g. room@conference.jabber.org/nick).
      */
-    void left(EntityFullJid participant);
+    default void left(EntityFullJid participant) {
+    }
 
     /**
      * Called when a room participant has been kicked from the room. This means that the kicked
@@ -57,7 +59,8 @@ public interface ParticipantStatusListener {
      * @param actor the moderator that kicked the occupant from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick the occupant from the room.
      */
-    void kicked(EntityFullJid participant, Jid actor, String reason);
+    default void kicked(EntityFullJid participant, Jid actor, String reason) {
+    }
 
     /**
      * Called when a moderator grants voice to a visitor. This means that the visitor
@@ -66,7 +69,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted voice in the room
      * (e.g. room@conference.jabber.org/nick).
      */
-    void voiceGranted(EntityFullJid participant);
+    default void voiceGranted(EntityFullJid participant) {
+    }
 
     /**
      * Called when a moderator revokes voice from a participant. This means that the participant
@@ -76,7 +80,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked voice from the room
      * (e.g. room@conference.jabber.org/nick).
      */
-    void voiceRevoked(EntityFullJid participant);
+    default void voiceRevoked(EntityFullJid participant) {
+    }
 
     /**
      * Called when an administrator or owner banned a participant from the room. This means that
@@ -87,7 +92,8 @@ public interface ParticipantStatusListener {
      * @param actor the administrator that banned the occupant (e.g. user@host.org).
      * @param reason the reason provided by the administrator to ban the occupant.
      */
-    void banned(EntityFullJid participant, Jid actor, String reason);
+    default void banned(EntityFullJid participant, Jid actor, String reason) {
+    }
 
     /**
      * Called when an administrator grants a user membership to the room. This means that the user
@@ -96,7 +102,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted membership in the room
      * (e.g. room@conference.jabber.org/nick).
      */
-     void membershipGranted(EntityFullJid participant);
+    default void membershipGranted(EntityFullJid participant) {
+    }
 
     /**
      * Called when an administrator revokes a user membership to the room. This means that the
@@ -105,7 +112,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked membership from the room
      * (e.g. room@conference.jabber.org/nick).
      */
-     void membershipRevoked(EntityFullJid participant);
+    default void membershipRevoked(EntityFullJid participant) {
+    }
 
     /**
      * Called when an administrator grants moderator privileges to a user. This means that the user
@@ -115,7 +123,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted moderator privileges in the room
      * (e.g. room@conference.jabber.org/nick).
      */
-     void moderatorGranted(EntityFullJid participant);
+    default void moderatorGranted(EntityFullJid participant) {
+    }
 
     /**
      * Called when an administrator revokes moderator privileges from a user. This means that the
@@ -125,7 +134,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked moderator privileges in the room
      * (e.g. room@conference.jabber.org/nick).
      */
-     void moderatorRevoked(EntityFullJid participant);
+    default void moderatorRevoked(EntityFullJid participant) {
+    }
 
     /**
      * Called when an owner grants a user ownership on the room. This means that the user
@@ -135,7 +145,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted ownership on the room
      * (e.g. room@conference.jabber.org/nick).
      */
-     void ownershipGranted(EntityFullJid participant);
+    default void ownershipGranted(EntityFullJid participant) {
+    }
 
     /**
      * Called when an owner revokes a user ownership on the room. This means that the user
@@ -145,7 +156,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked ownership on the room
      * (e.g. room@conference.jabber.org/nick).
      */
-     void ownershipRevoked(EntityFullJid participant);
+    default void ownershipRevoked(EntityFullJid participant) {
+    }
 
     /**
      * Called when an owner grants administrator privileges to a user. This means that the user
@@ -155,7 +167,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was granted administrator privileges
      * (e.g. room@conference.jabber.org/nick).
      */
-     void adminGranted(EntityFullJid participant);
+    default void adminGranted(EntityFullJid participant) {
+    }
 
     /**
      * Called when an owner revokes administrator privileges from a user. This means that the user
@@ -165,7 +178,8 @@ public interface ParticipantStatusListener {
      * @param participant the participant that was revoked administrator privileges
      * (e.g. room@conference.jabber.org/nick).
      */
-     void adminRevoked(EntityFullJid participant);
+    default void adminRevoked(EntityFullJid participant) {
+    }
 
     /**
      * Called when a participant changed his/her nickname in the room. The new participant's
@@ -175,6 +189,7 @@ public interface ParticipantStatusListener {
      * (e.g. room@conference.jabber.org/nick).
      * @param newNickname the new nickname that the participant decided to use.
      */
-     void nicknameChanged(EntityFullJid participant, Resourcepart newNickname);
+    default void nicknameChanged(EntityFullJid participant, Resourcepart newNickname) {
+    }
 
 }

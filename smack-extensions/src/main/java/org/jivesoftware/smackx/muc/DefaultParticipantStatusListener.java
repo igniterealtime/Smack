@@ -29,7 +29,10 @@ import org.jxmpp.jid.parts.Resourcepart;
  * some of the methods.
  *
  * @author Gaston Dombiak
+ * @deprecated use {@link ParticipantStatusListener} instead.
  */
+// TODO: Remove in Smack 4.5
+@Deprecated
 public class DefaultParticipantStatusListener implements ParticipantStatusListener {
 
     @Override
