@@ -401,7 +401,7 @@ public final class ReconnectionManager {
         reconnectionThread = null;
     }
 
-    private final ConnectionListener connectionListener = new AbstractConnectionListener() {
+    private final ConnectionListener connectionListener = new ConnectionListener() {
 
         @Override
         public void connectionClosed() {

@@ -18,7 +18,6 @@ package org.jivesoftware.smack.debugger;
 
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.ReconnectionListener;
@@ -69,7 +68,7 @@ public abstract class AbstractDebugger extends SmackDebugger {
         };
         this.writer.addWriterListener(writerListener);
 
-        connListener = new AbstractConnectionListener() {
+        connListener = new ConnectionListener() {
             @Override
             public void connected(XMPPConnection connection) {
                 log("XMPPConnection connected ("

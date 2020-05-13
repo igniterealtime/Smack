@@ -37,7 +37,8 @@ public interface ConnectionListener {
      *
      * @param connection the XMPPConnection which successfully connected to its endpoint.
      */
-    void connected(XMPPConnection connection);
+    default void connected(XMPPConnection connection) {
+    }
 
     /**
      * Notification that the connection has been authenticated.
@@ -45,12 +46,14 @@ public interface ConnectionListener {
      * @param connection the XMPPConnection which successfully authenticated.
      * @param resumed true if a previous XMPP session's stream was resumed.
      */
-    void authenticated(XMPPConnection connection, boolean resumed);
+    default void authenticated(XMPPConnection connection, boolean resumed) {
+    }
 
     /**
      * Notification that the connection was closed normally.
      */
-    void connectionClosed();
+    default void connectionClosed() {
+    }
 
     /**
      * Notification that the connection was closed due to an exception. When
@@ -59,6 +62,7 @@ public interface ConnectionListener {
      *
      * @param e the exception.
      */
-    void connectionClosedOnError(Exception e);
+    default void connectionClosedOnError(Exception e) {
+    }
 
 }

@@ -17,13 +17,13 @@
 
 package org.jivesoftware.smackx.debugger.slf4j;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.ReconnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
 
 import org.slf4j.Logger;
 
-class SLF4JLoggingConnectionListener extends AbstractConnectionListener implements ReconnectionListener {
+class SLF4JLoggingConnectionListener implements ConnectionListener, ReconnectionListener {
     private final XMPPConnection connection;
     private final Logger logger;
 

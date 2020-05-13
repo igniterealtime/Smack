@@ -60,7 +60,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.BadLocationException;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.ReconnectionListener;
@@ -220,7 +219,7 @@ public class EnhancedDebugger extends SmackDebugger {
         addInformationPanel();
 
         // Create a thread that will listen for any connection closed event
-        connListener = new AbstractConnectionListener() {
+        connListener = new ConnectionListener() {
             @Override
             public void connectionClosed() {
                 SwingUtilities.invokeLater(new Runnable() {

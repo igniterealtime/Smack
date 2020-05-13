@@ -33,9 +33,9 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.AbstractConnectionListener;
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
@@ -313,7 +313,7 @@ public final class Roster extends Manager {
         }, PresenceTypeFilter.SUBSCRIBE);
 
         // Listen for connection events
-        connection.addConnectionListener(new AbstractConnectionListener() {
+        connection.addConnectionListener(new ConnectionListener() {
 
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {

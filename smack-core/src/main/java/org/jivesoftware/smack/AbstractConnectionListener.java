@@ -23,7 +23,10 @@ package org.jivesoftware.smack;
  * all methods.
  *
  * @author Henning Staib
+ * @deprecated use {@link ConnectionListener} instead.
  */
+// TODO: Remove in Smack 4.5.
+@Deprecated
 public class AbstractConnectionListener implements ConnectionListener {
     @Override
     public void connected(XMPPConnection connection) {
