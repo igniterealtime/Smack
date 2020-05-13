@@ -8,7 +8,9 @@ dependencies {
 	compile project(':smack-extensions')
 	compile project(':smack-experimental')
 
-	compile 'org.pgpainless:pgpainless-core:0.0.1-alpha7'
+	api 'org.pgpainless:pgpainless-core:0.0.1-alpha11'
+
+	testImplementation "org.bouncycastle:bcprov-jdk15on:1.65"
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testCompile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
