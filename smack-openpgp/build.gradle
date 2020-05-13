@@ -10,7 +10,7 @@ dependencies {
 
 	api 'org.pgpainless:pgpainless-core:0.0.1-alpha11'
 
-	testImplementation "org.bouncycastle:bcprov-jdk15on:1.65"
+	testImplementation "org.bouncycastle:bcprov-jdk15on:${bouncyCastleVersion}"
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testCompile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"

@@ -18,7 +18,7 @@ dependencies {
 	// 'implementation' here since there is no need to shadow it
 	// outside of the fixtures compilation classpath. That is, no test
 	// should ever setup Bouncy Castle as security provider explicitly.
-	testFixturesImplementation 'org.bouncycastle:bcprov-jdk15on:1.64'
+	testFixturesImplementation "org.bouncycastle:bcprov-jdk15on:${bouncyCastleVersion}"
 	testFixturesImplementation 'org.apache.commons:commons-lang3:3.10'
 
 	testFixturesApi "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"

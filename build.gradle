@@ -116,6 +116,7 @@ allprojects {
 		].collect { project(it) }
 		junitVersion = '5.6.0'
 		commonsIoVersion = '2.6'
+		bouncyCastleVersion = '1.65'
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
 		} else {
