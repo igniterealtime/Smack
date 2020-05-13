@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2017-2020 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2017-2020 Florian Schmaus, 2020 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -71,10 +73,14 @@ import org.jxmpp.jid.EntityFullJid;
  *
  * @author Georg Lukas
  * @author Florian Schmaus
+ * @author Paul Schaub
  */
 public final class CarbonManager extends Manager {
 
-    private static Map<XMPPConnection, CarbonManager> INSTANCES = new WeakHashMap<XMPPConnection, CarbonManager>();
+    private static final Logger LOGGER = Logger.getLogger(CarbonManager.class.getName());
+    private static Map<XMPPConnection, CarbonManager> INSTANCES = new WeakHashMap<>();
+
+    private static boolean ENABLED_BY_DEFAULT = false;
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -99,10 +105,21 @@ public final class CarbonManager extends Manager {
     private final Set<CarbonCopyReceivedListener> listeners = new CopyOnWriteArraySet<>();
 
     private volatile boolean enabled_state = false;
+    private volatile boolean enabledByDefault = ENABLED_BY_DEFAULT;
 
     private final StanzaListener carbonsListener;
 
     private final AsyncButOrdered<BareJid> carbonsListenerAsyncButOrdered = new AsyncButOrdered<>();
+
+    /**
+     * Should Carbons be automatically be enabled once the connection is authenticated?
+     * Default: false
+     *
+     * @param enabledByDefault new default value
+     */
+    public static void setEnabledByDefault(boolean enabledByDefault) {
+        ENABLED_BY_DEFAULT = enabledByDefault;
+    }
 
     private CarbonManager(XMPPConnection connection) {
         super(connection);
@@ -111,7 +128,7 @@ public final class CarbonManager extends Manager {
 
         carbonsListener = new StanzaListener() {
             @Override
-            public void processStanza(final Stanza stanza) throws NotConnectedException, InterruptedException {
+            public void processStanza(final Stanza stanza) {
                 final Message wrappingMessage = (Message) stanza;
                 final CarbonExtension carbonExtension = CarbonExtension.from(wrappingMessage);
                 final Direction direction = carbonExtension.getDirection();
@@ -145,6 +162,13 @@ public final class CarbonManager extends Manager {
                 if (!resumed) {
                     // Non-resumed XMPP sessions always start with disabled carbons
                     enabled_state = false;
+                    try {
+                        if (shouldCarbonsBeEnabled() && isSupportedByServer()) {
+                            setCarbonsEnabled(true);
+                        }
+                    } catch (InterruptedException | XMPPErrorException | NotConnectedException | NoResponseException e) {
+                        LOGGER.log(Level.WARNING, "Cannot check for Carbon support and / or enable carbons.", e);
+                    }
                 }
                 addCarbonsListener(connection);
             }
@@ -239,12 +263,10 @@ public final class CarbonManager extends Manager {
      * You should first check for support using isSupportedByServer().
      *
      * @param new_state whether carbons should be enabled or disabled
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
      * @deprecated use {@link #enableCarbonsAsync(ExceptionCallback)} or {@link #disableCarbonsAsync(ExceptionCallback)} instead.
      */
     @Deprecated
-    public void sendCarbonsEnabled(final boolean new_state) throws NotConnectedException, InterruptedException {
+    public void sendCarbonsEnabled(final boolean new_state) {
         sendUseCarbons(new_state, null);
     }
 
@@ -281,6 +303,7 @@ public final class CarbonManager extends Manager {
     }
 
     private void sendUseCarbons(final boolean use, ExceptionCallback<Exception> exceptionCallback) {
+        enabledByDefault = use;
         IQ setIQ = carbonsEnabledIQ(use);
 
         SmackFuture<IQ, Exception> future = connection().sendIqRequestAsync(setIQ);
@@ -310,6 +333,7 @@ public final class CarbonManager extends Manager {
      */
     public synchronized void setCarbonsEnabled(final boolean new_state) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
+        enabledByDefault = new_state;
         if (enabled_state == new_state)
             return;
 
@@ -348,6 +372,10 @@ public final class CarbonManager extends Manager {
      */
     public boolean getCarbonsEnabled() {
         return this.enabled_state;
+    }
+
+    private boolean shouldCarbonsBeEnabled() {
+        return enabledByDefault;
     }
 
     /**
