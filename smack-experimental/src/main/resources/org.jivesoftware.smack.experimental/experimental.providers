@@ -299,6 +299,13 @@
       <className>org.jivesoftware.smackx.message_fastening.provider.FasteningElementProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0428: Fallback Indication -->
+    <extensionProvider>
+      <elementName>fallback</elementName>
+      <namespace>urn:xmpp:fallback:0</namespace>
+      <className>org.jivesoftware.smackx.fallback_indication.provider.FallbackIndicationElementProvider</className>
+    </extensionProvider>
+
     <!-- XEP-xxxx: Multi-User Chat Light -->
     <iqProvider>
         <elementName>query</elementName>
