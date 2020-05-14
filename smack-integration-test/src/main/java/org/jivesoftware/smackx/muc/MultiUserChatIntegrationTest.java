@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -39,6 +40,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -119,5 +121,42 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
         mucAsSeenByOne.leave();
         mucAsSeenByTwo.leave();
+    }
+
+    @SmackIntegrationTest
+    public void mucDestroyTest() throws TimeoutException, Exception {
+
+        EntityBareJid mucAddress = JidCreate.entityBareFrom(Localpart.from("smack-inttest-join-leave-" + randomString),
+                                                            mucService.getDomain());
+
+        MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
+        muc.join(Resourcepart.from("nick-one"));
+
+        final SimpleResultSyncPoint mucDestroyed = new SimpleResultSyncPoint();
+
+        @SuppressWarnings("deprecation")
+        DefaultUserStatusListener userStatusListener = new DefaultUserStatusListener() {
+            @Override
+            public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+                mucDestroyed.signal();
+            }
+        };
+
+        muc.addUserStatusListener(userStatusListener);
+
+        assertTrue(mucManagerOne.getJoinedRooms().size() == 1);
+        assertTrue(muc.getOccupantsCount() == 1);
+        assertTrue(muc.getNickname() != null);
+
+        try {
+            muc.destroy("Dummy reason", null);
+            mucDestroyed.waitForResult(timeout);
+        } finally {
+            muc.removeUserStatusListener(userStatusListener);
+        }
+
+        assertTrue(mucManagerOne.getJoinedRooms().size() == 0);
+        assertTrue(muc.getOccupantsCount() == 0);
+        assertTrue(muc.getNickname() == null);
     }
 }
