@@ -43,7 +43,7 @@ public abstract class FilledForm implements FormReader {
     }
 
     @Override
-    public FormField read(String fieldName) {
+    public FormField getField(String fieldName) {
         return dataForm.getField(fieldName);
     }
 
@@ -72,10 +72,6 @@ public abstract class FilledForm implements FormReader {
 
     public boolean hasField(String fieldName) {
         return dataForm.hasField(fieldName);
-    }
-
-    public FormField getField(String fieldName) {
-        return dataForm.getField(fieldName);
     }
 
     protected FormField getFieldOrThrow(String fieldName) {

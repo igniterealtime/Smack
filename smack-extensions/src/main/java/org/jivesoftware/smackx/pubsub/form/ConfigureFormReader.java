@@ -90,7 +90,7 @@ public interface ConfigureFormReader extends FormReader {
      * @return List of the whitelist
      */
     default List<Jid> getChildrenAssociationWhitelist() {
-        FormField formField = read(ConfigureNodeFields.children_association_whitelist.getFieldName());
+        FormField formField = getField(ConfigureNodeFields.children_association_whitelist.getFieldName());
         if (formField == null) {
             Collections.emptyList();
         }

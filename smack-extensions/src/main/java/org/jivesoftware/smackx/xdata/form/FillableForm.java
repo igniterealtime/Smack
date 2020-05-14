@@ -243,13 +243,13 @@ public class FillableForm extends FilledForm {
     }
 
     @Override
-    public FormField read(String fieldName) {
+    public FormField getField(String fieldName) {
         FormField filledField = filledFields.get(fieldName);
         if (filledField != null) {
             return filledField;
         }
 
-        return super.read(fieldName);
+        return super.getField(fieldName);
     }
 
     public DataForm getDataFormToSubmit() {

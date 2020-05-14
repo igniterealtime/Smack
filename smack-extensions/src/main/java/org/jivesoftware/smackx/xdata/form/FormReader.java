@@ -30,10 +30,10 @@ import org.jxmpp.util.XmppDateTime;
 
 public interface FormReader {
 
-    FormField read(String fieldName);
+    FormField getField(String fieldName);
 
     default String readFirstValue(String fieldName) {
-        FormField formField = read(fieldName);
+        FormField formField = getField(fieldName);
         if (formField == null) {
             return null;
         }
@@ -41,7 +41,7 @@ public interface FormReader {
     }
 
     default List<? extends CharSequence> readValues(String fieldName) {
-        FormField formField = read(fieldName);
+        FormField formField = getField(fieldName);
         if (formField == null) {
             return Collections.emptyList();
         }
@@ -49,7 +49,7 @@ public interface FormReader {
     }
 
     default List<String> readStringValues(String fieldName) {
-        FormField formField = read(fieldName);
+        FormField formField = getField(fieldName);
         if (formField == null) {
             return Collections.emptyList();
         }
@@ -58,7 +58,7 @@ public interface FormReader {
     }
 
     default Boolean readBoolean(String fieldName) {
-        FormField formField = read(fieldName);
+        FormField formField = getField(fieldName);
         if (formField == null) {
             return null;
         }
@@ -67,7 +67,7 @@ public interface FormReader {
     }
 
     default Integer readInteger(String fieldName) {
-        FormField formField = read(fieldName);
+        FormField formField = getField(fieldName);
         if (formField == null) {
             return null;
         }
@@ -76,7 +76,7 @@ public interface FormReader {
     }
 
     default Date readDate(String fieldName) throws ParseException {
-        FormField formField = read(fieldName);
+        FormField formField = getField(fieldName);
         if (formField == null) {
             return null;
         }
