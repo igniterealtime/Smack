@@ -1,0 +1,10 @@
+description = """\
+Smack for standard XMPP connections over Websockets."""
+
+dependencies {
+	compile project(':smack-core')
+
+	testFixturesApi(testFixtures(project(":smack-core")))
+
+	implementation("com.squareup.okhttp3:okhttp:4.6.0")
+}

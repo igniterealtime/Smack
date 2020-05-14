@@ -288,6 +288,9 @@ tasks.withType(Javadoc) {
 		// fixtures, and we want to have mockito also available in
 		// test, so we use API here.
 		testFixturesApi "org.mockito:mockito-core:3.3.3"
+		
+		// To mock final classes
+		testImplementation 'org.mockito:mockito-inline:3.3.3'
 		testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 
 		errorprone 'com.google.errorprone:error_prone_core:2.3.4'

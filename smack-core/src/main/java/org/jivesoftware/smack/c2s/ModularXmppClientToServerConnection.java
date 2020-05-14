@@ -61,13 +61,13 @@ import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.fsm.StateTransitionResult.AttemptResult;
 import org.jivesoftware.smack.internal.AbstractStats;
 import org.jivesoftware.smack.internal.SmackTlsContext;
+import org.jivesoftware.smack.packet.AbstractStreamClose;
 import org.jivesoftware.smack.packet.AbstractStreamOpen;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.StreamClose;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -139,6 +139,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
+            public void setCurrentConnectionExceptionAndNotify(Exception exception) {
+                ModularXmppClientToServerConnection.this.setCurrentConnectionExceptionAndNotify(exception);
+            }
+
+            @Override
             public void onStreamOpen(XmlPullParser parser) {
                 ModularXmppClientToServerConnection.this.onStreamOpen(parser);
             }
@@ -177,6 +182,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             @Override
             public ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterEndIterator() {
                 return inputOutputFilters.listIterator(inputOutputFilters.size());
+            }
+
+            @Override
+            public void waitForFeaturesReceived(String waitFor) throws InterruptedException, SmackException, XMPPException {
+                ModularXmppClientToServerConnection.this.waitForFeaturesReceived(waitFor);
             }
 
             @Override
@@ -930,7 +940,9 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext) {
             closingStreamReceived = false;
 
-            boolean streamCloseIssued = outgoingElementsQueue.offerAndShutdown(StreamClose.INSTANCE);
+            StreamOpenAndCloseFactory openAndCloseFactory = activeTransport.getStreamOpenAndCloseFactory();
+            AbstractStreamClose closeStreamElement = openAndCloseFactory.createStreamClose();
+            boolean streamCloseIssued = outgoingElementsQueue.offerAndShutdown(closeStreamElement);
 
             if (streamCloseIssued) {
                 activeTransport.notifyAboutNewOutgoingElements();

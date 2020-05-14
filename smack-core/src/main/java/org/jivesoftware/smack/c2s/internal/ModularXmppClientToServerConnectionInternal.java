@@ -85,6 +85,8 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract void notifyConnectionError(Exception e);
 
+    public abstract void setCurrentConnectionExceptionAndNotify(Exception exception);
+
     public abstract void onStreamOpen(XmlPullParser parser);
 
     public abstract void onStreamClosed();
@@ -98,6 +100,8 @@ public abstract class ModularXmppClientToServerConnectionInternal {
     public abstract ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterBeginIterator();
 
     public abstract ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterEndIterator();
+
+    public abstract void waitForFeaturesReceived(String waitFor) throws InterruptedException, SmackException, XMPPException;
 
     public abstract void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
                     NoResponseException, NotConnectedException, SmackException, XMPPException;

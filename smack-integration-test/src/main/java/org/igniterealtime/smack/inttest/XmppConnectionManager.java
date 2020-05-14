@@ -44,6 +44,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.websocket.XmppWebsocketTransportModuleDescriptor;
 
 import org.jivesoftware.smackx.admin.ServiceAdministrationManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
@@ -85,6 +86,15 @@ public class XmppConnectionManager {
                             .withNickname("modular-nocompress")
                             .applyExtraConfguration(cb -> cb.removeModule(CompressionModuleDescriptor.class))
                             .build()
+            );
+            addConnectionDescriptor(
+                    XmppConnectionDescriptor.buildWith(ModularXmppClientToServerConnection.class, ModularXmppClientToServerConnectionConfiguration.class, ModularXmppClientToServerConnectionConfiguration.Builder.class)
+                    .withNickname("modular-websocket")
+                    .applyExtraConfguration(cb -> {
+                        cb.removeAllModules();
+                        cb.addModule(XmppWebsocketTransportModuleDescriptor.class);
+                    })
+                    .build()
             );
         } catch (NoSuchMethodException | SecurityException e) {
             throw new AssertionError(e);
