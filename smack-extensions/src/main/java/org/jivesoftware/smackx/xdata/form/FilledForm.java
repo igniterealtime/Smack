@@ -74,12 +74,8 @@ public abstract class FilledForm implements FormReader {
         return dataForm.hasField(fieldName);
     }
 
-    public FormField getField(String fieldName) {
-        return dataForm.getField(fieldName);
-    }
-
     protected FormField getFieldOrThrow(String fieldName) {
-        FormField formField = getField(fieldName);
+        FormField formField = read(fieldName);
         if (formField == null) {
             throw new IllegalArgumentException("No field named " + fieldName);
         }

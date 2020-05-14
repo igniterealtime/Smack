@@ -114,11 +114,11 @@ public class FormTest extends AbstractSmackIntegrationTest {
             // Retrieve the form to fill out
             Form formToRespond = Form.from(msg2);
             assertNotNull(formToRespond);
-            assertNotNull(formToRespond.getField("name"));
-            assertNotNull(formToRespond.getField("description"));
+            assertNotNull(formToRespond.read("name"));
+            assertNotNull(formToRespond.read("description"));
             // Obtain the form to send with the replies
             final FillableForm completedForm = formToRespond.getFillableForm();
-            assertNotNull(completedForm.getField("hidden_var"));
+            assertNotNull(completedForm.read("hidden_var"));
             // Check that a field of type String does not accept booleans
             assertThrows(IllegalArgumentException.class, () -> completedForm.setAnswer("name", true));
             completedForm.setAnswer("name", "Credit card number invalid");
