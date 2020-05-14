@@ -299,6 +299,18 @@
       <className>org.jivesoftware.smackx.message_fastening.provider.FasteningElementProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0424: Message Retraction -->
+    <extensionProvider>
+      <elementName>retract</elementName>
+      <namespace>urn:xmpp:message-retract:0</namespace>
+      <className>org.jivesoftware.smackx.message_retraction.provider.RetractElementProvider</className>
+    </extensionProvider>
+    <extensionProvider>
+      <elementName>retracted</elementName>
+      <namespace>urn:xmpp:message-retract:0</namespace>
+      <className>org.jivesoftware.smackx.message_retraction.provider.RetractedElementProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0428: Fallback Indication -->
     <extensionProvider>
       <elementName>fallback</elementName>
