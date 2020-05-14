@@ -380,7 +380,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param elementName the XML element name of the extension. (May be null)
      * @param namespace the XML element namespace of the extension.
      * @return the extension, or <code>null</code> if it doesn't exist.
-     * @deprecated use {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)} isntead.
+     * @deprecated use {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)} instead.
      */
     // TODO: Remove in Smack 4.5.
     @SuppressWarnings("unchecked")
