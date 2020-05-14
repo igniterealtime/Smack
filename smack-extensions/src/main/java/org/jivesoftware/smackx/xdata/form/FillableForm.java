@@ -39,7 +39,7 @@ import org.jxmpp.jid.util.JidUtil;
 import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppDateTime;
 
-public class FillableForm extends FilledForm implements FormWriter {
+public class FillableForm extends FilledForm {
 
     private final Set<String> requiredFields;
 
@@ -212,7 +212,6 @@ public class FillableForm extends FilledForm implements FormWriter {
         write(filledFormField);
     }
 
-    @Override
     public final void write(FormField filledFormField) {
         if (filledFormField.getType() == FormField.Type.fixed) {
             throw new IllegalArgumentException();
