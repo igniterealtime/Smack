@@ -989,4 +989,52 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             throw new AssertionError("The expected delete notification was not received by the subscriber.", e);
         }
     }
+
+    /**
+     * Asserts that publishing an item with the same ID overwrites the previous item with that ID.
+     *
+     * <p>From XEP-0060 § 7.1.2 Success Case:</p>
+     * <blockquote>
+     * Note: If the publisher previously published an item with the same ItemID, successfully processing the request
+     * means that the service MUST overwrite the old item with the new item and then proceed as follows.
+     * </blockquote>
+     *
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    @SmackIntegrationTest
+    public void publishOverrideItemTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException
+    {
+        final String nodename = "sinttest-publish-item-nodename-" + testRunId;
+        final String itemId = "reused-id-for-testrun-" + testRunId;
+        final String needleA = "test content A" + Math.random();
+        final String needleB = "test content B" + Math.random();
+
+        final FillableConfigureForm config = pubSubManagerOne.getDefaultConfiguration().getFillableForm();
+        config.setPersistentItems(true);
+        config.setNodeType(NodeType.leaf);
+        config.setMaxItems(2);
+
+        LeafNode node = (LeafNode) pubSubManagerOne.createNode(nodename, config);
+        try
+        {
+            // Publish a new item.
+            node.publish(new PayloadItem<>(itemId, GeoLocation.builder().setDescription(needleA).build()));
+            node.publish(new PayloadItem<>(itemId, GeoLocation.builder().setDescription(needleB).build()));
+
+            // Retrieve items and assert that the item that was just published is among them.
+            final List<Item> items = node.getItems();
+            assertEquals(1, items.size());
+            final Item item = items.iterator().next();
+            assertEquals(itemId, item.getId());
+            assertFalse(item.toXML("").toString().contains(needleA));
+            assertTrue(item.toXML("").toString().contains(needleB));
+        }
+        finally
+        {
+            pubSubManagerOne.deleteNode(nodename);
+        }
+    }
 }
