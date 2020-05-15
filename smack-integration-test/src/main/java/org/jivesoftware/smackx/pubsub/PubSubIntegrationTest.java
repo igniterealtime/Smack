@@ -87,7 +87,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
             // Retrieve items and assert that the item that was just published is among them.
             final List<Item> items = node.getItems();
-            assertTrue( items.stream().anyMatch( stanza -> stanza.toXML( "" ).toString().contains( needle ) ) );
+            assertTrue( items.stream().anyMatch( stanza -> stanza.toXML().toString().contains( needle ) ) );
         }
         finally {
             pubSubManagerOne.deleteNode( nodename );
@@ -824,7 +824,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             subscriberNode.subscribe( subscriber );
 
             final CompletableFuture<Stanza> result = new CompletableFuture<>();
-            conTwo.addAsyncStanzaListener( result::complete, stanza -> stanza.toXML( "" ).toString().contains( needle ) );
+            conTwo.addAsyncStanzaListener( result::complete, stanza -> stanza.toXML().toString().contains( needle ) );
 
             publisherNode.publish( new PayloadItem<>( GeoLocation.builder().setDescription( needle ).build() ) );
 
@@ -977,7 +977,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
             subscriberNode.subscribe(subscriber);
             final CompletableFuture<Stanza> result = new CompletableFuture<>();
-            conTwo.addAsyncStanzaListener(result::complete, stanza -> stanza.toXML("").toString().contains(needle));
+            conTwo.addAsyncStanzaListener(result::complete, stanza -> stanza.toXML().toString().contains(needle));
 
             // Delete an existent node
             pubSubManagerOne.deleteNode(nodename);
@@ -1029,8 +1029,8 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             assertEquals(1, items.size());
             final Item item = items.iterator().next();
             assertEquals(itemId, item.getId());
-            assertFalse(item.toXML("").toString().contains(needleA));
-            assertTrue(item.toXML("").toString().contains(needleB));
+            assertFalse(item.toXML().toString().contains(needleA));
+            assertTrue(item.toXML().toString().contains(needleB));
         }
         finally
         {
