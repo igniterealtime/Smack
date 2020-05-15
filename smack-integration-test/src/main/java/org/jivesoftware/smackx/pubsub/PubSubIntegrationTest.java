@@ -945,4 +945,48 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         // Delete an non existent node
         assertFalse( pubSubManagerOne.deleteNode(nodename), "The server should have returned a <item-not-found/> error, but did not." );
     }
+
+    /**
+     * Assert that the server send a notification to subscribers when deleting a
+     * node that exist
+     *
+     * <p>
+     * From XEP-0060 § 8.4.1:
+     * </p>
+     * <blockquote> In order to delete a node, a node owner MUST send a node
+     * deletion request, consisting of a &lt;delete/&gt; element whose 'node'
+     * attribute specifies the NodeID of the node to be deleted </blockquote>
+     *
+     * @throws NoResponseException                     if there was no response from
+     *                                                 the remote entity.
+     * @throws NotConnectedException                   if the XMPP connection is not
+     *                                                 connected.
+     * @throws InterruptedException                    if the calling thread was
+     *                                                 interrupted.
+     * @throws PubSubException.NotAPubSubNodeException if the node cannot be
+     *                                                 accessed.
+     */
+    @SmackIntegrationTest
+    public void deleteNodeAndNotifySubscribersTest() throws NoResponseException, ExecutionException,
+            NotConnectedException, InterruptedException, PubSubException.NotAPubSubNodeException {
+        final String nodename = "sinttest-delete-node-that-exist-" + testRunId;
+        final String needle = "<event xmlns='http://jabber.org/protocol/pubsub#event'>";
+        try {
+            LeafNode node = pubSubManagerOne.createNode(nodename);
+            final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
+            final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
+            subscriberNode.subscribe(subscriber);
+            final CompletableFuture<Stanza> result = new CompletableFuture<>();
+            conTwo.addAsyncStanzaListener(result::complete, stanza -> stanza.toXML("").toString().contains(needle));
+
+            // Delete an existent node
+            pubSubManagerOne.deleteNode(nodename);
+
+            assertNotNull(result.get(conOne.getReplyTimeout(), TimeUnit.MILLISECONDS));
+        } catch (XMPPErrorException e) {
+            assertEquals(StanzaError.Condition.item_not_found, e.getStanzaError().getCondition());
+        } catch (TimeoutException e) {
+            throw new AssertionError("The expected delete notification was not received by the subscriber.", e);
+        }
+    }
 }
