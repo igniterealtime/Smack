@@ -19,10 +19,10 @@ package org.jivesoftware.smack.roster.packet;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
@@ -155,7 +155,7 @@ public final class RosterPacket extends IQ {
             this.jid = Objects.requireNonNull(jid);
             this.name = name;
             this.subscriptionPending = subscriptionPending;
-            groupNames = new CopyOnWriteArraySet<>();
+            groupNames = new HashSet<>();
         }
 
         @Override
