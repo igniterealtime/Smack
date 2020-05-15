@@ -20,8 +20,6 @@ plugins {
 
 apply plugin: 'org.kordamp.gradle.markdown'
 
-apply from: 'version.gradle'
-
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'java-test-fixtures'
@@ -30,7 +28,10 @@ allprojects {
 	apply plugin: 'jacoco'
 	apply plugin: 'net.ltgt.errorprone'
 
+	version readVersionFile()
+
 	ext {
+		isSnapshot = version.endsWith('-SNAPSHOT')
 		gitCommit = getGitCommit()
 		javadocAllDir = new File(buildDir, 'javadoc')
 		documentationDir = new File(buildDir, 'documentation')
@@ -114,9 +115,20 @@ allprojects {
 			':smack-omemo-signal',
 			':smack-openpgp',
 		].collect { project(it) }
+
+		// When using dynamic versions for those, do *not* use [1.0,
+		// 2.0), since this will also pull in 2.0-alpha1. Instead use
+		// [1.0, 1.0.99].
+		// See also:
+		// - https://issues.apache.org/jira/browse/MNG-6232
+		// - https://issues.igniterealtime.org/browse/SMACK-858
+		jxmppVersion = '0.7.0-alpha5'
+		miniDnsVersion = '0.4.0-alpha3'
+		smackMinAndroidSdk = 19
 		junitVersion = '5.6.0'
 		commonsIoVersion = '2.6'
 		bouncyCastleVersion = '1.65'
+
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
 		} else {
@@ -129,10 +141,6 @@ allprojects {
 	group = 'org.igniterealtime.smack'
 	sourceCompatibility = javaCompatilibity
 	targetCompatibility = sourceCompatibility
-	version = shortVersion
-	if (isSnapshot) {
-		version += '-SNAPSHOT'
-	}
 
 	test {
 		useJUnitPlatform()
@@ -705,4 +713,15 @@ def getAndroidHome() {
 	def androidHome = new File(androidHomeEnv)
 	if (!androidHome.isDirectory()) throw new Exception("Environment variable ANDROID_HOME is not pointing to a directory")
 	return androidHome
+}
+
+def readVersionFile() {
+	def versionFile = new File(rootDir, 'version')
+	if (!versionFile.isFile()) {
+		throw new Exception("Could not find version file")
+	}
+	if (versionFile.text.isEmpty()) {
+		throw new Exception("Version file does not contain a version")
+	}
+	versionFile.text.trim()
 }
