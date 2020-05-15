@@ -36,7 +36,7 @@ import org.jxmpp.jid.Jid;
 
 public class FillableConfigureForm extends FillableForm implements ConfigureFormReader {
 
-    public FillableConfigureForm(DataForm dataForm) {
+    FillableConfigureForm(DataForm dataForm) {
         super(dataForm);
     }
 

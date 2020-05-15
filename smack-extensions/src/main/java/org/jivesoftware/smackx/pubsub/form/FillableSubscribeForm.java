@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 public class FillableSubscribeForm extends FillableForm implements SubscribeFormReader {
 
-    public FillableSubscribeForm(DataForm dataForm) {
+    FillableSubscribeForm(DataForm dataForm) {
         super(dataForm);
     }
 
