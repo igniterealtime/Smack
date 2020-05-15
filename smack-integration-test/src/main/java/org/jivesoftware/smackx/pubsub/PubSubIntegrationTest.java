@@ -922,5 +922,27 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         }
     }
 
-
+    /**
+     * Asserts that the server returns an 'item-not-found' error response when
+     * deleting a node that does not exist.
+     *
+     * <p>
+     * From XEP-0060 § 8.4.3.2:
+     * </p>
+     * <blockquote> If the requesting entity attempts to delete a node that does not
+     * exist, the service MUST return an &lt;item-not-found/&gt; error.
+     * </blockquote>
+     *
+     * @throws NoResponseException   if there was no response from the remote
+     *                               entity.
+     * @throws XMPPErrorException    if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException  if the calling thread was interrupted.
+     */
+    @SmackIntegrationTest
+    public void deleteNonExistentNodeTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        final String nodename = "sinttest-delete-node-that-does-not-exist-" + testRunId;
+        // Delete an non existent node
+        assertFalse( pubSubManagerOne.deleteNode(nodename), "The server should have returned a <item-not-found/> error, but did not." );
+    }
 }
