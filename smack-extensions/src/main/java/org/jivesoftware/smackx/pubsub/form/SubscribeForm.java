@@ -26,4 +26,8 @@ public class SubscribeForm extends Form implements SubscribeFormReader {
         ensureFormType(dataForm, FORM_TYPE);
     }
 
+    @Override
+    public FillableSubscribeForm getFillableForm() {
+        return new FillableSubscribeForm(getDataForm());
+    }
 }
