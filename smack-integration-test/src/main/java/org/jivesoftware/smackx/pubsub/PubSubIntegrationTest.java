@@ -437,9 +437,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             // Subscribe to the node twice, using different configuration
             final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formA = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formA.setDigestFrequency( 1 );
-            final FillableSubscribeForm formB = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formB = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formB.setDigestFrequency( 2 );
 
             final Subscription subscriptionA = subscriberNode.subscribe( subscriber, formA );
@@ -487,9 +487,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             // Subscribe to the node twice, using different configuration
             final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formA = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formA.setDigestFrequency( 1 );
-            final FillableSubscribeForm formB =new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formB = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formB.setDigestFrequency( 2 );
 
             final Subscription subscriptionA = subscriberNode.subscribe( subscriber, formA );
@@ -577,9 +577,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             // Subscribe to the node twice, using different configuration
             final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formA = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formA.setDigestFrequency( 1 );
-            final FillableSubscribeForm formB = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formB = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formB.setDigestFrequency( 2 );
 
             subscriberNode.subscribe( subscriber, formA );
@@ -749,9 +749,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
             // Subscribe to the node twice, using different configuration
             final Node subscriberNode = pubSubManagerTwo.getNode(nodename);
             final EntityBareJid subscriber = conTwo.getUser().asEntityBareJid();
-            final FillableSubscribeForm formA = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formA = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formA.setDigestFrequency( 1 );
-            final FillableSubscribeForm formB = new FillableSubscribeForm( DataForm.builder( DataForm.Type.form ).build() );
+            final FillableSubscribeForm formB = subscriberNode.getSubscriptionOptions( subscriber.toString() ).getFillableForm();
             formB.setDigestFrequency( 2 );
 
             subscriberNode.subscribe( subscriber, formA );
