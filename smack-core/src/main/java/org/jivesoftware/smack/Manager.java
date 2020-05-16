@@ -54,6 +54,14 @@ public abstract class Manager {
     }
 
     protected static final ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit) {
-        return AbstractXMPPConnection.SMACK_REACTOR.schedule(runnable, delay, unit);
+        return schedule(runnable, delay, unit, ScheduledAction.Kind.NonBlocking);
+    }
+
+    protected static final ScheduledAction scheduleBlocking(Runnable runnable, long delay, TimeUnit unit) {
+        return schedule(runnable, delay, unit, ScheduledAction.Kind.Blocking);
+    }
+
+    protected static final ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit, ScheduledAction.Kind scheduledActionKind) {
+        return AbstractXMPPConnection.SMACK_REACTOR.schedule(runnable, delay, unit, scheduledActionKind);
     }
 }

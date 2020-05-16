@@ -145,10 +145,10 @@ public class SmackReactor {
         }
     }
 
-    ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit) {
+    ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit, ScheduledAction.Kind scheduledActionKind) {
         long releaseTimeEpoch = System.currentTimeMillis() + unit.toMillis(delay);
         Date releaseTimeDate = new Date(releaseTimeEpoch);
-        ScheduledAction scheduledAction = new ScheduledAction(runnable, releaseTimeDate, this);
+        ScheduledAction scheduledAction = new ScheduledAction(runnable, releaseTimeDate, this, scheduledActionKind);
         scheduledActions.add(scheduledAction);
         selector.wakeup();
         return scheduledAction;
@@ -206,7 +206,7 @@ public class SmackReactor {
             }
 
             if (dueScheduledAction != null) {
-                dueScheduledAction.action.run();
+                dueScheduledAction.run();
                 return;
             }
 

@@ -2163,7 +2163,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     protected static ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit) {
-        return SMACK_REACTOR.schedule(runnable, delay, unit);
+        return SMACK_REACTOR.schedule(runnable, delay, unit, ScheduledAction.Kind.NonBlocking);
     }
 
     protected void onStreamOpen(XmlPullParser parser) {
