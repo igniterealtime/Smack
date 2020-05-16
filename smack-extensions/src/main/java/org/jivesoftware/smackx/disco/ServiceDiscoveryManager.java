@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.disco;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,20 +29,25 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.ScheduledAction;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.internal.AbstractStats;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.ExtendedAppendable;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -894,13 +900,33 @@ public final class ServiceDiscoveryManager extends Manager {
         return entityCapabilitiesChangedListeners.add(entityCapabilitiesChangedListener);
     }
 
+    private static final int RENEW_ENTITY_CAPS_DELAY_MILLIS = 25;
+
+    private ScheduledAction renewEntityCapsScheduledAction;
+
+    private final AtomicInteger renewEntityCapsPerformed = new AtomicInteger();
+    private int renewEntityCapsRequested = 0;
+    private int scheduledRenewEntityCapsAvoided = 0;
+
     /**
      * Notify the {@link EntityCapabilitiesChangedListener} about changed capabilities.
      */
-    private void renewEntityCapsVersion() {
-        for (EntityCapabilitiesChangedListener entityCapabilitiesChangedListener : entityCapabilitiesChangedListeners) {
-            entityCapabilitiesChangedListener.onEntityCapailitiesChanged();
+    private synchronized void renewEntityCapsVersion() {
+        renewEntityCapsRequested++;
+        if (renewEntityCapsScheduledAction != null) {
+            boolean canceled = renewEntityCapsScheduledAction.cancel();
+            if (canceled) {
+                scheduledRenewEntityCapsAvoided++;
+            }
         }
+
+        renewEntityCapsScheduledAction = scheduleBlocking(() -> {
+            renewEntityCapsPerformed.incrementAndGet();
+
+            for (EntityCapabilitiesChangedListener entityCapabilitiesChangedListener : entityCapabilitiesChangedListeners) {
+                entityCapabilitiesChangedListener.onEntityCapailitiesChanged();
+            }
+        }, RENEW_ENTITY_CAPS_DELAY_MILLIS, TimeUnit.MILLISECONDS);
     }
 
     public static void addDiscoInfoLookupShortcutMechanism(DiscoInfoLookupShortcutMechanism discoInfoLookupShortcutMechanism) {
@@ -914,5 +940,31 @@ public final class ServiceDiscoveryManager extends Manager {
         synchronized (discoInfoLookupShortcutMechanisms) {
             discoInfoLookupShortcutMechanisms.remove(discoInfoLookupShortcutMechanism);
         }
+    }
+
+    public synchronized Stats getStats() {
+        return new Stats(this);
+    }
+
+    public static final class Stats extends AbstractStats {
+
+        public final int renewEntityCapsRequested;
+        public final int renewEntityCapsPerformed;
+        public final int scheduledRenewEntityCapsAvoided;
+
+        private Stats(ServiceDiscoveryManager serviceDiscoveryManager) {
+            renewEntityCapsRequested = serviceDiscoveryManager.renewEntityCapsRequested;
+            renewEntityCapsPerformed = serviceDiscoveryManager.renewEntityCapsPerformed.get();
+            scheduledRenewEntityCapsAvoided = serviceDiscoveryManager.scheduledRenewEntityCapsAvoided;
+        }
+
+        @Override
+        public void appendStatsTo(ExtendedAppendable appendable) throws IOException {
+            StringUtils.appendHeading(appendable, "ServiceDiscoveryManager stats", '#').append('\n');
+            appendable.append("renew-entitycaps-requested: ").append(renewEntityCapsRequested).append('\n');
+            appendable.append("renew-entitycaps-performed: ").append(renewEntityCapsPerformed).append('\n');
+            appendable.append("scheduled-renew-entitycaps-avoided: ").append(scheduledRenewEntityCapsAvoided).append('\n');
+        }
+
     }
 }

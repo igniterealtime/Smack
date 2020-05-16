@@ -42,6 +42,8 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.sm.StreamManagementModuleDescriptor;
 import org.jivesoftware.smack.tcp.XmppTcpTransportModuleDescriptor;
 
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+
 import org.jxmpp.util.XmppDateTime;
 
 public class Nio {
@@ -128,9 +130,10 @@ public class Nio {
         connection.disconnect();
 
         ModularXmppClientToServerConnection.Stats connectionStats = connection.getStats();
+        ServiceDiscoveryManager.Stats serviceDiscoveryManagerStats = ServiceDiscoveryManager.getInstanceFor(connection).getStats();
 
         // CHECKSTYLE:OFF
-        System.out.println("NIO successfully finished, yeah!\n" + connectionStats);
+        System.out.println("NIO successfully finished, yeah!\n" + connectionStats + '\n' + serviceDiscoveryManagerStats);
         // CHECKSTYLE:ON
     }
 
