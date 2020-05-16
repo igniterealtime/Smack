@@ -65,6 +65,7 @@ import org.jivesoftware.smack.fsm.StateDescriptorGraph.GraphVertex;
 import org.jivesoftware.smack.fsm.StateMachineException;
 import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.fsm.StateTransitionResult.AttemptResult;
+import org.jivesoftware.smack.internal.AbstractStats;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Nonza;
@@ -78,6 +79,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.sasl.SASLErrorException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
+import org.jivesoftware.smack.util.ExtendedAppendable;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -1069,7 +1071,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         return new Stats(transportsStats, filterStats);
     }
 
-    public static final class Stats {
+    public static final class Stats extends AbstractStats {
         public final Map<Class<? extends ModularXmppClientToServerConnectionModuleDescriptor>, XmppClientToServerTransport.Stats> transportsStats;
         public final Map<String, Object> filtersStats;
 
@@ -1079,7 +1081,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             this.filtersStats = Collections.unmodifiableMap(filtersStats);
         }
 
-        public void appendStatsTo(Appendable appendable) throws IOException {
+        @Override
+        public void appendStatsTo(ExtendedAppendable appendable) throws IOException {
             StringUtils.appendHeading(appendable, "Connection stats", '#').append('\n');
 
             for (Map.Entry<Class<? extends ModularXmppClientToServerConnectionModuleDescriptor>, XmppClientToServerTransport.Stats> entry : transportsStats.entrySet()) {
@@ -1099,16 +1102,5 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
         }
 
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            try {
-                appendStatsTo(sb);
-            } catch (IOException e) {
-                // Should never happen.
-                throw new AssertionError(e);
-            }
-            return sb.toString();
-        }
     }
 }
