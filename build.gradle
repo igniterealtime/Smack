@@ -441,7 +441,7 @@ subprojects {
 					packaging = 'jar'
 					inceptionYear = '2003'
 					url = 'http://www.igniterealtime.org/projects/smack/'
-					description project.description
+					description = project.description
 
 					issueManagement {
 						system = 'JIRA'
