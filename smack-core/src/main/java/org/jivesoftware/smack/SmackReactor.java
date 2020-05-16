@@ -154,6 +154,12 @@ public class SmackReactor {
         return scheduledAction;
     }
 
+    /**
+     * Cancels the scheduled action.
+     *
+     * @param scheduledAction the scheduled action to cancel.
+     * @return <code>true</code> if the scheduled action was still pending and got removed, <code>false</code> otherwise.
+     */
     boolean cancel(ScheduledAction scheduledAction) {
         return scheduledActions.remove(scheduledAction);
     }
