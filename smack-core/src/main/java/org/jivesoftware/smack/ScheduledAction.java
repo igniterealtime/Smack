@@ -32,8 +32,13 @@ public class ScheduledAction implements Delayed {
         this.smackReactor = smackReactor;
     }
 
-    public void cancel() {
-        smackReactor.cancel(this);
+    /**
+     * Cancels this scheduled action.
+     *
+     * @return <code>true</code> if the scheduled action was still pending and got removed, <code>false</code> otherwise.
+     */
+    public boolean cancel() {
+        return smackReactor.cancel(this);
     }
 
     public boolean isDue() {
