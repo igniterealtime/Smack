@@ -66,4 +66,13 @@ public interface StanzaFilter extends Predicate<Stanza> {
     default boolean test(Stanza stanza) {
         return accept(stanza);
     }
+
+    default <S extends Stanza> Predicate<S> asPredicate(Class<?> stanzaClass) {
+        return s -> {
+            if (!stanzaClass.isAssignableFrom(s.getClass())) {
+                return false;
+            }
+            return accept(s);
+        };
+    }
 }
