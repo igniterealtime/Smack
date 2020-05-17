@@ -126,6 +126,7 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.Async;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.DNSUtil;
@@ -2291,7 +2292,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         try {
                             ks.load(stream, password);
                         } finally {
-                            stream.close();
+                            CloseableUtil.maybeClose(stream);
                         }
                     } catch (IOException e) {
                         LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
@@ -2302,7 +2303,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         try {
                             ks.load(stream, null);
                         } finally {
-                            stream.close();
+                            CloseableUtil.maybeClose(stream);
                         }
                     }
                 }
