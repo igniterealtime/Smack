@@ -33,8 +33,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
@@ -51,7 +49,6 @@ import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
@@ -87,7 +84,6 @@ import org.jxmpp.util.cache.LruCache;
  * @see <a href="http://www.xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>
  */
 public final class EntityCapsManager extends Manager {
-    private static final Logger LOGGER = Logger.getLogger(EntityCapsManager.class.getName());
 
     public static final String NAMESPACE = CapsExtension.NAMESPACE;
     public static final String ELEMENT = CapsExtension.ELEMENT;
@@ -307,7 +303,6 @@ public final class EntityCapsManager extends Manager {
 
     private boolean entityCapsEnabled;
     private CapsVersionAndHash currentCapsVersion;
-    private volatile Presence presenceSend;
 
     /**
      * The entity node String used by this EntityCapsManager instance.
@@ -342,11 +337,6 @@ public final class EntityCapsManager extends Manager {
                 // feature, so we try to process it after we are connected and
                 // once after we are authenticated.
                 processCapsStreamFeatureIfAvailable(connection);
-
-                // Reset presenceSend when the connection was not resumed
-                if (!resumed) {
-                    presenceSend = null;
-                }
             }
             private void processCapsStreamFeatureIfAvailable(XMPPConnection connection) {
                 CapsExtension capsExtension = connection.getFeature(
@@ -358,9 +348,6 @@ public final class EntityCapsManager extends Manager {
                 addCapsExtensionInfo(from, capsExtension);
             }
         });
-
-        // This calculates the local entity caps version
-        updateLocalEntityCaps();
 
         if (autoEnableEntityCaps)
             enableEntityCaps();
@@ -387,26 +374,16 @@ public final class EntityCapsManager extends Manager {
             }
         });
 
-        connection.addStanzaSendingListener(new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet) {
-                presenceSend = (Presence) packet;
-            }
-        }, PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
-
-
-        enableEntityCaps();
-
         // It's important to do this as last action. Since it changes the
         // behavior of the SDM in some ways
         sdm.addEntityCapabilitiesChangedListener(new EntityCapabilitiesChangedListener() {
             @Override
-            public void onEntityCapailitiesChanged() {
+            public void onEntityCapabilitiesChanged(DiscoverInfo synthesizedDiscoveryInfo) {
                 if (!entityCapsEnabled()) {
                     return;
                 }
 
-                updateLocalEntityCaps();
+                updateLocalEntityCaps(synthesizedDiscoveryInfo);
             }
         });
     }
@@ -431,7 +408,6 @@ public final class EntityCapsManager extends Manager {
 
         // Add Entity Capabilities (XEP-0115) feature node.
         sdm.addFeature(NAMESPACE);
-        updateLocalEntityCaps();
         entityCapsEnabled = true;
     }
 
@@ -444,11 +420,6 @@ public final class EntityCapsManager extends Manager {
 
     public boolean entityCapsEnabled() {
         return entityCapsEnabled;
-    }
-
-    public void setEntityNode(String entityNode) {
-        this.entityNode = entityNode;
-        updateLocalEntityCaps();
     }
 
     /**
@@ -522,13 +493,10 @@ public final class EntityCapsManager extends Manager {
      * presence is send to inform others about your new Entity Caps node string.
      *
      */
-    private void updateLocalEntityCaps() {
+    private void updateLocalEntityCaps(DiscoverInfo synthesizedDiscoveryInfo) {
         XMPPConnection connection = connection();
 
-        DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
-                .ofType(IQ.Type.result);
-        sdm.addDiscoverInfoTo(discoverInfoBuilder);
-
+        DiscoverInfoBuilder discoverInfoBuilder = synthesizedDiscoveryInfo.asBuilder();
         // getLocalNodeVer() will return a result only after currentCapsVersion is set. Therefore
         // set it first and then call getLocalNodeVer()
         currentCapsVersion = generateVerificationString(discoverInfoBuilder);
@@ -564,20 +532,6 @@ public final class EntityCapsManager extends Manager {
                 return packetExtensions;
             }
         });
-
-        // Re-send the last sent presence, and let the stanza interceptor
-        // add a <c/> node to it.
-        // See http://xmpp.org/extensions/xep-0115.html#advertise
-        // We only send a presence packet if there was already one send
-        // to respect ConnectionConfiguration.isSendPresence()
-        if (connection != null && connection.isAuthenticated() && presenceSend != null) {
-            try {
-                connection.sendStanza(presenceSend.cloneWithNewId());
-            }
-            catch (InterruptedException | NotConnectedException e) {
-                LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);
-            }
-        }
     }
 
     /**

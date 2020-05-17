@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus.
+ * Copyright 2018-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
  */
 package org.jivesoftware.smackx.disco;
 
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
 public interface EntityCapabilitiesChangedListener {
 
-    void onEntityCapailitiesChanged();
+    void onEntityCapabilitiesChanged(DiscoverInfo synthesizedDiscoveryInfo);
 
 }

@@ -31,8 +31,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.ScheduledAction;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -40,10 +43,12 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.internal.AbstractStats;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CollectionUtil;
@@ -77,6 +82,8 @@ import org.jxmpp.util.cache.ExpirationCache;
  */
 public final class ServiceDiscoveryManager extends Manager {
 
+    private static final Logger LOGGER = Logger.getLogger(ServiceDiscoveryManager.class.getName());
+
     private static final String DEFAULT_IDENTITY_NAME = "Smack";
     private static final String DEFAULT_IDENTITY_CATEGORY = "client";
     private static final String DEFAULT_IDENTITY_TYPE = "pc";
@@ -96,6 +103,8 @@ public final class ServiceDiscoveryManager extends Manager {
     private final Set<String> features = new HashSet<>();
     private List<DataForm> extendedInfos = new ArrayList<>(2);
     private final Map<String, NodeInformationProvider> nodeInformationProviders = new ConcurrentHashMap<>();
+
+    private volatile Presence presenceSend;
 
     // Create a new ServiceDiscoveryManager on every established connection
     static {
@@ -196,6 +205,18 @@ public final class ServiceDiscoveryManager extends Manager {
                 return response;
             }
         });
+
+        connection.addConnectionListener(new ConnectionListener() {
+            @Override
+            public void authenticated(XMPPConnection connection, boolean resumed) {
+                // Reset presenceSend when the connection was not resumed
+                if (!resumed) {
+                    presenceSend = null;
+                }
+            }
+        });
+        connection.addStanzaSendingListener(p -> presenceSend = (Presence) p,
+                        PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
     }
 
     /**
@@ -920,11 +941,33 @@ public final class ServiceDiscoveryManager extends Manager {
             }
         }
 
+        final XMPPConnection connection = connection();
+
         renewEntityCapsScheduledAction = scheduleBlocking(() -> {
             renewEntityCapsPerformed.incrementAndGet();
 
+            DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
+                            .ofType(IQ.Type.result);
+            addDiscoverInfoTo(discoverInfoBuilder);
+            DiscoverInfo synthesizedDiscoveryInfo = discoverInfoBuilder.build();
+
             for (EntityCapabilitiesChangedListener entityCapabilitiesChangedListener : entityCapabilitiesChangedListeners) {
-                entityCapabilitiesChangedListener.onEntityCapailitiesChanged();
+                entityCapabilitiesChangedListener.onEntityCapabilitiesChanged(synthesizedDiscoveryInfo);
+            }
+
+            // Re-send the last sent presence, and let the stanza interceptor
+            // add a <c/> node to it.
+            // See http://xmpp.org/extensions/xep-0115.html#advertise
+            // We only send a presence packet if there was already one send
+            // to respect ConnectionConfiguration.isSendPresence()
+            final Presence presenceSend = this.presenceSend;
+            if (connection.isAuthenticated() && presenceSend != null) {
+                try {
+                    connection.sendStanza(presenceSend.cloneWithNewId());
+                }
+                catch (InterruptedException | NotConnectedException e) {
+                    LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);
+                }
             }
         }, RENEW_ENTITY_CAPS_DELAY_MILLIS, TimeUnit.MILLISECONDS);
     }
