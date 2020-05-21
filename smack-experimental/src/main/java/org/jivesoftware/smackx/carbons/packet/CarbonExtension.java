@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.carbons.packet;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.forward.packet.Forwarded;
@@ -158,8 +159,21 @@ public class CarbonExtension implements ExtensionElement {
          * Marks a message "private", so that it will not be carbon-copied, by adding private packet
          * extension to the message.
          *
-         * @param message the message to add the private extension to
+         * @param messageBuilder the message to add the private extension to
          */
+        public static void addTo(MessageBuilder messageBuilder) {
+            messageBuilder.addExtension(INSTANCE);
+        }
+
+        /**
+         * Marks a message "private", so that it will not be carbon-copied, by adding private packet
+         * extension to the message.
+         *
+         * @param message the message to add the private extension to
+         * @deprecated use {@link #addTo(MessageBuilder)} instead.
+         */
+        // TODO: Remove in Smack 4.6
+        @Deprecated
         public static void addTo(Message message) {
             message.addExtension(INSTANCE);
         }
