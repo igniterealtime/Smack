@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 
 import org.jivesoftware.smackx.fallback_indication.element.FallbackIndicationElement;
 
@@ -30,11 +30,11 @@ public class FallbackIndicationTest {
 
     @Test
     public void testFallbackIndicationElementFromMessageTest() {
-        Message messageWithoutFallback = MessageBuilder.buildMessage()
+        Message messageWithoutFallback = StanzaBuilder.buildMessage()
                         .build();
         assertNull(FallbackIndicationElement.fromMessage(messageWithoutFallback));
 
-        Message messageWithFallback = MessageBuilder.buildMessage()
+        Message messageWithFallback = StanzaBuilder.buildMessage()
                         .addExtension(new FallbackIndicationElement())
                         .build();
         assertNotNull(FallbackIndicationElement.fromMessage(messageWithFallback));

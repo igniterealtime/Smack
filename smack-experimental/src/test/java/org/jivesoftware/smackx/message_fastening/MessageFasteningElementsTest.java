@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaFactory;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -166,10 +167,10 @@ public class MessageFasteningElementsTest {
 
     @Test
     public void hasFasteningElementTest() {
-        MessageBuilder messageBuilderWithFasteningElement = MessageBuilder.buildMessage()
+        MessageBuilder messageBuilderWithFasteningElement = StanzaBuilder.buildMessage()
                 .setBody("Hi!")
                 .addExtension(FasteningElement.builder().setOriginId("origin-id-1").build());
-        MessageBuilder messageBuilderWithoutFasteningElement = MessageBuilder.buildMessage()
+        MessageBuilder messageBuilderWithoutFasteningElement = StanzaBuilder.buildMessage()
                 .setBody("Ho!");
 
         assertTrue(FasteningElement.hasFasteningElement(messageBuilderWithFasteningElement));
