@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2018 Florian Schmaus
+ * Copyright 2013-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.jivesoftware.smack.util.Objects;
+
 public abstract class XMPPInputOutputStream {
 
-    protected static FlushMethod flushMethod;
+    protected static FlushMethod flushMethod = FlushMethod.SYNC_FLUSH;
 
     /**
      * Set the used flushed method when compressing data. The default is full flush which may not
@@ -33,7 +35,7 @@ public abstract class XMPPInputOutputStream {
      * @param flushMethod TODO javadoc me please
      */
     public static void setFlushMethod(FlushMethod flushMethod) {
-        XMPPInputOutputStream.flushMethod = flushMethod;
+        XMPPInputOutputStream.flushMethod = Objects.requireNonNull(flushMethod);
     }
 
     public static FlushMethod getFlushMethod() {
