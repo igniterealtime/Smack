@@ -2,6 +2,9 @@ plugins {
 	id "com.github.alisiikh.scalastyle_2.12" version "2.0.2"
 }
 
+description = """\
+A REPL (Read-Eval-Print-Loop) for Smack, or, in other words, a CLI (Command Line Interface) for Smack."""
+
 apply plugin: 'scala'
 apply plugin: 'com.github.alisiikh.scalastyle_2.12'
 
