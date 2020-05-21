@@ -26,6 +26,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.MessageView;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
@@ -57,7 +59,7 @@ public class XHTMLManager {
      * @param message an XHTML message
      * @return an Iterator for the bodies in the message or null if none.
      */
-    public static List<CharSequence> getBodies(Message message) {
+    public static List<CharSequence> getBodies(MessageView message) {
         XHTMLExtension xhtmlExtension = XHTMLExtension.from(message);
         if (xhtmlExtension != null)
             return xhtmlExtension.getBodies();
@@ -68,9 +70,29 @@ public class XHTMLManager {
     /**
      * Adds an XHTML body to the message.
      *
-     * @param message the message that will receive the XHTML body
+     * @param messageBuilder the message that will receive the XHTML body
      * @param xhtmlText the string to add as an XHTML body to the message
      */
+    public static void addBody(MessageBuilder messageBuilder, XHTMLText xhtmlText) {
+        XHTMLExtension xhtmlExtension = XHTMLExtension.from(messageBuilder);
+        if (xhtmlExtension == null) {
+            // Create an XHTMLExtension and add it to the message
+            xhtmlExtension = new XHTMLExtension();
+            messageBuilder.addExtension(xhtmlExtension);
+        }
+        // Add the required bodies to the message
+        xhtmlExtension.addBody(xhtmlText.toXML());
+    }
+
+    /**
+     * Adds an XHTML body to the message.
+     *
+     * @param message the message that will receive the XHTML body
+     * @param xhtmlText the string to add as an XHTML body to the message
+     * @deprecated use {@link #addBody(MessageBuilder, XHTMLText)} instead.
+     */
+    // TODO: Remove in Smack 4.6
+    @Deprecated
     public static void addBody(Message message, XHTMLText xhtmlText) {
         XHTMLExtension xhtmlExtension = XHTMLExtension.from(message);
         if (xhtmlExtension == null) {
