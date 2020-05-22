@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.softwareinfo;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -26,8 +25,6 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm;
@@ -48,7 +45,7 @@ public final class SoftwareInfoManager extends Manager {
     private static final Map<XMPPConnection, SoftwareInfoManager> INSTANCES = new WeakHashMap<>();
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
-    public static synchronized SoftwareInfoManager getInstanceFor (XMPPConnection connection) throws IOException, XmlPullParserException, SmackParsingException {
+    public static synchronized SoftwareInfoManager getInstanceFor (XMPPConnection connection) {
         SoftwareInfoManager manager = INSTANCES.get(connection);
         if (manager == null) {
             manager = new SoftwareInfoManager(connection);
@@ -57,7 +54,7 @@ public final class SoftwareInfoManager extends Manager {
         return manager;
     }
 
-    private SoftwareInfoManager(XMPPConnection connection) throws IOException, XmlPullParserException, SmackParsingException {
+    private SoftwareInfoManager(XMPPConnection connection) {
         super(connection);
         serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
     }
