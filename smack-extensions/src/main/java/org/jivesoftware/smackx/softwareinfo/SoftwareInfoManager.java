@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -41,7 +40,6 @@ import org.jxmpp.jid.Jid;
 */
 public final class SoftwareInfoManager extends Manager {
 
-    private static final String FEATURE = "http://jabber.org/protocol/disco";
     private static final Map<XMPPConnection, SoftwareInfoManager> INSTANCES = new WeakHashMap<>();
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
@@ -60,20 +58,6 @@ public final class SoftwareInfoManager extends Manager {
     }
 
     /**
-     * Returns true if the feature is supported by the Jid.
-     * <br>
-     * @param jid Jid to be checked for support
-     * @return boolean
-     * @throws NoResponseException if there was no response from the remote entity
-     * @throws XMPPErrorException if there was an XMPP error returned
-     * @throws NotConnectedException if the XMPP connection is not connected
-     * @throws InterruptedException if the calling thread was interrupted
-     */
-    public boolean isSupported(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return serviceDiscoveryManager.supportsFeatures(jid, FEATURE);
-    }
-
-    /**
      * Publishes the provided {@link SoftwareInfoForm} as an extended info.
      * <br>
      * @param softwareInfoForm form to be added as an extended info
@@ -83,20 +67,16 @@ public final class SoftwareInfoManager extends Manager {
     }
 
     /**
-     * Get SoftwareInfoForm from Jid provided.
-     * <br>
+     * Get Software Information from the provided XMPP address. Returns <code>null</code> in case the queried entity does not announce that information.
+     *
      * @param jid jid to get software information from
-     * @return {@link SoftwareInfoForm} Form containing software information
+     * @return {@link SoftwareInfoForm} Form containing software information or <code>null</code>.
      * @throws NoResponseException if there was no response from the remote entity
      * @throws XMPPErrorException if there was an XMPP error returned
      * @throws NotConnectedException if the XMPP connection is not connected
      * @throws InterruptedException if the calling thread was interrupted
-     * @throws FeatureNotSupportedException if the feature is not supported
      */
-    public SoftwareInfoForm fromJid(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, FeatureNotSupportedException {
-        if (!isSupported(jid)) {
-            throw new FeatureNotSupportedException(SoftwareInfoForm.FORM_TYPE, jid);
-        }
+    public SoftwareInfoForm fromJid(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DiscoverInfo discoverInfo = serviceDiscoveryManager.discoverInfo(jid);
         DataForm dataForm = DataForm.from(discoverInfo, SoftwareInfoForm.FORM_TYPE);
         if (dataForm == null) {
