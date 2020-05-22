@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.jivesoftware.smack.packet;
 
 import java.util.List;
 import java.util.Locale;
-
-import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
@@ -100,7 +98,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * @param to the recipient.
      * @param type the type.
      * @since 4.2
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -116,7 +114,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * @param status a text message describing the presence update.
      * @param priority the priority of this presence update.
      * @param mode the mode type for this presence update.
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -192,7 +190,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * Sets the type of the presence packet.
      *
      * @param type the type of the presence packet.
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -210,7 +208,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * describing a user's presence (i.e., "gone to lunch").
      *
      * @param status the status message.
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -237,7 +235,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * @param priority the priority of the presence.
      * @throws IllegalArgumentException if the priority is outside the valid range.
      * @see <a href="https://tools.ietf.org/html/rfc6121#section-4.7.2.3">RFC 6121 § 4.7.2.3. Priority Element</a>
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -266,7 +264,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * to be the same thing as {@link Presence.Mode#available}.
      *
      * @param mode the mode.
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
