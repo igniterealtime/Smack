@@ -299,8 +299,8 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
         return containsDuplicateFeatures;
     }
 
-    public DiscoverInfoBuilder asBuilder() {
-        return new DiscoverInfoBuilder(this);
+    public DiscoverInfoBuilder asBuilder(String stanzaId) {
+        return new DiscoverInfoBuilder(this, stanzaId);
     }
 
     // TODO: Deprecate in favor of asBuilder().

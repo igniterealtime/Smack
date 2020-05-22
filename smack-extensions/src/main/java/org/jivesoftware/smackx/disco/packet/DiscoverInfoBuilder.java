@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,8 @@ public class DiscoverInfoBuilder extends IqBuilder<DiscoverInfoBuilder, Discover
         super(stanzaId);
     }
 
-    public DiscoverInfoBuilder(DiscoverInfo discoverInfo) {
-        super(discoverInfo.getStanzaId());
+    public DiscoverInfoBuilder(DiscoverInfo discoverInfo, String stanzaId) {
+        super(discoverInfo, stanzaId);
         features.addAll(discoverInfo.getFeatures());
         identities.addAll(discoverInfo.getIdentities());
         node = discoverInfo.getNode();

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,10 @@ import org.jivesoftware.smack.util.Objects;
 
 public abstract class IqBuilder<IB extends IqBuilder<IB, I>, I extends IQ>
                 extends AbstractIqBuilder<IB> {
+
+    protected IqBuilder(IQ other, String stanzaId) {
+        super(other, stanzaId);
+    }
 
     protected IqBuilder(AbstractIqBuilder<?> other) {
         super(other);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,10 @@ import org.jivesoftware.smack.util.ToStringUtil;
 public abstract class AbstractIqBuilder<IB extends AbstractIqBuilder<IB>> extends StanzaBuilder<IB> implements IqView {
 
     protected IQ.Type type = IQ.Type.get;
+
+    AbstractIqBuilder(IQ other, String stanzaId) {
+        super(other, stanzaId);
+    }
 
     AbstractIqBuilder(AbstractIqBuilder<?> other) {
         super(other);

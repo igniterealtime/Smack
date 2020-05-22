@@ -496,7 +496,7 @@ public final class EntityCapsManager extends Manager {
     private void updateLocalEntityCaps(DiscoverInfo synthesizedDiscoveryInfo) {
         XMPPConnection connection = connection();
 
-        DiscoverInfoBuilder discoverInfoBuilder = synthesizedDiscoveryInfo.asBuilder();
+        DiscoverInfoBuilder discoverInfoBuilder = synthesizedDiscoveryInfo.asBuilder("synthesized-disco-info-result");
         // getLocalNodeVer() will return a result only after currentCapsVersion is set. Therefore
         // set it first and then call getLocalNodeVer()
         currentCapsVersion = generateVerificationString(discoverInfoBuilder);
