@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack.packet;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.net.SocketFactory;
@@ -309,6 +310,16 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
         if (type != Type.available) {
             buf.attribute("type", type);
         }
+
+        List<ExtensionElement> extensions = getExtensions();
+        if (status == null
+                        && priority == null
+                        && (mode == null || mode == Mode.available)
+                        && extensions.isEmpty()
+                        && getError() == null) {
+            return buf.closeEmptyElement();
+        }
+
         buf.rightAngleBracket();
 
         buf.optElement("status", status);
@@ -317,7 +328,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
             buf.element("show", mode);
         }
 
-        buf.append(getExtensions());
+        buf.append(extensions);
 
         // Add the error sub-packet, if there is one.
         appendErrorIfExists(buf);
