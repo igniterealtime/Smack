@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jxmpp.jid.Jid;
 
 /**
- * Represents XMPP presence packets. Every presence stanza has a type, which is one of
+ * Represents XMPP presence stanzas. Every presence stanza has a type, which is one of
  * the following values:
  * <ul>
  *      <li>{@link Presence.Type#available available} -- (Default) indicates the user is available to
@@ -56,7 +56,7 @@ import org.jxmpp.jid.Jid;
  *          {@link Mode#dnd dnd} (do not disturb).
  * </ul><p>
  *
- * Presence packets are used for two purposes. First, to notify the server of
+ * Presence stanzas are used for two purposes. First, to notify the server of
  * the user's current presence status. Second, they are used to subscribe and
  * unsubscribe users from the roster.
  *
@@ -84,7 +84,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * Creates a new presence update. Status, priority, and mode are left un-set.
      *
      * @param type the type.
-     * @deprecated use {@link StanzaBuilder} or {@link SocketFactory} instead.
+     * @deprecated use {@link PresenceBuilder} or {@link org.jivesoftware.smack.XMPPConnection#getStanzaFactory} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
