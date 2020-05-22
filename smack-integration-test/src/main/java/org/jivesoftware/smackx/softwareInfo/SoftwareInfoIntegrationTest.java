@@ -16,13 +16,14 @@
  */
 package org.jivesoftware.smackx.softwareInfo;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.util.Async.ThrowingRunnable;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.mediaelement.element.MediaElement;
 import org.jivesoftware.smackx.softwareinfo.SoftwareInfoManager;
@@ -54,9 +55,14 @@ public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
     @SmackIntegrationTest
     public void test() throws Exception {
         SoftwareInfoForm softwareInfoSent = createSoftwareInfoForm();
-        sim1.publishSoftwareInformationForm(softwareInfoSent);
+        performActionAndWaitForPresence(conTwo, conOne, new ThrowingRunnable() {
+            @Override
+            public void runOrThrow() throws Exception {
+                sim1.publishSoftwareInformationForm(softwareInfoSent);
+            }
+        });
         SoftwareInfoForm softwareInfoFormReceived = sim2.fromJid(conOne.getUser());
-        assertTrue(softwareInfoFormReceived.equals(softwareInfoSent));
+        assertEquals(softwareInfoSent, softwareInfoFormReceived);
     }
 
     private static SoftwareInfoForm createSoftwareInfoForm() throws URISyntaxException {

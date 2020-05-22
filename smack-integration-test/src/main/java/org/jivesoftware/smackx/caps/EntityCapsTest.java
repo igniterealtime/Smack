@@ -31,6 +31,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.StanzaListener;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -40,6 +41,7 @@ import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterUtil;
+import org.jivesoftware.smack.util.Async.ThrowingRunnable;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -49,7 +51,6 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
@@ -143,26 +144,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
         }, new AndFilter(new StanzaTypeFilter(DiscoverInfo.class), IQTypeFilter.GET));
 
-        final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
-        final StanzaListener presenceListener = new StanzaListener() {
-            @Override
-            public void processStanza(Stanza packet) {
-                presenceReceivedSyncPoint.signal();
-            }
-        };
-
-        // Add a stanzaListener to listen for incoming presence
-        conOne.addAsyncStanzaListener(presenceListener, PresenceTypeFilter.AVAILABLE);
-
-        // add a bogus feature so that con1 ver won't match con0's
-        sdmTwo.addFeature(dummyFeature);
-
-        try {
-            // wait for the dummy feature to get sent via presence
-            presenceReceivedSyncPoint.waitForResult(timeout);
-        } finally {
-            conOne.removeAsyncStanzaListener(presenceListener);
-        }
+        addFeatureAndWaitForPresence(conOne, conTwo, dummyFeature);
 
         dropCapsCache();
         // discover that
@@ -181,10 +163,10 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
-    public void testCapsChanged() {
+    public void testCapsChanged() throws Exception {
         final String dummyFeature = getNewDummyFeature();
         String nodeVerBefore = EntityCapsManager.getNodeVersionByJid(conTwo.getUser());
-        sdmTwo.addFeature(dummyFeature);
+        addFeatureAndWaitForPresence(conOne, conTwo, dummyFeature);
         String nodeVerAfter = EntityCapsManager.getNodeVersionByJid(conTwo.getUser());
 
         assertFalse(nodeVerBefore.equals(nodeVerAfter));
@@ -228,5 +210,25 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
     private static void dropCapsCache() {
         EntityCapsManager.CAPS_CACHE.clear();
+    }
+
+    /**
+     * Adds 'feature' to conB and waits until conA observes a presence form conB.
+     *
+     * @param conA the connection to observe the presence on.
+     * @param conB the connection to add the feature to.
+     * @param feature the feature to add.
+     * @throws Exception in case of an exception.
+     */
+    private void addFeatureAndWaitForPresence(XMPPConnection conA, XMPPConnection conB, String feature)
+                    throws Exception {
+        final ServiceDiscoveryManager sdmB = ServiceDiscoveryManager.getInstanceFor(conB);
+        ThrowingRunnable action = new ThrowingRunnable() {
+            @Override
+            public void runOrThrow() throws Exception {
+                sdmB.addFeature(feature);
+            }
+        };
+        performActionAndWaitForPresence(conA, conB, action);
     }
 }

@@ -20,7 +20,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Async.ThrowingRunnable;
+
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest {
 
@@ -57,5 +65,49 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
         connectionsLocal.add(conTwo);
         connectionsLocal.add(conThree);
         this.connections = Collections.unmodifiableList(connectionsLocal);
+    }
+
+    /**
+     * Perform action and wait until conA observes a presence form conB.
+     * <p>
+     * This method is usually used so that 'action' performs an operation that changes one entities
+     * features/nodes/capabilities, and we want to check that another connection is able to observe this change, and use
+     * that new "thing" that was added to the connection.
+     * </p>
+     * <p>
+     * Note that this method is a workaround at best and not reliable. Because it is not guaranteed that any XEP-0030
+     * related manager, e.g. EntityCapsManager, already processed the presence when this method returns.
+     * </p>
+     * TODO: Come up with a better solution.
+     *
+     * @param conA the connection to observe the presence on.
+     * @param conB the connection sending the presence
+     * @param action the action to perform.
+     * @throws Exception in case of an exception.
+     */
+    protected void performActionAndWaitForPresence(XMPPConnection conA, XMPPConnection conB, ThrowingRunnable action)
+                    throws Exception {
+        final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
+        final StanzaListener presenceListener = new StanzaListener() {
+            @Override
+            public void processStanza(Stanza packet) {
+                presenceReceivedSyncPoint.signal();
+            }
+        };
+
+        // Add a stanzaListener to listen for incoming presence
+        conA.addAsyncStanzaListener(presenceListener, new AndFilter(
+                        PresenceTypeFilter.AVAILABLE,
+                        FromMatchesFilter.create(conB.getUser())
+                        ));
+
+        action.runOrThrow();
+
+        try {
+            // wait for the dummy feature to get sent via presence
+            presenceReceivedSyncPoint.waitForResult(timeout);
+        } finally {
+            conA.removeAsyncStanzaListener(presenceListener);
+        }
     }
 }
