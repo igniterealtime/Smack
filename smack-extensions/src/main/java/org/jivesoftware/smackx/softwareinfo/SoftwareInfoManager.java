@@ -41,6 +41,7 @@ import org.jxmpp.jid.Jid;
 public final class SoftwareInfoManager extends Manager {
 
     private static final Map<XMPPConnection, SoftwareInfoManager> INSTANCES = new WeakHashMap<>();
+
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
     public static synchronized SoftwareInfoManager getInstanceFor (XMPPConnection connection) {
