@@ -105,8 +105,6 @@
 		<module name="JavadocMethod">
 			<!-- TODO stricten those checks -->
 			<property name="scope" value="protected"/>
-			<property name="allowMissingJavadoc" value="true"/>
-			<property name="suppressLoadErrors" value="true"/>
 		</module>
 		<module name="JavadocStyle">
 			<property name="scope" value="public"/>

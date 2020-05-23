@@ -409,7 +409,7 @@ subprojects {
 	apply plugin: 'org.kordamp.gradle.clirr'
 
 	checkstyle {
-		toolVersion = '8.22'
+		toolVersion = '8.27'
 	}
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
