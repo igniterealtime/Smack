@@ -52,12 +52,12 @@ public class PacketWriterTest {
      * interrupt.
      *
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws BrokenBarrierException
+     * @throws BrokenBarrierException in case of a broken barrier.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws XmppStringprepException if the provided string is invalid.
      * @throws SecurityException if there was a security violation.
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
+     * @throws NoSuchFieldException if there is no such field.
+     * @throws IllegalAccessException if there was an illegal access.
      * @throws IllegalArgumentException if an illegal argument was given.
      */
     @Test

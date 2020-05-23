@@ -29,6 +29,7 @@ public class ProviderManagerTest {
 
     /**
      * This test should be run in a clean (e.g. forked) VM
+     * @throws Exception if exception.
      */
     @Test
     public void shouldInitializeSmackTest() throws Exception {

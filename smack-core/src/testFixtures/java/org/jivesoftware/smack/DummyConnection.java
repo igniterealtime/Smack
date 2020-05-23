@@ -150,6 +150,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * Returns the first stanza that's sent through {@link #sendStanza(Stanza)}
      * and that has not been returned by earlier calls to this method.
      *
+     * @param <P> the top level stream element class.
      * @return a sent packet.
      */
     public <P extends TopLevelStreamElement> P getSentPacket() {
@@ -162,6 +163,8 @@ public class DummyConnection extends AbstractXMPPConnection {
      * method will block for up to the specified number of seconds if no packets
      * have been sent yet.
      *
+     * @param wait how long to wait in seconds.
+     * @param <P> the top level stream element class.
      * @return a sent packet.
      */
     @SuppressWarnings("unchecked")

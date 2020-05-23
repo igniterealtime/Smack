@@ -57,6 +57,7 @@ public class DirectoryRosterStoreTest {
 
     /**
      * Tests that opening an uninitialized directory fails.
+     * @throws IOException if IO exception.
      */
     @Test
     public void testStoreUninitialized() throws IOException {
@@ -66,6 +67,7 @@ public class DirectoryRosterStoreTest {
 
     /**
      * Tests that an initialized directory is empty.
+     * @throws IOException if IO exception.
      */
     @Test
     public void testStoreInitializedEmpty() throws IOException {
@@ -80,6 +82,7 @@ public class DirectoryRosterStoreTest {
 
     /**
      * Tests adding and removing entries.
+     * @throws IOException if IO exception.
      */
     @Test
     public void testStoreAddRemove() throws IOException {

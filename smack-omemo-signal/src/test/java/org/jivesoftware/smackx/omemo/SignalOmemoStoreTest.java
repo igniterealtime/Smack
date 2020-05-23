@@ -60,7 +60,7 @@ public class SignalOmemoStoreTest extends OmemoStoreTest<IdentityKeyPair, Identi
 
     /**
      * We are running this Test with multiple available OmemoStore implementations.
-     * @return
+     * @return the test parameters.
      * @throws IOException if an I/O error occurred.
      */
     @Parameterized.Parameters

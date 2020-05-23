@@ -186,8 +186,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Artist is an optional element in UserTuneElement.
-         * @param artist.
-         * @return builder.
+         * @param artist the artist.
+         * @return a reference to this builder.
          */
         public Builder setArtist(String artist) {
             this.artist = artist;
@@ -196,8 +196,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Length is an optional element in UserTuneElement.
-         * @param length.
-         * @return builder.
+         * @param length the length.
+         * @return a reference to this builder.
          */
         public Builder setLength(int length) {
             return setLength(UInt16.from(length));
@@ -205,8 +205,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Length is an optional element in UserTuneElement.
-         * @param length.
-         * @return builder.
+         * @param length the length.
+         * @return a reference to this builder.
          */
         public Builder setLength(UInt16 length) {
             this.length = length;
@@ -215,8 +215,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Rating is an optional element in UserTuneElement.
-         * @param rating.
-         * @return builder.
+         * @param rating the rating.
+         * @return a reference to this builder.
          */
         public Builder setRating(int rating) {
             this.rating = rating;
@@ -225,8 +225,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Source is an optional element in UserTuneElement.
-         * @param source.
-         * @return builder.
+         * @param source the source.
+         * @return a reference to this builder.
          */
         public Builder setSource(String source) {
             this.source = source;
@@ -235,8 +235,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Title is an optional element in UserTuneElement.
-         * @param title.
-         * @return builder.
+         * @param title the title.
+         * @return a reference to this builder.
          */
         public Builder setTitle(String title) {
             this.title = title;
@@ -245,8 +245,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * Track is an optional element in UserTuneElement.
-         * @param track.
-         * @return builder.
+         * @param track the track.
+         * @return a reference to this builder.
          */
         public Builder setTrack(String track) {
             this.track = track;
@@ -255,8 +255,8 @@ public final class UserTuneElement implements ExtensionElement {
 
         /**
          * URI is an optional element in UserTuneElement.
-         * @param uri.
-         * @return builder.
+         * @param uri the URI.
+         * @return a reference to this builder.
          */
         public Builder setUri(URI uri) {
             this.uri = uri;

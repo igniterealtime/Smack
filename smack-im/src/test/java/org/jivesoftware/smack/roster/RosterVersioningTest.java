@@ -97,6 +97,8 @@ public class RosterVersioningTest {
      * by all entries of the roster store.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws XMPPException if an XMPP protocol error was received.
+     * @throws InterruptedException if interrupted.
+     * @throws IOException if IO exception.
      */
     @Test(timeout = 300000)
     public void testEqualVersionStored() throws InterruptedException, IOException, XMPPException, SmackException {
@@ -172,6 +174,7 @@ public class RosterVersioningTest {
 
     /**
      * Test roster versioning with roster pushes.
+     * @throws Throwable in case a throwable is thrown.
      */
     @SuppressWarnings("UndefinedEquals")
     @Test(timeout = 5000)

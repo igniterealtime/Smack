@@ -86,7 +86,7 @@ public class Socks5ProxyTest {
      * When inserting new network addresses to the proxy the order should remain in the order they
      * were inserted.
      *
-     * @throws UnknownHostException
+     * @throws UnknownHostException if unknown host.
      */
     @Test
     public void shouldPreserveAddressOrderOnInsertions() throws UnknownHostException {
@@ -114,7 +114,7 @@ public class Socks5ProxyTest {
      * When replacing network addresses of the proxy the order should remain in the order if the
      * given list.
      *
-     * @throws UnknownHostException
+     * @throws UnknownHostException if unknown host.
      */
     @Test
     public void shouldPreserveAddressOrderOnReplace() throws UnknownHostException {

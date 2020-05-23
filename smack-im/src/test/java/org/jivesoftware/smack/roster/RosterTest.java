@@ -95,6 +95,8 @@ public class RosterTest extends InitSmackIm {
      * Test a simple roster initialization according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-login"
      *     >RFC3921: Retrieving One's Roster on Login</a>.
+     *
+     * @throws Exception in case of an exception.
      */
     @Test
     public void testSimpleRosterInitialization() throws Exception {
@@ -131,6 +133,8 @@ public class RosterTest extends InitSmackIm {
      * Test adding a roster item according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-add"
      *     >RFC3921: Adding a Roster Item</a>.
+     *
+     * @throws Throwable in case a throwable is thrown.
      */
     @Test
     public void testAddRosterItem() throws Throwable {
@@ -203,6 +207,8 @@ public class RosterTest extends InitSmackIm {
      * Test updating a roster item according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-update"
      *     >RFC3921: Updating a Roster Item</a>.
+     *
+     * @throws Throwable in case a throwable is thrown.
      */
     @Test
     public void testUpdateRosterItem() throws Throwable {
@@ -279,6 +285,7 @@ public class RosterTest extends InitSmackIm {
      * Test deleting a roster item according to the example in
      * <a href="http://xmpp.org/rfcs/rfc3921.html#roster-delete"
      *     >RFC3921: Deleting a Roster Item</a>.
+     * @throws Throwable if throwable is thrown.
      */
     @Test
     public void testDeleteRosterItem() throws Throwable {
@@ -327,6 +334,7 @@ public class RosterTest extends InitSmackIm {
      * Test a simple roster push according to the example in
      * <a href="http://xmpp.org/internet-drafts/draft-ietf-xmpp-3921bis-03.html#roster-syntax-actions-push"
      *     >RFC3921bis-03: Roster Push</a>.
+     * @throws Throwable in case a throwable is thrown.
      */
     @Test
     public void testSimpleRosterPush() throws Throwable {
@@ -398,6 +406,7 @@ public class RosterTest extends InitSmackIm {
      * Test if adding an user with an empty group is equivalent with providing
      * no group.
      *
+     * @throws Throwable in case a throwable is thrown.
      * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
      */
     @Test(timeout = 5000)
@@ -466,6 +475,7 @@ public class RosterTest extends InitSmackIm {
      * Test processing a roster push with an empty group is equivalent with providing
      * no group.
      *
+     * @throws Throwable in case a throwable is thrown.
      * @see <a href="http://www.igniterealtime.org/issues/browse/SMACK-294">SMACK-294</a>
      */
     @Test
