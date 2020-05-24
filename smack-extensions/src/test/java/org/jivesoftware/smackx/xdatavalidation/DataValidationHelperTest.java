@@ -44,9 +44,8 @@ public class DataValidationHelperTest {
                         () -> element.checkConsistency(field));
         assertEquals("Field type 'jid-single' is not consistent with validation method 'basic'.", vce.getMessage());
 
-        IllegalArgumentException iae = assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                         () -> new ListRange(-1L, 1L));
-        assertEquals("unsigned 32-bit integers can't be negative", iae.getMessage());
 
         element.setListRange(new ListRange(10L, 100L));
         vce = assertThrows(ValidationConsistencyException.class, () -> element.checkConsistency(field));
