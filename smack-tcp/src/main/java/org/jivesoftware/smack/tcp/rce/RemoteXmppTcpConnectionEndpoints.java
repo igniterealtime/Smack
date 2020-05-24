@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.dns.DNSResolver;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpoint;
@@ -72,7 +73,7 @@ public class RemoteXmppTcpConnectionEndpoints {
 
             if (hostAddresses != null) {
                 discoveredRemoteConnectionEndpoints = new ArrayList<>(hostAddresses.size());
-                int port = config.getPort();
+                UInt16 port = config.getPort();
                 for (InetAddress inetAddress : hostAddresses) {
                     IpTcpRemoteConnectionEndpoint<InternetAddressRR> connectionEndpoint = IpTcpRemoteConnectionEndpoint.from(
                                     host, port, inetAddress);
@@ -198,13 +199,13 @@ public class RemoteXmppTcpConnectionEndpoints {
             LOGGER.info("Could not resolve DNS SRV resource records for " + srvDomain + ". Consider adding those.");
         }
 
-        int defaultPort;
+        UInt16 defaultPort;
         switch (domainType) {
         case client:
-            defaultPort = 5222;
+            defaultPort = UInt16.from(5222);
             break;
         case server:
-            defaultPort = 5269;
+            defaultPort = UInt16.from(5269);
             break;
         default:
             throw new AssertionError();

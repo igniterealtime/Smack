@@ -42,7 +42,7 @@ public final class IpTcpRemoteConnectionEndpoint<IARR extends InternetAddressRR>
         this.internetAddressResourceRecord = internetAddressResourceRecord;
     }
 
-    public static IpTcpRemoteConnectionEndpoint<InternetAddressRR> from(CharSequence host, int port,
+    public static IpTcpRemoteConnectionEndpoint<InternetAddressRR> from(CharSequence host, UInt16 port,
                     InetAddress inetAddress) {
         InternetAddressRR internetAddressResourceRecord;
         // TODO: Use InternetAddressRR.from(InetAddress) once MiniDNS is updated.
@@ -52,7 +52,7 @@ public final class IpTcpRemoteConnectionEndpoint<IARR extends InternetAddressRR>
             internetAddressResourceRecord = new AAAA((Inet6Address) inetAddress);
         }
 
-        return new IpTcpRemoteConnectionEndpoint<InternetAddressRR>(host, UInt16.from(port),
+        return new IpTcpRemoteConnectionEndpoint<InternetAddressRR>(host, port,
                         internetAddressResourceRecord);
     }
 

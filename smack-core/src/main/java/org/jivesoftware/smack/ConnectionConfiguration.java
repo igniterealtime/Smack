@@ -35,6 +35,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.CallbackHandler;
 
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
@@ -101,7 +102,7 @@ public abstract class ConnectionConfiguration {
 
     protected final InetAddress hostAddress;
     protected final DnsName host;
-    protected final int port;
+    protected final UInt16 port;
 
     private final String keystorePath;
     private final String keystoreType;
@@ -237,7 +238,7 @@ public abstract class ConnectionConfiguration {
         return hostAddress;
     }
 
-    public int getPort() {
+    public UInt16 getPort() {
         return port;
     }
 
@@ -621,7 +622,7 @@ public abstract class ConnectionConfiguration {
         private DomainBareJid xmppServiceDomain;
         private InetAddress hostAddress;
         private DnsName host;
-        private int port = 5222;
+        private UInt16 port = UInt16.from(5222);
         private boolean allowEmptyOrNullUsername = false;
         private boolean saslMechanismsSealed;
         private Set<String> enabledSaslMechanisms;
@@ -837,7 +838,12 @@ public abstract class ConnectionConfiguration {
                 throw new IllegalArgumentException(
                         "Port must be a 16-bit unsigned integer (i.e. between 0-65535. Port was: " + port);
             }
-            this.port = port;
+            UInt16 portUint16 = UInt16.from(port);
+            return setPort(portUint16);
+        }
+
+        public B setPort(UInt16 port) {
+            this.port = Objects.requireNonNull(port);
             return getThis();
         }
 
