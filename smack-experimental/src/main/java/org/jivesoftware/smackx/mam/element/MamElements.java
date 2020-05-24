@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus and Fernando Ramirez
+ * Copyright © 2016-2020 Florian Schmaus and Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.jxmpp.jid.Jid;
  */
 public class MamElements {
 
-    public static final String NAMESPACE = "urn:xmpp:mam:1";
+    public static final String NAMESPACE = "urn:xmpp:mam:2";
 
     /**
      * MAM result extension class.

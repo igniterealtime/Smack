@@ -40,12 +40,12 @@ import org.jxmpp.jid.impl.JidCreate;
 
 public class QueryArchiveTest extends MamTest {
 
-    private static final String mamSimpleQueryIQ = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:1' queryid='testid'>"
+    private static final String mamSimpleQueryIQ = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:2' queryid='testid'>"
             + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>" + "<value>"
             + MamElements.NAMESPACE + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
 
     private static final String mamQueryResultExample = "<message to='hag66@shakespeare.lit/pda' from='coven@chat.shakespeare.lit' id='iasd207'>"
-            + "<result xmlns='urn:xmpp:mam:1' queryid='g27' id='34482-21985-73620'>"
+            + "<result xmlns='urn:xmpp:mam:2' queryid='g27' id='34482-21985-73620'>"
             + "<forwarded xmlns='urn:xmpp:forward:0'>"
             + "<delay xmlns='urn:xmpp:delay' stamp='2002-10-13T23:58:37.000+00:00'/>" + "<message "
             + "xmlns='jabber:client' from='coven@chat.shakespeare.lit/firstwitch' " + "id='162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2' "

@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 
 public class MamFinProviderTest extends MamTest {
 
-    static final String exmapleMamFinXml = "<fin xmlns='urn:xmpp:mam:1' stable='true'>"
+    static final String exmapleMamFinXml = "<fin xmlns='urn:xmpp:mam:2' stable='true'>"
             + "<set xmlns='http://jabber.org/protocol/rsm'>" + "<max>10</max>" + "<after>09af3-cc343-b409f</after>"
             + "</set>" + "</fin>";
 
@@ -56,7 +56,7 @@ public class MamFinProviderTest extends MamTest {
     public void checkQueryLimitedResults() throws Exception {
         // @formatter:off
         final String IQ_LIMITED_RESULTS_EXAMPLE = "<iq type='result' id='u29303'>"
-                        + "<fin xmlns='urn:xmpp:mam:1' complete='true'>"
+                        + "<fin xmlns='urn:xmpp:mam:2' complete='true'>"
                         + "<set xmlns='http://jabber.org/protocol/rsm'>"
                         + "<first index='0'>23452-4534-1</first>"
                         + "<last>390-2342-22</last>" + "<count>16</count>"

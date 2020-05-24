@@ -33,19 +33,19 @@ import org.jxmpp.jid.Jid;
 
 public class MamPrefIQProviderTest extends MamTest {
 
-    private static final String exampleMamPrefsIQ1 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>"
+    private static final String exampleMamPrefsIQ1 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:2' default='roster'>"
             + "<always>" + "<jid>romeo@montague.lit</jid>" + "</always>" + "<never>"
             + "<jid>montague@montague.lit</jid>" + "</never>" + "</prefs>" + "</iq>";
 
-    private static final String exampleMamPrefsIQ2 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>"
+    private static final String exampleMamPrefsIQ2 = "<iq type='set' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:2' default='roster'>"
             + "<always>" + "<jid>romeo@montague.lit</jid>" + "<jid>montague@montague.lit</jid>" + "</always>"
             + "<never>" + "</never>" + "</prefs>" + "</iq>";
 
-    private static final String exampleMamPrefsIQ3 = "<iq type='get' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:1'>" + "</prefs>"
+    private static final String exampleMamPrefsIQ3 = "<iq type='get' id='juliet3'>" + "<prefs xmlns='urn:xmpp:mam:2'>" + "</prefs>"
             + "</iq>";
 
     private static final String exampleMamPrefsResultIQ = "<iq type='result' id='juliet3'>"
-            + "<prefs xmlns='urn:xmpp:mam:1' default='roster'>" + "<always>" + "<jid>romeo@montague.lit</jid>"
+            + "<prefs xmlns='urn:xmpp:mam:2' default='roster'>" + "<always>" + "<jid>romeo@montague.lit</jid>"
             + "</always>" + "<never>" + "<jid>sarasa@montague.lit</jid>" + "<jid>montague@montague.lit</jid>"
             + "</never>" + "</prefs>" + "</iq>";
 
