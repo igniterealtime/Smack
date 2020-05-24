@@ -139,7 +139,7 @@ public final class FallbackIndicationManager extends Manager {
      * @param fallbackMessageBody fallback message body
      * @return builder with set body and added fallback element
      */
-    public MessageBuilder addFallbackIndicationWithBody(MessageBuilder messageBuilder, String fallbackMessageBody) {
+    public static MessageBuilder addFallbackIndicationWithBody(MessageBuilder messageBuilder, String fallbackMessageBody) {
         return addFallbackIndication(messageBuilder).setBody(fallbackMessageBody);
     }
 
@@ -149,7 +149,7 @@ public final class FallbackIndicationManager extends Manager {
      * @param messageBuilder message builder
      * @return message builder with added fallback element
      */
-    public MessageBuilder addFallbackIndication(MessageBuilder messageBuilder) {
+    public static MessageBuilder addFallbackIndication(MessageBuilder messageBuilder) {
         return messageBuilder.addExtension(new FallbackIndicationElement());
     }
 

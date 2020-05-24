@@ -102,7 +102,7 @@ public final class MessageRetractionManager extends Manager {
      * @param retractedMessageId {@link OriginIdElement OriginID} of the message that the user wants to retract
      * @param carrierMessageBuilder message used to transmit the message retraction to the recipient
      */
-    public void addRetractionElementToMessage(OriginIdElement retractedMessageId, MessageBuilder carrierMessageBuilder) {
+    public static void addRetractionElementToMessage(OriginIdElement retractedMessageId, MessageBuilder carrierMessageBuilder) {
         FasteningElement fasteningElement = FasteningElement.builder()
                 .setOriginId(retractedMessageId)
                 .addWrappedPayload(new RetractElement())
