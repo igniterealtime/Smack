@@ -16,18 +16,14 @@
  */
 package org.jivesoftware.smack.tcp.rce;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 
 import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.util.rce.SingleAddressRemoteConnectionEndpoint;
 
-import org.minidns.record.A;
-import org.minidns.record.AAAA;
 import org.minidns.record.InternetAddressRR;
 
-public final class IpTcpRemoteConnectionEndpoint<IARR extends InternetAddressRR>
+public final class IpTcpRemoteConnectionEndpoint<IARR extends InternetAddressRR<?>>
                 implements Rfc6120TcpRemoteConnectionEndpoint, SingleAddressRemoteConnectionEndpoint {
 
     private final CharSequence host;
@@ -42,17 +38,11 @@ public final class IpTcpRemoteConnectionEndpoint<IARR extends InternetAddressRR>
         this.internetAddressResourceRecord = internetAddressResourceRecord;
     }
 
-    public static IpTcpRemoteConnectionEndpoint<InternetAddressRR> from(CharSequence host, UInt16 port,
+    public static IpTcpRemoteConnectionEndpoint<InternetAddressRR<?>> from(CharSequence host, UInt16 port,
                     InetAddress inetAddress) {
-        InternetAddressRR internetAddressResourceRecord;
-        // TODO: Use InternetAddressRR.from(InetAddress) once MiniDNS is updated.
-        if (inetAddress instanceof Inet4Address) {
-            internetAddressResourceRecord = new A((Inet4Address) inetAddress);
-        } else {
-            internetAddressResourceRecord = new AAAA((Inet6Address) inetAddress);
-        }
+        InternetAddressRR<?> internetAddressResourceRecord = InternetAddressRR.from(inetAddress);
 
-        return new IpTcpRemoteConnectionEndpoint<InternetAddressRR>(host, port,
+        return new IpTcpRemoteConnectionEndpoint<InternetAddressRR<?>>(host, port,
                         internetAddressResourceRecord);
     }
 

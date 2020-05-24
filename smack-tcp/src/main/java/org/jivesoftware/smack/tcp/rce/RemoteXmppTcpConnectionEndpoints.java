@@ -62,7 +62,7 @@ public class RemoteXmppTcpConnectionEndpoints {
         if (hostAddress != null) {
             lookupFailures = Collections.emptyList();
 
-            IpTcpRemoteConnectionEndpoint<InternetAddressRR> connectionEndpoint = IpTcpRemoteConnectionEndpoint.from(
+            IpTcpRemoteConnectionEndpoint<InternetAddressRR<?>> connectionEndpoint = IpTcpRemoteConnectionEndpoint.from(
                             hostAddress.toString(), config.getPort(), hostAddress);
             discoveredRemoteConnectionEndpoints = Collections.singletonList(connectionEndpoint);
         } else if (host != null) {
@@ -75,7 +75,7 @@ public class RemoteXmppTcpConnectionEndpoints {
                 discoveredRemoteConnectionEndpoints = new ArrayList<>(hostAddresses.size());
                 UInt16 port = config.getPort();
                 for (InetAddress inetAddress : hostAddresses) {
-                    IpTcpRemoteConnectionEndpoint<InternetAddressRR> connectionEndpoint = IpTcpRemoteConnectionEndpoint.from(
+                    IpTcpRemoteConnectionEndpoint<InternetAddressRR<?>> connectionEndpoint = IpTcpRemoteConnectionEndpoint.from(
                                     host, port, inetAddress);
                     discoveredRemoteConnectionEndpoints.add(connectionEndpoint);
                 }
@@ -215,7 +215,7 @@ public class RemoteXmppTcpConnectionEndpoints {
         List<InetAddress> hostAddresses = dnsResolver.lookupHostAddress(domain, lookupFailures, dnssecMode);
         if (hostAddresses != null) {
             for (InetAddress inetAddress : hostAddresses) {
-                IpTcpRemoteConnectionEndpoint<InternetAddressRR> endpoint = IpTcpRemoteConnectionEndpoint.from(domain, defaultPort, inetAddress);
+                IpTcpRemoteConnectionEndpoint<InternetAddressRR<?>> endpoint = IpTcpRemoteConnectionEndpoint.from(domain, defaultPort, inetAddress);
                 endpoints.add(endpoint);
             }
         }
