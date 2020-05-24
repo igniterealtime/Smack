@@ -44,7 +44,6 @@ import org.jivesoftware.smackx.ox.crypto.OpenPgpElementAndMetadata;
 import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
-import org.jivesoftware.smackx.ox.listener.SigncryptElementReceivedListener;
 
 import org.bouncycastle.openpgp.PGPException;
 import org.jxmpp.jid.BareJid;
@@ -127,7 +126,7 @@ public final class OXInstantMessagingManager extends Manager {
     private OXInstantMessagingManager(final XMPPConnection connection) {
         super(connection);
         openPgpManager = OpenPgpManager.getInstanceFor(connection);
-        openPgpManager.registerSigncryptReceivedListener(signcryptElementReceivedListener);
+        openPgpManager.registerSigncryptReceivedListener(this::signcryptElementReceivedListener);
         announceSupportForOxInstantMessaging();
     }
 
@@ -358,12 +357,9 @@ public final class OXInstantMessagingManager extends Manager {
         message.setBody("This message is encrypted using XEP-0374: OpenPGP for XMPP: Instant Messaging.");
     }
 
-    private final SigncryptElementReceivedListener signcryptElementReceivedListener = new SigncryptElementReceivedListener() {
-        @Override
-        public void signcryptElementReceived(OpenPgpContact contact, Message originalMessage, SigncryptElement signcryptElement, OpenPgpMetadata metadata) {
-            for (OxMessageListener listener : oxMessageListeners) {
-                listener.newIncomingOxMessage(contact, originalMessage, signcryptElement, metadata);
-            }
+    private void signcryptElementReceivedListener(OpenPgpContact contact, Message originalMessage, SigncryptElement signcryptElement, OpenPgpMetadata metadata) {
+        for (OxMessageListener listener : oxMessageListeners) {
+            listener.newIncomingOxMessage(contact, originalMessage, signcryptElement, metadata);
         }
-    };
+    }
 }

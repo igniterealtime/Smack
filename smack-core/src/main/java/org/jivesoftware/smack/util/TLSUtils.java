@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
@@ -143,14 +142,6 @@ public class TLSUtils {
         return builder;
     }
 
-    private static final HostnameVerifier DOES_NOT_VERIFY_VERIFIER = new HostnameVerifier() {
-        @Override
-        public boolean verify(String hostname, SSLSession session) {
-            // This verifier doesn't verify the hostname, it always returns true.
-            return true;
-        }
-    };
-
     /**
      * Disable the hostname verification of TLS certificates.
      * <p>
@@ -164,7 +155,9 @@ public class TLSUtils {
      * @return the given builder.
      */
     public static <B extends ConnectionConfiguration.Builder<B, ?>> B disableHostnameVerificationForTlsCertificates(B builder) {
-        builder.setHostnameVerifier(DOES_NOT_VERIFY_VERIFIER);
+        builder.setHostnameVerifier((hostname, session) -> {
+            return true;
+        });
         return builder;
     }
 

@@ -54,7 +54,6 @@ import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -312,11 +311,11 @@ public final class EntityCapsManager extends Manager {
     // Intercept presence packages and add caps data when intended.
     // XEP-0115 specifies that a client SHOULD include entity capabilities
     // with every presence notification it sends.
-    private final Consumer<PresenceBuilder> presenceInterceptor = presenceBuilder -> {
+    private void addCapsExtension(PresenceBuilder presenceBuilder) {
         CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
         CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
         presenceBuilder.overrideExtension(caps);
-    };
+    }
 
     private EntityCapsManager(XMPPConnection connection) {
         super(connection);
@@ -402,7 +401,7 @@ public final class EntityCapsManager extends Manager {
     }
 
     public synchronized void enableEntityCaps() {
-        connection().addPresenceInterceptor(presenceInterceptor, p -> {
+        connection().addPresenceInterceptor(this::addCapsExtension, p -> {
             return PresenceTypeFilter.AVAILABLE.accept(p);
         });
 
@@ -415,7 +414,7 @@ public final class EntityCapsManager extends Manager {
         entityCapsEnabled = false;
         sdm.removeFeature(NAMESPACE);
 
-        connection().removePresenceInterceptor(presenceInterceptor);
+        connection().removePresenceInterceptor(this::addCapsExtension);
     }
 
     public boolean entityCapsEnabled() {

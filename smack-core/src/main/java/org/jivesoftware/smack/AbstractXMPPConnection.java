@@ -374,17 +374,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected final AsyncButOrdered<StanzaListener> inOrderListeners = new AsyncButOrdered<>();
 
     /**
-     * An executor which uses {@link #asyncGoLimited(Runnable)} to limit the number of asynchronously processed runnables
-     * per connection.
-     */
-    private final Executor limitedExcutor = new Executor() {
-        @Override
-        public void execute(Runnable runnable) {
-            asyncGoLimited(runnable);
-        }
-    };
-
-    /**
      * The used host to establish the connection to
      */
     protected String host;
@@ -1524,7 +1513,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         executorService = ASYNC_BUT_ORDERED.asExecutorFor(this);
                         break;
                     case async:
-                        executorService = limitedExcutor;
+                        executorService = this::asyncGoLimited;
                         break;
                     }
                     final IQRequestHandler finalIqRequestHandler = iqRequestHandler;

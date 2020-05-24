@@ -25,7 +25,6 @@ import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException;
@@ -68,23 +67,20 @@ public final class FallbackIndicationManager extends Manager {
     private final StanzaFilter fallbackIndicationElementFilter = new AndFilter(StanzaTypeFilter.MESSAGE,
             new StanzaExtensionFilter(FallbackIndicationElement.ELEMENT, FallbackIndicationElement.NAMESPACE));
 
-    private final StanzaListener fallbackIndicationElementListener = new StanzaListener() {
-        @Override
-        public void processStanza(Stanza packet) {
-            Message message = (Message) packet;
-            FallbackIndicationElement indicator = FallbackIndicationElement.fromMessage(message);
-            String body = message.getBody();
-            asyncButOrdered.performAsyncButOrdered(message.getFrom().asBareJid(), () -> {
-                for (FallbackIndicationListener l : listeners) {
-                    l.onFallbackIndicationReceived(message, indicator, body);
-                }
-            });
-        }
-    };
+    private void fallbackIndicationElementListener(Stanza packet) {
+        Message message = (Message) packet;
+        FallbackIndicationElement indicator = FallbackIndicationElement.fromMessage(message);
+        String body = message.getBody();
+        asyncButOrdered.performAsyncButOrdered(message.getFrom().asBareJid(), () -> {
+            for (FallbackIndicationListener l : listeners) {
+                l.onFallbackIndicationReceived(message, indicator, body);
+            }
+        });
+    }
 
     private FallbackIndicationManager(XMPPConnection connection) {
         super(connection);
-        connection.addAsyncStanzaListener(fallbackIndicationElementListener, fallbackIndicationElementFilter);
+        connection.addAsyncStanzaListener(this::fallbackIndicationElementListener, fallbackIndicationElementFilter);
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(FallbackIndicationElement.NAMESPACE);
     }
 

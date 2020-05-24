@@ -307,7 +307,9 @@ public final class HttpFileUploadManager extends Manager {
     public URL uploadFile(InputStream inputStream, String fileName, long fileSize, UploadProgressListener listener) throws XMPPErrorException, InterruptedException, SmackException, IOException {
         Objects.requireNonNull(inputStream, "Input Stream cannot be null");
         Objects.requireNonNull(fileName, "Filename Stream cannot be null");
-        Objects.requireNonNull(fileSize, "Filesize Stream cannot be null");
+        if (fileSize < 0) {
+            throw new IllegalArgumentException("File size cannot be negative");
+        }
         final Slot slot = requestSlot(fileName, fileSize, "application/octet-stream");
         upload(inputStream, fileSize, slot, listener);
         return slot.getGetUrl();

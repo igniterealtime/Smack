@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2020 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.ChatManager;
-import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.stringencoder.Base64;
@@ -180,7 +179,7 @@ public final class OpenPgpManager extends Manager {
      */
     private OpenPgpManager(XMPPConnection connection) {
         super(connection);
-        ChatManager.getInstanceFor(connection).addIncomingListener(incomingOpenPgpMessageListener);
+        ChatManager.getInstanceFor(connection).addIncomingListener(this::incomingChatMessageListener);
         pepManager = PepManager.getInstanceFor(connection);
     }
 
@@ -279,7 +278,7 @@ public final class OpenPgpManager extends Manager {
         publishPublicKey(pepManager, pubkeyElement, primaryFingerprint);
 
         // Subscribe to public key changes
-        PepManager.getInstanceFor(connection()).addPepListener(metadataListener);
+        PepManager.getInstanceFor(connection()).addPepListener(this::metadataListener);
         ServiceDiscoveryManager.getInstanceFor(connection())
                 .addFeature(PEP_NODE_PUBLIC_KEYS_NOTIFY);
     }
@@ -381,7 +380,7 @@ public final class OpenPgpManager extends Manager {
      * Remove the metadata listener. This method is mainly used in tests.
      */
     public void stopMetadataListener() {
-        PepManager.getInstanceFor(connection()).removePepListener(metadataListener);
+        PepManager.getInstanceFor(connection()).removePepListener(this::metadataListener);
     }
 
     /**
@@ -502,25 +501,22 @@ public final class OpenPgpManager extends Manager {
      *
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#pubsub-notifications">XEP-0373 §4.4</a>
      */
-    private final PepListener metadataListener = new PepListener() {
-        @Override
-        public void eventReceived(final EntityBareJid from, final EventElement event, final Message message) {
-            if (PEP_NODE_PUBLIC_KEYS.equals(event.getEvent().getNode())) {
-                final BareJid contact = from.asBareJid();
-                LOGGER.log(Level.INFO, "Received OpenPGP metadata update from " + contact);
-                Async.go(new Runnable() {
-                    @Override
-                    public void run() {
-                        ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                        PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
-                        PublicKeysListElement listElement = (PublicKeysListElement) payload.getPayload();
+    private void metadataListener(final EntityBareJid from, final EventElement event, final Message message) {
+        if (PEP_NODE_PUBLIC_KEYS.equals(event.getEvent().getNode())) {
+            final BareJid contact = from.asBareJid();
+            LOGGER.log(Level.INFO, "Received OpenPGP metadata update from " + contact);
+            Async.go(new Runnable() {
+                @Override
+                public void run() {
+                    ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
+                    PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
+                    PublicKeysListElement listElement = (PublicKeysListElement) payload.getPayload();
 
-                        processPublicKeysListElement(from, listElement);
-                    }
-                }, "ProcessOXMetadata");
-            }
+                    processPublicKeysListElement(from, listElement);
+                }
+            }, "ProcessOXMetadata");
         }
-    };
+    }
 
     private void processPublicKeysListElement(BareJid contact, PublicKeysListElement listElement) {
         OpenPgpContact openPgpContact = getOpenPgpContact(contact.asEntityBareJidIfPossible());
@@ -548,62 +544,60 @@ public final class OpenPgpManager extends Manager {
         return provider.decryptAndOrVerify(element, getOpenPgpSelf(), sender);
     }
 
-    private final IncomingChatMessageListener incomingOpenPgpMessageListener =
-            new IncomingChatMessageListener() {
-                @Override
-                public void newIncomingMessage(final EntityBareJid from, final Message message, Chat chat) {
-                    Async.go(new Runnable() {
-                        @Override
-                        public void run() {
-                            OpenPgpElement element = message.getExtension(OpenPgpElement.class);
-                            if (element == null) {
-                                // Message does not contain an OpenPgpElement -> discard
-                                return;
-                            }
-
-                            OpenPgpContact contact = getOpenPgpContact(from);
-
-                            OpenPgpMessage decrypted = null;
-                            OpenPgpContentElement contentElement = null;
-                            try {
-                                decrypted = decryptOpenPgpElement(element, contact);
-                                contentElement = decrypted.getOpenPgpContentElement();
-                            } catch (PGPException e) {
-                                LOGGER.log(Level.WARNING, "Could not decrypt incoming OpenPGP encrypted message", e);
-                            } catch (XmlPullParserException | IOException e) {
-                                LOGGER.log(Level.WARNING, "Invalid XML content of incoming OpenPGP encrypted message", e);
-                            } catch (SmackException.NotLoggedInException e) {
-                                LOGGER.log(Level.WARNING, "Cannot determine our JID, since we are not logged in.", e);
-                            }
-
-                            if (contentElement instanceof SigncryptElement) {
-                                for (SigncryptElementReceivedListener l : signcryptElementReceivedListeners) {
-                                    l.signcryptElementReceived(contact, message, (SigncryptElement) contentElement, decrypted.getMetadata());
-                                }
-                                return;
-                            }
-
-                            if (contentElement instanceof SignElement) {
-                                for (SignElementReceivedListener l : signElementReceivedListeners) {
-                                    l.signElementReceived(contact, message, (SignElement) contentElement, decrypted.getMetadata());
-                                }
-                                return;
-                            }
-
-                            if (contentElement instanceof CryptElement) {
-                                for (CryptElementReceivedListener l : cryptElementReceivedListeners) {
-                                    l.cryptElementReceived(contact, message, (CryptElement) contentElement, decrypted.getMetadata());
-                                }
-                                return;
-                            }
-
-                            else {
-                                throw new AssertionError("Invalid element received: " + contentElement.getClass().getName());
-                            }
-                        }
-                    });
+    private void incomingChatMessageListener(final EntityBareJid from, final Message message, Chat chat) {
+        Async.go(new Runnable() {
+            @Override
+            public void run() {
+                OpenPgpElement element = message.getExtension(OpenPgpElement.class);
+                if (element == null) {
+                    // Message does not contain an OpenPgpElement -> discard
+                    return;
                 }
-            };
+
+                OpenPgpContact contact = getOpenPgpContact(from);
+
+                OpenPgpMessage decrypted = null;
+                OpenPgpContentElement contentElement = null;
+                try {
+                    decrypted = decryptOpenPgpElement(element, contact);
+                    contentElement = decrypted.getOpenPgpContentElement();
+                } catch (PGPException e) {
+                    LOGGER.log(Level.WARNING, "Could not decrypt incoming OpenPGP encrypted message", e);
+                } catch (XmlPullParserException | IOException e) {
+                    LOGGER.log(Level.WARNING, "Invalid XML content of incoming OpenPGP encrypted message", e);
+                } catch (SmackException.NotLoggedInException e) {
+                    LOGGER.log(Level.WARNING, "Cannot determine our JID, since we are not logged in.", e);
+                }
+
+                if (contentElement instanceof SigncryptElement) {
+                    for (SigncryptElementReceivedListener l : signcryptElementReceivedListeners) {
+                        l.signcryptElementReceived(contact, message, (SigncryptElement) contentElement,
+                                        decrypted.getMetadata());
+                    }
+                    return;
+                }
+
+                if (contentElement instanceof SignElement) {
+                    for (SignElementReceivedListener l : signElementReceivedListeners) {
+                        l.signElementReceived(contact, message, (SignElement) contentElement, decrypted.getMetadata());
+                    }
+                    return;
+                }
+
+                if (contentElement instanceof CryptElement) {
+                    for (CryptElementReceivedListener l : cryptElementReceivedListeners) {
+                        l.cryptElementReceived(contact, message, (CryptElement) contentElement,
+                                        decrypted.getMetadata());
+                    }
+                    return;
+                }
+
+                else {
+                    throw new AssertionError("Invalid element received: " + contentElement.getClass().getName());
+                }
+            }
+        });
+    }
 
     /**
      * Create a {@link PubkeyElement} which contains the OpenPGP public key of {@code owner} which belongs to

@@ -39,7 +39,7 @@ public class OriginIdElement extends StableAndUniqueIdElement {
      *
      * @param message message.
      * @return the added origin-id element.
-     * @deprecated use {@link #addOriginId(MessageBuilder)} instead.
+     * @deprecated use {@link #addTo(MessageBuilder)} instead.
      */
     @Deprecated
     // TODO: Remove in Smack 4.5.
@@ -57,7 +57,7 @@ public class OriginIdElement extends StableAndUniqueIdElement {
      * @param messageBuilder the message builder to add an origin ID to.
      * @return the added origin-id element.
      */
-    public static OriginIdElement addOriginId(MessageBuilder messageBuilder) {
+    public static OriginIdElement addTo(MessageBuilder messageBuilder) {
         OriginIdElement originId = new OriginIdElement();
         messageBuilder.addExtension(originId);
         // TODO: Find solution to have both the originIds stanzaId and a nice to look at incremental stanzaID.

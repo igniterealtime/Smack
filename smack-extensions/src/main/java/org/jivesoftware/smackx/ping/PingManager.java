@@ -390,7 +390,7 @@ public final class PingManager extends Manager {
             int nextPingIn = pingInterval - delta;
             LOGGER.fine("Scheduling ServerPingTask in " + nextPingIn + " seconds (pingInterval="
                             + pingInterval + ", delta=" + delta + ")");
-            nextAutomaticPing = schedule(pingServerRunnable, nextPingIn, TimeUnit.SECONDS);
+            nextAutomaticPing = schedule(this::pingServerIfNecessary, nextPingIn, TimeUnit.SECONDS);
         }
     }
 
@@ -467,13 +467,4 @@ public final class PingManager extends Manager {
             }
         });
     }
-
-    private final Runnable pingServerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            LOGGER.fine("ServerPingTask run()");
-            pingServerIfNecessary();
-        }
-    };
-
 }

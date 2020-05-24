@@ -25,6 +25,7 @@ import org.junit.Test;
 
 public class DnsUtilTest {
 
+    @SuppressWarnings("UnnecessaryAnonymousClass")
     private static final SmackDaneProvider DNS_UTIL_TEST_DANE_PROVIDER = new SmackDaneProvider() {
         @Override
         public SmackDaneVerifier newInstance() {

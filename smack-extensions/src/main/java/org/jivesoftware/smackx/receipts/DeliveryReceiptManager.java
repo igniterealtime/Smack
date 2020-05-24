@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2015-2019 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,11 +38,9 @@ import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -273,8 +271,6 @@ public final class DeliveryReceiptManager extends Manager {
                     );
                    // @formatter:on
 
-    private static final Consumer<MessageBuilder> AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER = mb -> DeliveryReceiptRequest.addTo(mb);
-
     /**
      * Enables automatic requests of delivery receipts for outgoing messages of
      * {@link org.jivesoftware.smack.packet.Message.Type#normal}, {@link org.jivesoftware.smack.packet.Message.Type#chat} or {@link org.jivesoftware.smack.packet.Message.Type#headline}, and
@@ -284,7 +280,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #dontAutoAddDeliveryReceiptRequests()
      */
     public void autoAddDeliveryReceiptRequests() {
-        connection().addMessageInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER, m -> {
+        connection().addMessageInterceptor(DeliveryReceiptRequest::addTo, m -> {
             return MESSAGES_TO_REQUEST_RECEIPTS_FOR.accept(m);
         });
     }
@@ -296,7 +292,7 @@ public final class DeliveryReceiptManager extends Manager {
      * @see #autoAddDeliveryReceiptRequests()
      */
     public void dontAutoAddDeliveryReceiptRequests() {
-        connection().removeMessageInterceptor(AUTO_ADD_DELIVERY_RECEIPT_REQUESTS_LISTENER);
+        connection().removeMessageInterceptor(DeliveryReceiptRequest::addTo);
     }
 
     /**

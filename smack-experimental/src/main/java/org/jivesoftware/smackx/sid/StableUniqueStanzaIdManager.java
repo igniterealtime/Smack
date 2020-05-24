@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub
+ * Copyright 2018 Paul Schaub, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,6 @@ import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.MessageBuilder;
-import org.jivesoftware.smack.util.Consumer;
-import org.jivesoftware.smack.util.Predicate;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
@@ -62,14 +58,8 @@ public final class StableUniqueStanzaIdManager extends Manager {
     // Filter that filters for messages with an origin id
     private static final StanzaFilter ORIGIN_ID_FILTER = new StanzaExtensionFilter(OriginIdElement.ELEMENT, NAMESPACE);
 
-    // Listener for outgoing stanzas that adds origin-ids to outgoing stanzas.
-    private static final Consumer<MessageBuilder> ADD_ORIGIN_ID_INTERCEPTOR = mb -> OriginIdElement.addOriginId(mb);
-
     // We need a filter for outgoing messages that do not carry an origin-id already.
     private static final StanzaFilter ADD_ORIGIN_ID_FILTER = new AndFilter(OUTGOING_FILTER, new NotFilter(ORIGIN_ID_FILTER));
-    private static final Predicate<Message> ADD_ORIGIN_ID_PREDICATE = m -> {
-        return ADD_ORIGIN_ID_FILTER.accept(m);
-    };
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -113,7 +103,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      * Start appending origin-id elements to outgoing stanzas and add the feature to disco.
      */
     public synchronized void enable() {
-        connection().addMessageInterceptor(ADD_ORIGIN_ID_INTERCEPTOR, ADD_ORIGIN_ID_PREDICATE);
+        connection().addMessageInterceptor(OriginIdElement::addTo, ADD_ORIGIN_ID_FILTER::accept);
         ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(NAMESPACE);
     }
 
@@ -122,7 +112,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
      */
     public synchronized void disable() {
         ServiceDiscoveryManager.getInstanceFor(connection()).removeFeature(NAMESPACE);
-        connection().removeMessageInterceptor(ADD_ORIGIN_ID_INTERCEPTOR);
+        connection().removeMessageInterceptor(OriginIdElement::addTo);
     }
 
     /**

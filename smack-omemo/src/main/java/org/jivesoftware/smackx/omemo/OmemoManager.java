@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,14 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Async;
 
-import org.jivesoftware.smackx.carbons.CarbonCopyReceivedListener;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -74,7 +71,6 @@ import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 import org.jivesoftware.smackx.omemo.util.MessageOrOmemoMessage;
-import org.jivesoftware.smackx.pep.PepListener;
 import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
@@ -897,23 +893,23 @@ public final class OmemoManager extends Manager {
         CarbonManager carbonManager = CarbonManager.getInstanceFor(connection());
 
         // Remove listeners to avoid them getting added twice
-        connection().removeAsyncStanzaListener(internalOmemoMessageStanzaListener);
-        carbonManager.removeCarbonCopyReceivedListener(internalOmemoCarbonCopyListener);
-        pepManager.removePepListener(deviceListUpdateListener);
+        connection().removeAsyncStanzaListener(this::internalOmemoMessageStanzaListener);
+        carbonManager.removeCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
+        pepManager.removePepListener(this::deviceListUpdateListener);
 
         // Add listeners
-        pepManager.addPepListener(deviceListUpdateListener);
-        connection().addAsyncStanzaListener(internalOmemoMessageStanzaListener, omemoMessageStanzaFilter);
-        carbonManager.addCarbonCopyReceivedListener(internalOmemoCarbonCopyListener);
+        pepManager.addPepListener(this::deviceListUpdateListener);
+        connection().addAsyncStanzaListener(this::internalOmemoMessageStanzaListener, OmemoManager::isOmemoMessage);
+        carbonManager.addCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
     }
 
     /**
      * Remove active stanza listeners needed for OMEMO.
      */
     public void stopStanzaAndPEPListeners() {
-        PepManager.getInstanceFor(connection()).removePepListener(deviceListUpdateListener);
-        connection().removeAsyncStanzaListener(internalOmemoMessageStanzaListener);
-        CarbonManager.getInstanceFor(connection()).removeCarbonCopyReceivedListener(internalOmemoCarbonCopyListener);
+        PepManager.getInstanceFor(connection()).removePepListener(this::deviceListUpdateListener);
+        connection().removeAsyncStanzaListener(this::internalOmemoMessageStanzaListener);
+        CarbonManager.getInstanceFor(connection()).removeCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
     }
 
     /**
@@ -961,127 +957,113 @@ public final class OmemoManager extends Manager {
     /**
      * StanzaListener that listens for incoming Stanzas which contain OMEMO elements.
      */
-    private final StanzaListener internalOmemoMessageStanzaListener = new StanzaListener() {
+    private void internalOmemoMessageStanzaListener(final Stanza packet) {
+        Async.go(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getOmemoService().onOmemoMessageStanzaReceived(packet,
+                            new LoggedInOmemoManager(OmemoManager.this));
+                } catch (SmackException.NotLoggedInException | IOException e) {
+                    LOGGER.log(Level.SEVERE, "Exception while processing OMEMO stanza", e);
+                }
+            }
+        });
+    }
 
-        @Override
-        public void processStanza(final Stanza packet) {
-            Async.go(new Runnable() {
-                @Override
-                public void run() {
+    /**
+     * CarbonCopyListener that listens for incoming carbon copies which contain OMEMO elements.
+     */
+    private void internalOmemoCarbonCopyListener(final CarbonExtension.Direction direction,
+                    final Message carbonCopy,
+                    final Message wrappingMessage) {
+        Async.go(new Runnable() {
+            @Override
+            public void run() {
+                if (isOmemoMessage(carbonCopy)) {
                     try {
-                        getOmemoService().onOmemoMessageStanzaReceived(packet,
+                        getOmemoService().onOmemoCarbonCopyReceived(direction, carbonCopy, wrappingMessage,
                                 new LoggedInOmemoManager(OmemoManager.this));
                     } catch (SmackException.NotLoggedInException | IOException e) {
                         LOGGER.log(Level.SEVERE, "Exception while processing OMEMO stanza", e);
                     }
                 }
-            });
-        }
-    };
-
-    /**
-     * CarbonCopyListener that listens for incoming carbon copies which contain OMEMO elements.
-     */
-    private final CarbonCopyReceivedListener internalOmemoCarbonCopyListener = new CarbonCopyReceivedListener() {
-        @Override
-        public void onCarbonCopyReceived(final CarbonExtension.Direction direction,
-                                         final Message carbonCopy,
-                                         final Message wrappingMessage) {
-            Async.go(new Runnable() {
-                @Override
-                public void run() {
-                    if (omemoMessageStanzaFilter.accept(carbonCopy)) {
-                        try {
-                            getOmemoService().onOmemoCarbonCopyReceived(direction, carbonCopy, wrappingMessage,
-                                    new LoggedInOmemoManager(OmemoManager.this));
-                        } catch (SmackException.NotLoggedInException | IOException e) {
-                            LOGGER.log(Level.SEVERE, "Exception while processing OMEMO stanza", e);
-                        }
-                    }
-                }
-            });
-        }
-    };
+            }
+        });
+    }
 
     /**
      * PEPListener that listens for OMEMO deviceList updates.
      */
-    private final PepListener deviceListUpdateListener = new PepListener() {
-        @Override
-        public void eventReceived(EntityBareJid from, EventElement event, Message message) {
+    private void deviceListUpdateListener(EntityBareJid from, EventElement event, Message message) {
+        // Unknown sender, no more work to do.
+        if (from == null) {
+            // TODO: This DOES happen for some reason. Figure out when...
+            return;
+        }
 
-            // Unknown sender, no more work to do.
-            if (from == null) {
-                // TODO: This DOES happen for some reason. Figure out when...
-                return;
+        for (ExtensionElement items : event.getExtensions()) {
+            if (!(items instanceof ItemsExtension)) {
+                continue;
             }
 
-            for (ExtensionElement items : event.getExtensions()) {
-                if (!(items instanceof ItemsExtension)) {
+            for (ExtensionElement item : ((ItemsExtension) items).getExtensions()) {
+                if (!(item instanceof PayloadItem<?>)) {
                     continue;
                 }
 
-                for (ExtensionElement item : ((ItemsExtension) items).getExtensions()) {
-                    if (!(item instanceof PayloadItem<?>)) {
+                PayloadItem<?> payloadItem = (PayloadItem<?>) item;
+
+                if (!(payloadItem.getPayload() instanceof OmemoDeviceListElement)) {
+                    continue;
+                }
+
+                // Device List <list>
+                OmemoCachedDeviceList deviceList;
+                OmemoDeviceListElement receivedDeviceList = (OmemoDeviceListElement) payloadItem.getPayload();
+                try {
+                    getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from,
+                            receivedDeviceList);
+
+                    if (!from.asBareJid().equals(getOwnJid())) {
                         continue;
                     }
 
-                    PayloadItem<?> payloadItem = (PayloadItem<?>) item;
+                    deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
+                } catch (IOException e) {
+                    LOGGER.log(Level.SEVERE,
+                            "IOException while processing OMEMO PEP device updates. Message: " + message,
+                            e);
+                    continue;
+                }
+                final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
 
-                    if (!(payloadItem.getPayload() instanceof OmemoDeviceListElement)) {
-                        continue;
-                    }
-
-                    // Device List <list>
-                    OmemoCachedDeviceList deviceList;
-                    OmemoDeviceListElement receivedDeviceList = (OmemoDeviceListElement) payloadItem.getPayload();
-                    try {
-                        getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from,
-                                receivedDeviceList);
-
-                        if (!from.asBareJid().equals(getOwnJid())) {
-                            continue;
-                        }
-
-                        deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
-                    } catch (IOException e) {
-                        LOGGER.log(Level.SEVERE,
-                                "IOException while processing OMEMO PEP device updates. Message: " + message,
-                                e);
-                        continue;
-                    }
-                    final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
-
-                    if (!newDeviceList.copyDeviceIds().equals(receivedDeviceList.copyDeviceIds())) {
-                        LOGGER.log(Level.FINE, "Republish deviceList due to changes:" +
-                                " Received: " + Arrays.toString(receivedDeviceList.copyDeviceIds().toArray()) +
-                                " Published: " + Arrays.toString(newDeviceList.copyDeviceIds().toArray()));
-                        Async.go(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    OmemoService.publishDeviceList(connection(), newDeviceList);
-                                } catch (InterruptedException | XMPPException.XMPPErrorException |
-                                        SmackException.NotConnectedException | SmackException.NoResponseException | PubSubException.NotALeafNodeException e) {
-                                    LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
-                                }
+                if (!newDeviceList.copyDeviceIds().equals(receivedDeviceList.copyDeviceIds())) {
+                    LOGGER.log(Level.FINE, "Republish deviceList due to changes:" +
+                            " Received: " + Arrays.toString(receivedDeviceList.copyDeviceIds().toArray()) +
+                            " Published: " + Arrays.toString(newDeviceList.copyDeviceIds().toArray()));
+                    Async.go(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                OmemoService.publishDeviceList(connection(), newDeviceList);
+                            } catch (InterruptedException | XMPPException.XMPPErrorException |
+                                    SmackException.NotConnectedException | SmackException.NoResponseException | PubSubException.NotALeafNodeException e) {
+                                LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             }
         }
-    };
+    }
 
     /**
      * StanzaFilter that filters messages containing a OMEMO element.
      */
-    private final StanzaFilter omemoMessageStanzaFilter = new StanzaFilter() {
-        @Override
-        public boolean accept(Stanza stanza) {
-            return stanza instanceof Message && OmemoManager.stanzaContainsOmemoElement(stanza);
-        }
-    };
+    private static boolean isOmemoMessage(Stanza stanza) {
+        return stanza instanceof Message && OmemoManager.stanzaContainsOmemoElement(stanza);
+    }
 
     /**
      * Guard class which ensures that the wrapped OmemoManager knows its BareJid.

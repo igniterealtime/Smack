@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 the original author or authors
+ * Copyright 2013-2015 the original author or authors, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.jivesoftware.smack.roster.rosterstore;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -56,15 +55,10 @@ public final class DirectoryRosterStore implements RosterStore {
     private static final String STORE_ID = "DEFAULT_ROSTER_STORE";
     private static final Logger LOGGER = Logger.getLogger(DirectoryRosterStore.class.getName());
 
-    private static final FileFilter rosterDirFilter = new FileFilter() {
-
-        @Override
-        public boolean accept(File file) {
-            String name = file.getName();
-            return name.startsWith(ENTRY_PREFIX);
-        }
-
-    };
+    private static boolean rosterDirFilter(File file) {
+        String name = file.getName();
+        return name.startsWith(ENTRY_PREFIX);
+    }
 
     /**
      * @param baseDir TODO javadoc me please
@@ -122,7 +116,7 @@ public final class DirectoryRosterStore implements RosterStore {
     public List<Item> getEntries() {
         List<Item> entries = new ArrayList<>();
 
-        for (File file : fileDir.listFiles(rosterDirFilter)) {
+        for (File file : fileDir.listFiles(DirectoryRosterStore::rosterDirFilter)) {
             Item entry = readEntry(file);
             if (entry == null) {
                 // Roster directory store corrupt. Abort and signal this by returning null.
@@ -168,7 +162,7 @@ public final class DirectoryRosterStore implements RosterStore {
 
     @Override
     public boolean resetEntries(Collection<Item> items, String version) {
-        for (File file : fileDir.listFiles(rosterDirFilter)) {
+        for (File file : fileDir.listFiles(DirectoryRosterStore::rosterDirFilter)) {
             file.delete();
         }
         for (Item item : items) {

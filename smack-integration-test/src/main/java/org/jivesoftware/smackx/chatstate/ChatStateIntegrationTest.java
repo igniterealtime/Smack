@@ -21,7 +21,6 @@ import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
-import org.jivesoftware.smackx.chatstates.ChatStateListener;
 import org.jivesoftware.smackx.chatstates.ChatStateManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -34,25 +33,19 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
 
     // Listener for composing chat state
     private final SimpleResultSyncPoint composingSyncPoint = new SimpleResultSyncPoint();
-    private final ChatStateListener composingListener = new ChatStateListener() {
-        @Override
-        public void stateChanged(Chat chat, ChatState state, Message message) {
-            if (state.equals(ChatState.composing)) {
-                composingSyncPoint.signal();
-            }
+    private void  composingListener(Chat chat, ChatState state, Message message) {
+        if (state.equals(ChatState.composing)) {
+            composingSyncPoint.signal();
         }
-    };
+    }
 
     // Listener for active chat state
     private final SimpleResultSyncPoint activeSyncPoint = new SimpleResultSyncPoint();
-    private final ChatStateListener activeListener = new ChatStateListener() {
-        @Override
-        public void stateChanged(Chat chat, ChatState state, Message message) {
-            if (state.equals(ChatState.active)) {
-                activeSyncPoint.signal();
-            }
+    private void activeListener(Chat chat, ChatState state, Message message) {
+        if (state.equals(ChatState.active)) {
+            activeSyncPoint.signal();
         }
-    };
+    }
 
 
     public ChatStateIntegrationTest(SmackIntegrationTestEnvironment environment) {
@@ -65,8 +58,8 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
         ChatStateManager manTwo = ChatStateManager.getInstance(conTwo);
 
         // Add chatState listeners.
-        manTwo.addChatStateListener(composingListener);
-        manTwo.addChatStateListener(activeListener);
+        manTwo.addChatStateListener(this::composingListener);
+        manTwo.addChatStateListener(this::activeListener);
 
         Chat chatOne = ChatManager.getInstanceFor(conOne)
                 .chatWith(conTwo.getUser().asEntityBareJid());
@@ -86,7 +79,7 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
     @AfterClass
     public void cleanup() {
         ChatStateManager manTwo = ChatStateManager.getInstance(conTwo);
-        manTwo.removeChatStateListener(composingListener);
-        manTwo.removeChatStateListener(activeListener);
+        manTwo.removeChatStateListener(this::composingListener);
+        manTwo.removeChatStateListener(this::activeListener);
     }
 }

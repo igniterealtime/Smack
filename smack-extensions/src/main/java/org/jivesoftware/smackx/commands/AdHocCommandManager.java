@@ -517,7 +517,7 @@ public final class AdHocCommandManager extends Manager {
 
     private boolean sessionSweeperScheduled;
 
-    private final Runnable sessionSweeper = () -> {
+    private void sessionSweeper() {
         final long currentTime = System.currentTimeMillis();
         synchronized (this) {
             for (Iterator<Entry<String, LocalCommand>> it = executingCommands.entrySet().iterator(); it.hasNext();) {
@@ -553,7 +553,7 @@ public final class AdHocCommandManager extends Manager {
         }
 
         sessionSweeperScheduled = true;
-        schedule(sessionSweeper, 10, TimeUnit.SECONDS);
+        schedule(this::sessionSweeper, 10, TimeUnit.SECONDS);
     }
 
     /**
