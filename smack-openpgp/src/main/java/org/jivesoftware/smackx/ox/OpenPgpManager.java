@@ -503,8 +503,6 @@ public final class OpenPgpManager extends Manager {
      */
     private void metadataListener(final EntityBareJid from, final EventElement event, final Message message) {
         if (PEP_NODE_PUBLIC_KEYS.equals(event.getEvent().getNode())) {
-            final BareJid contact = from.asBareJid();
-            LOGGER.log(Level.INFO, "Received OpenPGP metadata update from " + contact);
             Async.go(new Runnable() {
                 @Override
                 public void run() {
