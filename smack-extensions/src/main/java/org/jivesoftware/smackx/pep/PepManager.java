@@ -253,7 +253,10 @@ public final class PepManager extends Manager {
      *
      * @param pepListener a roster exchange listener.
      * @return true if pepListener was added.
+     * @deprecated use {@link #addPepEventListener(String, Class, PepEventListener)} instead.
      */
+    // TODO: Remove in Smack 4.5
+    @Deprecated
     public boolean addPepListener(PepListener pepListener) {
         return pepListeners.add(pepListener);
     }
@@ -263,7 +266,10 @@ public final class PepManager extends Manager {
      *
      * @param pepListener a roster exchange listener.
      * @return true, if pepListener was removed.
+     * @deprecated use {@link #removePepEventListener(PepEventListener)} instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public boolean removePepListener(PepListener pepListener) {
         return pepListeners.remove(pepListener);
     }

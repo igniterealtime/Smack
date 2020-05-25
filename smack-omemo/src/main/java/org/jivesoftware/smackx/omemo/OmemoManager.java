@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.omemo;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PEP_NODE_DEVICE_LIST_NOTIFY;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -39,7 +38,6 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
@@ -71,10 +69,9 @@ import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
 import org.jivesoftware.smackx.omemo.trust.TrustState;
 import org.jivesoftware.smackx.omemo.util.MessageOrOmemoMessage;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
+import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.pep.PepManager;
-import org.jivesoftware.smackx.pubsub.EventElement;
-import org.jivesoftware.smackx.pubsub.ItemsExtension;
-import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
@@ -101,6 +98,8 @@ public final class OmemoManager extends Manager {
     private final HashSet<OmemoMessageListener> omemoMessageListeners = new HashSet<>();
     private final HashSet<OmemoMucMessageListener> omemoMucMessageListeners = new HashSet<>();
 
+    private final PepManager pepManager;
+
     private OmemoTrustCallback trustCallback;
 
     private BareJid ownJid;
@@ -116,6 +115,7 @@ public final class OmemoManager extends Manager {
         super(connection);
 
         service = OmemoService.getInstance();
+        pepManager = PepManager.getInstanceFor(connection);
 
         this.deviceId = deviceId;
 
@@ -134,9 +134,6 @@ public final class OmemoManager extends Manager {
 
         // StanzaListeners
         resumeStanzaAndPEPListeners();
-
-        // Announce OMEMO support
-        ServiceDiscoveryManager.getInstanceFor(connection).addFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
     }
 
     /**
@@ -247,7 +244,6 @@ public final class OmemoManager extends Manager {
         }
 
         getOmemoService().init(new LoggedInOmemoManager(this));
-        ServiceDiscoveryManager.getInstanceFor(connection()).addFeature(PEP_NODE_DEVICE_LIST_NOTIFY);
     }
 
     /**
@@ -889,16 +885,14 @@ public final class OmemoManager extends Manager {
      * after {@link #stopStanzaAndPEPListeners()} was called.
      */
     public void resumeStanzaAndPEPListeners() {
-        PepManager pepManager = PepManager.getInstanceFor(connection());
         CarbonManager carbonManager = CarbonManager.getInstanceFor(connection());
 
         // Remove listeners to avoid them getting added twice
         connection().removeAsyncStanzaListener(this::internalOmemoMessageStanzaListener);
         carbonManager.removeCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
-        pepManager.removePepListener(this::deviceListUpdateListener);
 
         // Add listeners
-        pepManager.addPepListener(this::deviceListUpdateListener);
+        pepManager.addPepEventListener(OmemoConstants.PEP_NODE_DEVICE_LIST, OmemoDeviceListElement.class, pepOmemoDeviceListEventListener);
         connection().addAsyncStanzaListener(this::internalOmemoMessageStanzaListener, OmemoManager::isOmemoMessage);
         carbonManager.addCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
     }
@@ -907,7 +901,7 @@ public final class OmemoManager extends Manager {
      * Remove active stanza listeners needed for OMEMO.
      */
     public void stopStanzaAndPEPListeners() {
-        PepManager.getInstanceFor(connection()).removePepListener(this::deviceListUpdateListener);
+        pepManager.removePepEventListener(pepOmemoDeviceListEventListener);
         connection().removeAsyncStanzaListener(this::internalOmemoMessageStanzaListener);
         CarbonManager.getInstanceFor(connection()).removeCarbonCopyReceivedListener(this::internalOmemoCarbonCopyListener);
     }
@@ -992,71 +986,45 @@ public final class OmemoManager extends Manager {
         });
     }
 
-    /**
-     * PEPListener that listens for OMEMO deviceList updates.
-     */
-    private void deviceListUpdateListener(EntityBareJid from, EventElement event, Message message) {
-        // Unknown sender, no more work to do.
-        if (from == null) {
-            // TODO: This DOES happen for some reason. Figure out when...
-            return;
-        }
-
-        for (ExtensionElement items : event.getExtensions()) {
-            if (!(items instanceof ItemsExtension)) {
-                continue;
-            }
-
-            for (ExtensionElement item : ((ItemsExtension) items).getExtensions()) {
-                if (!(item instanceof PayloadItem<?>)) {
-                    continue;
-                }
-
-                PayloadItem<?> payloadItem = (PayloadItem<?>) item;
-
-                if (!(payloadItem.getPayload() instanceof OmemoDeviceListElement)) {
-                    continue;
-                }
-
-                // Device List <list>
-                OmemoCachedDeviceList deviceList;
-                OmemoDeviceListElement receivedDeviceList = (OmemoDeviceListElement) payloadItem.getPayload();
-                try {
-                    getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from,
+    @SuppressWarnings("UnnecessaryLambda")
+    private final PepEventListener<OmemoDeviceListElement> pepOmemoDeviceListEventListener =
+                    (from, receivedDeviceList, id, message) -> {
+        // Device List <list>
+        OmemoCachedDeviceList deviceList;
+        try {
+            getOmemoService().getOmemoStoreBackend().mergeCachedDeviceList(getOwnDevice(), from,
                             receivedDeviceList);
 
-                    if (!from.asBareJid().equals(getOwnJid())) {
-                        continue;
-                    }
+            if (!from.asBareJid().equals(getOwnJid())) {
+                return;
+            }
 
-                    deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE,
+            deviceList = getOmemoService().cleanUpDeviceList(getOwnDevice());
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE,
                             "IOException while processing OMEMO PEP device updates. Message: " + message,
-                            e);
-                    continue;
-                }
-                final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
+                                e);
+            return;
+        }
+        final OmemoDeviceListElement_VAxolotl newDeviceList = new OmemoDeviceListElement_VAxolotl(deviceList);
 
-                if (!newDeviceList.copyDeviceIds().equals(receivedDeviceList.copyDeviceIds())) {
-                    LOGGER.log(Level.FINE, "Republish deviceList due to changes:" +
+        if (!newDeviceList.copyDeviceIds().equals(receivedDeviceList.copyDeviceIds())) {
+            LOGGER.log(Level.FINE, "Republish deviceList due to changes:" +
                             " Received: " + Arrays.toString(receivedDeviceList.copyDeviceIds().toArray()) +
                             " Published: " + Arrays.toString(newDeviceList.copyDeviceIds().toArray()));
-                    Async.go(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                OmemoService.publishDeviceList(connection(), newDeviceList);
-                            } catch (InterruptedException | XMPPException.XMPPErrorException |
+            Async.go(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        OmemoService.publishDeviceList(connection(), newDeviceList);
+                    } catch (InterruptedException | XMPPException.XMPPErrorException |
                                     SmackException.NotConnectedException | SmackException.NoResponseException | PubSubException.NotALeafNodeException e) {
-                                LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
-                            }
-                        }
-                    });
+                        LOGGER.log(Level.WARNING, "Could not publish our deviceList upon an received update.", e);
+                    }
                 }
-            }
+            });
         }
-    }
+    };
 
     /**
      * StanzaFilter that filters messages containing a OMEMO element.

@@ -68,12 +68,10 @@ import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpTrustStore;
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 import org.jivesoftware.smackx.ox.util.SecretKeyBackupHelper;
+import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.pep.PepListener;
 import org.jivesoftware.smackx.pep.PepManager;
-import org.jivesoftware.smackx.pubsub.EventElement;
-import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.LeafNode;
-import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 
@@ -171,6 +169,9 @@ public final class OpenPgpManager extends Manager {
     private final Set<SigncryptElementReceivedListener> signcryptElementReceivedListeners = new HashSet<>();
     private final Set<SignElementReceivedListener> signElementReceivedListeners = new HashSet<>();
     private final Set<CryptElementReceivedListener> cryptElementReceivedListeners = new HashSet<>();
+
+    @SuppressWarnings("UnnecessaryLambda")
+    private final PepEventListener<PublicKeysListElement> pepPublicKeyListElementListener = (from, listElement, id, message) -> processPublicKeysListElement(from, listElement);;
 
     /**
      * Private constructor to avoid instantiation without putting the object into {@code INSTANCES}.
@@ -278,7 +279,7 @@ public final class OpenPgpManager extends Manager {
         publishPublicKey(pepManager, pubkeyElement, primaryFingerprint);
 
         // Subscribe to public key changes
-        PepManager.getInstanceFor(connection()).addPepListener(this::metadataListener);
+        pepManager.addPepEventListener(PEP_NODE_PUBLIC_KEYS, PublicKeysListElement.class, pepPublicKeyListElementListener);
         ServiceDiscoveryManager.getInstanceFor(connection())
                 .addFeature(PEP_NODE_PUBLIC_KEYS_NOTIFY);
     }
@@ -380,7 +381,7 @@ public final class OpenPgpManager extends Manager {
      * Remove the metadata listener. This method is mainly used in tests.
      */
     public void stopMetadataListener() {
-        PepManager.getInstanceFor(connection()).removePepListener(this::metadataListener);
+        pepManager.removePepEventListener(pepPublicKeyListElementListener);
     }
 
     /**
@@ -495,26 +496,6 @@ public final class OpenPgpManager extends Manager {
     /*
     Private stuff.
      */
-
-    /**
-     * {@link PepListener} that listens for changes to the OX public keys metadata node.
-     *
-     * @see <a href="https://xmpp.org/extensions/xep-0373.html#pubsub-notifications">XEP-0373 §4.4</a>
-     */
-    private void metadataListener(final EntityBareJid from, final EventElement event, final Message message) {
-        if (PEP_NODE_PUBLIC_KEYS.equals(event.getEvent().getNode())) {
-            Async.go(new Runnable() {
-                @Override
-                public void run() {
-                    ItemsExtension items = (ItemsExtension) event.getExtensions().get(0);
-                    PayloadItem<?> payload = (PayloadItem<?>) items.getItems().get(0);
-                    PublicKeysListElement listElement = (PublicKeysListElement) payload.getPayload();
-
-                    processPublicKeysListElement(from, listElement);
-                }
-            }, "ProcessOXMetadata");
-        }
-    }
 
     private void processPublicKeysListElement(BareJid contact, PublicKeysListElement listElement) {
         OpenPgpContact openPgpContact = getOpenPgpContact(contact.asEntityBareJidIfPossible());
