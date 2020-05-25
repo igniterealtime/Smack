@@ -225,6 +225,7 @@ public class DummyConnection extends AbstractXMPPConnection {
                         ConnectionConfiguration.Builder<Builder, DummyConnectionConfiguration> {
 
             private Builder() {
+                setSecurityMode(SecurityMode.disabled);
             }
 
             @Override

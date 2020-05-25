@@ -600,7 +600,7 @@ public abstract class ConnectionConfiguration {
      * @param <C> the resulting connection configuration type parameter.
      */
     public abstract static class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
-        private SecurityMode securityMode = SecurityMode.ifpossible;
+        private SecurityMode securityMode = SecurityMode.required;
         private DnssecMode dnssecMode = DnssecMode.disabled;
         private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
         private String keystoreType = KeyStore.getDefaultType();
