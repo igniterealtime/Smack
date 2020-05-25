@@ -16,20 +16,12 @@
  */
 package org.jivesoftware.smack.c2s.internal;
 
-import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.ListIterator;
 import java.util.Queue;
 
-import org.jivesoftware.smack.AbstractXMPPConnection.SmackTlsContext;
 import org.jivesoftware.smack.SmackException.ConnectionUnexpectedTerminatedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -41,6 +33,7 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.fsm.ConnectionStateEvent;
+import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -107,9 +100,7 @@ public abstract class ModularXmppClientToServerConnectionInternal {
     public abstract void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
                     ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException;
 
-    public abstract SmackTlsContext getSmackTlsContext()
-                    throws KeyManagementException, NoSuchAlgorithmException, CertificateException, IOException,
-                    UnrecoverableKeyException, KeyStoreException, NoSuchProviderException;
+    public abstract SmackTlsContext getSmackTlsContext();
 
     public abstract <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
                     Class<SN> successNonzaClass, Class<FN> failedNonzaClass)

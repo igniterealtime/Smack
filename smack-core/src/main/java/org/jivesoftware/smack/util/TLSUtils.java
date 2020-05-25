@@ -22,12 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -38,12 +34,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -131,14 +124,10 @@ public class TLSUtils {
      *
      * @param builder a connection configuration builder.
      * @param <B> Type of the ConnectionConfiguration builder.
-     * @throws NoSuchAlgorithmException if no such algorithm is available.
-     * @throws KeyManagementException if there was a key mangement error.
      * @return the given builder.
      */
-    public static <B extends ConnectionConfiguration.Builder<B, ?>> B acceptAllCertificates(B builder) throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext context = SSLContext.getInstance(TLS);
-        context.init(null, new TrustManager[] { new AcceptAllTrustManager() }, new SecureRandom());
-        builder.setCustomSSLContext(context);
+    public static <B extends ConnectionConfiguration.Builder<B, ?>> B acceptAllCertificates(B builder) {
+        builder.setCustomX509TrustManager(new AcceptAllTrustManager());
         return builder;
     }
 
@@ -265,24 +254,6 @@ public class TLSUtils {
         public X509Certificate[] getAcceptedIssuers() {
             return new X509Certificate[0];
         }
-    }
-
-    public static X509TrustManager getDefaultX509TrustManager(KeyStore keyStore) {
-        String defaultAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-        TrustManagerFactory trustManagerFactory;
-        try {
-            trustManagerFactory = TrustManagerFactory.getInstance(defaultAlgorithm);
-            trustManagerFactory.init(keyStore);
-        } catch (NoSuchAlgorithmException | KeyStoreException e) {
-            throw new AssertionError(e);
-        }
-
-        for (TrustManager trustManager : trustManagerFactory.getTrustManagers()) {
-            if (trustManager instanceof X509TrustManager) {
-                return (X509TrustManager) trustManager;
-            }
-        }
-        throw new AssertionError("No trust manager for the default algorithm " + defaultAlgorithm + " found");
     }
 
     private static final File DEFAULT_TRUSTSTORE_PATH;

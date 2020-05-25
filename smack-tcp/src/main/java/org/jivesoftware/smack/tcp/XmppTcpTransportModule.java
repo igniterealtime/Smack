@@ -24,11 +24,6 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +45,6 @@ import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 
-import org.jivesoftware.smack.AbstractXMPPConnection.SmackTlsContext;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.ConnectionException;
@@ -75,6 +69,7 @@ import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.fsm.State;
 import org.jivesoftware.smack.fsm.StateDescriptor;
 import org.jivesoftware.smack.fsm.StateTransitionResult;
+import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamOpen;
@@ -867,13 +862,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                         ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException {
             connectionInternal.sendAndWaitForResponse(StartTls.INSTANCE, TlsProceed.class, TlsFailure.class);
 
-            SmackTlsContext smackTlsContext;
-            try {
-                smackTlsContext = connectionInternal.getSmackTlsContext();
-            } catch (KeyManagementException | UnrecoverableKeyException | NoSuchAlgorithmException
-                    | CertificateException | KeyStoreException | NoSuchProviderException e) {
-                throw new SmackWrappedException(e);
-            }
+            SmackTlsContext smackTlsContext = connectionInternal.getSmackTlsContext();
 
             tlsState = new TlsState(smackTlsContext);
             connectionInternal.addXmppInputOutputFilter(tlsState);

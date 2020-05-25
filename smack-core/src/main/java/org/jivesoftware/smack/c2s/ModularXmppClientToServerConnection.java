@@ -17,11 +17,6 @@
 package org.jivesoftware.smack.c2s;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +61,7 @@ import org.jivesoftware.smack.fsm.StateMachineException;
 import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.fsm.StateTransitionResult.AttemptResult;
 import org.jivesoftware.smack.internal.AbstractStats;
+import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Nonza;
@@ -186,9 +182,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public SmackTlsContext getSmackTlsContext()
-                            throws KeyManagementException, NoSuchAlgorithmException, CertificateException, IOException,
-                            UnrecoverableKeyException, KeyStoreException, NoSuchProviderException {
+            public SmackTlsContext getSmackTlsContext() {
                 return ModularXmppClientToServerConnection.this.getSmackTlsContext();
             }
 

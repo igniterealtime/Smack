@@ -17,9 +17,24 @@
 
 package org.jivesoftware.smack;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,21 +46,34 @@ import java.util.logging.Logger;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
+import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
 
 import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
+import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.packet.id.StanzaIdSourceFactory;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
+import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.CollectionUtil;
+import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.Objects;
+import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TLSUtils;
+import org.jivesoftware.smack.util.dns.SmackDaneProvider;
+import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -104,11 +132,6 @@ public abstract class ConnectionConfiguration {
     protected final DnsName host;
     protected final UInt16 port;
 
-    private final String keystorePath;
-    private final String keystoreType;
-    private final String pkcs11Library;
-    private final SSLContext customSSLContext;
-
     /**
      * Used to get information from the user
      */
@@ -138,9 +161,9 @@ public abstract class ConnectionConfiguration {
 
     private final SecurityMode securityMode;
 
-    private final DnssecMode dnssecMode;
+    final SmackTlsContext smackTlsContext;
 
-    private final X509TrustManager customX509TrustManager;
+    private final DnssecMode dnssecMode;
 
     /**
      *
@@ -166,6 +189,17 @@ public abstract class ConnectionConfiguration {
     private final StanzaIdSourceFactory stanzaIdSourceFactory;
 
     protected ConnectionConfiguration(Builder<?, ?> builder) {
+        try {
+            smackTlsContext = getSmackTlsContext(builder.dnssecMode, builder.sslContextFactory,
+                            builder.customX509TrustManager, builder.keystoreType, builder.keystorePath,
+                            builder.callbackHandler, builder.pkcs11Library);
+        } catch (UnrecoverableKeyException | KeyManagementException | NoSuchAlgorithmException | CertificateException
+                        | KeyStoreException | NoSuchProviderException | IOException | NoSuchMethodException
+                        | SecurityException | ClassNotFoundException | InstantiationException | IllegalAccessException
+                        | IllegalArgumentException | InvocationTargetException | UnsupportedCallbackException e) {
+            throw new IllegalArgumentException(e);
+        }
+
         authzid = builder.authzid;
         username = builder.username;
         password = builder.password;
@@ -202,13 +236,7 @@ public abstract class ConnectionConfiguration {
 
         dnssecMode = builder.dnssecMode;
 
-        customX509TrustManager = builder.customX509TrustManager;
-
         securityMode = builder.securityMode;
-        keystoreType = builder.keystoreType;
-        keystorePath = builder.keystorePath;
-        pkcs11Library = builder.pkcs11Library;
-        customSSLContext = builder.customSSLContext;
         enabledSSLProtocols = builder.enabledSSLProtocols;
         enabledSSLCiphers = builder.enabledSSLCiphers;
         hostnameVerifier = builder.hostnameVerifier;
@@ -223,11 +251,115 @@ public abstract class ConnectionConfiguration {
 
         // If the enabledSaslmechanisms are set, then they must not be empty
         assert enabledSaslMechanisms == null || !enabledSaslMechanisms.isEmpty();
+    }
 
-        if (dnssecMode != DnssecMode.disabled && customSSLContext != null) {
-            throw new IllegalStateException("You can not use a custom SSL context with DNSSEC enabled");
+    private static SmackTlsContext getSmackTlsContext(DnssecMode dnssecMode, SslContextFactory sslContextFactory,
+                    X509TrustManager trustManager, String keystoreType, String keystorePath,
+                    CallbackHandler callbackHandler, String pkcs11Library) throws NoSuchAlgorithmException,
+                    CertificateException, IOException, KeyStoreException, NoSuchProviderException,
+                    UnrecoverableKeyException, KeyManagementException, UnsupportedCallbackException,
+                    NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+                    IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        final SSLContext context;
+        if (sslContextFactory != null) {
+            context = sslContextFactory.createSslContext();
+        } else {
+            // If the user didn't specify a SslContextFactory, use the default one
+            context = SSLContext.getInstance("TLS");
         }
 
+        KeyStore ks = null;
+        PasswordCallback pcb = null;
+        KeyManager[] kms = null;
+
+        if ("PKCS11".equals(keystoreType)) {
+                Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
+                String pkcs11Config = "name = SmartCard\nlibrary = " + pkcs11Library;
+                ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
+                Provider p = (Provider) c.newInstance(config);
+                Security.addProvider(p);
+                ks = KeyStore.getInstance("PKCS11", p);
+                pcb = new PasswordCallback("PKCS11 Password: ", false);
+                callbackHandler.handle(new Callback[] { pcb });
+                ks.load(null, pcb.getPassword());
+        } else if ("Apple".equals(keystoreType)) {
+            ks = KeyStore.getInstance("KeychainStore", "Apple");
+            ks.load(null, null);
+            // pcb = new PasswordCallback("Apple Keychain",false);
+            // pcb.setPassword(null);
+        } else if (keystoreType != null) {
+            ks = KeyStore.getInstance(keystoreType);
+            if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
+                pcb = new PasswordCallback("Keystore Password: ", false);
+                callbackHandler.handle(new Callback[] { pcb });
+                ks.load(new FileInputStream(keystorePath), pcb.getPassword());
+            } else {
+                InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                try {
+                    // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
+                    // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
+                    char[] password = "changeit".toCharArray();
+                    try {
+                        ks.load(stream, password);
+                    } finally {
+                        CloseableUtil.maybeClose(stream);
+                    }
+                } catch (IOException e) {
+                    LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
+
+                    ks = KeyStore.getInstance("jks");
+                    // Open the stream again, so that we read it from the beginning.
+                    stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                    try {
+                        ks.load(stream, null);
+                    } finally {
+                        CloseableUtil.maybeClose(stream);
+                    }
+                }
+            }
+        }
+
+        if (ks != null) {
+            String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
+            if (kmf != null) {
+                if (pcb == null) {
+                    kmf.init(ks, null);
+                } else {
+                    kmf.init(ks, pcb.getPassword());
+                    pcb.clearPassword();
+                }
+                kms = kmf.getKeyManagers();
+            }
+        }
+
+        SmackDaneVerifier daneVerifier = null;
+        if (dnssecMode == DnssecMode.needsDnssecAndDane) {
+            SmackDaneProvider daneProvider = DNSUtil.getDaneProvider();
+            if (daneProvider == null) {
+                throw new UnsupportedOperationException("DANE enabled but no SmackDaneProvider configured");
+            }
+            daneVerifier = daneProvider.newInstance();
+            if (daneVerifier == null) {
+                throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
+            }
+
+            // User requested DANE verification.
+            daneVerifier.init(context, kms, trustManager, null);
+        } else {
+            final TrustManager[] trustManagers;
+            if (trustManager != null) {
+                trustManagers = new TrustManager[] { trustManager };
+            } else {
+                // Ensure trustManagers is null in case there was no explicit trust manager provided, so that the
+                // default one is used.
+                trustManagers = null;
+            }
+
+            context.init(kms, trustManagers, null);
+        }
+
+        return new SmackTlsContext(context, daneVerifier);
     }
 
     public DnsName getHost() {
@@ -285,50 +417,6 @@ public abstract class ConnectionConfiguration {
 
     public DnssecMode getDnssecMode() {
         return dnssecMode;
-    }
-
-    public X509TrustManager getCustomX509TrustManager() {
-        return customX509TrustManager;
-    }
-
-    /**
-     * Retuns the path to the keystore file. The key store file contains the
-     * certificates that may be used to authenticate the client to the server,
-     * in the event the server requests or requires it.
-     *
-     * @return the path to the keystore file.
-     */
-    public String getKeystorePath() {
-        return keystorePath;
-    }
-
-    /**
-     * Returns the keystore type, or <code>null</code> if it's not set.
-     *
-     * @return the keystore type.
-     */
-    public String getKeystoreType() {
-        return keystoreType;
-    }
-
-    /**
-     * Returns the PKCS11 library file location, needed when the
-     * Keystore type is PKCS11.
-     *
-     * @return the path to the PKCS11 library file
-     */
-    public String getPKCS11Library() {
-        return pkcs11Library;
-    }
-
-    /**
-     * Gets the custom SSLContext previously set with {@link ConnectionConfiguration.Builder#setCustomSSLContext(SSLContext)} for
-     * SSL sockets. This is null by default.
-     *
-     * @return the custom SSLContext or null.
-     */
-    public SSLContext getCustomSSLContext() {
-        return this.customSSLContext;
     }
 
     /**
@@ -602,10 +690,10 @@ public abstract class ConnectionConfiguration {
     public abstract static class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
         private SecurityMode securityMode = SecurityMode.required;
         private DnssecMode dnssecMode = DnssecMode.disabled;
-        private String keystorePath = System.getProperty("javax.net.ssl.keyStore");
-        private String keystoreType = KeyStore.getDefaultType();
+        private String keystorePath;
+        private String keystoreType;
         private String pkcs11Library = "pkcs11.config";
-        private SSLContext customSSLContext;
+        private SslContextFactory sslContextFactory;
         private String[] enabledSSLProtocols;
         private String[] enabledSSLCiphers;
         private HostnameVerifier hostnameVerifier;
@@ -929,9 +1017,28 @@ public abstract class ConnectionConfiguration {
          *
          * @param context the custom SSLContext for new sockets.
          * @return a reference to this builder.
+         * @deprecated use {@link #setSslContextFactory(SslContextFactory)} instead}.
          */
+        // TODO: Remove in Smack 4.5.
+        @Deprecated
         public B setCustomSSLContext(SSLContext context) {
-            this.customSSLContext = Objects.requireNonNull(context, "The SSLContext must not be null");
+            return setSslContextFactory(() -> {
+                return context;
+            });
+        }
+
+        /**
+         * Sets a custom SSLContext for creating SSL sockets.
+         * <p>
+         * For more information on how to create a SSLContext see <a href=
+         * "http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager"
+         * >Java Secure Socket Extension (JSEE) Reference Guide: Creating Your Own X509TrustManager</a>
+         *
+         * @param sslContextFactory the custom SSLContext for new sockets.
+         * @return a reference to this builder.
+         */
+        public B setSslContextFactory(SslContextFactory sslContextFactory) {
+            this.sslContextFactory = Objects.requireNonNull(sslContextFactory, "The provided SslContextFactory must not be null");
             return getThis();
         }
 
@@ -1172,5 +1279,4 @@ public abstract class ConnectionConfiguration {
 
         protected abstract B getThis();
     }
-
 }

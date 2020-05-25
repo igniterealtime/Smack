@@ -37,7 +37,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -426,11 +425,6 @@ public final class HttpFileUploadManager extends Manager {
             return;
         }
         this.tlsSocketFactory = tlsContext.getSocketFactory();
-    }
-
-    public void useTlsSettingsFrom(ConnectionConfiguration connectionConfiguration) {
-        SSLContext sslContext = connectionConfiguration.getCustomSSLContext();
-        setTlsContext(sslContext);
     }
 
     private void upload(InputStream iStream, long fileSize, Slot slot, UploadProgressListener listener) throws IOException {

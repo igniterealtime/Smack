@@ -57,7 +57,9 @@ public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest 
                             + " does not accept files of size " + FILE_SIZE
                             + ". It only accepts files with  a maximum size of " + uploadService.getMaxFileSize());
         }
-        hfumOne.setTlsContext(environment.configuration.tlsContext);
+        if (environment.configuration.sslContextFactory != null) {
+            hfumOne.setTlsContext(environment.configuration.sslContextFactory.createSslContext());
+        }
     }
 
     @SmackIntegrationTest

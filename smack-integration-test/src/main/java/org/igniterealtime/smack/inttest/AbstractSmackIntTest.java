@@ -84,9 +84,9 @@ public abstract class AbstractSmackIntTest {
 
     protected HttpURLConnection getHttpUrlConnectionFor(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        if (sinttestConfiguration.tlsContext != null && urlConnection instanceof HttpsURLConnection) {
+        if (sinttestConfiguration.sslContextFactory != null && urlConnection instanceof HttpsURLConnection) {
             HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) urlConnection;
-            httpsUrlConnection.setSSLSocketFactory(sinttestConfiguration.tlsContext.getSocketFactory());
+            httpsUrlConnection.setSSLSocketFactory(sinttestConfiguration.sslContextFactory.createSslContext().getSocketFactory());
         }
         return urlConnection;
     }

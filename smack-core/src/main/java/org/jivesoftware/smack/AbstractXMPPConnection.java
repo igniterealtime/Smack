@@ -16,24 +16,9 @@
  */
 package org.jivesoftware.smack;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.Constructor;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,18 +41,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.PasswordCallback;
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackConfiguration.UnknownIqRequestReplyMode;
 import org.jivesoftware.smack.SmackException.AlreadyConnectedException;
@@ -92,6 +68,7 @@ import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
+import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
@@ -126,19 +103,14 @@ import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Consumer;
-import org.jivesoftware.smack.util.DNSUtil;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TLSUtils;
-import org.jivesoftware.smack.util.dns.SmackDaneProvider;
-import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -2203,148 +2175,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         outgoingStreamXmlEnvironment = xmlEnvironmentBuilder.build();
     }
 
-    public static final class SmackTlsContext {
-        public final SSLContext sslContext;
-        public final SmackDaneVerifier daneVerifier;
-
-        private SmackTlsContext(SSLContext sslContext, SmackDaneVerifier daneVerifier) {
-            assert sslContext != null;
-            this.sslContext = sslContext;
-            this.daneVerifier = daneVerifier;
-        }
-    }
-
-    protected final SmackTlsContext getSmackTlsContext() throws KeyManagementException, NoSuchAlgorithmException,
-                    CertificateException, IOException, UnrecoverableKeyException, KeyStoreException, NoSuchProviderException {
-        SmackDaneVerifier daneVerifier = null;
-
-        if (config.getDnssecMode() == DnssecMode.needsDnssecAndDane) {
-            SmackDaneProvider daneProvider = DNSUtil.getDaneProvider();
-            if (daneProvider == null) {
-                throw new UnsupportedOperationException("DANE enabled but no SmackDaneProvider configured");
-            }
-            daneVerifier = daneProvider.newInstance();
-            if (daneVerifier == null) {
-                throw new IllegalStateException("DANE requested but DANE provider did not return a DANE verifier");
-            }
-        }
-
-        SSLContext context = this.config.getCustomSSLContext();
-        KeyStore ks = null;
-        PasswordCallback pcb = null;
-
-        if (context == null) {
-            final String keyStoreType = config.getKeystoreType();
-            final CallbackHandler callbackHandler = config.getCallbackHandler();
-            final String keystorePath = config.getKeystorePath();
-            if ("PKCS11".equals(keyStoreType)) {
-                try {
-                    Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
-                    String pkcs11Config = "name = SmartCard\nlibrary = " + config.getPKCS11Library();
-                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
-                    Provider p = (Provider) c.newInstance(config);
-                    Security.addProvider(p);
-                    ks = KeyStore.getInstance("PKCS11", p);
-                    pcb = new PasswordCallback("PKCS11 Password: ", false);
-                    callbackHandler.handle(new Callback[] {pcb});
-                    ks.load(null, pcb.getPassword());
-                }
-                catch (Exception e) {
-                    LOGGER.log(Level.WARNING, "Exception", e);
-                    ks = null;
-                }
-            }
-            else if ("Apple".equals(keyStoreType)) {
-                ks = KeyStore.getInstance("KeychainStore", "Apple");
-                ks.load(null, null);
-                // pcb = new PasswordCallback("Apple Keychain",false);
-                // pcb.setPassword(null);
-            }
-            else if (keyStoreType != null) {
-                ks = KeyStore.getInstance(keyStoreType);
-                if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
-                    try {
-                        pcb = new PasswordCallback("Keystore Password: ", false);
-                        callbackHandler.handle(new Callback[] { pcb });
-                        ks.load(new FileInputStream(keystorePath), pcb.getPassword());
-                    }
-                    catch (Exception e) {
-                        LOGGER.log(Level.WARNING, "Exception", e);
-                        ks = null;
-                    }
-                } else {
-                    InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
-                    try {
-                        // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
-                        // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
-                        char[] password = "changeit".toCharArray();
-                        try {
-                            ks.load(stream, password);
-                        } finally {
-                            CloseableUtil.maybeClose(stream);
-                        }
-                    } catch (IOException e) {
-                        LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
-
-                        ks = KeyStore.getInstance("jks");
-                        // Open the stream again, so that we read it from the beginning.
-                        stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
-                        try {
-                            ks.load(stream, null);
-                        } finally {
-                            CloseableUtil.maybeClose(stream);
-                        }
-                    }
-                }
-            }
-
-            KeyManager[] kms = null;
-
-            if (ks != null) {
-                String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-                KeyManagerFactory kmf = null;
-                try {
-                    kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
-                }
-                catch (NoSuchAlgorithmException e) {
-                    LOGGER.log(Level.FINE, "Could get the default KeyManagerFactory for the '"
-                                    + keyManagerFactoryAlgorithm + "' algorithm", e);
-                }
-                if (kmf != null) {
-                    try {
-                        if (pcb == null) {
-                            kmf.init(ks, null);
-                        }
-                        else {
-                            kmf.init(ks, pcb.getPassword());
-                            pcb.clearPassword();
-                        }
-                        kms = kmf.getKeyManagers();
-                    }
-                    catch (NullPointerException npe) {
-                        LOGGER.log(Level.WARNING, "NullPointerException", npe);
-                    }
-                }
-            }
-
-            // If the user didn't specify a SSLContext, use the default one
-            context = SSLContext.getInstance("TLS");
-
-            final SecureRandom secureRandom = new java.security.SecureRandom();
-            X509TrustManager trustManager = config.getCustomX509TrustManager();
-            if (trustManager == null) {
-                trustManager = TLSUtils.getDefaultX509TrustManager(ks);
-            }
-
-            if (daneVerifier != null) {
-                // User requested DANE verification.
-                daneVerifier.init(context, kms, trustManager, secureRandom);
-            } else {
-                TrustManager[] customTrustManagers = new TrustManager[] { trustManager };
-                context.init(kms, customTrustManagers, secureRandom);
-            }
-        }
-
-        return new SmackTlsContext(context, daneVerifier);
+    protected final SmackTlsContext getSmackTlsContext() {
+        return config.smackTlsContext;
     }
 }

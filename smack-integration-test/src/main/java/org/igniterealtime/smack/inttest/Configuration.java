@@ -36,6 +36,7 @@ import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.debugger.EnhancedDebugger;
@@ -72,7 +73,7 @@ public final class Configuration {
 
     public final String serviceTlsPin;
 
-    public final SSLContext tlsContext;
+    public final SslContextFactory sslContextFactory;
 
     public final SecurityMode securityMode;
 
@@ -121,9 +122,10 @@ public final class Configuration {
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
         serviceTlsPin = builder.serviceTlsPin;
         if (serviceTlsPin != null) {
-            tlsContext = Java7Pinning.forPin(serviceTlsPin);
+            SSLContext sslContext = Java7Pinning.forPin(serviceTlsPin);
+            sslContextFactory = () -> sslContext;
         } else {
-            tlsContext = null;
+            sslContextFactory = null;
         }
         securityMode = builder.securityMode;
         if (builder.replyTimeout > 0) {
@@ -168,8 +170,8 @@ public final class Configuration {
         this.testPackages = builder.testPackages;
 
         this.configurationApplier = b -> {
-            if (tlsContext != null) {
-                b.setCustomSSLContext(tlsContext);
+            if (sslContextFactory != null) {
+                b.setSslContextFactory(sslContextFactory);
             }
             b.setSecurityMode(securityMode);
             b.setXmppDomain(service);

@@ -89,7 +89,7 @@ public class TlsTest {
 
         if (StringUtils.isNotEmpty(tlsPin)) {
             SSLContext sslContext = Java7Pinning.forPin(tlsPin);
-            builder.setCustomSSLContext(sslContext);
+            builder.setSslContextFactory(() -> sslContext);
         }
 
 
