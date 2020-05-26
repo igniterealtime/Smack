@@ -662,6 +662,14 @@ task omemoSignalIntTest {
 	dependsOn project(':smack-omemo-signal-integration-test').tasks.run
 }
 
+task sinttestAll {
+	description 'Run all of Smack\'s integration tests.'
+	dependsOn {[
+		integrationTest,
+		omemoSignalIntTest,
+	]}
+}
+
 def getGitCommit() {
 	def dotGit = new File("$projectDir/.git")
 	if (!dotGit.isDirectory()) return 'non-git build'
