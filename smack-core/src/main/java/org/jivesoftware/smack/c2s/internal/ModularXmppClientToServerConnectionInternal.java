@@ -22,11 +22,12 @@ import java.nio.channels.SelectionKey;
 import java.util.ListIterator;
 import java.util.Queue;
 
-import org.jivesoftware.smack.SmackException.ConnectionUnexpectedTerminatedException;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackReactor;
 import org.jivesoftware.smack.SmackReactor.ChannelSelectedCallback;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.FailedNonzaException;
 import org.jivesoftware.smack.XmppInputOutputFilter;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
@@ -38,6 +39,7 @@ import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Consumer;
+import org.jivesoftware.smack.util.Supplier;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 public abstract class ModularXmppClientToServerConnectionInternal {
@@ -98,7 +100,7 @@ public abstract class ModularXmppClientToServerConnectionInternal {
     public abstract ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterEndIterator();
 
     public abstract void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
-                    ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException;
+                    NoResponseException, NotConnectedException, SmackException, XMPPException;
 
     public abstract SmackTlsContext getSmackTlsContext();
 
@@ -108,7 +110,9 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract void asyncGo(Runnable runnable);
 
-    public abstract Exception getCurrentConnectionException();
+    public abstract void waitForCondition(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException;
+
+    public abstract void notifyWaitingThreads();
 
     public abstract void setCompressionEnabled(boolean compressionEnabled);
 

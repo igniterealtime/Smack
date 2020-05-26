@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,8 +124,6 @@ public class PacketWriterTest {
         // Not really cool, but may increases the chances for 't' to block in sendStanza.
         Thread.sleep(250);
 
-        // Set to true for testing purposes, so that shutdown() won't wait packet writer
-        pw.shutdownDone.reportSuccess();
         // Shutdown the packetwriter, this will also interrupt the writer thread, which is what we hope to happen in the
         // thread created above.
         pw.shutdown(false);

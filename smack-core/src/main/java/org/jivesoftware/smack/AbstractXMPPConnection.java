@@ -111,6 +111,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.Supplier;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -172,6 +173,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     static {
         // Ensure the SmackConfiguration class is loaded by calling a method in it.
         SmackConfiguration.getVersion();
+    }
+
+    protected enum SyncPointState {
+        initial,
+        request_sent,
+        successful,
     }
 
     /**
@@ -271,30 +278,29 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected Writer writer;
 
-    protected final SynchronizationPoint<SmackException> tlsHandled = new SynchronizationPoint<>(this, "establishing TLS");
+    protected SmackException currentSmackException;
+    protected XMPPException currentXmppException;
+
+    protected boolean tlsHandled;
 
     /**
-     * Set to success if the last features stanza from the server has been parsed. A XMPP connection
+     * Set to <code>true</code> if the last features stanza from the server has been parsed. A XMPP connection
      * handshake can invoke multiple features stanzas, e.g. when TLS is activated a second feature
      * stanza is send by the server. This is set to true once the last feature stanza has been
      * parsed.
      */
-    protected final SynchronizationPoint<SmackException> lastFeaturesReceived = new SynchronizationPoint<>(
-                    AbstractXMPPConnection.this, "last stream features received from server");
+    protected boolean lastFeaturesReceived;
 
     /**
-     * Set to success if the SASL feature has been received.
+     * Set to <code>true</code> if the SASL feature has been received.
      */
-    protected final SynchronizationPoint<XMPPException> saslFeatureReceived = new SynchronizationPoint<>(
-                    AbstractXMPPConnection.this, "SASL mechanisms stream feature from server");
-
+    protected boolean saslFeatureReceived;
 
     /**
      * A synchronization point which is successful if this connection has received the closing
      * stream element from the remote end-point, i.e. the server.
      */
-    protected final SynchronizationPoint<Exception> closingStreamReceived = new SynchronizationPoint<>(
-                    this, "stream closing element received");
+    protected boolean closingStreamReceived;
 
     /**
      * The SASLAuthentication manager that is responsible for authenticating with the server.
@@ -368,8 +374,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * to the server was closed (abruptly or not).
      */
     protected boolean wasAuthenticated = false;
-
-    protected Exception currentConnectionException;
 
     private final Map<QName, IQRequestHandler> setIqRequestHandler = new HashMap<>();
     private final Map<QName, IQRequestHandler> getIqRequestHandler = new HashMap<>();
@@ -486,10 +490,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public abstract boolean isUsingCompression();
 
     protected void initState() {
-        saslFeatureReceived.init();
-        lastFeaturesReceived.init();
-        tlsHandled.init();
-        // TODO: We do not init() closingStreamReceived here, as the integration tests use it to check if we waited for
+        currentSmackException = null;
+        currentXmppException = null;
+        saslFeatureReceived = lastFeaturesReceived = tlsHandled = false;
+        // TODO: We do not init closingStreamReceived here, as the integration tests use it to check if we waited for
         // it.
     }
 
@@ -512,7 +516,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         // Reset the connection state
         initState();
-        closingStreamReceived.init();
+        closingStreamReceived = false;
         streamId = null;
 
         try {
@@ -657,15 +661,82 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return streamId;
     }
 
-    protected Resourcepart bindResourceAndEstablishSession(Resourcepart resource) throws XMPPErrorException,
-                    SmackException, InterruptedException {
+    protected final void throwCurrentConnectionException() throws SmackException, XMPPException {
+        if (currentSmackException != null) {
+            throw currentSmackException;
+        } else if (currentXmppException != null) {
+            throw currentXmppException;
+        }
 
+        throw new AssertionError("No current connection exception set, although throwCurrentException() was called");
+    }
+
+    protected final boolean hasCurrentConnectionException() {
+        return currentSmackException != null || currentXmppException != null;
+    }
+
+    protected final void setCurrentConnectionExceptionAndNotify(Exception exception) {
+        if (exception instanceof SmackException) {
+            currentSmackException = (SmackException) exception;
+        } else if (exception instanceof XMPPException) {
+            currentXmppException = (XMPPException) exception;
+        } else {
+            currentSmackException = new SmackException.SmackWrappedException(exception);
+        }
+
+        notifyWaitingThreads();
+    }
+
+    /**
+     * We use an extra object for {@link #notifyWaitingThreads()} and {@link #waitForCondition(Supplier)}, because all state
+     * changing methods of the connection are synchronized using the connection instance as monitor. If we now would
+     * also use the connection instance for the internal process to wait for a condition, the {@link Object#wait()}
+     * would leave the monitor when it waites, which would allow for another potential call to a state changing function
+     * to proceed.
+     */
+    private final Object internalMonitor = new Object();
+
+    protected final void notifyWaitingThreads() {
+        synchronized (internalMonitor) {
+            internalMonitor.notifyAll();
+        }
+    }
+
+    protected final boolean waitForCondition(Supplier<Boolean> condition) throws InterruptedException {
+        final long deadline = System.currentTimeMillis() + getReplyTimeout();
+        synchronized (internalMonitor) {
+            while (!condition.get().booleanValue() && !hasCurrentConnectionException()) {
+                final long now = System.currentTimeMillis();
+                if (now >= deadline) {
+                    return false;
+                }
+                internalMonitor.wait(deadline - now);
+            }
+        }
+        return true;
+    }
+
+    protected final void waitForCondition(Supplier<Boolean> condition, String waitFor) throws InterruptedException, NoResponseException {
+        boolean success = waitForCondition(condition);
+        if (!success) {
+            throw NoResponseException.newWith(this, waitFor);
+        }
+    }
+
+    protected final void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException {
+        waitForCondition(condition, waitFor);
+        if (hasCurrentConnectionException()) {
+            throwCurrentConnectionException();
+        }
+    }
+
+    protected Resourcepart bindResourceAndEstablishSession(Resourcepart resource)
+                    throws SmackException, InterruptedException, XMPPException {
         // Wait until either:
         // - the servers last features stanza has been parsed
         // - the timeout occurs
         LOGGER.finer("Waiting for last features to be received before continuing with resource binding");
-        lastFeaturesReceived.checkIfSuccessOrWaitOrThrow();
-
+        waitForConditionOrThrowConnectionException(() -> lastFeaturesReceived, "last stream features received from server");
 
         if (!hasFeature(Bind.ELEMENT, Bind.NAMESPACE)) {
             // Server never offered resource binding, which is REQUIRED in XMPP client and
@@ -905,28 +976,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return;
         }
 
+        // TODO: Remove this async but ordered?
         ASYNC_BUT_ORDERED.performAsyncButOrdered(this, () -> {
-            currentConnectionException = exception;
+            // Note that we first have to set the current connection exception and notify waiting threads, as one of them
+            // could hold the instance lock, which we also need later when calling instantShutdown().
+            setCurrentConnectionExceptionAndNotify(exception);
+
+            // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
+            // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in
+            // case the Exception is a StreamErrorException.
+            instantShutdown();
 
             for (StanzaCollector collector : collectors) {
                 collector.notifyConnectionError(exception);
-            }
-            SmackWrappedException smackWrappedException = new SmackWrappedException(exception);
-            tlsHandled.reportGenericFailure(smackWrappedException);
-            saslFeatureReceived.reportGenericFailure(smackWrappedException);
-            lastFeaturesReceived.reportGenericFailure(smackWrappedException);
-            closingStreamReceived.reportFailure(smackWrappedException);
-            // TODO From XMPPTCPConnection. Was called in Smack 4.3 where notifyConnectionError() was part of
-            // XMPPTCPConnection. Create delegation method?
-            // maybeCompressFeaturesReceived.reportGenericFailure(smackWrappedException);
-
-            synchronized (AbstractXMPPConnection.this) {
-                notifyAll();
-
-                // Closes the connection temporary. A if the connection supports stream management, then a reconnection is
-                // possible. Note that a connection listener of e.g. XMPPTCPConnection will drop the SM state in
-                // case the Exception is a StreamErrorException.
-                instantShutdown();
             }
 
             Async.go(() -> {
@@ -947,19 +1009,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected abstract void shutdown();
 
     protected final boolean waitForClosingStreamTagFromServer() {
-        Exception exception;
         try {
-            // After we send the closing stream element, check if there was already a
-            // closing stream element sent by the server or wait with a timeout for a
-            // closing stream element to be received from the server.
-            exception = closingStreamReceived.checkIfSuccessOrWait();
-        } catch (InterruptedException | NoResponseException e) {
-            exception = e;
+            waitForConditionOrThrowConnectionException(() -> closingStreamReceived, "closing stream tag from the server");
+        } catch (InterruptedException | SmackException | XMPPException e) {
+            LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
+            return false;
         }
-        if (exception != null) {
-            LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, exception);
-        }
-        return exception == null;
+        return true;
     }
 
     @Override
@@ -1817,8 +1873,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             // Only proceed with SASL auth if TLS is disabled or if the server doesn't announce it
             if (!hasFeature(StartTls.ELEMENT, StartTls.NAMESPACE)
                             || config.getSecurityMode() == SecurityMode.disabled) {
-                tlsHandled.reportSuccess();
-                saslFeatureReceived.reportSuccess();
+                tlsHandled = saslFeatureReceived = true;
+                notifyWaitingThreads();
             }
         }
 
@@ -1829,7 +1885,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                             || !config.isCompressionEnabled()) {
                 // This was was last features from the server is either it did not contain
                 // compression or if we disabled it
-                lastFeaturesReceived.reportSuccess();
+                lastFeaturesReceived = true;
+                notifyWaitingThreads();
             }
         }
         afterFeaturesReceived();

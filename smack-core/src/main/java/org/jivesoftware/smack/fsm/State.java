@@ -19,11 +19,9 @@ package org.jivesoftware.smack.fsm;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException.FailedNonzaException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
-import org.jivesoftware.smack.sasl.SASLErrorException;
 
 /**
  * Note that this is an non-static inner class of XmppClientToServerConnection so that states can inspect and modify
@@ -53,8 +51,7 @@ public abstract class State {
     }
 
     public abstract StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                    throws XMPPErrorException, SASLErrorException, IOException, SmackException,
-                    InterruptedException, FailedNonzaException;
+                    throws IOException, SmackException, InterruptedException, XMPPException;
 
     public StateDescriptor getStateDescriptor() {
         return stateDescriptor;

@@ -47,17 +47,13 @@ import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.ConnectionException;
-import org.jivesoftware.smack.SmackException.ConnectionUnexpectedTerminatedException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
-import org.jivesoftware.smack.SmackException.SmackWrappedException;
+import org.jivesoftware.smack.SmackException.SmackCertificateException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.SmackReactor.SelectionKeyAttachment;
-import org.jivesoftware.smack.XMPPException.FailedNonzaException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XmppInputOutputFilter;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.ConnectedButUnauthenticatedStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.LookupRemoteConnectionEndpointsStateDescriptor;
@@ -744,23 +740,14 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                        throws InterruptedException, ConnectionUnexpectedTerminatedException, NotConnectedException,
-                        NoResponseException, IOException {
+                        throws InterruptedException, IOException, SmackException, XMPPException {
             // The fields inetSocketAddress and failedAddresses are handed over from LookupHostAddresses to
             // ConnectingToHost.
             ConnectionAttemptState connectionAttemptState = new ConnectionAttemptState(connectionInternal, discoveredTcpEndpoints,
                     this);
-            connectionAttemptState.establishTcpConnection();
-
-            try {
-                connectionAttemptState.tcpConnectionEstablishedSyncPoint.checkIfSuccessOrWaitOrThrow();
-            } catch (ConnectionException | NoResponseException e) {
-                // TODO: It is not really elegant that we catch the exception here. Ideally ConnectionAttemptState would
-                // simply return a StateTranstionResult.FailureCausedByException.
-                return new StateTransitionResult.FailureCausedByException<>(e);
-            } catch (SmackWrappedException e) {
-                // Should never throw SmackWrappedException.
-                throw new AssertionError(e);
+            StateTransitionResult.Failure failure = connectionAttemptState.establishTcpConnection();
+            if (failure != null) {
+                return failure;
             }
 
             socketChannel = connectionAttemptState.socketChannel;
@@ -858,8 +845,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                        throws SmackWrappedException, FailedNonzaException, IOException, InterruptedException,
-                        ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException {
+                        throws IOException, InterruptedException, SmackException, XMPPException {
             connectionInternal.sendAndWaitForResponse(StartTls.INSTANCE, TlsProceed.class, TlsFailure.class);
 
             SmackTlsContext smackTlsContext = connectionInternal.getSmackTlsContext();
@@ -881,7 +867,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             try {
                 tlsState.waitForHandshakeFinished();
             } catch (CertificateException e) {
-                throw new SmackWrappedException(e);
+                throw new SmackCertificateException(e);
             }
 
             connectionInternal.newStreamOpenWaitForFeaturesSequence("stream features after TLS established");
@@ -1166,43 +1152,20 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         private void handleSslException(SSLException e) {
             handshakeException = e;
             handshakeStatus = TlsHandshakeStatus.failed;
-            synchronized (this) {
-                notifyAll();
-            }
+            connectionInternal.notifyWaitingThreads();
         }
 
         private void onHandshakeFinished() {
             handshakeStatus = TlsHandshakeStatus.successful;
-            synchronized (this) {
-                notifyAll();
-            }
+            connectionInternal.notifyWaitingThreads();
         }
 
         private boolean isHandshakeFinished() {
             return handshakeStatus == TlsHandshakeStatus.successful || handshakeStatus == TlsHandshakeStatus.failed;
         }
 
-        private void waitForHandshakeFinished() throws InterruptedException, CertificateException, SSLException, ConnectionUnexpectedTerminatedException, NoResponseException {
-            final long deadline = System.currentTimeMillis() + connectionInternal.connection.getReplyTimeout();
-
-            Exception currentConnectionException = null;
-            synchronized (this) {
-                while (!isHandshakeFinished()
-                                && (currentConnectionException = connectionInternal.getCurrentConnectionException()) == null) {
-                    final long now = System.currentTimeMillis();
-                    if (now >= deadline)
-                        break;
-                    wait(deadline - now);
-                }
-            }
-
-            if (currentConnectionException != null) {
-                throw new SmackException.ConnectionUnexpectedTerminatedException(currentConnectionException);
-            }
-
-            if (!isHandshakeFinished()) {
-                throw NoResponseException.newWith(connectionInternal.connection, "TLS handshake to finish");
-            }
+        private void waitForHandshakeFinished() throws InterruptedException, CertificateException, SSLException, SmackException, XMPPException {
+            connectionInternal.waitForCondition(() -> isHandshakeFinished(), "TLS handshake to finish");
 
             if (handshakeStatus == TlsHandshakeStatus.failed) {
                 throw handshakeException;
@@ -1235,7 +1198,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
         @Override
         public void waitUntilInputOutputClosed() throws IOException, CertificateException, InterruptedException,
-                ConnectionUnexpectedTerminatedException, NoResponseException {
+                SmackException, XMPPException {
             waitForHandshakeFinished();
         }
 

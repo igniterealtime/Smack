@@ -67,6 +67,14 @@ public abstract class StateTransitionResult {
         }
     }
 
+    public static final class FailureCausedByTimeout extends Failure {
+
+        public FailureCausedByTimeout(String failureMessage) {
+            super(failureMessage);
+        }
+
+    }
+
     public abstract static class TransitionImpossible extends StateTransitionResult {
         protected TransitionImpossible(String message) {
             super(message);

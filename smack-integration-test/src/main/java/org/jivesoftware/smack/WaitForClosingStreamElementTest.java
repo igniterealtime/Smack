@@ -38,12 +38,7 @@ public class WaitForClosingStreamElementTest extends AbstractSmackLowLevelIntegr
 
         Field closingStreamReceivedField = AbstractXMPPConnection.class.getDeclaredField("closingStreamReceived");
         closingStreamReceivedField.setAccessible(true);
-        SynchronizationPoint<?> closingStreamReceived = (SynchronizationPoint<?>) closingStreamReceivedField.get(connection);
-        Exception failureException = closingStreamReceived.getFailureException();
-        if (failureException != null) {
-            throw new AssertionError("Sync poing yielded failure exception", failureException);
-        }
-        boolean closingStreamReceivedSuccessful = closingStreamReceived.wasSuccessful();
-        assertTrue(closingStreamReceivedSuccessful);
+        boolean closingStreamReceived = (boolean) closingStreamReceivedField.get(connection);
+        assertTrue(closingStreamReceived);
     }
 }

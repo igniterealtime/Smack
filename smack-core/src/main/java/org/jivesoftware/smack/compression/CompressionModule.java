@@ -17,10 +17,8 @@
 package org.jivesoftware.smack.compression;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.SmackException.ConnectionUnexpectedTerminatedException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.XMPPException.FailedNonzaException;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XmppInputOutputFilter;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.AuthenticatedButUnboundStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.ResourceBindingStateDescriptor;
@@ -90,8 +88,7 @@ public class CompressionModule extends ModularXmppClientToServerConnectionModule
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                        throws NoResponseException, NotConnectedException, FailedNonzaException, InterruptedException,
-                        ConnectionUnexpectedTerminatedException {
+                        throws InterruptedException, SmackException, XMPPException {
             final String compressionMethod = selectedCompressionFactory.getCompressionMethod();
             connectionInternal.sendAndWaitForResponse(new Compress(compressionMethod), Compressed.class, Failure.class);
 

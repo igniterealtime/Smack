@@ -67,7 +67,8 @@ public interface XmppInputOutputFilter {
     default void closeInputOutput() {
     }
 
-    default void waitUntilInputOutputClosed() throws IOException, NoResponseException, CertificateException, InterruptedException, SmackException {
+    default void waitUntilInputOutputClosed() throws IOException, NoResponseException, CertificateException,
+                    InterruptedException, SmackException, XMPPException {
     }
 
     Object getStats();

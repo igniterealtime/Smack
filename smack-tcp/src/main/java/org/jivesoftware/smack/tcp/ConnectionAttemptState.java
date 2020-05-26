@@ -26,10 +26,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.EndpointConnectionException;
-import org.jivesoftware.smack.SynchronizationPoint;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.tcp.XmppTcpTransportModule.EstablishingTcpConnectionState;
 import org.jivesoftware.smack.tcp.rce.Rfc6120TcpRemoteConnectionEndpoint;
 import org.jivesoftware.smack.util.Async;
@@ -48,7 +47,10 @@ public final class ConnectionAttemptState {
     final SocketChannel socketChannel;
 
     final List<RemoteConnectionException<?>> connectionExceptions;
-    final SynchronizationPoint<ConnectionException> tcpConnectionEstablishedSyncPoint;
+
+    EndpointConnectionException connectionException;
+    boolean connected;
+    long deadline;
 
     final Iterator<Rfc6120TcpRemoteConnectionEndpoint> connectionEndpointIterator;
     /** The current connection endpoint we are trying */
@@ -65,17 +67,32 @@ public final class ConnectionAttemptState {
         socketChannel = SocketChannel.open();
         socketChannel.configureBlocking(false);
 
-        connectionEndpointIterator = discoveredEndpoints.result.discoveredRemoteConnectionEndpoints.iterator();
+        List<Rfc6120TcpRemoteConnectionEndpoint> endpoints = discoveredEndpoints.result.discoveredRemoteConnectionEndpoints;
+        connectionEndpointIterator = endpoints.iterator();
         connectionEndpoint = connectionEndpointIterator.next();
-        connectionExceptions = new ArrayList<>(discoveredEndpoints.result.discoveredRemoteConnectionEndpoints.size());
-
-        tcpConnectionEstablishedSyncPoint = new SynchronizationPoint<>(connectionInternal.connection,
-                "TCP connection establishment");
+        connectionExceptions = new ArrayList<>(endpoints.size());
     }
 
-    void establishTcpConnection() {
+    StateTransitionResult.Failure establishTcpConnection() throws InterruptedException {
         RemoteConnectionEndpoint.InetSocketAddressCoupling<Rfc6120TcpRemoteConnectionEndpoint> address = nextAddress();
         establishTcpConnection(address);
+
+        synchronized (this) {
+            while (!connected && connectionException == null) {
+                final long now = System.currentTimeMillis();
+                if (now >= deadline) {
+                    return new StateTransitionResult.FailureCausedByTimeout("Timeout waiting to establish connection");
+                }
+                wait (deadline - now);
+            }
+        }
+        if (connected) {
+            assert connectionException == null;
+            // Success case: we have been able to establish a connection to one remote endpoint.
+            return null;
+        }
+
+        return new StateTransitionResult.FailureCausedByException<Exception>(connectionException);
     }
 
     private void establishTcpConnection(
@@ -84,8 +101,10 @@ public final class ConnectionAttemptState {
                         establishingTcpConnectionState, address);
         connectionInternal.invokeConnectionStateMachineListener(connectingToHostEvent);
 
-        final boolean connected;
         final InetSocketAddress inetSocketAddress = address.getInetSocketAddress();
+        // TODO: Should use "connect timeout" instead of reply timeout. But first connect timeout needs to be moved from
+        // XMPPTCPConnectionConfiguration. into XMPPConnectionConfiguration.
+        deadline = System.currentTimeMillis() + connectionInternal.connection.getReplyTimeout();
         try {
             connected = socketChannel.connect(inetSocketAddress);
         } catch (IOException e) {
@@ -98,7 +117,9 @@ public final class ConnectionAttemptState {
                             establishingTcpConnectionState, address, true);
             connectionInternal.invokeConnectionStateMachineListener(connectedToHostEvent);
 
-            tcpConnectionEstablishedSyncPoint.reportSuccess();
+            synchronized (this) {
+                notifyAll();
+            }
             return;
         }
 
@@ -124,9 +145,10 @@ public final class ConnectionAttemptState {
                                         establishingTcpConnectionState, address, false);
                         connectionInternal.invokeConnectionStateMachineListener(connectedToHostEvent);
 
-                        // Do not set 'state' here, since this is processed by a reactor thread, which doesn't hold
-                        // the objects lock.
-                        tcpConnectionEstablishedSyncPoint.reportSuccess();
+                        connected = true;
+                        synchronized (ConnectionAttemptState.this) {
+                            notifyAll();
+                        }
                     });
         } catch (ClosedChannelException e) {
             onIOExceptionWhenEstablishingTcpConnection(e, address);
@@ -137,13 +159,13 @@ public final class ConnectionAttemptState {
                     RemoteConnectionEndpoint.InetSocketAddressCoupling<Rfc6120TcpRemoteConnectionEndpoint> failedAddress) {
         RemoteConnectionEndpoint.InetSocketAddressCoupling<Rfc6120TcpRemoteConnectionEndpoint> nextInetSocketAddress = nextAddress();
         if (nextInetSocketAddress == null) {
-            EndpointConnectionException connectionException = EndpointConnectionException.from(
+            connectionException = EndpointConnectionException.from(
                             discoveredEndpoints.result.lookupFailures, connectionExceptions);
-            tcpConnectionEstablishedSyncPoint.reportFailure(connectionException);
+            synchronized (this) {
+                notifyAll();
+            }
             return;
         }
-
-        tcpConnectionEstablishedSyncPoint.resetTimeout();
 
         RemoteConnectionException<Rfc6120TcpRemoteConnectionEndpoint> rce = new RemoteConnectionException<>(
                         failedAddress, exception);

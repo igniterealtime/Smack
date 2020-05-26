@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack;
 
+import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.List;
 
@@ -371,15 +372,6 @@ public abstract class SmackException extends Exception {
         }
     }
 
-    public static class ConnectionUnexpectedTerminatedException extends SmackException {
-
-        private static final long serialVersionUID = 1L;
-
-        public ConnectionUnexpectedTerminatedException(Throwable wrappedThrowable) {
-            super(wrappedThrowable);
-        }
-    }
-
     public static class FeatureNotSupportedException extends SmackException {
 
         /**
@@ -485,6 +477,21 @@ public abstract class SmackException extends Exception {
 
         public SmackSaslException(String message, Exception exception) {
             super(message, exception);
+        }
+    }
+
+    public static class SmackCertificateException extends SmackException {
+
+        private static final long serialVersionUID = 1L;
+
+        private final CertificateException certificateException;
+
+        public SmackCertificateException(CertificateException certificateException) {
+            this.certificateException = certificateException;
+        }
+
+        public CertificateException getCertificateException() {
+            return certificateException;
         }
     }
 }

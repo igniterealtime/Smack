@@ -35,7 +35,6 @@ import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.ConnectionUnexpectedTerminatedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackFuture;
@@ -78,6 +77,7 @@ import org.jivesoftware.smack.util.ArrayBlockingQueueWithShutdown;
 import org.jivesoftware.smack.util.ExtendedAppendable;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.Supplier;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -142,7 +142,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             @Override
             public void onStreamClosed() {
-                ModularXmppClientToServerConnection.this.closingStreamReceived.reportSuccess();
+                ModularXmppClientToServerConnection.this.closingStreamReceived = true;
+                notifyWaitingThreads();
             }
 
             @Override
@@ -177,7 +178,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             @Override
             public void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
-                            ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException {
+                            SmackException, XMPPException {
                 ModularXmppClientToServerConnection.this.newStreamOpenWaitForFeaturesSequence(waitFor);
             }
 
@@ -198,8 +199,14 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public Exception getCurrentConnectionException() {
-                return ModularXmppClientToServerConnection.this.currentConnectionException;
+            public void waitForCondition(Supplier<Boolean> condition, String waitFor)
+                            throws InterruptedException, SmackException, XMPPException {
+                ModularXmppClientToServerConnection.this.waitForConditionOrThrowConnectionException(condition, waitFor);
+            }
+
+            @Override
+            public void notifyWaitingThreads() {
+                ModularXmppClientToServerConnection.this.notifyWaitingThreads();
             }
 
             @Override
@@ -263,14 +270,13 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         revertedState.resetState();
     }
 
-    protected void walkStateGraph(WalkStateGraphContext walkStateGraphContext) throws XMPPErrorException,
-                    SASLErrorException, FailedNonzaException, IOException, SmackException, InterruptedException {
+    protected void walkStateGraph(WalkStateGraphContext walkStateGraphContext)
+                    throws XMPPException, IOException, SmackException, InterruptedException {
         // Save a copy of the current state
         GraphVertex<State> previousStateVertex = currentStateVertex;
         try {
             walkStateGraphInternal(walkStateGraphContext);
-        } catch (XMPPErrorException | SASLErrorException | FailedNonzaException | IOException | SmackException
-                        | InterruptedException e) {
+        } catch (IOException | SmackException | InterruptedException | XMPPException e) {
             currentStateVertex = previousStateVertex;
             // Unwind the state.
             State revertedState = currentStateVertex.getElement();
@@ -279,8 +285,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         }
     }
 
-    private void walkStateGraphInternal(WalkStateGraphContext walkStateGraphContext) throws XMPPErrorException,
-                    SASLErrorException, IOException, SmackException, InterruptedException, FailedNonzaException {
+    private void walkStateGraphInternal(WalkStateGraphContext walkStateGraphContext)
+                    throws IOException, SmackException, InterruptedException, XMPPException {
         // Save a copy of the current state
         final GraphVertex<State> initialStateVertex = currentStateVertex;
         final State initialState = initialStateVertex.getElement();
@@ -359,15 +365,13 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
      * @param walkStateGraphContext the "walk state graph" context.
      * @return A state transition result or <code>null</code> if this state can be ignored.
      * @throws SmackException if Smack detected an exceptional situation.
-     * @throws XMPPErrorException if an XMPP protocol error was received.
-     * @throws SASLErrorException if a SASL protocol error was returned.
+     * @throws XMPPException if an XMPP protocol error was received.
      * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws FailedNonzaException if an XMPP protocol failure was received.
      */
     private StateTransitionResult attemptEnterState(GraphVertex<State> successorStateVertex,
-                    WalkStateGraphContext walkStateGraphContext) throws SmackException, XMPPErrorException,
-                    SASLErrorException, IOException, InterruptedException, FailedNonzaException {
+                    WalkStateGraphContext walkStateGraphContext) throws SmackException, XMPPException,
+                    IOException, InterruptedException {
         final GraphVertex<State> initialStateVertex = currentStateVertex;
         final State initialState = initialStateVertex.getElement();
         final State successorState = successorStateVertex.getElement();
@@ -400,8 +404,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             invokeConnectionStateMachineListener(new ConnectionStateEvent.AboutToTransitionInto(initialState, successorState));
             transitionAttemptResult = successorState.transitionInto(walkStateGraphContext);
-        } catch (SmackException | XMPPErrorException | SASLErrorException | IOException | InterruptedException
-                        | FailedNonzaException e) {
+        } catch (SmackException | IOException | InterruptedException | XMPPException e) {
             // Unwind the state here too, since this state will not be unwound by walkStateGraph(), as it will not
             // become a predecessor state in the walk.
             unwindState(successorState);
@@ -474,8 +477,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
         try {
             walkStateGraph(context);
-        } catch (XMPPErrorException | SASLErrorException | IOException | SmackException | InterruptedException
-                        | FailedNonzaException e) {
+        } catch (IOException | SmackException | InterruptedException | XMPPException e) {
             throw new IllegalStateException("A walk to disconnected state should never throw", e);
         }
     }
@@ -491,9 +493,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     @Override
     protected void afterFeaturesReceived() {
         featuresReceived = true;
-        synchronized (this) {
-            notifyAll();
-        }
+        notifyWaitingThreads();
     }
 
     protected void parseAndProcessElement(String element) {
@@ -522,8 +522,10 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                         break;
                     case "error":
                         StreamError streamError = PacketParserUtils.parseStreamError(parser, null);
-                        saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
-                        throw new StreamErrorException(streamError);
+                        StreamErrorException streamErrorException = new StreamErrorException(streamError);
+                        currentXmppException = streamErrorException;
+                        notifyWaitingThreads();
+                        throw streamErrorException;
                     case "features":
                         parseFeatures(parser);
                         afterFeaturesReceived();
@@ -550,25 +552,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     protected void waitForFeaturesReceived(String waitFor)
-                    throws InterruptedException, ConnectionUnexpectedTerminatedException, NoResponseException {
-        long waitStartMs = System.currentTimeMillis();
-        long timeoutMs = getReplyTimeout();
-        synchronized (this) {
-            while (!featuresReceived && currentConnectionException == null) {
-                long remainingWaitMs = timeoutMs - (System.currentTimeMillis() - waitStartMs);
-                if (remainingWaitMs <= 0) {
-                    throw NoResponseException.newWith(this, waitFor);
-                }
-                wait(remainingWaitMs);
-            }
-            if (currentConnectionException != null) {
-                throw new SmackException.ConnectionUnexpectedTerminatedException(currentConnectionException);
-            }
-        }
+                    throws InterruptedException, SmackException, XMPPException {
+        waitForConditionOrThrowConnectionException(() -> featuresReceived, waitFor);
     }
 
     protected void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
-                    ConnectionUnexpectedTerminatedException, NoResponseException, NotConnectedException {
+                    SmackException, XMPPException {
         prepareToWaitForFeaturesReceived();
         sendStreamOpen();
         waitForFeaturesReceived(waitFor);
@@ -763,8 +752,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                        throws XMPPErrorException, SASLErrorException, IOException, SmackException,
-                        InterruptedException {
+                        throws IOException, SmackException, InterruptedException, XMPPException {
             prepareToWaitForFeaturesReceived();
 
             LoginContext loginContext = walkStateGraphContext.getLoginContext();
@@ -813,12 +801,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                        throws XMPPErrorException, SASLErrorException, IOException, SmackException,
-                        InterruptedException {
+                        throws IOException, SmackException, InterruptedException, XMPPException {
             // Calling bindResourceAndEstablishSession() below requires the lastFeaturesReceived sync point to be signaled.
             // Since we entered this state, the FSM has decided that the last features have been received, hence signal
             // the sync point.
-            lastFeaturesReceived.reportSuccess();
+            lastFeaturesReceived = true;
+            notifyWaitingThreads();
 
             LoginContext loginContext = walkStateGraphContext.getLoginContext();
             Resourcepart resource = bindResourceAndEstablishSession(loginContext.resource);
@@ -914,7 +902,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext) {
-            closingStreamReceived.init();
+            closingStreamReceived = false;
 
             boolean streamCloseIssued = outgoingElementsQueue.offerAndShutdown(StreamClose.INSTANCE);
 
@@ -936,7 +924,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                         XmppInputOutputFilter filter = it.next();
                         try {
                             filter.waitUntilInputOutputClosed();
-                        } catch (IOException | CertificateException | InterruptedException | SmackException e) {
+                        } catch (IOException | CertificateException | InterruptedException | SmackException | XMPPException e) {
                             LOGGER.log(Level.WARNING, "waitUntilInputOutputClosed() threw", e);
                         }
                     }
