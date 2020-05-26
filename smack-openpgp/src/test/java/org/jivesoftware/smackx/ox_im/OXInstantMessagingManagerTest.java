@@ -56,7 +56,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.JidTestUtil;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
 
 public class OXInstantMessagingManagerTest extends SmackTestSuite {
@@ -71,16 +70,10 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
     public void test() throws IOException, PGPException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
             NoSuchProviderException, SmackException, MissingUserIdOnKeyException, InterruptedException, XMPPException,
             XmlPullParserException {
-        DummyConnection aliceCon = new DummyConnection(
-                DummyConnection.DummyConnectionConfiguration.builder()
-                        .setXmppDomain(JidTestUtil.EXAMPLE_ORG)
-                        .setUsernameAndPassword("alice", "dummypass").build());
+        DummyConnection aliceCon = new DummyConnection();
         aliceCon.connect().login();
 
-        DummyConnection bobCon = new DummyConnection(
-                DummyConnection.DummyConnectionConfiguration.builder()
-                        .setXmppDomain(JidTestUtil.EXAMPLE_ORG)
-                        .setUsernameAndPassword("bob", "dummypass").build());
+        DummyConnection bobCon = new DummyConnection();
         bobCon.connect().login();
 
         FileBasedOpenPgpStore aliceStore = new FileBasedOpenPgpStore(new File(basePath, "alice"));
