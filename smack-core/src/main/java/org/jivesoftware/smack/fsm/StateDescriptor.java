@@ -212,7 +212,7 @@ public abstract class StateDescriptor {
     protected State constructState(ModularXmppClientToServerConnectionInternal connectionInternal) {
         ModularXmppClientToServerConnection connection = connectionInternal.connection;
         try {
-            // If stateClassConstructor is null here, then you probably forgot to override the the
+            // If stateClassConstructor is null here, then you probably forgot to override the
             // StateDescriptor.constructState() method?
             return stateClassConstructor.newInstance(connection, this, connectionInternal);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException

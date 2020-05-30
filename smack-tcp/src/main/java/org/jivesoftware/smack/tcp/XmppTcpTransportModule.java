@@ -591,7 +591,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
         @Override
         protected List<SmackFuture<LookupConnectionEndpointsResult, Exception>> lookupConnectionEndpoints() {
-            // Assert that there are no stale discovred endpoints prior performing the lookup.
+            // Assert that there are no stale discovered endpoints prior performing the lookup.
             assert discoveredTcpEndpoints == null;
 
             List<SmackFuture<LookupConnectionEndpointsResult, Exception>> futures = new ArrayList<>(2);
