@@ -17,7 +17,6 @@
 package org.jivesoftware.smack;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.nio.channels.CancelledKeyException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
@@ -368,13 +367,8 @@ public class SmackReactor {
         for (SelectionKey selectionKey : selectedKeys) {
             SelectableChannel channel = selectionKey.channel();
             SelectionKeyAttachment selectionKeyAttachment = (SelectionKeyAttachment) selectionKey.attachment();
-            ChannelSelectedCallback channelSelectedCallback = selectionKeyAttachment.weaeklyReferencedChannelSelectedCallback.get();
-            if (channelSelectedCallback != null) {
-                channelSelectedCallback.onChannelSelected(channel, selectionKey);
-            }
-            else {
-                selectionKey.cancel();
-            }
+            ChannelSelectedCallback channelSelectedCallback = selectionKeyAttachment.channelSelectedCallback;
+            channelSelectedCallback.onChannelSelected(channel, selectionKey);
         }
     }
 
@@ -422,11 +416,11 @@ public class SmackReactor {
     }
 
     public static final class SelectionKeyAttachment {
-        private final WeakReference<ChannelSelectedCallback> weaeklyReferencedChannelSelectedCallback;
+        private final ChannelSelectedCallback channelSelectedCallback;
         private final AtomicBoolean reactorThreadRacing = new AtomicBoolean();
 
         private SelectionKeyAttachment(ChannelSelectedCallback channelSelectedCallback) {
-            this.weaeklyReferencedChannelSelectedCallback = new WeakReference<>(channelSelectedCallback);
+            this.channelSelectedCallback = channelSelectedCallback;
         }
 
         private void setRacing() {
