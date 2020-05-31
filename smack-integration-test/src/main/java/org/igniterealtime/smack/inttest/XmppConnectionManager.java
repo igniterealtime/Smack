@@ -480,6 +480,8 @@ public class XmppConnectionManager {
             synchronized (connectionPool) {
                 connectionPool.put(connectionClass, connection);
             }
+        } else {
+            connection.disconnect();
         }
         // Note that we do not delete the account of the unauthenticated connection here, as it is done at the end of
         // the test run together with all other dynamically created accounts.
