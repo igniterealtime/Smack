@@ -949,12 +949,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             break;
                         case "error":
                             StreamError streamError = PacketParserUtils.parseStreamError(parser);
-                            currentXmppException = new StreamErrorException(streamError);
-                            // Mark the tlsHandled sync point as success, we will use the saslFeatureReceived sync
-                            // point to report the error, which is checked immediately after tlsHandled in
-                            // connectInternal().
-                            tlsHandled = true;
-                            notifyWaiters();
+                            // Stream errors are non recoverable, throw this exceptions. Also note that this will set
+                            // this exception as current connection exceptions and notify any waiting threads.
                             throw new StreamErrorException(streamError);
                         case "features":
                             parseFeaturesAndNotify(parser);
