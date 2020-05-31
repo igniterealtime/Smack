@@ -58,11 +58,15 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
         AbstractXMPPConnection connection = getUnconnectedConnection();
         connection.connect();
 
-        SASLErrorException saslErrorException = assertThrows(SASLErrorException.class,
-                        () -> connection.login(nonExistentUserString, invalidPassword));
+        try {
+            SASLErrorException saslErrorException = assertThrows(SASLErrorException.class,
+                            () -> connection.login(nonExistentUserString, invalidPassword));
 
-        SaslNonza.SASLFailure saslFailure = saslErrorException.getSASLFailure();
-        assertEquals(SASLError.not_authorized, saslFailure.getSASLError());
+            SaslNonza.SASLFailure saslFailure = saslErrorException.getSASLFailure();
+            assertEquals(SASLError.not_authorized, saslFailure.getSASLError());
+        } finally {
+            connection.disconnect();
+        }
     }
 
 }
