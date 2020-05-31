@@ -1332,7 +1332,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             writer.write(packet.toXML().toString());
                         }
-                        writer.flush();
                     }
                     catch (Exception e) {
                         LOGGER.log(Level.WARNING,
