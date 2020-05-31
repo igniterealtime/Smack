@@ -477,14 +477,19 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void shutdown(boolean instant) {
-        // First shutdown the writer, this will result in a closing stream element getting send to
-        // the server
-        LOGGER.finer("PacketWriter shutdown()");
-        packetWriter.shutdown(instant);
-        LOGGER.finer("PacketWriter has been shut down");
+        // The writer thread may already been finished at this point, for example when the connection is in the
+        // disconnected-but-resumable state. There is no need to wait for the closing stream tag from the server in this
+        // case.
+        if (!packetWriter.done()) {
+            // First shutdown the writer, this will result in a closing stream element getting send to
+            // the server
+            LOGGER.finer("PacketWriter shutdown()");
+            packetWriter.shutdown(instant);
+            LOGGER.finer("PacketWriter has been shut down");
 
-        if (!instant) {
-            waitForClosingStreamTagFromServer();
+            if (!instant) {
+                waitForClosingStreamTagFromServer();
+            }
         }
 
         LOGGER.finer("PacketReader shutdown()");
