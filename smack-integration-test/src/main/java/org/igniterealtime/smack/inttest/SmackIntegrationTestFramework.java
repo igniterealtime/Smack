@@ -863,6 +863,8 @@ public class SmackIntegrationTestFramework {
                 }
                 testMethod.invoke(test, connectionsArray);
             }
+
+            connectionManager.recycle(connections);
         }
 
         @Override
