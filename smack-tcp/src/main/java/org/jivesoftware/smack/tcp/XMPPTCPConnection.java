@@ -1225,7 +1225,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         /**
          * Shuts down the stanza writer. Once this method has been called, no further
          * packets will be written to the server.
-         * @throws InterruptedException if the calling thread was interrupted.
          */
         void shutdown(boolean instant) {
             instantShutdown = instant;
