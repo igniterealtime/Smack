@@ -963,6 +963,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         callConnectionClosedListener();
     }
 
+    private final Object notifyConnectionErrorMonitor = new Object();
+
     /**
      * Sends out a notification that there was an error with the connection
      * and closes the connection.
@@ -970,14 +972,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @param exception the exception that causes the connection close event.
      */
     protected final void notifyConnectionError(final Exception exception) {
-        if (!isConnected()) {
-            LOGGER.log(Level.INFO, "Connection was already disconnected when attempting to handle " + exception,
-                            exception);
-            return;
-        }
+        synchronized (notifyConnectionErrorMonitor) {
+            if (!isConnected()) {
+                LOGGER.log(Level.INFO, "Connection was already disconnected when attempting to handle " + exception,
+                                exception);
+                return;
+            }
 
-        // TODO: Remove this async but ordered?
-        ASYNC_BUT_ORDERED.performAsyncButOrdered(this, () -> {
             // Note that we first have to set the current connection exception and notify waiting threads, as one of them
             // could hold the instance lock, which we also need later when calling instantShutdown().
             setCurrentConnectionExceptionAndNotify(exception);
@@ -995,7 +996,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 // Notify connection listeners of the error.
                 callConnectionClosedOnErrorListener(exception);
             }, AbstractXMPPConnection.this + " callConnectionClosedOnErrorListener()");
-        });
+        }
     }
 
     /**
