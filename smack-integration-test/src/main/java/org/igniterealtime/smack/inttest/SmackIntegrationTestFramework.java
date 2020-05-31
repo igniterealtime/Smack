@@ -454,10 +454,12 @@ public class SmackIntegrationTestFramework {
             }
             sb.append('\n');
         }
-        sb.append("Available tests: ").append(numberOfAvailableTests)
-            .append("(#-classes: ").append(testRunResult.disabledTestClasses.size())
-            .append(", #-tests: ").append(testRunResult.disabledTests.size())
-            .append(")\n");
+        sb.append("Available tests: ").append(numberOfAvailableTests);
+        if (!testRunResult.disabledTestClasses.isEmpty() || !testRunResult.disabledTests.isEmpty()) {
+            sb.append(" (Disabled ").append(testRunResult.disabledTestClasses.size()).append(" classes")
+              .append(" and ").append(testRunResult.disabledTests.size()).append(" tests");
+        }
+        sb.append('\n');
         LOGGER.info(sb.toString());
 
         for (PreparedTest test : tests) {
