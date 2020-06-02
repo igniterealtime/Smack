@@ -359,7 +359,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     /**
-     * Attempt to enter a state. Note that this method may return <code>null</code> if this state can be safely ignored ignored.
+     * Attempt to enter a state. Note that this method may return <code>null</code> if this state can be safely ignored.
      *
      * @param successorStateVertex the successor state vertex.
      * @param walkStateGraphContext the "walk state graph" context.
