@@ -1884,8 +1884,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (hasFeature(Bind.ELEMENT, Bind.NAMESPACE)) {
             if (!hasFeature(Compress.Feature.ELEMENT, Compress.NAMESPACE)
                             || !config.isCompressionEnabled()) {
-                // This was was last features from the server is either it did not contain
-                // compression or if we disabled it
+                // This where the last stream features from the server, either it did not contain
+                // compression or we disabled it.
                 lastFeaturesReceived = true;
                 notifyWaitingThreads();
             }
