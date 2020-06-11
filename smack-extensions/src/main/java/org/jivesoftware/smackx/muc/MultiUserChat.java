@@ -88,7 +88,6 @@ import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
-import org.jxmpp.util.cache.ExpirationCache;
 
 /**
  * A MultiUserChat room (XEP-45), created with {@link MultiUserChatManager#getMultiUserChat(EntityBareJid)}.
@@ -111,9 +110,6 @@ import org.jxmpp.util.cache.ExpirationCache;
  */
 public class MultiUserChat {
     private static final Logger LOGGER = Logger.getLogger(MultiUserChat.class.getName());
-
-    private static final ExpirationCache<DomainBareJid, Void> KNOWN_MUC_SERVICES = new ExpirationCache<>(
-                    100, 1000 * 60 * 60 * 24);
 
     private final XMPPConnection connection;
     private final EntityBareJid room;
@@ -340,12 +336,8 @@ public class MultiUserChat {
     private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
         final DomainBareJid mucService = room.asDomainBareJid();
-        if (!KNOWN_MUC_SERVICES.containsKey(mucService)) {
-            if (multiUserChatManager.providesMucService(mucService)) {
-                KNOWN_MUC_SERVICES.put(mucService, null);
-            } else {
-                throw new NotAMucServiceException(this);
-            }
+        if (!multiUserChatManager.providesMucService(mucService)) {
+            throw new NotAMucServiceException(this);
         }
         // We enter a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"

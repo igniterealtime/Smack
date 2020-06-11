@@ -64,6 +64,7 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.util.cache.ExpirationCache;
 
 /**
  * A manager for Multi-User Chat rooms.
@@ -135,6 +136,9 @@ public final class MultiUserChatManager extends Manager {
 
     private static final StanzaFilter INVITATION_FILTER = new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(new MUCUser()),
                     new NotFilter(MessageTypeFilter.ERROR));
+
+    private static final ExpirationCache<DomainBareJid, Void> KNOWN_MUC_SERVICES = new ExpirationCache<>(
+        100, 1000 * 60 * 60 * 24);
 
     private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
 
@@ -392,8 +396,16 @@ public final class MultiUserChatManager extends Manager {
      */
     public boolean providesMucService(DomainBareJid domainBareJid) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        return serviceDiscoveryManager.supportsFeature(domainBareJid,
-                        MUCInitialPresence.NAMESPACE);
+        boolean contains = KNOWN_MUC_SERVICES.containsKey(domainBareJid);
+        if (!contains) {
+            if (serviceDiscoveryManager.supportsFeature(domainBareJid,
+                        MUCInitialPresence.NAMESPACE)) {
+                KNOWN_MUC_SERVICES.put(domainBareJid, null);
+                return true;
+            }
+        }
+
+        return contains;
     }
 
     /**
