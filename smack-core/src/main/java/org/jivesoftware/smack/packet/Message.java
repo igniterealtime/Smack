@@ -17,12 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
@@ -187,59 +183,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     }
 
     /**
-     * Returns the default subject of the message, or null if the subject has not been set.
-     * The subject is a short description of message contents.
-     * <p>
-     * The default subject of a message is the subject that corresponds to the message's language.
-     * (see {@link #getLanguage()}) or if no language is set to the applications default
-     * language (see {@link Stanza#getDefaultLanguage()}).
-     *
-     * @return the subject of the message.
-     */
-    public String getSubject() {
-        return getSubject(null);
-    }
-
-    /**
-     * Returns the subject corresponding to the language. If the language is null, the method result
-     * will be the same as {@link #getSubject()}. Null will be returned if the language does not have
-     * a corresponding subject.
-     *
-     * @param language the language of the subject to return.
-     * @return the subject related to the passed in language.
-     */
-    public String getSubject(String language) {
-        Subject subject = getMessageSubject(language);
-        return subject == null ? null : subject.subject;
-    }
-
-    private Subject getMessageSubject(String language) {
-        language = determineLanguage(language);
-        for (Subject subject : getSubjects()) {
-            if (Objects.equals(language, subject.language)
-                            || (subject.language == null && Objects.equals(this.language, language))) {
-                return subject;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns a set of all subjects in this Message, including the default message subject accessible
-     * from {@link #getSubject()}.
-     *
-     * @return a collection of all subjects in this message.
-     */
-    public Set<Subject> getSubjects() {
-        List<Subject> subjectList = getExtensions(Subject.class);
-
-        Set<Subject> subjects = new HashSet<>(subjectList.size());
-        subjects.addAll(subjectList);
-
-        return subjects;
-    }
-
-    /**
      * Sets the subject of the message. The subject is a short description of
      * message contents.
      *
@@ -267,7 +210,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     @Deprecated
     // TODO: Remove when stanza builder is ready.
     public Subject addSubject(String language, String subject) {
-        language = determineLanguage(language);
+        language = Stanza.determineLanguage(this, language);
 
         List<Subject> currentSubjects = getExtensions(Subject.class);
         for (Subject currentSubject : currentSubjects) {
@@ -290,7 +233,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     @Deprecated
     // TODO: Remove when stanza builder is ready.
     public boolean removeSubject(String language) {
-        language = determineLanguage(language);
+        language = Stanza.determineLanguage(this, language);
         for (Subject subject : getExtensions(Subject.class)) {
             if (language.equals(subject.language)) {
                 return removeSubject(subject);
@@ -309,77 +252,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     // TODO: Remove when stanza builder is ready.
     public boolean removeSubject(Subject subject) {
         return removeExtension(subject) != null;
-    }
-
-    /**
-     * Returns all the languages being used for the subjects, not including the default subject.
-     *
-     * @return the languages being used for the subjects.
-     */
-    public List<String> getSubjectLanguages() {
-        Subject defaultSubject = getMessageSubject(null);
-        List<String> languages = new ArrayList<String>();
-        for (Subject subject : getExtensions(Subject.class)) {
-            if (!subject.equals(defaultSubject)) {
-                languages.add(subject.language);
-            }
-        }
-        return Collections.unmodifiableList(languages);
-    }
-
-    /**
-     * Returns the default body of the message, or null if the body has not been set. The body
-     * is the main message contents.
-     * <p>
-     * The default body of a message is the body that corresponds to the message's language.
-     * (see {@link #getLanguage()}) or if no language is set to the applications default
-     * language (see {@link Stanza#getDefaultLanguage()}).
-     *
-     * @return the body of the message.
-     */
-    public String getBody() {
-        return getBody(language);
-    }
-
-    /**
-     * Returns the body corresponding to the language. If the language is null, the method result
-     * will be the same as {@link #getBody()}. Null will be returned if the language does not have
-     * a corresponding body.
-     *
-     * @param language the language of the body to return.
-     * @return the body related to the passed in language.
-     * @since 3.0.2
-     */
-    public String getBody(String language) {
-        Body body = getMessageBody(language);
-        return body == null ? null : body.message;
-    }
-
-    private Body getMessageBody(String language) {
-        language = determineLanguage(language);
-        for (Body body : getBodies()) {
-            if (Objects.equals(language, body.language) || (language != null && language.equals(this.language) && body.language == null)) {
-                return body;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns a set of all bodies in this Message, including the default message body accessible
-     * from {@link #getBody()}.
-     *
-     * @return a collection of all bodies in this Message.
-     * @since 3.0.2
-     */
-    public Set<Body> getBodies() {
-        List<ExtensionElement> bodiesList = getExtensions(Body.ELEMENT, Body.NAMESPACE);
-        Set<Body> resultSet = new HashSet<>(bodiesList.size());
-        for (ExtensionElement extensionElement : bodiesList) {
-            Body body = (Body) extensionElement;
-            resultSet.add(body);
-        }
-        return resultSet;
     }
 
     /**
@@ -431,7 +303,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     @Deprecated
     // TODO: Remove when stanza builder is ready.
     public Body addBody(String language, String body) {
-        language = determineLanguage(language);
+        language = Stanza.determineLanguage(this, language);
 
         removeBody(language);
 
@@ -450,7 +322,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     @Deprecated
     // TODO: Remove when stanza builder is ready.
     public boolean removeBody(String language) {
-        language = determineLanguage(language);
+        language = Stanza.determineLanguage(this, language);
         for (Body body : getBodies()) {
             String bodyLanguage = body.getLanguage();
             if (Objects.equals(bodyLanguage, language)) {
@@ -477,37 +349,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     }
 
     /**
-     * Returns all the languages being used for the bodies, not including the default body.
-     *
-     * @return the languages being used for the bodies.
-     * @since 3.0.2
-     */
-    public List<String> getBodyLanguages() {
-        Body defaultBody = getMessageBody(null);
-        List<String> languages = new ArrayList<String>();
-        for (Body body : getBodies()) {
-            if (!body.equals(defaultBody)) {
-                languages.add(body.language);
-            }
-        }
-        return Collections.unmodifiableList(languages);
-    }
-
-    /**
-     * Returns the thread id of the message, which is a unique identifier for a sequence
-     * of "chat" messages. If no thread id is set, <code>null</code> will be returned.
-     *
-     * @return the thread id of the message, or <code>null</code> if it doesn't exist.
-     */
-    public String getThread() {
-        Message.Thread thread = getExtension(Message.Thread.class);
-        if (thread == null) {
-            return null;
-        }
-        return thread.getThread();
-    }
-
-    /**
      * Sets the thread id of the message, which is a unique identifier for a sequence
      * of "chat" messages.
      *
@@ -518,18 +359,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     // TODO: Remove when stanza builder is ready.
     public void setThread(String thread) {
         addExtension(new Message.Thread(thread));
-    }
-
-    private String determineLanguage(String language) {
-
-        // empty string is passed by #setSubject() and #setBody() and is the same as null
-        language = "".equals(language) ? null : language;
-
-        // if given language is null check if message language is set
-        if (language == null && this.language != null) {
-            return this.language;
-        }
-        return language;
     }
 
     @Override

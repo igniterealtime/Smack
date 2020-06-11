@@ -575,4 +575,18 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
             xml.append(error);
         }
     }
+
+    /**
+     * Return the provided non-empty language, or use this {@link XmlLangElement} language (if set).
+     *
+     * @param language the provided language, may be the empty string or <code>null</code>.
+     * @return the provided language or this element's language (if set).
+     */
+    static String determineLanguage(XmlLangElement xmlLangElement, String language) {
+        if (language != null && !language.isEmpty()) {
+            return language;
+        }
+
+        return xmlLangElement.getLanguage();
+    }
 }
