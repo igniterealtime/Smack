@@ -190,10 +190,22 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private String smSessionId;
 
-    private SyncPointState smResumedSyncPoint;
+    /**
+     * Represents the state of stream management resumption.
+     * <p>
+     * Unlike other sync points, this sync point is marked volatile because it is also read by the reader thread.
+     * </p>
+     */
+    private volatile SyncPointState smResumedSyncPoint;
     private Failed smResumptionFailed;
 
-    private boolean smEnabledSyncPoint;
+    /**
+     * Represents the state of stream magement.
+     * <p>
+     * This boolean is marked volatile as it is read by various threads, including the reader thread via {@link #isSmEnabled()}.
+     * </p>
+     */
+    private volatile boolean smEnabledSyncPoint;
 
     /**
      * The client's preferred maximum resumption time in seconds.
