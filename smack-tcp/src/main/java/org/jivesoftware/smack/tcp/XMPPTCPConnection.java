@@ -1016,6 +1016,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 // This is a <failed/> nonza in a response to resuming a previous stream, failure to do
                                 // so is non-fatal as we can simply continue with resource binding in this case.
                                 smResumptionFailed = failed;
+                                notifyWaitingThreads();
                             } else {
                                 FailedNonzaException xmppException = new FailedNonzaException(failed, failed.getStanzaErrorCondition());
                                 setCurrentConnectionExceptionAndNotify(xmppException);
