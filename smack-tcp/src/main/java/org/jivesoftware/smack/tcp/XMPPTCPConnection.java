@@ -364,6 +364,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     SmackException, IOException, InterruptedException {
         // Authenticate using SASL
         SSLSession sslSession = secureSocket != null ? secureSocket.getSession() : null;
+
+        streamFeaturesAfterAuthenticationReceived = false;
         authenticate(username, password, config.getAuthzid(), sslSession);
 
         // Wait for stream features after the authentication.
@@ -375,6 +377,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // recommends to perform stream compression before resource binding.
         maybeEnableCompression();
 
+        smResumedSyncPoint = SyncPointState.initial;
+        smResumptionFailed = null;
         if (isSmResumptionPossible()) {
             smResumedSyncPoint = SyncPointState.request_sent;
             sendNonza(new Resume(clientHandledStanzasCount, smSessionId));
@@ -409,6 +413,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // unacknowledgedStanzas and become duplicated on reconnect. See SMACK-706.
         bindResourceAndEstablishSession(resource);
 
+        smEnabledSyncPoint = false;
         if (isSmAvailable() && useSm) {
             // Remove what is maybe left from previously stream managed sessions
             serverHandledStanzasCount = 0;
@@ -533,15 +538,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         writer = null;
 
         initState();
-    }
-
-    @Override
-    protected void initState() {
-        super.initState();
-        streamFeaturesAfterAuthenticationReceived = compressSyncPoint = false;
-        smResumedSyncPoint = SyncPointState.initial;
-        smResumptionFailed = null;
-        smEnabledSyncPoint = false;
     }
 
     @Override
@@ -794,6 +790,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // If stream compression was offered by the server and we want to use
         // compression then send compression request to the server
         if ((compressionHandler = maybeGetCompressionHandler(compression)) != null) {
+            compressSyncPoint = false;
             sendNonza(new Compress(compressionHandler.getCompressionMethod()));
             waitForConditionOrThrowConnectionException(() -> compressSyncPoint, "establishing stream compression");
         } else {
