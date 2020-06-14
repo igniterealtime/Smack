@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.jivesoftware.smack.compress.packet;
 
 import java.util.Objects;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -26,6 +28,7 @@ public class Failure implements Nonza {
 
     public static final String ELEMENT = "failure";
     public static final String NAMESPACE = Compress.NAMESPACE;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public enum CompressFailureError {
         setup_failed,
