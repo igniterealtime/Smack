@@ -32,7 +32,6 @@ import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
  */
 public class AffiliationsExtension extends NodeExtension {
     protected List<Affiliation> items = Collections.emptyList();
-    private final String node;
 
     public AffiliationsExtension() {
         this(null);
@@ -51,9 +50,8 @@ public class AffiliationsExtension extends NodeExtension {
     }
 
     public AffiliationsExtension(AffiliationNamespace affiliationsNamespace, List<Affiliation> subList, String node) {
-        super(affiliationsNamespace.type);
+        super(affiliationsNamespace.type, node);
         items = subList;
-        this.node = node;
     }
 
     public List<Affiliation> getAffiliations() {
@@ -61,19 +59,14 @@ public class AffiliationsExtension extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+    protected void addXml(XmlStringBuilder xml) {
         if ((items == null) || (items.size() == 0)) {
-            return super.toXML(enclosingNamespace);
+            xml.closeEmptyElement();
+            return;
         }
-        else {
-            // Can't use XmlStringBuilder(this), because we don't want the namespace to be included
-            XmlStringBuilder xml = new XmlStringBuilder();
-            xml.halfOpenElement(getElementName());
-            xml.optAttribute("node", node);
-            xml.rightAngleBracket();
-            xml.append(items);
-            xml.closeElement(this);
-            return xml;
-        }
+
+        xml.rightAngleBracket();
+        xml.append(items);
+        xml.closeElement(this);
     }
 }

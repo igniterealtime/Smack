@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -69,26 +71,14 @@ public class FormNode extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+    protected void addXml(XmlStringBuilder xml) {
         if (configForm == null) {
-            return super.toXML(enclosingNamespace);
+            xml.closeEmptyElement();
+            return;
         }
-        else {
-            StringBuilder builder = new StringBuilder("<");
-            builder.append(getElementName());
 
-            if (getNode() != null) {
-                builder.append(" node='");
-                builder.append(getNode());
-                builder.append("'>");
-            }
-            else
-                builder.append('>');
-            builder.append(configForm.toXML());
-            builder.append("</");
-            builder.append(getElementName() + '>');
-            return builder.toString();
-        }
+        xml.append(configForm);
+        xml.closeElement(this);
     }
 
 }

@@ -54,13 +54,9 @@ public class GetItemsRequest extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder();
-        xml.halfOpenElement(getElementName());
-        xml.attribute("node", getNode());
+    protected void addXml(XmlStringBuilder xml) {
         xml.optAttribute("subid", getSubscriptionId());
         xml.optIntAttribute("max_items", getMaxItems());
         xml.closeEmptyElement();
-        return xml;
     }
 }

@@ -132,14 +132,11 @@ public class PayloadItem<E extends ExtensionElement> extends Item {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = getCommonXml();
-
+    protected void addXml(XmlStringBuilder xml) {
+        xml.optAttribute("id", getId());
         xml.rightAngleBracket();
-        xml.append(payload.toXML());
+        xml.append(payload);
         xml.closeElement(this);
-
-        return xml;
     }
 
     @Override

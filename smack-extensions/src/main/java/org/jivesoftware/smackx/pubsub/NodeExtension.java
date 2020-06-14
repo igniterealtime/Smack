@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
@@ -78,8 +80,17 @@ public class NodeExtension implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        return '<' + getElementName() + (node == null ? "" : " node='" + node + '\'') + "/>";
+    public final XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        xml.optAttribute("node", node);
+
+        addXml(xml);
+
+        return xml;
+    }
+
+    protected void addXml(XmlStringBuilder xml) {
+        xml.closeEmptyElement();
     }
 
     @Override

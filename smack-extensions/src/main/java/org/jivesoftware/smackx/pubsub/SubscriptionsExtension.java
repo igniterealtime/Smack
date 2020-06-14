@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents the element holding the list of subscription elements.
  *
@@ -91,29 +93,13 @@ public class SubscriptionsExtension extends NodeExtension {
     }
 
     @Override
-    public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+    protected void addXml(XmlStringBuilder xml) {
         if ((items == null) || (items.size() == 0)) {
-            return super.toXML(enclosingNamespace);
+            xml.closeEmptyElement();
+            return;
         }
-        else {
-            StringBuilder builder = new StringBuilder("<");
-            builder.append(getElementName());
-
-            if (getNode() != null) {
-                builder.append(" node='");
-                builder.append(getNode());
-                builder.append('\'');
-            }
-            builder.append('>');
-
-            for (Subscription item : items) {
-                builder.append(item.toXML());
-            }
-
-            builder.append("</");
-            builder.append(getElementName());
-            builder.append('>');
-            return builder.toString();
-        }
+        xml.rightAngleBracket();
+        xml.append(items);
+        xml.closeElement(this);
     }
 }

@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.pubsub;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 /**
  * Represents a request to publish an item(s) to a specific node.
  *
@@ -51,18 +53,9 @@ public class PublishItem<T extends Item> extends NodeExtension {
     }
 
     @Override
-    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        StringBuilder builder = new StringBuilder("<");
-        builder.append(getElementName());
-        builder.append(" node='");
-        builder.append(getNode());
-        builder.append("'>");
-
-        for (Item item : items) {
-            builder.append(item.toXML());
-        }
-        builder.append("</publish>");
-
-        return builder.toString();
+    protected void addXml(XmlStringBuilder xml) {
+        xml.rightAngleBracket();
+        xml.append(items);
+        xml.closeElement(this);
     }
 }

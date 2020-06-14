@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smackx.pubsub.Affiliation.Type;
+import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.BareJid;
@@ -40,10 +41,10 @@ public class AffiliationsExtensionTest {
 
         AffiliationsExtension affiliationsExtension = new AffiliationsExtension(affiliationsList, "testNode");
 
-        CharSequence xml = affiliationsExtension.toXML();
+        CharSequence xml = affiliationsExtension.toXML(PubSub.NAMESPACE);
 
         assertXmlSimilar("<affiliations node='testNode'><affiliation xmlns='http://jabber.org/protocol/pubsub#owner' jid='one@exampleone.org' affiliation='member'/></affiliations>",
-                        xml.toString());
+                        xml);
     }
 
 }

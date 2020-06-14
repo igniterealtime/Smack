@@ -150,21 +150,9 @@ public class Item extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = getCommonXml();
-
-        xml.closeEmptyElement();
-
-        return xml;
-    }
-
-    protected final XmlStringBuilder getCommonXml() {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-
+    protected void addXml(XmlStringBuilder xml) {
         xml.optAttribute("id", getId());
-        xml.optAttribute("node", getNode());
-
-        return xml;
+        xml.closeEmptyElement();
     }
 
     @Override

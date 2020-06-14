@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.jid.Jid;
@@ -44,11 +43,8 @@ public class SubscribeExtension extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
-        XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
-        xml.optAttribute("node", getNode());
+    protected void addXml(XmlStringBuilder xml) {
         xml.attribute("jid", getJid());
         xml.closeEmptyElement();
-        return xml;
     }
 }

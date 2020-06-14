@@ -138,16 +138,11 @@ public class Subscription extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder builder = new XmlStringBuilder(this);
-        builder.attribute("jid", jid);
-
-        builder.optAttribute("node", getNode());
-        builder.optAttribute("subid", id);
-        builder.optAttribute("subscription", state.toString());
-
-        builder.closeEmptyElement();
-        return builder;
+    protected void addXml(XmlStringBuilder xml) {
+        xml.attribute("jid", jid);
+        xml.optAttribute("subid", id);
+        xml.optAttribute("subscription", state);
+        xml.closeEmptyElement();
     }
 
 }

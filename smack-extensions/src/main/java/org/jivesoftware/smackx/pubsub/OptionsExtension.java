@@ -50,13 +50,15 @@ public class OptionsExtension extends NodeExtension {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder();
+    protected void addXml(XmlStringBuilder xml) {
+        xml.rightAngleBracket();
+
         xml.halfOpenElement(getElementName());
         xml.attribute("jid", jid);
         xml.optAttribute("node", getNode());
         xml.optAttribute("subid", id);
+
         xml.closeEmptyElement();
-        return xml;
+        xml.closeElement(this);
     }
 }
