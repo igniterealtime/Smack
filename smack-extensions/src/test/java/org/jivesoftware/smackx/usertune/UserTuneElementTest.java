@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.usertune;
 
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
 import java.io.IOException;
 import java.net.URI;

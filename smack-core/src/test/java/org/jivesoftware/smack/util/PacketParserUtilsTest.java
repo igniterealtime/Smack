@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlNotSimilar;
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlNotSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;

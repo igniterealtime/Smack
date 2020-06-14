@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,7 @@ import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.ElementSelectors;
 import org.xmlunit.input.NormalizedSource;
 
-// TODO: Rename this class to XmlAssertUtil
-public class XmlUnitUtils {
+public class XmlAssertUtil {
 
     public static void assertXmlNotSimilar(CharSequence xmlOne, CharSequence xmlTwo) {
         normalizedCompare(xmlOne, xmlTwo).areNotSimilar();

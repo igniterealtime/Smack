@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.ox;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;

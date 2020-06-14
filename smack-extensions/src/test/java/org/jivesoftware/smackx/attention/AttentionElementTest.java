@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.attention;
 
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
 import org.jivesoftware.smackx.attention.packet.AttentionExtension;
 

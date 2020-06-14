@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.xdata;
 
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;

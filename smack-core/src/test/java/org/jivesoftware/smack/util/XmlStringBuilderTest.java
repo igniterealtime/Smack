@@ -18,7 +18,7 @@ package org.jivesoftware.smack.util;
 
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.test.util.XmlUnitUtils;
+import org.jivesoftware.smack.test.util.XmlAssertUtil;
 
 import org.junit.jupiter.api.Test;
 
@@ -38,10 +38,10 @@ public class XmlStringBuilderTest {
         String expectedXml = "<outer xmlns='outer-namespace'><inner xmlns='inner-namespace'></inner><inner xmlns='inner-namespace'></inner></outer>";
         XmlStringBuilder actualXml = outer.toXML(XmlEnvironment.EMPTY);
 
-        XmlUnitUtils.assertXmlSimilar(expectedXml, actualXml);
+        XmlAssertUtil.assertXmlSimilar(expectedXml, actualXml);
 
         StringBuilder actualXmlTwo = actualXml.toXML(XmlEnvironment.EMPTY);
 
-        XmlUnitUtils.assertXmlSimilar(expectedXml, actualXmlTwo);
+        XmlAssertUtil.assertXmlSimilar(expectedXml, actualXmlTwo);
     }
 }

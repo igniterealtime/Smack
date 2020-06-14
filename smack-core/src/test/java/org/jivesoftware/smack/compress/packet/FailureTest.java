@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smack.compress.packet;
 
-import static org.jivesoftware.smack.test.util.XmlUnitUtils.assertXmlSimilar;
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
 import java.io.IOException;
 
