@@ -30,7 +30,6 @@ import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.util.XmppStringUtils;
@@ -44,7 +43,7 @@ import org.jxmpp.util.XmppStringUtils;
  *
  * @author Gaston Dombiak
  */
-public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable<DiscoverInfo> {
+public class DiscoverInfo extends IQ implements DiscoverInfoView {
 
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "http://jabber.org/protocol/disco#info";
@@ -303,7 +302,13 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
         return new DiscoverInfoBuilder(this, stanzaId);
     }
 
-    // TODO: Deprecate in favor of asBuilder().
+    /**
+     * Deprecated, do not use.
+     *
+     * @deprecated use {@link #asBuilder(String)} instead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     @Override
     public DiscoverInfo clone() {
         return new DiscoverInfo(this);
@@ -516,7 +521,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
      * as well as specific feature types of interest, if any (e.g., for the purpose of feature
      * negotiation).
      */
-    public static final class Feature implements TypedCloneable<Feature> {
+    public static final class Feature {
 
         private final String variable;
 
@@ -564,11 +569,6 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView, TypedCloneable
         @Override
         public int hashCode() {
             return variable.hashCode();
-        }
-
-        @Override
-        public Feature clone() {
-            return new Feature(this);
         }
 
         @Override

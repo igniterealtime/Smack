@@ -1047,7 +1047,7 @@ public final class Roster extends Manager {
             }
             if (presence == null) {
                 if (unavailable != null) {
-                    return unavailable.clone();
+                    return unavailable;
                 }
                 else {
                     presence = synthesizeUnvailablePresence(jid);
@@ -1055,7 +1055,7 @@ public final class Roster extends Manager {
                 }
             }
             else {
-                return presence.clone();
+                return presence;
             }
         }
     }
@@ -1084,7 +1084,7 @@ public final class Roster extends Manager {
                 return presence;
             }
             else {
-                return presence.clone();
+                return presence;
             }
         }
     }
@@ -1107,7 +1107,7 @@ public final class Roster extends Manager {
         } else {
             res = new ArrayList<>(userPresences.values().size());
             for (Presence presence : userPresences.values()) {
-                res.add(presence.clone());
+                res.add(presence);
             }
         }
         return res;
@@ -1156,7 +1156,7 @@ public final class Roster extends Manager {
             Presence unavailable = null;
             for (Presence presence : userPresences.values()) {
                 if (presence.isAvailable()) {
-                    answer.add(presence.clone());
+                    answer.add(presence);
                 }
                 else {
                     unavailable = presence;
@@ -1166,7 +1166,7 @@ public final class Roster extends Manager {
                 res = answer;
             }
             else if (unavailable != null) {
-                res = Arrays.asList(unavailable.clone());
+                res = Arrays.asList(unavailable);
             }
             else {
                 Presence presence = synthesizeUnvailablePresence(jid);

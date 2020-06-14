@@ -22,11 +22,11 @@ import java.util.Locale;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.jid.Jid;
@@ -58,7 +58,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * @author Matt Tucker
  */
 public final class Message extends MessageOrPresence<MessageBuilder>
-                implements MessageView, TypedCloneable<Message> {
+                implements MessageView {
 
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
@@ -372,6 +372,16 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     }
 
     @Override
+    public MessageBuilder asBuilder(String id) {
+        return StanzaBuilder.buildMessageFrom(this, id);
+    }
+
+    @Override
+    public MessageBuilder asBuilder(XMPPConnection connection) {
+        return connection.getStanzaFactory().buildMessageStanzaFrom(this);
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Message Stanza [");
@@ -409,7 +419,10 @@ public final class Message extends MessageOrPresence<MessageBuilder>
      * instance.
      * </p>
      * @return a clone of this message.
+     * @deprecated use {@link #asBuilder()} instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     @Override
     public Message clone() {
         return new Message(this);

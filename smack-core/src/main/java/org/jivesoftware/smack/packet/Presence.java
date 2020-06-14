@@ -20,9 +20,9 @@ package org.jivesoftware.smack.packet;
 import java.util.List;
 import java.util.Locale;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.TypedCloneable;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.jid.Jid;
@@ -61,7 +61,7 @@ import org.jxmpp.jid.Jid;
  * @author Matt Tucker
  */
 public final class Presence extends MessageOrPresence<PresenceBuilder>
-                implements PresenceView, TypedCloneable<Presence> {
+                implements PresenceView {
 
     public static final String ELEMENT = "presence";
 
@@ -283,6 +283,16 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
     }
 
     @Override
+    public PresenceBuilder asBuilder(String id) {
+        return StanzaBuilder.buildPresenceFrom(this, id);
+    }
+
+    @Override
+    public PresenceBuilder asBuilder(XMPPConnection connection) {
+        return connection.getStanzaFactory().buildPresenceStanzaFrom(this);
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Presence Stanza [");
@@ -343,7 +353,10 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * instance.
      * </p>
      * @return a clone of this presence.
+     * @deprecated use {@link #asBuilder()} instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     @Override
     public Presence clone() {
         return new Presence(this);
@@ -354,7 +367,10 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      *
      * @return a "clone" of this presence  with a different stanza ID.
      * @since 4.1.2
+     * @deprecated use {@link #asBuilder(XMPPConnection)} or {@link #asBuilder(String)}instead.
      */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
     public Presence cloneWithNewId() {
         Presence clone = clone();
         clone.setNewStanzaId();

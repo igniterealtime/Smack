@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015-2019 Florian Schmaus
+ * Copyright © 2015-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import java.util.Set;
  * @param <K> the type of the keys the map uses.
  * @param <V> the type of the values the map uses.
  */
-public class MultiMap<K, V> implements TypedCloneable<MultiMap<K, V>> {
+public class MultiMap<K, V> {
 
     /**
      * The constant value {@value}.

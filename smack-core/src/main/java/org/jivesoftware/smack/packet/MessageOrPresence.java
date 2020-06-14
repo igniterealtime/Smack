@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smack.packet;
+
+import org.jivesoftware.smack.XMPPConnection;
 
 public abstract class MessageOrPresence<MPB extends MessageOrPresenceBuilder<?, ?>> extends Stanza {
 
@@ -32,5 +34,9 @@ public abstract class MessageOrPresence<MPB extends MessageOrPresenceBuilder<?, 
     }
 
     public abstract MPB asBuilder();
+
+    public abstract MPB asBuilder(String id);
+
+    public abstract MPB asBuilder(XMPPConnection connection);
 
 }

@@ -962,8 +962,9 @@ public final class ServiceDiscoveryManager extends Manager {
             // to respect ConnectionConfiguration.isSendPresence()
             final Presence presenceSend = this.presenceSend;
             if (connection.isAuthenticated() && presenceSend != null) {
+                Presence presence = presenceSend.asBuilder(connection).build();
                 try {
-                    connection.sendStanza(presenceSend.cloneWithNewId());
+                    connection.sendStanza(presence);
                 }
                 catch (InterruptedException | NotConnectedException e) {
                     LOGGER.log(Level.WARNING, "Could could not update presence with caps info", e);
