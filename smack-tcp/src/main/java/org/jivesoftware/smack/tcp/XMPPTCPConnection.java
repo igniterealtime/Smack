@@ -1318,7 +1318,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
                     CharSequence elementXml = element.toXML(outgoingStreamXmlEnvironment);
                     if (elementXml instanceof XmlStringBuilder) {
-                        ((XmlStringBuilder) elementXml).write(writer, outgoingStreamXmlEnvironment);
+                        try {
+                            ((XmlStringBuilder) elementXml).write(writer, outgoingStreamXmlEnvironment);
+                        } catch (NullPointerException npe) {
+                            LOGGER.log(Level.FINE, "NPE in XmlStringBuilder of " + element.getClass() + ": " + element, npe);
+                            throw npe;
+                        }
                     }
                     else {
                         writer.write(elementXml.toString());
