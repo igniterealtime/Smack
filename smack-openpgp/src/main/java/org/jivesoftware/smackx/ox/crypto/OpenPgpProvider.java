@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.ox.crypto;
 import java.io.IOException;
 import java.util.Collection;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpMessage;
 import org.jivesoftware.smackx.ox.OpenPgpSelf;
@@ -96,12 +97,13 @@ public interface OpenPgpProvider {
      * @param element signed and or encrypted {@link OpenPgpElement}.
      * @param self our OpenPGP identity.
      * @param sender OpenPGP identity of the sender.
+     * @param connection XMPP connection used to fetch any missing keys.
      *
      * @return decrypted message as {@link OpenPgpMessage}.
      *
      * @throws IOException IO is dangerous
      * @throws PGPException PGP is brittle
      */
-    OpenPgpMessage decryptAndOrVerify(OpenPgpElement element, OpenPgpSelf self, OpenPgpContact sender)
+    OpenPgpMessage decryptAndOrVerify(XMPPConnection connection, OpenPgpElement element, OpenPgpSelf self, OpenPgpContact sender)
             throws IOException, PGPException;
 }
