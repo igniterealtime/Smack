@@ -122,7 +122,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
 
         OpenPgpStore beforeStore = new FileBasedOpenPgpStore(beforePath);
         beforeStore.setKeyRingProtector(new UnprotectedKeysProtector());
-        PainlessOpenPgpProvider beforeProvider = new PainlessOpenPgpProvider(aliceConnection, beforeStore);
+        PainlessOpenPgpProvider beforeProvider = new PainlessOpenPgpProvider(beforeStore);
         openPgpManager = OpenPgpManager.getInstanceFor(aliceConnection);
         openPgpManager.setOpenPgpProvider(beforeProvider);
 
@@ -155,7 +155,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
 
         FileBasedOpenPgpStore afterStore = new FileBasedOpenPgpStore(afterPath);
         afterStore.setKeyRingProtector(new UnprotectedKeysProtector());
-        PainlessOpenPgpProvider afterProvider = new PainlessOpenPgpProvider(aliceConnection, afterStore);
+        PainlessOpenPgpProvider afterProvider = new PainlessOpenPgpProvider(afterStore);
         openPgpManager.setOpenPgpProvider(afterProvider);
 
         OpenPgpV4Fingerprint fingerprint = openPgpManager.restoreSecretKeyServerBackup(new AskForBackupCodeCallback() {

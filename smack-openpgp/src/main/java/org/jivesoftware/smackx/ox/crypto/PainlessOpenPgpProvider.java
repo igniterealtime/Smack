@@ -51,11 +51,9 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
 
     private static final Logger LOGGER = Logger.getLogger(PainlessOpenPgpProvider.class.getName());
 
-    private final XMPPConnection connection;
     private final OpenPgpStore store;
 
-    public PainlessOpenPgpProvider(XMPPConnection connection, OpenPgpStore store) {
-        this.connection = Objects.requireNonNull(connection);
+    public PainlessOpenPgpProvider(OpenPgpStore store) {
         this.store = Objects.requireNonNull(store);
     }
 
@@ -158,7 +156,7 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
     }
 
     @Override
-    public OpenPgpMessage decryptAndOrVerify(OpenPgpElement element, final OpenPgpSelf self, final OpenPgpContact sender) throws IOException, PGPException {
+    public OpenPgpMessage decryptAndOrVerify(XMPPConnection connection, OpenPgpElement element, final OpenPgpSelf self, final OpenPgpContact sender) throws IOException, PGPException {
         ByteArrayOutputStream plainText = new ByteArrayOutputStream();
         InputStream cipherText = element.toInputStream();
 

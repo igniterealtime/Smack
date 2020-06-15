@@ -520,7 +520,7 @@ public final class OpenPgpManager extends Manager {
      */
     public OpenPgpMessage decryptOpenPgpElement(OpenPgpElement element, OpenPgpContact sender)
             throws SmackException.NotLoggedInException, IOException, PGPException {
-        return provider.decryptAndOrVerify(element, getOpenPgpSelf(), sender);
+        return provider.decryptAndOrVerify(getAuthenticatedConnectionOrThrow(), element, getOpenPgpSelf(), sender);
     }
 
     private void incomingChatMessageListener(final EntityBareJid from, final Message message, Chat chat) {

@@ -27,7 +27,6 @@ import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
@@ -79,7 +78,7 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
 
         // Prepare store and provider and so on...
         FileBasedOpenPgpStore store = new FileBasedOpenPgpStore(basePath);
-        PainlessOpenPgpProvider provider = new PainlessOpenPgpProvider(new DummyConnection(), store);
+        PainlessOpenPgpProvider provider = new PainlessOpenPgpProvider(store);
 
         // Generate and import key
         PGPKeyRing keyRing = PGPainless.generateKeyRing().simpleEcKeyRing("xmpp:alice@wonderland.lit");

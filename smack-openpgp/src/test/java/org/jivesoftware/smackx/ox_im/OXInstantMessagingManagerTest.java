@@ -79,8 +79,8 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
         FileBasedOpenPgpStore aliceStore = new FileBasedOpenPgpStore(new File(basePath, "alice"));
         FileBasedOpenPgpStore bobStore = new FileBasedOpenPgpStore(new File(basePath, "bob"));
 
-        PainlessOpenPgpProvider aliceProvider = new PainlessOpenPgpProvider(aliceCon, aliceStore);
-        PainlessOpenPgpProvider bobProvider = new PainlessOpenPgpProvider(bobCon, bobStore);
+        PainlessOpenPgpProvider aliceProvider = new PainlessOpenPgpProvider(aliceStore);
+        PainlessOpenPgpProvider bobProvider = new PainlessOpenPgpProvider(bobStore);
 
         OpenPgpManager aliceOpenPgp = OpenPgpManager.getInstanceFor(aliceCon);
         OpenPgpManager bobOpenPgp = OpenPgpManager.getInstanceFor(bobCon);

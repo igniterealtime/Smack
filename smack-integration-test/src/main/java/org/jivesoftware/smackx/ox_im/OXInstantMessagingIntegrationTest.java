@@ -114,8 +114,8 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
         FileBasedOpenPgpStore bobStore = new FileBasedOpenPgpStore(bobStorePath);
         bobStore.setKeyRingProtector(new UnprotectedKeysProtector());
 
-        PainlessOpenPgpProvider aliceProvider = new PainlessOpenPgpProvider(aliceConnection, aliceStore);
-        PainlessOpenPgpProvider bobProvider = new PainlessOpenPgpProvider(bobConnection, bobStore);
+        PainlessOpenPgpProvider aliceProvider = new PainlessOpenPgpProvider(aliceStore);
+        PainlessOpenPgpProvider bobProvider = new PainlessOpenPgpProvider(bobStore);
 
         aliceOpenPgp = OpenPgpManager.getInstanceFor(aliceConnection);
         bobOpenPgp = OpenPgpManager.getInstanceFor(bobConnection);
