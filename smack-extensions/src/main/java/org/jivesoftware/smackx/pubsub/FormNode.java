@@ -77,6 +77,7 @@ public class FormNode extends NodeExtension {
             return;
         }
 
+        xml.rightAngleBracket();
         xml.append(configForm);
         xml.closeElement(this);
     }
