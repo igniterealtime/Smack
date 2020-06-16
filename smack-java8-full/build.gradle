@@ -9,7 +9,6 @@ dependencies {
 	api project(':smack-java7')
 	api project(':smack-legacy')
 	api project(':smack-omemo')
-	api project(':smack-omemo-signal')
 	api project(':smack-openpgp')
 	api project(':smack-resolver-minidns')
 	api project(':smack-resolver-minidns-dox')
