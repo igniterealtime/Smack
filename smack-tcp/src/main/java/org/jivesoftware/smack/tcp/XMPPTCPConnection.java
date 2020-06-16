@@ -500,18 +500,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (!packetWriter.done()) {
             // First shutdown the writer, this will result in a closing stream element getting send to
             // the server
-            LOGGER.finer("PacketWriter shutdown()");
+            LOGGER.finer(packetWriter.threadName + " shutdown()");
             packetWriter.shutdown(instant);
-            LOGGER.finer("PacketWriter has been shut down");
+            LOGGER.finer(packetWriter.threadName + " shutdown() returned");
 
             if (!instant) {
                 waitForClosingStreamTagFromServer();
             }
         }
 
-        LOGGER.finer("PacketReader shutdown()");
+        LOGGER.finer(packetReader.threadName + " shutdown()");
         packetReader.shutdown();
-        LOGGER.finer("PacketReader has been shut down");
+        LOGGER.finer(packetReader.threadName + " shutdown() returned");
 
         CloseableUtil.maybeClose(socket, LOGGER);
 
@@ -520,7 +520,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         try {
             boolean readerAndWriterThreadsTermianted = waitForCondition(() -> !packetWriter.running && !packetReader.running);
             if (!readerAndWriterThreadsTermianted) {
-                LOGGER.severe("Reader and writer threads did not terminate");
+                LOGGER.severe("Reader and/or writer threads did not terminate timely. Writer running: "
+                                + packetWriter.running + ", Reader running: " + packetReader.running);
+            } else {
+                LOGGER.fine("Reader and writer threads terminated");
             }
         } catch (InterruptedException e) {
             LOGGER.log(Level.FINE, "Interrupted while waiting for reader and writer threads to terminate", e);
