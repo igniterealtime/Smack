@@ -1129,6 +1129,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed.
                 if (!done) {
+                    // Set running to false since this thread will exit here and notifyConnectionError() will wait until
+                    // the reader and writer thread's 'running' value is false.
+                    running = false;
                     // Close the connection and notify connection listeners of the
                     // error.
                     notifyConnectionError(e);
@@ -1381,6 +1384,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed
                 if (!(done() || queue.isShutdown())) {
+                    // Set running to false since this thread will exit here and notifyConnectionError() will wait until
+                    // the reader and writer thread's 'running' value is false.
+                    running = false;
                     notifyConnectionError(e);
                 } else {
                     LOGGER.log(Level.FINE, "Ignoring Exception in writePackets()", e);
