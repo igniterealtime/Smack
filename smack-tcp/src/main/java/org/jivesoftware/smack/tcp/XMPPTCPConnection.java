@@ -912,11 +912,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         void init() {
             done = false;
 
+            running = true;
             Async.go(new Runnable() {
                 @Override
                 public void run() {
                     LOGGER.finer(threadName + " start");
-                    running = true;
                     try {
                         parsePackets();
                     } finally {
@@ -1184,11 +1184,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
 
             queue.start();
+            running = true;
             Async.go(new Runnable() {
                 @Override
                 public void run() {
                     LOGGER.finer(threadName + " start");
-                    running = true;
                     try {
                         writePackets();
                     } finally {
