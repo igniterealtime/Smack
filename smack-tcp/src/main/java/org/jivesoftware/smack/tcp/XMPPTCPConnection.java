@@ -518,7 +518,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         setWasAuthenticated();
 
         try {
-            boolean readerAndWriterThreadsTermianted = waitForConditionOrConnectionException(() -> !packetWriter.running && !packetReader.running);
+            boolean readerAndWriterThreadsTermianted = waitFor(() -> !packetWriter.running && !packetReader.running);
             if (!readerAndWriterThreadsTermianted) {
                 LOGGER.severe("Reader and/or writer threads did not terminate timely. Writer running: "
                                 + packetWriter.running + ", Reader running: " + packetReader.running);
