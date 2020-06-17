@@ -1272,7 +1272,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         private void writePackets() {
-            Exception writerException = null;
             try {
                 // Write out packets from the queue.
                 while (!done()) {
@@ -1382,14 +1381,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // The exception can be ignored if the the connection is 'done'
                 // or if the it was caused because the socket got closed
                 if (!(done() || queue.isShutdown())) {
-                    writerException = e;
+                    notifyConnectionError(e);
                 } else {
                     LOGGER.log(Level.FINE, "Ignoring Exception in writePackets()", e);
                 }
-            }
-            // Delay notifyConnectionError after shutdownDone has been reported in the finally block.
-            if (writerException != null) {
-                notifyConnectionError(writerException);
             }
         }
 
