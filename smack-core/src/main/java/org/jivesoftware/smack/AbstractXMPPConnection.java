@@ -688,7 +688,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * We use an extra object for {@link #notifyWaitingThreads()} and {@link #waitForCondition(Supplier)}, because all state
+     * We use an extra object for {@link #notifyWaitingThreads()} and {@link #waitForConditionOrConnectionException(Supplier)}, because all state
      * changing methods of the connection are synchronized using the connection instance as monitor. If we now would
      * also use the connection instance for the internal process to wait for a condition, the {@link Object#wait()}
      * would leave the monitor when it waites, which would allow for another potential call to a state changing function
@@ -702,10 +702,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected final boolean waitForCondition(Supplier<Boolean> condition) throws InterruptedException {
+    protected final boolean waitFor(Supplier<Boolean> condition) throws InterruptedException {
         final long deadline = System.currentTimeMillis() + getReplyTimeout();
         synchronized (internalMonitor) {
-            while (!condition.get().booleanValue() && !hasCurrentConnectionException()) {
+            while (!condition.get().booleanValue()) {
                 final long now = System.currentTimeMillis();
                 if (now >= deadline) {
                     return false;
@@ -716,15 +716,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return true;
     }
 
-    protected final void waitForCondition(Supplier<Boolean> condition, String waitFor) throws InterruptedException, NoResponseException {
-        boolean success = waitForCondition(condition);
+    protected final boolean waitForConditionOrConnectionException(Supplier<Boolean> condition) throws InterruptedException {
+        return waitFor(() -> condition.get().booleanValue() || hasCurrentConnectionException());
+    }
+
+    protected final void waitForConditionOrConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, NoResponseException {
+        boolean success = waitForConditionOrConnectionException(condition);
         if (!success) {
             throw NoResponseException.newWith(this, waitFor);
         }
     }
 
     protected final void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException {
-        waitForCondition(condition, waitFor);
+        waitForConditionOrConnectionException(condition, waitFor);
         if (hasCurrentConnectionException()) {
             throwCurrentConnectionException();
         }

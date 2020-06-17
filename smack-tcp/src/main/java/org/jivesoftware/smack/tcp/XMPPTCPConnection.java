@@ -394,7 +394,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (isSmResumptionPossible()) {
             smResumedSyncPoint = SyncPointState.request_sent;
             sendNonza(new Resume(clientHandledStanzasCount, smSessionId));
-            waitForCondition(() -> smResumedSyncPoint == SyncPointState.successful || smResumptionFailed != null, "resume previous stream");
+            waitForConditionOrConnectionException(() -> smResumedSyncPoint == SyncPointState.successful || smResumptionFailed != null, "resume previous stream");
             if (smResumedSyncPoint == SyncPointState.successful) {
                 // We successfully resumed the stream, be done here
                 afterSuccessfulLogin(true);
@@ -518,7 +518,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         setWasAuthenticated();
 
         try {
-            boolean readerAndWriterThreadsTermianted = waitForCondition(() -> !packetWriter.running && !packetReader.running);
+            boolean readerAndWriterThreadsTermianted = waitForConditionOrConnectionException(() -> !packetWriter.running && !packetReader.running);
             if (!readerAndWriterThreadsTermianted) {
                 LOGGER.severe("Reader and/or writer threads did not terminate timely. Writer running: "
                                 + packetWriter.running + ", Reader running: " + packetReader.running);
