@@ -14,6 +14,7 @@ Currently supported XEPs of Smack (all sub-projects)
 
 | Name                                        | XEP                                                    | Version   | Description |
 |---------------------------------------------|--------------------------------------------------------|-----------|----------------------------------------------------------------------------------------------------------|
+| Discovering Alternative XMPP Connection Methods | [XEP-0156](https://xmpp.org/extensions/xep-0156.html)  | 1.3.0    | Defines ways to discover alternative connection methods.                                                              |
 | Nonzas                                      | [XEP-0360](https://xmpp.org/extensions/xep-0360.html)  | n/a       | Defines the term "Nonza", describing every top level stream element that is not a Stanza.                                         |
 
 Currently supported XEPs of smack-tcp
