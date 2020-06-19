@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Set;
 
-import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.ox.crypto.OpenPgpProvider;
@@ -42,6 +42,8 @@ import org.pgpainless.util.Passphrase;
  */
 public class SecretKeyBackupHelper {
 
+    private static SecretKeyBackupCodeGenerator BACKUP_CODE_GENERATOR = new OfflineAttackSafeBackupCodeGenerator();
+
     /**
      * Generate a secure backup code.
      * This code can be used to encrypt a secret key backup and follows the form described in XEP-0373 §5.3.
@@ -52,7 +54,7 @@ public class SecretKeyBackupHelper {
      * @return backup code
      */
     public static String generateBackupPassword() {
-        return StringUtils.secureOfflineAttackSafeRandomString();
+        return BACKUP_CODE_GENERATOR.generateSecretKeyBackupCode();
     }
 
     /**
@@ -135,5 +137,14 @@ public class SecretKeyBackupHelper {
         }
 
         return PGPainless.readKeyRing().secretKeyRing(decrypted);
+    }
+
+    /**
+     * Overwrite the default {@link SecretKeyBackupCodeGenerator} with a custom implementation.
+     *
+     * @param generator backup key generator.
+     */
+    public static void setBackupCodeGenerator(SecretKeyBackupCodeGenerator generator) {
+        BACKUP_CODE_GENERATOR = Objects.requireNonNull(generator);
     }
 }
