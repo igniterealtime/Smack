@@ -69,7 +69,6 @@ public final class ConnectionAttemptState {
 
         List<Rfc6120TcpRemoteConnectionEndpoint> endpoints = discoveredEndpoints.result.discoveredRemoteConnectionEndpoints;
         connectionEndpointIterator = endpoints.iterator();
-        connectionEndpoint = connectionEndpointIterator.next();
         connectionExceptions = new ArrayList<>(endpoints.size());
     }
 
