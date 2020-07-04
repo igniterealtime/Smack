@@ -40,7 +40,10 @@ import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.CloseableUtil;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -89,9 +92,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     @SuppressWarnings("HidingField")
     private final BOSHConfiguration config;
 
-    // Some flags which provides some info about the current state.
-    private boolean isFirstInitialization = true;
-    private boolean done = false;
+    // a flag to indicate incomingStreamXmlEnvironment has been initialized
+    private boolean xmlLangInit = false;
 
     // The readerPipe and consumer thread are used for the debugger.
     private PipedWriter readerPipe;
@@ -101,8 +103,6 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      * The session ID for the BOSH session with the connection manager.
      */
     protected String sessionID = null;
-
-    private boolean notified;
 
     /**
      * Create a HTTP Binding connection to an XMPP server.
@@ -138,9 +138,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     @SuppressWarnings("deprecation")
     @Override
-    protected void connectInternal() throws SmackException, InterruptedException {
-        done = false;
-        notified = false;
+    protected void connectInternal() throws SmackException, InterruptedException, XMPPException {
         try {
             // Ensure a clean starting state
             if (client != null) {
@@ -164,13 +162,14 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
             client = BOSHClient.create(cfgBuilder.build());
 
-            client.addBOSHClientConnListener(new BOSHConnectionListener());
-            client.addBOSHClientResponseListener(new BOSHPacketReader());
-
-            // Initialize the debugger
+            // Initialize the debugger before addBOSHClientResponseListener(new BOSHPacketReader());
+            // BOSHPacketReader may hold and send response prior to display of the request i.e. <response/> before <challenge/>
             if (debugger != null) {
                 initDebugger();
             }
+
+            client.addBOSHClientConnListener(new BOSHConnectionListener());
+            client.addBOSHClientResponseListener(new BOSHPacketReader());
 
             // Send the session creation request
             client.send(ComposableBody.builder()
@@ -181,25 +180,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             throw new GenericConnectionException(e);
         }
 
-        // Wait for the response from the server
-        synchronized (this) {
-            if (!connected) {
-                final long deadline = System.currentTimeMillis() + getReplyTimeout();
-                while (!notified) {
-                    final long now = System.currentTimeMillis();
-                    if (now >= deadline) break;
-                    wait(deadline - now);
-                }
-            }
-        }
-
-        // If there is no feedback, throw an remote server timeout error
-        if (!connected && !done) {
-            done = true;
-            String errorMessage = "Timeout reached for the connection to "
-                    + getHost() + ":" + getPort() + ".";
-            throw new SmackException.SmackMessageException(errorMessage);
-        }
+        // Wait with SASL auth until the SASL mechanisms have been received
+        waitForConditionOrThrowConnectionException(() -> saslFeatureReceived, "SASL mechanisms stream feature from server");
     }
 
     @Override
@@ -227,18 +209,15 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     @Override
     public void sendNonza(Nonza element) throws NotConnectedException {
-        if (done) {
-            throw new NotConnectedException();
-        }
         sendElement(element);
     }
 
     @Override
-    protected void sendStanzaInternal(Stanza packet) throws NotConnectedException {
-        sendElement(packet);
+    protected void sendStanzaInternal(Stanza stanza) throws NotConnectedException {
+        sendElement(stanza);
     }
 
-    private void sendElement(Element element) {
+    private void sendElement(Element element) throws NotConnectedException {
         try {
             send(ComposableBody.builder().setPayloadXML(element.toXML(BOSH_URI).toString()).build());
             if (element instanceof Stanza) {
@@ -276,20 +255,19 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     public void instantShutdown() {
         setWasAuthenticated();
         sessionID = null;
-        done = true;
         authenticated = false;
         connected = false;
-        isFirstInitialization = false;
 
         // Close down the readers and writers.
         CloseableUtil.maybeClose(readerPipe, LOGGER);
         CloseableUtil.maybeClose(reader, LOGGER);
         CloseableUtil.maybeClose(writer, LOGGER);
 
-        readerPipe = null;
-        reader = null;
-        writer = null;
+        // set readerConsumer = null before reader
         readerConsumer = null;
+        reader = null;
+        readerPipe = null;
+        writer = null;
     }
 
     /**
@@ -297,13 +275,14 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      *
      * @param body the body which will be sent.
      * @throws BOSHException if an BOSH (Bidirectional-streams Over Synchronous HTTP, XEP-0124) related error occurs
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws IllegalArgumentException if the body is null or empty.
      */
-    protected void send(ComposableBody body) throws BOSHException {
+    protected void send(ComposableBody body) throws BOSHException, NotConnectedException, IllegalArgumentException {
+
+        Objects.requireNonNull(body, "Body must not be null");
         if (!connected) {
-            throw new IllegalStateException("Not connected to a server!");
-        }
-        if (body == null) {
-            throw new NullPointerException("Body mustn't be null!");
+            throw new NotConnectedException("Not connected to a server!");
         }
         if (sessionID != null) {
             body = body.rebuild().setAttribute(
@@ -367,6 +346,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 if (event.getBody() != null) {
                     try {
                         writer.write(event.getBody().toXML());
+                        writer.flush();
                     } catch (Exception e) {
                         // Ignore
                     }
@@ -383,7 +363,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             public void run() {
                 try {
                     char[] cbuf = new char[bufferLength];
-                    while (readerConsumer == thread && !done) {
+                    while (readerConsumer == thread) {
                         reader.read(cbuf, 0, bufferLength);
                     }
                 } catch (IOException e) {
@@ -400,12 +380,13 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     throws NotConnectedException, InterruptedException, SmackWrappedException {
         // XMPP over BOSH is unusual when it comes to SASL authentication: Instead of sending a new stream open, it
         // requires a special XML element ot be send after successful SASL authentication.
-        // See XEP-0206 § 5., especially the following is example 5 of XEP-0206.
-        ComposableBody composeableBody = ComposableBody.builder().setNamespaceDefinition("xmpp",
-                        XMPPBOSHConnection.XMPP_BOSH_NS).setAttribute(
-                        BodyQName.createWithPrefix(XMPPBOSHConnection.XMPP_BOSH_NS, "restart",
-                                        "xmpp"), "true").setAttribute(
-                        BodyQName.create(XMPPBOSHConnection.BOSH_URI, "to"), getXMPPServiceDomain().toString()).build();
+        // See XEP-0206 § 5., especially the following is example 8 of XEP-0206.
+        ComposableBody composeableBody = ComposableBody.builder()
+                .setNamespaceDefinition("xmpp", XMPP_BOSH_NS)
+                .setAttribute(BodyQName.createWithPrefix(XMPP_BOSH_NS, "lang", "xmpp"), "en")
+                .setAttribute(BodyQName.createWithPrefix(XMPP_BOSH_NS, "restart", "xmpp"), "true")
+                .setAttribute(BodyQName.create(BOSH_URI, "to"), getXMPPServiceDomain().toString())
+                .build();
 
         try {
             send(composeableBody);
@@ -416,58 +397,22 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * A listener class which listen for a successfully established connection
-     * and connection errors and notifies the BOSHConnection.
-     *
-     * @author Guenther Niess
+     * A listener class which listen for BOSH connection errors and notifies the XMPPConnection.
+     * All other exceptions are handled by AbstractXMPPConnection class
      */
     private class BOSHConnectionListener implements BOSHClientConnListener {
-
-        /**
-         * Notify the BOSHConnection about connection state changes.
-         * Process the connection listeners and try to login if the
-         * connection was formerly authenticated and is now reconnected.
-         */
         @Override
         public void connectionEvent(BOSHClientConnEvent connEvent) {
-            try {
-                if (connEvent.isConnected()) {
-                    connected = true;
-                    if (isFirstInitialization) {
-                        isFirstInitialization = false;
-                    }
-                    else {
-                            if (wasAuthenticated) {
-                                try {
-                                    login();
-                                }
-                                catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                    }
+            if (connEvent.isError() && isConnected()) {
+                // stanza sending disrupted gets <h1>400 Bad Request</h1>
+                Throwable cause = connEvent.getCause();
+                Exception e;
+                if (cause instanceof Exception) {
+                    e = (Exception) cause;
+                } else {
+                    e = new Exception(cause);
                 }
-                else {
-                    if (connEvent.isError()) {
-                        // TODO Check why jbosh's getCause returns Throwable here. This is very
-                        // unusual and should be avoided if possible
-                        Throwable cause = connEvent.getCause();
-                        Exception e;
-                        if (cause instanceof Exception) {
-                            e = (Exception) cause;
-                        } else {
-                            e = new Exception(cause);
-                        }
-                        notifyConnectionError(e);
-                    }
-                    connected = false;
-                }
-            }
-            finally {
-                notified = true;
-                synchronized (XMPPBOSHConnection.this) {
-                    XMPPBOSHConnection.this.notifyAll();
-                }
+                notifyConnectionError(e);
             }
         }
     }
@@ -498,26 +443,37 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                     }
                     final XmlPullParser parser = PacketParserUtils.getParserFor(body.toXML());
 
-                    XmlPullParser.Event eventType = parser.getEventType();
+                    XmlPullParser.Event eventType;
                     do {
                         eventType = parser.next();
                         switch (eventType) {
                         case START_ELEMENT:
                             String name = parser.getName();
                             switch (name) {
-                            case Message.ELEMENT:
                             case IQ.IQ_ELEMENT:
+                                // cmeng: a temporary patch to init incomingStreamXmlEnvironment for BOSHConnection
+                                // BOSHConnection does not have a stream:stream Nonza.
+                                if (!xmlLangInit && body.toXML().contains(RosterPacket.NAMESPACE)) {
+                                    onStreamOpen(parser);
+                                    xmlLangInit = true;
+                                }
+                            case Message.ELEMENT:
                             case Presence.ELEMENT:
                                 parseAndProcessStanza(parser);
                                 break;
                             case "features":
-                                parseFeatures(parser);
+                                parseFeaturesAndNotify(parser);
                                 break;
                             case "error":
-                                // Some BOSH error isn't stream error.
-                                if ("urn:ietf:params:xml:ns:xmpp-streams".equals(parser.getNamespace(null))) {
-                                    throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
-                                } else {
+                                // Some BOSH error isn't stream error. parser.getNamespace(null) <= http://jabber.org/protocol/httpbind
+                                StreamError streamError = PacketParserUtils.parseStreamError(parser);
+                                // saslFeatureReceived.reportFailure(new StreamErrorException(streamError));
+                                // throwCurrentConnectionException();
+
+                                if (StreamError.NAMESPACE.equals(streamError.getNamespace())) {
+                                    throw new StreamErrorException(streamError);
+                                }
+                                else {
                                     StanzaError stanzaError = PacketParserUtils.parseError(parser);
                                     throw new XMPPException.XMPPErrorException(null, stanzaError);
                                 }
