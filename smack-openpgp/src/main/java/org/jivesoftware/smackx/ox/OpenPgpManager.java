@@ -482,13 +482,6 @@ public final class OpenPgpManager extends Manager {
         provider.getStore().importSecretKey(getJidOrThrow(), secretKeys);
         provider.getStore().importPublicKey(getJidOrThrow(), BCUtil.publicKeyRingFromSecretKeyRing(secretKeys));
 
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream(2048);
-        for (PGPSecretKey sk : secretKeys) {
-            PGPPublicKey pk = sk.getPublicKey();
-            if (pk != null) pk.encode(buffer);
-        }
-        PGPPublicKeyRing publicKeys = new PGPPublicKeyRing(buffer.toByteArray(), new BcKeyFingerprintCalculator());
-        provider.getStore().importPublicKey(getJidOrThrow(), publicKeys);
 
         return new OpenPgpV4Fingerprint(secretKeys);
     }
