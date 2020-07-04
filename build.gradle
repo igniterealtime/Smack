@@ -259,6 +259,13 @@ allprojects {
 	if (JavaVersion.current().isJava9Compatible()) {
 		tasks.withType(Javadoc) {
 			options.addStringOption('-release', javaMajor)
+
+			// Fix for javadoc search. If not set, the search result would direct to
+			// javadoc/undefined/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
+			// instead of
+			// javadoc/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
+			// https://stackoverflow.com/a/53732633/194894
+			options.addBooleanOption("-no-module-directories", true)
 		}
 		tasks.withType(JavaCompile) {
 			options.compilerArgs.addAll([

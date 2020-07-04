@@ -479,16 +479,11 @@ public final class OpenPgpManager extends Manager {
         String backupCode = codeCallback.askForBackupCode();
 
         PGPSecretKeyRing secretKeys = SecretKeyBackupHelper.restoreSecretKeyBackup(backup, backupCode);
+        OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(secretKeys);
         provider.getStore().importSecretKey(getJidOrThrow(), secretKeys);
         provider.getStore().importPublicKey(getJidOrThrow(), BCUtil.publicKeyRingFromSecretKeyRing(secretKeys));
 
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream(2048);
-        for (PGPSecretKey sk : secretKeys) {
-            PGPPublicKey pk = sk.getPublicKey();
-            if (pk != null) pk.encode(buffer);
-        }
-        PGPPublicKeyRing publicKeys = new PGPPublicKeyRing(buffer.toByteArray(), new BcKeyFingerprintCalculator());
-        provider.getStore().importPublicKey(getJidOrThrow(), publicKeys);
+        getOpenPgpSelf().trust(fingerprint);
 
         return new OpenPgpV4Fingerprint(secretKeys);
     }
