@@ -479,9 +479,11 @@ public final class OpenPgpManager extends Manager {
         String backupCode = codeCallback.askForBackupCode();
 
         PGPSecretKeyRing secretKeys = SecretKeyBackupHelper.restoreSecretKeyBackup(backup, backupCode);
+        OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(secretKeys);
         provider.getStore().importSecretKey(getJidOrThrow(), secretKeys);
         provider.getStore().importPublicKey(getJidOrThrow(), BCUtil.publicKeyRingFromSecretKeyRing(secretKeys));
 
+        getOpenPgpSelf().trust(fingerprint);
 
         return new OpenPgpV4Fingerprint(secretKeys);
     }
