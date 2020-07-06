@@ -83,23 +83,14 @@ public class InitiationListenerTest extends SmackTestSuite {
      */
     @Test
     public void shouldRespondWithError() throws Exception {
-
         // run the listener with the initiation packet
-        initiationListener.handleIQRequest(initBytestream);
-
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
-        // capture reply to the In-Band Bytestream open request
-        ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendStanza(argument.capture());
+        IQ response = initiationListener.handleIQRequest(initBytestream);
 
         // assert that reply is the correct error packet
-        assertEquals(initiatorJID, argument.getValue().getTo());
-        assertEquals(IQ.Type.error, argument.getValue().getType());
+        assertEquals(initiatorJID, response.getTo());
+        assertEquals(IQ.Type.error, response.getType());
         assertEquals(StanzaError.Condition.not_acceptable,
-                        argument.getValue().getError().getCondition());
-
+                        response.getError().getCondition());
     }
 
     /**
@@ -113,21 +104,13 @@ public class InitiationListenerTest extends SmackTestSuite {
         byteStreamManager.setMaximumBlockSize(1024);
 
         // run the listener with the initiation packet
-        initiationListener.handleIQRequest(initBytestream);
-
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
-
-        // capture reply to the In-Band Bytestream open request
-        ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendStanza(argument.capture());
+        IQ response = initiationListener.handleIQRequest(initBytestream);
 
         // assert that reply is the correct error packet
-        assertEquals(initiatorJID, argument.getValue().getTo());
-        assertEquals(IQ.Type.error, argument.getValue().getType());
+        assertEquals(initiatorJID, response.getTo());
+        assertEquals(IQ.Type.error, response.getType());
         assertEquals(StanzaError.Condition.resource_constraint,
-                        argument.getValue().getError().getCondition());
-
+                        response.getError().getCondition());
     }
 
     /**
@@ -199,24 +182,17 @@ public class InitiationListenerTest extends SmackTestSuite {
         byteStreamManager.addIncomingBytestreamListener(listener, JidCreate.from("other_" + initiatorJID));
 
         // run the listener with the initiation packet
-        initiationListener.handleIQRequest(initBytestream);
-
-        // wait because packet is processed in an extra thread
-        Thread.sleep(200);
+        IQ response = initiationListener.handleIQRequest(initBytestream);
 
         // assert listener is not called
         ArgumentCaptor<BytestreamRequest> byteStreamRequest = ArgumentCaptor.forClass(BytestreamRequest.class);
         verify(listener, never()).incomingBytestreamRequest(byteStreamRequest.capture());
 
-        // capture reply to the In-Band Bytestream open request
-        ArgumentCaptor<IQ> argument = ArgumentCaptor.forClass(IQ.class);
-        verify(connection).sendStanza(argument.capture());
-
         // assert that reply is the correct error packet
-        assertEquals(initiatorJID, argument.getValue().getTo());
-        assertEquals(IQ.Type.error, argument.getValue().getType());
+        assertEquals(initiatorJID, response.getTo());
+        assertEquals(IQ.Type.error, response.getType());
         assertEquals(StanzaError.Condition.not_acceptable,
-                        argument.getValue().getError().getCondition());
+                        response.getError().getCondition());
     }
 
     /**

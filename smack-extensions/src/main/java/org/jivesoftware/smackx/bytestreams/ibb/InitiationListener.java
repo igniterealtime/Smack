@@ -16,15 +16,9 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
@@ -44,13 +38,9 @@ import org.jivesoftware.smackx.filetransfer.StreamNegotiator;
  * @author Henning Staib
  */
 class InitiationListener extends AbstractIqRequestHandler {
-    private static final Logger LOGGER = Logger.getLogger(InitiationListener.class.getName());
 
     /* manager containing the listeners and the XMPP connection */
     private final InBandBytestreamManager manager;
-
-    /* executor service to process incoming requests concurrently */
-    private final ExecutorService initiationListenerExecutor;
 
     /**
      * Constructor.
@@ -60,40 +50,29 @@ class InitiationListener extends AbstractIqRequestHandler {
     protected InitiationListener(InBandBytestreamManager manager) {
         super(Open.ELEMENT, Open.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
-        initiationListenerExecutor = Executors.newCachedThreadPool();
      }
 
     @Override
-    public IQ handleIQRequest(final IQ packet) {
-        initiationListenerExecutor.execute(new Runnable() {
+    public IQ handleIQRequest(final IQ iqRequest) {
+        Open ibbRequest = (Open) iqRequest;
 
-            @Override
-            public void run() {
-                try {
-                    processRequest(packet);
-                }
-                catch (InterruptedException | NotConnectedException e) {
-                    LOGGER.log(Level.WARNING, "proccessRequest", e);
-                }
-            }
-        });
-        return null;
-    }
-
-    private void processRequest(Stanza packet) throws NotConnectedException, InterruptedException {
-        Open ibbRequest = (Open) packet;
-
+        int blockSize = ibbRequest.getBlockSize();
+        int maximumBlockSize = manager.getMaximumBlockSize();
         // validate that block size is within allowed range
-        if (ibbRequest.getBlockSize() > this.manager.getMaximumBlockSize()) {
-            this.manager.replyResourceConstraintPacket(ibbRequest);
-            return;
+        if (blockSize > maximumBlockSize) {
+            StanzaError error = StanzaError.getBuilder().setCondition(StanzaError.Condition.resource_constraint)
+                            .setDescriptiveEnText("Requests block size of " + blockSize + " exceeds maximum block size of "
+                                                            + maximumBlockSize)
+                            .build();
+            return IQ.createErrorResponse(iqRequest, error);
         }
 
         StreamNegotiator.signal(ibbRequest.getFrom().toString() + '\t' + ibbRequest.getSessionID(), ibbRequest);
 
         // ignore request if in ignore list
-        if (this.manager.getIgnoredBytestreamRequests().remove(ibbRequest.getSessionID()))
-            return;
+        if (this.manager.getIgnoredBytestreamRequests().remove(ibbRequest.getSessionID())) {
+            return null;
+        }
 
         // build bytestream request from packet
         InBandBytestreamRequest request = new InBandBytestreamRequest(this.manager, ibbRequest);
@@ -102,7 +81,6 @@ class InitiationListener extends AbstractIqRequestHandler {
         BytestreamListener userListener = this.manager.getUserListener(ibbRequest.getFrom());
         if (userListener != null) {
             userListener.incomingBytestreamRequest(request);
-
         }
         else if (!this.manager.getAllRequestListeners().isEmpty()) {
             /*
@@ -111,21 +89,16 @@ class InitiationListener extends AbstractIqRequestHandler {
             for (BytestreamListener listener : this.manager.getAllRequestListeners()) {
                 listener.incomingBytestreamRequest(request);
             }
-
         }
         else {
-            /*
-             * if there is no listener for this initiation request, reply with reject message
-             */
-            this.manager.replyRejectPacket(ibbRequest);
+            StanzaError error = StanzaError.getBuilder()
+                            .setCondition(StanzaError.Condition.not_acceptable)
+                            .setDescriptiveEnText("No file-transfer listeners registered")
+                            .build();
+            return IQ.createErrorResponse(iqRequest, error);
         }
-    }
 
-    /**
-     * Shuts down the listeners executor service.
-     */
-    protected void shutdown() {
-        this.initiationListenerExecutor.shutdownNow();
+        return null;
     }
 
 }

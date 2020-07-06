@@ -110,22 +110,6 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
             public void connectionCreated(final XMPPConnection connection) {
                 // create the manager for this connection
                 InBandBytestreamManager.getByteStreamManager(connection);
-
-                // register shutdown listener
-                connection.addConnectionListener(new AbstractConnectionClosedListener() {
-
-                    @Override
-                    public void connectionTerminated() {
-                        InBandBytestreamManager.getByteStreamManager(connection).disableService();
-                    }
-
-                    @Override
-                    public void connected(XMPPConnection connection) {
-                        InBandBytestreamManager.getByteStreamManager(connection);
-                    }
-
-                });
-
             }
         });
     }
@@ -205,6 +189,15 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      */
     private InBandBytestreamManager(XMPPConnection connection) {
         super(connection);
+
+        connection.addConnectionListener(new AbstractConnectionClosedListener() {
+            @Override
+            public void connectionTerminated() {
+                // reset internal status
+                InBandBytestreamManager.this.sessions.clear();
+                InBandBytestreamManager.this.ignoredBytestreamRequests.clear();
+            }
+        });
 
         // register bytestream open packet listener
         this.initiationListener = new InitiationListener(this);
@@ -454,19 +447,6 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream open
-     * request is rejected because its block size is greater than the maximum allowed block size.
-     *
-     * @param request IQ stanza that should be answered with a resource-constraint error
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     */
-    protected void replyResourceConstraintPacket(IQ request) throws NotConnectedException, InterruptedException {
-        IQ error = IQ.createErrorResponse(request, StanzaError.Condition.resource_constraint);
-        connection().sendStanza(error);
-    }
-
-    /**
      * Responses to the given IQ packet's sender with an XMPP error that an In-Band Bytestream
      * session could not be found.
      *
@@ -537,32 +517,6 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      */
     protected List<String> getIgnoredBytestreamRequests() {
         return ignoredBytestreamRequests;
-    }
-
-    /**
-     * Disables the InBandBytestreamManager by removing its stanza listeners and resetting its
-     * internal status, which includes removing this instance from the managers map.
-     */
-    private void disableService() {
-        final XMPPConnection connection = connection();
-
-        // remove manager from static managers map
-        managers.remove(connection);
-
-        // remove all listeners registered by this manager
-        connection.unregisterIQRequestHandler(initiationListener);
-        connection.unregisterIQRequestHandler(dataListener);
-        connection.unregisterIQRequestHandler(closeListener);
-
-        // shutdown threads
-        this.initiationListener.shutdown();
-
-        // reset internal status
-        this.userListeners.clear();
-        this.allRequestListeners.clear();
-        this.sessions.clear();
-        this.ignoredBytestreamRequests.clear();
-
     }
 
 }
