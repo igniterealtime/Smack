@@ -193,7 +193,7 @@ public class FillableForm extends FilledForm {
             return FormField.textSingleBuilder(fieldName);
         case hidden:
             return FormField.hiddenBuilder(fieldName);
-        case list_multi:
+        case list_single:
             return FormField.listSingleBuilder(fieldName);
         default:
             throw new IllegalArgumentException();
