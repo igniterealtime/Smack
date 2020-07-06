@@ -196,7 +196,7 @@ public class FillableForm extends FilledForm {
         case list_single:
             return FormField.listSingleBuilder(fieldName);
         default:
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Unsupported type: " + type);
         }
     }
 
