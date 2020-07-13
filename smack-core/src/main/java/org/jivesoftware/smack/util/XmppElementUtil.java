@@ -37,7 +37,7 @@ public class XmppElementUtil {
             }
             LOGGER.warning("The QNAME field of " + fullyQualifiedElement + " is not of type QNAME.");
         } catch (NoSuchFieldException e) {
-            LOGGER.finer("The class " + fullyQualifiedElement + " has no static QNAME field. Consider adding one.");
+            LOGGER.finer("The " + fullyQualifiedElement + " has no static QNAME field. Consider adding one.");
             // Proceed to fallback strategy.
         } catch (IllegalArgumentException | IllegalAccessException | SecurityException e) {
             throw new IllegalArgumentException(e);
@@ -49,7 +49,7 @@ public class XmppElementUtil {
             namespace = (String) fullyQualifiedElement.getField("NAMESPACE").get(null);
         }
         catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            throw new IllegalArgumentException("The class" + fullyQualifiedElement + " has no ELEMENT, NAMESPACE or QNAME member. Consider adding QNAME", e);
+            throw new IllegalArgumentException("The " + fullyQualifiedElement + " has no ELEMENT, NAMESPACE or QNAME member. Consider adding QNAME", e);
         }
 
         return new QName(namespace, element);
