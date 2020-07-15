@@ -23,6 +23,7 @@ import java.util.Set;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
+import org.jivesoftware.smackx.ox.OpenPgpSecretKeyBackupPassphrase;
 import org.jivesoftware.smackx.ox.crypto.OpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
 import org.jivesoftware.smackx.ox.exception.InvalidBackupCodeException;
@@ -51,8 +52,8 @@ public class SecretKeyBackupHelper {
      *
      * @return backup code
      */
-    public static String generateBackupPassword() {
-        return StringUtils.secureOfflineAttackSafeRandomString();
+    public static OpenPgpSecretKeyBackupPassphrase generateBackupPassword() {
+        return new OpenPgpSecretKeyBackupPassphrase(StringUtils.secureOfflineAttackSafeRandomString());
     }
 
     /**
@@ -73,7 +74,7 @@ public class SecretKeyBackupHelper {
     public static SecretkeyElement createSecretkeyElement(OpenPgpProvider provider,
                                                     BareJid owner,
                                                     Set<OpenPgpV4Fingerprint> fingerprints,
-                                                    String backupCode)
+                                                    OpenPgpSecretKeyBackupPassphrase backupCode)
             throws PGPException, IOException, MissingOpenPgpKeyException {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
@@ -105,9 +106,9 @@ public class SecretKeyBackupHelper {
      * @throws IOException IO is dangerous
      */
     public static SecretkeyElement createSecretkeyElement(byte[] keys,
-                                                          String backupCode)
+                                                          OpenPgpSecretKeyBackupPassphrase backupCode)
             throws PGPException, IOException {
-        byte[] encrypted = PGPainless.encryptWithPassword(keys, new Passphrase(backupCode.toCharArray()),
+        byte[] encrypted = PGPainless.encryptWithPassword(keys, new Passphrase(backupCode.toString().toCharArray()),
                 SymmetricKeyAlgorithm.AES_256);
         return new SecretkeyElement(Base64.encode(encrypted));
     }
@@ -123,13 +124,13 @@ public class SecretKeyBackupHelper {
      * @throws IOException IO is dangerous.
      * @throws PGPException PGP is brittle.
      */
-    public static PGPSecretKeyRing restoreSecretKeyBackup(SecretkeyElement backup, String backupCode)
+    public static PGPSecretKeyRing restoreSecretKeyBackup(SecretkeyElement backup, OpenPgpSecretKeyBackupPassphrase backupCode)
             throws InvalidBackupCodeException, IOException, PGPException {
         byte[] encrypted = Base64.decode(backup.getB64Data());
 
         byte[] decrypted;
         try {
-            decrypted = PGPainless.decryptWithPassword(encrypted, new Passphrase(backupCode.toCharArray()));
+            decrypted = PGPainless.decryptWithPassword(encrypted, new Passphrase(backupCode.toString().toCharArray()));
         } catch (IOException | PGPException e) {
             throw new InvalidBackupCodeException("Could not decrypt secret key backup. Possibly wrong passphrase?", e);
         }

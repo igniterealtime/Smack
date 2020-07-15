@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2020 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2018-2020 Paul Schaub, 2017-2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,6 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ox.callback.backup.AskForBackupCodeCallback;
-import org.jivesoftware.smackx.ox.callback.backup.DisplayBackupCodeCallback;
 import org.jivesoftware.smackx.ox.callback.backup.SecretKeyBackupSelectionCallback;
 import org.jivesoftware.smackx.ox.crypto.OpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.CryptElement;
@@ -389,8 +388,9 @@ public final class OpenPgpManager extends Manager {
      *
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#synchro-pep">XEP-0373 §5</a>
      *
-     * @param displayCodeCallback callback, which will receive the backup password used to encrypt the secret key.
      * @param selectKeyCallback callback, which will receive the users choice of which keys will be backed up.
+     * @return secret key passphrase used to encrypt the backup.
+     *
      * @throws InterruptedException if the thread is interrupted.
      * @throws PubSubException.NotALeafNodeException if the private node is not a {@link LeafNode}.
      * @throws XMPPException.XMPPErrorException in case of an XMPP protocol error.
@@ -402,8 +402,38 @@ public final class OpenPgpManager extends Manager {
      * @throws PGPException PGP is brittle
      * @throws MissingOpenPgpKeyException in case we have no OpenPGP key pair to back up.
      */
-    public void backupSecretKeyToServer(DisplayBackupCodeCallback displayCodeCallback,
-                                        SecretKeyBackupSelectionCallback selectKeyCallback)
+    public OpenPgpSecretKeyBackupPassphrase backupSecretKeyToServer(SecretKeyBackupSelectionCallback selectKeyCallback)
+            throws InterruptedException, PubSubException.NotALeafNodeException,
+            XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException,
+            SmackException.NotLoggedInException, IOException,
+            SmackException.FeatureNotSupportedException, PGPException, MissingOpenPgpKeyException {
+        OpenPgpSecretKeyBackupPassphrase passphrase = SecretKeyBackupHelper.generateBackupPassword();
+        backupSecretKeyToServer(selectKeyCallback, passphrase);
+        return passphrase;
+    }
+
+    /**
+     * Upload the encrypted secret key to a private PEP node.
+     * The backup is encrypted using the provided secret key passphrase.
+     *
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#synchro-pep">XEP-0373 §5</a>
+     *
+     * @param selectKeyCallback callback, which will receive the users choice of which keys will be backed up. @param selectKeyCallback
+     * @param passphrase secret key passphrase
+     *
+     * @throws InterruptedException if the thread is interrupted.
+     * @throws PubSubException.NotALeafNodeException if the private node is not a {@link LeafNode}.
+     * @throws XMPPException.XMPPErrorException in case of an XMPP protocol error.
+     * @throws SmackException.NotConnectedException if we are not connected.
+     * @throws SmackException.NoResponseException if the server doesn't respond.
+     * @throws SmackException.NotLoggedInException if we are not logged in.
+     * @throws IOException IO is dangerous.
+     * @throws SmackException.FeatureNotSupportedException if the server doesn't support the PubSub whitelist access model.
+     * @throws PGPException PGP is brittle
+     * @throws MissingOpenPgpKeyException in case we have no OpenPGP key pair to back up.
+     */
+    public void backupSecretKeyToServer(SecretKeyBackupSelectionCallback selectKeyCallback,
+                                        OpenPgpSecretKeyBackupPassphrase passphrase)
             throws InterruptedException, PubSubException.NotALeafNodeException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException,
             SmackException.NotLoggedInException, IOException,
@@ -412,8 +442,6 @@ public final class OpenPgpManager extends Manager {
         throwIfNotAuthenticated();
 
         BareJid ownJid = connection().getUser().asBareJid();
-
-        String backupCode = SecretKeyBackupHelper.generateBackupPassword();
 
         PGPSecretKeyRingCollection secretKeyRings = provider.getStore().getSecretKeysOf(ownJid);
 
@@ -424,10 +452,9 @@ public final class OpenPgpManager extends Manager {
 
         Set<OpenPgpV4Fingerprint> selectedKeyPairs = selectKeyCallback.selectKeysToBackup(availableKeyPairs);
 
-        SecretkeyElement secretKey = SecretKeyBackupHelper.createSecretkeyElement(provider, ownJid, selectedKeyPairs, backupCode);
+        SecretkeyElement secretKey = SecretKeyBackupHelper.createSecretkeyElement(provider, ownJid, selectedKeyPairs, passphrase);
 
         OpenPgpPubSubUtil.depositSecretKey(connection(), secretKey);
-        displayCodeCallback.displayBackupCode(backupCode);
     }
 
     /**
@@ -476,7 +503,7 @@ public final class OpenPgpManager extends Manager {
             throw new NoBackupFoundException();
         }
 
-        String backupCode = codeCallback.askForBackupCode();
+        OpenPgpSecretKeyBackupPassphrase backupCode = codeCallback.askForBackupCode();
 
         PGPSecretKeyRing secretKeys = SecretKeyBackupHelper.restoreSecretKeyBackup(backup, backupCode);
         provider.getStore().importSecretKey(getJidOrThrow(), secretKeys);
