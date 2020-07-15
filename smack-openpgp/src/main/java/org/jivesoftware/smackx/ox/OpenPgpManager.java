@@ -551,7 +551,7 @@ public final class OpenPgpManager extends Manager {
                 if (contentElement instanceof SigncryptElement) {
                     for (SigncryptElementReceivedListener l : signcryptElementReceivedListeners) {
                         l.signcryptElementReceived(contact, message, (SigncryptElement) contentElement,
-                                        decrypted.getMetadata());
+                                decrypted.getMetadata());
                     }
                     return;
                 }
@@ -566,7 +566,7 @@ public final class OpenPgpManager extends Manager {
                 if (contentElement instanceof CryptElement) {
                     for (CryptElementReceivedListener l : cryptElementReceivedListeners) {
                         l.cryptElementReceived(contact, message, (CryptElement) contentElement,
-                                        decrypted.getMetadata());
+                                decrypted.getMetadata());
                     }
                     return;
                 }
