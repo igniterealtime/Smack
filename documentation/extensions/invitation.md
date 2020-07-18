@@ -10,6 +10,7 @@ group chat room.
   * Listen for Invitations
 
 **XEP related:** N/A -- this protocol is outdated now that the Multi-User Chat (MUC) XEP is available ([XEP-45](http://www.xmpp.org/extensions/xep-0045.html)). However, most existing clients still use this older protocol. Once MUC support becomes more widespread, this API may be deprecated. 
+**XEP related:** Now there is support for XEP-0249: Direct MUC Invitations.
 
 Inviting Other Users
 --------------------
