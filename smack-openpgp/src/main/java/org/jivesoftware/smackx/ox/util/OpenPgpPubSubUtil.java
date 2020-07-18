@@ -111,7 +111,7 @@ public class OpenPgpPubSubUtil {
      * Publish the users OpenPGP public key to the public key node if necessary.
      * Also announce the key to other users by updating the metadata node.
      *
-     * @see <a href="https://xmpp.org/extensions/xep-0373.html#annoucning-pubkey">XEP-0373 §4.1</a>
+     * @see <a href="https://xmpp.org/extensions/xep-0373.html#announcing-pubkey">XEP-0373 §4.1</a>
      *
      * @param pepManager The PEP manager.
      * @param pubkeyElement {@link PubkeyElement} containing the public key

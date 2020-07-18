@@ -20,7 +20,6 @@ import static org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil.PEP_NODE_PUBLIC_
 import static org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil.PEP_NODE_PUBLIC_KEYS_NOTIFY;
 import static org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil.publishPublicKey;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
@@ -43,7 +42,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ox.callback.backup.AskForBackupCodeCallback;
 import org.jivesoftware.smackx.ox.callback.backup.SecretKeyBackupSelectionCallback;
@@ -75,12 +73,9 @@ import org.jivesoftware.smackx.pubsub.PubSubException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
 
 import org.bouncycastle.openpgp.PGPException;
-import org.bouncycastle.openpgp.PGPPublicKey;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
-import org.bouncycastle.openpgp.PGPSecretKey;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
-import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
@@ -506,16 +501,11 @@ public final class OpenPgpManager extends Manager {
         OpenPgpSecretKeyBackupPassphrase backupCode = codeCallback.askForBackupCode();
 
         PGPSecretKeyRing secretKeys = SecretKeyBackupHelper.restoreSecretKeyBackup(backup, backupCode);
+        OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(secretKeys);
         provider.getStore().importSecretKey(getJidOrThrow(), secretKeys);
         provider.getStore().importPublicKey(getJidOrThrow(), BCUtil.publicKeyRingFromSecretKeyRing(secretKeys));
 
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream(2048);
-        for (PGPSecretKey sk : secretKeys) {
-            PGPPublicKey pk = sk.getPublicKey();
-            if (pk != null) pk.encode(buffer);
-        }
-        PGPPublicKeyRing publicKeys = new PGPPublicKeyRing(buffer.toByteArray(), new BcKeyFingerprintCalculator());
-        provider.getStore().importPublicKey(getJidOrThrow(), publicKeys);
+        getOpenPgpSelf().trust(fingerprint);
 
         return new OpenPgpV4Fingerprint(secretKeys);
     }
