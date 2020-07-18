@@ -264,7 +264,7 @@ public final class OXInstantMessagingManager extends Manager {
      * Add an OX-IM message element to a message.
      *
      * @param messageBuilder message
-     * @param contacts recipients of the message
+     * @param recipients recipients of the message
      * @param payload payload which will be encrypted and signed
      *
      * @return metadata about the messages encryption + signatures.
@@ -273,12 +273,8 @@ public final class OXInstantMessagingManager extends Manager {
      * @throws PGPException in case something goes wrong during encryption
      * @throws IOException IO is dangerous (we need to read keys)
      */
-    public OpenPgpMetadata addOxMessage(MessageBuilder messageBuilder, Set<OpenPgpContact> contacts, List<ExtensionElement> payload)
+    public OpenPgpMetadata addOxMessage(MessageBuilder messageBuilder, Set<OpenPgpContact> recipients, List<ExtensionElement> payload)
             throws SmackException.NotLoggedInException, IOException, PGPException {
-
-        HashSet<OpenPgpContact> recipients = new HashSet<>(contacts);
-        OpenPgpContact self = openPgpManager.getOpenPgpSelf();
-        recipients.add(self);
 
         OpenPgpElementAndMetadata openPgpElementAndMetadata = signAndEncrypt(recipients, payload);
         messageBuilder.addExtension(openPgpElementAndMetadata.getElement());
