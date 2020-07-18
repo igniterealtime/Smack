@@ -514,6 +514,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Check if not already connected
         throwAlreadyConnectedExceptionIfAppropriate();
 
+        // Notify connection listeners that we are trying to connect
+        callConnectionConnectingListener();
+
         // Reset the connection state
         initState();
         closingStreamReceived = false;
@@ -1677,6 +1680,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Never reset the flag if the connection has ever been authenticated
         if (!wasAuthenticated) {
             wasAuthenticated = authenticated;
+        }
+    }
+
+    protected void callConnectionConnectingListener() {
+        for (ConnectionListener listener : connectionListeners) {
+            listener.connecting(this);
         }
     }
 
