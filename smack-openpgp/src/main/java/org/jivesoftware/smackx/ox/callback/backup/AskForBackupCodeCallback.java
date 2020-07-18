@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.ox.callback.backup;
 
+import org.jivesoftware.smackx.ox.OpenPgpSecretKeyBackupPassphrase;
+
 public interface AskForBackupCodeCallback {
 
     /**
@@ -27,5 +29,5 @@ public interface AskForBackupCodeCallback {
      *
      * @return backup code provided by the user.
      */
-    String askForBackupCode();
+    OpenPgpSecretKeyBackupPassphrase askForBackupCode();
 }
