@@ -270,7 +270,12 @@ public class StringUtils {
     /**
      * 24 upper case characters from the latin alphabet and numbers without '0' and 'O'.
      */
-    private static final char[] UNAMBIGUOUS_NUMBERS_AND_LETTER = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ".toCharArray();
+    public static final String UNAMBIGUOUS_NUMBERS_AND_LETTERS_STRING = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ";
+
+    /**
+     * 24 upper case characters from the latin alphabet and numbers without '0' and 'O'.
+     */
+    private static final char[] UNAMBIGUOUS_NUMBERS_AND_LETTERS = UNAMBIGUOUS_NUMBERS_AND_LETTERS_STRING.toCharArray();
 
     /**
      * Returns a random String of numbers and letters (lower and upper case)
@@ -294,14 +299,14 @@ public class StringUtils {
         // See also https://www.grc.com/haystack.htm
         final int REQUIRED_LENGTH = 10;
 
-        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTERS, REQUIRED_LENGTH);
     }
 
     public static String secureUniqueRandomString() {
         // 34^13 = 8.11e19 possible combinations, which is > 2^64.
         final int REQUIRED_LENGTH = 13;
 
-        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTERS, REQUIRED_LENGTH);
     }
 
     /**
@@ -324,7 +329,7 @@ public class StringUtils {
         // See also https://www.grc.com/haystack.htm
         final int REQUIRED_LENGTH = 24;
 
-        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTER, REQUIRED_LENGTH);
+        return randomString(RandomUtil.SECURE_RANDOM.get(), UNAMBIGUOUS_NUMBERS_AND_LETTERS, REQUIRED_LENGTH);
     }
 
     private static final int RANDOM_STRING_CHUNK_SIZE = 4;
@@ -368,8 +373,8 @@ public class StringUtils {
 
         char[] randomChars = new char[length];
         for (int i = 0; i < length; i++) {
-            int index = random.nextInt(UNAMBIGUOUS_NUMBERS_AND_LETTER.length);
-            randomChars[i] = UNAMBIGUOUS_NUMBERS_AND_LETTER[index];
+            int index = random.nextInt(UNAMBIGUOUS_NUMBERS_AND_LETTERS.length);
+            randomChars[i] = UNAMBIGUOUS_NUMBERS_AND_LETTERS[index];
         }
         return new String(randomChars);
     }

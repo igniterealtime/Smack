@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.ox;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -26,17 +27,11 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.Arrays;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.jivesoftware.smackx.ox.callback.backup.AskForBackupCodeCallback;
-import org.jivesoftware.smackx.ox.callback.backup.DisplayBackupCodeCallback;
-import org.jivesoftware.smackx.ox.callback.backup.SecretKeyBackupSelectionCallback;
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.exception.InvalidBackupCodeException;
 import org.jivesoftware.smackx.ox.exception.MissingOpenPgpKeyException;
@@ -63,10 +58,6 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
     private static final File tempDir = org.apache.commons.io.FileUtils.getTempDirectory();
     private static final File beforePath = new File(tempDir, "ox_backup_" + sessionId);
     private static final File afterPath = new File(tempDir, "ox_restore_" + sessionId);
-
-    private String backupCode = null;
-
-    private OpenPgpManager openPgpManager;
 
     /**
      * This integration test tests the basic secret key backup and restore functionality as described
@@ -123,7 +114,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
         OpenPgpStore beforeStore = new FileBasedOpenPgpStore(beforePath);
         beforeStore.setKeyRingProtector(new UnprotectedKeysProtector());
         PainlessOpenPgpProvider beforeProvider = new PainlessOpenPgpProvider(beforeStore);
-        openPgpManager = OpenPgpManager.getInstanceFor(aliceConnection);
+        OpenPgpManager openPgpManager = OpenPgpManager.getInstanceFor(aliceConnection);
         openPgpManager.setOpenPgpProvider(beforeProvider);
 
         OpenPgpSelf self = openPgpManager.getOpenPgpSelf();
@@ -141,29 +132,15 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
         PGPPublicKeyRing beforePub = beforeStore.getPublicKeyRing(alice, keyFingerprint);
         assertNotNull(beforePub);
 
-        openPgpManager.backupSecretKeyToServer(new DisplayBackupCodeCallback() {
-            @Override
-            public void displayBackupCode(String backupCode) {
-                OXSecretKeyBackupIntegrationTest.this.backupCode = backupCode;
-            }
-        }, new SecretKeyBackupSelectionCallback() {
-            @Override
-            public Set<OpenPgpV4Fingerprint> selectKeysToBackup(Set<OpenPgpV4Fingerprint> availableSecretKeys) {
-                return availableSecretKeys;
-            }
-        });
+        OpenPgpSecretKeyBackupPassphrase backupPassphrase =
+                openPgpManager.backupSecretKeyToServer(availableSecretKeys -> availableSecretKeys);
 
         FileBasedOpenPgpStore afterStore = new FileBasedOpenPgpStore(afterPath);
         afterStore.setKeyRingProtector(new UnprotectedKeysProtector());
         PainlessOpenPgpProvider afterProvider = new PainlessOpenPgpProvider(afterStore);
         openPgpManager.setOpenPgpProvider(afterProvider);
 
-        OpenPgpV4Fingerprint fingerprint = openPgpManager.restoreSecretKeyServerBackup(new AskForBackupCodeCallback() {
-            @Override
-            public String askForBackupCode() {
-                return backupCode;
-            }
-        });
+        OpenPgpV4Fingerprint fingerprint = openPgpManager.restoreSecretKeyServerBackup(() -> backupPassphrase);
 
         assertEquals(keyFingerprint, fingerprint);
 
@@ -173,10 +150,10 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
 
         PGPSecretKeyRing afterSec = afterStore.getSecretKeyRing(alice, keyFingerprint);
         assertNotNull(afterSec);
-        assertTrue(Arrays.equals(beforeSec.getEncoded(), afterSec.getEncoded()));
+        assertArrayEquals(beforeSec.getEncoded(), afterSec.getEncoded());
 
         PGPPublicKeyRing afterPub = afterStore.getPublicKeyRing(alice, keyFingerprint);
         assertNotNull(afterPub);
-        assertTrue(Arrays.equals(beforePub.getEncoded(), afterPub.getEncoded()));
+        assertArrayEquals(beforePub.getEncoded(), afterPub.getEncoded());
     }
 }
