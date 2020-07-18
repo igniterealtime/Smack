@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2022 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2020 Paul Schaub, 2022-2023 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,12 @@
  */
 package org.jivesoftware.smackx.muc.provider;
 
+import static org.jivesoftware.smackx.muc.packet.GroupChatInvitation.ATTR_CONTINUE;
+import static org.jivesoftware.smackx.muc.packet.GroupChatInvitation.ATTR_PASSWORD;
+import static org.jivesoftware.smackx.muc.packet.GroupChatInvitation.ATTR_REASON;
+import static org.jivesoftware.smackx.muc.packet.GroupChatInvitation.ATTR_THREAD;
+
 import java.io.IOException;
-import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -33,11 +37,14 @@ public class GroupChatInvitationProvider extends ExtensionElementProvider<GroupC
 
     @Override
     public GroupChatInvitation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        EntityBareJid roomAddress = ParserUtils.getBareJidAttribute(parser);
-        // Advance to end of extension.
-        parser.next();
-        return new GroupChatInvitation(roomAddress);
-    }
+            throws XmlPullParserException, IOException, SmackParsingException {
 
+        EntityBareJid roomJid = ParserUtils.getBareJidAttribute(parser);
+        String password = parser.getAttributeValue(ATTR_PASSWORD);
+        String reason = parser.getAttributeValue(ATTR_REASON);
+        boolean isContinue = ParserUtils.getBooleanAttribute(parser, ATTR_CONTINUE, false);
+        String thread = parser.getAttributeValue(ATTR_THREAD);
+
+        return new GroupChatInvitation(roomJid, reason, password, isContinue, thread);
+    }
 }

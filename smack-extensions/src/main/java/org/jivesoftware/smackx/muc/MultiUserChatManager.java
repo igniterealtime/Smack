@@ -83,6 +83,10 @@ import org.jxmpp.util.cache.ExpirationCache;
  * further attempts will be made for the other rooms.
  * </p>
  *
+ * Note:
+ * For inviting other users to a group chat or listening for such invitations, take a look at the
+ * {@link DirectMucInvitationManager} which provides an implementation of XEP-0249: Direct MUC Invitations.
+ *
  * @see <a href="http://xmpp.org/extensions/xep-0045.html">XEP-0045: Multi-User Chat</a>
  */
 public final class MultiUserChatManager extends Manager {

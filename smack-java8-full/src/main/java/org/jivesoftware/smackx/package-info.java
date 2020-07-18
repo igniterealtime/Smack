@@ -584,12 +584,6 @@
  * <td>Multi-User Chats for mobile XMPP applications and specific environment.</td>
  * </tr>
  * <tr>
- * <td>Group Chat Invitations</td>
- * <td></td>
- * <td></td>
- * <td>Send invitations to other users to join a group chat room.</td>
- * </tr>
- * <tr>
  * <td><a href="properties.md">Jive Properties</a></td>
  * <td></td>
  * <td></td>
