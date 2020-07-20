@@ -407,6 +407,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             LOGGER.fine("Stream resumption failed, continuing with normal stream establishment process: " + smResumptionFailed);
         }
 
+        // We either failed to resume a previous stream management (SM) session, or we did not even try. In any case,
+        // mark SM as not enabled. Most importantly, we do this prior calling bindResourceAndEstablishSession(), as the
+        // bind IQ may trigger a SM ack request, which would be invalid in the pre resource bound state.
+        smEnabledSyncPoint = false;
+
         List<Stanza> previouslyUnackedStanzas = new LinkedList<Stanza>();
         if (unacknowledgedStanzas != null) {
             // There was a previous connection with SM enabled but that was either not resumable or
@@ -425,7 +430,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // unacknowledgedStanzas and become duplicated on reconnect. See SMACK-706.
         bindResourceAndEstablishSession(resource);
 
-        smEnabledSyncPoint = false;
         if (isSmAvailable() && useSm) {
             // Remove what is maybe left from previously stream managed sessions
             serverHandledStanzasCount = 0;
