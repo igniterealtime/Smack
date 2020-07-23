@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.sid.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -25,6 +27,8 @@ import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 public class OriginIdElement extends StableAndUniqueIdElement {
 
     public static final String ELEMENT = "origin-id";
+    public static final String NAMESPACE = StableUniqueStanzaIdManager.NAMESPACE;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public OriginIdElement() {
         super();
