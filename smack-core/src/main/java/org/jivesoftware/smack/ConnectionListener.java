@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2020 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,16 @@ package org.jivesoftware.smack;
  * @author Matt Tucker
  */
 public interface ConnectionListener {
+
+    /**
+     * Notification that the connection is in the process of connecting.
+     * This method is called when {@link AbstractXMPPConnection#connect()} is executed.
+     *
+     * @param connection connection
+     * @since 4.4
+     */
+    default void connecting(XMPPConnection connection) {
+    }
 
     /**
      * Notification that the connection has been successfully connected to the remote endpoint (e.g. the XMPP server).
