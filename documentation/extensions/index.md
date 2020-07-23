@@ -123,6 +123,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | [Consistent Color Generation](consistent_colors.md)       | [XEP-0392](https://xmpp.org/extensions/xep-0392.html)  | 0.6.0     | Generate consistent colors for identifiers like usernames to provide a consistent user experience. |
 | [Message Markup](messagemarkup.md)                        | [XEP-0394](https://xmpp.org/extensions/xep-0394.html)  | 0.1.0     | Style message bodies while keeping body and markup information separated. |
 | DNS Queries over XMPP (DoX)                               | [XEP-0418](https://xmpp.org/extensions/xep-0418.html)  | 0.1.0     | Send DNS queries and responses over XMPP. |
+| Stanza Content Encryption                                 | [XEP-0420](https://xmpp.org/extensions/xep-0420.html)  | 0.3.0     | End-to-end encryption of arbitrary extension elements. Smack provides elements and providers to be used by encryption mechanisms. |
 | Message Fastening                                         | [XEP-0422](https://xmpp.org/extensions/xep-0422.html)  | 0.1.1     | Mark payloads on a message to be logistically fastened to a previous message. |
 | Message Retraction                                        | [XEP-0424](https://xmpp.org/extensions/xep-0424.html)  | 0.2.0     | Mark messages as retracted. |
 | Fallback Indication                                       | [XEP-0428](https://xmpp.org/extensions/xep-0428.html)  | 0.1.0     | Declare body elements of a message as ignorable fallback for naive legacy clients. |
