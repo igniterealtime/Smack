@@ -760,7 +760,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         user = response.getJid();
         xmppServiceDomain = user.asDomainBareJid();
 
-        Session.Feature sessionFeature = getFeature(Session.ELEMENT, Session.NAMESPACE);
+        Session.Feature sessionFeature = getFeature(Session.Feature.class);
         // Only bind the session if it's announced as stream feature by the server, is not optional and not disabled
         // For more information see http://tools.ietf.org/html/draft-cridland-xmpp-session-01
         if (sessionFeature != null && !sessionFeature.isOptional()) {
@@ -1904,14 +1904,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <F extends FullyQualifiedElement> F getFeature(String element, String namespace) {
-        QName qname = new QName(namespace, element);
+    public <F extends FullyQualifiedElement> F getFeature(QName qname) {
         return (F) streamFeatures.get(qname);
     }
 
     @Override
-    public boolean hasFeature(String element, String namespace) {
-        return getFeature(element, namespace) != null;
+    public boolean hasFeature(QName qname) {
+        return streamFeatures.containsKey(qname);
     }
 
     protected void addStreamFeature(FullyQualifiedElement feature) {

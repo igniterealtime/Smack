@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.jivesoftware.smack.compress.packet;
 
 import java.util.Collections;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Nonza;
@@ -55,6 +57,7 @@ public class Compress implements Nonza {
 
     public static class Feature implements ExtensionElement {
         public static final String ELEMENT = "compression";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public final List<String> methods;
 

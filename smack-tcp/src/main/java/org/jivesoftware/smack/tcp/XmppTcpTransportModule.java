@@ -819,7 +819,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         @Override
         public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext)
                 throws SecurityRequiredByClientException, SecurityRequiredByServerException {
-            StartTls startTlsFeature = connectionInternal.connection.getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
+            StartTls startTlsFeature = connectionInternal.connection.getFeature(StartTls.class);
             SecurityMode securityMode = connectionInternal.connection.getConfiguration().getSecurityMode();
 
             switch (securityMode) {

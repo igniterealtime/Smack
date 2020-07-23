@@ -70,7 +70,7 @@ public class CompressionModule extends ModularXmppClientToServerConnectionModule
                 return new StateTransitionResult.TransitionImpossibleReason("Stream compression disabled by connection configuration");
             }
 
-            Compress.Feature compressFeature = connectionInternal.connection.getFeature(Compress.Feature.ELEMENT, Compress.NAMESPACE);
+            Compress.Feature compressFeature = connectionInternal.connection.getFeature(Compress.Feature.class);
             if (compressFeature == null) {
                 return new StateTransitionResult.TransitionImpossibleReason("Stream compression not supported or enabled by service");
             }
