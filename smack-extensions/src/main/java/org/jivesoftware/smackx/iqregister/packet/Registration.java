@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.iqregister.packet;
 
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 
@@ -104,6 +106,8 @@ public class Registration extends IQ {
 
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         public static final Feature INSTANCE = new Registration.Feature();
 
         private Feature() {

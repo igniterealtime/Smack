@@ -356,7 +356,7 @@ public final class SASLAuthentication {
     }
 
     private List<String> getServerMechanisms() {
-        Mechanisms mechanisms = connection.getFeature(Mechanisms.ELEMENT, Mechanisms.NAMESPACE);
+        Mechanisms mechanisms = connection.getFeature(Mechanisms.class);
         if (mechanisms == null) {
             return Collections.emptyList();
         }

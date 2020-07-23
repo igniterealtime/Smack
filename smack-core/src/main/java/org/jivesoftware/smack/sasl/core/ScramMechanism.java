@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -227,7 +227,7 @@ public abstract class ScramMechanism extends SASLMechanism {
             authzidPortion = "a=" + authorizationId;
         }
 
-        String cbName = getChannelBindingName();
+        String cbName = getGs2CbindFlag();
         assert StringUtils.isNotEmpty(cbName);
 
         return cbName + ',' + authzidPortion + ",";
@@ -244,7 +244,13 @@ public abstract class ScramMechanism extends SASLMechanism {
         return ByteUtils.concat(gs2Header, cbindData);
     }
 
-    protected String getChannelBindingName() {
+    /**
+     * Get the SCRAM GSS-API Channel Binding Flag value.
+     *
+     * @return the gs2-cbind-flag value.
+     * @see <a href="https://tools.ietf.org/html/rfc5802#section-6">RFC 5802 § 6.</a>
+     */
+    protected String getGs2CbindFlag() {
         // Check if we are using TLS and if a "-PLUS" variant of this mechanism is enabled. Assuming that the "-PLUS"
         // variants always have precedence before the non-"-PLUS" variants this means that the server did not announce
         // the "-PLUS" variant, as otherwise we would have tried it.

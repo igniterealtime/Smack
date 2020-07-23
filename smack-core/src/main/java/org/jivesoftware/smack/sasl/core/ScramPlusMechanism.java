@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2019 Florian Schmaus
+ * Copyright 2016-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public abstract class ScramPlusMechanism extends ScramMechanism {
     }
 
     @Override
-    protected String getChannelBindingName() {
+    protected String getGs2CbindFlag() {
         return "p=tls-server-end-point";
     }
 

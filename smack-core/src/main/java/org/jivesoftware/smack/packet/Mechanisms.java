@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class Mechanisms implements ExtensionElement {
 
     public static final String ELEMENT = "mechanisms";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public final List<String> mechanisms = new LinkedList<String>();
 

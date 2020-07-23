@@ -18,6 +18,8 @@ package org.jivesoftware.smack;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -36,6 +38,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaFactory;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.Predicate;
+import org.jivesoftware.smack.util.XmppElementUtil;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -576,8 +579,39 @@ public interface XMPPConnection {
      * @param element TODO javadoc me please
      * @param namespace TODO javadoc me please
      * @return a stanza extensions of the feature or <code>null</code>
+     * @deprecated use {@link #getFeature(Class)} instead.
      */
-    <F extends FullyQualifiedElement> F getFeature(String element, String namespace);
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
+    default <F extends FullyQualifiedElement> F getFeature(String element, String namespace) {
+        QName qname = new QName(namespace, element);
+        return getFeature(qname);
+    }
+
+    /**
+     * Get the feature stanza extensions for a given stream feature of the
+     * server, or <code>null</code> if the server doesn't support that feature.
+     *
+     * @param <F> {@link ExtensionElement} type of the feature.
+     * @param qname the qualified name of the XML element of feature.
+     * @return a stanza extensions of the feature or <code>null</code>
+     * @since 4.4
+     */
+    <F extends FullyQualifiedElement> F getFeature(QName qname);
+
+    /**
+     * Get the feature stanza extensions for a given stream feature of the
+     * server, or <code>null</code> if the server doesn't support that feature.
+     *
+     * @param <F> {@link ExtensionElement} type of the feature.
+     * @param featureClass the class of the feature.
+     * @return a stanza extensions of the feature or <code>null</code>
+     * @since 4.4
+     */
+    default <F extends FullyQualifiedElement> F getFeature(Class<F> featureClass) {
+        QName qname = XmppElementUtil.getQNameFor(featureClass);
+        return getFeature(qname);
+    }
 
     /**
      * Return true if the server supports the given stream feature.
@@ -586,7 +620,18 @@ public interface XMPPConnection {
      * @param namespace TODO javadoc me please
      * @return true if the server supports the stream feature.
      */
-    boolean hasFeature(String element, String namespace);
+    default boolean hasFeature(String element, String namespace) {
+        QName qname = new QName(namespace, element);
+        return hasFeature(qname);
+    }
+
+    /**
+     * Return true if the server supports the given stream feature.
+     *
+     * @param qname the qualified name of the XML element of feature.
+     * @return true if the server supports the stream feature.
+     */
+    boolean hasFeature(QName qname);
 
     /**
      * Send an IQ request asynchronously. The connection's default reply timeout will be used.

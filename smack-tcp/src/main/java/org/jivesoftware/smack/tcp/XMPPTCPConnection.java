@@ -801,7 +801,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             return;
         }
 
-        Compress.Feature compression = getFeature(Compress.Feature.ELEMENT, Compress.NAMESPACE);
+        Compress.Feature compression = getFeature(Compress.Feature.class);
         if (compression == null) {
             // Server does not support compression
             return;
@@ -857,7 +857,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     @Override
     protected void afterFeaturesReceived() throws NotConnectedException, InterruptedException, SecurityRequiredByServerException {
-        StartTls startTlsFeature = getFeature(StartTls.ELEMENT, StartTls.NAMESPACE);
+        StartTls startTlsFeature = getFeature(StartTls.class);
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
                 SecurityRequiredByServerException smackException = new SecurityRequiredByServerException();

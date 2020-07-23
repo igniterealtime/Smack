@@ -339,7 +339,7 @@ public final class EntityCapsManager extends Manager {
             }
             private void processCapsStreamFeatureIfAvailable(XMPPConnection connection) {
                 CapsExtension capsExtension = connection.getFeature(
-                                CapsExtension.ELEMENT, CapsExtension.NAMESPACE);
+                                CapsExtension.class);
                 if (capsExtension == null) {
                     return;
                 }
