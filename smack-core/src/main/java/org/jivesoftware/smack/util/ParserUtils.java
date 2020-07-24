@@ -63,6 +63,17 @@ public class ParserUtils {
         assert parser.getEventType() == XmlPullParser.Event.END_ELEMENT;
     }
 
+    public static void forwardToStartElement(XmlPullParser parser) throws XmlPullParserException, IOException {
+         // Wind the parser forward to the first start tag
+        XmlPullParser.Event event = parser.getEventType();
+        while (event != XmlPullParser.Event.START_ELEMENT) {
+            if (event == XmlPullParser.Event.END_DOCUMENT) {
+                throw new IllegalArgumentException("Document contains no start tag");
+            }
+            event = parser.next();
+        }
+    }
+
     public static void forwardToEndTagOfDepth(XmlPullParser parser, int depth)
                     throws XmlPullParserException, IOException {
         XmlPullParser.Event event = parser.getEventType();
