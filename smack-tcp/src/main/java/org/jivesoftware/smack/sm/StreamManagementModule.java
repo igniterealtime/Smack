@@ -91,7 +91,7 @@ public class StreamManagementModule extends ModularXmppClientToServerConnectionM
             addPredeccessor(AuthenticatedButUnboundStateDescriptor.class);
             addSuccessor(AuthenticatedAndResourceBoundStateDescriptor.class);
             declarePrecedenceOver(ResourceBindingStateDescriptor.class);
-            declareInferiortyTo(CompressionStateDescriptor.class);
+            declareInferiorityTo(CompressionStateDescriptor.class);
         }
 
         @Override

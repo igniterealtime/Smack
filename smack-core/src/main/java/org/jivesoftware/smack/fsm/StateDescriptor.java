@@ -133,7 +133,7 @@ public abstract class StateDescriptor {
         addAndCheckNonExistent(precedenceOver, subordinate);
     }
 
-    protected void declareInferiortyTo(Class<? extends StateDescriptor> superior) {
+    protected void declareInferiorityTo(Class<? extends StateDescriptor> superior) {
         addAndCheckNonExistent(inferiorTo, superior);
     }
 
