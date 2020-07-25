@@ -22,11 +22,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 
 public abstract class StateDescriptor {
+
+    private static final Logger LOGGER = Logger.getLogger(StateDescriptor.class.getName());
 
     public enum Property {
         multiVisitState,
@@ -133,8 +137,33 @@ public abstract class StateDescriptor {
         addAndCheckNonExistent(precedenceOver, subordinate);
     }
 
+    protected void declarePrecedenceOver(String subordinate) {
+        addAndCheckNonExistent(precedenceOver, subordinate);
+    }
+
     protected void declareInferiorityTo(Class<? extends StateDescriptor> superior) {
         addAndCheckNonExistent(inferiorTo, superior);
+    }
+
+    protected void declareInferiorityTo(String superior) {
+        addAndCheckNonExistent(inferiorTo, superior);
+    }
+
+    private static void addAndCheckNonExistent(Set<Class<? extends StateDescriptor>> set, String clazzName) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(clazzName);
+        } catch (ClassNotFoundException e) {
+            // The state descriptor class is not in classpath, which probably means that the smack module is not loaded
+            // into the classpath. Hence we can silently ignore that.
+            LOGGER.log(Level.FINEST, "Ignoring unknown state descriptor '" + clazzName + "'", e);
+            return;
+        }
+        if (!StateDescriptor.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException(clazz + " is no state descriptor class");
+        }
+        Class<? extends StateDescriptor> stateDescriptorClass = clazz.asSubclass(StateDescriptor.class);
+        addAndCheckNonExistent(set, stateDescriptorClass);
     }
 
     private static <E> void addAndCheckNonExistent(Set<E> set, E e) {
