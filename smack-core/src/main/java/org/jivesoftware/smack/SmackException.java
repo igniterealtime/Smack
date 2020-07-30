@@ -364,7 +364,7 @@ public abstract class SmackException extends Exception {
             if (lookupFailures.isEmpty()) {
                 sb.append("No endpoint lookup finished within the timeout");
             } else {
-                sb.append("Not endpoints could be discovered due the following lookup failures: ");
+                sb.append("No endpoints could be discovered due the following lookup failures: ");
                 StringUtils.appendTo(lookupFailures, sb);
             }
 
