@@ -110,7 +110,7 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract void asyncGo(Runnable runnable);
 
-    public abstract void waitForCondition(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException;
+    public abstract void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException;
 
     public abstract void notifyWaitingThreads();
 
