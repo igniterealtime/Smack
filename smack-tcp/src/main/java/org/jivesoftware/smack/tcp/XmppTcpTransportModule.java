@@ -1165,7 +1165,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         }
 
         private void waitForHandshakeFinished() throws InterruptedException, CertificateException, SSLException, SmackException, XMPPException {
-            connectionInternal.waitForCondition(() -> isHandshakeFinished(), "TLS handshake to finish");
+            connectionInternal.waitForConditionOrThrowConnectionException(() -> isHandshakeFinished(), "TLS handshake to finish");
 
             if (handshakeStatus == TlsHandshakeStatus.failed) {
                 throw handshakeException;

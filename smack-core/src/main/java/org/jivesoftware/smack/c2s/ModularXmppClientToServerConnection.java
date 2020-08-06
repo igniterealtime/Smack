@@ -199,7 +199,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public void waitForCondition(Supplier<Boolean> condition, String waitFor)
+            public void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor)
                             throws InterruptedException, SmackException, XMPPException {
                 ModularXmppClientToServerConnection.this.waitForConditionOrThrowConnectionException(condition, waitFor);
             }
