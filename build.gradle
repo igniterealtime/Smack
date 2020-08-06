@@ -122,8 +122,8 @@ allprojects {
 		// See also:
 		// - https://issues.apache.org/jira/browse/MNG-6232
 		// - https://issues.igniterealtime.org/browse/SMACK-858
-		jxmppVersion = '1.0.0'
-		miniDnsVersion = '1.0.0'
+		jxmppVersion = '[1.0.0, 1.0.999]'
+		miniDnsVersion = '[1.0.0, 1.0.999]'
 		smackMinAndroidSdk = 19
 		junitVersion = '5.6.2'
 		commonsIoVersion = '2.6'
@@ -305,6 +305,13 @@ configure (junit4Projects) {
 	}
 }
 
+// We need to evaluate the child projects first because
+// - javadocAll needs the smack-core child to have already resolved
+//   the jXMPP/MiniDNS dependencies, so that we can the resovled
+//   version to link to those project's javadoc.
+// - We use the child's project description as description for the
+//   Maven POM.
+evaluationDependsOnChildren()
 task javadocAll(type: Javadoc) {
 	source javadocAllProjects.collect {project ->
 		project.sourceSets.main.allJava.findAll {
@@ -319,13 +326,15 @@ task javadocAll(type: Javadoc) {
 	classpath = files(subprojects.collect {project ->
 		project.sourceSets.main.compileClasspath})
 	classpath += files(androidBootClasspath)
+	def staticJxmppVersion = getResolvedVersion('org.jxmpp:jxmpp-core')
+	def staticMiniDnsVersion = getResolvedVersion('org.minidns:minidns-core')
 	options {
 		linkSource = true
 		use = true
 		links = [
 		"https://docs.oracle.com/javase/${javaMajor}/docs/api/",
-		"https://jxmpp.org/releases/$jxmppVersion/javadoc/",
-		"https://minidns.org/releases/$miniDnsVersion/javadoc/",
+		"https://jxmpp.org/releases/${staticJxmppVersion}/javadoc/",
+		"https://minidns.org/releases/${staticMiniDnsVersion}/javadoc/",
 		] as String[]
 		overview = "$projectDir/resources/javadoc-overview.html"
 	}
@@ -408,7 +417,6 @@ description = """\
 Smack ${version}
 ${oneLineDesc}."""
 
-evaluationDependsOnChildren()
 subprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'signing'
@@ -739,4 +747,25 @@ def readVersionFile() {
 		throw new Exception("Version file does not contain a version")
 	}
 	versionFile.text.trim()
+}
+
+def getResolvedVersion(queriedProject = 'smack-core', component) {
+	def configuration = project(queriedProject)
+		.configurations
+		.compileClasspath
+
+	def artifact = configuration
+		.resolvedConfiguration
+		.resolvedArtifacts
+		.findAll {
+			// 'it' is of type ResolvedArtifact, 'id' of
+			// Component*Artifcat*Identifier, and we check the
+			// ComponentIdentifier.
+			it.id.getComponentIdentifier() instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
+		}
+	    .find {
+			it.id.getComponentIdentifier().toString().startsWith(component + ':')
+		}
+
+	artifact.getModuleVersion().getId().getVersion()
 }
