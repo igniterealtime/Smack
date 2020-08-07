@@ -82,14 +82,7 @@ public class PacketParserUtils {
 
     public static XmlPullParser getParserFor(Reader reader) throws XmlPullParserException, IOException {
         XmlPullParser parser = SmackXmlParser.newXmlParser(reader);
-        // Wind the parser forward to the first start tag
-        XmlPullParser.Event event = parser.getEventType();
-        while (event != XmlPullParser.Event.START_ELEMENT) {
-            if (event == XmlPullParser.Event.END_DOCUMENT) {
-                throw new IllegalArgumentException("Document contains no start tag");
-            }
-            event = parser.next();
-        }
+        ParserUtils.forwardToStartElement(parser);
         return parser;
     }
 

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -132,6 +133,7 @@ public final class HttpLookupMethod {
      * @throws URISyntaxException exception to indicate that a string could not be parsed as a URI reference
      */
     public static List<URI> parseXrdLinkReferencesFor(XmlPullParser parser, String relation) throws IOException, XmlPullParserException, URISyntaxException {
+        ParserUtils.forwardToStartElement(parser);
         List<URI> uriList = new ArrayList<>();
         int initialDepth = parser.getDepth();
 
