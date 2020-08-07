@@ -836,6 +836,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // there is an error establishing the connection
         connectUsingConfiguration();
 
+        connected = true;
+
         // We connected successfully to the servers TCP port
         initConnection();
 

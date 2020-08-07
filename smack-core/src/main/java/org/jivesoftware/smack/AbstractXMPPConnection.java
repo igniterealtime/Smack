@@ -522,6 +522,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         closingStreamReceived = false;
         streamId = null;
 
+        // The connection should not be connected nor marked as such prior calling connectInternal().
+        assert !connected;
+
         try {
             // Perform the actual connection to the XMPP service
             connectInternal();
@@ -537,8 +540,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             throw e;
         }
 
-        // Make note of the fact that we're now connected.
-        connected = true;
+        // If connectInternal() did not throw, then this connection must now be marked as connected.
+        assert connected;
+
         callConnectionConnectedListener();
 
         return this;

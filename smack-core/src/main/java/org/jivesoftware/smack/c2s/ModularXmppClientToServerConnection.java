@@ -217,6 +217,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             @Override
             public void setTransport(XmppClientToServerTransport xmppTransport) {
                 ModularXmppClientToServerConnection.this.activeTransport = xmppTransport;
+                ModularXmppClientToServerConnection.this.connected = true;
             }
 
         };

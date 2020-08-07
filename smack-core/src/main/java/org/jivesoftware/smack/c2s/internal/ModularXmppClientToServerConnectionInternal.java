@@ -116,5 +116,11 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract void setCompressionEnabled(boolean compressionEnabled);
 
+    /**
+     * Set the active transport (TCP, BOSH, WebSocket, …) to be used for the XMPP connection. Also marks the connection
+     * as connected.
+     *
+     * @param xmppTransport the active transport.
+     */
     public abstract void setTransport(XmppClientToServerTransport xmppTransport);
 }
