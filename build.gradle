@@ -686,19 +686,19 @@ task sinttestAll {
 }
 
 def getGitCommit() {
-	def dotGit = new File("$projectDir/.git")
+	def projectDirFile = new File("$projectDir")
+	def dotGit = new File(projectDirFile, ".git")
 	if (!dotGit.isDirectory()) return 'non-git build'
 
-	def projectDir = dotGit.getParentFile()
 	def cmd = 'git describe --always --tags --dirty=+'
-	def proc = cmd.execute(null, projectDir)
+	def proc = cmd.execute(null, projectDirFile)
 	proc.waitForOrKill(10 * 1000)
 
 	def gitCommit = proc.text.trim()
 	assert !gitCommit.isEmpty()
 
     def srCmd = 'git symbolic-ref --short HEAD'
-    def srProc = srCmd.execute(null, projectDir)
+    def srProc = srCmd.execute(null, projectDirFile)
     srProc.waitForOrKill(10 * 1000)
     if (srProc.exitValue() == 0) {
         // Only add the information if the git command was
