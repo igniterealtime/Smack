@@ -1,0 +1,8 @@
+description = """\
+Smack support for XMPP Stream Management (XEP-0198)."""
+
+dependencies {
+	api project(':smack-core')
+
+	testFixturesApi(testFixtures(project(":smack-core")))
+}
