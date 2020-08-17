@@ -71,7 +71,7 @@ public class XmlEnvironment {
     }
 
     public String getEffectiveNamespaceOrUse(String namespace) {
-        String effectiveNamespace = getEffectiveLanguage();
+        String effectiveNamespace = getEffectiveNamespace();
         if (StringUtils.isNullOrEmpty(effectiveNamespace)) {
             return namespace;
         }
