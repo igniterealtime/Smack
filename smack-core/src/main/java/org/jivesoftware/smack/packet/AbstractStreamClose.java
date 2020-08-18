@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2020 Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,5 @@
  */
 package org.jivesoftware.smack.packet;
 
-public final class StreamClose extends AbstractStreamClose {
-
-    public static final StreamClose INSTANCE = new StreamClose();
-
-    private StreamClose() {
-    }
-
-    @Override
-    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        return "</" + getElementName() + '>';
-    }
-
-    @Override
-    public String getNamespace() {
-        // Closing XML tags do never explicitly state their namespace.
-        return "(none)";
-    }
-
-    @Override
-    public String getElementName() {
-        return StreamOpen.ELEMENT;
-    }
-
+public abstract class AbstractStreamClose implements Nonza {
 }

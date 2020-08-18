@@ -58,6 +58,8 @@ public abstract class XmppClientToServerTransport {
         return getSslSession() != null;
     }
 
+    public abstract StreamOpenAndCloseFactory getStreamOpenAndCloseFactory();
+
     public abstract Stats getStats();
 
     public abstract static class Stats {

@@ -2243,7 +2243,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         StreamOpen streamOpen = new StreamOpen(to, from, id, config.getXmlLang(), StreamOpen.StreamContentNamespace.client);
         sendNonza(streamOpen);
+        updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
+    }
 
+    protected void updateOutgoingStreamXmlEnvironmentOnStreamOpen(StreamOpen streamOpen) {
         XmlEnvironment.Builder xmlEnvironmentBuilder = XmlEnvironment.builder();
         xmlEnvironmentBuilder.with(streamOpen);
         outgoingStreamXmlEnvironment = xmlEnvironmentBuilder.build();
