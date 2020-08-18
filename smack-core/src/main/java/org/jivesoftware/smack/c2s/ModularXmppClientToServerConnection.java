@@ -68,6 +68,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StreamClose;
 import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -81,7 +82,9 @@ import org.jivesoftware.smack.util.Supplier;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.util.XmppStringUtils;
 
 public final class ModularXmppClientToServerConnection extends AbstractXMPPConnection {
 
@@ -560,8 +563,24 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     protected void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
                     SmackException, XMPPException {
         prepareToWaitForFeaturesReceived();
-        sendStreamOpen();
+
+        // Create StreamOpen from StreamOpenAndCloseFactory via underlying transport.
+        StreamOpenAndCloseFactory streamOpenAndCloseFactory = activeTransport.getStreamOpenAndCloseFactory();
+        CharSequence from = null;
+        CharSequence localpart = connectionInternal.connection.getConfiguration().getUsername();
+        DomainBareJid xmppServiceDomain = getXMPPServiceDomain();
+        if (localpart != null) {
+            from = XmppStringUtils.completeJidFrom(localpart, xmppServiceDomain);
+        }
+        StreamOpen streamOpen = streamOpenAndCloseFactory.createStreamOpen(xmppServiceDomain, from, getStreamId(), getConfiguration().getXmlLang());
+        sendStreamOpen(streamOpen);
+
         waitForFeaturesReceived(waitFor);
+    }
+
+    private void sendStreamOpen(StreamOpen streamOpen) throws NotConnectedException, InterruptedException {
+        sendNonza(streamOpen);
+        updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
     }
 
     public static class DisconnectedStateDescriptor extends StateDescriptor {

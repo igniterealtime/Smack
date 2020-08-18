@@ -58,6 +58,7 @@ import org.jivesoftware.smack.XmppInputOutputFilter;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.ConnectedButUnauthenticatedStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.LookupRemoteConnectionEndpointsStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModule;
+import org.jivesoftware.smack.c2s.StreamOpenAndCloseFactory;
 import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
@@ -68,6 +69,7 @@ import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
+import org.jivesoftware.smack.packet.StreamClose;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TlsFailure;
 import org.jivesoftware.smack.packet.TlsProceed;
@@ -578,6 +580,22 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
         protected XmppTcpNioTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(connectionInternal);
+        }
+
+        @Override
+        public StreamOpenAndCloseFactory getStreamOpenAndCloseFactory() {
+            return new StreamOpenAndCloseFactory() {
+                @Override
+                public StreamOpen createStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+                    String xmlLang = connectionInternal.connection.getConfiguration().getXmlLang();
+                    StreamOpen streamOpen = new StreamOpen(to, from, id, xmlLang, StreamOpen.StreamContentNamespace.client);
+                    return streamOpen;
+                }
+                @Override
+                public StreamClose createStreamClose() {
+                    return StreamClose.INSTANCE;
+                }
+            };
         }
 
         @Override
