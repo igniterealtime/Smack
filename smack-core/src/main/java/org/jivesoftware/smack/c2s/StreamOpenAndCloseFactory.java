@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smack.c2s;
 
-import org.jivesoftware.smack.packet.StreamClose;
-import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.AbstractStreamClose;
+import org.jivesoftware.smack.packet.AbstractStreamOpen;
 
 public interface StreamOpenAndCloseFactory {
-    StreamOpen createStreamOpen(CharSequence to, CharSequence from, String id, String lang);
+    AbstractStreamOpen createStreamOpen(CharSequence to, CharSequence from, String id, String lang);
 
-    StreamClose createStreamClose();
+    AbstractStreamClose createStreamClose();
 }

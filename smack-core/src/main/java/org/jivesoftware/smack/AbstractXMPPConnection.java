@@ -70,6 +70,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
+import org.jivesoftware.smack.packet.AbstractStreamOpen;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -2246,7 +2247,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
     }
 
-    protected void updateOutgoingStreamXmlEnvironmentOnStreamOpen(StreamOpen streamOpen) {
+    protected void updateOutgoingStreamXmlEnvironmentOnStreamOpen(AbstractStreamOpen streamOpen) {
         XmlEnvironment.Builder xmlEnvironmentBuilder = XmlEnvironment.builder();
         xmlEnvironmentBuilder.with(streamOpen);
         outgoingStreamXmlEnvironment = xmlEnvironmentBuilder.build();

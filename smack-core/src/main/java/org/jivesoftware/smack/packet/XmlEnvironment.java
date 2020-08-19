@@ -162,7 +162,7 @@ public class XmlEnvironment {
             return this;
         }
 
-        public Builder with(StreamOpen streamOpen) {
+        public Builder with(AbstractStreamOpen streamOpen) {
             withNamespace(streamOpen.getNamespace());
             withLanguage(streamOpen.getLanguage());
             return this;

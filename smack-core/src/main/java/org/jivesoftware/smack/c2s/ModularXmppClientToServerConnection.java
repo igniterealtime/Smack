@@ -61,6 +61,7 @@ import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.fsm.StateTransitionResult.AttemptResult;
 import org.jivesoftware.smack.internal.AbstractStats;
 import org.jivesoftware.smack.internal.SmackTlsContext;
+import org.jivesoftware.smack.packet.AbstractStreamOpen;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Nonza;
@@ -68,7 +69,6 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StreamClose;
 import org.jivesoftware.smack.packet.StreamError;
-import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -572,13 +572,13 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         if (localpart != null) {
             from = XmppStringUtils.completeJidFrom(localpart, xmppServiceDomain);
         }
-        StreamOpen streamOpen = streamOpenAndCloseFactory.createStreamOpen(xmppServiceDomain, from, getStreamId(), getConfiguration().getXmlLang());
+        AbstractStreamOpen streamOpen = streamOpenAndCloseFactory.createStreamOpen(xmppServiceDomain, from, getStreamId(), getConfiguration().getXmlLang());
         sendStreamOpen(streamOpen);
 
         waitForFeaturesReceived(waitFor);
     }
 
-    private void sendStreamOpen(StreamOpen streamOpen) throws NotConnectedException, InterruptedException {
+    private void sendStreamOpen(AbstractStreamOpen streamOpen) throws NotConnectedException, InterruptedException {
         sendNonza(streamOpen);
         updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
     }
