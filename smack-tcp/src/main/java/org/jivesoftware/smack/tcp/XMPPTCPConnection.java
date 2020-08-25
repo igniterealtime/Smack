@@ -538,7 +538,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         // If we are able to resume the stream, then don't set
-        // connected/authenticated/usingTLS to false since we like behave like we are still
+        // connected/authenticated/usingTLS to false since we like to behave like we are still
         // connected (e.g. sendStanza should not throw a NotConnectedException).
         if (isSmResumptionPossible() && instant) {
             disconnectedButResumeable = true;
