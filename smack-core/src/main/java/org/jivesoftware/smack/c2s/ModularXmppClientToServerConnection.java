@@ -560,6 +560,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         waitForConditionOrThrowConnectionException(() -> featuresReceived, waitFor);
     }
 
+    @Override
+    protected AbstractStreamOpen getStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+        StreamOpenAndCloseFactory streamOpenAndCloseFactory = activeTransport.getStreamOpenAndCloseFactory();
+        return streamOpenAndCloseFactory.createStreamOpen(to, from, id, lang);
+    }
+
     protected void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
                     SmackException, XMPPException {
         prepareToWaitForFeaturesReceived();

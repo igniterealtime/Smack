@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ public final class StreamOpen extends AbstractStreamOpen {
 
     public StreamOpen(CharSequence to, CharSequence from, String id) {
         this(to, from, id, "en", StreamContentNamespace.client);
+    }
+
+    public StreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+        super(to, from, id, lang);
     }
 
     public StreamOpen(CharSequence to, CharSequence from, String id, String lang, StreamContentNamespace ns) {
