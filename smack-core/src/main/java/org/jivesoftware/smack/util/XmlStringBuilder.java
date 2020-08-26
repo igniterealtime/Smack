@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -43,7 +42,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         effectiveXmlEnvironment = null;
     }
 
-    public XmlStringBuilder(ExtensionElement pe) {
+    public XmlStringBuilder(FullyQualifiedElement pe) {
         this(pe, null);
     }
 
