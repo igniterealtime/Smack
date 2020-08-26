@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,7 +151,7 @@ public class JingleReason implements FullyQualifiedElement {
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            XmlStringBuilder xml = new XmlStringBuilder(this);
+            XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.rightAngleBracket();
 
             xml.openElement(reason.asString);
