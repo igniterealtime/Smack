@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Florian Schmaus, Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,6 +59,10 @@ public abstract class AbstractStreamOpen implements Nonza {
      * RFC 6120 § 4.8.2.
      */
     protected final String contentNamespace;
+
+    public AbstractStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+        this(to, from, id, lang, StreamContentNamespace.client);
+    }
 
     public AbstractStreamOpen(CharSequence to, CharSequence from, String id, String lang, StreamContentNamespace ns) {
         this.to = StringUtils.maybeToString(to);

@@ -2229,7 +2229,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
-    protected void sendStreamOpen() throws NotConnectedException, InterruptedException {
+    protected final void sendStreamOpen() throws NotConnectedException, InterruptedException {
         // If possible, provide the receiving entity of the stream open tag, i.e. the server, as much information as
         // possible. The 'to' attribute is *always* available. The 'from' attribute if set by the user and no external
         // mechanism is used to determine the local entity (user). And the 'id' attribute is available after the first
@@ -2241,10 +2241,15 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             from = XmppStringUtils.completeJidFrom(localpart, to);
         }
         String id = getStreamId();
+        String lang = config.getXmlLang();
 
-        StreamOpen streamOpen = new StreamOpen(to, from, id, config.getXmlLang(), StreamOpen.StreamContentNamespace.client);
+        AbstractStreamOpen streamOpen = getStreamOpen(to, from, id, lang);
         sendNonza(streamOpen);
         updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
+    }
+
+    protected AbstractStreamOpen getStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+        return new StreamOpen(to, from, id, lang);
     }
 
     protected void updateOutgoingStreamXmlEnvironmentOnStreamOpen(AbstractStreamOpen streamOpen) {
