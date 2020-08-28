@@ -25,15 +25,26 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 
+import org.jxmpp.util.cache.LruCache;
+
 public class XmppElementUtil {
+
+    private static final LruCache<Class<? extends FullyQualifiedElement>, QName> CLASS_TO_QNAME_CACHE = new LruCache<>(512);
 
     public static final Logger LOGGER = Logger.getLogger(XmppElementUtil.class.getName());
 
     public static QName getQNameFor(Class<? extends FullyQualifiedElement> fullyQualifiedElement) {
+        QName qname = CLASS_TO_QNAME_CACHE.get(fullyQualifiedElement);
+        if (qname != null) {
+            return qname;
+        }
+
         try {
             Object qnameObject = fullyQualifiedElement.getField("QNAME").get(null);
             if (QName.class.isAssignableFrom(qnameObject.getClass())) {
-                return (QName) qnameObject;
+                qname = (QName) qnameObject;
+                CLASS_TO_QNAME_CACHE.put(fullyQualifiedElement, qname);
+                return qname;
             }
             LOGGER.warning("The QNAME field of " + fullyQualifiedElement + " is not of type QNAME.");
         } catch (NoSuchFieldException e) {
@@ -52,7 +63,9 @@ public class XmppElementUtil {
             throw new IllegalArgumentException("The " + fullyQualifiedElement + " has no ELEMENT, NAMESPACE or QNAME member. Consider adding QNAME", e);
         }
 
-        return new QName(namespace, element);
+        qname = new QName(namespace, element);
+        CLASS_TO_QNAME_CACHE.put(fullyQualifiedElement, qname);
+        return qname;
     }
 
     public static <E extends FullyQualifiedElement, R extends FullyQualifiedElement> List<R> getElementsFrom(
