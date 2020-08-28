@@ -23,7 +23,10 @@ import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.provider.ProviderManager;
 
 import org.jxmpp.util.cache.LruCache;
 
@@ -68,21 +71,47 @@ public class XmppElementUtil {
         return qname;
     }
 
-    public static <E extends FullyQualifiedElement, R extends FullyQualifiedElement> List<R> getElementsFrom(
-                    MultiMap<QName, E> elementMap, Class<R> extensionElementClass) {
+    public static <E extends ExtensionElement> List<E> getElementsFrom(
+                    MultiMap<QName, ExtensionElement> elementMap, Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);
 
-        List<E> extensionElements = elementMap.getAll(qname);
+        List<ExtensionElement> extensionElements = elementMap.getAll(qname);
 
         if (extensionElements.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<R> res = new ArrayList<>(extensionElements.size());
-        for (E extensionElement : extensionElements) {
-            R e = extensionElementClass.cast(extensionElement);
+        List<E> res = new ArrayList<>(extensionElements.size());
+        for (ExtensionElement extensionElement : extensionElements) {
+            E e = castOrThrow(extensionElement, extensionElementClass);
             res.add(e);
         }
         return res;
     }
+
+    public static <E extends ExtensionElement> E castOrThrow(ExtensionElement extensionElement, Class<E> extensionElementClass) {
+        if (!extensionElementClass.isInstance(extensionElement)) {
+            final QName qname = getQNameFor(extensionElementClass);
+
+            final String detailMessage;
+            if (extensionElement instanceof StandardExtensionElement) {
+                detailMessage = "because there is no according extension element provider registered with ProviderManager for "
+                                + qname
+                                + ". WARNING: This indicates a serious problem with your Smack setup, probably causing Smack not being able to properly initialize itself.";
+            } else {
+                Object provider = ProviderManager.getExtensionProvider(qname);
+                detailMessage = "because there is an inconsistency with the provider registered with ProviderManager: the active provider for "
+                                + qname + " '" + provider.getClass()
+                                + "' does not return instances of type " + extensionElementClass
+                                + ", but instead returns instances of type " + extensionElement.getClass() + ".";
+            }
+
+            String message = "Extension element is not of expected class '" + extensionElementClass.getName() + "', "
+                            + detailMessage;
+            throw new IllegalStateException(message);
+        }
+
+        return extensionElementClass.cast(extensionElement);
+    }
+
 }
