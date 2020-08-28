@@ -243,7 +243,11 @@ public final class ProviderManager {
      */
     public static ExtensionElementProvider<ExtensionElement> getExtensionProvider(String elementName, String namespace) {
         QName key = getQName(elementName, namespace);
-        return extensionProviders.get(key);
+        return getExtensionProvider(key);
+    }
+
+    public static ExtensionElementProvider<ExtensionElement> getExtensionProvider(QName qname) {
+        return extensionProviders.get(qname);
     }
 
     /**
