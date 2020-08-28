@@ -90,11 +90,12 @@ public interface StanzaView extends XmlLangElement {
     default <E extends ExtensionElement> E getExtension(Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);
         ExtensionElement extensionElement = getExtension(qname);
-        if (!extensionElementClass.isInstance(extensionElement)) {
+
+        if (extensionElement == null) {
             return null;
         }
 
-        return extensionElementClass.cast(extensionElement);
+        return XmppElementUtil.castOrThrow(extensionElement, extensionElementClass);
     }
 
     /**
