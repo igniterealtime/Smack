@@ -30,6 +30,7 @@ include 'smack-core',
 		'smack-omemo-signal-integration-test',
 		'smack-repl',
 		'smack-openpgp',
+		'smack-websocket',
 		'smack-xmlparser',
 		'smack-xmlparser-stax',
 		'smack-xmlparser-xpp3'

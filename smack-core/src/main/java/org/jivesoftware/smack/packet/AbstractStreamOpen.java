@@ -19,6 +19,7 @@ package org.jivesoftware.smack.packet;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.StreamOpen.StreamContentNamespace;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * AbstractStreamOpen is actually a {@link TopLevelStreamElement}, however we
@@ -79,5 +80,10 @@ public abstract class AbstractStreamOpen implements Nonza {
         default:
             throw new IllegalStateException();
         }
+    }
+
+    protected final void addCommonAttributes(XmlStringBuilder xml) {
+        xml.optAttribute("to", to);
+        xml.optAttribute("version", VERSION);
     }
 }

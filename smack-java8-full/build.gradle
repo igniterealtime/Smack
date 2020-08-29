@@ -12,6 +12,7 @@ dependencies {
 	api project(':smack-openpgp')
 	api project(':smack-resolver-minidns')
 	api project(':smack-resolver-minidns-dox')
+	api project(':smack-websocket')
 	api project(':smack-tcp')
 
 	testImplementation 'com.google.guava:guava:28.2-jre'
