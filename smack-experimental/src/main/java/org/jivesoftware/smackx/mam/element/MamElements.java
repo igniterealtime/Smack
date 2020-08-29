@@ -18,9 +18,11 @@ package org.jivesoftware.smackx.mam.element;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -53,6 +55,11 @@ public class MamElements {
          * result element.
          */
         public static final String ELEMENT = "result";
+
+        /**
+         * The qualified name of the MAM result extension element.
+         */
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         /**
          * id of the result.
@@ -139,8 +146,8 @@ public class MamElements {
             return xml;
         }
 
-        public static MamResultExtension from(Message message) {
-            return (MamResultExtension) message.getExtensionElement(ELEMENT, NAMESPACE);
+        public static MamResultExtension from(MessageView message) {
+            return message.getExtension(MamResultExtension.class);
         }
 
     }
