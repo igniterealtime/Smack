@@ -540,13 +540,22 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // If we are able to resume the stream, then don't set
         // connected/authenticated/usingTLS to false since we like to behave like we are still
         // connected (e.g. sendStanza should not throw a NotConnectedException).
-        if (isSmResumptionPossible() && instant) {
-            disconnectedButResumeable = true;
+        if (instant) {
+            disconnectedButResumeable = isSmResumptionPossible();
+            if (!disconnectedButResumeable) {
+                // Reset the stream management session id to null, since the stream is no longer resumable. Note that we
+                // keep the unacknowledgedStanzas queue, because we want to resend them when we are reconnected.
+                smSessionId = null;
+            }
         } else {
             disconnectedButResumeable = false;
-            // Reset the stream management session id to null, since if the stream is cleanly closed, i.e. sending a closing
-            // stream tag, there is no longer a stream to resume.
-            smSessionId = null;
+
+            // Drop the stream management state if this is not an instant shutdown. We send
+            // a </stream> close tag and now the stream management state is no longer valid.
+            // This also prevents that we will potentially (re-)send any unavailable presence we
+            // may have send, because it got put into the unacknowledged queue and was not acknowledged before the
+            // connection terminated.
+            dropSmState();
             // Note that we deliberately do not reset authenticatedConnectionInitiallyEstablishedTimestamp here, so that the
             // information is available in the connectionClosedOnError() listeners.
         }
