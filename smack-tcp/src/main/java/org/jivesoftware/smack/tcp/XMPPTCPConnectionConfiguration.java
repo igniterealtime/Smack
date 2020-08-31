@@ -28,7 +28,6 @@ import org.jivesoftware.smack.ConnectionConfiguration;
  * {@code
  * XMPPTCPConnectionConfiguration conf = XMPPTCPConnectionConfiguration.builder()
  *     .setXmppDomain("example.org").setUsernameAndPassword("user", "password")
- *     .setCompressionEnabled(false).build();
  * XMPPTCPConnection connection = new XMPPTCPConnection(conf);
  * }
  * </pre>
