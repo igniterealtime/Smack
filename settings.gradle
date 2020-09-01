@@ -31,6 +31,7 @@ include 'smack-core',
 		'smack-repl',
 		'smack-openpgp',
 		'smack-websocket',
+		'smack-websocket-okhttp',
 		'smack-xmlparser',
 		'smack-xmlparser-stax',
 		'smack-xmlparser-xpp3'

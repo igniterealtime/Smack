@@ -14,4 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.implementations.okhttp;
+/**
+ * This package contains websocket implementations to be plugged inside websocket transport.
+ */
+package org.jivesoftware.smack.websocket.impl;

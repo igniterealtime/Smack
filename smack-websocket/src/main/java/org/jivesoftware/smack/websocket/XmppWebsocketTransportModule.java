@@ -53,7 +53,7 @@ import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
 import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.XmppWebsocketTransport.DiscoveredWebsocketEndpoints;
 import org.jivesoftware.smack.websocket.elements.WebsocketCloseElement;
 import org.jivesoftware.smack.websocket.elements.WebsocketOpenElement;
-import org.jivesoftware.smack.websocket.implementations.AbstractWebsocket;
+import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
 import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpointLookup;
 import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpointLookup.Result;

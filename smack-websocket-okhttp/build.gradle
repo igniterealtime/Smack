@@ -1,0 +1,10 @@
+description = """\
+Smack for XMPP connections over WebSocket (RFC 7395) using OkHttp."""
+
+dependencies {
+	api project(':smack-websocket')
+
+	testFixturesApi(testFixtures(project(':smack-websocket')))
+
+	implementation("com.squareup.okhttp3:okhttp:4.6.0")
+}

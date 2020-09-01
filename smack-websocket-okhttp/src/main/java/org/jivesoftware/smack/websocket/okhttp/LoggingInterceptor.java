@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.implementations.okhttp;
+package org.jivesoftware.smack.websocket.okhttp;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

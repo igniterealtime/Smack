@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.implementations.okhttp;
+package org.jivesoftware.smack.websocket.okhttp;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -28,9 +28,8 @@ import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionIn
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.websocket.WebsocketException;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.XmppWebsocketTransport.DiscoveredWebsocketEndpoints;
 import org.jivesoftware.smack.websocket.elements.WebsocketOpenElement;
-import org.jivesoftware.smack.websocket.implementations.AbstractWebsocket;
+import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
 import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -54,8 +53,7 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
     private WebsocketConnectionPhase phase;
     private WebsocketRemoteConnectionEndpoint connectedEndpoint;
 
-    public OkHttpWebsocket(ModularXmppClientToServerConnectionInternal connectionInternal,
-            DiscoveredWebsocketEndpoints discoveredWebsocketEndpoints) {
+    public OkHttpWebsocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
         this.connectionInternal = connectionInternal;
 
         if (okHttpClient == null) {

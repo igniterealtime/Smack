@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@
  */
 package org.jivesoftware.smack.websocket;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.EstablishingWebsocketConnectionState;
-import org.jivesoftware.smack.websocket.implementations.AbstractWebsocket;
-import org.jivesoftware.smack.websocket.implementations.WebsocketImplProvider;
-import org.jivesoftware.smack.websocket.implementations.okhttp.OkHttpWebsocket;
+import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
+import org.jivesoftware.smack.websocket.impl.WebsocketFactoryService;
 import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
 
 public final class WebsocketConnectionAttemptState {
@@ -56,15 +54,7 @@ public final class WebsocketConnectionAttemptState {
         }
 
         List<Throwable> connectionFailureList = new ArrayList<>();
-        AbstractWebsocket websocket;
-
-        try {
-            // Obtain desired websocket implementation by using WebsocketImplProvider
-            websocket = WebsocketImplProvider.getWebsocketImpl(OkHttpWebsocket.class, connectionInternal, discoveredEndpoints);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException |
-                IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
-            throw new WebsocketException(exception);
-        }
+        AbstractWebsocket websocket = WebsocketFactoryService.createWebsocket(connectionInternal);
 
         // Keep iterating over available endpoints until a connection is establised or all endpoints are tried to create a connection with.
         for (WebsocketRemoteConnectionEndpoint endpoint : endpoints) {
