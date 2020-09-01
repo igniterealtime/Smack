@@ -28,17 +28,17 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpoint;
 
-public final class WebsocketRemoteConnectionEndpoint implements RemoteConnectionEndpoint {
+public final class WebSocketRemoteConnectionEndpoint implements RemoteConnectionEndpoint {
 
     private static final Logger LOGGER = Logger.getAnonymousLogger();
 
     private final URI uri;
 
-    public WebsocketRemoteConnectionEndpoint(String uri) throws URISyntaxException {
+    public WebSocketRemoteConnectionEndpoint(String uri) throws URISyntaxException {
         this(new URI(uri));
     }
 
-    public WebsocketRemoteConnectionEndpoint(URI uri) {
+    public WebSocketRemoteConnectionEndpoint(URI uri) {
         this.uri = uri;
         String scheme = uri.getScheme();
         if (!(scheme.equals("ws") || scheme.equals("wss"))) {
@@ -46,7 +46,7 @@ public final class WebsocketRemoteConnectionEndpoint implements RemoteConnection
         }
     }
 
-    public URI getWebsocketEndpoint() {
+    public URI getWebSocketEndpoint() {
         return uri;
     }
 

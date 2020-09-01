@@ -27,10 +27,10 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.websocket.WebsocketException;
-import org.jivesoftware.smack.websocket.elements.WebsocketOpenElement;
-import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
-import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.WebSocketException;
+import org.jivesoftware.smack.websocket.elements.WebSocketOpenElement;
+import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import okhttp3.OkHttpClient;
@@ -39,9 +39,9 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
-public final class OkHttpWebsocket extends AbstractWebsocket {
+public final class OkHttpWebSocket extends AbstractWebSocket {
 
-    private static final Logger LOGGER = Logger.getLogger(OkHttpWebsocket.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(OkHttpWebSocket.class.getName());
 
     private static OkHttpClient okHttpClient = null;
 
@@ -49,11 +49,11 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
     private final LoggingInterceptor interceptor;
 
     private String openStreamHeader;
-    private WebSocket currentWebsocket;
-    private WebsocketConnectionPhase phase;
-    private WebsocketRemoteConnectionEndpoint connectedEndpoint;
+    private WebSocket currentWebSocket;
+    private WebSocketConnectionPhase phase;
+    private WebSocketRemoteConnectionEndpoint connectedEndpoint;
 
-    public OkHttpWebsocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
+    public OkHttpWebSocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
         this.connectionInternal = connectionInternal;
 
         if (okHttpClient == null) {
@@ -70,8 +70,8 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
     }
 
     @Override
-    public void connect(WebsocketRemoteConnectionEndpoint endpoint) throws InterruptedException, SmackException, XMPPException {
-        final String currentUri = endpoint.getWebsocketEndpoint().toString();
+    public void connect(WebSocketRemoteConnectionEndpoint endpoint) throws InterruptedException, SmackException, XMPPException {
+        final String currentUri = endpoint.getWebSocketEndpoint().toString();
         Request request = new Request.Builder()
                               .url(currentUri)
                               .header("Sec-WebSocket-Protocol", "xmpp")
@@ -81,12 +81,12 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
 
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
-                LOGGER.log(Level.FINER, "Websocket is open");
-                phase = WebsocketConnectionPhase.openFrameSent;
+                LOGGER.log(Level.FINER, "WebSocket is open");
+                phase = WebSocketConnectionPhase.openFrameSent;
                 if (interceptor != null) {
                     interceptor.interceptOpenResponse(response);
                 }
-                send(new WebsocketOpenElement(connectionInternal.connection.getXMPPServiceDomain()));
+                send(new WebSocketOpenElement(connectionInternal.connection.getXMPPServiceDomain()));
             }
 
             @Override
@@ -105,7 +105,7 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
                     if (isOpenElement(text)) {
                         // Converts the <open> element received into <stream> element.
                         openStreamHeader = getStreamFromOpenElement(text);
-                        phase = WebsocketConnectionPhase.exchangingTopLevelStreamElements;
+                        phase = WebSocketConnectionPhase.exchangingTopLevelStreamElements;
 
                         try {
                             connectionInternal.onStreamOpen(PacketParserUtils.getParserFor(openStreamHeader));
@@ -127,7 +127,7 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
             @Override
             public void onFailure(WebSocket webSocket, Throwable t, Response response) {
                 LOGGER.log(Level.INFO, "Exception caught", t);
-                WebsocketException websocketException = new WebsocketException(t);
+                WebSocketException websocketException = new WebSocketException(t);
                 if (connectionInternal.connection.isConnected()) {
                     connectionInternal.notifyConnectionError(websocketException);
                 } else {
@@ -137,7 +137,7 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
         };
 
         // Creates an instance of websocket through okHttpClient.
-        currentWebsocket = okHttpClient.newWebSocket(request, listener);
+        currentWebSocket = okHttpClient.newWebSocket(request, listener);
 
         // Open a new stream and wait until features are received.
         connectionInternal.waitForFeaturesReceived("Waiting to receive features");
@@ -151,13 +151,13 @@ public final class OkHttpWebsocket extends AbstractWebsocket {
         if (interceptor != null) {
             interceptor.interceptSentText(textToBeSent);
         }
-        currentWebsocket.send(textToBeSent);
+        currentWebSocket.send(textToBeSent);
     }
 
     @Override
     public void disconnect(int code, String message) {
-        currentWebsocket.close(code, message);
-        LOGGER.log(Level.INFO, "Websocket has been closed with message: " + message);
+        currentWebSocket.close(code, message);
+        LOGGER.log(Level.INFO, "WebSocket has been closed with message: " + message);
     }
 
     @Override

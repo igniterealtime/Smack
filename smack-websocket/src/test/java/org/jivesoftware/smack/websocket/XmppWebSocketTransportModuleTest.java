@@ -31,27 +31,27 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfigurati
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure.HttpLookupFailure;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.XmppWebsocketTransport.DiscoveredWebsocketEndpoints;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.XmppWebsocketTransport.WebsocketEndpointsDiscoveryFailed;
-import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
-import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpointLookup.Result;
+import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints;
+import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.XmppWebSocketTransport.WebSocketEndpointsDiscoveryFailed;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpointLookup.Result;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-public class XmppWebsocketTransportModuleTest {
+public class XmppWebSocketTransportModuleTest {
     @Test
-    public void createWebsocketModuleConnectionInstanceTest() throws URISyntaxException, XmppStringprepException {
+    public void createWebSocketModuleConnectionInstanceTest() throws URISyntaxException, XmppStringprepException {
         ModularXmppClientToServerConnectionConfiguration.Builder builder = ModularXmppClientToServerConnectionConfiguration
                 .builder();
 
         builder.removeAllModules();
-        builder.addModule(XmppWebsocketTransportModuleDescriptor.class);
+        builder.addModule(XmppWebSocketTransportModuleDescriptor.class);
         builder.setXmppAddressAndPassword("user5@localhost.org", "user5");
         builder.setHost("localhost.org");
 
-        XmppWebsocketTransportModuleDescriptor.Builder websocketBuilder = XmppWebsocketTransportModuleDescriptor.getBuilder(builder);
-        websocketBuilder.explicitlySetWebsocketEndpointAndDiscovery(new URI("wss://localhost.org:7443/ws/"), false);
+        XmppWebSocketTransportModuleDescriptor.Builder websocketBuilder = XmppWebSocketTransportModuleDescriptor.getBuilder(builder);
+        websocketBuilder.explicitlySetWebSocketEndpointAndDiscovery(new URI("wss://localhost.org:7443/ws/"), false);
 
         ModularXmppClientToServerConnectionConfiguration config = builder.build();
         ModularXmppClientToServerConnection connection = new ModularXmppClientToServerConnection(config);
@@ -60,26 +60,26 @@ public class XmppWebsocketTransportModuleTest {
 
     @Test
     public void createDescriptorTest() throws URISyntaxException, XmppStringprepException {
-        XmppWebsocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebsocketDescriptor();
+        XmppWebSocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebSocketDescriptor();
         assertNotNull(websocketTransportModuleDescriptor);
     }
 
     @Test
     public void websocketEndpointDiscoveryTest() throws URISyntaxException {
-        XmppWebsocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebsocketDescriptor();
+        XmppWebSocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebSocketDescriptor();
         ModularXmppClientToServerConnectionInternal connectionInternal = mock(ModularXmppClientToServerConnectionInternal.class);
 
-        XmppWebsocketTransportModule transportModule
-                        = new XmppWebsocketTransportModule(websocketTransportModuleDescriptor, connectionInternal);
+        XmppWebSocketTransportModule transportModule
+                        = new XmppWebSocketTransportModule(websocketTransportModuleDescriptor, connectionInternal);
 
-        XmppWebsocketTransportModule.XmppWebsocketTransport transport = transportModule.getTransport();
+        XmppWebSocketTransportModule.XmppWebSocketTransport transport = transportModule.getTransport();
 
-        assertThrows(AssertionError.class, () -> transport.new DiscoveredWebsocketEndpoints(null));
-        assertThrows(AssertionError.class, () -> transport.new WebsocketEndpointsDiscoveryFailed(null));
+        assertThrows(AssertionError.class, () -> transport.new DiscoveredWebSocketEndpoints(null));
+        assertThrows(AssertionError.class, () -> transport.new WebSocketEndpointsDiscoveryFailed(null));
 
-        WebsocketRemoteConnectionEndpoint endpoint = new WebsocketRemoteConnectionEndpoint("wss://localhost.org:7443/ws/");
+        WebSocketRemoteConnectionEndpoint endpoint = new WebSocketRemoteConnectionEndpoint("wss://localhost.org:7443/ws/");
 
-        List<WebsocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints = new ArrayList<>();
+        List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints = new ArrayList<>();
         discoveredRemoteConnectionEndpoints.add(endpoint);
 
         HttpLookupFailure httpLookupFailure = new RemoteConnectionEndpointLookupFailure.HttpLookupFailure(null, null);
@@ -87,38 +87,38 @@ public class XmppWebsocketTransportModuleTest {
         failureList.add(httpLookupFailure);
         Result result = new Result(discoveredRemoteConnectionEndpoints, failureList);
 
-        DiscoveredWebsocketEndpoints discoveredWebsocketEndpoints = transport.new DiscoveredWebsocketEndpoints(result);
-        assertNotNull(discoveredWebsocketEndpoints.getResult());
+        DiscoveredWebSocketEndpoints discoveredWebSocketEndpoints = transport.new DiscoveredWebSocketEndpoints(result);
+        assertNotNull(discoveredWebSocketEndpoints.getResult());
 
-        WebsocketEndpointsDiscoveryFailed endpointsDiscoveryFailed = transport.new WebsocketEndpointsDiscoveryFailed(result);
+        WebSocketEndpointsDiscoveryFailed endpointsDiscoveryFailed = transport.new WebSocketEndpointsDiscoveryFailed(result);
         assertNotNull(endpointsDiscoveryFailed.toString());
     }
 
     @Test
     public void websocketConnectedResultTest() throws URISyntaxException {
-        WebsocketRemoteConnectionEndpoint connectedEndpoint = new WebsocketRemoteConnectionEndpoint("wss://localhost.org:7443/ws/");
-        assertNotNull(new XmppWebsocketTransportModule.WebsocketConnectedResult(connectedEndpoint));
+        WebSocketRemoteConnectionEndpoint connectedEndpoint = new WebSocketRemoteConnectionEndpoint("wss://localhost.org:7443/ws/");
+        assertNotNull(new XmppWebSocketTransportModule.WebSocketConnectedResult(connectedEndpoint));
     }
 
     @Test
     public void lookupConnectionEndpointsTest() throws URISyntaxException {
-        XmppWebsocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebsocketDescriptor();
+        XmppWebSocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebSocketDescriptor();
         ModularXmppClientToServerConnectionInternal connectionInternal = mock(ModularXmppClientToServerConnectionInternal.class);
 
-        XmppWebsocketTransportModule transportModule
-                        = new XmppWebsocketTransportModule(websocketTransportModuleDescriptor, connectionInternal);
+        XmppWebSocketTransportModule transportModule
+                        = new XmppWebSocketTransportModule(websocketTransportModuleDescriptor, connectionInternal);
 
-        XmppWebsocketTransportModule.XmppWebsocketTransport transport = transportModule.getTransport();
+        XmppWebSocketTransportModule.XmppWebSocketTransport transport = transportModule.getTransport();
         assertNotNull(transport.lookupConnectionEndpoints());
 
     }
 
-    private static XmppWebsocketTransportModuleDescriptor getWebsocketDescriptor() throws URISyntaxException {
+    private static XmppWebSocketTransportModuleDescriptor getWebSocketDescriptor() throws URISyntaxException {
         ModularXmppClientToServerConnectionConfiguration.Builder builder = ModularXmppClientToServerConnectionConfiguration
                 .builder();
 
-        XmppWebsocketTransportModuleDescriptor.Builder websocketBuilder = XmppWebsocketTransportModuleDescriptor.getBuilder(builder);
-        websocketBuilder.explicitlySetWebsocketEndpointAndDiscovery(new URI("wss://localhost.org:7443/ws/"), false);
-        return (XmppWebsocketTransportModuleDescriptor) websocketBuilder.build();
+        XmppWebSocketTransportModuleDescriptor.Builder websocketBuilder = XmppWebSocketTransportModuleDescriptor.getBuilder(builder);
+        websocketBuilder.explicitlySetWebSocketEndpointAndDiscovery(new URI("wss://localhost.org:7443/ws/"), false);
+        return (XmppWebSocketTransportModuleDescriptor) websocketBuilder.build();
     }
 }

@@ -16,19 +16,23 @@
  */
 package org.jivesoftware.smack.websocket.elements;
 
-import org.jivesoftware.smack.packet.Nonza;
+import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.AbstractStreamClose;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-import org.jxmpp.jid.DomainBareJid;
-
-public abstract class AbstractWebsocketNonza implements Nonza {
+public final class WebSocketCloseElement extends AbstractStreamClose {
+    public static final String ELEMENT = "close";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-framing";
-    private static final String VERSION = "1.0";
-    private final DomainBareJid to;
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    public AbstractWebsocketNonza(DomainBareJid jid) {
-        this.to = jid;
+    public WebSocketCloseElement() {
+    }
+
+    @Override
+    public String getElementName() {
+        return ELEMENT;
     }
 
     @Override
@@ -37,10 +41,8 @@ public abstract class AbstractWebsocketNonza implements Nonza {
     }
 
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
-        XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
-        xml.attribute("to", to.toString());
-        xml.attribute("version", VERSION);
+    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
+        XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.closeEmptyElement();
         return xml;
     }

@@ -25,12 +25,12 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.jid.DomainBareJid;
 
-public final class WebsocketOpenElement extends AbstractStreamOpen {
+public final class WebSocketOpenElement extends AbstractStreamOpen {
     public static final String ELEMENT = "open";
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-framing";
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    public WebsocketOpenElement(DomainBareJid to) {
+    public WebSocketOpenElement(DomainBareJid to) {
         super(to, null, null, null, StreamContentNamespace.client);
     }
 

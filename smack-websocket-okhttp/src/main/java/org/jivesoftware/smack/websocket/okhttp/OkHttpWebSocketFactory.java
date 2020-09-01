@@ -16,15 +16,15 @@
  */
 package org.jivesoftware.smack.websocket.okhttp;
 
-import org.jivesoftware.smack.websocket.test.WebsocketFactoryServiceTestUtil;
+import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
 
-import org.junit.jupiter.api.Test;
+public class OkHttpWebSocketFactory implements WebSocketFactory {
 
-public class OkHttpWebsocketFactoryServiceTest {
-
-    @Test
-    public void createWebsocketTest() {
-        WebsocketFactoryServiceTestUtil.createWebsocketTest(OkHttpWebsocket.class);
+    @Override
+    public AbstractWebSocket create(ModularXmppClientToServerConnectionInternal connectionInternal) {
+        return new OkHttpWebSocket(connectionInternal);
     }
 
 }

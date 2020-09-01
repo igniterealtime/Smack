@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+  * Copyright 2020 Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,13 @@
  */
 package org.jivesoftware.smack.websocket;
 
-import java.util.Collections;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public final class WebsocketException extends Exception {
-    private static final long serialVersionUID = 1L;
+import org.junit.jupiter.api.Test;
 
-    private final List<Throwable> throwableList;
-
-    public WebsocketException(List<Throwable> throwableList) {
-        this.throwableList = throwableList;
-    }
-
-    public WebsocketException(Throwable throwable) {
-        this.throwableList = Collections.singletonList(throwable);
-    }
-
-    public List<Throwable> getThrowableList() {
-        return throwableList;
+public class WebSocketConnectionAttemptStateTest {
+    @Test
+    public void constructorTest() {
+        assertThrows(AssertionError.class, () -> new WebSocketConnectionAttemptState(null, null, null));
     }
 }

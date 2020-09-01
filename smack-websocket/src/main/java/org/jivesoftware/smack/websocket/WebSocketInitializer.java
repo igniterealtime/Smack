@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020 Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.okhttp;
+package org.jivesoftware.smack.websocket;
 
-import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
-import org.jivesoftware.smack.websocket.impl.WebsocketFactory;
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.initializer.UrlInitializer;
 
-public class OkHttpWebsocketFactory implements WebsocketFactory {
+public final class WebSocketInitializer extends UrlInitializer {
 
-    @Override
-    public AbstractWebsocket create(ModularXmppClientToServerConnectionInternal connectionInternal) {
-        return new OkHttpWebsocket(connectionInternal);
+    static {
+        SmackConfiguration.addModule(XmppWebSocketTransportModuleDescriptor.class);
     }
 
 }

@@ -19,11 +19,11 @@ package org.jivesoftware.smack.websocket.impl;
 import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
-import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
-public abstract class AbstractWebsocket {
+public abstract class AbstractWebSocket {
 
-    protected enum WebsocketConnectionPhase {
+    protected enum WebSocketConnectionPhase {
         openFrameSent,
         exchangingTopLevelStreamElements
     }
@@ -49,7 +49,7 @@ public abstract class AbstractWebsocket {
         return false;
     }
 
-    public abstract void connect(WebsocketRemoteConnectionEndpoint endpoint) throws Throwable;
+    public abstract void connect(WebSocketRemoteConnectionEndpoint endpoint) throws Throwable;
 
     public abstract void send(TopLevelStreamElement element);
 

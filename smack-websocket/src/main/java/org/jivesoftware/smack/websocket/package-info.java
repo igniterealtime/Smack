@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * Websocket related classes for Smack.
+ * WebSocket related classes for Smack.
  */
 package org.jivesoftware.smack.websocket;

@@ -21,15 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
-import org.jivesoftware.smack.websocket.impl.WebsocketFactoryService;
+import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactoryService;
 
-public class WebsocketFactoryServiceTestUtil {
+public class WebSocketFactoryServiceTestUtil {
 
-    public static void createWebsocketTest(Class<? extends AbstractWebsocket> expected) {
+    public static void createWebSocketTest(Class<? extends AbstractWebSocket> expected) {
         ModularXmppClientToServerConnectionInternal connectionInternal = mock(ModularXmppClientToServerConnectionInternal.class);
 
-        AbstractWebsocket websocket = WebsocketFactoryService.createWebsocket(connectionInternal);
+        AbstractWebSocket websocket = WebSocketFactoryService.createWebSocket(connectionInternal);
         assertEquals(expected, websocket.getClass());
     }
 

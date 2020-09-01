@@ -20,44 +20,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.EstablishingWebsocketConnectionState;
-import org.jivesoftware.smack.websocket.impl.AbstractWebsocket;
-import org.jivesoftware.smack.websocket.impl.WebsocketFactoryService;
-import org.jivesoftware.smack.websocket.rce.WebsocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.EstablishingWebSocketConnectionState;
+import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactoryService;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
-public final class WebsocketConnectionAttemptState {
+public final class WebSocketConnectionAttemptState {
     private final ModularXmppClientToServerConnectionInternal connectionInternal;
-    private final XmppWebsocketTransportModule.XmppWebsocketTransport.DiscoveredWebsocketEndpoints discoveredEndpoints;
+    private final XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints discoveredEndpoints;
 
-    private WebsocketRemoteConnectionEndpoint connectedEndpoint;
+    private WebSocketRemoteConnectionEndpoint connectedEndpoint;
 
-    WebsocketConnectionAttemptState(ModularXmppClientToServerConnectionInternal connectionInternal,
-                    XmppWebsocketTransportModule.XmppWebsocketTransport.DiscoveredWebsocketEndpoints discoveredWebsocketEndpoints,
-                    EstablishingWebsocketConnectionState establishingWebsocketConnectionState) {
-        assert discoveredWebsocketEndpoints != null;
+    WebSocketConnectionAttemptState(ModularXmppClientToServerConnectionInternal connectionInternal,
+                    XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints discoveredWebSocketEndpoints,
+                    EstablishingWebSocketConnectionState establishingWebSocketConnectionState) {
+        assert discoveredWebSocketEndpoints != null;
         this.connectionInternal = connectionInternal;
-        this.discoveredEndpoints = discoveredWebsocketEndpoints;
+        this.discoveredEndpoints = discoveredWebSocketEndpoints;
     }
 
     /**
      * Establish  a websocket connection with one of the discoveredRemoteConnectionEndpoints.<br>
      *
-     * @return {@link AbstractWebsocket} with which connection is establised
+     * @return {@link AbstractWebSocket} with which connection is establised
      * @throws InterruptedException if the calling thread was interrupted
-     * @throws WebsocketException if encounters a websocket exception
+     * @throws WebSocketException if encounters a websocket exception
      */
-    AbstractWebsocket establishWebsocketConnection() throws InterruptedException, WebsocketException {
-        List<WebsocketRemoteConnectionEndpoint> endpoints = discoveredEndpoints.result.discoveredRemoteConnectionEndpoints;
+    AbstractWebSocket establishWebSocketConnection() throws InterruptedException, WebSocketException {
+        List<WebSocketRemoteConnectionEndpoint> endpoints = discoveredEndpoints.result.discoveredRemoteConnectionEndpoints;
 
         if (endpoints.isEmpty()) {
-            throw new WebsocketException(new Throwable("No Endpoints discovered to establish connection"));
+            throw new WebSocketException(new Throwable("No Endpoints discovered to establish connection"));
         }
 
         List<Throwable> connectionFailureList = new ArrayList<>();
-        AbstractWebsocket websocket = WebsocketFactoryService.createWebsocket(connectionInternal);
+        AbstractWebSocket websocket = WebSocketFactoryService.createWebSocket(connectionInternal);
 
         // Keep iterating over available endpoints until a connection is establised or all endpoints are tried to create a connection with.
-        for (WebsocketRemoteConnectionEndpoint endpoint : endpoints) {
+        for (WebSocketRemoteConnectionEndpoint endpoint : endpoints) {
             try {
                 websocket.connect(endpoint);
                 connectedEndpoint = endpoint;
@@ -68,8 +68,8 @@ public final class WebsocketConnectionAttemptState {
                 // If the number of entries in connectionFailureList is equal to the number of endpoints,
                 // it means that all endpoints have been tried and have been unsuccessful.
                 if (connectionFailureList.size() == endpoints.size()) {
-                    WebsocketException websocketException = new WebsocketException(connectionFailureList);
-                    throw new WebsocketException(websocketException);
+                    WebSocketException websocketException = new WebSocketException(connectionFailureList);
+                    throw new WebSocketException(websocketException);
                 }
             }
         }
@@ -85,7 +85,7 @@ public final class WebsocketConnectionAttemptState {
      *
      * @return connected websocket endpoint
      */
-    public WebsocketRemoteConnectionEndpoint getConnectedEndpoint() {
+    public WebSocketRemoteConnectionEndpoint getConnectedEndpoint() {
         return connectedEndpoint;
     }
 }

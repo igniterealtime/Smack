@@ -28,20 +28,20 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModuleDescr
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.fsm.StateDescriptor;
 import org.jivesoftware.smack.util.Objects;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModule.EstablishingWebsocketConnectionStateDescriptor;
+import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.EstablishingWebSocketConnectionStateDescriptor;
 
 /**
- * The descriptor class for {@link XmppWebsocketTransportModule}.
+ * The descriptor class for {@link XmppWebSocketTransportModule}.
  * <br>
- * To add {@link XmppWebsocketTransportModule} to {@link ModularXmppClientToServerConnection},
+ * To add {@link XmppWebSocketTransportModule} to {@link ModularXmppClientToServerConnection},
  * use {@link ModularXmppClientToServerConnectionConfiguration.Builder#addModule(ModularXmppClientToServerConnectionModuleDescriptor)}.
  */
-public final class XmppWebsocketTransportModuleDescriptor extends ModularXmppClientToServerConnectionModuleDescriptor {
-    private boolean performWebsocketEndpointDiscovery;
+public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppClientToServerConnectionModuleDescriptor {
+    private boolean performWebSocketEndpointDiscovery;
     private URI uri;
 
-    public XmppWebsocketTransportModuleDescriptor(Builder builder) {
-        this.performWebsocketEndpointDiscovery = builder.performWebsocketEndpointDiscovery;
+    public XmppWebSocketTransportModuleDescriptor(Builder builder) {
+        this.performWebSocketEndpointDiscovery = builder.performWebSocketEndpointDiscovery;
         this.uri = builder.uri;
     }
 
@@ -49,8 +49,8 @@ public final class XmppWebsocketTransportModuleDescriptor extends ModularXmppCli
      * Returns true if websocket endpoint discovery is true, returns false otherwise.
      * @return boolean
      */
-    public boolean isWebsocketEndpointDiscoveryEnabled() {
-        return performWebsocketEndpointDiscovery;
+    public boolean isWebSocketEndpointDiscoveryEnabled() {
+        return performWebSocketEndpointDiscovery;
     }
 
     /**
@@ -64,14 +64,14 @@ public final class XmppWebsocketTransportModuleDescriptor extends ModularXmppCli
     @Override
     protected Set<Class<? extends StateDescriptor>> getStateDescriptors() {
         Set<Class<? extends StateDescriptor>> res = new HashSet<>();
-        res.add(EstablishingWebsocketConnectionStateDescriptor.class);
+        res.add(EstablishingWebSocketConnectionStateDescriptor.class);
         return res;
     }
 
     @Override
     protected ModularXmppClientToServerConnectionModule<? extends ModularXmppClientToServerConnectionModuleDescriptor> constructXmppConnectionModule(
             ModularXmppClientToServerConnectionInternal connectionInternal) {
-        return new XmppWebsocketTransportModule(this, connectionInternal);
+        return new XmppWebSocketTransportModule(this, connectionInternal);
     }
 
     /**
@@ -86,19 +86,19 @@ public final class XmppWebsocketTransportModuleDescriptor extends ModularXmppCli
     }
 
     /**
-     * Builder class for {@link XmppWebsocketTransportModuleDescriptor}.
+     * Builder class for {@link XmppWebSocketTransportModuleDescriptor}.
      * <br>
-     * To obtain an instance of {@link XmppWebsocketTransportModuleDescriptor.Builder}, use {@link XmppWebsocketTransportModuleDescriptor#getBuilder(ModularXmppClientToServerConnectionConfiguration.Builder)} method.
+     * To obtain an instance of {@link XmppWebSocketTransportModuleDescriptor.Builder}, use {@link XmppWebSocketTransportModuleDescriptor#getBuilder(ModularXmppClientToServerConnectionConfiguration.Builder)} method.
      * <br>
-     * Use {@link Builder#explicitlySetWebsocketEndpoint(URI)} to configure the URI of an endpoint as a backup in case connection couldn't be established with endpoints through http lookup.
+     * Use {@link Builder#explicitlySetWebSocketEndpoint(URI)} to configure the URI of an endpoint as a backup in case connection couldn't be established with endpoints through http lookup.
      * <br>
-     * Use {@link Builder#explicitlySetWebsocketEndpointAndDiscovery(URI, boolean)} to configure endpoint and disallow websocket endpoint discovery through http lookup.
-     * By default, {@link Builder#performWebsocketEndpointDiscovery} is set to true.
+     * Use {@link Builder#explicitlySetWebSocketEndpointAndDiscovery(URI, boolean)} to configure endpoint and disallow websocket endpoint discovery through http lookup.
+     * By default, {@link Builder#performWebSocketEndpointDiscovery} is set to true.
      * <br>
-     * Use {@link Builder#build()} to obtain {@link XmppWebsocketTransportModuleDescriptor}.
+     * Use {@link Builder#build()} to obtain {@link XmppWebSocketTransportModuleDescriptor}.
      */
     public static final class Builder extends ModularXmppClientToServerConnectionModuleDescriptor.Builder {
-        private boolean performWebsocketEndpointDiscovery = true;
+        private boolean performWebSocketEndpointDiscovery = true;
         private URI uri;
 
         private Builder(
@@ -106,31 +106,31 @@ public final class XmppWebsocketTransportModuleDescriptor extends ModularXmppCli
             super(connectionConfigurationBuilder);
         }
 
-        public Builder explicitlySetWebsocketEndpoint(URI endpoint) {
-            return explicitlySetWebsocketEndpointAndDiscovery(endpoint, true);
+        public Builder explicitlySetWebSocketEndpoint(URI endpoint) {
+            return explicitlySetWebSocketEndpointAndDiscovery(endpoint, true);
         }
 
-        public Builder explicitlySetWebsocketEndpointAndDiscovery(URI endpoint, boolean performWebsocketEndpointDiscovery) {
+        public Builder explicitlySetWebSocketEndpointAndDiscovery(URI endpoint, boolean performWebSocketEndpointDiscovery) {
             Objects.requireNonNull(endpoint, "Provided endpoint URI must not be null");
             this.uri = endpoint;
-            this.performWebsocketEndpointDiscovery = performWebsocketEndpointDiscovery;
+            this.performWebSocketEndpointDiscovery = performWebSocketEndpointDiscovery;
             return this;
         }
 
-        public Builder explicitlySetWebsocketEndpoint(CharSequence endpoint) throws URISyntaxException {
+        public Builder explicitlySetWebSocketEndpoint(CharSequence endpoint) throws URISyntaxException {
             URI endpointUri = new URI(endpoint.toString());
-            return explicitlySetWebsocketEndpointAndDiscovery(endpointUri, true);
+            return explicitlySetWebSocketEndpointAndDiscovery(endpointUri, true);
         }
 
-        public Builder explicitlySetWebsocketEndpoint(CharSequence endpoint, boolean performWebsocketEndpointDiscovery)
+        public Builder explicitlySetWebSocketEndpoint(CharSequence endpoint, boolean performWebSocketEndpointDiscovery)
                 throws URISyntaxException {
             URI endpointUri = new URI(endpoint.toString());
-            return explicitlySetWebsocketEndpointAndDiscovery(endpointUri, performWebsocketEndpointDiscovery);
+            return explicitlySetWebSocketEndpointAndDiscovery(endpointUri, performWebSocketEndpointDiscovery);
         }
 
         @Override
         public ModularXmppClientToServerConnectionModuleDescriptor build() {
-            return new XmppWebsocketTransportModuleDescriptor(this);
+            return new XmppWebSocketTransportModuleDescriptor(this);
         }
     }
 }

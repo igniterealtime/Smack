@@ -16,13 +16,23 @@
  */
 package org.jivesoftware.smack.websocket;
 
-import org.jivesoftware.smack.SmackConfiguration;
-import org.jivesoftware.smack.initializer.UrlInitializer;
+import java.util.Collections;
+import java.util.List;
 
-public final class WebsocketInitializer extends UrlInitializer {
+public final class WebSocketException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-    static {
-        SmackConfiguration.addModule(XmppWebsocketTransportModuleDescriptor.class);
+    private final List<Throwable> throwableList;
+
+    public WebSocketException(List<Throwable> throwableList) {
+        this.throwableList = throwableList;
     }
 
+    public WebSocketException(Throwable throwable) {
+        this.throwableList = Collections.singletonList(throwable);
+    }
+
+    public List<Throwable> getThrowableList() {
+        return throwableList;
+    }
 }

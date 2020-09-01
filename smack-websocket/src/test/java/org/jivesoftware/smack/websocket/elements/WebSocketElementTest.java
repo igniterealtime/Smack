@@ -23,20 +23,20 @@ import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-public class WebsocketElementTest {
+public class WebSocketElementTest {
     private static final String OPEN_ELEMENT = "<open xmlns='urn:ietf:params:xml:ns:xmpp-framing' to='foodomain.foo' version='1.0'/>";
     private static final String CLOSE_ELEMENT = "<close xmlns='urn:ietf:params:xml:ns:xmpp-framing'/>";
 
     @Test
     public void websocketOpenElementTest() throws XmppStringprepException {
-        String openElementXml =  new WebsocketOpenElement(JidCreate.domainBareFrom("foodomain.foo")).toXML().toString();
+        String openElementXml =  new WebSocketOpenElement(JidCreate.domainBareFrom("foodomain.foo")).toXML().toString();
         assertXmlSimilar(OPEN_ELEMENT, openElementXml);
-        assertXmlNotSimilar(CLOSE_ELEMENT, new WebsocketOpenElement(JidCreate.domainBareFrom("foodomain.foo")).toXML());
+        assertXmlNotSimilar(CLOSE_ELEMENT, new WebSocketOpenElement(JidCreate.domainBareFrom("foodomain.foo")).toXML());
     }
 
     @Test
     public void websocketCloseElementTest() throws XmppStringprepException {
-        String closeElementXml = new WebsocketCloseElement().toXML().toString();
+        String closeElementXml = new WebSocketCloseElement().toXML().toString();
         assertXmlSimilar(CLOSE_ELEMENT, closeElementXml);
         assertXmlNotSimilar(OPEN_ELEMENT, closeElementXml);
     }

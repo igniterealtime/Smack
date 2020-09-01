@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020 Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.impl;
+package org.jivesoftware.smack.websocket;
 
-import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public interface WebsocketFactory {
+import java.util.List;
 
-    AbstractWebsocket create(ModularXmppClientToServerConnectionInternal connectionInternal);
+import org.junit.jupiter.api.Test;
 
+public class WebSocketInitializerTest {
+    @Test
+    public void testExtensionInitializer() {
+        WebSocketInitializer initializer = new WebSocketInitializer();
+        List<Exception> exceptions = initializer.initialize();
+        assertTrue(exceptions.size() == 0);
+    }
 }

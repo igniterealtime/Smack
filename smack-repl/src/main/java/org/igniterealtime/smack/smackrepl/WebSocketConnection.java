@@ -29,9 +29,9 @@ import org.jivesoftware.smack.XMPPException;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModuleDescriptor;
+import org.jivesoftware.smack.websocket.XmppWebSocketTransportModuleDescriptor;
 
-public class WebsocketConnection {
+public class WebSocketConnection {
 
     public static void main(String[] args) throws SmackException, IOException, XMPPException, InterruptedException, URISyntaxException {
         ModularXmppClientToServerConnectionConfiguration.Builder builder = ModularXmppClientToServerConnectionConfiguration.builder();
@@ -39,8 +39,8 @@ public class WebsocketConnection {
         builder.setXmppAddressAndPassword(args[0], args[1]);
 
         // Set a fallback uri into websocket transport descriptor and add this descriptor into connection builder.
-        XmppWebsocketTransportModuleDescriptor.Builder websocketBuilder = XmppWebsocketTransportModuleDescriptor.getBuilder(builder);
-        websocketBuilder.explicitlySetWebsocketEndpointAndDiscovery(new URI(args[2]), false);
+        XmppWebSocketTransportModuleDescriptor.Builder websocketBuilder = XmppWebSocketTransportModuleDescriptor.getBuilder(builder);
+        websocketBuilder.explicitlySetWebSocketEndpointAndDiscovery(new URI(args[2]), false);
         builder.addModule(websocketBuilder.build());
 
         ModularXmppClientToServerConnectionConfiguration config = builder.build();

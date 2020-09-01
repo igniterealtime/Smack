@@ -31,11 +31,11 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.DomainBareJid;
 
-public final class WebsocketRemoteConnectionEndpointLookup {
+public final class WebSocketRemoteConnectionEndpointLookup {
 
     public static Result lookup(DomainBareJid domainBareJid, SecurityMode securityMode) {
         List<RemoteConnectionEndpointLookupFailure> lookupFailures = new ArrayList<>(1);
-        List<WebsocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints = new ArrayList<>();
+        List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints = new ArrayList<>();
 
         List<URI> rcUriList = null;
         try {
@@ -52,11 +52,11 @@ public final class WebsocketRemoteConnectionEndpointLookup {
             throw new IllegalStateException("No endpoints were found inside host-meta");
         }
 
-        // Convert rcUriList to List<WebsocketRemoteConnectionEndpoint>
+        // Convert rcUriList to List<WebSocketRemoteConnectionEndpoint>
         Iterator<URI> iterator = rcUriList.iterator();
-        List<WebsocketRemoteConnectionEndpoint> rceList = new ArrayList<>();
+        List<WebSocketRemoteConnectionEndpoint> rceList = new ArrayList<>();
         while (iterator.hasNext()) {
-            rceList.add(new WebsocketRemoteConnectionEndpoint(iterator.next()));
+            rceList.add(new WebSocketRemoteConnectionEndpoint(iterator.next()));
         }
 
         switch (securityMode) {
@@ -64,9 +64,9 @@ public final class WebsocketRemoteConnectionEndpointLookup {
                 // If security mode equals `if-possible`, give priority to secure endpoints over insecure endpoints.
 
                 // Seprate secure and unsecure endpoints.
-                List<WebsocketRemoteConnectionEndpoint> secureEndpointsForSecurityModeIfPossible = new ArrayList<>();
-                List<WebsocketRemoteConnectionEndpoint> insecureEndpointsForSecurityModeIfPossible = new ArrayList<>();
-                for (WebsocketRemoteConnectionEndpoint uri : rceList) {
+                List<WebSocketRemoteConnectionEndpoint> secureEndpointsForSecurityModeIfPossible = new ArrayList<>();
+                List<WebSocketRemoteConnectionEndpoint> insecureEndpointsForSecurityModeIfPossible = new ArrayList<>();
+                for (WebSocketRemoteConnectionEndpoint uri : rceList) {
                     if (uri.isSecureEndpoint()) {
                         secureEndpointsForSecurityModeIfPossible.add(uri);
                     } else {
@@ -82,7 +82,7 @@ public final class WebsocketRemoteConnectionEndpointLookup {
                  * If, SecurityMode equals to required, accept wss endpoints (secure endpoints) only or,
                  * if SecurityMode equals to disabled, accept ws endpoints (unsecure endpoints) only.
                  */
-                for (WebsocketRemoteConnectionEndpoint uri : rceList) {
+                for (WebSocketRemoteConnectionEndpoint uri : rceList) {
                     if ((securityMode.equals(SecurityMode.disabled) && !uri.isSecureEndpoint())
                                     || (securityMode.equals(SecurityMode.required) && uri.isSecureEndpoint())) {
                         discoveredRemoteConnectionEndpoints.add(uri);
@@ -95,16 +95,16 @@ public final class WebsocketRemoteConnectionEndpointLookup {
     }
 
     public static final class Result {
-        public final List<WebsocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints;
+        public final List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints;
         public final List<RemoteConnectionEndpointLookupFailure> lookupFailures;
 
-        public Result(List<WebsocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints,
+        public Result(List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints,
                         List<RemoteConnectionEndpointLookupFailure> lookupFailures) {
             this.discoveredRemoteConnectionEndpoints = discoveredRemoteConnectionEndpoints;
             this.lookupFailures = lookupFailures;
         }
 
-        public List<WebsocketRemoteConnectionEndpoint> getDiscoveredRemoteConnectionEndpoints() {
+        public List<WebSocketRemoteConnectionEndpoint> getDiscoveredRemoteConnectionEndpoints() {
             return discoveredRemoteConnectionEndpoints;
         }
 

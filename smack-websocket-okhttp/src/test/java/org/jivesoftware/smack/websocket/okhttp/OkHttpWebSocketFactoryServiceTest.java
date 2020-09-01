@@ -1,6 +1,6 @@
 /**
  *
-  * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket;
+package org.jivesoftware.smack.websocket.okhttp;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.jivesoftware.smack.websocket.test.WebSocketFactoryServiceTestUtil;
 
 import org.junit.jupiter.api.Test;
 
-public class WebsocketConnectionAttemptStateTest {
+public class OkHttpWebSocketFactoryServiceTest {
+
     @Test
-    public void constructorTest() {
-        assertThrows(AssertionError.class, () -> new WebsocketConnectionAttemptState(null, null, null));
+    public void createWebSocketTest() {
+        WebSocketFactoryServiceTestUtil.createWebSocketTest(OkHttpWebSocket.class);
     }
+
 }

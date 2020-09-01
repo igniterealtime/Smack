@@ -21,19 +21,19 @@ import java.util.ServiceLoader;
 
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 
-public final class WebsocketFactoryService {
+public final class WebSocketFactoryService {
 
-    private static final ServiceLoader<WebsocketFactory> SERVICE_LOADER = ServiceLoader.load(WebsocketFactory.class);
+    private static final ServiceLoader<WebSocketFactory> SERVICE_LOADER = ServiceLoader.load(WebSocketFactory.class);
 
-    public static AbstractWebsocket createWebsocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
+    public static AbstractWebSocket createWebSocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
         assert connectionInternal != null;
 
-        Iterator<WebsocketFactory> websocketFactories = SERVICE_LOADER.iterator();
+        Iterator<WebSocketFactory> websocketFactories = SERVICE_LOADER.iterator();
         if (!websocketFactories.hasNext()) {
             throw new IllegalStateException("No smack websocket service configured");
         }
 
-        WebsocketFactory websocketFactory = websocketFactories.next();
+        WebSocketFactory websocketFactory = websocketFactories.next();
         return websocketFactory.create(connectionInternal);
     }
 
