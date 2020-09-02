@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * WebSocket related classes for Smack.
- */
-package org.jivesoftware.smack.websocket;
+package org.jivesoftware.smack.websocket.impl;
+
+import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+
+public interface WebSocketFactory {
+
+    AbstractWebSocket create(ModularXmppClientToServerConnectionInternal connectionInternal);
+
+}

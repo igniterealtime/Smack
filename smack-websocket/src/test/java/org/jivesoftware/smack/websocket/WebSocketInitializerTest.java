@@ -14,7 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * WebSocket related classes for Smack.
- */
 package org.jivesoftware.smack.websocket;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
+public class WebSocketInitializerTest {
+    @Test
+    public void testExtensionInitializer() {
+        WebSocketInitializer initializer = new WebSocketInitializer();
+        List<Exception> exceptions = initializer.initialize();
+        assertTrue(exceptions.size() == 0);
+    }
+}

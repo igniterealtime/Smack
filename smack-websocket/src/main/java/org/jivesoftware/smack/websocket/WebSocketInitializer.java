@@ -14,7 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * WebSocket related classes for Smack.
- */
 package org.jivesoftware.smack.websocket;
+
+import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.initializer.UrlInitializer;
+
+public final class WebSocketInitializer extends UrlInitializer {
+
+    static {
+        SmackConfiguration.addModule(XmppWebSocketTransportModuleDescriptor.class);
+    }
+
+}

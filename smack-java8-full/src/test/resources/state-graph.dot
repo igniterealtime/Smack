@@ -32,7 +32,7 @@ digraph {
   "ConnectedButUnauthenticated" -> "InstantShutdown" [xlabel="5"];
 "ConnectedButUnauthenticated" [ style=filled ]
   "EstablishingTcpConnection" -> "ConnectedButUnauthenticated" [xlabel="2"];
-  "LookupRemoteConnectionEndpoints" -> "EstablishingWebsocketConnection" [xlabel="2"];
-  "EstablishingWebsocketConnection" -> "ConnectedButUnauthenticated";
+  "LookupRemoteConnectionEndpoints" -> "EstablishingWebSocketConnection" [xlabel="2"];
+  "EstablishingWebSocketConnection" -> "ConnectedButUnauthenticated";
 "Disconnected" [ style=filled ]
 }

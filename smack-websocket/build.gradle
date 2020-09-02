@@ -1,10 +1,8 @@
 description = """\
-Smack for standard XMPP connections over Websockets."""
+Smack for XMPP connections over WebSocket (RFC 7395)."""
 
 dependencies {
-	compile project(':smack-core')
+	api project(':smack-core')
 
-	testFixturesApi(testFixtures(project(":smack-core")))
-
-	implementation("com.squareup.okhttp3:okhttp:4.6.0")
+	testFixturesApi(testFixtures(project(':smack-core')))
 }

@@ -14,7 +14,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * WebSocket related classes for Smack.
- */
-package org.jivesoftware.smack.websocket;
+package org.jivesoftware.smack.websocket.okhttp;

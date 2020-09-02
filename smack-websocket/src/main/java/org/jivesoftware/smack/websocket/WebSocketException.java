@@ -14,7 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * WebSocket related classes for Smack.
- */
 package org.jivesoftware.smack.websocket;
+
+import java.util.Collections;
+import java.util.List;
+
+public final class WebSocketException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    private final List<Throwable> throwableList;
+
+    public WebSocketException(List<Throwable> throwableList) {
+        this.throwableList = throwableList;
+    }
+
+    public WebSocketException(Throwable throwable) {
+        this.throwableList = Collections.singletonList(throwable);
+    }
+
+    public List<Throwable> getThrowableList() {
+        return throwableList;
+    }
+}

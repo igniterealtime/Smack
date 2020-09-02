@@ -44,7 +44,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.websocket.XmppWebsocketTransportModuleDescriptor;
+import org.jivesoftware.smack.websocket.XmppWebSocketTransportModuleDescriptor;
 
 import org.jivesoftware.smackx.admin.ServiceAdministrationManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
@@ -92,7 +92,7 @@ public class XmppConnectionManager {
                     .withNickname("modular-websocket")
                     .applyExtraConfguration(cb -> {
                         cb.removeAllModules();
-                        cb.addModule(XmppWebsocketTransportModuleDescriptor.class);
+                        cb.addModule(XmppWebSocketTransportModuleDescriptor.class);
                     })
                     .build()
             );

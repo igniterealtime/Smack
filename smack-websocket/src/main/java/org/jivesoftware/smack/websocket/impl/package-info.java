@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * WebSocket related classes for Smack.
+ * This package contains websocket implementations to be plugged inside websocket transport.
  */
-package org.jivesoftware.smack.websocket;
+package org.jivesoftware.smack.websocket.impl;
