@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.List;
+
 public final class EqualsUtil {
 
     private EqualsUtil() {
@@ -240,6 +242,19 @@ public final class EqualsUtil {
                 }
                 for (int i = 0; i < left.length && isEquals; i++) {
                     append(left[i], right[i]);
+                }
+            });
+            return this;
+        }
+
+        public <O> Builder append(List<O> left, List<O> right) {
+            nullSafeCompare(left, right, () -> {
+                if (left.size() != right.size()) {
+                    isEquals = false;
+                    return;
+                }
+                for (int i = 0; i < left.size() && isEquals; i++) {
+                    append(left.get(i), right.get(i));
                 }
             });
             return this;

@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.util;
 
+import java.util.List;
+
 public class HashCode {
 
     private static final int MULTIPLIER_VALUE = 37;
@@ -199,6 +201,17 @@ public class HashCode {
 
             for (Object element : array) {
                 append(element);
+            }
+            return this;
+        }
+
+        public <O> Builder append(List<O> list) {
+            if (list == null) {
+                applyHash();
+                return this;
+            }
+            for (O o : list) {
+                append(o);
             }
             return this;
         }
