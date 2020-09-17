@@ -590,7 +590,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
         public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingXmlEnvironment);
             xml.rightAngleBracket();
-            xml.escape(message);
+            xml.text(message);
             xml.closeElement(getElementName());
             return xml;
         }

@@ -206,4 +206,17 @@ public class MessageTest {
 
         assertXmlSimilar(control, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
+
+    /**
+     * Tests that only required characters are XML escaped in body.
+     *
+     * @see <a href="https://issues.igniterealtime.org/browse/SMACK-892">SMACK-892</a>
+     */
+    @Test
+    public void escapeInBodyTest() {
+        String theFive = "\"'<>&";
+        Message.Body body = new Message.Body(null, theFive);
+
+        assertEquals("<body xmlns='jabber:client'>\"'&lt;>&amp;</body>", body.toXML().toString());
+    }
 }
