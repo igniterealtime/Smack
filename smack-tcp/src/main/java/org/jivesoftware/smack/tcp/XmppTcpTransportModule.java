@@ -1066,18 +1066,25 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     SSLEngineResult.HandshakeStatus handshakeStatus = handleHandshakeStatus(result);
                     switch (handshakeStatus) {
                     case NEED_TASK:
-                        // A delegated task is asynchronously running. Signal that there is pending input data and
-                        // cycle again through the smack reactor.
+                        // A delegated task is asynchronously running. Take care of the remaining accumulatedData.
                         addAsPendingInputData(accumulatedData);
-                        break;
+                        // Return here, as the async task created by handleHandshakeStatus will continue calling the
+                        // cannelSelectedCallback.
+                        return null;
                     case NEED_UNWRAP:
                         continue;
                     case NEED_WRAP:
                         // NEED_WRAP means that the SSLEngine needs to send data, probably without consuming data.
                         // We exploit here the fact that the channelSelectedCallback is single threaded and that the
                         // input processing is after the output processing.
+                        addAsPendingInputData(accumulatedData);
+                        // Note that it is ok that we the provided argument for pending input filter data to channel
+                        // selected callback is false, as setPendingInputFilterData() will have set the internal state
+                        // boolean accordingly.
                         connectionInternal.asyncGo(() -> callChannelSelectedCallback(false, true));
-                        break;
+                        // Do not break here, but instead return and let the asynchronously invoked
+                        // callChannelSelectedCallback() do its work.
+                        return null;
                     default:
                         break;
                     }
@@ -1109,8 +1116,13 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         }
 
         private void addAsPendingInputData(ByteBuffer byteBuffer) {
+            // TODO: Why doeesn't simply
+            // pendingInputData = byteBuffer;
+            // work?
             pendingInputData = ByteBuffer.allocate(byteBuffer.remaining());
             pendingInputData.put(byteBuffer).flip();
+
+            pendingInputFilterData = pendingInputData.hasRemaining();
         }
 
         private SSLEngineResult.HandshakeStatus handleHandshakeStatus(SSLEngineResult sslEngineResult) {
