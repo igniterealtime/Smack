@@ -711,7 +711,7 @@ public final class Message extends Stanza implements TypedCloneable<Message> {
         public XmlStringBuilder toXML(String enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.optXmlLangAttribute(getLanguage()).rightAngleBracket();
-            xml.escape(message);
+            xml.text(message);
             xml.closeElement(getElementName());
             return xml;
         }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2018 Florian Schmaus
+ * Copyright 2014-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -402,6 +402,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         if (!StringUtils.isNullOrEmpty(lang)) {
             xmllangAttribute(lang);
         }
+        return this;
+    }
+
+    public XmlStringBuilder text(CharSequence text) {
+        assert text != null;
+        CharSequence escapedText = StringUtils.escapeForXmlText(text);
+        sb.append(escapedText);
         return this;
     }
 
