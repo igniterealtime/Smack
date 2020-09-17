@@ -293,6 +293,30 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    /**
+     * Put if the queue has not been shutdown yet.
+     *
+     * @param e the element to put into the queue.
+     * @return <code>true</code> if the element has been put into the queue, <code>false</code> if the queue was shutdown.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.4
+     */
+    public boolean putIfNotShutdown(E e) throws InterruptedException {
+        checkNotNull(e);
+        lock.lockInterruptibly();
+
+        try {
+            if (isShutdown) {
+                return false;
+            }
+
+            putInternal(e, true);
+            return true;
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public void putAll(Collection<? extends E> elements) throws InterruptedException {
         checkNotNull(elements);
         lock.lockInterruptibly();
