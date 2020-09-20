@@ -498,9 +498,9 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     pendingInputFilterData = false;
                 }
 
-                // We have successfully read something. It is now possible that a filter is now also able to write
-                // additional data (for example SSLEngine).
                 if (pendingWriteInterestAfterRead) {
+                    // We have successfully read something and someone announced a write interest after a read. It is
+                    // now possible that a filter is now also able to write additional data (for example SSLEngine).
                     pendingWriteInterestAfterRead = false;
                     newInterestedOps |= SelectionKey.OP_WRITE;
                 }
