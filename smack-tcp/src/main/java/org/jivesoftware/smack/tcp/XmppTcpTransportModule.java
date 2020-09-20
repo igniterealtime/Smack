@@ -500,9 +500,9 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     pendingInputFilterData = false;
                 }
 
-                // We have successfully read something. It is now possible that a filter is now also able to write
-                // additional data (for example SSLEngine).
                 if (pendingWriteInterestAfterRead) {
+                    // We have successfully read something and someone announced a write interest after a read. It is
+                    // now possible that a filter is now also able to write additional data (for example SSLEngine).
                     pendingWriteInterestAfterRead = false;
                     newInterestedOps |= SelectionKey.OP_WRITE;
                 }
@@ -1048,12 +1048,15 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             }
         }
 
+        @SuppressWarnings("ReferenceEquality")
         @Override
         public ByteBuffer input(ByteBuffer inputData) throws SSLException {
             ByteBuffer accumulatedData;
             if (pendingInputData == null) {
                 accumulatedData = inputData;
             } else {
+                assert pendingInputData != inputData;
+
                 int accumulatedDataBytes = pendingInputData.remaining() + inputData.remaining();
                 accumulatedData = ByteBuffer.allocate(accumulatedDataBytes);
                 accumulatedData.put(pendingInputData)
@@ -1084,18 +1087,25 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     SSLEngineResult.HandshakeStatus handshakeStatus = handleHandshakeStatus(result);
                     switch (handshakeStatus) {
                     case NEED_TASK:
-                        // A delegated task is asynchronously running. Signal that there is pending input data and
-                        // cycle again through the smack reactor.
+                        // A delegated task is asynchronously running. Take care of the remaining accumulatedData.
                         addAsPendingInputData(accumulatedData);
-                        break;
+                        // Return here, as the async task created by handleHandshakeStatus will continue calling the
+                        // cannelSelectedCallback.
+                        return null;
                     case NEED_UNWRAP:
                         continue;
                     case NEED_WRAP:
                         // NEED_WRAP means that the SSLEngine needs to send data, probably without consuming data.
                         // We exploit here the fact that the channelSelectedCallback is single threaded and that the
                         // input processing is after the output processing.
+                        addAsPendingInputData(accumulatedData);
+                        // Note that it is ok that we the provided argument for pending input filter data to channel
+                        // selected callback is false, as setPendingInputFilterData() will have set the internal state
+                        // boolean accordingly.
                         connectionInternal.asyncGo(() -> callChannelSelectedCallback(false, true));
-                        break;
+                        // Do not break here, but instead return and let the asynchronously invoked
+                        // callChannelSelectedCallback() do its work.
+                        return null;
                     default:
                         break;
                     }
@@ -1127,8 +1137,15 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         }
 
         private void addAsPendingInputData(ByteBuffer byteBuffer) {
+            // Note that we can not simply write
+            // pendingInputData = byteBuffer;
+            // we have to copy the provided byte buffer, because it is possible that this byteBuffer is re-used by some
+            // higher layer. That is, here 'byteBuffer' is typically 'incomingBuffer', which is a direct buffer only
+            // allocated once per connection for performance reasons and hence re-used for read() calls.
             pendingInputData = ByteBuffer.allocate(byteBuffer.remaining());
             pendingInputData.put(byteBuffer).flip();
+
+            pendingInputFilterData = pendingInputData.hasRemaining();
         }
 
         private SSLEngineResult.HandshakeStatus handleHandshakeStatus(SSLEngineResult sslEngineResult) {

@@ -1592,7 +1592,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     private void sendSmAcknowledgementInternal() throws NotConnectedException, InterruptedException {
-        packetWriter.sendStreamElement(new AckAnswer(clientHandledStanzasCount));
+        AckAnswer ackAnswer = new AckAnswer(clientHandledStanzasCount);
+        // Do net put an ack to the queue if it has already been shutdown. Some servers, like ejabberd, like to request
+        // an ack even after we have send a stream close (and hance the queue was shutdown). If we would not check here,
+        // then the ack would dangle around in the queue, and be send on the next re-connection attempt even before the
+        // stream open.
+        packetWriter.queue.putIfNotShutdown(ackAnswer);
     }
 
     /**

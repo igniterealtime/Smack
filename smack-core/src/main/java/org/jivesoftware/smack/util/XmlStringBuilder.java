@@ -456,6 +456,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
+    public XmlStringBuilder text(CharSequence text) {
+        assert text != null;
+        CharSequence escapedText = StringUtils.escapeForXmlText(text);
+        sb.append(escapedText);
+        return this;
+    }
+
     public XmlStringBuilder escape(String text) {
         assert text != null;
         sb.append(StringUtils.escapeForXml(text));
