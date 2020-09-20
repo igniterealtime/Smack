@@ -1030,12 +1030,15 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             }
         }
 
+        @SuppressWarnings("ReferenceEquality")
         @Override
         public ByteBuffer input(ByteBuffer inputData) throws SSLException {
             ByteBuffer accumulatedData;
             if (pendingInputData == null) {
                 accumulatedData = inputData;
             } else {
+                assert pendingInputData != inputData;
+
                 int accumulatedDataBytes = pendingInputData.remaining() + inputData.remaining();
                 accumulatedData = ByteBuffer.allocate(accumulatedDataBytes);
                 accumulatedData.put(pendingInputData)
@@ -1116,9 +1119,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         }
 
         private void addAsPendingInputData(ByteBuffer byteBuffer) {
-            // TODO: Why doeesn't simply
+            // Note that we can not simply write
             // pendingInputData = byteBuffer;
-            // work?
+            // we have to copy the provided byte buffer, because it is possible that this byteBuffer is re-used by some
+            // higher layer. That is, here 'byteBuffer' is typically 'incomingBuffer', which is a direct buffer only
+            // allocated once per connection for performance reasons and hence re-used for read() calls.
             pendingInputData = ByteBuffer.allocate(byteBuffer.remaining());
             pendingInputData.put(byteBuffer).flip();
 
