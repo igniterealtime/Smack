@@ -18,26 +18,28 @@ package org.jivesoftware.smackx.caps2;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smackx.caps2.element.Caps2Element;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import org.jxmpp.jid.DomainBareJid;
 
 public final class Caps2Manager extends Manager {
 
@@ -53,7 +55,6 @@ public final class Caps2Manager extends Manager {
                 getInstanceFor(connection);
             }
         });
-        Logger.getAnonymousLogger().info("adiaholic : Inside caps2 registry");
     }
 
     public static synchronized Caps2Manager getInstanceFor(XMPPConnection connection) {
@@ -71,32 +72,27 @@ public final class Caps2Manager extends Manager {
         if (autoEnable) {
             publishSupportForECaps2();
         }
-
-        connection.addConnectionListener(new ConnectionListener() {
-            @Override
-            public void connected(XMPPConnection connection) {
-                 processCapsStreamFeatureIfAvailable(connection);
-            }
-            private void processCapsStreamFeatureIfAvailable(XMPPConnection connection) {
-                Caps2Element caps2Element = connection.getFeature(Caps2Element.class);
-                if (caps2Element == null) {
-                    return;
-                }
-                DomainBareJid from = connection.getXMPPServiceDomain();
-                addCapsExtensionInfo(from, caps2Element);
-            }
-        });
     }
 
     public void publishSupportForECaps2() {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         sdm.addFeature(Caps2Element.NAMESPACE);
-        Logger.getAnonymousLogger().info("adiaholic : caps2 feature added");
     }
 
-    private static void addCapsExtensionInfo(DomainBareJid from, Caps2Element caps2Element) {
-        from.asBareJid();
-        caps2Element.getClass();
+    public void publishEntityCapabilities() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
+        DiscoverInfo discoverInfo = sdm.discoverInfo(connection().getUser());
+
+        List<String> algoList = new ArrayList<String>();
+        algoList.add(defaultAlgo);
+
+        Caps2Element element = generateCapabilityHash(discoverInfo, algoList);
+
+        Presence presence = PresenceBuilder
+                                        .buildPresence()
+                                        .addExtension(element)
+                                        .build();
+        connection().sendStanza(presence);
     }
 
     public static Caps2Element generateCapabilityHash(DiscoverInfo di, List<String> algoList) throws UnsupportedEncodingException, NoSuchAlgorithmException {

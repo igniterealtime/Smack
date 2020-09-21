@@ -18,13 +18,22 @@ package org.jivesoftware.smackx.caps2;
 
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
+import org.jivesoftware.smack.test.util.SmackTestUtil.XmlPullParserKind;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.caps2.element.Caps2Element;
 import org.jivesoftware.smackx.caps2.element.Caps2Element.Caps2HashElement;
+import org.jivesoftware.smackx.caps2.provider.Caps2Provider;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class Caps2ElementTest {
 
@@ -34,7 +43,7 @@ public class Caps2ElementTest {
             "</c>";
 
     @Test
-    public void caps2ElementTest() {
+    public void toXmlTest() {
         Caps2HashElement sha_256_hashElement = new Caps2HashElement("sha-256", "kzBZbkqJ3ADrj7v08reD1qcWUwNGHaidNUgD7nHpiw8=");
 
         Caps2HashElement sha3_256_hashElement = new Caps2HashElement("sha3-256", "79mdYAfU9rEdTOcWDO7UEAt6E56SUzk/g6TnqUeuD9Q=");
@@ -45,6 +54,14 @@ public class Caps2ElementTest {
 
         Caps2Element element = new Caps2Element(set);
 
+        assertXmlSimilar(CAPS2ELEMENT_EXPECTED, element.toXML());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = SmackTestUtil.XmlPullParserKind.class)
+    public void caps2ProviderTest(XmlPullParserKind parserKind) throws XmlPullParserException, IOException, SmackParsingException {
+        XmlPullParser parser = SmackTestUtil.getParserFor(CAPS2ELEMENT_EXPECTED, parserKind);
+        Caps2Element element = Caps2Provider.INSTANCE.parse(parser);
         assertXmlSimilar(CAPS2ELEMENT_EXPECTED, element.toXML());
     }
 }
