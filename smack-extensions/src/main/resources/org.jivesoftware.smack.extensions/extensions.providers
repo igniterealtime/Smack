@@ -500,6 +500,12 @@
     </extensionProvider>
 
     <!-- XEP-0231: Bits of Binary -->
+    <extensionProvider>
+        <elementName>data</elementName>
+        <namespace>urn:xmpp:bob</namespace>
+        <className>org.jivesoftware.smackx.bob.provider.BoBDataExtensionProvider</className>
+    </extensionProvider>
+
     <iqProvider>
         <elementName>data</elementName>
         <namespace>urn:xmpp:bob</namespace>

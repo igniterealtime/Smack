@@ -37,7 +37,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  *
  * @author Gaston Dombiak
  */
-public class XHTMLExtension implements ExtensionElement {
+public final class XHTMLExtension implements ExtensionElement {
 
     public static final String ELEMENT = "html";
     public static final String NAMESPACE = "http://jabber.org/protocol/xhtml-im";
