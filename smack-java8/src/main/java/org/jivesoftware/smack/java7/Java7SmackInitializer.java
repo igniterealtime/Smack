@@ -33,7 +33,7 @@ public class Java7SmackInitializer implements SmackInitializer {
         if (SystemUtil.onAndroid()) {
             // @formatter:off
             throw new RuntimeException(
-                            "You need to remove the smack-java7 dependency/jar from your build, " +
+                            "You need to remove the smack-java8 dependency/jar from your build, " +
                             "as it does not run on Android. " +
                             "Use smack-android instead.");
             // @formatter:on

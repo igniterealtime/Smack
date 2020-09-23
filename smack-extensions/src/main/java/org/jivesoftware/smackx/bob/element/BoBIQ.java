@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016 Fernando Ramirez, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.bob.element;
 import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.bob.BoBData;
-import org.jivesoftware.smackx.bob.BoBHash;
 import org.jivesoftware.smackx.bob.BoBManager;
+import org.jivesoftware.smackx.bob.ContentId;
 
 /**
  * Bits of Binary IQ class.
@@ -41,28 +41,40 @@ public class BoBIQ extends IQ {
      */
     public static final String NAMESPACE = BoBManager.NAMESPACE;
 
-    private final BoBHash bobHash;
+    private final ContentId cid;
     private final BoBData bobData;
 
     /**
      * Bits of Binary IQ constructor.
      *
-     * @param bobHash TODO javadoc me please
+     * @param cid TODO javadoc me please
      * @param bobData TODO javadoc me please
      */
-    public BoBIQ(BoBHash bobHash, BoBData bobData) {
+    public BoBIQ(ContentId cid, BoBData bobData) {
         super(ELEMENT, NAMESPACE);
-        this.bobHash = bobHash;
+        this.cid = cid;
         this.bobData = bobData;
     }
 
     /**
      * Bits of Binary IQ constructor.
      *
-     * @param bobHash TODO javadoc me please
+     * @param cid TODO javadoc me please
      */
-    public BoBIQ(BoBHash bobHash) {
-        this(bobHash, null);
+    public BoBIQ(ContentId cid) {
+        this(cid, null);
+    }
+
+    /**
+     * Get the BoB hash.
+     *
+     * @return the BoB hash
+     * @deprecated use {@link #getContentId()} instead.
+     */
+    // TODO: Remove in Smack 4.5.
+    @Deprecated
+    public ContentId getBoBHash() {
+        return cid;
     }
 
     /**
@@ -70,8 +82,8 @@ public class BoBIQ extends IQ {
      *
      * @return the BoB hash
      */
-    public BoBHash getBoBHash() {
-        return bobHash;
+    public ContentId getContentId() {
+        return cid;
     }
 
     /**
@@ -85,7 +97,7 @@ public class BoBIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.attribute("cid", bobHash.getCid());
+        xml.attribute("cid", cid.getCid());
 
         if (bobData != null) {
             xml.optIntAttribute("max_age", bobData.getMaxAge());

@@ -6,7 +6,7 @@ dependencies {
 	api project(':smack-debug')
 	api project(':smack-experimental')
 	api project(':smack-extensions')
-	api project(':smack-java7')
+	api project(':smack-java8')
 	api project(':smack-legacy')
 	api project(':smack-omemo')
 	api project(':smack-openpgp')

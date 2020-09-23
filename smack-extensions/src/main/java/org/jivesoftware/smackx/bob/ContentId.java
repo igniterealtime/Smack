@@ -19,18 +19,23 @@ package org.jivesoftware.smackx.bob;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
- * Bits of Binary hash class.
+ * Content-ID class.
  *
  * @author Fernando Ramirez
  * @author Florian Schmaus
- * @see <a href="http://xmpp.org/extensions/xep-0231.html">XEP-0231: Bits of
- *      Binary</a>
+ * @see <a href="https://tools.ietf.org/html/rfc2392">RFC 2392: Content-ID and Message-ID Uniform Resource Locators</a>
  */
-public class BoBHash {
+public class ContentId {
 
     private final String hash;
     private final String hashType;
     private final String cid;
+
+    private ContentId(String hash, String hashType, String cid) {
+        this.hash = StringUtils.requireNotNullNorEmpty(hash, "hash must not be null nor empty");
+        this.hashType = StringUtils.requireNotNullNorEmpty(hashType, "hashType must not be null nor empty");
+        this.cid = cid;
+    }
 
     /**
      * BoB hash constructor.
@@ -38,10 +43,8 @@ public class BoBHash {
      * @param hash TODO javadoc me please
      * @param hashType TODO javadoc me please
      */
-    public BoBHash(String hash, String hashType) {
-        this.hash = StringUtils.requireNotNullNorEmpty(hash, "hash must not be null nor empty");
-        this.hashType = StringUtils.requireNotNullNorEmpty(hashType, "hashType must not be null nor empty");
-        this.cid = this.hashType + '+' + this.hash + "@bob.xmpp.org";
+    public ContentId(String hash, String hashType) {
+        this(hash, hashType, hashType + '+' + hash + "@bob.xmpp.org");
     }
 
     /**
@@ -82,8 +85,8 @@ public class BoBHash {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof BoBHash) {
-            BoBHash otherBob = (BoBHash) other;
+        if (other instanceof ContentId) {
+            ContentId otherBob = (ContentId) other;
             return cid.equals(otherBob.cid);
         }
         return false;
@@ -100,10 +103,10 @@ public class BoBHash {
      * @param src TODO javadoc me please
      * @return the BoB hash
      */
-    public static BoBHash fromSrc(String src) {
+    public static ContentId fromSrc(String src) {
         String hashType = src.substring(src.lastIndexOf("cid:") + 4, src.indexOf("+"));
         String hash = src.substring(src.indexOf("+") + 1, src.indexOf("@bob.xmpp.org"));
-        return new BoBHash(hash, hashType);
+        return new ContentId(hash, hashType);
     }
 
     /**
@@ -112,10 +115,10 @@ public class BoBHash {
      * @param cid TODO javadoc me please
      * @return the BoB hash
      */
-    public static BoBHash fromCid(String cid) {
+    public static ContentId fromCid(String cid) {
         String hashType = cid.substring(0, cid.indexOf("+"));
         String hash = cid.substring(cid.indexOf("+") + 1, cid.indexOf("@bob.xmpp.org"));
-        return new BoBHash(hash, hashType);
+        return new ContentId(hash, hashType, cid);
     }
 
 }

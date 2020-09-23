@@ -79,7 +79,7 @@ public class QueryArchiveTest extends MamTest {
                         .setBody("Thrice the brinded cat hath mew.")
                         .build();
 
-        Forwarded forwarded = new Forwarded(delay, forwardedMessage);
+        Forwarded<Message> forwarded = new Forwarded<>(forwardedMessage, delay);
 
         message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
 
@@ -90,7 +90,7 @@ public class QueryArchiveTest extends MamTest {
         assertEquals(mamResultExtension.getId(), "34482-21985-73620");
         assertEquals(mamResultExtension.getForwarded().getDelayInformation().getStamp(), date);
 
-        Message resultMessage = (Message) mamResultExtension.getForwarded().getForwardedStanza();
+        Message resultMessage = mamResultExtension.getForwarded().getForwardedStanza();
         assertEquals(resultMessage.getFrom(), JidCreate.from("coven@chat.shakespeare.lit/firstwitch"));
         assertEquals(resultMessage.getStanzaId(), "162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2");
         assertEquals(resultMessage.getType(), Type.chat);

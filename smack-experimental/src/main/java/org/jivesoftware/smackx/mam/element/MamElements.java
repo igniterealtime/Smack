@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -69,7 +70,7 @@ public class MamElements {
         /**
          * the forwarded element.
          */
-        private final Forwarded forwarded;
+        private final Forwarded<Message> forwarded;
 
         /**
          * the query id.
@@ -83,7 +84,7 @@ public class MamElements {
          * @param id TODO javadoc me please
          * @param forwarded TODO javadoc me please
          */
-        public MamResultExtension(String queryId, String id, Forwarded forwarded) {
+        public MamResultExtension(String queryId, String id, Forwarded<Message> forwarded) {
             if (StringUtils.isEmpty(id)) {
                 throw new IllegalArgumentException("id must not be null or empty");
             }
@@ -109,7 +110,7 @@ public class MamElements {
          *
          * @return the forwarded element
          */
-        public Forwarded getForwarded() {
+        public Forwarded<Message> getForwarded() {
             return forwarded;
         }
 

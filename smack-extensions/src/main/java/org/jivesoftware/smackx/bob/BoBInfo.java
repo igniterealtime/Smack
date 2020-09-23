@@ -20,15 +20,15 @@ import java.util.Set;
 
 public class BoBInfo {
 
-    private final Set<BoBHash> hashes;
+    private final Set<ContentId> hashes;
     private final BoBData data;
 
-    BoBInfo(Set<BoBHash> hashes, BoBData data) {
+    BoBInfo(Set<ContentId> hashes, BoBData data) {
         this.hashes = hashes;
         this.data = data;
     }
 
-    public Set<BoBHash> getHashes() {
+    public Set<ContentId> getHashes() {
         return hashes;
     }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public class CarbonExtension implements ExtensionElement {
     public static final String NAMESPACE = Carbon.NAMESPACE;
 
     private final Direction dir;
-    private final Forwarded fwd;
+    private final Forwarded<Message> fwd;
 
     /**
      * Construct a Carbon message extension.
@@ -46,7 +46,7 @@ public class CarbonExtension implements ExtensionElement {
      * @param dir Determines if the carbon is being sent/received
      * @param fwd The forwarded message.
      */
-    public CarbonExtension(Direction dir, Forwarded fwd) {
+    public CarbonExtension(Direction dir, Forwarded<Message> fwd) {
         this.dir = dir;
         this.fwd = fwd;
     }
@@ -65,7 +65,7 @@ public class CarbonExtension implements ExtensionElement {
      *
      * @return the {@link Forwarded} message contained in this Carbon.
      */
-    public Forwarded getForwarded() {
+    public Forwarded<Message> getForwarded() {
         return fwd;
     }
 

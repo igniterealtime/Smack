@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2017 Fernando Ramirez, Florian Schmaus
+ * Copyright 2016-2020 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,9 +81,9 @@ public final class BoBManager extends Manager {
         return bobManager;
     }
 
-    private static final LruCache<BoBHash, BoBData> BOB_CACHE = new LruCache<>(128);
+    private static final LruCache<ContentId, BoBData> BOB_CACHE = new LruCache<>(128);
 
-    private final Map<BoBHash, BoBInfo> bobs = new ConcurrentHashMap<>();
+    private final Map<ContentId, BoBInfo> bobs = new ConcurrentHashMap<>();
 
     private BoBManager(XMPPConnection connection) {
         super(connection);
@@ -95,15 +95,16 @@ public final class BoBManager extends Manager {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         BoBIQ bobIQRequest = (BoBIQ) iqRequest;
+                        ContentId contentId = bobIQRequest.getContentId();
 
-                        BoBInfo bobInfo = bobs.get(bobIQRequest.getBoBHash());
+                        BoBInfo bobInfo = bobs.get(contentId);
                         if (bobInfo == null) {
                             // TODO return item-not-found
                             return null;
                         }
 
                         BoBData bobData = bobInfo.getData();
-                        BoBIQ responseBoBIQ = new BoBIQ(bobIQRequest.getBoBHash(), bobData);
+                        BoBIQ responseBoBIQ = new BoBIQ(contentId, bobData);
                         responseBoBIQ.setType(Type.result);
                         responseBoBIQ.setTo(bobIQRequest.getFrom());
                         return responseBoBIQ;
@@ -137,7 +138,7 @@ public final class BoBManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public BoBData requestBoB(Jid to, BoBHash bobHash) throws NotLoggedInException, NoResponseException,
+    public BoBData requestBoB(Jid to, ContentId bobHash) throws NotLoggedInException, NoResponseException,
             XMPPErrorException, NotConnectedException, InterruptedException {
         BoBData bobData = BOB_CACHE.lookup(bobHash);
         if (bobData != null) {
@@ -159,9 +160,9 @@ public final class BoBManager extends Manager {
 
     public BoBInfo addBoB(BoBData bobData) {
         // We only support SHA-1 for now.
-        BoBHash bobHash = new BoBHash(SHA1.hex(bobData.getContent()), "sha1");
+        ContentId bobHash = new ContentId(SHA1.hex(bobData.getContent()), "sha1");
 
-        Set<BoBHash> bobHashes = Collections.singleton(bobHash);
+        Set<ContentId> bobHashes = Collections.singleton(bobHash);
         bobHashes = Collections.unmodifiableSet(bobHashes);
 
         BoBInfo bobInfo = new BoBInfo(bobHashes, bobData);
@@ -171,12 +172,12 @@ public final class BoBManager extends Manager {
         return bobInfo;
     }
 
-    public BoBInfo removeBoB(BoBHash bobHash) {
+    public BoBInfo removeBoB(ContentId bobHash) {
         BoBInfo bobInfo = bobs.remove(bobHash);
         if (bobInfo == null) {
             return null;
         }
-        for (BoBHash otherBobHash : bobInfo.getHashes()) {
+        for (ContentId otherBobHash : bobInfo.getHashes()) {
             bobs.remove(otherBobHash);
         }
         return bobInfo;

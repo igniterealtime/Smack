@@ -632,7 +632,7 @@ public final class MamManager extends Manager {
         private final MamFinIQ mamFin;
         private final List<Message> mamResultCarrierMessages;
         private final List<MamResultExtension> mamResultExtensions;
-        private final List<Forwarded> forwardedMessages;
+        private final List<Forwarded<Message>> forwardedMessages;
         private final List<Message> messages;
 
         private MamQueryPage(StanzaCollector stanzaCollector, MamFinIQ mamFin) {
@@ -642,7 +642,7 @@ public final class MamManager extends Manager {
 
             List<Message> mamResultCarrierMessages = new ArrayList<>(mamResultCarrierStanzas.size());
             List<MamResultExtension> mamResultExtensions = new ArrayList<>(mamResultCarrierStanzas.size());
-            List<Forwarded> forwardedMessages = new ArrayList<>(mamResultCarrierStanzas.size());
+            List<Forwarded<Message>> forwardedMessages = new ArrayList<>(mamResultCarrierStanzas.size());
 
             for (Stanza mamResultStanza : mamResultCarrierStanzas) {
                 Message resultMessage = (Message) mamResultStanza;
@@ -665,7 +665,7 @@ public final class MamManager extends Manager {
             return messages;
         }
 
-        public List<Forwarded> getForwarded() {
+        public List<Forwarded<Message>> getForwarded() {
             return forwardedMessages;
         }
 

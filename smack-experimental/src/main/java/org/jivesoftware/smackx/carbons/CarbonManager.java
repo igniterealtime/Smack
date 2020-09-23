@@ -132,8 +132,8 @@ public final class CarbonManager extends Manager {
                 final Message wrappingMessage = (Message) stanza;
                 final CarbonExtension carbonExtension = CarbonExtension.from(wrappingMessage);
                 final Direction direction = carbonExtension.getDirection();
-                final Forwarded forwarded = carbonExtension.getForwarded();
-                final Message carbonCopy = (Message) forwarded.getForwardedStanza();
+                final Forwarded<Message> forwarded = carbonExtension.getForwarded();
+                final Message carbonCopy = forwarded.getForwardedStanza();
                 final BareJid from = carbonCopy.getFrom().asBareJid();
 
                 carbonsListenerAsyncButOrdered.performAsyncButOrdered(from, new Runnable() {

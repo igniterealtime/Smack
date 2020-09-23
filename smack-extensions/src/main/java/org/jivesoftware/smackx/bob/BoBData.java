@@ -29,14 +29,19 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
  */
 public class BoBData {
 
-    private final int maxAge;
+    private final Integer maxAge;
     private final String type;
 
     private byte[] contentBinary;
     private String contentString;
 
+    private BoBData(String type, Integer maxAge) {
+        this.type = type;
+        this.maxAge = maxAge;
+    }
+
     public BoBData(String type, byte[] content) {
-        this(type, content, -1);
+        this(type, content, null);
     }
 
     /**
@@ -46,20 +51,18 @@ public class BoBData {
      * @param content TODO javadoc me please
      * @param maxAge TODO javadoc me please
      */
-    public BoBData(String type, byte[] content, int maxAge) {
-        this.type = type;
+    public BoBData(String type, byte[] content, Integer maxAge) {
+        this(type, maxAge);
         this.contentBinary = content;
-        this.maxAge = maxAge;
     }
 
     public BoBData(String type, String content) {
-        this(type, content, -1);
+        this(type, content, null);
     }
 
-    public BoBData(String type, String content, int maxAge) {
-        this.type = type;
+    public BoBData(String type, String content, Integer maxAge) {
+        this(type, maxAge);
         this.contentString = content;
-        this.maxAge = maxAge;
     }
 
     /**
@@ -67,7 +70,7 @@ public class BoBData {
      *
      * @return the max age
      */
-    public int getMaxAge() {
+    public Integer getMaxAge() {
         return maxAge;
     }
 

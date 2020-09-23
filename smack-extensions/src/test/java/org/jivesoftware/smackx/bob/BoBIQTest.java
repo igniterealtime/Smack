@@ -41,7 +41,7 @@ public class BoBIQTest extends SmackTestSuite {
 
     @Test
     public void checkBoBIQRequest() throws Exception {
-        BoBHash bobHash = new BoBHash("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
+        ContentId bobHash = new ContentId("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
 
         BoBIQ createdBoBIQ = new BoBIQ(bobHash);
         createdBoBIQ.setStanzaId("sarasa");
@@ -55,7 +55,7 @@ public class BoBIQTest extends SmackTestSuite {
     public void checkBoBIQResponse() throws Exception {
         BoBIQ bobIQ = PacketParserUtils.parseStanza(sampleBoBIQResponse);
 
-        BoBHash bobHash = new BoBHash("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
+        ContentId bobHash = new ContentId("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
         BoBData bobData = new BoBData("image/png", "sarasade2354j2".getBytes(StandardCharsets.UTF_8), 86400);
 
         BoBIQ createdBoBIQ = new BoBIQ(bobHash, bobData);
@@ -63,8 +63,8 @@ public class BoBIQTest extends SmackTestSuite {
         createdBoBIQ.setTo(JidCreate.from("doctor@shakespeare.lit/pda"));
         createdBoBIQ.setType(Type.result);
 
-        assertEquals(bobIQ.getBoBHash().getHash(), createdBoBIQ.getBoBHash().getHash());
-        assertEquals(bobIQ.getBoBHash().getHashType(), createdBoBIQ.getBoBHash().getHashType());
+        assertEquals(bobIQ.getContentId().getHash(), createdBoBIQ.getContentId().getHash());
+        assertEquals(bobIQ.getContentId().getHashType(), createdBoBIQ.getContentId().getHashType());
         assertEquals(bobIQ.getBoBData().getMaxAge(), createdBoBIQ.getBoBData().getMaxAge());
         assertEquals(bobIQ.getBoBData().getType(), createdBoBIQ.getBoBData().getType());
         assertEquals(bobIQ.getBoBData().getContentBase64Encoded(), createdBoBIQ.getBoBData().getContentBase64Encoded());

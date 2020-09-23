@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas
+ * Copyright 2013-2014 Georg Lukas, 2020 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.carbons.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -38,25 +39,22 @@ import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
  */
 public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtension> {
 
-    private static final ForwardedProvider FORWARDED_PROVIDER = new ForwardedProvider();
-
     @Override
     public CarbonExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         Direction dir = Direction.valueOf(parser.getName());
-        Forwarded fwd = null;
+        Forwarded<Message> fwd = null;
 
         boolean done = false;
         while (!done) {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getName().equals("forwarded")) {
-                fwd = FORWARDED_PROVIDER.parse(parser);
+                fwd = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment);
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT && dir == Direction.valueOf(parser.getName()))
                 done = true;
         }
         if (fwd == null) {
-            // TODO: Should be SmackParseException.
-            throw new IOException("sent/received must contain exactly one <forwarded> tag");
+            throw new SmackParsingException("sent/received must contain exactly one <forwarded/> element");
         }
         return new CarbonExtension(dir, fwd);
     }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez
+ * Copyright 2016 Fernando Ramirez, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.mam.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -40,7 +41,7 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
 
     @Override
     public MamResultExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        Forwarded forwarded = null;
+        Forwarded<Message> forwarded = null;
         String queryId = parser.getAttributeValue("", "queryid");
         String id = parser.getAttributeValue("", "id");
 
@@ -51,7 +52,7 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
             case START_ELEMENT:
                 switch (name) {
                 case Forwarded.ELEMENT:
-                    forwarded = ForwardedProvider.INSTANCE.parse(parser);
+                    forwarded = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment);
                     break;
                 }
                 break;
