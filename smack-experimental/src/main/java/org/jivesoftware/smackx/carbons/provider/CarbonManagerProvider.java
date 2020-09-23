@@ -55,8 +55,7 @@ public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtens
                 done = true;
         }
         if (fwd == null) {
-            // TODO: Should be SmackParseException.
-            throw new IOException("sent/received must contain exactly one <forwarded> tag");
+            throw new SmackParsingException("sent/received must contain exactly one <forwarded/> element");
         }
         return new CarbonExtension(dir, fwd);
     }

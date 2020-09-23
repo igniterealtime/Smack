@@ -19,9 +19,9 @@ package org.jivesoftware.smackx.carbons;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
 import java.util.Properties;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -107,6 +107,6 @@ public class CarbonTest extends ExperimentalInitializerTest {
             .a("xmlns", "urn:xmpp:forwarded:0")
             .asString(outputProperties);
 
-        assertThrows(IOException.class, () -> SmackTestUtil.parse(control, CarbonManagerProvider.class, parserKind));
+        assertThrows(SmackParsingException.class, () -> SmackTestUtil.parse(control, CarbonManagerProvider.class, parserKind));
     }
 }
