@@ -62,7 +62,7 @@ allprojects {
 			':smack-bosh',
 			':smack-debug',
 			':smack-debug-slf4j',
-			':smack-java7',
+			':smack-java8',
 			':smack-jingle-old',
 			':smack-resolver-dnsjava',
 			':smack-resolver-javax',
