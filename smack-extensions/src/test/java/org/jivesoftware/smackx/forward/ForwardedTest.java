@@ -45,7 +45,7 @@ public class ForwardedTest {
     public void forwardedTest() throws Exception {
         XmlPullParser parser;
         String control;
-        Forwarded fwd;
+        Forwarded<?> fwd;
 
         control = XMLBuilder.create("forwarded")
             .a("xmlns", "urn:xmpp:forwarded:0")
@@ -71,7 +71,7 @@ public class ForwardedTest {
     public void forwardedWithDelayTest() throws Exception {
         XmlPullParser parser;
         String control;
-        Forwarded fwd;
+        Forwarded<?> fwd;
 
         // @formatter:off
         control = XMLBuilder.create("forwarded").a("xmlns", "urn:xmpp:forwarded:0")

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,16 @@ public class AbstractProvider<E extends Element> {
         Type[] actualTypeArguments = parameterizedGenericSuperclass.getActualTypeArguments();
         Type elementType = actualTypeArguments[0];
 
-        elementClass =  (Class<E>) elementType;
+
+        if (elementType instanceof Class) {
+            elementClass = (Class<E>) elementType;
+        } else if (elementType instanceof ParameterizedType) {
+            ParameterizedType parameteriezedElementType = (ParameterizedType) elementType;
+            elementClass = (Class<E>) parameteriezedElementType.getRawType();
+        } else {
+            throw new AssertionError(
+                            "Element type '" + elementType + "' is neither of type Class or ParameterizedType");
+        }
     }
 
     public final Class<E> getElementClass() {

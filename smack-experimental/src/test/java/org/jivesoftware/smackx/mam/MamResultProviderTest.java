@@ -59,10 +59,10 @@ public class MamResultProviderTest {
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = calendar.getTime();
 
-        Forwarded forwarded = mamResultExtension.getForwarded();
+        Forwarded<Message> forwarded = mamResultExtension.getForwarded();
         assertEquals(forwarded.getDelayInformation().getStamp(), date);
 
-        Message message = (Message) forwarded.getForwardedStanza();
+        Message message = forwarded.getForwardedStanza();
         assertEquals(message.getFrom().toString(), "romeo@montague.lit/orchard");
         assertEquals(message.getTo().toString(), "juliet@capulet.lit/balcony");
         assertEquals(message.getBody(),
@@ -81,10 +81,10 @@ public class MamResultProviderTest {
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = calendar.getTime();
 
-        Forwarded forwarded = mamResultExtension.getForwarded();
+        Forwarded<Message> forwarded = mamResultExtension.getForwarded();
         assertEquals(forwarded.getDelayInformation().getStamp(), date);
 
-        Message forwardedMessage = (Message) forwarded.getForwardedStanza();
+        Message forwardedMessage = forwarded.getForwardedStanza();
         assertEquals(forwardedMessage.getFrom().toString(), "witch@shakespeare.lit");
         assertEquals(forwardedMessage.getTo().toString(), "macbeth@shakespeare.lit");
         assertEquals(forwardedMessage.getBody(), "Hail to thee");

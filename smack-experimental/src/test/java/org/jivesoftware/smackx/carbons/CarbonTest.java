@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Properties;
 
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -48,7 +49,7 @@ public class CarbonTest extends ExperimentalInitializerTest {
         XmlPullParser parser;
         String control;
         CarbonExtension cc;
-        Forwarded fwd;
+        Forwarded<Message> fwd;
 
         control = XMLBuilder.create("sent")
             .e("forwarded")
