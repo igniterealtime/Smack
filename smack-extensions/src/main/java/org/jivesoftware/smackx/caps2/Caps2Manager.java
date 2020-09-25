@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.caps2;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,8 +83,7 @@ public final class Caps2Manager extends Manager {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         DiscoverInfo discoverInfo = sdm.discoverInfo(connection().getUser());
 
-        List<String> algoList = new ArrayList<String>();
-        algoList.add(defaultAlgo);
+        List<String> algoList = Collections.singletonList(defaultAlgo);
 
         Caps2Element element = generateCapabilityHash(discoverInfo, algoList);
 
