@@ -30,16 +30,26 @@ import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps2.element.Caps2Element;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
+import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.util.cache.LruCache;
 
 public final class Caps2Manager extends Manager {
 
@@ -47,6 +57,8 @@ public final class Caps2Manager extends Manager {
     private static String defaultAlgo = "sha-256";
 
     private static boolean autoEnable = true;
+
+    private static LruCache<Jid, Caps2Element> CACHE = new LruCache<Jid, Caps2Element>(10000);
 
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
@@ -56,6 +68,8 @@ public final class Caps2Manager extends Manager {
             }
         });
     }
+
+    private Caps2Element currentEntityCapabilities;
 
     public static synchronized Caps2Manager getInstanceFor(XMPPConnection connection) {
         Caps2Manager manager = INSTANCES.get(connection);
@@ -72,6 +86,17 @@ public final class Caps2Manager extends Manager {
         if (autoEnable) {
             publishSupportForECaps2();
         }
+
+        connection.addAsyncStanzaListener(new StanzaListener() {
+            @Override
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException {
+                Presence presence = (Presence) packet;
+                Jid jid = presence.getFrom();
+                Caps2Element caps2Element = presence.getExtension(Caps2Element.class);
+                CACHE.put(jid, caps2Element);
+            }
+        }, new AndFilter(new StanzaTypeFilter(Presence.class), new StanzaExtensionFilter(
+                Caps2Element.ELEMENT, Caps2Element.NAMESPACE)));
     }
 
     public void publishSupportForECaps2() {
@@ -85,11 +110,11 @@ public final class Caps2Manager extends Manager {
 
         List<String> algoList = Collections.singletonList(defaultAlgo);
 
-        Caps2Element element = generateCapabilityHash(discoverInfo, algoList);
+        currentEntityCapabilities = generateCapabilityHash(discoverInfo, algoList);
 
         Presence presence = PresenceBuilder
                                         .buildPresence()
-                                        .addExtension(element)
+                                        .addExtension(currentEntityCapabilities)
                                         .build();
         connection().sendStanza(presence);
     }
@@ -225,5 +250,18 @@ public final class Caps2Manager extends Manager {
             }
         }
         return sb.toString();
+    }
+
+    public Caps2Element getEntityCapabilitiesFrom(EntityFullJid entityFullJid) {
+        // Look in CACHE for Caps2Element
+        Caps2Element element = CACHE.get(entityFullJid);
+        if (element != null) {
+            return element;
+        }
+        return null;
+    }
+
+    public Caps2Element getCurrentEnitityCapabilities() {
+        return currentEntityCapabilities;
     }
 }

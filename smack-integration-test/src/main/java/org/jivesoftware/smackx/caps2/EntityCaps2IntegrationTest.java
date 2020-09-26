@@ -16,8 +16,13 @@
  */
 package org.jivesoftware.smackx.caps2;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -30,7 +35,6 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps2.element.Caps2Element;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -42,11 +46,8 @@ import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
 
-    @SuppressWarnings("unused")
     private final Caps2Manager caps2Man1;
-
-    @SuppressWarnings("unused")
-    private final ServiceDiscoveryManager sdm2;
+    private final Caps2Manager caps2Man2;
 
     private final Set<String> dummyFeatures = new HashSet<>();
     private final AtomicInteger dummyFeatureId = new AtomicInteger();
@@ -54,7 +55,28 @@ public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
     public EntityCaps2IntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         caps2Man1 = Caps2Manager.getInstanceFor(environment.conOne);
-        sdm2 = ServiceDiscoveryManager.getInstanceFor(conTwo);
+        caps2Man2 = Caps2Manager.getInstanceFor(environment.conTwo);
+    }
+
+    Caps2Element conOneCaps2ElementObtained = null;
+
+    @SmackIntegrationTest
+    public void tradeBetweenDistinctECaps2ManagerTest() throws NoResponseException, XMPPErrorException, NotConnectedException, UnsupportedEncodingException, NoSuchAlgorithmException, InterruptedException, TimeoutException {
+        caps2Man1.publishEntityCapabilities();
+        Caps2Element conOneCaps2Element = caps2Man1.getCurrentEnitityCapabilities();
+
+        waitUntilTrue(new Condition() {
+            @Override
+            public boolean evaluate()
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+                conOneCaps2ElementObtained = caps2Man2.getEntityCapabilitiesFrom(conOne.getUser());
+                if (conOneCaps2ElementObtained != null) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        assertEquals(conOneCaps2Element.toXML(), conOneCaps2ElementObtained.toXML());
     }
 
     @SmackIntegrationTest
