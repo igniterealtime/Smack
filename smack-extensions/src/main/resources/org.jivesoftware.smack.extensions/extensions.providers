@@ -542,7 +542,7 @@
 
     <!-- XEP-0390: Entity Capabilities 2.0 -->
     <extensionProvider>
-        <elementName>Caps2Element</elementName>
+        <elementName>c</elementName>
         <namespace>urn:xmpp:caps</namespace>
         <className>org.jivesoftware.smackx.caps2.provider.Caps2Provider</className>
     </extensionProvider>

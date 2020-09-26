@@ -51,7 +51,7 @@ public class Caps2Element implements ExtensionElement {
     }
 
     @Override
-    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
+    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
         xml.rightAngleBracket();
 
@@ -88,7 +88,7 @@ public class Caps2Element implements ExtensionElement {
         }
 
         @Override
-        public CharSequence toXML(XmlEnvironment xmlEnvironment) {
+        public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
             XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
             xml.attribute("algo", algorithm);
             xml.rightAngleBracket();

@@ -24,7 +24,12 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.filter.StanzaFilter;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smackx.caps2.element.Caps2Element;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -33,13 +38,15 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
 
     @SuppressWarnings("unused")
     private final Caps2Manager caps2Man1;
+
     @SuppressWarnings("unused")
-    private final ServiceDiscoveryManager sdm1;
+    private final ServiceDiscoveryManager sdm2;
 
     private final Set<String> dummyFeatures = new HashSet<>();
     private final AtomicInteger dummyFeatureId = new AtomicInteger();
@@ -47,7 +54,38 @@ public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
     public EntityCaps2IntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         caps2Man1 = Caps2Manager.getInstanceFor(environment.conOne);
-        sdm1 = ServiceDiscoveryManager.getInstanceFor(conOne);
+        sdm2 = ServiceDiscoveryManager.getInstanceFor(conTwo);
+    }
+
+    @SmackIntegrationTest
+    public void getEntityCapability() throws Exception {
+        final SimpleResultSyncPoint entityCaps2Received = new SimpleResultSyncPoint();
+
+        StanzaListener stanzaListener = new StanzaListener() {
+            @Override
+            public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException {
+                Presence presence = (Presence) packet;
+                if (presence.hasExtension(Caps2Element.class)) {
+                    Logger.getAnonymousLogger().info("\n\n\n adiaholic caps2Element : " + packet.toXML());
+                    entityCaps2Received.signal();
+                }
+            }
+        };
+        conTwo.addStanzaListener(stanzaListener, new StanzaFilter() {
+            @Override
+            public boolean accept(Stanza stanza) {
+                if (stanza instanceof Presence) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        try {
+            caps2Man1.publishEntityCapabilities();
+            entityCaps2Received.waitForResult(timeout);
+        } finally {
+            conTwo.removeStanzaListener(stanzaListener);
+        }
     }
 
     @BeforeClass
@@ -66,12 +104,5 @@ public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
         dummyFeatures.add(dummyFeature);
         Logger.getAnonymousLogger().warning("adiaholic: dummy feature created: " + dummyFeature);
         return dummyFeature;
-    }
-
-    @SmackIntegrationTest
-    public void waitToPublishFeature() throws Exception {
-        Logger.getAnonymousLogger().warning("adiaholic: publishing feature");
-
-        Logger.getAnonymousLogger().warning("adiaholic: feature published");
     }
 }
