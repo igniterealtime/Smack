@@ -40,6 +40,10 @@ public class Caps2Element implements ExtensionElement {
         hashes = hashElementSet;
     }
 
+    public Set<Caps2HashElement> getHashes() {
+        return hashes;
+    }
+
     @Override
     public String getNamespace() {
         return NAMESPACE;
@@ -75,6 +79,14 @@ public class Caps2Element implements ExtensionElement {
         public Caps2HashElement (String algorithm, String hash) {
             this.algorithm = algorithm;
             this.hash = hash;
+        }
+
+        public String getAlgorithm() {
+            return algorithm;
+        }
+
+        public String getHash() {
+            return hash;
         }
 
         @Override

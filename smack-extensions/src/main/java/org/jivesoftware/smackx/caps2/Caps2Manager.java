@@ -18,11 +18,14 @@ package org.jivesoftware.smackx.caps2;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -42,8 +45,11 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps2.element.Caps2Element;
+import org.jivesoftware.smackx.caps2.element.Caps2Element.Caps2HashElement;
+import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -104,6 +110,40 @@ public final class Caps2Manager extends Manager {
         sdm.addFeature(Caps2Element.NAMESPACE);
     }
 
+    private void setLocalEntityCapsNodeProvider() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
+        DiscoverInfo discoverInfo = sdm.discoverInfo(connection().getUser());
+
+        Caps2Element element = generateCapabilityHash(discoverInfo, Arrays.asList("sha-256"));
+        Set<Caps2HashElement> hashes = element.getHashes();
+        Iterator<Caps2HashElement> iterator = hashes.iterator();
+        Caps2HashElement hashElement = iterator.next();
+
+        String algorithm = hashElement.getAlgorithm();
+        String hash = hashElement.getHash();
+
+        String node = Caps2Element.NAMESPACE + "#" + algorithm + "." + hash;
+
+        final List<Identity> identities = new LinkedList<>(ServiceDiscoveryManager.getInstanceFor(connection()).getIdentities());
+
+        sdm.setNodeInformationProvider(node, new AbstractNodeInformationProvider() {
+            List<String> features = sdm.getFeatures();
+            List<DataForm> packetExtensions = sdm.getExtendedInfo();
+            @Override
+            public List<String> getNodeFeatures() {
+                return features;
+            }
+            @Override
+            public List<Identity> getNodeIdentities() {
+                return identities;
+            }
+            @Override
+            public List<DataForm> getNodePacketExtensions() {
+                return packetExtensions;
+            }
+        });
+    }
+
     public void publishEntityCapabilities() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, UnsupportedEncodingException, NoSuchAlgorithmException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         DiscoverInfo discoverInfo = sdm.discoverInfo(connection().getUser());
@@ -117,6 +157,7 @@ public final class Caps2Manager extends Manager {
                                         .addExtension(currentEntityCapabilities)
                                         .build();
         connection().sendStanza(presence);
+        setLocalEntityCapsNodeProvider();
     }
 
     public static Caps2Element generateCapabilityHash(DiscoverInfo di, List<String> algoList) throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -259,6 +300,26 @@ public final class Caps2Manager extends Manager {
             return element;
         }
         return null;
+    }
+
+    public DiscoverInfo getDiscoInfoFrom(EntityFullJid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        Caps2Element element = getEntityCapabilitiesFrom(jid);
+        if (element == null) {
+            return null;
+        }
+
+        // Retrieve info through service discovery
+        Set<Caps2HashElement> hashes = element.getHashes();
+        Iterator<Caps2HashElement> iterator = hashes.iterator();
+        Caps2HashElement hashElement = iterator.next();
+
+        String algorithm = hashElement.getAlgorithm();
+        String hash = hashElement.getHash();
+
+        String node = Caps2Element.NAMESPACE + "#" + algorithm + "." + hash;
+
+        DiscoverInfo discoverInfo = ServiceDiscoveryManager.getInstanceFor(connection()).discoverInfo(jid, node);
+        return discoverInfo;
     }
 
     public Caps2Element getCurrentEnitityCapabilities() {

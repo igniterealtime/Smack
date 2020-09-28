@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,6 +36,10 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.caps2.element.Caps2Element;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Feature;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -61,8 +66,14 @@ public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
     Caps2Element conOneCaps2ElementObtained = null;
 
     @SmackIntegrationTest
-    public void tradeBetweenDistinctECaps2ManagerTest() throws NoResponseException, XMPPErrorException, NotConnectedException, UnsupportedEncodingException, NoSuchAlgorithmException, InterruptedException, TimeoutException {
+    public void tradeDiscoInfoBetweenDistinctECaps2ManagerTest() throws NoResponseException, XMPPErrorException, NotConnectedException, UnsupportedEncodingException, NoSuchAlgorithmException, InterruptedException, TimeoutException {
         caps2Man1.publishEntityCapabilities();
+
+        DiscoverInfo discoInfoSentFromOne = ServiceDiscoveryManager.getInstanceFor(conOne).discoverInfo(conOne.getUser());
+
+        List<Identity> identitiesSentFromOne = discoInfoSentFromOne.getIdentities();
+        List<Feature> featuresSentFromOne = discoInfoSentFromOne.getFeatures();
+
         Caps2Element conOneCaps2Element = caps2Man1.getCurrentEnitityCapabilities();
 
         waitUntilTrue(new Condition() {
@@ -77,6 +88,13 @@ public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
             }
         });
         assertEquals(conOneCaps2Element.toXML(), conOneCaps2ElementObtained.toXML());
+        DiscoverInfo discoInfoReceivedByTwo = caps2Man2.getDiscoInfoFrom(conOne.getUser());
+
+        List<Identity> identitiesReceivedByTwo = discoInfoReceivedByTwo.getIdentities();
+        List<Feature> featuresReceivedByTwo = discoInfoReceivedByTwo.getFeatures();
+
+        assertEquals(identitiesSentFromOne, identitiesReceivedByTwo);
+        assertEquals(featuresSentFromOne, featuresReceivedByTwo);
     }
 
     @SmackIntegrationTest
@@ -88,7 +106,6 @@ public class EntityCaps2IntegrationTest extends AbstractSmackIntegrationTest {
             public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException, NotLoggedInException {
                 Presence presence = (Presence) packet;
                 if (presence.hasExtension(Caps2Element.class)) {
-                    Logger.getAnonymousLogger().info("\n\n\n adiaholic caps2Element : " + packet.toXML());
                     entityCaps2Received.signal();
                 }
             }
