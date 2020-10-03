@@ -457,7 +457,7 @@ public class SmackIntegrationTestFramework {
         sb.append("Available tests: ").append(numberOfAvailableTests);
         if (!testRunResult.disabledTestClasses.isEmpty() || !testRunResult.disabledTests.isEmpty()) {
             sb.append(" (Disabled ").append(testRunResult.disabledTestClasses.size()).append(" classes")
-              .append(" and ").append(testRunResult.disabledTests.size()).append(" tests");
+              .append(" and ").append(testRunResult.disabledTests.size()).append(" tests)");
         }
         sb.append('\n');
         LOGGER.info(sb.toString());
