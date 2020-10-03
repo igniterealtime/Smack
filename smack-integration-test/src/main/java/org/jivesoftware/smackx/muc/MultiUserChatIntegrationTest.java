@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.muc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -144,9 +146,9 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
         muc.addUserStatusListener(userStatusListener);
 
-        assertTrue(mucManagerOne.getJoinedRooms().size() == 1);
-        assertTrue(muc.getOccupantsCount() == 1);
-        assertTrue(muc.getNickname() != null);
+        assertEquals(1, mucManagerOne.getJoinedRooms().size());
+        assertEquals(1, muc.getOccupantsCount());
+        assertNotNull(muc.getNickname());
 
         try {
             muc.destroy("Dummy reason", null);
@@ -155,8 +157,8 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
             muc.removeUserStatusListener(userStatusListener);
         }
 
-        assertTrue(mucManagerOne.getJoinedRooms().size() == 0);
-        assertTrue(muc.getOccupantsCount() == 0);
-        assertTrue(muc.getNickname() == null);
+        assertEquals(0, mucManagerOne.getJoinedRooms().size());
+        assertEquals(0, muc.getOccupantsCount());
+        assertNull(muc.getNickname());
     }
 }
