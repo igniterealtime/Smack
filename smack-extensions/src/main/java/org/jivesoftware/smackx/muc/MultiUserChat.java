@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smackx.muc;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -377,16 +378,53 @@ public class MultiUserChat {
                         )
                     );
         // @formatter:on
+
+        // 'responseFilter' is triggered by the same stanza as org.jivesoftware.smackx.muc.MultiUserChat.presenceListener,
+        // a listener that is responsible for updating the internal state of this instance of MultiUserChat. This causes
+        // a race condition: after this 'enter' method returns, other methods might not yet be aware of the newly entered
+        // occupant (eg: #getOccupantsCount might return an incorrect number). To prevent this, this 'enter' method does
+        // not return until after the internal state of this class has been updated to reflect that the user joined the muc.
+        final ArrayDeque<EntityFullJid> queue = new ArrayDeque<>();
+        final ParticipantStatusListener internalStateUpdateListener = new DefaultParticipantStatusListener() {
+            @Override
+            public void joined(EntityFullJid participant) {
+                synchronized (this) {
+                    // Prior to receiving status 110 'presence to self', we can't predict what address is used. Record them all.
+                    queue.add(participant);
+                    notifyAll();
+                }
+            }
+        };
+
         StanzaCollector presenceStanzaCollector = null;
         Presence presence;
         try {
+            addParticipantStatusListener(internalStateUpdateListener);
             // This stanza collector will collect the final self presence from the MUC, which also signals that we have successful entered the MUC.
             StanzaCollector selfPresenceCollector = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
             StanzaCollector.Configuration presenceStanzaCollectorConfguration = StanzaCollector.newConfiguration().setCollectorToReset(
                             selfPresenceCollector).setStanzaFilter(presenceFromRoomFilter);
             // This stanza collector is used to reset the timeout of the selfPresenceCollector.
             presenceStanzaCollector = connection.createStanzaCollector(presenceStanzaCollectorConfguration);
+            final long waitStart = System.currentTimeMillis();
             presence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
+
+            // Wait for the internal state of this instance of MultiUserChat to have been updated with the join.
+            long remainingWait = conf.getTimeout() - (System.currentTimeMillis() - waitStart);
+            outer:
+            while (remainingWait > 0) {
+                synchronized (internalStateUpdateListener) {
+                    while (!queue.isEmpty()) {
+                    final EntityFullJid seen = queue.poll();
+                        // Assert that we've seen an event triggered by ParticipantStatusListener related to the JID that represents our join.
+                        if (presence.getFrom().equals(seen)) {
+                            break outer;
+                        }
+                    }
+                    internalStateUpdateListener.wait(remainingWait);
+                }
+                remainingWait = conf.getTimeout() - (System.currentTimeMillis() - waitStart);
+            }
         }
         catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
@@ -397,6 +435,7 @@ public class MultiUserChat {
             if (presenceStanzaCollector != null) {
                 presenceStanzaCollector.cancel();
             }
+            removeParticipantStatusListener(internalStateUpdateListener);
         }
 
         // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
