@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2020-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,10 @@ public class StaxXmlPullParserFactory implements XmlPullParserFactory {
         // getText().
         xmlInputFactory.setProperty(XMLInputFactory.IS_COALESCING, true);
         // Internal and external entity references are prohibited in XMPP (RFC 6120 § 11.1).
+        xmlInputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
         xmlInputFactory.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
+        // We don't need to support DTDs in XMPP.
+        xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
     }
 
     @Override
