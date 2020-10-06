@@ -51,14 +51,9 @@ public class OptionsExtension extends NodeExtension {
 
     @Override
     protected void addXml(XmlStringBuilder xml) {
-        xml.rightAngleBracket();
-
-        xml.halfOpenElement(getElementName());
         xml.attribute("jid", jid);
-        xml.optAttribute("node", getNode());
         xml.optAttribute("subid", id);
 
         xml.closeEmptyElement();
-        xml.closeElement(this);
     }
 }
