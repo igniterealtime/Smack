@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.mood;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.pep.PepEventListener;
 
@@ -45,15 +46,28 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
         final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
+        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
+
+        ServiceDiscoveryManager.getInstanceFor(conTwo).addEntityCapabilitiesChangedListener(info -> {
+            if (info.containsFeature(MoodManager.MOOD_NODE+"+notify")) {
+                notificationFilterReceived.signal();
+            }
+        });
 
         final PepEventListener<MoodElement> moodListener = (jid, moodElement, id, message) -> {
             if (moodElement.getMood() == Mood.satisfied) {
                 moodReceived.signal();
             }
         };
+
+        // Adds listener, which implicitly publishes a disco/info filter for mood notification.
         mm2.addMoodListener(moodListener);
 
         try {
+            // Waits until ConTwo's newly-published interested in receiving mood notifications has been propagated.
+            notificationFilterReceived.waitForResult(timeout);
+
+            // Publish the data, and wait for it to be received.
             mm1.setMood(Mood.satisfied);
 
             moodReceived.waitForResult(timeout);
