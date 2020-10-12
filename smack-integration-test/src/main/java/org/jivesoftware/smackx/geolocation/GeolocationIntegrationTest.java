@@ -23,7 +23,6 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
@@ -35,7 +34,6 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.util.XmppDateTime;
 
 public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
@@ -78,15 +76,11 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
         final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
-        final PepEventListener<GeoLocation> geoLocationListener = new PepEventListener<GeoLocation>() {
-
-            @Override
-            public void onPepEvent(EntityBareJid jid, GeoLocation geoLocation, String id, Message message) {
-                if (geoLocation.equals(geoLocation1)) {
-                    geoLocationReceived.signal();
-                } else {
-                    geoLocationReceived.signalFailure("Received non matching GeoLocation");
-                }
+        final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
+            if (geoLocation.equals(geoLocation1)) {
+                geoLocationReceived.signal();
+            } else {
+                geoLocationReceived.signalFailure("Received non matching GeoLocation");
             }
         };
 
