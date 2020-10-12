@@ -24,6 +24,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.pep.PepEventListener;
@@ -75,7 +76,16 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
                                             .build();
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+
         final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
+        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
+
+        ServiceDiscoveryManager.getInstanceFor(conTwo).addEntityCapabilitiesChangedListener(info -> {
+            if (info.containsFeature(GeoLocationManager.GEOLOCATION_NODE+"+notify")) {
+                notificationFilterReceived.signal();
+            }
+        });
+
         final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
             if (geoLocation.equals(geoLocation1)) {
                 geoLocationReceived.signal();
@@ -84,9 +94,14 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             }
         };
 
+        // Adds listener, which implicitly publishes a disco/info filter for geolocation notification.
         glm2.addGeoLocationListener(geoLocationListener);
 
         try {
+            // Waits until ConTwo's newly-published interested in receiving geolocation notifications has been propagated.
+            notificationFilterReceived.waitForResult(timeout);
+
+            // Publish the data, and wait for it to be received.
             glm1.publishGeoLocation(geoLocation1);
             geoLocationReceived.waitForResult(timeout);
         } finally {
