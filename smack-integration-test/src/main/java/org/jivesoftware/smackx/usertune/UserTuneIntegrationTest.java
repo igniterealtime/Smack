@@ -23,6 +23,9 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
@@ -61,6 +64,16 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
         final SimpleResultSyncPoint userTuneReceived = new SimpleResultSyncPoint();
+        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
+
+        ServiceDiscoveryManager.getInstanceFor(conTwo).addEntityCapabilitiesChangedListener(new EntityCapabilitiesChangedListener() {
+            @Override
+            public void onEntityCapabilitiesChanged(DiscoverInfo info) {
+                if (info.containsFeature(UserTuneManager.USERTUNE_NODE+"+notify")) {
+                    notificationFilterReceived.signal();
+                }
+            }
+        });
 
         final PepEventListener<UserTuneElement> userTuneListener = new PepEventListener<UserTuneElement>() {
             @Override
@@ -71,9 +84,14 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
             }
         };
 
+        // Adds listener, which implicitly publishes a disco/info filter for usertune notification.
         utm2.addUserTuneListener(userTuneListener);
 
         try {
+            // Waits until ConTwo's newly-published interested in receiving usertune notifications has been propagated.
+            notificationFilterReceived.waitForResult(timeout);
+
+            // Publish the data, and wait for it to be received.
             utm1.publishUserTune(userTuneElement1);
             userTuneReceived.waitForResult(timeout);
         } finally {
