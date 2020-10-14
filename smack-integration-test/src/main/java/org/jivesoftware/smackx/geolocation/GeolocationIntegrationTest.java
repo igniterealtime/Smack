@@ -105,7 +105,10 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
 
             // Wait for the data to be received.
             try {
-                geoLocationReceived.waitForResult(timeout);
+                Object result = geoLocationReceived.waitForResult(timeout);
+
+                // Explicitly assert the success case.
+                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
             } catch (TimeoutException e) {
                 Assertions.fail("Expected to receive a PEP notification, but did not.");
             }
@@ -165,7 +168,10 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
 
             // Wait for the data to be received.
             try {
-                geoLocationReceived.waitForResult(timeout);
+                Object result = geoLocationReceived.waitForResult(timeout);
+
+                // Explicitly assert the success case.
+                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
             } catch (TimeoutException e) {
                 Assertions.fail("Expected to receive a PEP notification, but did not.");
             }

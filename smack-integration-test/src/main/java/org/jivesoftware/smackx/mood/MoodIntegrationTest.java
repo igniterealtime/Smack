@@ -116,7 +116,10 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
             // Wait for the data to be received.
             try {
-                moodReceived.waitForResult(timeout);
+                Object result = moodReceived.waitForResult(timeout);
+
+                // Explicitly assert the success case.
+                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
             } catch (TimeoutException e) {
                 Assertions.fail("Expected to receive a PEP notification, but did not.");
             }
