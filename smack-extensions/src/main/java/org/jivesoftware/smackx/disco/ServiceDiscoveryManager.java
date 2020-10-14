@@ -921,6 +921,10 @@ public final class ServiceDiscoveryManager extends Manager {
         return entityCapabilitiesChangedListeners.add(entityCapabilitiesChangedListener);
     }
 
+    public boolean removeEntityCapabilitiesChangedListener(EntityCapabilitiesChangedListener entityCapabilitiesChangedListener) {
+        return entityCapabilitiesChangedListeners.remove(entityCapabilitiesChangedListener);
+    }
+
     private static final int RENEW_ENTITY_CAPS_DELAY_MILLIS = 25;
 
     private ScheduledAction renewEntityCapsScheduledAction;
