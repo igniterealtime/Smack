@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
+import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -35,6 +36,7 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import org.junit.jupiter.api.Assertions;
 import org.jxmpp.util.XmppDateTime;
 
 public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
@@ -55,7 +57,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
     @SmackIntegrationTest
     public void testNotification() throws Exception {
         GeoLocation.Builder builder = GeoLocation.builder();
-        GeoLocation geoLocation1 = builder.setAccuracy(23d)
+        GeoLocation data = builder.setAccuracy(23d)
                                             .setAlt(1000d)
                                             .setAltAccuracy(10d)
                                             .setArea("Delhi")
@@ -84,10 +86,8 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
 
         final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
-            if (geoLocation.equals(geoLocation1)) {
+            if (geoLocation.equals(data)) {
                 geoLocationReceived.signal();
-            } else {
-                geoLocationReceived.signalFailure("Received non matching GeoLocation");
             }
         };
 
@@ -96,8 +96,13 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
 
             // Publish the data, and wait for it to be received.
-            glm1.publishGeoLocation(geoLocation1);
-            geoLocationReceived.waitForResult(timeout);
+            glm1.publishGeoLocation(data);
+
+            try {
+                geoLocationReceived.waitForResult(timeout);
+            } catch (TimeoutException e) {
+                Assertions.fail("Expected to receive a PEP notification, but did not.");
+            }
         } finally {
             unregisterListener(glm2, geoLocationListener);
         }
