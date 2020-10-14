@@ -50,6 +50,11 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         glm2 = GeoLocationManager.getInstanceFor(conTwo);
     }
 
+    @AfterClass
+    public void unsubscribe() throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+    }
+
     /**
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
@@ -95,9 +100,10 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             // Register ConTwo's interest in receiving geolocation notifications, and wait for that interest to have been propagated.
             registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
 
-            // Publish the data, and wait for it to be received.
-            glm1.publishGeoLocation(data);
+            // Publish the data.
+            glm1.publishGeoLocation(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
 
+            // Wait for the data to be received.
             try {
                 geoLocationReceived.waitForResult(timeout);
             } catch (TimeoutException e) {
@@ -108,9 +114,64 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         }
     }
 
-    @AfterClass
-    public void unsubscribe() throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+    /**
+     * Verifies that a notification for a previously sent publication is received as soon as notification filtering
+     * has been adjusted to allow for the notification to be delivered.
+     */
+    @SmackIntegrationTest
+    public void testNotificationAfterFilterChange() throws Exception {
+        GeoLocation.Builder builder = GeoLocation.builder();
+        GeoLocation data = builder.setAccuracy(12d)
+                .setAlt(999d)
+                .setAltAccuracy(9d)
+                .setArea("Amsterdam")
+                .setBearing(9d)
+                .setBuilding("Test Building")
+                .setCountry("Netherlands")
+                .setCountryCode("NL")
+                .setDescription("My Description")
+                .setFloor("middle")
+                .setLat(25.098345d)
+                .setLocality("brilliant")
+                .setLon(77.992034)
+                .setPostalcode("110085")
+                .setRegion("North")
+                .setRoom("small")
+                .setSpeed(250.0d)
+                .setStreet("Wall Street")
+                .setText("Unit Testing GeoLocation 2")
+                .setTimestamp(XmppDateTime.parseDate("2007-02-19"))
+                .setTzo("+5:30")
+                .setUri(new URI("http://xmpp.org"))
+                .build();
+
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+
+        final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
+
+        final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
+            if (geoLocation.equals(data)) {
+                geoLocationReceived.signal();
+            }
+        };
+
+        // TODO Ensure that pre-existing filtering notification excludes geolocation.
+        try {
+            // Publish the data
+            publishAndWait(glm1, ServiceDiscoveryManager.getInstanceFor(conOne), data);
+
+            // Adds listener, which implicitly publishes a disco/info filter for geolocation notification.
+            registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
+
+            // Wait for the data to be received.
+            try {
+                geoLocationReceived.waitForResult(timeout);
+            } catch (TimeoutException e) {
+                Assertions.fail("Expected to receive a PEP notification, but did not.");
+            }
+        } finally {
+            unregisterListener(glm2, geoLocationListener);
+        }
     }
 
     /**
@@ -151,5 +212,29 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
     {
         // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
         geoManager.removeGeoLocationListener(listener);
+    }
+
+    /**
+     * Publish data using PEP, and block until the server has echoed the publication back to the publishing user.
+     *
+     * @param geoManager The GeoLocationManager instance for the connection that is expected to publish data.
+     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
+     * @param data The data to be published.
+     */
+    public void publishAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, GeoLocation data) throws Exception
+    {
+        final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
+        final PepEventListener<GeoLocation> publicationEchoListener = (jid, geoLocation, id, message) -> {
+            if (geoLocation.equals(data)) {
+                publicationEchoReceived.signal();
+            }
+        };
+        try {
+            registerListenerAndWait(geoManager, discoManager, publicationEchoListener);
+            geoManager.addGeoLocationListener(publicationEchoListener);
+            geoManager.publishGeoLocation(data);
+        } finally {
+            geoManager.removeGeoLocationListener(publicationEchoListener);
+        }
     }
 }
