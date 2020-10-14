@@ -17,13 +17,13 @@
 package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
-import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
+import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
@@ -48,8 +48,12 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         glm2 = GeoLocationManager.getInstanceFor(conTwo);
     }
 
+    /**
+     * Verifies that a notification is sent when a publication is received, assuming that notification filtering
+     * has been adjusted to allow for the notification to be delivered.
+     */
     @SmackIntegrationTest
-    public void test() throws TimeoutException, Exception {
+    public void testNotification() throws Exception {
         GeoLocation.Builder builder = GeoLocation.builder();
         GeoLocation geoLocation1 = builder.setAccuracy(23d)
                                             .setAlt(1000d)
@@ -78,13 +82,6 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
         final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
-        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
-
-        ServiceDiscoveryManager.getInstanceFor(conTwo).addEntityCapabilitiesChangedListener(info -> {
-            if (info.containsFeature(GeoLocationManager.GEOLOCATION_NODE+"+notify")) {
-                notificationFilterReceived.signal();
-            }
-        });
 
         final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
             if (geoLocation.equals(geoLocation1)) {
@@ -94,23 +91,60 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             }
         };
 
-        // Adds listener, which implicitly publishes a disco/info filter for geolocation notification.
-        glm2.addGeoLocationListener(geoLocationListener);
-
         try {
-            // Waits until ConTwo's newly-published interested in receiving geolocation notifications has been propagated.
-            notificationFilterReceived.waitForResult(timeout);
+            // Register ConTwo's interest in receiving geolocation notifications, and wait for that interest to have been propagated.
+            registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
 
             // Publish the data, and wait for it to be received.
             glm1.publishGeoLocation(geoLocation1);
             geoLocationReceived.waitForResult(timeout);
         } finally {
-            glm2.removeGeoLocationListener(geoLocationListener);
+            unregisterListener(glm2, geoLocationListener);
         }
     }
 
     @AfterClass
     public void unsubscribe() throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+    }
+
+    /**
+     * Registers a listener for GeoLocation data. This implicitly publishes a CAPS update to include a notification
+     * filter for the geolocation node. This method blocks until the server has indicated that this update has been
+     * received.
+     *
+     * @param geoManager The GeoLocationManager instance for the connection that is expected to receive data.
+     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
+     * @param listener A listener instance for GeoLocation data that is to be registered.
+     */
+    public void registerListenerAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, PepEventListener<GeoLocation> listener) throws Exception
+    {
+        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
+        final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
+            if (info.containsFeature(GeoLocationManager.GEOLOCATION_NODE + "+notify")) {
+                notificationFilterReceived.signal();
+            }
+        };
+
+        discoManager.addEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
+        try {
+            geoManager.addGeoLocationListener(listener);
+            notificationFilterReceived.waitForResult(timeout);
+        } finally {
+            discoManager.removeEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
+        }
+    }
+
+    /**
+     * The functionally reverse of {@link #registerListenerAndWait(GeoLocationManager, ServiceDiscoveryManager, PepEventListener)}
+     * with the difference of not being a blocking operation.
+     *
+     * @param geoManager The GeoLocationManager instance for the connection that was expected to receive data.
+     * @param listener A listener instance for GeoLocation data that is to be removed.
+     */
+    public void unregisterListener(GeoLocationManager geoManager, PepEventListener<GeoLocation> listener)
+    {
+        // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
+        geoManager.removeGeoLocationListener(listener);
     }
 }
