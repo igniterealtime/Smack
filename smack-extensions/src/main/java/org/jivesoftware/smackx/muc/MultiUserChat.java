@@ -385,7 +385,7 @@ public class MultiUserChat {
         // occupant (eg: #getOccupantsCount might return an incorrect number). To prevent this, this 'enter' method does
         // not return until after the internal state of this class has been updated to reflect that the user joined the muc.
         final ArrayDeque<EntityFullJid> queue = new ArrayDeque<>();
-        final ParticipantStatusListener internalStateUpdateListener = new DefaultParticipantStatusListener() {
+        final ParticipantStatusListener internalStateUpdateListener = new ParticipantStatusListener() {
             @Override
             public void joined(EntityFullJid participant) {
                 synchronized (this) {
