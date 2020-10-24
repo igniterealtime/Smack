@@ -58,6 +58,8 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
+     *
+     * @throws Exception if the test fails
      */
     @SmackIntegrationTest
     public void testNotification() throws Exception {
@@ -120,6 +122,8 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Verifies that a notification for a previously sent publication is received as soon as notification filtering
      * has been adjusted to allow for the notification to be delivered.
+     *
+     * @throws Exception if the test fails
      */
     @SmackIntegrationTest
     public void testNotificationAfterFilterChange() throws Exception {
@@ -188,9 +192,10 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
      * @param geoManager The GeoLocationManager instance for the connection that is expected to receive data.
      * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
      * @param listener A listener instance for GeoLocation data that is to be registered.
+     *
+     * @throws Exception if the test fails
      */
-    public void registerListenerAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, PepEventListener<GeoLocation> listener) throws Exception
-    {
+    public void registerListenerAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, PepEventListener<GeoLocation> listener) throws Exception {
         final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
         final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
             if (info.containsFeature(GeoLocationManager.GEOLOCATION_NODE + "+notify")) {
@@ -214,8 +219,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
      * @param geoManager The GeoLocationManager instance for the connection that was expected to receive data.
      * @param listener A listener instance for GeoLocation data that is to be removed.
      */
-    public void unregisterListener(GeoLocationManager geoManager, PepEventListener<GeoLocation> listener)
-    {
+    public void unregisterListener(GeoLocationManager geoManager, PepEventListener<GeoLocation> listener) {
         // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
         geoManager.removeGeoLocationListener(listener);
     }
@@ -226,9 +230,10 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
      * @param geoManager The GeoLocationManager instance for the connection that is expected to publish data.
      * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
      * @param data The data to be published.
+     *
+     * @throws Exception if the test fails
      */
-    public void publishAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, GeoLocation data) throws Exception
-    {
+    public void publishAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, GeoLocation data) throws Exception {
         final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
         final PepEventListener<GeoLocation> publicationEchoListener = (jid, geoLocation, id, message) -> {
             if (geoLocation.equals(data)) {

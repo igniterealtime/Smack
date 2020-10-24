@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.mood;
 
+import java.util.concurrent.TimeoutException;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
@@ -31,8 +33,6 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.jupiter.api.Assertions;
-
-import java.util.concurrent.TimeoutException;
 
 public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -55,6 +55,8 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
+     *
+     * @throws Exception if the test fails
      */
     @SmackIntegrationTest
     public void testNotification() throws Exception {
@@ -91,6 +93,8 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Verifies that a notification for a previously sent publication is received as soon as notification filtering
      * has been adjusted to allow for the notification to be delivered.
+     *
+     * @throws Exception if the test fails
      */
     @SmackIntegrationTest
     public void testNotificationAfterFilterChange() throws Exception {
@@ -136,9 +140,10 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
      * @param moodManager The MoodManager instance for the connection that is expected to receive data.
      * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
      * @param listener A listener instance for Mood data that is to be registered.
+     *
+     * @throws Exception if the test fails
      */
-    public void registerListenerAndWait(MoodManager moodManager, ServiceDiscoveryManager discoManager, PepEventListener<MoodElement> listener) throws Exception
-    {
+    public void registerListenerAndWait(MoodManager moodManager, ServiceDiscoveryManager discoManager, PepEventListener<MoodElement> listener) throws Exception {
         final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
         final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
             if (info.containsFeature(MoodManager.MOOD_NODE + "+notify")) {
@@ -162,8 +167,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
      * @param moodManager The MoodManager instance for the connection that was expected to receive data.
      * @param listener A listener instance for Mood data that is to be removed.
      */
-    public void unregisterListener(MoodManager moodManager, PepEventListener<MoodElement> listener)
-    {
+    public void unregisterListener(MoodManager moodManager, PepEventListener<MoodElement> listener) {
         // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
         moodManager.removeMoodListener(listener);
     }
@@ -174,9 +178,10 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
      * @param moodManager The MoodManager instance for the connection that is expected to publish data.
      * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
      * @param data The data to be published.
+     *
+     * @throws Exception if the test fails
      */
-    public void publishAndWait(MoodManager moodManager, ServiceDiscoveryManager discoManager, Mood data) throws Exception
-    {
+    public void publishAndWait(MoodManager moodManager, ServiceDiscoveryManager discoManager, Mood data) throws Exception {
         final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
         final PepEventListener<MoodElement> publicationEchoListener = (jid, moodElement, id, message) -> {
             if (moodElement.getMood().equals(data)) {

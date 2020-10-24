@@ -57,19 +57,21 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
+     *
+     * @throws Exception if the test fails
      */
     @SmackIntegrationTest
     public void testNotification() throws Exception {
         URI uri = new URI("http://www.yesworld.com/lyrics/Fragile.html#9");
         UserTuneElement.Builder builder = UserTuneElement.getBuilder();
         UserTuneElement data = builder.setArtist("Yes")
-                                                  .setLength(686)
-                                                  .setRating(8)
-                                                  .setSource("Yessongs")
-                                                  .setTitle("Heart of the Sunrise")
-                                                  .setTrack("3")
-                                                  .setUri(uri)
-                                                  .build();
+                .setLength(686)
+                .setRating(8)
+                .setSource("Yessongs")
+                .setTitle("Heart of the Sunrise")
+                .setTrack("3")
+                .setUri(uri)
+                .build();
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
@@ -105,6 +107,8 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
     /**
      * Verifies that a notification for a previously sent publication is received as soon as notification filtering
      * has been adjusted to allow for the notification to be delivered.
+     *
+     * @throws Exception if the test fails
      */
     @SmackIntegrationTest
     public void testNotificationAfterFilterChange() throws Exception {
@@ -159,9 +163,10 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
      * @param userTuneManager The UserTuneManager instance for the connection that is expected to receive data.
      * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
      * @param listener A listener instance for UserTune data that is to be registered.
+     *
+     * @throws Exception if the test fails
      */
-    public void registerListenerAndWait(UserTuneManager userTuneManager, ServiceDiscoveryManager discoManager, PepEventListener<UserTuneElement> listener) throws Exception
-    {
+    public void registerListenerAndWait(UserTuneManager userTuneManager, ServiceDiscoveryManager discoManager, PepEventListener<UserTuneElement> listener) throws Exception {
         final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
         final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
             if (info.containsFeature(UserTuneManager.USERTUNE_NODE + "+notify")) {
@@ -185,8 +190,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
      * @param userTuneManager The UserTuneManager instance for the connection that was expected to receive data.
      * @param listener A listener instance for UserTune data that is to be removed.
      */
-    public void unregisterListener(UserTuneManager userTuneManager, PepEventListener<UserTuneElement> listener)
-    {
+    public void unregisterListener(UserTuneManager userTuneManager, PepEventListener<UserTuneElement> listener) {
         // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
         userTuneManager.removeUserTuneListener(listener);
     }
@@ -197,9 +201,10 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
      * @param userTuneManager The UserTuneManager instance for the connection that is expected to publish data.
      * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
      * @param data The data to be published.
+     *
+     * @throws Exception if the test fails
      */
-    public void publishAndWait(UserTuneManager userTuneManager, ServiceDiscoveryManager discoManager, UserTuneElement data) throws Exception
-    {
+    public void publishAndWait(UserTuneManager userTuneManager, ServiceDiscoveryManager discoManager, UserTuneElement data) throws Exception {
         final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
         final PepEventListener<UserTuneElement> publicationEchoListener = (jid, userTune, id, message) -> {
             if (userTune.equals(data)) {
