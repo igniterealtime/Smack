@@ -378,7 +378,7 @@ public class MultiUserChat {
                     );
         // @formatter:on
         StanzaCollector presenceStanzaCollector = null;
-        Presence presence;
+        final Presence reflectedSelfPresence;
         try {
             // This stanza collector will collect the final self presence from the MUC, which also signals that we have successful entered the MUC.
             StanzaCollector selfPresenceCollector = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
@@ -386,7 +386,7 @@ public class MultiUserChat {
                             selfPresenceCollector).setStanzaFilter(presenceFromRoomFilter);
             // This stanza collector is used to reset the timeout of the selfPresenceCollector.
             presenceStanzaCollector = connection.createStanzaCollector(presenceStanzaCollectorConfguration);
-            presence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
+            reflectedSelfPresence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
         }
         catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
@@ -401,12 +401,12 @@ public class MultiUserChat {
 
         // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
         // performed roomnick rewriting
-        Resourcepart receivedNickname = presence.getFrom().getResourceOrThrow();
+        Resourcepart receivedNickname = reflectedSelfPresence.getFrom().getResourceOrThrow();
         setNickname(receivedNickname);
 
         // Update the list of joined rooms
         multiUserChatManager.addJoinedRoom(room);
-        return presence;
+        return reflectedSelfPresence;
     }
 
     private void setNickname(Resourcepart nickname) {
