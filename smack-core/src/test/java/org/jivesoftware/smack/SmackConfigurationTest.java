@@ -49,8 +49,8 @@ public class SmackConfigurationTest {
     // *every* test, those tests are currently disabled. Hopefully this will change in the future.
     @Ignore
     @Test
-    public void smackconfigurationVersionShouldInitialzieSmacktTest() {
-        SmackConfiguration.getVersion();
+    public void smackEnsureInitializedShouldInitialzieSmacktTest() {
+        Smack.ensureInitialized();
 
         // Only a call to SmackConfiguration.getVersion() should cause Smack to become initialized.
         assertTrue(SmackConfiguration.isSmackInitialized());

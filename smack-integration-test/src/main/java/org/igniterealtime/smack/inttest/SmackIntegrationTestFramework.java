@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.Smack;
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -171,7 +172,7 @@ public class SmackIntegrationTestFramework {
         // Create a connection manager *after* we created the testRunId (in testRunResult).
         this.connectionManager = new XmppConnectionManager(this);
 
-        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting\nSmack version: " + SmackConfiguration.getVersion());
+        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting\nSmack version: " + Smack.getVersion());
         if (config.debugger != Configuration.Debugger.none) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE

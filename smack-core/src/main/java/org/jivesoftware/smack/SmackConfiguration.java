@@ -105,7 +105,10 @@ public final class SmackConfiguration {
      * Returns the Smack version information, eg "1.3.0".
      *
      * @return the Smack version information.
+     * @deprecated use {@link Smack#getVersion()} instead.
      */
+    @Deprecated
+    // TODO: Remove in Smack 4.6
     public static String getVersion() {
         return SmackInitialization.SMACK_VERSION;
     }

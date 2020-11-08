@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.Smack;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Nonza;
@@ -122,7 +122,7 @@ public final class ProviderManager {
         // registered providers do not get overwritten by a following Smack
         // initialization. This guarantees that Smack is initialized before a
         // new provider is registered
-        SmackConfiguration.getVersion();
+        Smack.ensureInitialized();
     }
 
     @SuppressWarnings("unchecked")

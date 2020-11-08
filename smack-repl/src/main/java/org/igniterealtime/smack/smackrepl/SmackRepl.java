@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2020 Florian Schmaus
  *
  * This file is part of smack-repl.
  *
@@ -20,13 +20,13 @@
  */
 package org.igniterealtime.smack.smackrepl;
 
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.Smack;
 import org.jivesoftware.smack.util.dns.javax.JavaxResolver;
 
 public class SmackRepl {
 
     public static void init() {
-        SmackConfiguration.getVersion();
+        Smack.ensureInitialized();
         // smack-repl also pulls in smack-resolver-minidns which has higher precedence the smack-resolver-javax but
         // won't work on Java SE platforms. Therefore explicitly setup JavaxResolver.
         JavaxResolver.setup();
