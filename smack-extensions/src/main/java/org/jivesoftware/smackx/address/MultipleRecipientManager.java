@@ -26,8 +26,13 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.StanzaFactory;
+import org.jivesoftware.smack.packet.StanzaView;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
@@ -207,25 +212,44 @@ public class MultipleRecipientManager {
         return extension == null ? null : new MultipleRecipientInfo(extension);
     }
 
-    private static void sendToIndividualRecipients(XMPPConnection connection, Stanza packet,
+    private static void sendToIndividualRecipients(XMPPConnection connection, StanzaView stanza,
             Collection<? extends Jid> to, Collection<? extends Jid> cc, Collection<? extends Jid> bcc) throws NotConnectedException, InterruptedException {
+        final StanzaFactory stanzaFactory = connection.getStanzaFactory();
+        final StanzaBuilder<?> stanzaBuilder;
+        if (stanza instanceof Message) {
+            Message message = (Message) stanza;
+            stanzaBuilder = stanzaFactory.buildMessageStanzaFrom(message);
+        } else if (stanza instanceof Presence) {
+            Presence presence = (Presence) stanza;
+            stanzaBuilder = stanzaFactory.buildPresenceStanzaFrom(presence);
+        } else if (stanza instanceof IQ) {
+            throw new IllegalArgumentException("IQ stanzas have no supported fallback in case no XEP-0033 service is available");
+        } else {
+            throw new AssertionError();
+        }
+
+        final int numRecipients = to.size() + cc.size() + bcc.size();
+        final List<Jid> recipients = new ArrayList<>(numRecipients);
+
         if (to != null) {
-            for (Jid jid : to) {
-                packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet));
-            }
+            recipients.addAll(to);
         }
         if (cc != null) {
-            for (Jid jid : cc) {
-                packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet));
-            }
+            recipients.addAll(cc);
         }
         if (bcc != null) {
-            for (Jid jid : bcc) {
-                packet.setTo(jid);
-                connection.sendStanza(new PacketCopy(packet));
-            }
+            recipients.addAll(bcc);
+        }
+
+        final List<Stanza> stanzasToSend = new ArrayList<>(numRecipients);
+        for (Jid recipient : recipients) {
+            Stanza stanzaToSend = stanzaBuilder.to(recipient).build();
+            stanzasToSend.add(stanzaToSend);
+        }
+
+        // TODO: Use XMPPConnection.sendStanzas(Collection<? extends Stanza>) once this method exists.
+        for (Stanza stanzaToSend : stanzasToSend) {
+            connection.sendStanza(stanzaToSend);
         }
     }
 
@@ -287,45 +311,6 @@ public class MultipleRecipientManager {
     private static DomainBareJid getMultipleRecipientServiceAddress(XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         return sdm.findService(MultipleAddresses.NAMESPACE, true);
-    }
-
-    /**
-     * Stanza that holds the XML stanza to send. This class is useful when the same packet
-     * is needed to be sent to different recipients. Since using the same stanza is not possible
-     * (i.e. cannot change the TO address of a queues stanza to be sent) then this class was
-     * created to keep the XML stanza to send.
-     */
-    private static final class PacketCopy extends Stanza {
-
-        private final String elementName;
-        private final CharSequence text;
-
-        /**
-         * Create a copy of a stanza with the text to send. The passed text must be a valid text to
-         * send to the server, no validation will be done on the passed text.
-         *
-         * @param text the whole text of the stanza to send
-         */
-        private PacketCopy(Stanza stanza) {
-            this.elementName = stanza.getElementName();
-            this.text = stanza.toXML();
-        }
-
-        @Override
-        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            return text;
-        }
-
-        @Override
-        public String toString() {
-            return toXML().toString();
-        }
-
-        @Override
-        public String getElementName() {
-            return elementName;
-        }
-
     }
 
 }
