@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,6 +183,8 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         extensionElements.put(key, extensionElement);
         return getThis();
     }
+
+    public abstract Stanza build();
 
     public abstract B getThis();
 
