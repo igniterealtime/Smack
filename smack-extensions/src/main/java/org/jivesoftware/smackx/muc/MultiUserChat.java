@@ -149,6 +149,11 @@ public class MultiUserChat {
     private EntityFullJid myRoomJid;
     private StanzaCollector messageCollector;
 
+    /**
+     * Used to signal that the reflected self-presence was received <b>and</b> processed by us.
+     */
+    private volatile boolean processedReflectedSelfPresence;
+
     MultiUserChat(XMPPConnection connection, EntityBareJid room, MultiUserChatManager multiUserChatManager) {
         this.connection = connection;
         this.room = room;
@@ -216,13 +221,15 @@ public class MultiUserChat {
                             newAffiliation,
                             isUserStatusModification,
                             from);
-                    }
-                    else {
+                    } else if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
+                        processedReflectedSelfPresence = true;
+                        synchronized (this) {
+                            notify();
+                        }
+                    } else {
                         // A new occupant has joined the room
-                        if (!isUserStatusModification) {
-                            for (ParticipantStatusListener listener : participantStatusListeners) {
-                                listener.joined(from);
-                            }
+                        for (ParticipantStatusListener listener : participantStatusListeners) {
+                            listener.joined(from);
                         }
                     }
                     break;
@@ -376,6 +383,7 @@ public class MultiUserChat {
                         )
                     );
         // @formatter:on
+        processedReflectedSelfPresence = false;
         StanzaCollector presenceStanzaCollector = null;
         final Presence reflectedSelfPresence;
         try {
@@ -395,6 +403,16 @@ public class MultiUserChat {
         finally {
             if (presenceStanzaCollector != null) {
                 presenceStanzaCollector.cancel();
+            }
+        }
+
+        synchronized (presenceListener) {
+            // Only continue after we have received *and* processed the reflected self-presence. Since presences are
+            // handled in an extra listener, we may return from enter() without having processed all presences of the
+            // participants, resulting in a e.g. to low participant counter after enter(). Hence we wait here until the
+            // processing is done.
+            while (!processedReflectedSelfPresence) {
+                presenceListener.wait();
             }
         }
 
