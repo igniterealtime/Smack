@@ -16,11 +16,16 @@
  */
 package org.jivesoftware.smack;
 
+import java.io.InputStream;
 import java.util.logging.Logger;
 
 public class Smack {
 
     private static final Logger LOGGER = Logger.getLogger(Smack.class.getName());
+
+    private static final String SMACK_ORG = "org.jivesoftware";
+
+    public static final String SMACK_PACKAGE = SMACK_ORG + ".smack";
 
     /**
      * Returns the Smack version information, eg "1.3.0".
@@ -29,6 +34,12 @@ public class Smack {
      */
     public static String getVersion() {
         return SmackInitialization.SMACK_VERSION;
+    }
+
+    private static final String NOTICE_RESOURCE = SMACK_PACKAGE + "/NOTICE";
+
+    public static InputStream getNoticeStream() {
+        return ClassLoader.getSystemResourceAsStream(NOTICE_RESOURCE);
     }
 
     public static void ensureInitialized() {
