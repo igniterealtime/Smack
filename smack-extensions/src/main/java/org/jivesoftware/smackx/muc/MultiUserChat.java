@@ -195,6 +195,7 @@ public class MultiUserChat {
                 }
                 final EntityFullJid myRoomJID = myRoomJid;
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
+                final MUCUser mucUser = MUCUser.from(packet);
 
                 switch (presence.getType()) {
                 case available:
@@ -205,9 +206,8 @@ public class MultiUserChat {
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
                         MUCRole oldRole = mucExtension.getItem().getRole();
                         // Get the new occupant's affiliation & role
-                        mucExtension = MUCUser.from(packet);
-                        MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
-                        MUCRole newRole = mucExtension.getItem().getRole();
+                        MUCAffiliation newAffiliation = mucUser.getItem().getAffiliation();
+                        MUCRole newRole = mucUser.getItem().getRole();
                         // Fire role modification events
                         checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
                         // Fire affiliation modification events
@@ -228,7 +228,6 @@ public class MultiUserChat {
                     break;
                 case unavailable:
                     occupantsMap.remove(from);
-                    MUCUser mucUser = MUCUser.from(packet);
                     if (mucUser != null && mucUser.hasStatus()) {
                         if (isUserStatusModification) {
                             userHasLeft();
