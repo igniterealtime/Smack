@@ -209,7 +209,7 @@ public abstract class FileTransfer {
         int count = 0;
         amountWritten = 0;
 
-        while ((count = in.read(b)) > 0 && !getStatus().equals(Status.cancelled)) {
+        while ((count = in.read(b)) > -1 && !getStatus().equals(Status.cancelled)) {
             out.write(b, 0, count);
             amountWritten += count;
         }
