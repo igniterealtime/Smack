@@ -214,7 +214,9 @@ public abstract class FileTransfer {
             amountWritten += count;
         }
 
-        // the connection was likely terminated abruptly if these are not equal
+        // When the amount of data written does not equal the expected amount, and
+        // the transfer was not explicitly cancelled, register an error (unless another
+        // error has already been logged).
         if (!getStatus().equals(Status.cancelled) && getError() == null
                 && amountWritten != fileSize) {
             setStatus(Status.error);
