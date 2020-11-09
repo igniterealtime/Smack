@@ -214,8 +214,10 @@ public abstract class FileTransfer {
             amountWritten += count;
         }
 
-        // the connection was likely terminated abruptly if these are not equal
-        if (!getStatus().equals(Status.cancelled) && getError() == Error.none
+        // When the amount of data written does not equal the expected amount, and
+        // the transfer was not explicitly cancelled, register an error (unless another
+        // error has already been logged).
+        if (!getStatus().equals(Status.cancelled) && getError() == null
                 && amountWritten != fileSize) {
             setStatus(Status.error);
             this.error = Error.connection;
@@ -313,11 +315,6 @@ public abstract class FileTransfer {
 
     @SuppressWarnings("JavaLangClash")
     public enum Error {
-        /**
-         * No error.
-         */
-        none("No error"),
-
         /**
          * The peer did not find any of the provided stream mechanisms
          * acceptable.
