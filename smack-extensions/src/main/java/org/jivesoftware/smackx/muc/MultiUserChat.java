@@ -149,6 +149,11 @@ public class MultiUserChat {
     private EntityFullJid myRoomJid;
     private StanzaCollector messageCollector;
 
+    /**
+     * Used to signal that the reflected self-presence was received <b>and</b> processed by us.
+     */
+    private volatile boolean processedReflectedSelfPresence;
+
     MultiUserChat(XMPPConnection connection, EntityBareJid room, MultiUserChatManager multiUserChatManager) {
         this.connection = connection;
         this.room = room;
@@ -195,6 +200,7 @@ public class MultiUserChat {
                 }
                 final EntityFullJid myRoomJID = myRoomJid;
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
+                final MUCUser mucUser = MUCUser.from(packet);
 
                 switch (presence.getType()) {
                 case available:
@@ -205,9 +211,8 @@ public class MultiUserChat {
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
                         MUCRole oldRole = mucExtension.getItem().getRole();
                         // Get the new occupant's affiliation & role
-                        mucExtension = MUCUser.from(packet);
-                        MUCAffiliation newAffiliation = mucExtension.getItem().getAffiliation();
-                        MUCRole newRole = mucExtension.getItem().getRole();
+                        MUCAffiliation newAffiliation = mucUser.getItem().getAffiliation();
+                        MUCRole newRole = mucUser.getItem().getRole();
                         // Fire role modification events
                         checkRoleModifications(oldRole, newRole, isUserStatusModification, from);
                         // Fire affiliation modification events
@@ -216,19 +221,20 @@ public class MultiUserChat {
                             newAffiliation,
                             isUserStatusModification,
                             from);
-                    }
-                    else {
+                    } else if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
+                        processedReflectedSelfPresence = true;
+                        synchronized (this) {
+                            notify();
+                        }
+                    } else {
                         // A new occupant has joined the room
-                        if (!isUserStatusModification) {
-                            for (ParticipantStatusListener listener : participantStatusListeners) {
-                                listener.joined(from);
-                            }
+                        for (ParticipantStatusListener listener : participantStatusListeners) {
+                            listener.joined(from);
                         }
                     }
                     break;
                 case unavailable:
                     occupantsMap.remove(from);
-                    MUCUser mucUser = MUCUser.from(packet);
                     if (mucUser != null && mucUser.hasStatus()) {
                         if (isUserStatusModification) {
                             userHasLeft();
@@ -377,8 +383,9 @@ public class MultiUserChat {
                         )
                     );
         // @formatter:on
+        processedReflectedSelfPresence = false;
         StanzaCollector presenceStanzaCollector = null;
-        Presence presence;
+        final Presence reflectedSelfPresence;
         try {
             // This stanza collector will collect the final self presence from the MUC, which also signals that we have successful entered the MUC.
             StanzaCollector selfPresenceCollector = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
@@ -386,7 +393,7 @@ public class MultiUserChat {
                             selfPresenceCollector).setStanzaFilter(presenceFromRoomFilter);
             // This stanza collector is used to reset the timeout of the selfPresenceCollector.
             presenceStanzaCollector = connection.createStanzaCollector(presenceStanzaCollectorConfguration);
-            presence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
+            reflectedSelfPresence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
         }
         catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
@@ -399,14 +406,24 @@ public class MultiUserChat {
             }
         }
 
+        synchronized (presenceListener) {
+            // Only continue after we have received *and* processed the reflected self-presence. Since presences are
+            // handled in an extra listener, we may return from enter() without having processed all presences of the
+            // participants, resulting in a e.g. to low participant counter after enter(). Hence we wait here until the
+            // processing is done.
+            while (!processedReflectedSelfPresence) {
+                presenceListener.wait();
+            }
+        }
+
         // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
         // performed roomnick rewriting
-        Resourcepart receivedNickname = presence.getFrom().getResourceOrThrow();
+        Resourcepart receivedNickname = reflectedSelfPresence.getFrom().getResourceOrThrow();
         setNickname(receivedNickname);
 
         // Update the list of joined rooms
         multiUserChatManager.addJoinedRoom(room);
-        return presence;
+        return reflectedSelfPresence;
     }
 
     private void setNickname(Resourcepart nickname) {

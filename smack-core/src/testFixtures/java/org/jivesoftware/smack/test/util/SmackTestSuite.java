@@ -19,7 +19,7 @@ package org.jivesoftware.smack.test.util;
 import java.security.Security;
 import java.util.Base64;
 
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.Smack;
 import org.jivesoftware.smack.util.stringencoder.Base64.Encoder;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -31,7 +31,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class SmackTestSuite {
 
     static {
-        SmackConfiguration.getVersion();
+        Smack.ensureInitialized();
         org.jivesoftware.smack.util.stringencoder.Base64.setEncoder(new Encoder() {
 
             @Override

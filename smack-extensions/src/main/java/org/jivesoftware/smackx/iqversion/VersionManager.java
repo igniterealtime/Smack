@@ -22,7 +22,7 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackConfiguration;
+import org.jivesoftware.smack.Smack;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -152,7 +152,7 @@ public final class VersionManager extends Manager {
 
     private static Version generateVersionFrom(String name, String version, String os) {
         if (autoAppendSmackVersion) {
-            name += " (Smack " + SmackConfiguration.getVersion() + ')';
+            name += " (Smack " + Smack.getVersion() + ')';
         }
         return new Version(name, version, os);
     }

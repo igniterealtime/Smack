@@ -37,6 +37,7 @@ public abstract class MessageOrPresenceBuilder<MP extends MessageOrPresence<? ex
         super(stanzaId);
     }
 
+    @Override
     public abstract MP build();
 
 }

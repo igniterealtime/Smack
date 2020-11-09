@@ -172,8 +172,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     private static final AtomicInteger connectionCounter = new AtomicInteger(0);
 
     static {
-        // Ensure the SmackConfiguration class is loaded by calling a method in it.
-        SmackConfiguration.getVersion();
+        Smack.ensureInitialized();
     }
 
     protected enum SyncPointState {

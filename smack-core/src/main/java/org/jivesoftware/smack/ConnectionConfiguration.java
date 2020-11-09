@@ -112,9 +112,7 @@ import org.minidns.util.InetAddressUtil;
 public abstract class ConnectionConfiguration {
 
     static {
-        // Ensure that Smack is initialized when ConnectionConfiguration is used, or otherwise e.g.
-        // SmackConfiguration.DEBUG may not be initialized yet.
-        SmackConfiguration.getVersion();
+        Smack.ensureInitialized();
     }
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionConfiguration.class.getName());

@@ -15,7 +15,7 @@ dependencies {
 	api project(':smack-websocket')
 	api project(':smack-tcp')
 
-	testImplementation 'com.google.guava:guava:28.2-jre'
+	testImplementation(testFixtures(project(":smack-core")))
 	testImplementation 'org.jgrapht:jgrapht-io:1.3.1'
 }
 

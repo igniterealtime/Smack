@@ -295,20 +295,32 @@ public final class OpenPgpManager extends Manager {
 
         throwIfNoProviderSet();
         OpenPgpStore store = provider.getStore();
-        PGPKeyRing keys = store.generateKeyRing(ourJid);
-        try {
-            store.importSecretKey(ourJid, keys.getSecretKeys());
-            store.importPublicKey(ourJid, keys.getPublicKeys());
-        } catch (MissingUserIdOnKeyException e) {
-            // This should never throw, since we set our jid literally one line above this comment.
-            throw new AssertionError(e);
-        }
+
+        PGPKeyRing keys = generateKeyRing(ourJid);
+        importKeyRing(ourJid, keys);
 
         OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(keys.getSecretKeys());
 
         store.setTrust(ourJid, fingerprint, OpenPgpTrustStore.Trust.trusted);
 
         return fingerprint;
+    }
+
+    public PGPKeyRing generateKeyRing(BareJid ourJid)
+            throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        throwIfNoProviderSet();
+        PGPKeyRing keys = provider.getStore().generateKeyRing(ourJid);
+        return keys;
+    }
+
+    private void importKeyRing(BareJid ourJid, PGPKeyRing keyRing) throws IOException, PGPException {
+        try {
+            provider.getStore().importSecretKey(ourJid, keyRing.getSecretKeys());
+            provider.getStore().importPublicKey(ourJid, keyRing.getPublicKeys());
+        } catch (MissingUserIdOnKeyException e) {
+            // This should never throw, since we set our jid literally one line above this comment.
+            throw new AssertionError(e);
+        }
     }
 
     /**

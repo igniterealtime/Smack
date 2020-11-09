@@ -33,6 +33,7 @@ dependencies {
 	testFixturesApi "org.assertj:assertj-core:3.11.1"
 	testFixturesApi "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
 	testFixturesApi 'org.hamcrest:hamcrest-library:2.2'
+	testFixturesApi 'com.google.guava:guava:28.2-jre'
 }
 
 class CreateFileTask extends DefaultTask {

@@ -43,6 +43,7 @@ public abstract class IqBuilder<IB extends IqBuilder<IB, I>, I extends IQ>
         return getThis();
     }
 
+    @Override
     public abstract I build();
 
 }
