@@ -61,7 +61,7 @@ If you find Smack useful and feel like donating, then you can use one of the fol
 Contact
 -------
 
-The developers hang around in `#smack` (freenode, IRC) and `open_chat@conference.igniterealtime.org` (XMPP MUC room).
+The developers hang around in [smack@conference.igniterealtime.org](xmpp:smack@conference.igniterealtime.org?join). You may use [this link](https://inverse.chat/badge.svg?room=smack@conference.igniterealtime.org) to join the room via [inverse.chat](https://inverse.chat).
 Remember that it may take some time (~hours) to get a response.
  
 You can also reach us via the [Smack Support Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
