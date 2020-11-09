@@ -84,7 +84,7 @@ Resources
 - Dev Forum: https://discourse.igniterealtime.org/c/smack/smack-dev
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
-- Nightly Unique Maven Snapshots: https://igniterealtime.org/repo/
+- Nightly Unique Maven Snapshots: https://www.igniterealtime.org/archiva/repository/maven/
 
 Ignite Realtime
 ===============
