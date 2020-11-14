@@ -192,8 +192,10 @@ public class RemoteXmppTcpConnectionEndpoints {
 
             for (SRV srv : sortedSrvRecords) {
                 List<InetAddress> targetInetAddresses = dnsResolver.lookupHostAddress(srv.target, lookupFailures, dnssecMode);
-                SrvXmppRemoteConnectionEndpoint endpoint = new SrvXmppRemoteConnectionEndpoint(srv, targetInetAddresses);
-                endpoints.add(endpoint);
+                if (targetInetAddresses != null) {
+                    SrvXmppRemoteConnectionEndpoint endpoint = new SrvXmppRemoteConnectionEndpoint(srv, targetInetAddresses);
+                    endpoints.add(endpoint);
+                }
             }
         } else {
             LOGGER.info("Could not resolve DNS SRV resource records for " + srvDomain + ". Consider adding those.");
