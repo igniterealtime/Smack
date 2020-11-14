@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jivesoftware.smack.datatypes.UInt16;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpoint;
 
 import org.minidns.record.SRV;
@@ -36,7 +37,7 @@ public abstract class SrvRemoteConnectionEndpoint implements RemoteConnectionEnd
     protected SrvRemoteConnectionEndpoint(SRV srv, List<? extends InetAddress> inetAddresses) {
         this.srv = srv;
         this.port = UInt16.from(srv.port);
-        this.inetAddresses = inetAddresses;
+        this.inetAddresses = Objects.requireNonNull(inetAddresses);
     }
 
     @Override

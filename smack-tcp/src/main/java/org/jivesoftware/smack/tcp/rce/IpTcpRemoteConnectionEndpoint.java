@@ -19,6 +19,7 @@ package org.jivesoftware.smack.tcp.rce;
 import java.net.InetAddress;
 
 import org.jivesoftware.smack.datatypes.UInt16;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.rce.SingleAddressRemoteConnectionEndpoint;
 
 import org.minidns.record.InternetAddressRR;
@@ -33,9 +34,9 @@ public final class IpTcpRemoteConnectionEndpoint<IARR extends InternetAddressRR<
     private final IARR internetAddressResourceRecord;
 
     public IpTcpRemoteConnectionEndpoint(CharSequence host, UInt16 port, IARR internetAddressResourceRecord) {
-        this.host = host;
-        this.port = port;
-        this.internetAddressResourceRecord = internetAddressResourceRecord;
+        this.host = Objects.requireNonNull(host);
+        this.port = Objects.requireNonNull(port);
+        this.internetAddressResourceRecord = Objects.requireNonNull(internetAddressResourceRecord);
     }
 
     public static IpTcpRemoteConnectionEndpoint<InternetAddressRR<?>> from(CharSequence host, UInt16 port,
