@@ -377,10 +377,9 @@ public class PacketParserUtils {
         outerloop: while (true) {
             switch (event) {
             case START_ELEMENT:
-                if (startElementJustSeen) {
-                    sb.rightAngleBracket();
-                }
                 startElementJustSeen = true;
+                String openElementTag = parser.getText();
+                sb.append(openElementTag);
                 break;
             case END_ELEMENT:
                 boolean isEmptyElement = false;

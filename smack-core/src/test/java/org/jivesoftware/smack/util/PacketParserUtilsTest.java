@@ -854,4 +854,40 @@ public class PacketParserUtilsTest {
         StanzaError error = PacketParserUtils.parseError(parser);
         assertEquals(text, error.getDescriptiveText());
     }
+
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseElementSimple(SmackTestUtil.XmlPullParserKind parserKind) throws TransformerException, ParserConfigurationException, FactoryConfigurationError, XmlPullParserException, IOException {
+        String unknownElement = XMLBuilder.create("unknown-element")
+                        .ns("https://example.org/non-existent")
+                        .e("inner")
+                        .t("test")
+                        .asString(outputProperties);
+
+        XmlPullParser xmlPullParser = SmackTestUtil.getParserFor(unknownElement, parserKind);
+
+        CharSequence unknownElementParsed = PacketParserUtils.parseElement(xmlPullParser);
+        assertXmlSimilar(unknownElement, unknownElementParsed);
+    }
+
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseElementExtended(SmackTestUtil.XmlPullParserKind parserKind) throws TransformerException, ParserConfigurationException, FactoryConfigurationError, XmlPullParserException, IOException {
+        String unknownElement = XMLBuilder.create("unknown-element")
+                        .ns("https://example.org/non-existent")
+                        .a("attribute-outer", "foo")
+                        .e("inner")
+                        .a("attribute-inner", "bar")
+                        .a("attribute-inner-2", "baz")
+                        .t("test")
+                        .up()
+                        .e("empty-element")
+                        .up()
+                        .asString(outputProperties);
+
+        XmlPullParser xmlPullParser = SmackTestUtil.getParserFor(unknownElement, parserKind);
+
+        CharSequence unknownElementParsed = PacketParserUtils.parseElement(xmlPullParser);
+        assertXmlSimilar(unknownElement, unknownElementParsed);
+    }
 }
