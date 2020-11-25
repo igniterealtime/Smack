@@ -299,7 +299,7 @@ public class PacketParserUtils {
      */
     public static CharSequence parseContentDepth(XmlPullParser parser, int depth, boolean fullNamespaces) throws XmlPullParserException, IOException {
         if (parser.supportsRoundtrip()) {
-            return parseContentDepthWithRoundtrip(parser, depth, fullNamespaces);
+            return parseContentDepthWithRoundtrip(parser, depth);
         } else {
             return parseContentDepthWithoutRoundtrip(parser, depth, fullNamespaces);
         }
@@ -368,8 +368,7 @@ public class PacketParserUtils {
         return xml;
     }
 
-    @SuppressWarnings("UnusedVariable")
-    private static CharSequence parseContentDepthWithRoundtrip(XmlPullParser parser, int depth, boolean fullNamespaces)
+    private static XmlStringBuilder parseContentDepthWithRoundtrip(XmlPullParser parser, int depth)
                     throws XmlPullParserException, IOException {
         XmlStringBuilder sb = new XmlStringBuilder();
         XmlPullParser.Event event = parser.getEventType();
