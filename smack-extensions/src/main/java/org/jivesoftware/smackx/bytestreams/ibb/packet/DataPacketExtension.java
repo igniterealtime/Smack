@@ -18,8 +18,10 @@ package org.jivesoftware.smackx.bytestreams.ibb.packet;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ.IQChildElementXmlStringBuilder;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -47,7 +49,7 @@ public class DataPacketExtension implements ExtensionElement {
     private final String sessionID;
 
     /* sequence of this packet in regard to the other data packets */
-    private final long seq;
+    private final UInt16 seq;
 
     /* the data contained in this packet */
     private final String data;
@@ -60,19 +62,28 @@ public class DataPacketExtension implements ExtensionElement {
      * @param sessionID unique session ID identifying this In-Band Bytestream
      * @param seq sequence of this stanza in regard to the other data packets
      * @param data the base64 encoded data contained in this packet
+     * @throws IllegalArgumentException if seq is not within the range [0, 65535].
      */
-    public DataPacketExtension(String sessionID, long seq, String data) {
+    public DataPacketExtension(String sessionID, int seq, String data) {
+        this(sessionID, UInt16.from(seq), data);
+    }
+
+    /**
+     * Creates a new In-Band Bytestream data packet.
+     *
+     * @param sessionID unique session ID identifying this In-Band Bytestream
+     * @param seq sequence of this stanza in regard to the other data packets
+     * @param data the base64 encoded data contained in this packet
+     */
+    public DataPacketExtension(String sessionID, UInt16 seq, String data) {
         if (sessionID == null || "".equals(sessionID)) {
             throw new IllegalArgumentException("Session ID must not be null or empty");
-        }
-        if (seq < 0 || seq > 65535) {
-            throw new IllegalArgumentException("Sequence must not be between 0 and 65535");
         }
         if (data == null) {
             throw new IllegalArgumentException("Data must not be null");
         }
         this.sessionID = sessionID;
-        this.seq = seq;
+        this.seq = Objects.requireNonNull(seq);
         this.data = data;
     }
 
@@ -90,7 +101,7 @@ public class DataPacketExtension implements ExtensionElement {
      *
      * @return the sequence of this stanza in regard to the other data packets.
      */
-    public long getSeq() {
+    public UInt16 getSeq() {
         return seq;
     }
 
@@ -148,7 +159,7 @@ public class DataPacketExtension implements ExtensionElement {
     }
 
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.attribute("seq", Long.toString(seq));
+        xml.attribute("seq", seq);
         xml.attribute("sid", sessionID);
         xml.rightAngleBracket();
         xml.append(data);

@@ -55,4 +55,28 @@ public class SmackParsingException extends Exception {
             super(uriSyntaxException);
         }
     }
+
+    public static class RequiredValueMissingException extends SmackParsingException {
+        /**
+        *
+        */
+       private static final long serialVersionUID = 1L;
+
+       public RequiredValueMissingException(String message) {
+            super(message);
+        }
+
+    }
+
+    public static class RequiredAttributeMissingException extends RequiredValueMissingException {
+        /**
+        *
+        */
+       private static final long serialVersionUID = 1L;
+
+       public RequiredAttributeMissingException(String attributeName) {
+            super("The required attribute '" + attributeName + "' is missing (or has the empty String as value)");
+        }
+
+    }
 }

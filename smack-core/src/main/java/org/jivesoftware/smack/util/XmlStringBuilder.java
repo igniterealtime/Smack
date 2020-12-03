@@ -363,6 +363,20 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     /**
+     * Same as {@link #optAttribute(String, CharSequence)}, but with a different method name. This method can be used if
+     * the provided attribute value argument type causes ambiguity in method overloading. For example if the type is a
+     * subclass of Number and CharSequence.
+     *
+     * @param name the name of the attribute.
+     * @param value the value of the attribute.
+     * @return a reference to this object.
+     * @since 4.5
+     */
+    public XmlStringBuilder optAttributeCs(String name, CharSequence value) {
+        return optAttribute(name, value);
+    }
+
+    /**
      * Add the given attribute if {@code value => 0}.
      *
      * @param name TODO javadoc me please

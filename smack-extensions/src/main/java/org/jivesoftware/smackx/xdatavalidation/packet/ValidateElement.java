@@ -401,8 +401,8 @@ public abstract class ValidateElement implements FormFieldChildElement {
         @Override
         public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
             XmlStringBuilder buf = new XmlStringBuilder(this, enclosingXmlEnvironment);
-            buf.optAttribute("min", getMin());
-            buf.optAttribute("max", getMax());
+            buf.optAttributeCs("min", getMin());
+            buf.optAttributeCs("max", getMax());
             buf.closeEmptyElement();
             return buf;
         }

@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.bytestreams.ibb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -29,6 +30,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -96,11 +98,11 @@ public class InBandBytestreamSessionTest extends SmackTestSuite {
 
         incrementingSequence = new Verification<Data, IQ>() {
 
-            long lastSeq = 0;
+            int lastSeq = 0;
 
             @Override
             public void verify(Data request, IQ response) {
-                assertEquals(lastSeq++, request.getDataPacketExtension().getSeq());
+                assertEquals(lastSeq++, request.getDataPacketExtension().getSeq().intValue());
             }
 
         };
@@ -266,9 +268,9 @@ public class InBandBytestreamSessionTest extends SmackTestSuite {
             @Override
             public void verify(Data request, IQ response) {
                 byte[] decodedData = request.getDataPacketExtension().getDecodedData();
-                int seq = (int) request.getDataPacketExtension().getSeq();
+                UInt16 seq = request.getDataPacketExtension().getSeq();
                 for (int i = 0; i < decodedData.length; i++) {
-                    assertEquals(controlData[(seq * blockSize) + i], decodedData[i]);
+                    assertEquals(controlData[(seq.intValue() * blockSize) + i], decodedData[i]);
                 }
             }
 
@@ -441,15 +443,6 @@ public class InBandBytestreamSessionTest extends SmackTestSuite {
      */
     @Test
     public void shouldSendCloseRequestIfInvalidSequenceReceived() throws Exception {
-        IQ resultIQ = IBBPacketUtils.createResultIQ(initiatorJID, targetJID);
-
-        // confirm data packet with invalid sequence
-        protocol.addResponse(resultIQ);
-
-        // confirm close request
-        protocol.addResponse(resultIQ, Verification.requestTypeSET,
-                        Verification.correspondingSenderReceiver);
-
         // get IBB sessions data packet listener
         InBandBytestreamSession session = new InBandBytestreamSession(connection, initBytestream,
                         initiatorJID);
@@ -465,16 +458,11 @@ public class InBandBytestreamSessionTest extends SmackTestSuite {
         listener.processStanza(data);
 
         // read until exception is thrown
-        try {
-            inputStream.read();
-            fail("exception should be thrown");
-        }
-        catch (IOException e) {
-            assertTrue(e.getMessage().contains("Packets out of sequence"));
-        }
-
-        protocol.verifyAll();
-
+        IOException ioException = assertThrows(IOException.class, () ->
+            inputStream.read()
+        );
+        String ioExceptionMessage = ioException.getMessage();
+        assertTrue(ioExceptionMessage.equals("Stream is closed"));
     }
 
     /**

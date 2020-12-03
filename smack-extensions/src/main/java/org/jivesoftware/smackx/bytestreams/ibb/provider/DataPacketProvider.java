@@ -18,8 +18,11 @@ package org.jivesoftware.smackx.bytestreams.ibb.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.SmackParsingException.RequiredAttributeMissingException;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -51,9 +54,9 @@ public class DataPacketProvider {
         @Override
         public DataPacketExtension parse(XmlPullParser parser,
                         int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
-                        IOException {
+                        IOException, RequiredAttributeMissingException {
             String sessionID = parser.getAttributeValue("", "sid");
-            long seq = Long.parseLong(parser.getAttributeValue("", "seq"));
+            UInt16 seq = ParserUtils.getRequiredUInt16Attribute(parser, "seq");
             String data = parser.nextText();
             return new DataPacketExtension(sessionID, seq, data);
         }

@@ -75,7 +75,7 @@ public class DataPacketExtensionTest extends SmackTestSuite {
     public void shouldSetAllFieldsCorrectly() {
         DataPacketExtension data = new DataPacketExtension("sessionID", 0, "data");
         assertEquals("sessionID", data.getSessionID());
-        assertEquals(0, data.getSeq());
+        assertEquals(0, data.getSeq().intValue());
         assertEquals("data", data.getData());
     }
 

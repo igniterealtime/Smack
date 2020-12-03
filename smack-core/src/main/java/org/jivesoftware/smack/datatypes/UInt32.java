@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,12 @@ public final class UInt32 extends Scalar {
     private static final long serialVersionUID = 1L;
 
     private final long number;
+
+    public static final long MIN_VALUE_LONG = 0;
+    public static final long MAX_VALUE_LONG = (1L << 32) - 1;
+
+    public static final UInt32 MIN_VALUE = UInt32.from(MAX_VALUE_LONG);
+    public static final UInt32 MAX_VALUE = UInt32.from(MAX_VALUE_LONG);
 
     private UInt32(long number) {
         super(NumberUtil.requireUInt32(number));
@@ -54,5 +60,21 @@ public final class UInt32 extends Scalar {
         }
 
         return super.equals(other);
+    }
+
+    @Override
+    public UInt32 getMinValue() {
+        return MIN_VALUE;
+    }
+
+    @Override
+    public UInt32 getMaxValue() {
+        return MAX_VALUE;
+    }
+
+    @Override
+    public UInt32 incrementedByOne() {
+        long incrementedValue = number < MAX_VALUE_LONG ? number + 1 : 0;
+        return UInt32.from(incrementedValue);
     }
 }

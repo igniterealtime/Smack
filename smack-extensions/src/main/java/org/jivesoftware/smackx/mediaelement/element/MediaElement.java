@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,8 +83,8 @@ public class MediaElement implements FormFieldChildElement {
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
-        xml.optAttribute("height", height)
-            .optAttribute("width", width)
+        xml.optAttributeCs("height", height)
+            .optAttributeCs("width", width)
             .rightAngleBracket();
 
         xml.append(uris);

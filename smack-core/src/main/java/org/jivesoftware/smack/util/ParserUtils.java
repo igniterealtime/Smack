@@ -29,6 +29,7 @@ import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.datatypes.UInt32;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.SmackParsingException.RequiredAttributeMissingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -229,6 +230,14 @@ public class ParserUtils {
             return null;
         }
         return UInt16.from(integer);
+    }
+
+    public static UInt16 getRequiredUInt16Attribute(XmlPullParser parser, String name) throws RequiredAttributeMissingException {
+        UInt16 uint16 = getUInt16Attribute(parser, name);
+        if (uint16 == null) {
+            throw new SmackParsingException.RequiredAttributeMissingException(name);
+        }
+        return uint16;
     }
 
     public static int getIntegerFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException {
