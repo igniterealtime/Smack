@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,17 @@ import org.jivesoftware.smack.util.NumberUtil;
 /**
  * A number representing an unsigned 16-bit integer. Can be used for values with the XML schema type "xs:unsingedShort".
  */
-public final class UInt16 extends Scalar {
+public final class UInt16 extends Scalar implements Comparable<UInt16> {
 
     private static final long serialVersionUID = 1L;
 
     private final int number;
+
+    public static final int MIN_VALUE_INT = 0;
+    public static final int MAX_VALUE_INT = (1 << 16) - 1;
+
+    public static final UInt16 MIN_VALUE = UInt16.from(MIN_VALUE_INT);
+    public static final UInt16 MAX_VALUE = UInt16.from(MAX_VALUE_INT);
 
     private UInt16(int number) {
         super(NumberUtil.requireUShort16(number));
@@ -53,5 +59,26 @@ public final class UInt16 extends Scalar {
         }
 
         return super.equals(other);
+    }
+
+    @Override
+    public int compareTo(UInt16 o) {
+        return Integer.compare(number, o.number);
+    }
+
+    @Override
+    public UInt16 getMinValue() {
+        return MIN_VALUE;
+    }
+
+    @Override
+    public UInt16 getMaxValue() {
+        return MAX_VALUE;
+    }
+
+    @Override
+    public UInt16 incrementedByOne() {
+        int incrementedValue = number < MAX_VALUE_INT ? number + 1 : 0;
+        return UInt16.from(incrementedValue);
     }
 }

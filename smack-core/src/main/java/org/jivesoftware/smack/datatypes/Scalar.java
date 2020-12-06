@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smack.datatypes;
 
-public abstract class Scalar extends java.lang.Number {
+import org.jivesoftware.smack.util.DefaultCharSequence;
+
+public abstract class Scalar extends java.lang.Number implements DefaultCharSequence {
 
     /**
      *
@@ -83,4 +85,11 @@ public abstract class Scalar extends java.lang.Number {
     public final String toString() {
         return number.toString();
     }
+
+    public abstract Scalar getMinValue();
+
+    public abstract Scalar getMaxValue();
+
+    public abstract Scalar incrementedByOne();
+
 }

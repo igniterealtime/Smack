@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.bytestreams.ibb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,7 +102,7 @@ public class InBandBytestreamSessionMessageTest extends SmackTestSuite {
             public void verify(Message request, IQ response) {
                 DataPacketExtension dpe = request.getExtension(
                                 DataPacketExtension.class);
-                assertEquals(lastSeq++, dpe.getSeq());
+                assertEquals(lastSeq++, dpe.getSeq().longValue());
             }
 
         };
@@ -275,16 +275,13 @@ public class InBandBytestreamSessionMessageTest extends SmackTestSuite {
         listener.processStanza(dataMessage);
 
         // read until exception is thrown
-        try {
-            inputStream.read();
-            fail("exception should be thrown");
-        }
-        catch (IOException e) {
-            assertTrue(e.getMessage().contains("Packets out of sequence"));
-        }
+        IOException ioException = assertThrows(IOException.class, () ->
+            inputStream.read()
+        );
+        String ioExceptionMessage = ioException.getMessage();
+        assertTrue(ioExceptionMessage.startsWith(InBandBytestreamSession.UNEXPECTED_IBB_SEQUENCE));
 
         protocol.verifyAll();
-
     }
 
     /**
