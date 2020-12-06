@@ -141,6 +141,112 @@ hr {
 
 	<div id="pageBody">
 
+
+
+<h2>4.4.0 -- <span style="font-weight: normal;">2020-12-06</span></h2>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-561'>SMACK-561</a>] -         Smack should not reply with multiple stream types after stream initiation is offered
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-624'>SMACK-624</a>] -         AdHocCommandManager&#39;s session sweeping thread does never stop
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-729'>SMACK-729</a>] -         Not all providers from smack-legacy.jar are loaded
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-770'>SMACK-770</a>] -         There is no Bits of Binary Extension Element provider registered
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-848'>SMACK-848</a>] -         Make MultiUserChat.leave() wait for response
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-874'>SMACK-874</a>] -         PacketParserUtilsTest#invalidXMLInMessageBody() fails on non-english machines
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-881'>SMACK-881</a>] -         Deadlock between reader and writer if Stream Mangement unacked stanza queue is full
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-888'>SMACK-888</a>] -         MUC roomDestroyed() callback is not invoked
+</li>
+</ul>
+
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-257'>SMACK-257</a>] -         Add support for XEP-0118: User Tune
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-636'>SMACK-636</a>] -         Add support for XEP-0319: Last User Interaction in Presence
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-743'>SMACK-743</a>] -         Add support for XEP-0384: OMEMO Encryption
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-801'>SMACK-801</a>] -         Update Smack to Java 8
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-824'>SMACK-824</a>] -         Add support for XEP-0221: Data Forms Media Element
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-862'>SMACK-862</a>] -         Add support for XEP-0418: DNS Queries over XMPP (DoX)
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-871'>SMACK-871</a>] -         Add support for XEP-0350: Data Forms Geolocation Element
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-872'>SMACK-872</a>] -         Add support for XEP-0315: Data Forms XML Element
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-878'>SMACK-878</a>] -         Add support for XEP-0328: JID Prep
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-884'>SMACK-884</a>] -         Add support for XEP-0422: Message Fastening
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-885'>SMACK-885</a>] -         Add support for XEP-0420 Stanza Content Encryption
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-889'>SMACK-889</a>] -         Add support for XEP-0428: Fallback Indication
+</li>
+</ul>
+
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-591'>SMACK-591</a>] -         Replace XPP3 by SmackXmlPullParser (wrapping Stax&#39;s XmlStreamReader and XPP3 on Android)
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-650'>SMACK-650</a>] -         Enable Java8&#39;s javadoc doclint
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-651'>SMACK-651</a>] -         Perform sound cross-compilation: Use newer javac&#39;s --release feature
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-718'>SMACK-718</a>] -         Prevent extremely long reply timeouts from being set
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-821'>SMACK-821</a>] -         Make Forwarded a generic type
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-822'>SMACK-822</a>] -         Add API for XEP-0313 § 6.2 Advanced configuration via Ad-Hoc commands
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-825'>SMACK-825</a>] -         Discourage Stanza.getExtension(String, String) in favor of Stanza.getExtension(Class&lt;E extends ExtensionElement&gt;)
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-826'>SMACK-826</a>] -         Add support for XEP-0373:&quot; OpenPGP for XMPP&quot; and XEP-0374: &quot;OpenPGP for XMPP Instant Messaging&quot;
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-828'>SMACK-828</a>] -         Add support for XEP-0107: User Mood
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-836'>SMACK-836</a>] -         Save a ServiceDiscoveryManager instance in a private field of MultiUserChatManger
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-839'>SMACK-839</a>] -         Provider.parse() should not throw a generic Exception, but instead IOException and XmlPullParserException
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-852'>SMACK-852</a>] -         Message thread and subject should be designed and implemented as ExtensionElements
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-854'>SMACK-854</a>] -         Rename smack-java7 to smack-java8
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-866'>SMACK-866</a>] -         Remove all tabs from the source code and add checkstyle rule that enforces no-tabs
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-867'>SMACK-867</a>] -         Extend HttpFileUploadManager by methods with InputStream parameter
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-882'>SMACK-882</a>] -         Add support for MUC status code 333
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-883'>SMACK-883</a>] -         Add generic MUC callback for &quot;participant left&quot; caused by unavailable presences
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-890'>SMACK-890</a>] -         Update Message Archive Management (XEP-0313) support to urn:xmpp:mam:2
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-892'>SMACK-892</a>] -         Smack performs unnecessary escaping in XML text
+</li>
+</ul>
+
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-750'>SMACK-750</a>] -         Raise Smack&#39;s minimum required Android SDK level to 19 (Android 4.4, Kit Kat, 2013-10)
+</li>
+<li>[<a href='https://igniterealtime.atlassian.net/browse/SMACK-840'>SMACK-840</a>] -         Remove smack-compression-jzlib, as it is obsolete (Smack uses Java 7 de- and inflate API now)
+</li>
+</ul>
+
 <h2>4.3.4 -- <span style="font-weight: normal;">2019-05-27</span></h2>
 
 <h2>        Bug
