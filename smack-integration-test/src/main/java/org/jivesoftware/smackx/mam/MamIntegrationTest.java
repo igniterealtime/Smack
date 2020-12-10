@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2018-2020 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -33,7 +34,7 @@ import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
-
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.mam.MamManager.MamQuery;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 
@@ -59,7 +60,17 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         }
 
         // Make sure MAM is archiving messages.
-        mamManagerConTwo.enableMamForAllMessages();
+        try {
+            mamManagerConTwo.enableMamForAllMessages();
+        } catch (XMPPErrorException e) {
+            // Note that we check for feature-not-implemented (and not service-unavailable), as the server understand
+            // the MAM namespace, but may not the <prefs/> IQ.
+            if (e.getStanzaError().getCondition() != StanzaError.Condition.feature_not_implemented) {
+                throw e;
+            }
+
+            LOGGER.log(Level.INFO, conTwo.getXMPPServiceDomain() + " doesn't support XEP-0441: Message Archive Management Preferences", e);
+        }
     }
 
     @SmackIntegrationTest
