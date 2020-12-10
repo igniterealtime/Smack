@@ -59,7 +59,11 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
         }
 
         // Make sure MAM is archiving messages.
-        mamManagerConTwo.enableMamForAllMessages();
+        try {
+            mamManagerConTwo.enableMamForAllMessages();
+        } catch ( XMPPErrorException e ) {
+            // Server doesn't support XEP-0441.
+        }
     }
 
     @SmackIntegrationTest
