@@ -390,6 +390,22 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     /**
+     * If the provided Integer argument is not null, then add a new XML attribute with the given name and the Integer as
+     * value.
+     *
+     * @param name the XML attribute name.
+     * @param value the optional integer to use as the attribute's value.
+     * @return a reference to this object.
+     * @since 4.4.1
+     */
+    public XmlStringBuilder optIntAttribute(String name, Integer value) {
+        if (value != null) {
+            attribute(name, value.toString());
+        }
+        return this;
+    }
+
+    /**
      * Add the given attribute if value not null and {@code value => 0}.
      *
      * @param name TODO javadoc me please

@@ -60,6 +60,26 @@ public class BoBDataExtension implements ExtensionElement {
         return NAMESPACE;
     }
 
+    /**
+     * Get the content ID.
+     *
+     * @return the content ID.
+     * @since 4.4.1
+     */
+    public final ContentId getContentId() {
+        return cid;
+    }
+
+    /**
+     * Get the Bits of Binary (BOB) data.
+     *
+     * @return the BoB data.
+     * @since 4.4.1
+     */
+    public final BoBData getBobData() {
+        return bobData;
+    }
+
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
