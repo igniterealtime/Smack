@@ -195,7 +195,7 @@ public final class DirectoryRosterStore implements RosterStore {
             Item item = RosterPacketProvider.parseItem(parser);
             reader.close();
             return item;
-        } catch (XmlPullParserException | IOException e) {
+        } catch (XmlPullParserException | IOException | IllegalArgumentException e) {
             boolean deleted = file.delete();
             String message = "Exception while parsing roster entry.";
             if (deleted) {
