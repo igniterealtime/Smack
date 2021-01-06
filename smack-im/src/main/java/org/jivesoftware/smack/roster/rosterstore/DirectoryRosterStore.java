@@ -183,7 +183,7 @@ public final class DirectoryRosterStore implements RosterStore {
     private static Item readEntry(File file) {
         Reader reader;
         try {
-            // TODO: Should use Files.newBufferedReader() but it is not available on Android.
+            // TODO: Use Files.newBufferedReader() once Smack's minimum Android API level is 26 or higher.
             reader = new FileReader(file);
         } catch (FileNotFoundException e) {
             LOGGER.log(Level.FINE, "Roster entry file not found", e);
