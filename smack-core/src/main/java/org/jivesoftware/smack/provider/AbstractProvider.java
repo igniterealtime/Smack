@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smack.provider;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import org.jivesoftware.smack.packet.Element;
 
@@ -42,9 +43,12 @@ public class AbstractProvider<E extends Element> {
         } else if (elementType instanceof ParameterizedType) {
             ParameterizedType parameteriezedElementType = (ParameterizedType) elementType;
             elementClass = (Class<E>) parameteriezedElementType.getRawType();
+        } else if (elementType instanceof TypeVariable) {
+            TypeVariable<?> typeVariableElementType = (TypeVariable<?>) elementType;
+            elementClass = (Class<E>) typeVariableElementType.getClass();
         } else {
-            throw new AssertionError(
-                            "Element type '" + elementType + "' is neither of type Class or ParameterizedType");
+            throw new AssertionError("Element type '" + elementType + "' (" + elementType.getClass()
+                            + ") is neither of type Class, ParameterizedType or TypeVariable");
         }
     }
 
