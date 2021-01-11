@@ -312,7 +312,10 @@ public final class EntityCapsManager extends Manager {
     // XEP-0115 specifies that a client SHOULD include entity capabilities
     // with every presence notification it sends.
     private void addCapsExtension(PresenceBuilder presenceBuilder) {
-        CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
+        final CapsVersionAndHash capsVersionAndHash = getCapsVersionAndHash();
+        if (capsVersionAndHash == null) {
+            return;
+        }
         CapsExtension caps = new CapsExtension(entityNode, capsVersionAndHash.version, capsVersionAndHash.hash);
         presenceBuilder.overrideExtension(caps);
     }
@@ -434,10 +437,10 @@ public final class EntityCapsManager extends Manager {
     }
 
     /**
-     * Get our own caps version. The version depends on the enabled features.
+     * Get our own caps version or {@code null} if none is yet set. The version depends on the enabled features.
      * A caps version looks like '66/0NaeaBKkwk85efJTGmU47vXI='
      *
-     * @return our own caps version
+     * @return our own caps version or {@code null}.
      */
     public CapsVersionAndHash getCapsVersionAndHash() {
         return currentCapsVersion;
