@@ -1,4 +1,4 @@
-name: Smack CI
+name: CI
 
 env:
   GRADLE_VERSION: 6.7.1
