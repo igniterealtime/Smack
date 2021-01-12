@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
     }
 }
 
@@ -16,6 +15,7 @@ plugins {
 	id 'net.ltgt.errorprone' version '1.1.1'
 	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
 	id 'com.dorongold.task-tree' version '1.5'
+	id 'com.github.kt3k.coveralls' version '2.10.2'
 }
 
 apply plugin: 'org.kordamp.gradle.markdown'
