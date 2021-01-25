@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ public class XmlEnvironment {
     }
 
     public static XmlEnvironment from(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) {
-        String namespace = parser.getNamespace();
+        String namespace = parser.getDefaultNamespace();
         String xmlLang = ParserUtils.getXmlLang(parser);
         return new XmlEnvironment(namespace, xmlLang, outerXmlEnvironment);
     }

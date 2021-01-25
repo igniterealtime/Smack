@@ -494,6 +494,9 @@ public final class DataForm implements ExtensionElement {
          * @return a reference to this builder.
          */
         public Builder addItem(Item item) {
+            if (items == null) {
+                items = new ArrayList<>();
+            }
             items.add(item);
             return this;
         }

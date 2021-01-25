@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import javax.xml.XMLConstants;
@@ -204,6 +207,34 @@ public class XmlPullParserTest {
             XmlPullParser parser = SmackTestUtil.getParserFor(emptyElement, parserKind);
             assertEquals(XmlPullParser.Event.START_ELEMENT, parser.getEventType());
             assertEquals("", parser.nextText());
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testGetNamespace(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException {
+        String xml = "<foo:bar xmlns='namespace' xmlns:foo='foo-namespace'/>";
+        XmlPullParser parser = SmackTestUtil.getParserFor(xml, parserKind);
+
+        String parsedName = parser.getName();
+        assertEquals("bar", parsedName);
+
+        String parsedPrefix = parser.getPrefix();
+        assertEquals("foo", parsedPrefix);
+
+        String parsedPrefixNamespace = parser.getNamespace(parsedPrefix);
+        assertEquals("foo-namespace", parsedPrefixNamespace);
+
+        String parsedNamespace = parser.getNamespace();
+        assertEquals("foo-namespace", parsedNamespace);
+
+        List<Function<XmlPullParser, String>>  defaultNamespaceRetrievers = new ArrayList<>();
+        defaultNamespaceRetrievers.add(p -> p.getNamespace(null));
+        defaultNamespaceRetrievers.add(p -> p.getDefaultNamespace());
+        for (Function<XmlPullParser, String> defaultNamespaceRetriever : defaultNamespaceRetrievers) {
+            String defaultNamespace = defaultNamespaceRetriever.apply(parser);
+            assertEquals("namespace", defaultNamespace);
         }
     }
 
