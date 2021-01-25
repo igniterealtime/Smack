@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModule;
@@ -29,6 +30,7 @@ import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionIn
 import org.jivesoftware.smack.fsm.StateDescriptor;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.EstablishingWebSocketConnectionStateDescriptor;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 /**
  * The descriptor class for {@link XmppWebSocketTransportModule}.
@@ -37,12 +39,43 @@ import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.Establishin
  * use {@link ModularXmppClientToServerConnectionConfiguration.Builder#addModule(ModularXmppClientToServerConnectionModuleDescriptor)}.
  */
 public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppClientToServerConnectionModuleDescriptor {
-    private boolean performWebSocketEndpointDiscovery;
-    private URI uri;
+    private final boolean performWebSocketEndpointDiscovery;
+    private final boolean implicitWebSocketEndpoint;
+    private final URI uri;
+    private final WebSocketRemoteConnectionEndpoint wsRce;
 
     public XmppWebSocketTransportModuleDescriptor(Builder builder) {
         this.performWebSocketEndpointDiscovery = builder.performWebSocketEndpointDiscovery;
+        this.implicitWebSocketEndpoint = builder.implicitWebSocketEndpoint;
+
         this.uri = builder.uri;
+        if (uri != null) {
+            wsRce = WebSocketRemoteConnectionEndpoint.from(uri);
+        } else {
+            wsRce = null;
+        }
+    }
+
+    @Override
+    @SuppressWarnings({"incomplete-switch", "MissingCasesInEnumSwitch"})
+    protected void validateConfiguration(ModularXmppClientToServerConnectionConfiguration configuration) {
+        if (wsRce == null) {
+            return;
+        }
+
+        SecurityMode securityMode = configuration.getSecurityMode();
+        switch (securityMode) {
+        case required:
+            if (!wsRce.isSecureEndpoint()) {
+                throw new IllegalArgumentException("The provided WebSocket endpoint " + wsRce + " is not a secure endpoint, but the connection configuration requires secure endpoints");
+            }
+            break;
+        case disabled:
+            if (wsRce.isSecureEndpoint()) {
+                throw new IllegalArgumentException("The provided WebSocket endpoint " + wsRce + " is a secure endpoint, but the connection configuration has security disabled");
+            }
+            break;
+        }
     }
 
     /**
@@ -53,12 +86,20 @@ public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppCli
         return performWebSocketEndpointDiscovery;
     }
 
+    public boolean isImplicitWebSocketEndpointEnabled() {
+        return implicitWebSocketEndpoint;
+    }
+
     /**
      * Returns explicitly configured websocket endpoint uri.
      * @return uri
      */
     public URI getExplicitlyProvidedUri() {
         return uri;
+    }
+
+    WebSocketRemoteConnectionEndpoint getExplicitlyProvidedEndpoint() {
+        return wsRce;
     }
 
     @Override
@@ -99,6 +140,7 @@ public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppCli
      */
     public static final class Builder extends ModularXmppClientToServerConnectionModuleDescriptor.Builder {
         private boolean performWebSocketEndpointDiscovery = true;
+        private boolean implicitWebSocketEndpoint = true;
         private URI uri;
 
         private Builder(
@@ -119,13 +161,18 @@ public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppCli
 
         public Builder explicitlySetWebSocketEndpoint(CharSequence endpoint) throws URISyntaxException {
             URI endpointUri = new URI(endpoint.toString());
-            return explicitlySetWebSocketEndpointAndDiscovery(endpointUri, true);
+            return explicitlySetWebSocketEndpoint(endpointUri);
         }
 
-        public Builder explicitlySetWebSocketEndpoint(CharSequence endpoint, boolean performWebSocketEndpointDiscovery)
+        public Builder explicitlySetWebSocketEndpointAndDiscovery(CharSequence endpoint, boolean performWebSocketEndpointDiscovery)
                 throws URISyntaxException {
             URI endpointUri = new URI(endpoint.toString());
             return explicitlySetWebSocketEndpointAndDiscovery(endpointUri, performWebSocketEndpointDiscovery);
+        }
+
+        public Builder disableImplicitWebsocketEndpoint() {
+            implicitWebSocketEndpoint = false;
+            return this;
         }
 
         @Override

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,11 @@
  */
 package org.jivesoftware.smack.websocket;
 
-import java.util.Collections;
-import java.util.List;
-
 public final class WebSocketException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    private final List<Throwable> throwableList;
-
-    public WebSocketException(List<Throwable> throwableList) {
-        this.throwableList = throwableList;
-    }
-
     public WebSocketException(Throwable throwable) {
-        this.throwableList = Collections.singletonList(throwable);
+        super("WebSocketException: " + throwable.getMessage(), throwable);
     }
 
-    public List<Throwable> getThrowableList() {
-        return throwableList;
-    }
 }

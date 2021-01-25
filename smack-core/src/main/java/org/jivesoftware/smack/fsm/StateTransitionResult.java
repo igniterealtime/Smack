@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smack.fsm;
+
+import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
 
 public abstract class StateTransitionResult {
 
@@ -90,6 +92,12 @@ public abstract class StateTransitionResult {
     public static class TransitionImpossibleBecauseNotImplemented extends TransitionImpossibleReason {
         public TransitionImpossibleBecauseNotImplemented(StateDescriptor stateDescriptor) {
             super(stateDescriptor.getFullStateName(false) + " is not implemented (yet)");
+        }
+    }
+
+    public static class TransitionImpossibleBecauseNoEndpointsDiscovered extends TransitionImpossibleReason {
+        public TransitionImpossibleBecauseNoEndpointsDiscovered(XmppClientToServerTransport transport) {
+            super("The transport " + transport + " did not discover any endpoints");
         }
     }
 }

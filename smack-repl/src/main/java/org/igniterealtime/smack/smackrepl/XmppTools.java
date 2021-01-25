@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2021 Florian Schmaus
  *
  * This file is part of smack-repl.
  *
@@ -23,6 +23,8 @@ package org.igniterealtime.smack.smackrepl;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -30,15 +32,19 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.TLSUtils;
-
+import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
+import org.jxmpp.stringprep.XmppStringprepException;
+import org.jxmpp.util.XmppDateTime;
 
 public class XmppTools {
 
@@ -105,5 +111,41 @@ public class XmppTools {
         } finally {
             connection.disconnect();
         }
+    }
+
+    public static void modularConnectionTest(ModularXmppClientToServerConnection connection, String messageTo) throws XMPPException, SmackException, IOException, InterruptedException {
+        connection.addConnectionStateMachineListener((event, c) -> {
+            Logger.getAnonymousLogger().info("Connection event: " + event);
+        });
+
+        connection.connect();
+
+        connection.login();
+
+        XmppTools.sendItsAlive(messageTo, connection);
+
+        Thread.sleep(1000);
+
+        connection.disconnect();
+
+        ModularXmppClientToServerConnection.Stats connectionStats = connection.getStats();
+        ServiceDiscoveryManager.Stats serviceDiscoveryManagerStats = ServiceDiscoveryManager.getInstanceFor(connection).getStats();
+
+        // CHECKSTYLE:OFF
+        System.out.println("NIO successfully finished, yeah!\n" + connectionStats + '\n' + serviceDiscoveryManagerStats);
+        // CHECKSTYLE:ON
+    }
+
+    public static void sendItsAlive(String to, XMPPConnection connection)
+                    throws XmppStringprepException, NotConnectedException, InterruptedException {
+        if (to == null) {
+            return;
+        }
+
+        Message message = connection.getStanzaFactory().buildMessageStanza()
+                        .to(to)
+                        .setBody("It is alive! " + XmppDateTime.formatXEP0082Date(new Date()))
+                        .build();
+        connection.sendStanza(message);
     }
 }

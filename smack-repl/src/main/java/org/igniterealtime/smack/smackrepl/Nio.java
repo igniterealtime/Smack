@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * This file is part of smack-repl.
  *
@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
@@ -38,17 +36,10 @@ import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.compression.XMPPInputOutputStream.FlushMethod;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
-import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.sm.StreamManagementModuleDescriptor;
 import org.jivesoftware.smack.tcp.XmppTcpTransportModuleDescriptor;
 
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
-
-import org.jxmpp.util.XmppDateTime;
-
 public class Nio {
-
-    private static final Logger LOGGER = Logger.getLogger(Nio.class.getName());
 
     public static void main(String[] args) throws SmackException, IOException, XMPPException, InterruptedException {
         doNio(args[0], args[1], args[2]);
@@ -111,30 +102,7 @@ public class Nio {
 
         connection.setReplyTimeout(5 * 60 * 1000);
 
-        connection.addConnectionStateMachineListener((event, c) -> {
-            LOGGER.info("Connection event: " + event);
-        });
-
-        connection.connect();
-
-        connection.login();
-
-        Message message = connection.getStanzaFactory().buildMessageStanza()
-                .to("flo@geekplace.eu")
-                .setBody("It is alive! " + XmppDateTime.formatXEP0082Date(new Date()))
-                .build();
-        connection.sendStanza(message);
-
-        Thread.sleep(1000);
-
-        connection.disconnect();
-
-        ModularXmppClientToServerConnection.Stats connectionStats = connection.getStats();
-        ServiceDiscoveryManager.Stats serviceDiscoveryManagerStats = ServiceDiscoveryManager.getInstanceFor(connection).getStats();
-
-        // CHECKSTYLE:OFF
-        System.out.println("NIO successfully finished, yeah!\n" + connectionStats + '\n' + serviceDiscoveryManagerStats);
-        // CHECKSTYLE:ON
+        XmppTools.modularConnectionTest(connection, "flo@geekplace.eu");
     }
 
 }

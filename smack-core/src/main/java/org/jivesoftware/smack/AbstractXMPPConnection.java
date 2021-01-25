@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2020 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2201,18 +2201,29 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return SMACK_REACTOR.schedule(runnable, delay, unit, ScheduledAction.Kind.NonBlocking);
     }
 
-    protected void onStreamOpen(XmlPullParser parser) {
-        // We found an opening stream.
-        if ("jabber:client".equals(parser.getNamespace(null))) {
-            streamId = parser.getAttributeValue("", "id");
-            incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
+    /**
+     * Must be called when a XMPP stream open tag is encountered. Sets values like the stream ID and the incoming stream
+     * XML environment.
+     * <p>
+     * This method also returns a matching stream close tag. For example if the stream open is {@code <stream …>}, then
+     * {@code </stream>} is returned. But if it is {@code <stream:stream>}, then {@code </stream:stream>} is returned.
+     * Or if it is {@code <foo:stream>}, then {@code </foo:stream>} is returned.
+     * </p>
+     *
+     * @param parser an XML parser that is positioned at the start of the stream open.
+     * @return a String representing the corresponding stream end tag.
+     */
+    protected String onStreamOpen(XmlPullParser parser) {
+        assert StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE.equals(parser.getNamespace());
+        assert StreamOpen.UNPREFIXED_ELEMENT.equals(parser.getName());
 
-            String reportedServerDomainString = parser.getAttributeValue("", "from");
-            if (reportedServerDomainString == null) {
-                // RFC 6120 § 4.7.1. makes no explicit statement whether or not 'from' in the stream open from the server
-                // in c2s connections is required or not.
-                return;
-            }
+        streamId = parser.getAttributeValue("id");
+        incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
+
+        String reportedServerDomainString = parser.getAttributeValue("from");
+        // RFC 6120 § 4.7.1. makes no explicit statement whether or not 'from' in the stream open from the server
+        // in c2s connections is required or not.
+        if (reportedServerDomainString != null) {
             DomainBareJid reportedServerDomain;
             try {
                 reportedServerDomain = JidCreate.domainBareFrom(reportedServerDomainString);
@@ -2226,6 +2237,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         + "' as reported by server could not be transformed to a valid JID", e);
             }
         }
+
+        String prefix = parser.getPrefix();
+        if (StringUtils.isNotEmpty(prefix)) {
+            return "</" + prefix + ":stream>";
+        }
+        return "</stream>";
     }
 
     protected final void sendStreamOpen() throws NotConnectedException, InterruptedException {
@@ -2233,7 +2250,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // possible. The 'to' attribute is *always* available. The 'from' attribute if set by the user and no external
         // mechanism is used to determine the local entity (user). And the 'id' attribute is available after the first
         // response from the server (see e.g. RFC 6120 § 9.1.1 Step 2.)
-        CharSequence to = getXMPPServiceDomain();
+        DomainBareJid to = getXMPPServiceDomain();
         CharSequence from = null;
         CharSequence localpart = config.getUsername();
         if (localpart != null) {
@@ -2247,7 +2264,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
     }
 
-    protected AbstractStreamOpen getStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+    protected AbstractStreamOpen getStreamOpen(DomainBareJid to, CharSequence from, String id, String lang) {
         return new StreamOpen(to, from, id, lang);
     }
 

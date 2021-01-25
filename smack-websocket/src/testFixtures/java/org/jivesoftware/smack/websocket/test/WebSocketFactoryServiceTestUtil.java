@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.mockito.Mockito.mock;
 
+import java.net.URISyntaxException;
+
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
 import org.jivesoftware.smack.websocket.impl.WebSocketFactoryService;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 public class WebSocketFactoryServiceTestUtil {
 
-    public static void createWebSocketTest(Class<? extends AbstractWebSocket> expected) {
+    public static void createWebSocketTest(Class<? extends AbstractWebSocket> expected) throws URISyntaxException {
+        WebSocketRemoteConnectionEndpoint endpoint = WebSocketRemoteConnectionEndpoint.from("wss://example.org");
+
         ModularXmppClientToServerConnectionInternal connectionInternal = mock(ModularXmppClientToServerConnectionInternal.class);
 
-        AbstractWebSocket websocket = WebSocketFactoryService.createWebSocket(connectionInternal);
+        AbstractWebSocket websocket = WebSocketFactoryService.createWebSocket(endpoint, connectionInternal);
         assertEquals(expected, websocket.getClass());
     }
 

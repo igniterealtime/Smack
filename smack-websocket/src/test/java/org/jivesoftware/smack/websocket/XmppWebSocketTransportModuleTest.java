@@ -17,24 +17,15 @@
 package org.jivesoftware.smack.websocket;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import static org.mockito.Mockito.mock;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
-import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure.HttpLookupFailure;
-import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints;
-import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.XmppWebSocketTransport.WebSocketEndpointsDiscoveryFailed;
-import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
-import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpointLookup.Result;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -62,42 +53,6 @@ public class XmppWebSocketTransportModuleTest {
     public void createDescriptorTest() throws URISyntaxException, XmppStringprepException {
         XmppWebSocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebSocketDescriptor();
         assertNotNull(websocketTransportModuleDescriptor);
-    }
-
-    @Test
-    public void websocketEndpointDiscoveryTest() throws URISyntaxException {
-        XmppWebSocketTransportModuleDescriptor websocketTransportModuleDescriptor = getWebSocketDescriptor();
-        ModularXmppClientToServerConnectionInternal connectionInternal = mock(ModularXmppClientToServerConnectionInternal.class);
-
-        XmppWebSocketTransportModule transportModule
-                        = new XmppWebSocketTransportModule(websocketTransportModuleDescriptor, connectionInternal);
-
-        XmppWebSocketTransportModule.XmppWebSocketTransport transport = transportModule.getTransport();
-
-        assertThrows(AssertionError.class, () -> transport.new DiscoveredWebSocketEndpoints(null));
-        assertThrows(AssertionError.class, () -> transport.new WebSocketEndpointsDiscoveryFailed(null));
-
-        WebSocketRemoteConnectionEndpoint endpoint = new WebSocketRemoteConnectionEndpoint("wss://localhost.org:7443/ws/");
-
-        List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints = new ArrayList<>();
-        discoveredRemoteConnectionEndpoints.add(endpoint);
-
-        HttpLookupFailure httpLookupFailure = new RemoteConnectionEndpointLookupFailure.HttpLookupFailure(null, null);
-        List<RemoteConnectionEndpointLookupFailure> failureList = new ArrayList<>();
-        failureList.add(httpLookupFailure);
-        Result result = new Result(discoveredRemoteConnectionEndpoints, failureList);
-
-        DiscoveredWebSocketEndpoints discoveredWebSocketEndpoints = transport.new DiscoveredWebSocketEndpoints(result);
-        assertNotNull(discoveredWebSocketEndpoints.getResult());
-
-        WebSocketEndpointsDiscoveryFailed endpointsDiscoveryFailed = transport.new WebSocketEndpointsDiscoveryFailed(result);
-        assertNotNull(endpointsDiscoveryFailed.toString());
-    }
-
-    @Test
-    public void websocketConnectedResultTest() throws URISyntaxException {
-        WebSocketRemoteConnectionEndpoint connectedEndpoint = new WebSocketRemoteConnectionEndpoint("wss://localhost.org:7443/ws/");
-        assertNotNull(new XmppWebSocketTransportModule.WebSocketConnectedResult(connectedEndpoint));
     }
 
     @Test

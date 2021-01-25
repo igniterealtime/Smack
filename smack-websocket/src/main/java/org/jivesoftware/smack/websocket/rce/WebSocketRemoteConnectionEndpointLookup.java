@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.altconnections.HttpLookupMethod;
 import org.jivesoftware.smack.altconnections.HttpLookupMethod.LinkRelation;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
@@ -33,9 +32,8 @@ import org.jxmpp.jid.DomainBareJid;
 
 public final class WebSocketRemoteConnectionEndpointLookup {
 
-    public static Result lookup(DomainBareJid domainBareJid, SecurityMode securityMode) {
+    public static Result lookup(DomainBareJid domainBareJid) {
         List<RemoteConnectionEndpointLookupFailure> lookupFailures = new ArrayList<>(1);
-        List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints = new ArrayList<>();
 
         List<URI> rcUriList = null;
         try {
@@ -45,67 +43,69 @@ public final class WebSocketRemoteConnectionEndpointLookup {
         } catch (IOException | XmlPullParserException | URISyntaxException e) {
             lookupFailures.add(new RemoteConnectionEndpointLookupFailure.HttpLookupFailure(
                             domainBareJid, e));
-            return new Result(discoveredRemoteConnectionEndpoints, lookupFailures);
+            return new Result(lookupFailures);
         }
 
-        if (rcUriList.isEmpty()) {
-            throw new IllegalStateException("No endpoints were found inside host-meta");
+        List<SecureWebSocketRemoteConnectionEndpoint> discoveredSecureEndpoints = new ArrayList<>(rcUriList.size());
+        List<InsecureWebSocketRemoteConnectionEndpoint> discoveredInsecureEndpoints = new ArrayList<>(rcUriList.size());
+
+        for (URI webSocketUri : rcUriList) {
+            WebSocketRemoteConnectionEndpoint wsRce = WebSocketRemoteConnectionEndpoint.from(webSocketUri);
+            if (wsRce instanceof SecureWebSocketRemoteConnectionEndpoint) {
+                SecureWebSocketRemoteConnectionEndpoint secureWsRce = (SecureWebSocketRemoteConnectionEndpoint) wsRce;
+                discoveredSecureEndpoints.add(secureWsRce);
+            } else if (wsRce instanceof InsecureWebSocketRemoteConnectionEndpoint) {
+                InsecureWebSocketRemoteConnectionEndpoint insecureWsRce = (InsecureWebSocketRemoteConnectionEndpoint) wsRce;
+                discoveredInsecureEndpoints.add(insecureWsRce);
+            } else {
+                // WebSocketRemoteConnectionEndpoint.from() must return an instance which type is one of the above.
+                throw new AssertionError();
+            }
         }
 
-        // Convert rcUriList to List<WebSocketRemoteConnectionEndpoint>
-        Iterator<URI> iterator = rcUriList.iterator();
-        List<WebSocketRemoteConnectionEndpoint> rceList = new ArrayList<>();
-        while (iterator.hasNext()) {
-            rceList.add(new WebSocketRemoteConnectionEndpoint(iterator.next()));
-        }
-
-        switch (securityMode) {
-            case ifpossible:
-                // If security mode equals `if-possible`, give priority to secure endpoints over insecure endpoints.
-
-                // Seprate secure and unsecure endpoints.
-                List<WebSocketRemoteConnectionEndpoint> secureEndpointsForSecurityModeIfPossible = new ArrayList<>();
-                List<WebSocketRemoteConnectionEndpoint> insecureEndpointsForSecurityModeIfPossible = new ArrayList<>();
-                for (WebSocketRemoteConnectionEndpoint uri : rceList) {
-                    if (uri.isSecureEndpoint()) {
-                        secureEndpointsForSecurityModeIfPossible.add(uri);
-                    } else {
-                        insecureEndpointsForSecurityModeIfPossible.add(uri);
-                    }
-                }
-                discoveredRemoteConnectionEndpoints = secureEndpointsForSecurityModeIfPossible;
-                discoveredRemoteConnectionEndpoints.addAll(insecureEndpointsForSecurityModeIfPossible);
-                break;
-            case required:
-            case disabled:
-                /**
-                 * If, SecurityMode equals to required, accept wss endpoints (secure endpoints) only or,
-                 * if SecurityMode equals to disabled, accept ws endpoints (unsecure endpoints) only.
-                 */
-                for (WebSocketRemoteConnectionEndpoint uri : rceList) {
-                    if ((securityMode.equals(SecurityMode.disabled) && !uri.isSecureEndpoint())
-                                    || (securityMode.equals(SecurityMode.required) && uri.isSecureEndpoint())) {
-                        discoveredRemoteConnectionEndpoints.add(uri);
-                    }
-                }
-                break;
-            default:
-        }
-        return new Result(discoveredRemoteConnectionEndpoints, lookupFailures);
+        return new Result(discoveredSecureEndpoints, discoveredInsecureEndpoints, lookupFailures);
     }
 
     public static final class Result {
-        public final List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints;
+        public final List<SecureWebSocketRemoteConnectionEndpoint> discoveredSecureEndpoints;
+        public final List<InsecureWebSocketRemoteConnectionEndpoint> discoveredInsecureEndpoints;
         public final List<RemoteConnectionEndpointLookupFailure> lookupFailures;
 
-        public Result(List<WebSocketRemoteConnectionEndpoint> discoveredRemoteConnectionEndpoints,
+        public Result() {
+            this(Collections.emptyList());
+        }
+
+        public Result(List<RemoteConnectionEndpointLookupFailure> lookupFailures) {
+            // The list of endpoints needs to be mutable, because maybe a user supplied endpoint will be added to it.
+            // Hence we do not use Collections.emptyList() as argument for the discovered endpoints.
+            this(new ArrayList<>(1), new ArrayList<>(1), lookupFailures);
+        }
+
+        public Result(List<SecureWebSocketRemoteConnectionEndpoint> discoveredSecureEndpoints,
+                        List<InsecureWebSocketRemoteConnectionEndpoint> discoveredInsecureEndpoints,
                         List<RemoteConnectionEndpointLookupFailure> lookupFailures) {
-            this.discoveredRemoteConnectionEndpoints = discoveredRemoteConnectionEndpoints;
+            this.discoveredSecureEndpoints = discoveredSecureEndpoints;
+            this.discoveredInsecureEndpoints = discoveredInsecureEndpoints;
             this.lookupFailures = lookupFailures;
         }
 
-        public List<WebSocketRemoteConnectionEndpoint> getDiscoveredRemoteConnectionEndpoints() {
-            return discoveredRemoteConnectionEndpoints;
+        public boolean isEmpty() {
+            return discoveredSecureEndpoints.isEmpty() && discoveredInsecureEndpoints.isEmpty();
+        }
+
+        public int discoveredEndpointCount() {
+            return discoveredSecureEndpoints.size() + discoveredInsecureEndpoints.size();
+        }
+
+        // TODO: Remove the following methods since the fields are already public? Or make the fields private and use
+        // the methods? I tend to remove the methods, as their method name is pretty long. But OTOH the fields reference
+        // mutable datastructes, which is uncommon to be public.
+        public List<SecureWebSocketRemoteConnectionEndpoint> getDiscoveredSecureRemoteConnectionEndpoints() {
+            return discoveredSecureEndpoints;
+        }
+
+        public List<InsecureWebSocketRemoteConnectionEndpoint> getDiscoveredInsecureRemoteConnectionEndpoints() {
+            return discoveredInsecureEndpoints;
         }
 
         public List<RemoteConnectionEndpointLookupFailure> getLookupFailures() {

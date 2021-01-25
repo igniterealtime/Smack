@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.websocket.okhttp;
 
+import java.net.URISyntaxException;
+
 import org.jivesoftware.smack.websocket.test.WebSocketFactoryServiceTestUtil;
 
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class OkHttpWebSocketFactoryServiceTest {
 
     @Test
-    public void createWebSocketTest() {
+    public void createWebSocketTest() throws URISyntaxException {
         WebSocketFactoryServiceTestUtil.createWebSocketTest(OkHttpWebSocket.class);
     }
 

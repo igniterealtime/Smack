@@ -23,7 +23,9 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * The stream open <b>tag</b>.
  */
 public final class StreamOpen extends AbstractStreamOpen {
-    public static final String ELEMENT = "stream:stream";
+    public static final String UNPREFIXED_ELEMENT = "stream";
+
+    public static final String ELEMENT = "stream:" + UNPREFIXED_ELEMENT;
 
     public StreamOpen(CharSequence to) {
        this(to, null, null, null, StreamContentNamespace.client);

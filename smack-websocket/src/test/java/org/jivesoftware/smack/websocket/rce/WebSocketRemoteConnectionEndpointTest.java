@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,20 +26,22 @@ import org.jivesoftware.smack.datatypes.UInt16;
 import org.junit.jupiter.api.Test;
 
 public class WebSocketRemoteConnectionEndpointTest {
+
     @Test
     public void endpointTest() throws URISyntaxException {
         String endpointString = "ws://fooDomain.org:7070/ws/";
-        WebSocketRemoteConnectionEndpoint endpoint = new WebSocketRemoteConnectionEndpoint(endpointString);
+        WebSocketRemoteConnectionEndpoint endpoint = WebSocketRemoteConnectionEndpoint.from(endpointString);
         assertEquals("fooDomain.org", endpoint.getHost());
         assertEquals(UInt16.from(7070), endpoint.getPort());
-        assertEquals(endpointString, endpoint.getWebSocketEndpoint().toString());
+        assertEquals(endpointString, endpoint.getUri().toString());
     }
 
     @Test
     public void faultyEndpointTest() {
         String faultyProtocolString = "wst://fooDomain.org:7070/ws/";
         assertThrows(IllegalArgumentException.class, () -> {
-            new WebSocketRemoteConnectionEndpoint(faultyProtocolString);
+            WebSocketRemoteConnectionEndpoint.from(faultyProtocolString);
         });
     }
+
 }

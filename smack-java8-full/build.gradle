@@ -12,7 +12,8 @@ dependencies {
 	api project(':smack-openpgp')
 	api project(':smack-resolver-minidns')
 	api project(':smack-resolver-minidns-dox')
-	api project(':smack-websocket')
+	// TODO: Change this to smack-websocket-java11 once it arrives.
+	api project(':smack-websocket-okhttp')
 	api project(':smack-tcp')
 
 	testImplementation(testFixtures(project(":smack-core")))

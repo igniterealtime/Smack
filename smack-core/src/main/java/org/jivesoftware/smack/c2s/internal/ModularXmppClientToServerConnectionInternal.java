@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.c2s.internal;
 
+import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
@@ -39,8 +40,10 @@ import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Consumer;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.Supplier;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public abstract class ModularXmppClientToServerConnectionInternal {
 
@@ -85,9 +88,19 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract void notifyConnectionError(Exception e);
 
-    public abstract void setCurrentConnectionExceptionAndNotify(Exception exception);
+    public final String onStreamOpen(String streamOpen) {
+        XmlPullParser streamOpenParser;
+        try {
+            streamOpenParser = PacketParserUtils.getParserFor(streamOpen);
+        } catch (XmlPullParserException | IOException e) {
+            // Should never happen.
+            throw new AssertionError(e);
+        }
+        String streamClose = onStreamOpen(streamOpenParser);
+        return streamClose;
+    }
 
-    public abstract void onStreamOpen(XmlPullParser parser);
+    public abstract String onStreamOpen(XmlPullParser parser);
 
     public abstract void onStreamClosed();
 

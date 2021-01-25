@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,8 @@ public abstract class XmppClientToServerTransport {
     protected abstract List<SmackFuture<LookupConnectionEndpointsResult, Exception>> lookupConnectionEndpoints();
 
     protected abstract void loadConnectionEndpoints(LookupConnectionEndpointsSuccess lookupConnectionEndpointsSuccess);
+
+    public abstract boolean hasUseableConnectionEndpoints();
 
     /**
      * Notify the transport that new outgoing data is available. Usually this method does not need to be called

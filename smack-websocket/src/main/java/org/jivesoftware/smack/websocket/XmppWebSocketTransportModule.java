@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,16 @@
  */
 package org.jivesoftware.smack.websocket;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.AsyncButOrdered;
-import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.XMPPException;
@@ -54,13 +50,13 @@ import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.XmppWebSock
 import org.jivesoftware.smack.websocket.elements.WebSocketCloseElement;
 import org.jivesoftware.smack.websocket.elements.WebSocketOpenElement;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
+import org.jivesoftware.smack.websocket.rce.InsecureWebSocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.rce.SecureWebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpointLookup;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpointLookup.Result;
 
 import org.jxmpp.jid.DomainBareJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * The websocket transport module that goes with Smack's modular architecture.
@@ -101,31 +97,37 @@ public final class XmppWebSocketTransportModule
         }
     }
 
-    final class EstablishingWebSocketConnectionState extends State {
+    final class EstablishingWebSocketConnectionState extends State.AbstractTransport {
         protected EstablishingWebSocketConnectionState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
-            super(stateDescriptor, connectionInternal);
+            super(websocketTransport, stateDescriptor, connectionInternal);
         }
 
         @Override
-        public AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
-                        throws IOException, SmackException, InterruptedException, XMPPException {
+        public AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext) throws InterruptedException,
+                        NoResponseException, NotConnectedException, SmackException, XMPPException {
             WebSocketConnectionAttemptState connectionAttemptState = new WebSocketConnectionAttemptState(
                             connectionInternal, discoveredWebSocketEndpoints, this);
 
-            try {
-                websocket = connectionAttemptState.establishWebSocketConnection();
-            } catch (InterruptedException | WebSocketException e) {
-                StateTransitionResult.Failure failure = new StateTransitionResult.FailureCausedByException<Exception>(e);
+            StateTransitionResult.Failure failure = connectionAttemptState.establishWebSocketConnection();
+            if (failure != null) {
                 return failure;
             }
 
+            websocket = connectionAttemptState.getConnectedWebSocket();
+
             connectionInternal.setTransport(websocketTransport);
 
-            WebSocketRemoteConnectionEndpoint connectedEndpoint = connectionAttemptState.getConnectedEndpoint();
+            // TODO: It appears this should be done in a generic way. I'd assume we always
+            // have to wait for stream features after the connection was established. But I
+            // am not yet 100% positive that this is the case for every transport. Hence keep it here for now(?).
+            // See also similar comment in XmppTcpTransportModule.
+            // Maybe move this into ConnectedButUnauthenticated state's transitionInto() method? That seems to be the
+            // right place.
+            connectionInternal.newStreamOpenWaitForFeaturesSequence("stream features after initial connection");
 
             // Construct a WebSocketConnectedResult using the connected endpoint.
-            return new WebSocketConnectedResult(connectedEndpoint);
+            return new WebSocketConnectedResult(websocket.getEndpoint());
         }
     }
 
@@ -140,7 +142,7 @@ public final class XmppWebSocketTransportModule
         final WebSocketRemoteConnectionEndpoint connectedEndpoint;
 
         public WebSocketConnectedResult(WebSocketRemoteConnectionEndpoint connectedEndpoint) {
-            super("WebSocket connection establised with endpoint: " + connectedEndpoint.getWebSocketEndpoint());
+            super("WebSocket connection establised with endpoint: " + connectedEndpoint);
             this.connectedEndpoint = connectedEndpoint;
         }
     }
@@ -165,6 +167,12 @@ public final class XmppWebSocketTransportModule
         }
 
         @Override
+        public boolean hasUseableConnectionEndpoints() {
+            return discoveredWebSocketEndpoints != null;
+        }
+
+        @SuppressWarnings("incomplete-switch")
+        @Override
         protected List<SmackFuture<LookupConnectionEndpointsResult, Exception>> lookupConnectionEndpoints() {
             // Assert that there are no stale discovered endpoints prior performing the lookup.
             assert discoveredWebSocketEndpoints == null;
@@ -172,51 +180,56 @@ public final class XmppWebSocketTransportModule
             InternalSmackFuture<LookupConnectionEndpointsResult, Exception> websocketEndpointsLookupFuture = new InternalSmackFuture<>();
 
             connectionInternal.asyncGo(() -> {
+                Result result = null;
 
-                WebSocketRemoteConnectionEndpoint providedEndpoint = null;
+                ModularXmppClientToServerConnectionConfiguration configuration = connectionInternal.connection.getConfiguration();
+                DomainBareJid host = configuration.getXMPPServiceDomain();
 
-                // Check if there is a websocket endpoint already configured.
-                URI uri = moduleDescriptor.getExplicitlyProvidedUri();
-                if (uri != null) {
-                    providedEndpoint = new WebSocketRemoteConnectionEndpoint(uri);
+                if (moduleDescriptor.isWebSocketEndpointDiscoveryEnabled()) {
+                    // Fetch remote endpoints.
+                    result = WebSocketRemoteConnectionEndpointLookup.lookup(host);
                 }
 
-                if (!moduleDescriptor.isWebSocketEndpointDiscoveryEnabled()) {
-                    // If discovery is disabled, assert that the provided endpoint isn't null.
-                    assert providedEndpoint != null;
-
-                    SecurityMode mode = connectionInternal.connection.getConfiguration().getSecurityMode();
-                    if ((providedEndpoint.isSecureEndpoint() &&
-                            mode.equals(SecurityMode.disabled))
-                            || (!providedEndpoint.isSecureEndpoint() &&
-                                    mode.equals(SecurityMode.required))) {
-                        throw new IllegalStateException("Explicitly configured uri: " + providedEndpoint.getWebSocketEndpoint().toString()
-                                + " does not comply with the configured security mode: " + mode);
+                WebSocketRemoteConnectionEndpoint providedEndpoint = moduleDescriptor.getExplicitlyProvidedEndpoint();
+                if (providedEndpoint != null) {
+                    // If there was not automatic lookup that produced a result, then create a result now.
+                    if (result == null) {
+                        result = new Result();
                     }
 
-                    // Generate Result for explicitly configured endpoint.
-                    Result manualResult = new Result(Arrays.asList(providedEndpoint), null);
-
-                    LookupConnectionEndpointsResult endpointsResult = new DiscoveredWebSocketEndpoints(manualResult);
-
-                    websocketEndpointsLookupFuture.setResult(endpointsResult);
-                } else {
-                    DomainBareJid host = connectionInternal.connection.getXMPPServiceDomain();
-                    ModularXmppClientToServerConnectionConfiguration configuration = connectionInternal.connection.getConfiguration();
-                    SecurityMode mode = configuration.getSecurityMode();
-
-                    // Fetch remote endpoints.
-                    Result xep0156result = WebSocketRemoteConnectionEndpointLookup.lookup(host, mode);
-
-                    List<WebSocketRemoteConnectionEndpoint> discoveredEndpoints = xep0156result.discoveredRemoteConnectionEndpoints;
-
-                    // Generate result considering both manual and fetched endpoints.
-                    Result finalResult = new Result(discoveredEndpoints, xep0156result.getLookupFailures());
-
-                    LookupConnectionEndpointsResult endpointsResult = new DiscoveredWebSocketEndpoints(finalResult);
-
-                    websocketEndpointsLookupFuture.setResult(endpointsResult);
+                    // We insert the provided endpoint at the beginning of the list, so that it is used first.
+                    final int INSERT_INDEX = 0;
+                    if (providedEndpoint instanceof SecureWebSocketRemoteConnectionEndpoint) {
+                        SecureWebSocketRemoteConnectionEndpoint secureEndpoint = (SecureWebSocketRemoteConnectionEndpoint) providedEndpoint;
+                        result.discoveredSecureEndpoints.add(INSERT_INDEX, secureEndpoint);
+                    } else if (providedEndpoint instanceof InsecureWebSocketRemoteConnectionEndpoint) {
+                        InsecureWebSocketRemoteConnectionEndpoint insecureEndpoint = (InsecureWebSocketRemoteConnectionEndpoint) providedEndpoint;
+                        result.discoveredInsecureEndpoints.add(INSERT_INDEX, insecureEndpoint);
+                    } else {
+                        throw new AssertionError();
+                    }
                 }
+
+                if (moduleDescriptor.isImplicitWebSocketEndpointEnabled()) {
+                    String urlWithoutScheme = "://" + host + ":5443/ws";
+
+                    SecureWebSocketRemoteConnectionEndpoint implicitSecureEndpoint = SecureWebSocketRemoteConnectionEndpoint.from(
+                                    WebSocketRemoteConnectionEndpoint.SECURE_WEB_SOCKET_SCHEME + urlWithoutScheme);
+                    result.discoveredSecureEndpoints.add(implicitSecureEndpoint);
+
+                    InsecureWebSocketRemoteConnectionEndpoint implicitInsecureEndpoint = InsecureWebSocketRemoteConnectionEndpoint.from(
+                                    WebSocketRemoteConnectionEndpoint.INSECURE_WEB_SOCKET_SCHEME + urlWithoutScheme);
+                    result.discoveredInsecureEndpoints.add(implicitInsecureEndpoint);
+                }
+
+                final LookupConnectionEndpointsResult endpointsResult;
+                if (result.isEmpty()) {
+                    endpointsResult = new WebSocketEndpointsDiscoveryFailed(result.lookupFailures);
+                } else {
+                    endpointsResult = new DiscoveredWebSocketEndpoints(result);
+                }
+
+                websocketEndpointsLookupFuture.setResult(endpointsResult);
             });
 
             return Collections.singletonList(websocketEndpointsLookupFuture);
@@ -238,11 +251,11 @@ public final class XmppWebSocketTransportModule
 
         @Override
         protected void notifyAboutNewOutgoingElements() {
-            Queue<TopLevelStreamElement> outgoingElementsQueue = connectionInternal.outgoingElementsQueue;
+            final Queue<TopLevelStreamElement> outgoingElementsQueue = connectionInternal.outgoingElementsQueue;
             asyncButOrderedOutgoingElementsQueue.performAsyncButOrdered(outgoingElementsQueue, () -> {
-                // Once new outgoingElement is notified, send the top level stream element obtained by polling.
-                TopLevelStreamElement topLevelStreamElement = outgoingElementsQueue.poll();
-                websocket.send(topLevelStreamElement);
+                for (TopLevelStreamElement topLevelStreamElement; (topLevelStreamElement = outgoingElementsQueue.poll()) != null;) {
+                    websocket.send(topLevelStreamElement);
+                }
             });
         }
 
@@ -268,15 +281,11 @@ public final class XmppWebSocketTransportModule
 
         @Override
         public StreamOpenAndCloseFactory getStreamOpenAndCloseFactory() {
+            // TODO: Create extra class for this?
             return new StreamOpenAndCloseFactory() {
                 @Override
-                public AbstractStreamOpen createStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
-                    try {
-                        return new WebSocketOpenElement(JidCreate.domainBareFrom(to));
-                    } catch (XmppStringprepException e) {
-                        Logger.getAnonymousLogger().log(Level.WARNING, "Couldn't create OpenElement", e);
-                        return null;
-                    }
+                public AbstractStreamOpen createStreamOpen(DomainBareJid to, CharSequence from, String id, String lang) {
+                    return new WebSocketOpenElement(to);
                 }
                 @Override
                 public AbstractStreamClose createStreamClose() {
@@ -295,10 +304,6 @@ public final class XmppWebSocketTransportModule
                 assert result != null;
                 this.result = result;
             }
-
-            public WebSocketRemoteConnectionEndpointLookup.Result getResult() {
-                return result;
-            }
         }
 
         /**
@@ -308,10 +313,13 @@ public final class XmppWebSocketTransportModule
         final class WebSocketEndpointsDiscoveryFailed implements LookupConnectionEndpointsFailed {
             final List<RemoteConnectionEndpointLookupFailure> lookupFailures;
 
-            WebSocketEndpointsDiscoveryFailed(
-                            WebSocketRemoteConnectionEndpointLookup.Result result) {
-                assert result != null;
-                lookupFailures = Collections.unmodifiableList(result.lookupFailures);
+            WebSocketEndpointsDiscoveryFailed(RemoteConnectionEndpointLookupFailure lookupFailure) {
+                this(Collections.singletonList(lookupFailure));
+            }
+
+            WebSocketEndpointsDiscoveryFailed(List<RemoteConnectionEndpointLookupFailure> lookupFailures) {
+                assert lookupFailures != null;
+                this.lookupFailures = Collections.unmodifiableList(lookupFailures);
             }
 
             @Override

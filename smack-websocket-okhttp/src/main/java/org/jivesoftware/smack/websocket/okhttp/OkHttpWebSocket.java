@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,17 @@
  */
 package org.jivesoftware.smack.websocket.okhttp;
 
-import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLSession;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.packet.TopLevelStreamElement;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.websocket.WebSocketException;
-import org.jivesoftware.smack.websocket.elements.WebSocketOpenElement;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
-import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -43,135 +38,119 @@ public final class OkHttpWebSocket extends AbstractWebSocket {
 
     private static final Logger LOGGER = Logger.getLogger(OkHttpWebSocket.class.getName());
 
-    private static OkHttpClient okHttpClient = null;
+    private static final OkHttpClient okHttpClient = new OkHttpClient();
 
-    private final ModularXmppClientToServerConnectionInternal connectionInternal;
+    // This is a potential candidate to be placed into AbstractWebSocket, but I keep it here until smack-websocket-java11
+    // arrives.
+    private final SmackFuture.InternalSmackFuture<AbstractWebSocket, Exception> future = new SmackFuture.InternalSmackFuture<>();
+
     private final LoggingInterceptor interceptor;
 
-    private String openStreamHeader;
-    private WebSocket currentWebSocket;
-    private WebSocketConnectionPhase phase;
-    private WebSocketRemoteConnectionEndpoint connectedEndpoint;
+    private final WebSocket okHttpWebSocket;
 
-    public OkHttpWebSocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
-        this.connectionInternal = connectionInternal;
+    public OkHttpWebSocket(WebSocketRemoteConnectionEndpoint endpoint,
+                    ModularXmppClientToServerConnectionInternal connectionInternal) {
+        super(endpoint, connectionInternal);
 
-        if (okHttpClient == null) {
-            // Creates an instance of okHttp client.
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            okHttpClient = builder.build();
-        }
-        // Add some mechanism to enable and disable this interceptor.
         if (connectionInternal.smackDebugger != null) {
             interceptor = new LoggingInterceptor(connectionInternal.smackDebugger);
         } else {
             interceptor = null;
         }
-    }
 
-    @Override
-    public void connect(WebSocketRemoteConnectionEndpoint endpoint) throws InterruptedException, SmackException, XMPPException {
-        final String currentUri = endpoint.getWebSocketEndpoint().toString();
+        final URI uri = endpoint.getUri();
+        final String url = uri.toString();
+
         Request request = new Request.Builder()
-                              .url(currentUri)
+                              .url(url)
                               .header("Sec-WebSocket-Protocol", "xmpp")
                               .build();
 
-        WebSocketListener listener = new WebSocketListener() {
+        okHttpWebSocket = okHttpClient.newWebSocket(request, listener);
+    }
 
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                LOGGER.log(Level.FINER, "WebSocket is open");
-                phase = WebSocketConnectionPhase.openFrameSent;
-                if (interceptor != null) {
-                    interceptor.interceptOpenResponse(response);
-                }
-                send(new WebSocketOpenElement(connectionInternal.connection.getXMPPServiceDomain()));
+    private final WebSocketListener listener = new WebSocketListener() {
+
+        @Override
+        public void onOpen(WebSocket webSocket, Response response) {
+            LOGGER.log(Level.FINER, "OkHttp invoked onOpen() for {0}. Response: {1}",
+                            new Object[] { webSocket, response });
+
+            if (interceptor != null) {
+                interceptor.interceptOpenResponse(response);
             }
 
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                if (interceptor != null) {
-                    interceptor.interceptReceivedText(text);
-                }
-                if (isCloseElement(text)) {
-                    connectionInternal.onStreamClosed();
-                    return;
-                }
+            future.setResult(OkHttpWebSocket.this);
+        }
 
-                String closingStream = "</stream>";
-                switch (phase) {
-                case openFrameSent:
-                    if (isOpenElement(text)) {
-                        // Converts the <open> element received into <stream> element.
-                        openStreamHeader = getStreamFromOpenElement(text);
-                        phase = WebSocketConnectionPhase.exchangingTopLevelStreamElements;
-
-                        try {
-                            connectionInternal.onStreamOpen(PacketParserUtils.getParserFor(openStreamHeader));
-                        } catch (XmlPullParserException | IOException e) {
-                            LOGGER.log(Level.WARNING, "Exception caught:", e);
-                        }
-                    } else {
-                        LOGGER.log(Level.WARNING, "Unexpected Frame received", text);
-                    }
-                    break;
-                case exchangingTopLevelStreamElements:
-                    connectionInternal.parseAndProcessElement(openStreamHeader + text + closingStream);
-                    break;
-                default:
-                    LOGGER.log(Level.INFO, "Default text: " + text);
-                }
+        @Override
+        public void onMessage(WebSocket webSocket, String text) {
+            if (interceptor != null) {
+                interceptor.interceptReceivedText(text);
             }
 
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                LOGGER.log(Level.INFO, "Exception caught", t);
-                WebSocketException websocketException = new WebSocketException(t);
-                if (connectionInternal.connection.isConnected()) {
-                    connectionInternal.notifyConnectionError(websocketException);
-                } else {
-                    connectionInternal.setCurrentConnectionExceptionAndNotify(websocketException);
-                }
+            onIncomingWebSocketElement(text);
+        }
+
+        @Override
+        public void onFailure(WebSocket webSocket, Throwable throwable, Response response) {
+            LOGGER.log(Level.FINER, "OkHttp invoked onFailure() for " + webSocket + ". Response: " + response, throwable);
+            WebSocketException websocketException = new WebSocketException(throwable);
+
+            // If we are already connected, then we need to notify the connection that it got tear down. Otherwise we
+            // need to notify the thread calling connect() that the connection failed.
+            if (future.wasSuccessful()) {
+                connectionInternal.notifyConnectionError(websocketException);
+            } else {
+                future.setException(websocketException);
             }
-        };
+        }
 
-        // Creates an instance of websocket through okHttpClient.
-        currentWebSocket = okHttpClient.newWebSocket(request, listener);
+        @Override
+        public void onClosing(WebSocket webSocket, int code, String reason) {
+            LOGGER.log(Level.FINER, "OkHttp invoked onClosing() for " + webSocket + ". Code: " + code + ". Reason: " + reason);
+        }
 
-        // Open a new stream and wait until features are received.
-        connectionInternal.waitForFeaturesReceived("Waiting to receive features");
+        @Override
+        public void onClosed(WebSocket webSocket, int code, String reason) {
+            LOGGER.log(Level.FINER, "OkHttp invoked onClosed() for " + webSocket + ". Code: " + code + ". Reason: " + reason);
+        }
 
-        connectedEndpoint = endpoint;
+    };
+
+    @Override
+    public SmackFuture<AbstractWebSocket, Exception> getFuture() {
+        return future;
     }
 
     @Override
-    public void send(TopLevelStreamElement element) {
-        String textToBeSent = element.toXML().toString();
+    public void send(String element) {
         if (interceptor != null) {
-            interceptor.interceptSentText(textToBeSent);
+            interceptor.interceptSentText(element);
         }
-        currentWebSocket.send(textToBeSent);
+        okHttpWebSocket.send(element);
     }
 
     @Override
     public void disconnect(int code, String message) {
-        currentWebSocket.close(code, message);
-        LOGGER.log(Level.INFO, "WebSocket has been closed with message: " + message);
+        LOGGER.log(Level.INFO, "WebSocket closing with code: " + code + " and message: " + message);
+        okHttpWebSocket.close(code, message);
     }
 
     @Override
     public boolean isConnectionSecure() {
-        return connectedEndpoint.isSecureEndpoint();
+        return endpoint.isSecureEndpoint();
     }
 
     @Override
     public boolean isConnected() {
-        return connectedEndpoint == null ? false : true;
+        // TODO: Do we need this method at all if we create an AbstractWebSocket object for every endpoint?
+        return true;
     }
 
     @Override
     public SSLSession getSSLSession() {
+        // TODO: What shall we do about this method, as it appears that OkHttp does not provide access to the used SSLSession?
         return null;
     }
 }

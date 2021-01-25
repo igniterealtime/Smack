@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,10 @@ public final class ModularXmppClientToServerConnectionConfiguration extends Conn
             // TODO: Depending on the exact exception thrown, this potentially indicates an invalid connection
             // configuration, e.g. there is no edge from disconnected to connected.
             throw new IllegalStateException(e);
+        }
+
+        for (ModularXmppClientToServerConnectionModuleDescriptor moduleDescriptor : moduleDescriptors) {
+            moduleDescriptor.validateConfiguration(this);
         }
     }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus, Aditya Borikar
+ * Copyright 2020-2021 Florian Schmaus, 2020 Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * be achieved through {@link XMPPConnection#sendNonza(Nonza)}.
  */
 public abstract class AbstractStreamOpen implements Nonza {
+    public static final String ETHERX_JABBER_STREAMS_NAMESPACE = "http://etherx.jabber.org/streams";
     public static final String CLIENT_NAMESPACE = "jabber:client";
     public static final String SERVER_NAMESPACE = "jabber:server";
 

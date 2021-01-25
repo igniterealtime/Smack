@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,13 +139,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public void setCurrentConnectionExceptionAndNotify(Exception exception) {
-                ModularXmppClientToServerConnection.this.setCurrentConnectionExceptionAndNotify(exception);
-            }
-
-            @Override
-            public void onStreamOpen(XmlPullParser parser) {
-                ModularXmppClientToServerConnection.this.onStreamOpen(parser);
+            public String onStreamOpen(XmlPullParser parser) {
+                return ModularXmppClientToServerConnection.this.onStreamOpen(parser);
             }
 
             @Override
@@ -571,7 +566,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     @Override
-    protected AbstractStreamOpen getStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+    protected AbstractStreamOpen getStreamOpen(DomainBareJid to, CharSequence from, String id, String lang) {
         StreamOpenAndCloseFactory streamOpenAndCloseFactory = activeTransport.getStreamOpenAndCloseFactory();
         return streamOpenAndCloseFactory.createStreamOpen(to, from, id, lang);
     }
@@ -718,6 +713,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             if (!atLeastOneConnectionEndpointDiscovered) {
                 throw SmackException.NoEndpointsDiscoveredException.from(lookupFailures);
+            }
+
+            if (!lookupFailures.isEmpty()) {
+                // TODO: Put those non-fatal lookup failures into a sink of the connection so that the user is able to
+                // be aware of them.
             }
 
             // Even though the outgoing elements queue is unrelated to the lookup remote connection endpoints state, we
@@ -1110,7 +1110,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                 XmppClientToServerTransport.Stats stats = entry.getValue();
 
                 StringUtils.appendHeading(appendable, transportClass.getName());
-                appendable.append(stats.toString()).append('\n');
+                if (stats != null) {
+                    appendable.append(stats.toString());
+                } else {
+                    appendable.append("No stats available.");
+                }
+                appendable.append('\n');
             }
 
             for (Map.Entry<String, Object> entry : filtersStats.entrySet()) {

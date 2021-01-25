@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar, Florian Schmaus.
+ * Copyright 2020 Aditya Borikar, 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,22 +19,29 @@ package org.jivesoftware.smack.websocket;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
+import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+import org.jivesoftware.smack.fsm.StateTransitionResult;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.EstablishingWebSocketConnectionState;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
 import org.jivesoftware.smack.websocket.impl.WebSocketFactoryService;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpointLookup;
 
 public final class WebSocketConnectionAttemptState {
     private final ModularXmppClientToServerConnectionInternal connectionInternal;
     private final XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints discoveredEndpoints;
 
-    private WebSocketRemoteConnectionEndpoint connectedEndpoint;
+    private AbstractWebSocket webSocket;
 
     WebSocketConnectionAttemptState(ModularXmppClientToServerConnectionInternal connectionInternal,
                     XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints discoveredWebSocketEndpoints,
                     EstablishingWebSocketConnectionState establishingWebSocketConnectionState) {
         assert discoveredWebSocketEndpoints != null;
+        assert !discoveredWebSocketEndpoints.result.isEmpty();
+
         this.connectionInternal = connectionInternal;
         this.discoveredEndpoints = discoveredWebSocketEndpoints;
     }
@@ -44,48 +51,96 @@ public final class WebSocketConnectionAttemptState {
      *
      * @return {@link AbstractWebSocket} with which connection is establised
      * @throws InterruptedException if the calling thread was interrupted
-     * @throws WebSocketException if encounters a websocket exception
      */
-    AbstractWebSocket establishWebSocketConnection() throws InterruptedException, WebSocketException {
-        List<WebSocketRemoteConnectionEndpoint> endpoints = discoveredEndpoints.result.discoveredRemoteConnectionEndpoints;
+    @SuppressWarnings({"incomplete-switch", "MissingCasesInEnumSwitch"})
+    StateTransitionResult.Failure establishWebSocketConnection() throws InterruptedException {
+        final WebSocketRemoteConnectionEndpointLookup.Result endpointLookupResult = discoveredEndpoints.result;
+        final List<Exception> failures = new ArrayList<>(endpointLookupResult.discoveredEndpointCount());
 
-        if (endpoints.isEmpty()) {
-            throw new WebSocketException(new Throwable("No Endpoints discovered to establish connection"));
-        }
+        webSocket = null;
 
-        List<Throwable> connectionFailureList = new ArrayList<>();
-        AbstractWebSocket websocket = WebSocketFactoryService.createWebSocket(connectionInternal);
-
-        // Keep iterating over available endpoints until a connection is establised or all endpoints are tried to create a connection with.
-        for (WebSocketRemoteConnectionEndpoint endpoint : endpoints) {
-            try {
-                websocket.connect(endpoint);
-                connectedEndpoint = endpoint;
-                break;
-            } catch (Throwable t) {
-                connectionFailureList.add(t);
-
-                // If the number of entries in connectionFailureList is equal to the number of endpoints,
-                // it means that all endpoints have been tried and have been unsuccessful.
-                if (connectionFailureList.size() == endpoints.size()) {
-                    WebSocketException websocketException = new WebSocketException(connectionFailureList);
-                    throw new WebSocketException(websocketException);
-                }
+        SecurityMode securityMode = connectionInternal.connection.getConfiguration().getSecurityMode();
+        switch (securityMode) {
+        case required:
+        case ifpossible:
+            establishWebSocketConnection(endpointLookupResult.discoveredSecureEndpoints, failures);
+            if (webSocket != null) {
+                return null;
             }
         }
 
-        assert connectedEndpoint != null;
+        establishWebSocketConnection(endpointLookupResult.discoveredInsecureEndpoints, failures);
+        if (webSocket != null) {
+            return null;
+        }
 
-        // Return connected websocket when no failure occurs.
-        return websocket;
+        StateTransitionResult.Failure failure = FailedToConnectToAnyWebSocketEndpoint.create(failures);
+        return failure;
     }
 
-    /**
-     * Returns the connected websocket endpoint.
-     *
-     * @return connected websocket endpoint
-     */
-    public WebSocketRemoteConnectionEndpoint getConnectedEndpoint() {
-        return connectedEndpoint;
+    private void establishWebSocketConnection(List<? extends WebSocketRemoteConnectionEndpoint> webSocketEndpoints,
+                    List<Exception> failures) throws InterruptedException {
+        final int endpointCount = webSocketEndpoints.size();
+
+        List<SmackFuture<AbstractWebSocket, Exception>> futures = new ArrayList<>(endpointCount);
+        {
+            List<AbstractWebSocket> webSockets = new ArrayList<>(endpointCount);
+            // First only create the AbstractWebSocket instances, in case a constructor throws.
+            for (WebSocketRemoteConnectionEndpoint endpoint : webSocketEndpoints) {
+                AbstractWebSocket webSocket = WebSocketFactoryService.createWebSocket(endpoint, connectionInternal);
+                webSockets.add(webSocket);
+            }
+
+            for (AbstractWebSocket webSocket : webSockets) {
+                SmackFuture<AbstractWebSocket, Exception> future = webSocket.getFuture();
+                futures.add(future);
+            }
+        }
+
+        SmackFuture.await(futures, connectionInternal.connection.getReplyTimeout());
+
+        for (SmackFuture<AbstractWebSocket, Exception> future : futures) {
+            AbstractWebSocket connectedWebSocket = future.getIfAvailable();
+            if (connectedWebSocket == null) {
+                Exception exception = future.getExceptionIfAvailable();
+                assert exception != null;
+                failures.add(exception);
+                continue;
+            }
+
+            if (webSocket == null) {
+                webSocket = connectedWebSocket;
+                // Continue here since we still need to read out the failure exceptions from potential further remaining
+                // futures and close remaining successfully connected ones.
+                continue;
+            }
+
+            connectedWebSocket.disconnect(1000, "Using other connection endpoint at " + webSocket.getEndpoint());
+        }
+    }
+
+    public AbstractWebSocket getConnectedWebSocket() {
+        return webSocket;
+    }
+
+    public static final class FailedToConnectToAnyWebSocketEndpoint extends StateTransitionResult.Failure {
+
+        private final List<Exception> failures;
+
+        private FailedToConnectToAnyWebSocketEndpoint(String failureMessage, List<Exception> failures) {
+            super(failureMessage);
+            this.failures = failures;
+        }
+
+        public List<Exception> getFailures() {
+            return failures;
+        }
+
+        private static FailedToConnectToAnyWebSocketEndpoint create(List<Exception> failures) {
+            StringBuilder sb = new StringBuilder(256);
+            StringUtils.appendTo(failures, sb, e -> sb.append(e.getMessage()));
+            String message = sb.toString();
+            return new FailedToConnectToAnyWebSocketEndpoint(message, failures);
+        }
     }
 }

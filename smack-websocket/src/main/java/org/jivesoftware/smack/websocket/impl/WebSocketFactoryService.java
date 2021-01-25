@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,14 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 public final class WebSocketFactoryService {
 
     private static final ServiceLoader<WebSocketFactory> SERVICE_LOADER = ServiceLoader.load(WebSocketFactory.class);
 
-    public static AbstractWebSocket createWebSocket(ModularXmppClientToServerConnectionInternal connectionInternal) {
+    public static AbstractWebSocket createWebSocket(WebSocketRemoteConnectionEndpoint endpoint,
+                    ModularXmppClientToServerConnectionInternal connectionInternal) {
         assert connectionInternal != null;
 
         Iterator<WebSocketFactory> websocketFactories = SERVICE_LOADER.iterator();
@@ -34,7 +36,7 @@ public final class WebSocketFactoryService {
         }
 
         WebSocketFactory websocketFactory = websocketFactories.next();
-        return websocketFactory.create(connectionInternal);
+        return websocketFactory.create(endpoint, connectionInternal);
     }
 
 }

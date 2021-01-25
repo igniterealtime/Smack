@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar.
+ * Copyright 2020 Aditya Borikar, 2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,12 @@ package org.jivesoftware.smack.c2s;
 import org.jivesoftware.smack.packet.AbstractStreamClose;
 import org.jivesoftware.smack.packet.AbstractStreamOpen;
 
+import org.jxmpp.jid.DomainBareJid;
+
 public interface StreamOpenAndCloseFactory {
-    AbstractStreamOpen createStreamOpen(CharSequence to, CharSequence from, String id, String lang);
+
+    AbstractStreamOpen createStreamOpen(DomainBareJid to, CharSequence from, String id, String lang);
 
     AbstractStreamClose createStreamClose();
+
 }

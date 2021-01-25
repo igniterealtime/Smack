@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,14 +80,12 @@ import org.jivesoftware.smack.tcp.rce.RemoteXmppTcpConnectionEndpoints;
 import org.jivesoftware.smack.tcp.rce.RemoteXmppTcpConnectionEndpoints.Result;
 import org.jivesoftware.smack.tcp.rce.Rfc6120TcpRemoteConnectionEndpoint;
 import org.jivesoftware.smack.util.CollectionUtil;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.UTF8;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
-import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.util.JidUtil;
 import org.jxmpp.xml.splitter.Utf8ByteXmppXmlSplitter;
@@ -213,6 +211,8 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             }
 
             final String prefixXmlns = "xmlns:" + prefix;
+            // TODO: Use the return value of onStreamOpen(), which now returns the
+            // corresponding stream close tag, instead of creating it here.
             final StringBuilder streamClose = new StringBuilder(32);
             final StringBuilder streamOpen = new StringBuilder(256);
 
@@ -253,14 +253,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             this.streamOpen = streamOpen.toString();
             this.streamClose = streamClose.toString();
 
-            XmlPullParser streamOpenParser;
-            try {
-                streamOpenParser = PacketParserUtils.getParserFor(this.streamOpen);
-            } catch (XmlPullParserException | IOException e) {
-                // Should never happen.
-                throw new AssertionError(e);
-            }
-            connectionInternal.onStreamOpen(streamOpenParser);
+            connectionInternal.onStreamOpen(this.streamOpen);
         }
 
         @Override
@@ -586,7 +579,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         public StreamOpenAndCloseFactory getStreamOpenAndCloseFactory() {
             return new StreamOpenAndCloseFactory() {
                 @Override
-                public StreamOpen createStreamOpen(CharSequence to, CharSequence from, String id, String lang) {
+                public StreamOpen createStreamOpen(DomainBareJid to, CharSequence from, String id, String lang) {
                     String xmlLang = connectionInternal.connection.getConfiguration().getXmlLang();
                     StreamOpen streamOpen = new StreamOpen(to, from, id, xmlLang, StreamOpen.StreamContentNamespace.client);
                     return streamOpen;
@@ -601,6 +594,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         @Override
         protected void resetDiscoveredConnectionEndpoints() {
             discoveredTcpEndpoints = null;
+        }
+
+        @Override
+        public boolean hasUseableConnectionEndpoints() {
+            return discoveredTcpEndpoints != null;
         }
 
         @Override
@@ -750,10 +748,10 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         return new EstablishingTcpConnectionState(stateDescriptor, connectionInternal);
     }
 
-    final class EstablishingTcpConnectionState extends State {
+    final class EstablishingTcpConnectionState extends State.AbstractTransport {
         private EstablishingTcpConnectionState(EstablishingTcpConnectionStateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
-            super(stateDescriptor, connectionInternal);
+            super(tcpNioTransport, stateDescriptor, connectionInternal);
         }
 
         @Override
@@ -777,6 +775,10 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
             connectionInternal.setTransport(tcpNioTransport);
 
+            // TODO: It appears this should be done in a generic way. I'd assume we always
+            // have to wait for stream features after the connection was established. If this is true then consider
+            // moving this into State.AbstractTransport. But I am not yet 100% positive that this is the case for every
+            // transport. Hence keep it here for now.
             connectionInternal.newStreamOpenWaitForFeaturesSequence("stream features after initial connection");
 
             return new TcpSocketConnectedResult(remoteAddress);

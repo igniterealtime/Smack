@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.jivesoftware.smack.packet;
 public final class StreamClose extends AbstractStreamClose {
 
     public static final StreamClose INSTANCE = new StreamClose();
+
+    public static final String STRING = "</" + StreamOpen.ELEMENT + ">";
 
     private StreamClose() {
     }
@@ -39,4 +41,8 @@ public final class StreamClose extends AbstractStreamClose {
         return StreamOpen.ELEMENT;
     }
 
+    @Override
+    public String toString() {
+        return STRING;
+    }
 }

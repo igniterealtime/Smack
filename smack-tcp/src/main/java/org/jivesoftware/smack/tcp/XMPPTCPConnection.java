@@ -83,6 +83,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.sm.SMUtils;
@@ -961,6 +962,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     switch (eventType) {
                     case START_ELEMENT:
                         final String name = parser.getName();
+                        final String namespace = parser.getNamespace();
+
                         switch (name) {
                         case Message.ELEMENT:
                         case IQ.IQ_ELEMENT:
@@ -972,7 +975,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             break;
                         case "stream":
-                            onStreamOpen(parser);
+                            if (StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE.equals(namespace)) {
+                                onStreamOpen(parser);
+                            }
                             break;
                         case "error":
                             StreamError streamError = PacketParserUtils.parseStreamError(parser);
@@ -989,7 +994,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             openStreamAndResetParser();
                             break;
                         case "failure":
-                            String namespace = parser.getNamespace(null);
                             switch (namespace) {
                             case "urn:ietf:params:xml:ns:xmpp-tls":
                                 // TLS negotiation has failed. The server will close the connection

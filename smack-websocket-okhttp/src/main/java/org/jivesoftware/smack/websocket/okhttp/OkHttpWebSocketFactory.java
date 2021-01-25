@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,13 @@ package org.jivesoftware.smack.websocket.okhttp;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
 import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
+import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 public class OkHttpWebSocketFactory implements WebSocketFactory {
 
     @Override
-    public AbstractWebSocket create(ModularXmppClientToServerConnectionInternal connectionInternal) {
-        return new OkHttpWebSocket(connectionInternal);
+    public AbstractWebSocket create(WebSocketRemoteConnectionEndpoint endpoint, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        return new OkHttpWebSocket(endpoint, connectionInternal);
     }
 
 }
