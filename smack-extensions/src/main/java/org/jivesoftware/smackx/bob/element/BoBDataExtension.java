@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.bob.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaView;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.bob.BoBData;
@@ -94,8 +94,8 @@ public class BoBDataExtension implements ExtensionElement {
         return xml;
     }
 
-    public static BoBDataExtension from(Message message) {
-        return message.getExtension(BoBDataExtension.class);
+    public static BoBDataExtension from(StanzaView stanza) {
+        return stanza.getExtension(BoBDataExtension.class);
     }
 
 }
