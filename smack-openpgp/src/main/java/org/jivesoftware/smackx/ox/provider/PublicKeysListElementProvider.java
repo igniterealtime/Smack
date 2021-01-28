@@ -17,10 +17,10 @@
 package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -35,7 +35,8 @@ public final class PublicKeysListElementProvider extends ExtensionElementProvide
     public static final PublicKeysListElementProvider TEST_INSTANCE = new PublicKeysListElementProvider();
 
     @Override
-    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackTextParseException {
+    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, ParseException {
 
         PublicKeysListElement.Builder builder = PublicKeysListElement.builder();
 

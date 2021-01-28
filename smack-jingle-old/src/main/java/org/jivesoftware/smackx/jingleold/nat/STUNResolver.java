@@ -161,11 +161,7 @@ public class STUNResolver extends TransportResolver {
                         // Parse the port
                         parser.next();
                         parser.next();
-                        try {
-                            serverPort = Integer.parseInt(parser.nextText());
-                        }
-                        catch (Exception e) {
-                        }
+                        serverPort = Integer.parseInt(parser.nextText());
 
                         // If we have a valid hostname and port, add
                         // it to the list.

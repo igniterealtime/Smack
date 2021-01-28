@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muclight.provider;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -65,7 +65,7 @@ public class MUCLightBlockingIQProvider extends IQProvider<MUCLightBlockingIQ> {
         }
 
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, users);
-        mucLightBlockingIQ.setType(Type.result);
+        mucLightBlockingIQ.setType(IQ.Type.result);
         return mucLightBlockingIQ;
     }
 

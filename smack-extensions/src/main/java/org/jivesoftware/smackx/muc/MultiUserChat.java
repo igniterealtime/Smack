@@ -1044,8 +1044,8 @@ public class MultiUserChat {
     /**
      * Fires invitation rejection listeners.
      *
-     * @param invitee the user being invited.
-     * @param reason the reason for the rejection
+     * @param message the message.
+     * @param rejection the information about the rejection.
      */
     private void fireInvitationRejectionListeners(Message message, MUCUser.Decline rejection) {
         EntityBareJid invitee = rejection.getFrom();

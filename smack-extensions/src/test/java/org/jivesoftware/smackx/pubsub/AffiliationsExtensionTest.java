@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2020 Florian Schmaus
+ * Copyright 2017-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smackx.pubsub.Affiliation.Type;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,7 @@ public class AffiliationsExtensionTest {
     @Test
     public void testAffiliationsExtensionToXml() throws SAXException, IOException {
         BareJid affiliatedJid = JidTestUtil.BARE_JID_1;
-        Affiliation affiliation = new Affiliation(affiliatedJid, Type.member);
+        Affiliation affiliation = new Affiliation(affiliatedJid, Affiliation.Type.member);
         List<Affiliation> affiliationsList = new ArrayList<>();
         affiliationsList.add(affiliation);
 

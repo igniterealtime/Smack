@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,12 @@ package org.jivesoftware.smackx.xdata.form;
 import org.jivesoftware.smack.packet.StanzaView;
 
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smackx.xdata.packet.DataForm.Type;
 
 public class Form extends FilledForm {
 
     public Form(DataForm dataForm) {
         super(dataForm);
-        if (dataForm.getType() != Type.form) {
+        if (dataForm.getType() != DataForm.Type.form) {
             throw new IllegalArgumentException();
         }
     }
@@ -36,7 +35,7 @@ public class Form extends FilledForm {
 
     public static Form from(StanzaView stanzaView) {
         DataForm dataForm = DataForm.from(stanzaView);
-        if (dataForm == null || dataForm.getType() != Type.form) {
+        if (dataForm == null || dataForm.getType() != DataForm.Type.form) {
             return null;
         }
         return new Form(dataForm);

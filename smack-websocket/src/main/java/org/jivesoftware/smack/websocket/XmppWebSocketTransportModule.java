@@ -67,7 +67,7 @@ public final class XmppWebSocketTransportModule
 
     private AbstractWebSocket websocket;
 
-    protected XmppWebSocketTransportModule(XmppWebSocketTransportModuleDescriptor moduleDescriptor,
+    XmppWebSocketTransportModule(XmppWebSocketTransportModuleDescriptor moduleDescriptor,
                     ModularXmppClientToServerConnectionInternal connectionInternal) {
         super(moduleDescriptor, connectionInternal);
 
@@ -98,7 +98,7 @@ public final class XmppWebSocketTransportModule
     }
 
     final class EstablishingWebSocketConnectionState extends State.AbstractTransport {
-        protected EstablishingWebSocketConnectionState(StateDescriptor stateDescriptor,
+        EstablishingWebSocketConnectionState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(websocketTransport, stateDescriptor, connectionInternal);
         }
@@ -156,7 +156,7 @@ public final class XmppWebSocketTransportModule
 
         AsyncButOrdered<Queue<TopLevelStreamElement>> asyncButOrderedOutgoingElementsQueue;
 
-        protected XmppWebSocketTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
+        XmppWebSocketTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(connectionInternal);
             asyncButOrderedOutgoingElementsQueue = new AsyncButOrdered<Queue<TopLevelStreamElement>>();
         }

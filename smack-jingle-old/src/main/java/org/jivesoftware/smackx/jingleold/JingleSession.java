@@ -85,7 +85,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     private StanzaFilter packetFilter;
 
-    protected List<JingleMediaManager> jingleMediaManagers = null;
+    List<JingleMediaManager> jingleMediaManagers = null;
 
     private JingleSessionState sessionState;
 
@@ -228,7 +228,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * @param sessionId TODO javadoc me please
      *            the sid to set
      */
-    protected void setSid(String sessionId) {
+    void setSid(String sessionId) {
         sid = sessionId;
     }
 
@@ -237,7 +237,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *
      * @return the generated session ID.
      */
-    protected static String generateSessionId() {
+    static String generateSessionId() {
         return String.valueOf(randomGenerator.nextInt(Integer.MAX_VALUE) + randomGenerator.nextInt(Integer.MAX_VALUE));
     }
 
@@ -675,7 +675,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     /**
      * Remove the stanza listener used for processing packet.
      */
-    protected void removeAsyncPacketListener() {
+    void removeAsyncPacketListener() {
         if (packetListener != null) {
             getConnection().removeAsyncStanzaListener(packetListener);
 
@@ -687,7 +687,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      * Install the stanza listener. The listener is responsible for responding
      * to any stanza that we receive...
      */
-    protected void updatePacketListener() {
+    void updatePacketListener() {
         removeAsyncPacketListener();
 
         LOGGER.fine("UpdatePacketListener");
@@ -895,7 +895,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *
      * @param reason the reason.
      */
-    protected void triggerSessionClosed(String reason) {
+    void triggerSessionClosed(String reason) {
         //        for (ContentNegotiator contentNegotiator : contentNegotiators) {
         //
         //            contentNegotiator.stopJingleMediaSession();
@@ -919,7 +919,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *
      * @param exc the exception.
      */
-    protected void triggerSessionClosedOnError(XMPPException exc) {
+    void triggerSessionClosedOnError(XMPPException exc) {
         for (ContentNegotiator contentNegotiator : contentNegotiators) {
 
             contentNegotiator.stopJingleMediaSession();
@@ -954,7 +954,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
      *
      * @param participant the participant.
      */
-    protected void triggerMediaReceived(String participant) {
+    void triggerMediaReceived(String participant) {
         List<JingleListener> listeners = getListenersList();
         for (JingleListener li : listeners) {
             if (li instanceof JingleSessionListener) {

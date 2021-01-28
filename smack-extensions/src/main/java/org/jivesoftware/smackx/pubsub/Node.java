@@ -29,7 +29,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -94,7 +94,7 @@ public abstract class Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public ConfigureForm getNodeConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(
+        PubSub pubSub = createPubsubPacket(IQ.Type.get, new NodeExtension(
                         PubSubElementType.CONFIGURE_OWNER, getId()));
         Stanza reply = sendPubsubPacket(pubSub);
         return NodeUtils.getFormFromPacket(reply, PubSubElementType.CONFIGURE_OWNER);
@@ -110,7 +110,7 @@ public abstract class Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendConfigurationForm(FillableConfigureForm configureForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub packet = createPubsubPacket(Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
+        PubSub packet = createPubsubPacket(IQ.Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
                         getId(), configureForm.getDataFormToSubmit()));
         pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
     }
@@ -218,7 +218,7 @@ public abstract class Node {
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSubElementType pubSubElementType = subscriptionsNamespace.type;
 
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(pubSubElementType, getId()));
+        PubSub pubSub = createPubsubPacket(IQ.Type.get, new NodeExtension(pubSubElementType, getId()));
         if (additionalExtensions != null) {
             for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
@@ -251,7 +251,7 @@ public abstract class Node {
     public PubSub modifySubscriptionsAsOwner(List<Subscription> changedSubs)
         throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
-        PubSub pubSub = createPubsubPacket(Type.set,
+        PubSub pubSub = createPubsubPacket(IQ.Type.set,
             new SubscriptionsExtension(SubscriptionsNamespace.owner, getId(), changedSubs));
         return sendPubsubPacket(pubSub);
     }
@@ -337,7 +337,7 @@ public abstract class Node {
                     NotConnectedException, InterruptedException {
         PubSubElementType pubSubElementType = affiliationsNamespace.type;
 
-        PubSub pubSub = createPubsubPacket(Type.get, new NodeExtension(pubSubElementType, getId()));
+        PubSub pubSub = createPubsubPacket(IQ.Type.get, new NodeExtension(pubSubElementType, getId()));
         if (additionalExtensions != null) {
             for (ExtensionElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
@@ -375,7 +375,7 @@ public abstract class Node {
             }
         }
 
-        PubSub pubSub = createPubsubPacket(Type.set, new AffiliationsExtension(AffiliationNamespace.owner, affiliations, getId()));
+        PubSub pubSub = createPubsubPacket(IQ.Type.set, new AffiliationsExtension(AffiliationNamespace.owner, affiliations, getId()));
         return sendPubsubPacket(pubSub);
     }
 
@@ -398,7 +398,7 @@ public abstract class Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public Subscription subscribe(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub pubSub = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
+        PubSub pubSub = createPubsubPacket(IQ.Type.set, new SubscribeExtension(jid, getId()));
         PubSub reply = sendPubsubPacket(pubSub);
         return reply.getExtension(PubSubElementType.SUBSCRIPTION);
     }
@@ -460,7 +460,7 @@ public abstract class Node {
      */
     public Subscription subscribe(Jid jid, FillableSubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DataForm submitForm = subForm.getDataFormToSubmit();
-        PubSub request = createPubsubPacket(Type.set, new SubscribeExtension(jid, getId()));
+        PubSub request = createPubsubPacket(IQ.Type.set, new SubscribeExtension(jid, getId()));
         request.addExtension(new FormNode(FormNodeType.OPTIONS, submitForm));
         PubSub reply = sendPubsubPacket(request);
         return reply.getExtension(PubSubElementType.SUBSCRIPTION);
@@ -529,7 +529,7 @@ public abstract class Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void unsubscribe(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        sendPubsubPacket(createPubsubPacket(Type.set, new UnsubscribeExtension(jid, getId(), subscriptionId)));
+        sendPubsubPacket(createPubsubPacket(IQ.Type.set, new UnsubscribeExtension(jid, getId(), subscriptionId)));
     }
 
     /**
@@ -563,7 +563,7 @@ public abstract class Node {
      *
      */
     public SubscribeForm getSubscriptionOptions(String jid, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub packet = sendPubsubPacket(createPubsubPacket(Type.get, new OptionsExtension(jid, getId(), subscriptionId)));
+        PubSub packet = sendPubsubPacket(createPubsubPacket(IQ.Type.get, new OptionsExtension(jid, getId(), subscriptionId)));
         FormNode ext = packet.getExtension(PubSubElementType.OPTIONS);
         return new SubscribeForm(ext.getForm());
     }
@@ -651,7 +651,7 @@ public abstract class Node {
         return super.toString() + " " + getClass().getName() + " id: " + id;
     }
 
-    protected PubSub createPubsubPacket(Type type, NodeExtension ext) {
+    protected PubSub createPubsubPacket(IQ.Type type, NodeExtension ext) {
         return PubSub.createPubsubPacket(pubSubManager.getServiceJid(), type, ext);
     }
 

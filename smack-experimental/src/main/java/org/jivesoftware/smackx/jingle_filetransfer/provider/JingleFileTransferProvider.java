@@ -44,7 +44,7 @@ public class JingleFileTransferProvider
         extends JingleContentDescriptionProvider<JingleFileTransfer> {
 
     @Override
-    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
 
@@ -59,11 +59,7 @@ public class JingleFileTransferProvider
                 elementName = parser.getName();
                 switch (elementName) {
                     case JingleFileTransferChild.ELEM_DATE:
-                    try {
                         builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
-                    } catch (ParseException e) {
-                        throw new SmackParsingException.SmackTextParseException(e);
-                    }
                         break;
 
                     case JingleFileTransferChild.ELEM_DESC:

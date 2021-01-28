@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2020 Fernando Ramirez, Florian Schmaus
+ * Copyright 2016-2021 Fernando Ramirez, Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.SHA1;
 
 import org.jivesoftware.smackx.bob.element.BoBIQ;
@@ -91,7 +90,7 @@ public final class BoBManager extends Manager {
         serviceDiscoveryManager.addFeature(NAMESPACE);
 
         connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, Type.get, Mode.async) {
+                new AbstractIqRequestHandler(BoBIQ.ELEMENT, BoBIQ.NAMESPACE, IQ.Type.get, Mode.async) {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         BoBIQ bobIQRequest = (BoBIQ) iqRequest;
@@ -105,7 +104,7 @@ public final class BoBManager extends Manager {
 
                         BoBData bobData = bobInfo.getData();
                         BoBIQ responseBoBIQ = new BoBIQ(contentId, bobData);
-                        responseBoBIQ.setType(Type.result);
+                        responseBoBIQ.setType(IQ.Type.result);
                         responseBoBIQ.setTo(bobIQRequest.getFrom());
                         return responseBoBIQ;
                     }
@@ -146,7 +145,7 @@ public final class BoBManager extends Manager {
         }
 
         BoBIQ requestBoBIQ = new BoBIQ(bobHash);
-        requestBoBIQ.setType(Type.get);
+        requestBoBIQ.setType(IQ.Type.get);
         requestBoBIQ.setTo(to);
 
         XMPPConnection connection = getAuthenticatedConnectionOrThrow();

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.privacy.filter;
 
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
-import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 
@@ -30,7 +30,7 @@ public final class SetDefaultListFilter extends FlexibleStanzaTypeFilter<Privacy
 
     @Override
     protected boolean acceptSpecific(Privacy privacy) {
-        if (privacy.getType() != Type.set) {
+        if (privacy.getType() != IQ.Type.set) {
             return false;
         }
         return privacy.getDefaultName() != null || privacy.isDeclineDefaultList();

@@ -38,6 +38,7 @@ import org.jxmpp.util.XmppDateTime;
 
 public class PubkeyElementTest extends SmackTestSuite {
 
+    @SuppressWarnings("UndefinedEquals")
     @ParameterizedTest
     @EnumSource(SmackTestUtil.XmlPullParserKind.class)
     public void providerTest(SmackTestUtil.XmlPullParserKind parserKind)

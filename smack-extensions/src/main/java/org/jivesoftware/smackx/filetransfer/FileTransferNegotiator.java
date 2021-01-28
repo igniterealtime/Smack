@@ -65,7 +65,7 @@ public final class FileTransferNegotiator extends Manager {
 
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
-    protected static final String STREAM_DATA_FIELD_NAME = "stream-method";
+    static final String STREAM_DATA_FIELD_NAME = "stream-method";
 
     private static final Random randomGenerator = new Random();
 

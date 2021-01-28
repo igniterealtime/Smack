@@ -24,7 +24,6 @@ import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StreamOpen;
 
@@ -75,7 +74,7 @@ public class QueryArchiveTest extends MamTest {
         DelayInformation delay = new DelayInformation(date);
         Message forwardedMessage = StanzaBuilder.buildMessage("162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2")
                         .from(JidCreate.from("coven@chat.shakespeare.lit/firstwitch"))
-                        .ofType(Type.chat)
+                        .ofType(Message.Type.chat)
                         .setBody("Thrice the brinded cat hath mew.")
                         .build();
 
@@ -93,7 +92,7 @@ public class QueryArchiveTest extends MamTest {
         Message resultMessage = mamResultExtension.getForwarded().getForwardedStanza();
         assertEquals(resultMessage.getFrom(), JidCreate.from("coven@chat.shakespeare.lit/firstwitch"));
         assertEquals(resultMessage.getStanzaId(), "162BEBB1-F6DB-4D9A-9BD8-CFDCC801A0B2");
-        assertEquals(resultMessage.getType(), Type.chat);
+        assertEquals(resultMessage.getType(), Message.Type.chat);
         assertEquals(resultMessage.getBody(), "Thrice the brinded cat hath mew.");
     }
 

@@ -28,7 +28,6 @@ import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
-import org.jivesoftware.smackx.jingleold.nat.ICECandidate.Type;
 
 @SuppressWarnings("UnusedVariable")
 public class ICETransportManager extends JingleTransportManager implements JingleSessionListener, CreatedJingleSessionListener {
@@ -62,7 +61,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
     @Override
     public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException {
         if (lc instanceof ICECandidate) {
-            if (((ICECandidate) lc).getType().equals(Type.relay)) {
+            if (((ICECandidate) lc).getType().equals(ICECandidate.Type.relay)) {
                 RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
             }
         }

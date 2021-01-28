@@ -28,7 +28,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.push_notifications.element.DisablePushNotificationsIQ;
@@ -166,7 +165,7 @@ public final class PushNotificationsManager extends Manager {
             throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         final XMPPConnection connection = connection();
         IQ responseIQ = connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
-        return responseIQ.getType() != Type.error;
+        return responseIQ.getType() != IQ.Type.error;
     }
 
 }

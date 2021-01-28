@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2020 Florian Schmaus
+ * Copyright 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import java.util.Random;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
@@ -263,6 +262,7 @@ public abstract class ScramMechanism extends SASLMechanism {
     }
 
     /**
+     * Get the channel binding data.
      *
      * @return the Channel Binding data.
      * @throws SmackSaslException if a SASL specific error occurred.
@@ -361,7 +361,7 @@ public abstract class ScramMechanism extends SASLMechanism {
      * @param key TODO javadoc me please
      * @param str TODO javadoc me please
      * @return the HMAC-SHA1 value of the input.
-     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws SmackSaslException if Smack detected an exceptional situation.
      */
     private byte[] hmac(byte[] key, byte[] str) throws SmackSaslException {
         try {

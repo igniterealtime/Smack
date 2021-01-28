@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +53,6 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
@@ -151,7 +149,17 @@ public final class Roster extends Manager {
     private static int defaultNonRosterPresenceMapMaxSize = INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE;
 
     private RosterStore rosterStore;
-    private final Map<String, RosterGroup> groups = new ConcurrentHashMap<>();
+
+    /**
+     * The groups of this roster.
+     * <p>
+     * Note that we use {@link ConcurrentHashMap} also as static type of this field, since we use the fact that the same
+     * thread can modify this collection, e.g. remove items, while iterating over it. This is done, for example in
+     * {@link #deleteEntry(Collection, RosterEntry)}. If we do not denote the static type to ConcurrentHashMap, but
+     * {@link Map} instead, then error prone would report a ModifyCollectionInEnhancedForLoop but.
+     * </p>
+     */
+    private final ConcurrentHashMap<String, RosterGroup> groups = new ConcurrentHashMap<>();
 
     /**
      * Concurrent hash map from JID to its roster entry.
@@ -508,7 +516,7 @@ public final class Roster extends Manager {
         return true;
     }
 
-    protected boolean waitUntilLoaded() throws InterruptedException {
+    boolean waitUntilLoaded() throws InterruptedException {
         long waitTime = connection().getReplyTimeout();
         long start = System.currentTimeMillis();
         while (!isLoaded()) {
@@ -1416,7 +1424,7 @@ public final class Roster extends Manager {
         move(user, presenceMap, nonRosterPresenceMap);
         deletedEntries.add(user);
 
-        for (Entry<String, RosterGroup> e : groups.entrySet()) {
+        for (Map.Entry<String, RosterGroup> e : groups.entrySet()) {
             RosterGroup group = e.getValue();
             group.removeEntryLocal(entry);
             if (group.getEntryCount() == 0) {
@@ -1787,7 +1795,7 @@ public final class Roster extends Manager {
     private final class RosterPushListener extends AbstractIqRequestHandler {
 
         private RosterPushListener() {
-            super(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, Type.set, Mode.sync);
+            super(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, IQ.Type.set, Mode.sync);
         }
 
         @Override

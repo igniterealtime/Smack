@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.jivesoftware.smack.iqrequest;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 /**
  * Convenience class to create IQ requests handlers.
@@ -26,10 +25,10 @@ public abstract class AbstractIqRequestHandler implements IQRequestHandler {
 
     private final String element;
     private final String namespace;
-    private final Type type;
+    private final IQ.Type type;
     private final Mode mode;
 
-    protected AbstractIqRequestHandler(String element, String namespace, Type type, Mode mode) {
+    protected AbstractIqRequestHandler(String element, String namespace, IQ.Type type, Mode mode) {
         switch (type) {
         case set:
         case get:
@@ -52,7 +51,7 @@ public abstract class AbstractIqRequestHandler implements IQRequestHandler {
     }
 
     @Override
-    public Type getType() {
+    public IQ.Type getType() {
         return type;
     }
 

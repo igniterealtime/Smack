@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2019 Florian Schmaus
+ * Copyright 2016-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
@@ -201,7 +200,7 @@ public final class IoTProvisioningManager extends Manager {
         }, FRIEND_MESSAGE);
 
         connection.registerIQRequestHandler(
-                        new AbstractIqRequestHandler(ClearCache.ELEMENT, ClearCache.NAMESPACE, Type.set, Mode.async) {
+                        new AbstractIqRequestHandler(ClearCache.ELEMENT, ClearCache.NAMESPACE, IQ.Type.set, Mode.async) {
                             @Override
                             public IQ handleIQRequest(IQ iqRequest) {
                                 if (!isFromProvisioningService(iqRequest, true)) {

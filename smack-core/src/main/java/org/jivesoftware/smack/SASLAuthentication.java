@@ -249,7 +249,6 @@ public final class SASLAuthentication {
      * Notification message saying that SASL authentication was successful. The next step
      * would be to bind the resource.
      * @param success result of the authentication.
-     * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws SmackSaslException if a SASL specific error occurred.

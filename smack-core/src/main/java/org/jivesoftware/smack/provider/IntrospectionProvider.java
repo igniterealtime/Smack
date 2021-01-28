@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public class IntrospectionProvider{
      * @param type the type of the property.
      * @param value the encode String value to decode.
      * @return the String value decoded into the specified type.
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException if the provided class was not found.
      */
     private static Object decode(Class<?> type, String value) throws ClassNotFoundException {
         String name = type.getName();

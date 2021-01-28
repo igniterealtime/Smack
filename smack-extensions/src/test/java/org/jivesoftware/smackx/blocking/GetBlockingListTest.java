@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.blocking;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -42,7 +41,7 @@ public class GetBlockingListTest {
     @Test
     public void checkGetBlockingListIQStanza() throws Exception {
         BlockListIQ getBlockListIQ = new BlockListIQ(null);
-        getBlockListIQ.setType(Type.get);
+        getBlockListIQ.setType(IQ.Type.get);
         getBlockListIQ.setStanzaId("blocklist1");
         assertEquals(getBlockingListIQExample, getBlockListIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }

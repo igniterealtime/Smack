@@ -448,6 +448,7 @@ public class AudioChannel {
         failed = true;
     }
 
+    @SuppressWarnings("LockOnBoxedPrimitive")
     private synchronized boolean waitForState(Processor p, int state) {
         p.addControllerListener(new StateListener());
         failed = false;
@@ -485,6 +486,7 @@ public class AudioChannel {
 
     class StateListener implements ControllerListener {
 
+        @SuppressWarnings("LockOnBoxedPrimitive")
         @Override
         public void controllerUpdate(ControllerEvent ce) {
 

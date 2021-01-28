@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -50,12 +51,13 @@ public abstract class Provider<E extends Element> extends AbstractProvider<E> {
         final int initialDepth = parser.getDepth();
         final XmlEnvironment xmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
 
-        E e = parse(parser, initialDepth, xmlEnvironment);
+        E e = wrapExceptions(() -> parse(parser, initialDepth, xmlEnvironment));
 
         // XPP3 calling convention assert: Parser should be at end tag of the consumed/parsed element
         ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
         return e;
     }
 
-    public abstract E parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException;
+    public abstract E parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 }

@@ -27,7 +27,6 @@ import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.form.FilledForm;
 import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smackx.xdata.packet.DataForm.Type;
 
 /**
  * {@link Form} that contains the software information.
@@ -145,7 +144,7 @@ public final class SoftwareInfoForm extends FilledForm {
         DataForm.Builder dataFormBuilder;
 
         private Builder() {
-            dataFormBuilder = DataForm.builder(Type.result);
+            dataFormBuilder = DataForm.builder(DataForm.Type.result);
             TextSingleFormField formField = FormField.buildHiddenFormType(FORM_TYPE);
             dataFormBuilder.addField(formField);
         }

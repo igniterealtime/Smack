@@ -25,7 +25,6 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout.Fieldref;
@@ -151,6 +150,6 @@ public class DataFormTest extends SmackTestSuite {
     public void testFixedField() throws Exception {
         final String formWithFixedField = "<x xmlns='jabber:x:data' type='form'><instructions>InstructionTest1</instructions><field type='fixed'><value>Fixed field value</value></field></x>";
         DataForm df = pr.parse(PacketParserUtils.getParserFor(formWithFixedField));
-        assertEquals(Type.fixed, df.getFields().get(0).getType());
+        assertEquals(FormField.Type.fixed, df.getFields().get(0).getType());
     }
 }

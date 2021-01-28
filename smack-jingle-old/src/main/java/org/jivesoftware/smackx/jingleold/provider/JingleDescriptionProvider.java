@@ -41,21 +41,15 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
      * @return a payload type element
      */
     protected PayloadType parsePayload(final XmlPullParser parser) {
-        int ptId = 0;
+        int ptId;
         String ptName;
-        int ptChannels = 0;
+        int ptChannels;
 
-        try {
-            ptId = Integer.parseInt(parser.getAttributeValue("", "id"));
-        } catch (Exception e) {
-        }
+        ptId = Integer.parseInt(parser.getAttributeValue("", "id"));
 
         ptName = parser.getAttributeValue("", "name");
 
-        try {
-            ptChannels = Integer.parseInt(parser.getAttributeValue("", "channels"));
-        } catch (Exception e) {
-        }
+        ptChannels = Integer.parseInt(parser.getAttributeValue("", "channels"));
 
         return new PayloadType(ptId, ptName, ptChannels);
     }
@@ -114,12 +108,7 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
         public PayloadType parsePayload(final XmlPullParser parser) {
             PayloadType pte = super.parsePayload(parser);
             PayloadType.Audio pt = new PayloadType.Audio(pte);
-            int ptClockRate = 0;
-
-            try {
-                ptClockRate = Integer.parseInt(parser.getAttributeValue("", "clockrate"));
-            } catch (Exception e) {
-            }
+            int ptClockRate = Integer.parseInt(parser.getAttributeValue("", "clockrate"));
             pt.setClockRate(ptClockRate);
 
             return pt;

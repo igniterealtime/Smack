@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
@@ -115,7 +114,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
     private Iterator<CharSequence> outgoingCharSequenceIterator;
 
     private final List<TopLevelStreamElement> currentlyOutgoingElements = new ArrayList<>();
-    private final Map<ByteBuffer, List<TopLevelStreamElement>> bufferToElementMap = new IdentityHashMap<>();
+    private final IdentityHashMap<ByteBuffer, List<TopLevelStreamElement>> bufferToElementMap = new IdentityHashMap<>();
 
     private ByteBuffer outgoingBuffer;
     private ByteBuffer filteredOutgoingBuffer;
@@ -224,7 +223,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             }
             streamOpen.append("stream");
             streamClose.append("stream>");
-            for (Entry<String, String> entry : attributes.entrySet()) {
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 String attributeName = entry.getKey();
                 String attributeValue = entry.getValue();
                 switch (attributeName) {
@@ -571,7 +570,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
     final class XmppTcpNioTransport extends XmppClientToServerTransport {
 
-        protected XmppTcpNioTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
+        XmppTcpNioTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(connectionInternal);
         }
 
@@ -1319,7 +1318,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             try {
                 socketChannel.close();
             } catch (IOException e) {
-
+                LOGGER.log(Level.FINE, "Closing the socket channel failed", e);
             }
         }
 

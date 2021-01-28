@@ -142,7 +142,7 @@ public final class FileTransferManager extends Manager {
      * @return The IncomingFileTransfer which manages the download of the file
      *         from the transfer initiator.
      */
-    protected IncomingFileTransfer createIncomingFileTransfer(
+    IncomingFileTransfer createIncomingFileTransfer(
             FileTransferRequest request) {
         if (request == null) {
             throw new NullPointerException("ReceiveRequest cannot be null");
@@ -164,7 +164,7 @@ public final class FileTransferManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    protected void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException, InterruptedException {
+    void rejectIncomingFileTransfer(FileTransferRequest request) throws NotConnectedException, InterruptedException {
         StreamInitiation initiation = request.getStreamInitiation();
 
         // Reject as specified in XEP-95 4.2. Note that this is not to be confused with the Socks 5

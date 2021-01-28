@@ -16,11 +16,15 @@
  */
 package org.jivesoftware.smack.provider;
 
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class AbstractProvider<E extends Element> {
 
@@ -54,5 +58,52 @@ public class AbstractProvider<E extends Element> {
 
     public final Class<E> getElementClass() {
         return elementClass;
+    }
+
+    public static final class TextParseException extends SmackParsingException {
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        private final ParseException parseException;
+
+        private TextParseException(ParseException parseException) {
+            super(parseException);
+            this.parseException = parseException;
+        }
+
+        public ParseException getParseException() {
+            return parseException;
+        }
+    }
+
+    public static final class NumberFormatParseException extends SmackParsingException {
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        private NumberFormatParseException(NumberFormatException numberFormatException) {
+            super(numberFormatException);
+        }
+    }
+
+    protected interface WrappableParser<E> {
+        E parse() throws XmlPullParserException, IOException, SmackParsingException, ParseException;
+    }
+
+    protected static <E> E wrapExceptions(WrappableParser<E> parser)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        E e;
+        try {
+            e = parser.parse();
+        } catch (ParseException parseException) {
+            throw new TextParseException(parseException);
+        } catch (NumberFormatException numberFormatException) {
+            throw new NumberFormatParseException(numberFormatException);
+        }
+
+        return e;
     }
 }

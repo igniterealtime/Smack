@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
@@ -58,7 +57,7 @@ public class ThreadedDummyConnection extends DummyConnection {
             replyPacket.setStanzaId(packet.getStanzaId());
             replyPacket.setTo(packet.getFrom());
             if (replyPacket.getType() == null) {
-                replyPacket.setType(Type.result);
+                replyPacket.setType(IQ.Type.result);
             }
 
             new ProcessQueue(replyQ).start();

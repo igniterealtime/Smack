@@ -31,7 +31,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -228,7 +227,7 @@ public final class MultiUserChatLightManager extends Manager {
     private MUCLightBlockingIQ getBlockingList(DomainBareJid mucLightService)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, null);
-        mucLightBlockingIQ.setType(Type.get);
+        mucLightBlockingIQ.setType(IQ.Type.get);
         mucLightBlockingIQ.setTo(mucLightService);
 
         StanzaFilter responseFilter = new IQReplyFilter(mucLightBlockingIQ, connection());
@@ -278,7 +277,7 @@ public final class MultiUserChatLightManager extends Manager {
     private void sendBlockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
         connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
@@ -322,7 +321,7 @@ public final class MultiUserChatLightManager extends Manager {
     private void sendBlockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
         connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
@@ -366,7 +365,7 @@ public final class MultiUserChatLightManager extends Manager {
     private void sendUnblockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
         connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }
@@ -410,7 +409,7 @@ public final class MultiUserChatLightManager extends Manager {
     private void sendUnblockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
         connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
     }

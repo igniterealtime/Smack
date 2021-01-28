@@ -30,7 +30,6 @@ import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterTest.TestRosterListener;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
@@ -146,7 +145,7 @@ public class RosterVersioningTest {
             RosterPacket sentRP = (RosterPacket) sentPacket;
             RosterPacket answer = new RosterPacket();
             answer.setStanzaId(sentRP.getStanzaId());
-            answer.setType(Type.result);
+            answer.setType(IQ.Type.result);
             answer.setTo(sentRP.getFrom());
 
             answer.setVersion("newVersion");
@@ -188,7 +187,7 @@ public class RosterVersioningTest {
         {
             RosterPacket rosterPush = new RosterPacket();
             rosterPush.setTo(JidCreate.from("rostertest@example.com/home"));
-            rosterPush.setType(Type.set);
+            rosterPush.setType(IQ.Type.set);
             rosterPush.setVersion("v97");
 
             Item pushedItem = vaglafItem();
@@ -214,7 +213,7 @@ public class RosterVersioningTest {
         {
             RosterPacket rosterPush = new RosterPacket();
             rosterPush.setTo(JidCreate.from("rostertest@example.com/home"));
-            rosterPush.setType(Type.set);
+            rosterPush.setType(IQ.Type.set);
             rosterPush.setVersion("v98");
 
             Item item = new Item(JidCreate.entityBareFrom("vaglaf@example.com"), "vaglaf the only");

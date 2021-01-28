@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -70,7 +70,7 @@ public class BlockListIQProvider extends IQProvider<BlockListIQ> {
         }
 
         BlockListIQ blockListIQ = new BlockListIQ(jids);
-        blockListIQ.setType(Type.result);
+        blockListIQ.setType(IQ.Type.result);
         return blockListIQ;
     }
 
