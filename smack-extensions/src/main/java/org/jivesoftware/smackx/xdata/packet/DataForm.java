@@ -353,6 +353,7 @@ public final class DataForm implements ExtensionElement {
     }
 
     public static final class Builder {
+        // TODO: Make this field final once setType() is gone.
         private Type type;
         private String title;
         private List<String> instructions;
@@ -381,6 +382,15 @@ public final class DataForm implements ExtensionElement {
             extensionElements = CollectionUtil.newListWith(dataForm.getExtensionElements());
         }
 
+        /**
+         * Deprecated do not use.
+         *
+         * @param type the type.
+         * @return a reference to this builder.
+         * @deprecated use {@link DataForm#builder(Type)} instead.
+         */
+        @Deprecated
+        // TODO: Remove in Smack 4.5 and then make this.type final.
         public Builder setType(Type type) {
             this.type = Objects.requireNonNull(type);
             return this;

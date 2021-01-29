@@ -360,8 +360,7 @@ public final class FileTransferNegotiator extends Manager {
     }
 
     private static DataForm createDefaultInitiationForm() {
-        DataForm.Builder form = DataForm.builder()
-                        .setType(DataForm.Type.form);
+        DataForm.Builder form = DataForm.builder(DataForm.Type.form);
         ListSingleFormField.Builder fieldBuilder = FormField.listSingleBuilder(STREAM_DATA_FIELD_NAME);
 
         if (!IBB_ONLY) {

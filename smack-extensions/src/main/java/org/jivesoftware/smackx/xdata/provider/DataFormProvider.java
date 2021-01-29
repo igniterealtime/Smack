@@ -66,8 +66,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     @Override
     public DataForm parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
-        DataForm.Builder dataForm = DataForm.builder();
-        dataForm.setType(dataFormType);
+        DataForm.Builder dataForm = DataForm.builder(dataFormType);
 
         String formType = null;
         DataForm.ReportedData reportedData = null;
