@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -538,6 +538,8 @@ public final class DataForm implements ExtensionElement {
 
         private final List<? extends FormField> fields;
 
+        private Map<String, FormField> fieldMap;
+
         public ReportedData(List<? extends FormField> fields) {
             this.fields = Collections.unmodifiableList(fields);
         }
@@ -559,6 +561,18 @@ public final class DataForm implements ExtensionElement {
          */
         public List<? extends FormField> getFields() {
             return fields;
+        }
+
+        public FormField getField(String name) {
+            if (fieldMap == null) {
+                fieldMap = new HashMap<>(fields.size());
+                for (FormField field : fields) {
+                    String fieldName = field.getFieldName();
+                    fieldMap.put(fieldName, field);
+                }
+            }
+
+            return fieldMap.get(name);
         }
 
         @Override
