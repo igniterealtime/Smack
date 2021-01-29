@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.stanza_content_encryption.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
@@ -42,7 +43,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
 
     @Override
     public ContentElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException {
+            throws XmlPullParserException, IOException, ParseException, SmackParsingException {
         ContentElement.Builder builder = ContentElement.builder();
 
         while (true) {
@@ -117,7 +118,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
     }
 
     private static void parseTimestampAffix(XmlPullParser parser, ContentElement.Builder builder)
-            throws SmackParsingException.SmackTextParseException {
+            throws ParseException {
         Date timestamp = ParserUtils.getDateFromXep82String(
                 parser.getAttributeValue("", TimestampAffixElement.ATTR_STAMP));
         builder.setTimestamp(timestamp);

@@ -138,6 +138,8 @@ public final class PublicKeysListElement implements ExtensionElement {
             return getV4Fingerprint().hashCode() + 3 * getDate().hashCode();
         }
 
+        @SuppressWarnings("UndefinedEquals")
+        // TODO: Fix the UndefinedEquals due using Date.equals(Date)
         @Override
         public boolean equals(Object o) {
             if (o == null) {

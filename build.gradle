@@ -12,7 +12,7 @@ buildscript {
 
 plugins {
     id 'ru.vyarus.animalsniffer' version '1.5.0'
-	id 'net.ltgt.errorprone' version '1.1.1'
+	id 'net.ltgt.errorprone' version '1.3.0'
 	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
 	id 'com.dorongold.task-tree' version '1.5'
 	id 'com.github.kt3k.coveralls' version '2.10.2'
@@ -218,6 +218,8 @@ allprojects {
 				// Disabled but should be re-enabled at some point
 				//'-Xep:InconsistentCapitalization:OFF',
 				'-Xep:MixedMutabilityReturnType:OFF',
+				// TODO: Re-enable once Smack's minimum Android SDK level is 26 or higher.
+				'-Xep:JavaUtilDate:OFF',
 			]
 		}
 	}
@@ -293,7 +295,7 @@ tasks.withType(Javadoc) {
 		testImplementation 'org.mockito:mockito-inline:3.3.3'
 		testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 
-		errorprone 'com.google.errorprone:error_prone_core:2.3.4'
+		errorprone 'com.google.errorprone:error_prone_core:2.5.1'
 		errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
 	}
 

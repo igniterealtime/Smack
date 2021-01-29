@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
-import org.jivesoftware.smack.packet.StanzaError.Type;
 import org.jivesoftware.smack.util.RandomUtil;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -89,7 +88,7 @@ public final class DnsOverXmppManager extends Manager {
                 response = resolver.resolve(query);
             } catch (IOException exception) {
                 StanzaError errorBuilder = StanzaError.getBuilder()
-                        .setType(Type.CANCEL)
+                        .setType(StanzaError.Type.CANCEL)
                         .setCondition(Condition.internal_server_error)
                         .setDescriptiveEnText("Exception while resolving your DNS query", exception)
                         .build()

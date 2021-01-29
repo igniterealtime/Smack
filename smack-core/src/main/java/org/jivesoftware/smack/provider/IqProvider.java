@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
@@ -37,10 +38,12 @@ public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
         final int initialDepth = parser.getDepth();
         final XmlEnvironment xmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
 
-        return parse(parser, initialDepth, iqData, xmlEnvironment);
+        I i = wrapExceptions(() -> parse(parser, initialDepth, iqData, xmlEnvironment));
+
+        return i;
     }
 
     public abstract I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
-                    throws XmlPullParserException, IOException, SmackParsingException;
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
 }

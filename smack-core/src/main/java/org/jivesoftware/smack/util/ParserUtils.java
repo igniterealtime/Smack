@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import org.jivesoftware.smack.datatypes.UInt32;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.SmackParsingException.RequiredAttributeMissingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -308,30 +307,23 @@ public class ParserUtils {
         return s;
     }
 
-    public static Date getDateFromOptionalXep82String(String dateString) throws SmackTextParseException {
+    public static Date getDateFromOptionalXep82String(String dateString) throws ParseException {
         if (dateString == null) {
             return null;
         }
         return getDateFromXep82String(dateString);
     }
 
-    public static Date getDateFromXep82String(String dateString) throws SmackTextParseException {
-        try {
-            return XmppDateTime.parseXEP0082Date(dateString);
-        } catch (ParseException e) {
-            throw new SmackParsingException.SmackTextParseException(e);
-        }
+    public static Date getDateFromXep82String(String dateString) throws ParseException {
+        return XmppDateTime.parseXEP0082Date(dateString);
     }
 
-    public static Date getDateFromString(String dateString) throws SmackTextParseException {
-        try {
-            return XmppDateTime.parseDate(dateString);
-        } catch (ParseException e) {
-            throw new SmackParsingException.SmackTextParseException(e);
-        }
+    public static Date getDateFromString(String dateString) throws ParseException {
+        return XmppDateTime.parseDate(dateString);
     }
 
-    public static Date getDateFromNextText(XmlPullParser parser) throws XmlPullParserException, IOException, SmackTextParseException {
+    public static Date getDateFromNextText(XmlPullParser parser)
+                    throws XmlPullParserException, IOException, ParseException {
         String dateString = parser.nextText();
         return getDateFromString(dateString);
     }

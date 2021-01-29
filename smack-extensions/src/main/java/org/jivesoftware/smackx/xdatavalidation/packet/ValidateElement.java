@@ -112,6 +112,8 @@ public abstract class ValidateElement implements FormFieldChildElement {
     }
 
     /**
+     * Append XML.
+     *
      * @param buf TODO javadoc me please
      */
     protected abstract void appendXML(XmlStringBuilder buf);
@@ -458,6 +460,8 @@ public abstract class ValidateElement implements FormFieldChildElement {
     }
 
     /**
+     * Check that the field being build is not of type multi (or hidden).
+     *
      * @param formField TODO javadoc me please
      * @param method TODO javadoc me please
      */

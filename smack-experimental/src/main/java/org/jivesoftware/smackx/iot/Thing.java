@@ -23,7 +23,6 @@ import java.util.Iterator;
 import org.jivesoftware.smackx.iot.control.ThingControlRequest;
 import org.jivesoftware.smackx.iot.data.ThingMomentaryReadOutRequest;
 import org.jivesoftware.smackx.iot.discovery.element.Tag;
-import org.jivesoftware.smackx.iot.discovery.element.Tag.Type;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 
 public final class Thing {
@@ -112,35 +111,35 @@ public final class Thing {
 
         public Builder setSerialNumber(String sn) {
             final String name = "SN";
-            Tag tag = new Tag(name, Type.str, sn);
+            Tag tag = new Tag(name, Tag.Type.str, sn);
             metaTags.put(name, tag);
             return this;
         }
 
         public Builder setKey(String key) {
             final String name = "KEY";
-            Tag tag = new Tag(name, Type.str, key);
+            Tag tag = new Tag(name, Tag.Type.str, key);
             metaTags.put(name, tag);
             return this;
         }
 
         public Builder setManufacturer(String manufacturer) {
             final String name = "MAN";
-            Tag tag = new Tag(name, Type.str, manufacturer);
+            Tag tag = new Tag(name, Tag.Type.str, manufacturer);
             metaTags.put(name, tag);
             return this;
         }
 
         public Builder setModel(String model) {
             final String name = "MODEL";
-            Tag tag = new Tag(name, Type.str, model);
+            Tag tag = new Tag(name, Tag.Type.str, model);
             metaTags.put(name, tag);
             return this;
         }
 
         public Builder setVersion(String version) {
             final String name = "V";
-            Tag tag = new Tag(name, Type.num, version);
+            Tag tag = new Tag(name, Tag.Type.num, version);
             metaTags.put(name, tag);
             return this;
         }

@@ -425,7 +425,7 @@ public final class OpenPgpManager extends Manager {
      *
      * @see <a href="https://xmpp.org/extensions/xep-0373.html#synchro-pep">XEP-0373 §5</a>
      *
-     * @param selectKeyCallback callback, which will receive the users choice of which keys will be backed up. @param selectKeyCallback
+     * @param selectKeyCallback callback, which will receive the users choice of which keys will be backed up.
      * @param passphrase secret key passphrase
      *
      * @throws InterruptedException if the thread is interrupted.
@@ -631,7 +631,7 @@ public final class OpenPgpManager extends Manager {
     }
 
     /**
-     * Create a {@link PubkeyElement} which contains the given {@code data} base64 encoded.
+     * Create a {@link PubkeyElement} which contains the given {@code date} base64 encoded.
      *
      * @param bytes byte representation of an OpenPGP public key
      * @param date date of creation of the element

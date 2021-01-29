@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smackx.xdata.packet.DataForm.Type;
 
 public abstract class FilledForm implements FormReader {
 
@@ -36,7 +35,7 @@ public abstract class FilledForm implements FormReader {
         if (StringUtils.isNullOrEmpty(formType)) {
             throw new IllegalArgumentException("The provided data form has no hidden FROM_TYPE field.");
         }
-        if (dataForm.getType() == Type.cancel) {
+        if (dataForm.getType() == DataForm.Type.cancel) {
             throw new IllegalArgumentException("Forms of type 'cancel' are not filled nor fillable");
         }
         formTypeFormField = dataForm.getHiddenFormTypeField();

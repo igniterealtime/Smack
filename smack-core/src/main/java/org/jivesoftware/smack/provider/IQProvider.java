@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
@@ -50,7 +51,7 @@ public abstract class IQProvider<I extends IQ> extends IqProvider<I> {
         final int initialDepth = parser.getDepth();
         final XmlEnvironment xmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
 
-        I e = parse(parser, initialDepth, xmlEnvironment);
+        I e = wrapExceptions(() -> parse(parser, initialDepth, xmlEnvironment));
 
         // XPP3 calling convention assert: Parser should be at end tag of the consumed/parsed element
         ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
@@ -59,11 +60,12 @@ public abstract class IQProvider<I extends IQ> extends IqProvider<I> {
 
     @Override
     public final I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
-                    throws XmlPullParserException, IOException, SmackParsingException {
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         // Old-style IQ parsers do not need IqData.
         return parse(parser, initialDepth, xmlEnvironment);
     }
 
-    public abstract I parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException;
+    public abstract I parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
 }

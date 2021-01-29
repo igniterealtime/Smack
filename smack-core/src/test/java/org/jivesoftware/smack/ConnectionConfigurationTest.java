@@ -53,7 +53,7 @@ public class ConnectionConfigurationTest {
 
     private static final class DummyConnectionConfiguration extends ConnectionConfiguration {
 
-        protected DummyConnectionConfiguration(Builder builder) {
+        DummyConnectionConfiguration(Builder builder) {
             super(builder);
         }
 

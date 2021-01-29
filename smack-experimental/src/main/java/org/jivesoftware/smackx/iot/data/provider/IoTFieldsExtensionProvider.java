@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016-2019 Florian Schmaus
+ * Copyright © 2016-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -45,7 +43,8 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
     private static final Logger LOGGER = Logger.getLogger(IoTFieldsExtensionProvider.class.getName());
 
     @Override
-    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackTextParseException {
+    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws IOException, XmlPullParserException, ParseException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request <accepted/> without sequence number");
         boolean done = ParserUtils.getBooleanAttribute(parser, "done", false);
         List<NodeElement> nodes = new ArrayList<>();
@@ -74,7 +73,7 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
         return new IoTFieldsExtension(seqNr, done, nodes);
     }
 
-    public NodeElement parseNode(XmlPullParser parser) throws XmlPullParserException, IOException, SmackTextParseException {
+    public NodeElement parseNode(XmlPullParser parser) throws XmlPullParserException, IOException, ParseException {
         final int initialDepth = parser.getDepth();
         final NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         List<TimestampElement> timestampElements = new ArrayList<>();
@@ -103,15 +102,11 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
         return new NodeElement(nodeInfo, timestampElements);
     }
 
-    public TimestampElement parseTimestampElement(XmlPullParser parser) throws XmlPullParserException, IOException, SmackTextParseException {
+    public TimestampElement parseTimestampElement(XmlPullParser parser)
+                    throws XmlPullParserException, IOException, ParseException {
         final int initialDepth = parser.getDepth();
         final String dateString = parser.getAttributeValue(null, "value");
-        Date date;
-        try {
-            date = XmppDateTime.parseDate(dateString);
-        } catch (ParseException e) {
-            throw new SmackParsingException.SmackTextParseException(e);
-        }
+        Date date = XmppDateTime.parseDate(dateString);
         List<IoTDataField> fields = new ArrayList<>();
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();

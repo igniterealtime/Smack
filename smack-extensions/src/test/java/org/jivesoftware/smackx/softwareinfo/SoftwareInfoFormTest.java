@@ -29,7 +29,6 @@ import org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smackx.xdata.packet.DataForm.Type;
 
 import org.junit.jupiter.api.Test;
 
@@ -85,21 +84,21 @@ public class SoftwareInfoFormTest extends SmackTestSuite {
 
     @Test
     public void faultySoftwareInfoFormsTest() {
-        DataForm.Builder dataFormbuilder = DataForm.builder(Type.result);
+        DataForm.Builder dataFormbuilder = DataForm.builder(DataForm.Type.result);
         TextSingleFormField formField = FormField.buildHiddenFormType("faulty_formtype");
         dataFormbuilder.addField(formField);
         assertThrows(IllegalArgumentException.class, () -> {
             SoftwareInfoForm.getBuilder().setDataForm(dataFormbuilder.build()).build();
         });
 
-        DataForm.Builder builderWithoutFormType = DataForm.builder(Type.result);
+        DataForm.Builder builderWithoutFormType = DataForm.builder(DataForm.Type.result);
         assertThrows(IllegalArgumentException.class, () -> {
             SoftwareInfoForm.getBuilder().setDataForm(builderWithoutFormType.build()).build();
         });
     }
 
     public static SoftwareInfoForm createSoftwareInfoFormUsingDataForm() throws URISyntaxException {
-        DataForm.Builder dataFormBuilder = DataForm.builder(Type.result);
+        DataForm.Builder dataFormBuilder = DataForm.builder(DataForm.Type.result);
         TextSingleFormField formField = FormField.buildHiddenFormType(SoftwareInfoForm.FORM_TYPE);
         dataFormBuilder.addField(formField);
 

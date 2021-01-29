@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import javax.xml.namespace.QName;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.Provider;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smack.xml.XmlPullParserFactory;
@@ -123,6 +124,11 @@ public class SmackTestUtil {
         XmlPullParser parser = getParserFor(xml, parserKind);
         forwardParserToStartElement(parser, p -> p.getName().equals(startTagLocalpart));
         return parser;
+    }
+
+    public static XmlPullParser createDummyParser() throws XmlPullParserException, IOException {
+        String dummyElement = "<empty-element/>";
+        return PacketParserUtils.getParserFor(dummyElement);
     }
 
     @SuppressWarnings("unchecked")

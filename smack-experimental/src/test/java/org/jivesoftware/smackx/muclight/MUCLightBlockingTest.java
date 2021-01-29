@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
@@ -59,7 +58,7 @@ public class MUCLightBlockingTest {
     @Test
     public void checkGetBlockingListIQ() throws Exception {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, null);
-        mucLightBlockingIQ.setType(Type.get);
+        mucLightBlockingIQ.setType(IQ.Type.get);
         mucLightBlockingIQ.setStanzaId("getblock1");
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
 
@@ -86,7 +85,7 @@ public class MUCLightBlockingTest {
         rooms.put(JidCreate.from("chapel@shakespeare.lit"), false);
 
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block1");
 
@@ -100,7 +99,7 @@ public class MUCLightBlockingTest {
         users.put(JidCreate.from("hag66@shakespeare.lit"), false);
 
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("block2");
 
@@ -116,7 +115,7 @@ public class MUCLightBlockingTest {
         rooms.put(JidCreate.from("coven@muclight.shakespeare.lit"), true);
 
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, users);
-        mucLightBlockingIQ.setType(Type.set);
+        mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(JidCreate.from("muclight.shakespeare.lit"));
         mucLightBlockingIQ.setStanzaId("unblock1");
 

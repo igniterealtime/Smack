@@ -88,6 +88,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         assertNotNull(element.getTimestamp());
     }
 
+    @SuppressWarnings("UndefinedEquals")
     @Test
     public void signElementProviderTest() throws Exception {
         String expected =
@@ -114,6 +115,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         assertEquals(element.getExtensions(), parsed.getExtensions());
     }
 
+    @SuppressWarnings("UndefinedEquals")
     @Test
     public void cryptElementProviderTest() throws Exception {
         String expected =
@@ -144,6 +146,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         assertEquals(element.getExtensions(), parsed.getExtensions());
     }
 
+    @SuppressWarnings("UndefinedEquals")
     @Test
     public void signcryptElementProviderTest() throws Exception {
         String expected =

@@ -99,7 +99,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
     private boolean featuresReceived;
 
-    protected boolean streamResumed;
+    private boolean streamResumed;
 
     private GraphVertex<State> currentStateVertex;
 
@@ -264,7 +264,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         walkStateGraph(walkStateGraphContext);
     }
 
-    protected WalkStateGraphContext.Builder buildNewWalkTo(Class<? extends StateDescriptor> finalStateClass) {
+    private WalkStateGraphContext.Builder buildNewWalkTo(Class<? extends StateDescriptor> finalStateClass) {
         return WalkStateGraphContext.builder(currentStateVertex.getElement().getStateDescriptor().getClass(), finalStateClass);
     }
 
@@ -279,7 +279,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         revertedState.resetState();
     }
 
-    protected void walkStateGraph(WalkStateGraphContext walkStateGraphContext)
+    private void walkStateGraph(WalkStateGraphContext walkStateGraphContext)
                     throws XMPPException, IOException, SmackException, InterruptedException {
         // Save a copy of the current state
         GraphVertex<State> previousStateVertex = currentStateVertex;
@@ -491,7 +491,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         }
     }
 
-    protected SSLSession getSSLSession() {
+    private SSLSession getSSLSession() {
         final XmppClientToServerTransport transport = activeTransport;
         if (transport == null) {
             return null;
@@ -505,7 +505,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         notifyWaitingThreads();
     }
 
-    protected void parseAndProcessElement(String element) {
+    private void parseAndProcessElement(String element) {
         try {
             XmlPullParser parser = PacketParserUtils.getParserFor(element);
 
@@ -556,11 +556,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         }
     }
 
-    protected synchronized void prepareToWaitForFeaturesReceived() {
+    private synchronized void prepareToWaitForFeaturesReceived() {
         featuresReceived = false;
     }
 
-    protected void waitForFeaturesReceived(String waitFor)
+    private void waitForFeaturesReceived(String waitFor)
                     throws InterruptedException, SmackException, XMPPException {
         waitForConditionOrThrowConnectionException(() -> featuresReceived, waitFor);
     }
@@ -571,7 +571,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         return streamOpenAndCloseFactory.createStreamOpen(to, from, id, lang);
     }
 
-    protected void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
+    private void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
                     SmackException, XMPPException {
         prepareToWaitForFeaturesReceived();
 
@@ -1028,7 +1028,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         return connectionStateMachineListeners.remove(connectionStateMachineListener);
     }
 
-    protected void invokeConnectionStateMachineListener(ConnectionStateEvent connectionStateEvent) {
+    private void invokeConnectionStateMachineListener(ConnectionStateEvent connectionStateEvent) {
         if (connectionStateMachineListeners.isEmpty()) {
             return;
         }
@@ -1056,7 +1056,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         walkStateGraph(walkStateGraphContext);
     }
 
-    protected Map<String, Object> getFilterStats() {
+    private Map<String, Object> getFilterStats() {
         Collection<XmppInputOutputFilter> filters;
         synchronized (this) {
             if (inputOutputFilters.isEmpty() && previousInputOutputFilters != null) {

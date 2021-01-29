@@ -29,7 +29,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.EqualsUtil;
 
@@ -221,7 +220,7 @@ public final class RosterEntry extends Manager {
         XMPPConnection connection = connection();
         Presence unsubscribed = connection.getStanzaFactory().buildPresenceStanza()
                 .to(item.getJid())
-                .ofType(Type.unsubscribed)
+                .ofType(Presence.Type.unsubscribed)
                 .build();
         connection.sendStanza(unsubscribed);
     }

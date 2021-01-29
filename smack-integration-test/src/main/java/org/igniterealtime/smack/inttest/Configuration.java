@@ -24,7 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -447,7 +447,7 @@ public final class Configuration {
 
         // Properties set via the system override the file properties
         Properties systemProperties = System.getProperties();
-        for (Entry<Object, Object> entry : systemProperties.entrySet()) {
+        for (Map.Entry<Object, Object> entry : systemProperties.entrySet()) {
             String key = (String) entry.getKey();
             if (!key.startsWith(SINTTEST)) {
                 continue;

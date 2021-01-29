@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -68,7 +67,7 @@ public class MamFinProviderTest extends MamTest {
         IQ iq = PacketParserUtils.parseStanza(IQ_LIMITED_RESULTS_EXAMPLE);
 
         MamFinIQ mamFinIQ = (MamFinIQ) iq;
-        assertEquals(mamFinIQ.getType(), Type.result);
+        assertEquals(mamFinIQ.getType(), IQ.Type.result);
 
         assertTrue(mamFinIQ.isComplete());
         assertEquals(mamFinIQ.getRSMSet().getCount(), 16);

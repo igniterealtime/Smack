@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2020 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.forward.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.Message;
@@ -45,7 +46,8 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override
-    public Forwarded<?> parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public Forwarded<?> parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         DelayInformation di = null;
         Stanza packet = null;
 
@@ -90,13 +92,14 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
     }
 
     public static Forwarded<Message> parseForwardedMessage(XmlPullParser parser, XmlEnvironment xmlEnvironment)
-                    throws XmlPullParserException, IOException, SmackParsingException {
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         return parseForwardedMessage(parser, parser.getDepth(), xmlEnvironment);
     }
 
     @SuppressWarnings("unchecked")
     public static Forwarded<Message> parseForwardedMessage(XmlPullParser parser, int initialDepth,
-                    XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+                    XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         Forwarded<?> forwarded = INSTANCE.parse(parser, initialDepth, xmlEnvironment);
         if (!forwarded.isForwarded(Message.class)) {
             throw new SmackParsingException("Expecting a forwarded message, but got " + forwarded);

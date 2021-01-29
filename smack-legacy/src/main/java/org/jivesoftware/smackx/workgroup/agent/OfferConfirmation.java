@@ -73,18 +73,10 @@ public class OfferConfirmation extends SimpleIQ {
                 parser.next();
                 String elementName = parser.getName();
                 if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "user-jid".equals(elementName)) {
-                    try {
-                        confirmation.setUserJID(parser.nextText());
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
+                    confirmation.setUserJID(parser.nextText());
                 }
                 else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "session-id".equals(elementName)) {
-                    try {
-                        confirmation.setSessionID(Long.valueOf(parser.nextText()));
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
+                    confirmation.setSessionID(Long.valueOf(parser.nextText()));
                 }
                 else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "offer-confirmation".equals(elementName)) {
                     done = true;

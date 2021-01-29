@@ -187,7 +187,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * The stream ID of the stream that is currently resumable, ie. the stream we hold the state
      * for in {@link #clientHandledStanzasCount}, {@link #serverHandledStanzasCount} and
-     * {@link #unFailedNonzaExceptionacknowledgedStanzas}.
+     * {@link #unacknowledgedStanzas}.
      */
     private String smSessionId;
 
@@ -668,8 +668,6 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * Initializes the connection by creating a stanza reader and writer and opening a
      * XMPP stream to the server.
      *
-     * @throws XMPPException if establishing a connection to the server fails.
-     * @throws SmackException if the server fails to respond back or if there is anther error.
      * @throws IOException if an I/O error occurred.
      * @throws InterruptedException if the calling thread was interrupted.
      */

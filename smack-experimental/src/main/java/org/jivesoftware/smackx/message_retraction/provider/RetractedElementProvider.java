@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.message_retraction.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -34,7 +35,7 @@ public class RetractedElementProvider extends ExtensionElementProvider<Retracted
 
     @Override
     public RetractedElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException {
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         Date date = ParserUtils.getDateFromXep82String(parser.getAttributeValue("", RetractedElement.ATTR_STAMP));
 
         OriginIdElement originIdElement = null;

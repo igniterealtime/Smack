@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
@@ -40,7 +41,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class ContentElementProviderTest {
 
     @Test
-    public void testParsing() throws XmlPullParserException, IOException, SmackParsingException {
+    public void testParsing() throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String xml = "" +
                 "<content xmlns='urn:xmpp:sce:0'>\n" +
                 "  <payload>\n" +

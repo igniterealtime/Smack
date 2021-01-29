@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2020 Florian Schmaus
+ * Copyright 2017-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class JingleReason implements FullyQualifiedElement {
         unsupported_transports,
         ;
 
-        protected static final Map<String, Reason> LUT = new HashMap<>(Reason.values().length);
+        static final Map<String, Reason> LUT = new HashMap<>(Reason.values().length);
 
         static {
             for (Reason reason : Reason.values()) {
@@ -84,7 +84,7 @@ public class JingleReason implements FullyQualifiedElement {
             }
         }
 
-        protected final String asString;
+        final String asString;
 
         Reason() {
             asString = name().replace('_', '-');

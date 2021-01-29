@@ -37,7 +37,6 @@ import org.jivesoftware.smackx.jingleold.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleTransportListener;
-import org.jivesoftware.smackx.jingleold.nat.ICECandidate.Type;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
@@ -364,7 +363,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         for (TransportCandidate candidate : remoteCandidates) {
                             if (candidate instanceof ICECandidate) {
                                 ICECandidate iceCandidate = (ICECandidate) candidate;
-                                if (iceCandidate.getType().equals(Type.relay)) {
+                                if (iceCandidate.getType().equals(ICECandidate.Type.relay)) {
                                     // TODO Check if the relay is reachable.
                                     addValidRemoteCandidate(iceCandidate);
                                     foundRemoteRelay = true;
@@ -379,7 +378,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                             for (TransportCandidate candidate : offeredCandidates) {
                                 if (candidate instanceof ICECandidate) {
                                     ICECandidate iceCandidate = (ICECandidate) candidate;
-                                    if (iceCandidate.getType().equals(Type.relay)) {
+                                    if (iceCandidate.getType().equals(ICECandidate.Type.relay)) {
                                         foundLocalRelay = true;
                                     }
                                 }
@@ -512,7 +511,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      * Parse the list of transport candidates from a Jingle packet.
      *
-     * @param jin The input jingle packet
+     * @param jingle The input jingle packet
      */
     private List<TransportCandidate> obtainCandidatesList(Jingle jingle) {
         List<TransportCandidate> result = new ArrayList<>();
@@ -943,7 +942,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 result = chose;
             }
 
-            if (result != null && result.getType().equals(Type.relay))
+            if (result != null && result.getType().equals(ICECandidate.Type.relay))
                 LOGGER.fine("Relay Type");
 
             return result;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019-2020 Florian Schmaus
+ * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 package org.jivesoftware.smackx.geoloc.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -38,7 +38,7 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
 
     @Override
     public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException,
-                    SmackTextParseException, SmackUriSyntaxParsingException {
+                    SmackUriSyntaxParsingException, ParseException {
 
         GeoLocation.Builder builder = GeoLocation.builder();
 
@@ -153,7 +153,7 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
 
         @Override
         public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-                        throws XmlPullParserException, IOException, SmackParsingException {
+                        throws XmlPullParserException, IOException, SmackParsingException, ParseException {
             return GeoLocationProvider.INSTANCE.parse(parser, initialDepth, xmlEnvironment);
         }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -106,7 +105,7 @@ public class SmackIntegrationTestFramework {
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
 
-        for (Entry<Class<? extends AbstractSmackIntTest>, Throwable> entry : testRunResult.impossibleTestClasses.entrySet()) {
+        for (Map.Entry<Class<? extends AbstractSmackIntTest>, Throwable> entry : testRunResult.impossibleTestClasses.entrySet()) {
             LOGGER.info("Could not run " + entry.getKey().getName() + " because: "
                             + entry.getValue().getLocalizedMessage());
         }
@@ -769,7 +768,7 @@ public class SmackIntegrationTestFramework {
             /**
              * Execute the test.
              *
-             * @throws IllegalAccessException
+             * @throws IllegalAccessException if there was an illegal access.
              * @throws InterruptedException if the calling thread was interrupted.
              * @throws InvocationTargetException if the reflective invoked test throws an exception.
              * @throws XMPPException in case an XMPPException happens when <em>preparing</em> the test.

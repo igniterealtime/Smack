@@ -106,18 +106,10 @@ public class QueueUpdate implements ExtensionElement {
                 parser.next();
                 String elementName = parser.getName();
                 if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "position".equals(elementName)) {
-                    try {
-                        position = Integer.parseInt(parser.nextText());
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
+                    position = Integer.parseInt(parser.nextText());
                 }
                 else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "time".equals(elementName)) {
-                    try {
-                        timeRemaining = Integer.parseInt(parser.nextText());
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
+                    timeRemaining = Integer.parseInt(parser.nextText());
                 }
                 else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "queue-status".equals(elementName)) {
                     done = true;

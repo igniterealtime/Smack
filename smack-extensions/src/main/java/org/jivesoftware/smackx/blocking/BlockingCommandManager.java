@@ -35,7 +35,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
@@ -97,7 +96,7 @@ public final class BlockingCommandManager extends Manager {
 
         // block IQ handler
         connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(BlockContactsIQ.ELEMENT, BlockContactsIQ.NAMESPACE, Type.set, Mode.sync) {
+                new AbstractIqRequestHandler(BlockContactsIQ.ELEMENT, BlockContactsIQ.NAMESPACE, IQ.Type.set, Mode.sync) {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         BlockContactsIQ blockContactIQ = (BlockContactsIQ) iqRequest;
@@ -119,7 +118,7 @@ public final class BlockingCommandManager extends Manager {
 
         // unblock IQ handler
         connection.registerIQRequestHandler(new AbstractIqRequestHandler(UnblockContactsIQ.ELEMENT,
-                UnblockContactsIQ.NAMESPACE, Type.set, Mode.sync) {
+                UnblockContactsIQ.NAMESPACE, IQ.Type.set, Mode.sync) {
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
                 UnblockContactsIQ unblockContactIQ = (UnblockContactsIQ) iqRequest;

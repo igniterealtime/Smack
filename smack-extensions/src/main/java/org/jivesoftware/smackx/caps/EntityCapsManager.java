@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2020 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public final class EntityCapsManager extends Manager {
 
     private static String DEFAULT_ENTITY_NODE = SmackConfiguration.SMACK_URL_STRING;
 
-    protected static EntityCapsPersistentCache persistentCache;
+    static EntityCapsPersistentCache persistentCache;
 
     private static boolean autoEnableEntityCaps = true;
 
@@ -595,7 +595,7 @@ public final class EntityCapsManager extends Manager {
         return true;
     }
 
-    protected static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo) {
+    static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo) {
         return generateVerificationString(discoverInfo, null);
     }
 
@@ -611,7 +611,7 @@ public final class EntityCapsManager extends Manager {
      * @return The generated verification String or null if the hash is not
      *         supported
      */
-    protected static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo, String hash) {
+    static CapsVersionAndHash generateVerificationString(DiscoverInfoView discoverInfo, String hash) {
         if (hash == null) {
             hash = DEFAULT_HASH;
         }

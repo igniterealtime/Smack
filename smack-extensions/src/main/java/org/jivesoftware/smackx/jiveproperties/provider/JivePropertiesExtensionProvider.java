@@ -51,6 +51,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
      * @throws IOException if an I/O error occurred.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      */
+    @SuppressWarnings("BanSerializableRead")
     @Override
     public JivePropertiesExtension parse(XmlPullParser parser,
                     int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,

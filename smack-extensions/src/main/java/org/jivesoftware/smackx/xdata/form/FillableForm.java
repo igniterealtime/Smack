@@ -29,7 +29,6 @@ import java.util.Set;
 import org.jivesoftware.smackx.xdata.AbstractMultiFormField;
 import org.jivesoftware.smackx.xdata.AbstractSingleStringValueFormField;
 import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.FormField.Type;
 import org.jivesoftware.smackx.xdata.FormFieldChildElement;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -202,7 +201,7 @@ public class FillableForm extends FilledForm {
 
     public void setAnswer(String fieldName, boolean answer) {
         FormField blankField = getFieldOrThrow(fieldName);
-        if (blankField.getType() != Type.bool) {
+        if (blankField.getType() != FormField.Type.bool) {
             throw new IllegalArgumentException();
         }
 
