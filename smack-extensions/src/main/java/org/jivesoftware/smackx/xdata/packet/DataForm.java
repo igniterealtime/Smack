@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -353,6 +353,7 @@ public final class DataForm implements ExtensionElement {
     }
 
     public static final class Builder {
+        // TODO: Make this field final once setType() is gone.
         private Type type;
         private String title;
         private List<String> instructions;
@@ -381,6 +382,15 @@ public final class DataForm implements ExtensionElement {
             extensionElements = CollectionUtil.newListWith(dataForm.getExtensionElements());
         }
 
+        /**
+         * Deprecated do not use.
+         *
+         * @param type the type.
+         * @return a reference to this builder.
+         * @deprecated use {@link DataForm#builder(Type)} instead.
+         */
+        @Deprecated
+        // TODO: Remove in Smack 4.5 and then make this.type final.
         public Builder setType(Type type) {
             this.type = Objects.requireNonNull(type);
             return this;
@@ -538,6 +548,8 @@ public final class DataForm implements ExtensionElement {
 
         private final List<? extends FormField> fields;
 
+        private Map<String, FormField> fieldMap;
+
         public ReportedData(List<? extends FormField> fields) {
             this.fields = Collections.unmodifiableList(fields);
         }
@@ -559,6 +571,18 @@ public final class DataForm implements ExtensionElement {
          */
         public List<? extends FormField> getFields() {
             return fields;
+        }
+
+        public FormField getField(String name) {
+            if (fieldMap == null) {
+                fieldMap = new HashMap<>(fields.size());
+                for (FormField field : fields) {
+                    String fieldName = field.getFieldName();
+                    fieldMap.put(fieldName, field);
+                }
+            }
+
+            return fieldMap.get(name);
         }
 
         @Override
