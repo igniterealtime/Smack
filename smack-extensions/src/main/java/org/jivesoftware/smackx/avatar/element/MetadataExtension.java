@@ -45,6 +45,13 @@ public class MetadataExtension implements ExtensionElement {
     private final List<MetadataPointer> pointers;
 
     /**
+     * Empty constructor.
+     */
+    public MetadataExtension() {
+        this(null);
+    }
+
+    /**
      * Metadata Extension constructor.
      *
      * @param infos list of {@link MetadataInfo} elements.

@@ -118,7 +118,7 @@ public class MetadataExtensionTest {
 
     @Test
     public void checkEmptyMetadataExtensionParse() {
-        MetadataExtension metadataExtension = new MetadataExtension(null);
+        MetadataExtension metadataExtension = new MetadataExtension();
         assertEquals(emptyMetadataExtensionExample, metadataExtension.toXML().toString());
     }
 

@@ -484,7 +484,7 @@ public final class UserAvatarManager extends Manager {
      */
     public void unpublishAvatar()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, PubSubException.NotALeafNodeException {
-        getOrCreateMetadataNode().publish(new PayloadItem<>(new MetadataExtension(null)));
+        getOrCreateMetadataNode().publish(new PayloadItem<>(new MetadataExtension()));
     }
 
     @SuppressWarnings("UnnecessaryAnonymousClass")
