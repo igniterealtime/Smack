@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020-2021 Florian Schmaus.
+ * Copyright 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.okhttp;
+package org.jivesoftware.smack.websocket.java11;
 
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
 import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
-public class OkHttpWebSocketFactory implements WebSocketFactory {
+public class Java11WebSocketFactory implements WebSocketFactory {
 
-    public static final OkHttpWebSocketFactory INSTANCE = new OkHttpWebSocketFactory();
+    public static final Java11WebSocketFactory INSTANCE = new Java11WebSocketFactory();
 
     @Override
-    public AbstractWebSocket create(WebSocketRemoteConnectionEndpoint endpoint, ModularXmppClientToServerConnectionInternal connectionInternal) {
-        return new OkHttpWebSocket(endpoint, connectionInternal);
+    public Java11WebSocket create(WebSocketRemoteConnectionEndpoint endpoint,
+                    ModularXmppClientToServerConnectionInternal connectionInternal) {
+        return new Java11WebSocket(endpoint, connectionInternal);
     }
 
 }

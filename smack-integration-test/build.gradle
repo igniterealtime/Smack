@@ -9,6 +9,7 @@ applicationDefaultJvmArgs = ["-enableassertions"]
 dependencies {
 	api project(':smack-java8-full')
 	api project(':smack-resolver-dnsjava')
+	implementation project(':smack-websocket-java11')
 	implementation "com.google.guava:guava:${guavaVersion}"
 	compile 'org.reflections:reflections:0.9.12'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'

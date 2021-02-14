@@ -20,6 +20,29 @@ plugins {
 
 apply plugin: 'org.kordamp.gradle.markdown'
 
+ext {
+	java11Projects = [
+		':smack-integration-test',
+		':smack-omemo-signal-integration-test',
+		':smack-repl',
+		':smack-websocket-java11',
+	].collect { project(it) }
+	java11Projects += getRootProject()
+	java8Projects = allprojects - java11Projects
+}
+
+configure (java8Projects) {
+	ext {
+		javaCompatilibity = JavaVersion.VERSION_1_8
+	}
+}
+
+configure (java11Projects) {
+	ext {
+		javaCompatilibity = JavaVersion.VERSION_11
+	}
+}
+
 allprojects {
 	apply plugin: 'java-library'
 	apply plugin: 'java-test-fixtures'
@@ -136,7 +159,6 @@ allprojects {
 			// Default to true
 			useSonatype = true
 		}
-		javaCompatilibity = JavaVersion.VERSION_1_8
 		javaMajor = javaCompatilibity.getMajorVersion()
 	}
 	group = 'org.igniterealtime.smack'
@@ -338,7 +360,7 @@ task javadocAll(type: Javadoc) {
 		linkSource = true
 		use = true
 		links = [
-		"https://docs.oracle.com/javase/${javaMajor}/docs/api/",
+		"https://docs.oracle.com/en/java/javase/${javaMajor}/docs/api/",
 		"https://jxmpp.org/releases/${staticJxmppVersion}/javadoc/",
 		"https://minidns.org/releases/${staticMiniDnsVersion}/javadoc/",
 		] as String[]

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,8 +45,8 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.websocket.XmppWebSocketTransportModuleDescriptor;
-
+import org.jivesoftware.smack.websocket.java11.Java11WebSocketFactory;
+import org.jivesoftware.smack.websocket.okhttp.OkHttpWebSocketFactory;
 import org.jivesoftware.smackx.admin.ServiceAdministrationManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
@@ -88,15 +89,13 @@ public class XmppConnectionManager {
                             .build()
             );
             addConnectionDescriptor(
-                    XmppConnectionDescriptor.buildWith(ModularXmppClientToServerConnection.class, ModularXmppClientToServerConnectionConfiguration.class, ModularXmppClientToServerConnectionConfiguration.Builder.class)
-                    .withNickname("modular-websocket")
-                    .applyExtraConfguration(cb -> {
-                        cb.removeAllModules();
-                        cb.addModule(XmppWebSocketTransportModuleDescriptor.class);
-                    })
-                    .build()
+                            XmppConnectionDescriptor.buildWebsocketDescriptor("modular-websocket-okhttp", OkHttpWebSocketFactory.class)
             );
-        } catch (NoSuchMethodException | SecurityException e) {
+            addConnectionDescriptor(
+                            XmppConnectionDescriptor.buildWebsocketDescriptor("modular-websocket-java11", Java11WebSocketFactory.class)
+            );
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+                        | IllegalArgumentException | InvocationTargetException e) {
             throw new AssertionError(e);
         }
     }
@@ -155,12 +154,12 @@ public class XmppConnectionManager {
     /**
      * A pool of authenticated and free to use connections.
      */
-    private final MultiMap<Class<? extends AbstractXMPPConnection>, AbstractXMPPConnection> connectionPool = new MultiMap<>();
+    private final MultiMap<XmppConnectionDescriptor<?, ?, ?>, AbstractXMPPConnection> connectionPool = new MultiMap<>();
 
     /**
      * A list of all ever created connections.
      */
-    private final List<AbstractXMPPConnection> connections = new ArrayList<>();
+    private final Map<AbstractXMPPConnection, XmppConnectionDescriptor<?, ?, ?>> connections = new ConcurrentHashMap<>();
 
     XmppConnectionManager(SmackIntegrationTestFramework sinttestFramework)
             throws SmackException, IOException, XMPPException, InterruptedException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -249,7 +248,7 @@ public class XmppConnectionManager {
 
     void disconnectAndCleanup() throws InterruptedException {
         int successfullyDeletedAccountsCount = 0;
-        for (AbstractXMPPConnection connection : connections) {
+        for (AbstractXMPPConnection connection : connections.keySet()) {
             if (sinttestConfiguration.accountRegistration == AccountRegistration.inBandRegistration) {
                 // Note that we use the account manager from the to-be-deleted connection.
                 AccountManager accountManager = AccountManager.getInstance(connection);
@@ -345,7 +344,7 @@ public class XmppConnectionManager {
             }
         });
 
-        connections.add(mainConnection);
+        connections.put(mainConnection, defaultConnectionDescriptor);
 
         mainConnection.connect();
         mainConnection.login();
@@ -384,13 +383,13 @@ public class XmppConnectionManager {
         }
     }
 
-    <C extends AbstractXMPPConnection> List<C> constructConnectedConnections(Class<C> connectionClass, int count)
+    <C extends AbstractXMPPConnection> List<C> constructConnectedConnections(XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>>  connectionDescriptor, int count)
                     throws InterruptedException, SmackException, IOException, XMPPException {
         List<C> connections = new ArrayList<>(count);
 
         synchronized (connectionPool) {
             @SuppressWarnings("unchecked")
-            List<C> pooledConnections = (List<C>) connectionPool.getAll(connectionClass);
+            List<C> pooledConnections = (List<C>) connectionPool.getAll(connectionDescriptor);
             while (count > 0 && !pooledConnections.isEmpty()) {
                 C connection = pooledConnections.remove(pooledConnections.size() - 1);
                 connections.add(connection);
@@ -398,9 +397,6 @@ public class XmppConnectionManager {
             }
         }
 
-        @SuppressWarnings("unchecked")
-        XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> connectionDescriptor = (XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>>) connectionDescriptors
-                .getFirst(connectionClass);
         for (int i = 0; i < count; i++) {
             C connection = constructConnectedConnection(connectionDescriptor);
             connections.add(connection);
@@ -469,7 +465,7 @@ public class XmppConnectionManager {
             throw new IllegalStateException(e);
         }
 
-        connections.add(connection);
+        connections.put(connection, connectionDescriptor);
 
         return connection;
     }
@@ -487,8 +483,13 @@ public class XmppConnectionManager {
         }
 
         if (connection.isAuthenticated()) {
+            XmppConnectionDescriptor<?, ?, ?> connectionDescriptor = connections.get(connection);
+            if (connectionDescriptor == null) {
+                throw new IllegalStateException("Attempt to recycle unknown connection: " + connection);
+            }
+
             synchronized (connectionPool) {
-                connectionPool.put(connectionClass, connection);
+                connectionPool.put(connectionDescriptor, connection);
             }
         } else {
             connection.disconnect();

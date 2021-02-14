@@ -54,8 +54,6 @@ public abstract class XmppClientToServerTransport {
 
     public abstract SSLSession getSslSession();
 
-    public abstract boolean isConnected();
-
     public boolean isTransportSecured() {
         return getSslSession() != null;
     }

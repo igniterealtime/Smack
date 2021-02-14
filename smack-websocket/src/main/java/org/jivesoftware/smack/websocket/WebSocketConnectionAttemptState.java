@@ -24,26 +24,28 @@ import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.EstablishingWebSocketConnectionState;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
-import org.jivesoftware.smack.websocket.impl.WebSocketFactoryService;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpointLookup;
 
 public final class WebSocketConnectionAttemptState {
+
     private final ModularXmppClientToServerConnectionInternal connectionInternal;
     private final XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints discoveredEndpoints;
+    private final WebSocketFactory webSocketFactory;
 
     private AbstractWebSocket webSocket;
 
     WebSocketConnectionAttemptState(ModularXmppClientToServerConnectionInternal connectionInternal,
                     XmppWebSocketTransportModule.XmppWebSocketTransport.DiscoveredWebSocketEndpoints discoveredWebSocketEndpoints,
-                    EstablishingWebSocketConnectionState establishingWebSocketConnectionState) {
+                    WebSocketFactory webSocketFactory) {
         assert discoveredWebSocketEndpoints != null;
         assert !discoveredWebSocketEndpoints.result.isEmpty();
 
         this.connectionInternal = connectionInternal;
         this.discoveredEndpoints = discoveredWebSocketEndpoints;
+        this.webSocketFactory = webSocketFactory;
     }
 
     /**
@@ -87,7 +89,7 @@ public final class WebSocketConnectionAttemptState {
             List<AbstractWebSocket> webSockets = new ArrayList<>(endpointCount);
             // First only create the AbstractWebSocket instances, in case a constructor throws.
             for (WebSocketRemoteConnectionEndpoint endpoint : webSocketEndpoints) {
-                AbstractWebSocket webSocket = WebSocketFactoryService.createWebSocket(endpoint, connectionInternal);
+                AbstractWebSocket webSocket = webSocketFactory.create(endpoint, connectionInternal);
                 webSockets.add(webSocket);
             }
 

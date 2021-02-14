@@ -50,6 +50,8 @@ import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.XmppWebSock
 import org.jivesoftware.smack.websocket.elements.WebSocketCloseElement;
 import org.jivesoftware.smack.websocket.elements.WebSocketOpenElement;
 import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactoryService;
 import org.jivesoftware.smack.websocket.rce.InsecureWebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.websocket.rce.SecureWebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
@@ -63,6 +65,9 @@ import org.jxmpp.jid.DomainBareJid;
  */
 public final class XmppWebSocketTransportModule
                 extends ModularXmppClientToServerConnectionModule<XmppWebSocketTransportModuleDescriptor> {
+
+    private static final int WEBSOCKET_NORMAL_CLOSURE = 1000;
+
     private final XmppWebSocketTransport websocketTransport;
 
     private AbstractWebSocket websocket;
@@ -106,8 +111,15 @@ public final class XmppWebSocketTransportModule
         @Override
         public AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext) throws InterruptedException,
                         NoResponseException, NotConnectedException, SmackException, XMPPException {
+            final WebSocketFactory webSocketFactory;
+            if (moduleDescriptor.webSocketFactory != null) {
+                webSocketFactory = moduleDescriptor.webSocketFactory;
+            } else {
+                webSocketFactory = WebSocketFactoryService::createWebSocket;
+            }
+
             WebSocketConnectionAttemptState connectionAttemptState = new WebSocketConnectionAttemptState(
-                            connectionInternal, discoveredWebSocketEndpoints, this);
+                            connectionInternal, discoveredWebSocketEndpoints, webSocketFactory);
 
             StateTransitionResult.Failure failure = connectionAttemptState.establishWebSocketConnection();
             if (failure != null) {
@@ -246,7 +258,7 @@ public final class XmppWebSocketTransportModule
 
         @Override
         protected void disconnect() {
-            websocket.disconnect(1000, "WebSocket closed normally");
+            websocket.disconnect(WEBSOCKET_NORMAL_CLOSURE, "WebSocket closed normally");
         }
 
         @Override
@@ -267,11 +279,6 @@ public final class XmppWebSocketTransportModule
         @Override
         public boolean isTransportSecured() {
             return websocket.isConnectionSecure();
-        }
-
-        @Override
-        public boolean isConnected() {
-            return websocket.isConnected();
         }
 
         @Override

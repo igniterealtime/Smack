@@ -664,7 +664,6 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             return tlsState.engine.getSession();
         }
 
-        @Override
         public boolean isConnected() {
             SocketChannel socketChannel = XmppTcpTransportModule.this.socketChannel;
             if (socketChannel == null) {

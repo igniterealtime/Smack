@@ -14,57 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.websocket.okhttp;
+package org.jivesoftware.smack.websocket.impl;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.debugger.SmackDebugger;
 
-import okhttp3.Headers;
-import okhttp3.Response;
-
 import org.jxmpp.xml.splitter.XmlPrettyPrinter;
 import org.jxmpp.xml.splitter.XmppXmlSplitter;
 
-public final class LoggingInterceptor {
-    private static final Logger LOGGER = Logger.getLogger(LoggingInterceptor.class.getName());
+public class SmackWebSocketDebugger {
+
+    private static final Logger LOGGER = Logger.getLogger(SmackWebSocketDebugger.class.getName());
 
     private final SmackDebugger debugger;
     private final XmppXmlSplitter incomingXmlSplitter;
     private final XmppXmlSplitter outgoingXmlSplitter;
 
-    LoggingInterceptor(SmackDebugger smackDebugger) {
+    SmackWebSocketDebugger(SmackDebugger smackDebugger) {
         this.debugger = smackDebugger;
 
         XmlPrettyPrinter incomingTextPrinter = XmlPrettyPrinter.builder()
-                                    .setPrettyWriter(sb -> debugger.incomingStreamSink(sb))
-                                    .setTabWidth(4)
-                                    .build();
+                        .setPrettyWriter(sb -> debugger.incomingStreamSink(sb))
+                        .setTabWidth(4)
+                        .build();
         incomingXmlSplitter = new XmppXmlSplitter(incomingTextPrinter);
 
         XmlPrettyPrinter outgoingTextPrinter = XmlPrettyPrinter.builder()
-                .setPrettyWriter(sb -> debugger.outgoingStreamSink(sb))
-                .setTabWidth(4)
-                .build();
+                        .setPrettyWriter(sb -> debugger.outgoingStreamSink(sb))
+                        .setTabWidth(4)
+                        .build();
         outgoingXmlSplitter = new XmppXmlSplitter(outgoingTextPrinter);
     }
 
-    // Open response received here isn't in the form of an Xml an so, there isn't much to format.
-    void interceptOpenResponse(Response response) {
-       Headers headers = response.headers();
-       Iterator<?> iterator = headers.iterator();
-       StringBuilder sb = new StringBuilder();
-       sb.append("Received headers:");
-       while (iterator.hasNext()) {
-           sb.append("\n\t" + iterator.next());
-       }
-       debugger.incomingStreamSink(sb);
-    }
-
-    void interceptReceivedText(String text) {
+    void incoming(String text) {
         try {
             incomingXmlSplitter.write(text);
         } catch (IOException e) {
@@ -73,7 +58,7 @@ public final class LoggingInterceptor {
         }
     }
 
-    void interceptSentText(String text) {
+    void outgoing(String text) {
         try {
             outgoingXmlSplitter.write(text);
         } catch (IOException e) {

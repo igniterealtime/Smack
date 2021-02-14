@@ -16,24 +16,44 @@
  */
 package org.jivesoftware.smack.websocket.impl;
 
+import java.util.logging.Logger;
+
 import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
+import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.websocket.WebSocketException;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 public abstract class AbstractWebSocket {
+
+    protected static final Logger LOGGER = Logger.getLogger(AbstractWebSocket.class.getName());
+
+    protected static final String SEC_WEBSOCKET_PROTOCOL_HEADER_FILED_NAME = "Sec-WebSocket-Protocol";
+    protected static final String SEC_WEBSOCKET_PROTOCOL_HEADER_FILED_VALUE_XMPP = "xmpp";
+
+    protected final SmackFuture.InternalSmackFuture<AbstractWebSocket, Exception> future = new SmackFuture.InternalSmackFuture<>();
 
     protected final ModularXmppClientToServerConnectionInternal connectionInternal;
 
     protected final WebSocketRemoteConnectionEndpoint endpoint;
 
+    private final SmackWebSocketDebugger debugger;
+
     protected AbstractWebSocket(WebSocketRemoteConnectionEndpoint endpoint,
                     ModularXmppClientToServerConnectionInternal connectionInternal) {
         this.endpoint = endpoint;
         this.connectionInternal = connectionInternal;
+
+        final SmackDebugger smackDebugger = connectionInternal.smackDebugger;
+        if (smackDebugger != null) {
+            debugger = new SmackWebSocketDebugger(smackDebugger);
+        } else {
+            debugger = null;
+        }
     }
 
     public final WebSocketRemoteConnectionEndpoint getEndpoint() {
@@ -44,6 +64,10 @@ public abstract class AbstractWebSocket {
     private String streamClose;
 
     protected final void onIncomingWebSocketElement(String element) {
+        if (debugger != null) {
+            debugger.incoming(element);
+        }
+
         // TODO: Once smack-websocket-java15 is there, we have to re-evaluate if the async operation here is still
         // required, or if it should only be performed if OkHTTP is used.
         if (isOpenElement(element)) {
@@ -95,11 +119,31 @@ public abstract class AbstractWebSocket {
         return false;
     }
 
-    public abstract SmackFuture<AbstractWebSocket, Exception> getFuture();
+    protected void onWebSocketFailure(Throwable throwable) {
+        WebSocketException websocketException = new WebSocketException(throwable);
+
+        // If we are already connected, then we need to notify the connection that it got tear down. Otherwise we
+        // need to notify the thread calling connect() that the connection failed.
+        if (future.wasSuccessful()) {
+            connectionInternal.notifyConnectionError(websocketException);
+        } else {
+            future.setException(websocketException);
+        }
+    }
+
+    public final SmackFuture<AbstractWebSocket, Exception> getFuture() {
+        return future;
+    }
 
     public final void send(TopLevelStreamElement element) {
         XmlEnvironment outgoingStreamXmlEnvironment = connectionInternal.getOutgoingStreamXmlEnvironment();
         String elementString = element.toXML(outgoingStreamXmlEnvironment).toString();
+
+        // TODO: We could make use of Java 11's WebSocket (is)last feature when sending
+        if (debugger != null) {
+            debugger.outgoing(elementString);
+        }
+
         send(elementString);
     }
 
@@ -107,9 +151,9 @@ public abstract class AbstractWebSocket {
 
     public abstract void disconnect(int code, String message);
 
-    public abstract boolean isConnectionSecure();
+    public boolean isConnectionSecure() {
+        return endpoint.isSecureEndpoint();
+    }
 
     public abstract SSLSession getSSLSession();
-
-    public abstract boolean isConnected();
 }

@@ -30,6 +30,7 @@ import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionIn
 import org.jivesoftware.smack.fsm.StateDescriptor;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.websocket.XmppWebSocketTransportModule.EstablishingWebSocketConnectionStateDescriptor;
+import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 /**
@@ -41,14 +42,16 @@ import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppClientToServerConnectionModuleDescriptor {
     private final boolean performWebSocketEndpointDiscovery;
     private final boolean implicitWebSocketEndpoint;
-    private final URI uri;
     private final WebSocketRemoteConnectionEndpoint wsRce;
+
+    final WebSocketFactory webSocketFactory;
 
     public XmppWebSocketTransportModuleDescriptor(Builder builder) {
         this.performWebSocketEndpointDiscovery = builder.performWebSocketEndpointDiscovery;
         this.implicitWebSocketEndpoint = builder.implicitWebSocketEndpoint;
+        this.webSocketFactory = builder.webSocketFactory;
 
-        this.uri = builder.uri;
+        URI uri = builder.uri;
         if (uri != null) {
             wsRce = WebSocketRemoteConnectionEndpoint.from(uri);
         } else {
@@ -95,7 +98,7 @@ public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppCli
      * @return uri
      */
     public URI getExplicitlyProvidedUri() {
-        return uri;
+        return wsRce.getUri();
     }
 
     WebSocketRemoteConnectionEndpoint getExplicitlyProvidedEndpoint() {
@@ -142,6 +145,7 @@ public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppCli
         private boolean performWebSocketEndpointDiscovery = true;
         private boolean implicitWebSocketEndpoint = true;
         private URI uri;
+        private WebSocketFactory webSocketFactory;
 
         private Builder(
                 ModularXmppClientToServerConnectionConfiguration.Builder connectionConfigurationBuilder) {
@@ -172,6 +176,12 @@ public final class XmppWebSocketTransportModuleDescriptor extends ModularXmppCli
 
         public Builder disableImplicitWebsocketEndpoint() {
             implicitWebSocketEndpoint = false;
+            return this;
+        }
+
+        public Builder setWebSocketFactory(WebSocketFactory webSocketFactory) {
+            Objects.requireNonNull(webSocketFactory);
+            this.webSocketFactory = webSocketFactory;
             return this;
         }
 

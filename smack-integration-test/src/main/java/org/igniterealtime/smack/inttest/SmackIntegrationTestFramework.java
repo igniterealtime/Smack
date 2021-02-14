@@ -48,6 +48,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.Smack;
 import org.jivesoftware.smack.SmackConfiguration;
@@ -199,8 +200,8 @@ public class SmackIntegrationTestFramework {
         Set<Class<? extends AbstractSmackIntegrationTest>> inttestClasses = reflections.getSubTypesOf(AbstractSmackIntegrationTest.class);
         Set<Class<? extends AbstractSmackLowLevelIntegrationTest>> lowLevelInttestClasses = reflections.getSubTypesOf(AbstractSmackLowLevelIntegrationTest.class);
 
-        Set<Class<? extends AbstractSmackIntTest>> classes = new HashSet<>(inttestClasses.size()
-                        + lowLevelInttestClasses.size());
+        final int builtInTestCount = inttestClasses.size() + lowLevelInttestClasses.size();
+        Set<Class<? extends AbstractSmackIntTest>> classes = new HashSet<>(builtInTestCount);
         classes.addAll(inttestClasses);
         classes.addAll(lowLevelInttestClasses);
 
@@ -333,11 +334,11 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
-            Class<? extends AbstractXMPPConnection> specificLowLevelConnectionClass = null;
+            XmppConnectionDescriptor<?, ?, ?> specificLowLevelConnectionDescriptor = null;
             final TestType testType;
             if (test instanceof AbstractSmackSpecificLowLevelIntegrationTest) {
                 AbstractSmackSpecificLowLevelIntegrationTest<?> specificLowLevelTest = (AbstractSmackSpecificLowLevelIntegrationTest<?>) test;
-                specificLowLevelConnectionClass = specificLowLevelTest.getConnectionClass();
+                specificLowLevelConnectionDescriptor = specificLowLevelTest.getConnectionDescriptor();
                 testType = TestType.SpecificLowLevel;
             } else if (test instanceof AbstractSmackLowLevelIntegrationTest) {
                 testType = TestType.LowLevel;
@@ -366,6 +367,7 @@ public class SmackIntegrationTestFramework {
                     verifyLowLevelTestMethod(method, AbstractXMPPConnection.class);
                     break;
                 case SpecificLowLevel:
+                    Class<? extends AbstractXMPPConnection> specificLowLevelConnectionClass = specificLowLevelConnectionDescriptor.getConnectionClass();
                     verifyLowLevelTestMethod(method, specificLowLevelConnectionClass);
                     break;
                 }
@@ -543,10 +545,8 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
-            Class<? extends AbstractXMPPConnection> connectionClass = connectionDescriptor.getConnectionClass();
-
-            ConcreteTest.Executor executor = () -> lowLevelTestMethod.invoke(test, connectionClass);
-            ConcreteTest concreteTest = new ConcreteTest(TestType.LowLevel, lowLevelTestMethod.testMethod, executor, connectionClass.getSimpleName());
+            ConcreteTest.Executor executor = () -> lowLevelTestMethod.invoke(test, connectionDescriptor);
+            ConcreteTest concreteTest = new ConcreteTest(TestType.LowLevel, lowLevelTestMethod.testMethod, executor, connectionDescriptor.getNickname());
             resultingConcreteTests.add(concreteTest);
         }
 
@@ -560,8 +560,9 @@ public class SmackIntegrationTestFramework {
         if (testMethod.smackIntegrationTestAnnotation.onlyDefaultConnectionType()) {
             throw new IllegalArgumentException("SpecificLowLevelTests must not have set onlyDefaultConnectionType");
         }
-        Class<C> connectionClass = test.getConnectionClass();
-        testMethod.invoke(test, connectionClass);
+
+        XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> connectionDescriptor = test.getConnectionDescriptor();
+        testMethod.invoke(test, connectionDescriptor);
     }
 
     protected SmackIntegrationTestEnvironment prepareEnvironment() throws SmackException,
@@ -837,9 +838,8 @@ public class SmackIntegrationTestFramework {
             parameterListOfConnections = testMethodParametersIsListOfConnections(testMethod);
         }
 
-        // TODO: The second parameter should probably be a connection descriptor?
         private void invoke(AbstractSmackLowLevelIntegrationTest test,
-                        Class<? extends AbstractXMPPConnection> connectionClass)
+                        XmppConnectionDescriptor<?, ?, ?> connectionDescriptor)
                         throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
                         InterruptedException, SmackException, IOException, XMPPException {
             final int connectionCount;
@@ -854,7 +854,7 @@ public class SmackIntegrationTestFramework {
             }
 
             List<? extends AbstractXMPPConnection> connections = connectionManager.constructConnectedConnections(
-                            connectionClass, connectionCount);
+                            connectionDescriptor, connectionCount);
 
             if (parameterListOfConnections) {
                 testMethod.invoke(test, connections);

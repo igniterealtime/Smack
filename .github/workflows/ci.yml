@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        java: [ 1.8, 11 ]
+        java:
+          - 11
 
     steps:
       - name: Checkout
