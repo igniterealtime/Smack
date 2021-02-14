@@ -79,6 +79,12 @@ public final class ServerPingWithAlarmManager extends Manager {
         });
     }
 
+    /**
+     * Get the instance of this manager for the given connection.
+     *
+     * @param connection the connection.
+     * @return the instance of this manager for the given connection.
+     */
     public static synchronized ServerPingWithAlarmManager getInstanceFor(XMPPConnection connection) {
         ServerPingWithAlarmManager serverPingWithAlarmManager = INSTANCES.get(connection);
         if (serverPingWithAlarmManager == null) {
@@ -104,6 +110,11 @@ public final class ServerPingWithAlarmManager extends Manager {
         mEnabled = enabled;
     }
 
+    /**
+     * Check if this manager is enabled.
+     *
+     * @return <code>true</code> if this manager is enabled, <code>false</code> otherwise.
+     */
     public boolean isEnabled() {
         return mEnabled;
     }

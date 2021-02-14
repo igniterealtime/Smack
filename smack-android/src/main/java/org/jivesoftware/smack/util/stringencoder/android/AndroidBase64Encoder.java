@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,16 +24,15 @@ import android.util.Base64;
  */
 public final class AndroidBase64Encoder implements org.jivesoftware.smack.util.stringencoder.Base64.Encoder {
 
-    private static AndroidBase64Encoder instance = new AndroidBase64Encoder();
+    /**
+     * An instance of this encoder.
+     */
+    public static AndroidBase64Encoder INSTANCE = new AndroidBase64Encoder();
 
     private static final int BASE64_ENCODER_FLAGS = Base64.NO_WRAP;
 
     private AndroidBase64Encoder() {
         // Use getInstance()
-    }
-
-    public static AndroidBase64Encoder getInstance() {
-        return instance;
     }
 
     @Override
