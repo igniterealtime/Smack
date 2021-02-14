@@ -127,7 +127,7 @@ allprojects {
 		smackMinAndroidSdk = 19
 		junitVersion = '5.6.2'
 		commonsIoVersion = '2.6'
-		bouncyCastleVersion = '1.65'
+		bouncyCastleVersion = '1.68'
 
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
