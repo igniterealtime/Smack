@@ -152,6 +152,7 @@ allprojects {
 		commonsIoVersion = '2.6'
 		bouncyCastleVersion = '1.68'
 		guavaVersion = '30.1-jre'
+		mockitoVersion = '3.7.7'
 
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
@@ -312,10 +313,10 @@ tasks.withType(Javadoc) {
 		// The smack-extensions subproject uses mockito in its fest
 		// fixtures, and we want to have mockito also available in
 		// test, so we use API here.
-		testFixturesApi "org.mockito:mockito-core:3.3.3"
+		testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
 		
 		// To mock final classes
-		testImplementation 'org.mockito:mockito-inline:3.3.3'
+		testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
 		testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 
 		errorprone 'com.google.errorprone:error_prone_core:2.5.1'
