@@ -152,6 +152,7 @@ allprojects {
 		commonsIoVersion = '2.6'
 		bouncyCastleVersion = '1.68'
 		guavaVersion = '30.1-jre'
+		mockitoVersion = '3.7.7'
 
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
@@ -255,7 +256,7 @@ allprojects {
 	}
 
 	jacoco {
-		toolVersion = "0.8.3"
+		toolVersion = "0.8.6"
 	}
 
 	jacocoTestReport {
@@ -273,7 +274,10 @@ allprojects {
 			// since the one paramater addStringOption doesn't seem to
 			// work, we extra add '-quiet', which is added anyway by
 			// gradle.
-			options.addStringOption('Xdoclint:all', '-quiet')
+			// TODO: This enables all doclint check but
+			// 'missing'. Re-enable 'missing' once every public API in
+			// Smack has a javadoc comment.
+			options.addStringOption('Xdoclint:accessibility,html,reference,syntax', '-quiet')
 
 			// Treat warnings as errors.
 			// See also https://bugs.openjdk.java.net/browse/JDK-8200363
@@ -285,12 +289,16 @@ allprojects {
 		tasks.withType(Javadoc) {
 			options.addStringOption('-release', javaMajor)
 
-			// Fix for javadoc search. If not set, the search result would direct to
-			// javadoc/undefined/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
-			// instead of
-			// javadoc/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
-			// https://stackoverflow.com/a/53732633/194894
-			options.addBooleanOption("-no-module-directories", true)
+			// The -no-modules-directories javadoc option was removed in Java 13
+			// See https://bugs.openjdk.java.net/browse/JDK-8215582
+			if (JavaVersion.current() < JavaVersion.VERSION_13) {
+				// Fix for javadoc search. If not set, the search result would direct to
+				// javadoc/undefined/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
+				// instead of
+				// javadoc/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
+				// https://stackoverflow.com/a/53732633/194894
+				options.addBooleanOption("-no-module-directories", true)
+			}
 		}
 		tasks.withType(JavaCompile) {
 			options.compilerArgs.addAll([
@@ -312,10 +320,10 @@ tasks.withType(Javadoc) {
 		// The smack-extensions subproject uses mockito in its fest
 		// fixtures, and we want to have mockito also available in
 		// test, so we use API here.
-		testFixturesApi "org.mockito:mockito-core:3.3.3"
+		testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
 		
 		// To mock final classes
-		testImplementation 'org.mockito:mockito-inline:3.3.3'
+		testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
 		testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 
 		errorprone 'com.google.errorprone:error_prone_core:2.5.1'
