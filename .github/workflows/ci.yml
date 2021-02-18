@@ -74,6 +74,12 @@ jobs:
       - name: Gradle Check
         run: ${PATH_TO_GRADLE} check --stacktrace
 
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.17
+        if: always()
+        with:
+          files: test-results/**/*.xml
+
       # Test local publish
       - name: Gradle publish
         run: ${PATH_TO_GRADLE} publishToMavenLocal --stacktrace
