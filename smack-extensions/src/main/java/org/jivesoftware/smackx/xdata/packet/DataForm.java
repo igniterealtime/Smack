@@ -105,7 +105,7 @@ public final class DataForm implements ExtensionElement {
         extensionElements = CollectionUtil.cloneAndSeal(builder.extensionElements);
 
         // Ensure that the types of the form fields of every data form is known by registering such fields.
-        if (type == Type.form) {
+        if (type == Type.form && hasHiddenFormTypeField()) {
             FormFieldRegistry.register(this);
         }
     }
