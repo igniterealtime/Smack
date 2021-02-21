@@ -207,14 +207,19 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         }
 
         if (type == null) {
-            // If no field type was explicitly provided, then we need to lookup the
-            // field's type in the registry.
-            type = FormFieldRegistry.lookup(formType, fieldName);
-            if (type == null) {
-                LOGGER.warning("The Field '" + fieldName + "' from FORM_TYPE '" + formType
-                                + "' is not registered. Field type is unknown, assuming text-single.");
-                // As per XEP-0004, text-single is the default form field type, which we use as emergency fallback here.
-                type = FormField.Type.text_single;
+            // The field name 'FORM_TYPE' is magic.
+            if (fieldName.equals(FormField.FORM_TYPE)) {
+                type = FormField.Type.hidden;
+            } else {
+                // If no field type was explicitly provided, then we need to lookup the
+                // field's type in the registry.
+                type = FormFieldRegistry.lookup(formType, fieldName);
+                if (type == null) {
+                    LOGGER.warning("The Field '" + fieldName + "' from FORM_TYPE '" + formType
+                                    + "' is not registered. Field type is unknown, assuming text-single.");
+                    // As per XEP-0004, text-single is the default form field type, which we use as emergency fallback here.
+                    type = FormField.Type.text_single;
+                }
             }
         }
 

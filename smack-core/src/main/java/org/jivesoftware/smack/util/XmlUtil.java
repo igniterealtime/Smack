@@ -64,4 +64,13 @@ public class XmlUtil {
 
         return stringWriter.toString();
     }
+
+    public static boolean isClarkNotation(String text) {
+        if (text.isEmpty()) {
+            return false;
+        }
+
+        // TODO: This is currently a mediocre heuristic to check for clark notation.
+        return text.charAt(0) == '{';
+    }
 }
