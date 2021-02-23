@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.xdata.form;
 
 import org.jivesoftware.smack.util.Objects;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
@@ -32,10 +31,6 @@ public abstract class FilledForm implements FormReader {
 
     public FilledForm(DataForm dataForm) {
         this.dataForm = Objects.requireNonNull(dataForm);
-        String formType = dataForm.getFormType();
-        if (StringUtils.isNullOrEmpty(formType)) {
-            throw new IllegalArgumentException("The provided data form has no hidden FROM_TYPE field.");
-        }
         if (dataForm.getType() == Type.cancel) {
             throw new IllegalArgumentException("Forms of type 'cancel' are not filled nor fillable");
         }
