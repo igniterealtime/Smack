@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.XmlUtil;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -73,22 +74,28 @@ public class FormFieldRegistry {
         FIELD_NAME_TO_FORM_TYPE.put(fieldName, formType);
     }
 
-    public static synchronized FormField.Type lookup(String formType, String fieldName) {
-        if (formType == null) {
-            formType = FIELD_NAME_TO_FORM_TYPE.get(fieldName);
-            if (formType != null) {
-                FormField.Type type = lookup(formType, fieldName);
+    public static FormField.Type lookup(String formType, String fieldName) {
+        if (XmlUtil.isClarkNotation(fieldName)) {
+            return null;
+        }
+
+        synchronized (FormFieldRegistry.class) {
+            if (formType == null) {
+                formType = FIELD_NAME_TO_FORM_TYPE.get(fieldName);
+                if (formType != null) {
+                    FormField.Type type = lookup(formType, fieldName);
+                    if (type != null) {
+                        return type;
+                    }
+                }
+            }
+
+            Map<String, FormField.Type> fieldNameToTypeMap = REGISTRY.get(formType);
+            if (fieldNameToTypeMap != null) {
+                FormField.Type type = fieldNameToTypeMap.get(fieldName);
                 if (type != null) {
                     return type;
                 }
-            }
-        }
-
-        Map<String, FormField.Type> fieldNameToTypeMap = REGISTRY.get(formType);
-        if (fieldNameToTypeMap != null) {
-            FormField.Type type = fieldNameToTypeMap.get(fieldName);
-            if (type != null) {
-                return type;
             }
         }
 
@@ -96,7 +103,15 @@ public class FormFieldRegistry {
     }
 
     public static synchronized FormFieldInformation lookup(String fieldName) {
-        String formType = FIELD_NAME_TO_FORM_TYPE.get(fieldName);
+        if (XmlUtil.isClarkNotation(fieldName)) {
+            return null;
+        }
+
+        String formType;
+        synchronized (FormFieldRegistry.class) {
+            formType = FIELD_NAME_TO_FORM_TYPE.get(fieldName);
+        }
+
         FormField.Type type = lookup(formType, fieldName);
         if (type == null) {
             return null;
