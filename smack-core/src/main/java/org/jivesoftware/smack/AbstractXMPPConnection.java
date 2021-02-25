@@ -2214,7 +2214,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @return a String representing the corresponding stream end tag.
      */
     protected String onStreamOpen(XmlPullParser parser) {
-        assert StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE.equals(parser.getNamespace());
+        assert StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE.equals(parser.getNamespace()) : parser.getNamespace()
+                        + " is not " + StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE;
         assert StreamOpen.UNPREFIXED_ELEMENT.equals(parser.getName());
 
         streamId = parser.getAttributeValue("id");
