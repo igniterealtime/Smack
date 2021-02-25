@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.formtypes;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlUtil;
@@ -26,6 +27,8 @@ import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 public class FormFieldRegistry {
+
+    private static final Logger LOGGER = Logger.getLogger(FormFieldRegistry.class.getName());
 
     private static final Map<String, Map<String, FormField.Type>> REGISTRY = new HashMap<>();
 
@@ -69,7 +72,10 @@ public class FormFieldRegistry {
                 throw new IllegalArgumentException();
             }
         }
-        fieldNameToType.put(fieldName, type);
+        FormField.Type previousType = fieldNameToType.put(fieldName, type);
+        if (previousType != null && type != previousType) {
+            LOGGER.warning("Form field registry inconsitency detected: Registered field '" + fieldName + "' of type " + type + " but previous type was " + previousType);
+        }
 
         FIELD_NAME_TO_FORM_TYPE.put(fieldName, formType);
     }
