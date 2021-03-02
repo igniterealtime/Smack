@@ -100,6 +100,9 @@ public final class DataForm implements ExtensionElement {
         instructions = CollectionUtil.cloneAndSeal(builder.instructions);
         reportedData = builder.reportedData;
         items = CollectionUtil.cloneAndSeal(builder.items);
+
+        builder.orderFields();
+
         fields = CollectionUtil.cloneAndSeal(builder.fields);
         fieldsMap = CollectionUtil.cloneAndSeal(builder.fieldsMap);
         extensionElements = CollectionUtil.cloneAndSeal(builder.extensionElements);
@@ -380,6 +383,30 @@ public final class DataForm implements ExtensionElement {
             fields = CollectionUtil.newListWith(dataForm.getFields());
             fieldsMap = new HashMap<>(dataForm.fieldsMap);
             extensionElements = CollectionUtil.newListWith(dataForm.getExtensionElements());
+        }
+
+        private void orderFields() {
+            Iterator<FormField> it = fields.iterator();
+            if (!it.hasNext()) {
+                return;
+            }
+
+            FormField hiddenFormTypeField = it.next().asHiddenFormTypeFieldIfPossible();
+            if (hiddenFormTypeField != null) {
+                // The hidden FROM_TYPE field is already in first position, nothing to do.
+                return;
+            }
+
+            while (it.hasNext()) {
+                hiddenFormTypeField = it.next().asHiddenFormTypeFieldIfPossible();
+                if (hiddenFormTypeField != null) {
+                    // Remove the hidden FORM_TYPE field that is not on first position.
+                    it.remove();
+                    // And insert it again at first position.
+                    fields.add(0, hiddenFormTypeField);
+                    break;
+                }
+            }
         }
 
         /**

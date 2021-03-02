@@ -153,4 +153,14 @@ public class DataFormTest extends SmackTestSuite {
         DataForm df = pr.parse(PacketParserUtils.getParserFor(formWithFixedField));
         assertEquals(Type.fixed, df.getFields().get(0).getType());
     }
+
+    @Test
+    public void testReorderHiddenFormTypeFieldAtFirstPosition() {
+        DataForm dataForm = DataForm.builder()
+            .addField(FormField.textSingleBuilder("foo1").setValue("bar").build())
+            .addField(FormField.textSingleBuilder("foo2").setValue("baz").build())
+            .setFormType("my-form-type")
+            .build();
+        assertNotNull(dataForm.getFields().get(0).asHiddenFormTypeFieldIfPossible());
+    }
 }
