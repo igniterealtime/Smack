@@ -108,9 +108,8 @@ public final class StaxXmlPullParser implements XmlPullParser {
 
     @Override
     public String getNamespace() {
-        NamespaceContext namespaceContext = xmlStreamReader.getNamespaceContext();
         String prefix = getPrefix();
-        return namespaceContext.getNamespaceURI(prefix);
+        return getNamespace(prefix);
     }
 
     @Override
