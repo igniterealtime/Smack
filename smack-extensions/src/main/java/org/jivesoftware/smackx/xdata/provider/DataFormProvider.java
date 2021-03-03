@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software 2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,10 +66,10 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     @Override
     public DataForm parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
-        DataForm.Builder dataForm = DataForm.builder();
-        dataForm.setType(dataFormType);
+        DataForm.Builder dataForm = DataForm.builder(dataFormType);
 
         String formType = null;
+        DataForm.ReportedData reportedData = null;
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -86,6 +86,8 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     dataForm.setTitle(parser.nextText());
                     break;
                 case "field":
+                    // Note that we parse this form field without any potential reportedData. We only use reportedData
+                    // to lookup form field types of fields under <item/>.
                     FormField formField = parseField(parser, elementXmlEnvironment, formType);
 
                     TextSingleFormField hiddenFormTypeField = formField.asHiddenFormTypeFieldIfPossible();
@@ -99,12 +101,15 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     dataForm.addField(formField);
                     break;
                 case "item":
-                    DataForm.Item item = parseItem(parser, elementXmlEnvironment, formType);
+                    DataForm.Item item = parseItem(parser, elementXmlEnvironment, formType, reportedData);
                     dataForm.addItem(item);
                     break;
                 case "reported":
-                    DataForm.ReportedData reported = parseReported(parser, elementXmlEnvironment, formType);
-                    dataForm.setReportedData(reported);
+                    if (reportedData != null) {
+                        throw new SmackParsingException("Data form with multiple <reported/> elements");
+                    }
+                    reportedData = parseReported(parser, elementXmlEnvironment, formType);
+                    dataForm.setReportedData(reportedData);
                     break;
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
                 case RosterPacket.ELEMENT:
@@ -134,6 +139,11 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     }
 
     private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        return parseField(parser, xmlEnvironment, formType, null);
+    }
+
+    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType, DataForm.ReportedData reportedData)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
 
@@ -186,15 +196,30 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
             }
         }
 
+        // Data forms of type 'result' may contain <reported/> and <item/> elements. If this is the case, then the type
+        // of the <field/>s within the <item/> elements is determined by the information found in <reported/>. See
+        // XEP-0004 § 3.4 and SMACK-902
+        if (type == null && reportedData != null) {
+            FormField reportedFormField = reportedData.getField(fieldName);
+            if (reportedFormField != null) {
+                type = reportedFormField.getType();
+            }
+        }
+
         if (type == null) {
-            // If no field type was explicitly provided, then we need to lookup the
-            // field's type in the registry.
-            type = FormFieldRegistry.lookup(formType, fieldName);
-            if (type == null) {
-                LOGGER.warning("The Field '" + fieldName + "' from FORM_TYPE '" + formType
-                                + "' is not registered. Field type is unknown, assuming text-single.");
-                // As per XEP-0004, text-single is the default form field type, which we use as emergency fallback here.
-                type = FormField.Type.text_single;
+            // The field name 'FORM_TYPE' is magic.
+            if (fieldName.equals(FormField.FORM_TYPE)) {
+                type = FormField.Type.hidden;
+            } else {
+                // If no field type was explicitly provided, then we need to lookup the
+                // field's type in the registry.
+                type = FormFieldRegistry.lookup(formType, fieldName);
+                if (type == null) {
+                    LOGGER.warning("The Field '" + fieldName + "' from FORM_TYPE '" + formType
+                                    + "' is not registered. Field type is unknown, assuming text-single.");
+                    // As per XEP-0004, text-single is the default form field type, which we use as emergency fallback here.
+                    type = FormField.Type.text_single;
+                }
             }
         }
 
@@ -301,7 +326,8 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return builder;
     }
 
-    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType)
+    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType,
+                    DataForm.ReportedData reportedData)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<>();
@@ -312,7 +338,8 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), formType);
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), formType,
+                                    reportedData);
                     fields.add(field);
                     break;
                 }
