@@ -1141,16 +1141,26 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
             catch (Exception e) {
-                // The exception can be ignored if the the connection is 'done'
-                // or if the it was caused because the socket got closed.
-                if (!done) {
-                    // Set running to false since this thread will exit here and notifyConnectionError() will wait until
-                    // the reader and writer thread's 'running' value is false.
-                    running = false;
-                    // Close the connection and notify connection listeners of the
-                    // error.
-                    notifyConnectionError(e);
+                // Set running to false since this thread will exit here and notifyConnectionError() will wait until
+                // the reader and writer thread's 'running' value is false.
+                running = false;
+
+                String ignoreReasonThread = null;
+
+                boolean writerThreadWasShutDown = packetWriter.queue.isShutdown();
+                if (writerThreadWasShutDown) {
+                    ignoreReasonThread = "writer";
+                } else if (done) {
+                    ignoreReasonThread = "reader";
                 }
+
+                if (ignoreReasonThread != null) {
+                    LOGGER.log(Level.FINER, "Ignoring " + e + " as " + ignoreReasonThread + " was already shut down");
+                    return;
+                }
+
+                // Close the connection and notify connection listeners of the error.
+                notifyConnectionError(e);
             }
         }
     }
