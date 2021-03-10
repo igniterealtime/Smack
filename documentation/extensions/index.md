@@ -28,7 +28,7 @@ Currently supported XEPs of smack-im
 ------------------------------------
 
 | Name                                        | XEP                                                    | Version   | Description |
-|---------------------------------------------|--------------------------------------------------------|-----------|-----------------------------------|--
+|---------------------------------------------|--------------------------------------------------------|-----------|-----------------------------------|
 | Roster Versioning                           | [XEP-0237](https://xmpp.org/extensions/xep-0237.html)  | n/a       | Efficient roster synchronization. |
 
 Smack Extensions and currently supported XEPs of smack-extensions
