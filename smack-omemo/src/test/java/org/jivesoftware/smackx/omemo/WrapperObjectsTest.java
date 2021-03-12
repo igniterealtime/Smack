@@ -22,7 +22,6 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -61,7 +60,6 @@ public class WrapperObjectsTest extends SmackTestSuite {
 
         CipherAndAuthTag cat = new CipherAndAuthTag(key, iv, authTag, true);
 
-        assertNotNull(cat.getCipher());
         assertArrayEquals(key, cat.getKey());
         assertArrayEquals(iv, cat.getIv());
         assertArrayEquals(authTag, cat.getAuthTag());
