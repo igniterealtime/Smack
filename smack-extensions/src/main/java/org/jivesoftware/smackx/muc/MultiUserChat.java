@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software. 2020 Florian Schmaus
+ * Copyright 2003-2007 Jive Software. 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,6 +148,8 @@ public class MultiUserChat {
     private String subject;
     private EntityFullJid myRoomJid;
     private StanzaCollector messageCollector;
+
+    private DiscoverInfo mucServiceDiscoInfo;
 
     /**
      * Used to signal that the reflected self-presence was received <b>and</b> processed by us.
@@ -342,7 +344,8 @@ public class MultiUserChat {
     private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
                     XMPPErrorException, InterruptedException, NotAMucServiceException {
         final DomainBareJid mucService = room.asDomainBareJid();
-        if (!multiUserChatManager.providesMucService(mucService)) {
+        mucServiceDiscoInfo = multiUserChatManager.getMucServiceDiscoInfo(mucService);
+        if (mucServiceDiscoInfo == null) {
             throw new NotAMucServiceException(this);
         }
         // We enter a room by sending a presence packet where the "to"
@@ -757,6 +760,10 @@ public class MultiUserChat {
             throw new MucNotJoinedException(this);
         }
 
+        // TODO: Consider adding a origin-id to the presence, once it is moved form smack-experimental into
+        // smack-extensions, in case the MUC service does not support stable IDs, and modify
+        // reflectedLeavePresenceFilters accordingly.
+
         // We leave a room by sending a presence packet where the "to"
         // field is in the form "roomName@service/nickname"
         Presence leavePresence = connection.getStanzaFactory().buildPresenceStanza()
@@ -764,14 +771,19 @@ public class MultiUserChat {
                 .to(myRoomJid)
                 .build();
 
-        StanzaFilter reflectedLeavePresenceFilter = new AndFilter(
-                        StanzaTypeFilter.PRESENCE,
-                        new StanzaIdFilter(leavePresence),
-                        new OrFilter(
-                                        new AndFilter(FromMatchesFilter.createFull(myRoomJid), PresenceTypeFilter.UNAVAILABLE, MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF),
-                                        new AndFilter(fromRoomFilter, PresenceTypeFilter.ERROR)
-                                    )
-                                );
+        List<StanzaFilter> reflectedLeavePresenceFilters = new ArrayList<>(3);
+        reflectedLeavePresenceFilters.add(StanzaTypeFilter.PRESENCE);
+        reflectedLeavePresenceFilters.add(new OrFilter(
+                        new AndFilter(FromMatchesFilter.createFull(myRoomJid), PresenceTypeFilter.UNAVAILABLE,
+                                        MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF),
+                        new AndFilter(fromRoomFilter, PresenceTypeFilter.ERROR)));
+
+        boolean supportsStableId = mucServiceDiscoInfo.containsFeature(MultiUserChatConstants.STABLE_ID_FEATURE);
+        if (supportsStableId) {
+            reflectedLeavePresenceFilters.add(new StanzaIdFilter(leavePresence));
+        }
+
+        StanzaFilter reflectedLeavePresenceFilter = new AndFilter(reflectedLeavePresenceFilters);
 
         // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
         // throw.
