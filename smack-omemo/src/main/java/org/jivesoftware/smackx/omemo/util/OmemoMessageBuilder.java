@@ -36,6 +36,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.jivesoftware.smack.util.RandomUtil;
 import org.jivesoftware.smackx.omemo.OmemoRatchet;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
@@ -278,9 +279,8 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @return initialization vector
      */
     public static byte[] generateIv() {
-        SecureRandom random = new SecureRandom();
         byte[] iv = new byte[12];
-        random.nextBytes(iv);
+        RandomUtil.fillWithSecureRandom(iv);
         return iv;
     }
 }
