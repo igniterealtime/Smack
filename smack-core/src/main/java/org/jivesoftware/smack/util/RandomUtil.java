@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,5 +46,9 @@ public class RandomUtil {
 
     public static int nextSecureRandomInt() {
         return SECURE_RANDOM.get().nextInt();
+    }
+
+    public static void fillWithSecureRandom(byte[] bytes) {
+        SECURE_RANDOM.get().nextBytes(bytes);
     }
 }
