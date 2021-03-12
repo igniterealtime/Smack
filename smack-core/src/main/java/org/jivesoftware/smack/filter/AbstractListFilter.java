@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,20 @@ public abstract class AbstractListFilter implements StanzaFilter {
      * @param filters the filters to add.
      */
     protected AbstractListFilter(StanzaFilter... filters) {
+        this(new ArrayList<StanzaFilter>(Arrays.asList(filters)));
+    }
+
+    /**
+     * Creates an filter using the specified filters.
+     *
+     * @param filters the filters to add.
+     */
+    protected AbstractListFilter(List<StanzaFilter> filters) {
         Objects.requireNonNull(filters, "Parameter must not be null.");
         for (StanzaFilter filter : filters) {
             Objects.requireNonNull(filter, "Parameter must not be null.");
         }
-        this.filters = new ArrayList<StanzaFilter>(Arrays.asList(filters));
+        this.filters = filters;
     }
 
     /**
