@@ -324,6 +324,10 @@ public class OutgoingFileTransfer extends FileTransfer {
         transferThread.start();
     }
 
+    public void setCallback(NegotiationProgress negotiationProcess) {
+        this.callback = negotiationProcess;
+    }
+
     private void handleXMPPException(XMPPErrorException e) {
         StanzaError error = e.getStanzaError();
         if (error != null) {
