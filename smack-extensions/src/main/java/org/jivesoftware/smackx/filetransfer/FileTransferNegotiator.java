@@ -40,6 +40,7 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoAcceptableTransferMechanisms;
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethodsOfferedException;
+import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.ListSingleFormField;
@@ -66,6 +67,9 @@ public final class FileTransferNegotiator extends Manager {
     private static final String STREAM_INIT_PREFIX = "jsi_";
 
     protected static final String STREAM_DATA_FIELD_NAME = "stream-method";
+    static {
+        FormFieldRegistry.addLookasideFieldRegistryEntry(STREAM_DATA_FIELD_NAME, FormField.Type.list_single);
+    }
 
     private static final Random randomGenerator = new Random();
 
