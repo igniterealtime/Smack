@@ -1142,7 +1142,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
             catch (Exception e) {
                 // Set running to false since this thread will exit here and notifyConnectionError() will wait until
-                // the reader and writer thread's 'running' value is false.
+                // the reader and writer thread's 'running' value is false. Hence we need to set it to false before calling
+                // notifyConnetctionError() below, even though run() also sets it to false. Therefore, do not remove this.
                 running = false;
 
                 String ignoreReasonThread = null;
