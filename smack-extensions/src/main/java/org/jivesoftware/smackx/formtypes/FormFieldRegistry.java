@@ -36,6 +36,8 @@ public class FormFieldRegistry {
 
     private static final Map<String, FormField.Type> CLARK_NOTATION_FIELD_REGISTRY = new ConcurrentHashMap<>();
 
+    private static final Map<String, FormField.Type> LOOKASIDE_FIELD_REGISTRY = new ConcurrentHashMap<>();
+
     @SuppressWarnings("ReferenceEquality")
     public static void register(DataForm dataForm) {
         // TODO: Also allow forms of type 'result'?
@@ -98,11 +100,11 @@ public class FormFieldRegistry {
 
     public static FormField.Type lookup(String formType, String fieldName) {
         if (formType == null) {
-            if (!XmlUtil.isClarkNotation(fieldName)) {
-                return null;
+            if (XmlUtil.isClarkNotation(fieldName)) {
+                return CLARK_NOTATION_FIELD_REGISTRY.get(fieldName);
             }
 
-            return CLARK_NOTATION_FIELD_REGISTRY.get(fieldName);
+            return LOOKASIDE_FIELD_REGISTRY.get(fieldName);
         }
 
         synchronized (REGISTRY) {
@@ -122,4 +124,7 @@ public class FormFieldRegistry {
         return lookup(null, fieldName);
     }
 
+    public static void addLookasideFieldRegistryEntry(String fieldName, FormField.Type formFieldType) {
+        LOOKASIDE_FIELD_REGISTRY.put(fieldName, formFieldType);
+    }
 }
