@@ -134,6 +134,9 @@ public class XmppConnectionStressTest {
         Map<XMPPConnection, Map<EntityFullJid, boolean[]>> receiveMarkers = new ConcurrentHashMap<>(connections.size());
 
         for (XMPPConnection connection : connections) {
+            final Map<EntityFullJid, boolean[]> myReceiveMarkers = new HashMap<>(connections.size());
+            receiveMarkers.put(connection, myReceiveMarkers);
+
             connection.addSyncStanzaListener(new StanzaListener() {
                 @Override
                 public void processStanza(Stanza stanza) {
@@ -144,12 +147,6 @@ public class XmppConnectionStressTest {
                     JivePropertiesExtension extension = JivePropertiesExtension.from(message);
 
                     Integer messageNumber = (Integer) extension.getProperty(MESSAGE_NUMBER_PROPERTY);
-
-                    Map<EntityFullJid, boolean[]> myReceiveMarkers = receiveMarkers.get(connection);
-                    if (myReceiveMarkers == null) {
-                        myReceiveMarkers = new HashMap<>(connections.size());
-                        receiveMarkers.put(connection, myReceiveMarkers);
-                    }
 
                     boolean[] fromMarkers = myReceiveMarkers.get(from);
                     if (fromMarkers == null) {
