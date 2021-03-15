@@ -90,7 +90,13 @@ public class XmppConnectionStressTest {
                     MessageBuilder messageBuilder = fromConnection.getStanzaFactory().buildMessageStanza();
                     messageBuilder.to(toConnection.getUser());
 
-                    int payloadChunkCount = random.nextInt(configuration.maxPayloadChunks) + 1;
+                    final int payloadChunkCount;
+                    if (configuration.maxPayloadChunks == 0) {
+                        payloadChunkCount = 0;
+                    } else {
+                        payloadChunkCount = random.nextInt(configuration.maxPayloadChunks) + 1;
+                    }
+
                     for (int c = 0; c < payloadChunkCount; c++) {
                         int payloadChunkSize = random.nextInt(configuration.maxPayloadChunkSize) + 1;
                         String payloadCunk = StringUtils.randomString(payloadChunkSize, random);
