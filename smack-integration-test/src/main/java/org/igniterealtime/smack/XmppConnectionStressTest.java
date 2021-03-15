@@ -301,7 +301,7 @@ public class XmppConnectionStressTest {
                         sb.append(markerToConnectionId)
                         .append(" is missing ").append(numberOfFalseMarkers)
                         .append(" messages from ").append(markerFromConnectionId)
-                        .append(" :");
+                        .append(": ");
                         for (int i = 0; i < marker.length; i++) {
                             if (marker[i]) {
                                 continue;
