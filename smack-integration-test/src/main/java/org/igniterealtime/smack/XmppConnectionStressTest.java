@@ -282,6 +282,7 @@ public class XmppConnectionStressTest {
                     XMPPConnection connection = connections.get(i);
                     EntityFullJid connectionAddress = connection.getUser();
                     connectionIds.put(connectionAddress, i);
+                    sb.append(i).append(": ").append(connection).append('\n');
                 }
 
                 for (Map.Entry<XMPPConnection, Map<EntityFullJid, boolean[]>> entry : receiveMarkers.entrySet()) {
