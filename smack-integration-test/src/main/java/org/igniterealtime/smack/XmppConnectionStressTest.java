@@ -16,6 +16,7 @@
  */
 package org.igniterealtime.smack;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,7 +177,9 @@ public class XmppConnectionStressTest {
                         exceptionMessage.append(i);
                         exceptionMessage.append("\nMessage with id ").append(stanza.getStanzaId())
                             .append(" from ").append(from)
-                            .append(" to ").append(stanza.getTo());
+                            .append(" to ").append(stanza.getTo())
+                            .append('\n');
+                        exceptionMessage.append("From Markers: ").append(Arrays.toString(fromMarkers)).append('\n');
 
                         Exception exception = new Exception(exceptionMessage.toString());
                         receiveExceptions.put(connection, exception);
