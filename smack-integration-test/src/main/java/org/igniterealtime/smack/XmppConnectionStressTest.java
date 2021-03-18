@@ -136,6 +136,10 @@ public class XmppConnectionStressTest {
         for (XMPPConnection connection : connections) {
             final Map<EntityFullJid, boolean[]> myReceiveMarkers = new HashMap<>(connections.size());
             receiveMarkers.put(connection, myReceiveMarkers);
+            for (XMPPConnection otherConnection : connections) {
+                boolean[] fromMarkers = new boolean[configuration.messagesPerConnection];
+                myReceiveMarkers.put(otherConnection.getUser(), fromMarkers);
+            }
 
             connection.addSyncStanzaListener(new StanzaListener() {
                 @Override
@@ -149,10 +153,6 @@ public class XmppConnectionStressTest {
                     Integer messageNumber = (Integer) extension.getProperty(MESSAGE_NUMBER_PROPERTY);
 
                     boolean[] fromMarkers = myReceiveMarkers.get(from);
-                    if (fromMarkers == null) {
-                        fromMarkers = new boolean[configuration.messagesPerConnection];
-                        myReceiveMarkers.put(from, fromMarkers);
-                    }
 
                     // Sanity check: All markers before must be true, all markers including the messageNumber marker must be false.
                     for (int i = 0; i < fromMarkers.length; i++) {
@@ -190,10 +190,6 @@ public class XmppConnectionStressTest {
                     }
 
                     fromMarkers[messageNumber] = true;
-
-                    if (myReceiveMarkers.size() != connections.size()) {
-                        return;
-                    }
 
                     for (boolean[] markers : myReceiveMarkers.values()) {
                         if (BooleansUtils.contains(markers, false)) {
