@@ -196,9 +196,12 @@ public class XmppConnectionStressTest {
 
                     for (boolean[] markers : myReceiveMarkers.values()) {
                         if (BooleansUtils.contains(markers, false)) {
+                            // There is at least one message we did not receive yet, therefore do not signal the
+                            // receivedSemaphore.
                             return;
                         }
                     }
+
                     // All markers set to true, this means we received all messages.
                     receivedSemaphore.release();
                 }
