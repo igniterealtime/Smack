@@ -16,6 +16,7 @@
  */
 package org.igniterealtime.smack;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,13 @@ public class XmppConnectionStressTest {
                     MessageBuilder messageBuilder = fromConnection.getStanzaFactory().buildMessageStanza();
                     messageBuilder.to(toConnection.getUser());
 
-                    int payloadChunkCount = random.nextInt(configuration.maxPayloadChunks) + 1;
+                    final int payloadChunkCount;
+                    if (configuration.maxPayloadChunks == 0) {
+                        payloadChunkCount = 0;
+                    } else {
+                        payloadChunkCount = random.nextInt(configuration.maxPayloadChunks) + 1;
+                    }
+
                     for (int c = 0; c < payloadChunkCount; c++) {
                         int payloadChunkSize = random.nextInt(configuration.maxPayloadChunkSize) + 1;
                         String payloadCunk = StringUtils.randomString(payloadChunkSize, random);
@@ -128,6 +135,13 @@ public class XmppConnectionStressTest {
         Map<XMPPConnection, Map<EntityFullJid, boolean[]>> receiveMarkers = new ConcurrentHashMap<>(connections.size());
 
         for (XMPPConnection connection : connections) {
+            final Map<EntityFullJid, boolean[]> myReceiveMarkers = new HashMap<>(connections.size());
+            receiveMarkers.put(connection, myReceiveMarkers);
+            for (XMPPConnection otherConnection : connections) {
+                boolean[] fromMarkers = new boolean[configuration.messagesPerConnection];
+                myReceiveMarkers.put(otherConnection.getUser(), fromMarkers);
+            }
+
             connection.addSyncStanzaListener(new StanzaListener() {
                 @Override
                 public void processStanza(Stanza stanza) {
@@ -139,17 +153,7 @@ public class XmppConnectionStressTest {
 
                     Integer messageNumber = (Integer) extension.getProperty(MESSAGE_NUMBER_PROPERTY);
 
-                    Map<EntityFullJid, boolean[]> myReceiveMarkers = receiveMarkers.get(connection);
-                    if (myReceiveMarkers == null) {
-                        myReceiveMarkers = new HashMap<>(connections.size());
-                        receiveMarkers.put(connection, myReceiveMarkers);
-                    }
-
                     boolean[] fromMarkers = myReceiveMarkers.get(from);
-                    if (fromMarkers == null) {
-                        fromMarkers = new boolean[configuration.messagesPerConnection];
-                        myReceiveMarkers.put(from, fromMarkers);
-                    }
 
                     // Sanity check: All markers before must be true, all markers including the messageNumber marker must be false.
                     for (int i = 0; i < fromMarkers.length; i++) {
@@ -173,7 +177,9 @@ public class XmppConnectionStressTest {
                         exceptionMessage.append(i);
                         exceptionMessage.append("\nMessage with id ").append(stanza.getStanzaId())
                             .append(" from ").append(from)
-                            .append(" to ").append(stanza.getTo());
+                            .append(" to ").append(stanza.getTo())
+                            .append('\n');
+                        exceptionMessage.append("From Markers: ").append(Arrays.toString(fromMarkers)).append('\n');
 
                         Exception exception = new Exception(exceptionMessage.toString());
                         receiveExceptions.put(connection, exception);
@@ -188,15 +194,14 @@ public class XmppConnectionStressTest {
 
                     fromMarkers[messageNumber] = true;
 
-                    if (myReceiveMarkers.size() != connections.size()) {
-                        return;
-                    }
-
                     for (boolean[] markers : myReceiveMarkers.values()) {
                         if (BooleansUtils.contains(markers, false)) {
+                            // There is at least one message we did not receive yet, therefore do not signal the
+                            // receivedSemaphore.
                             return;
                         }
                     }
+
                     // All markers set to true, this means we received all messages.
                     receivedSemaphore.release();
                 }
@@ -276,6 +281,7 @@ public class XmppConnectionStressTest {
                     XMPPConnection connection = connections.get(i);
                     EntityFullJid connectionAddress = connection.getUser();
                     connectionIds.put(connectionAddress, i);
+                    sb.append(i).append(": ").append(connection).append('\n');
                 }
 
                 for (Map.Entry<XMPPConnection, Map<EntityFullJid, boolean[]>> entry : receiveMarkers.entrySet()) {
@@ -295,7 +301,7 @@ public class XmppConnectionStressTest {
                         sb.append(markerToConnectionId)
                         .append(" is missing ").append(numberOfFalseMarkers)
                         .append(" messages from ").append(markerFromConnectionId)
-                        .append(" :");
+                        .append(": ");
                         for (int i = 0; i < marker.length; i++) {
                             if (marker[i]) {
                                 continue;

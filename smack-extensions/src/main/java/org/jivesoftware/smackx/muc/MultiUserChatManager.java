@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2020 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,7 +137,7 @@ public final class MultiUserChatManager extends Manager {
     private static final StanzaFilter INVITATION_FILTER = new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(new MUCUser()),
                     new NotFilter(MessageTypeFilter.ERROR));
 
-    private static final ExpirationCache<DomainBareJid, Void> KNOWN_MUC_SERVICES = new ExpirationCache<>(
+    private static final ExpirationCache<DomainBareJid, DiscoverInfo> KNOWN_MUC_SERVICES = new ExpirationCache<>(
         100, 1000 * 60 * 60 * 24);
 
     private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
@@ -396,16 +396,23 @@ public final class MultiUserChatManager extends Manager {
      */
     public boolean providesMucService(DomainBareJid domainBareJid) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        boolean contains = KNOWN_MUC_SERVICES.containsKey(domainBareJid);
-        if (!contains) {
-            if (serviceDiscoveryManager.supportsFeature(domainBareJid,
-                        MUCInitialPresence.NAMESPACE)) {
-                KNOWN_MUC_SERVICES.put(domainBareJid, null);
-                return true;
-            }
+        return getMucServiceDiscoInfo(domainBareJid) != null;
+    }
+
+    DiscoverInfo getMucServiceDiscoInfo(DomainBareJid mucServiceAddress)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        DiscoverInfo discoInfo = KNOWN_MUC_SERVICES.get(mucServiceAddress);
+        if (discoInfo != null) {
+            return discoInfo;
         }
 
-        return contains;
+        discoInfo = serviceDiscoveryManager.discoverInfo(mucServiceAddress);
+        if (!discoInfo.containsFeature(MUCInitialPresence.NAMESPACE)) {
+            return null;
+        }
+
+        KNOWN_MUC_SERVICES.put(mucServiceAddress, discoInfo);
+        return discoInfo;
     }
 
     /**

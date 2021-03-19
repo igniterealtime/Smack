@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Arrays;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -98,9 +99,12 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
         oft.sendStream(new ByteArrayInputStream(dataToSend), "hello.txt", dataToSend.length, "A greeting");
         int duration = 0;
         while (!oft.isDone()) {
-            switch (oft.getStatus()) {
+            Status status = oft.getStatus();
+            switch (status) {
             case error:
-                throw new Exception("FileTransfer error: " + oft.getError());
+                FileTransfer.Error error = oft.getError();
+                Exception exception = oft.getException();
+                throw new Exception("FileTransfer error: " + error, exception);
             default:
                 LOGGER.info("FileTransfer status: " + oft.getStatus() + ". Progress: " + oft.getProgress());
                 break;

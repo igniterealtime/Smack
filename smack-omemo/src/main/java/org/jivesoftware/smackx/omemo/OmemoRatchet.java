@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,9 @@
 package org.jivesoftware.smackx.omemo;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,6 +27,7 @@ import java.util.logging.Logger;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
@@ -172,11 +175,10 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         byte[] encryptedBody = payloadAndAuthTag(element, cipherAndAuthTag.getAuthTag());
 
         try {
-            String plaintext = new String(cipherAndAuthTag.getCipher().doFinal(encryptedBody), StandardCharsets.UTF_8);
-            return plaintext;
-        } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new CryptoFailedException("decryptMessageElement could not decipher message body: "
-                    + e.getMessage());
+            return cipherAndAuthTag.decrypt(encryptedBody);
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException
+                        | NoSuchPaddingException | InvalidAlgorithmParameterException e) {
+            throw new CryptoFailedException("decryptMessageElement could not decipher message body", e);
         }
     }
 

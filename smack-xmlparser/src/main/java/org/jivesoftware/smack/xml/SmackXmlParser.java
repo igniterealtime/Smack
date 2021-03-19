@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus.
+ * Copyright 2019-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,24 @@ public class SmackXmlParser {
         xmlPullParserFactoryServiceLoader = ServiceLoader.load(XmlPullParserFactory.class);
     }
 
+    private static XmlPullParserFactory xmlPullParserFactory;
+
     public static XmlPullParserFactory getXmlPullParserFactory() {
+        final XmlPullParserFactory xmlPullParserFactory = SmackXmlParser.xmlPullParserFactory;
+        if (xmlPullParserFactory != null) {
+            return xmlPullParserFactory;
+        }
+
         Iterator<XmlPullParserFactory> iterator = xmlPullParserFactoryServiceLoader.iterator();
         if (!iterator.hasNext()) {
             throw new IllegalStateException(
                     "No XmlPullParserFactory registered with Service Provider Interface (SPI). Is smack-xmlparser-xpp3 or smack-xmlparser-stax in classpath?");
         }
         return iterator.next();
+    }
+
+    public static void setXmlPullParserFactory(XmlPullParserFactory xmlPullParserFactory) {
+        SmackXmlParser.xmlPullParserFactory = xmlPullParserFactory;
     }
 
     /**

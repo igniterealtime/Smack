@@ -183,6 +183,10 @@ public abstract class FileTransfer {
 
     protected void setException(Exception exception) {
         this.exception = exception;
+        Status currentStatus = getStatus();
+        if (currentStatus != Status.error) {
+            updateStatus(currentStatus, Status.error);
+        }
     }
 
     protected void setStatus(Status status) {

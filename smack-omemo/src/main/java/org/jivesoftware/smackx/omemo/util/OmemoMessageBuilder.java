@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub, 2019 Florian Schmaus
+ * Copyright 2017 Paul Schaub, 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,20 @@
  */
 package org.jivesoftware.smackx.omemo.util;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.CIPHERMODE;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYLENGTH;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.Crypto.KEYTYPE;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
+import org.jivesoftware.smack.util.RandomUtil;
 import org.jivesoftware.smackx.omemo.OmemoRatchet;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
@@ -47,6 +41,7 @@ import org.jivesoftware.smackx.omemo.exceptions.NoIdentityKeyException;
 import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.exceptions.UntrustedOmemoIdentityException;
 import org.jivesoftware.smackx.omemo.internal.CiphertextTuple;
+import org.jivesoftware.smackx.omemo.internal.OmemoAesCipher;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.trust.OmemoTrustCallback;
@@ -159,16 +154,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         }
 
         // Encrypt message body
-        SecretKey secretKey = new SecretKeySpec(messageKey, KEYTYPE);
-        IvParameterSpec ivSpec = new IvParameterSpec(initializationVector);
-        Cipher cipher = Cipher.getInstance(CIPHERMODE);
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
-
-        byte[] body;
-        byte[] ciphertext;
-
-        body = message.getBytes(StandardCharsets.UTF_8);
-        ciphertext = cipher.doFinal(body);
+        byte[] ciphertext = OmemoAesCipher.encryptAesGcmNoPadding(message, messageKey, initializationVector);
 
         byte[] clearKeyWithAuthTag = new byte[messageKey.length + 16];
         byte[] cipherTextWithoutAuthTag = new byte[ciphertext.length - 16];
@@ -278,9 +264,8 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @return initialization vector
      */
     public static byte[] generateIv() {
-        SecureRandom random = new SecureRandom();
         byte[] iv = new byte[12];
-        random.nextBytes(iv);
+        RandomUtil.fillWithSecureRandom(iv);
         return iv;
     }
 }

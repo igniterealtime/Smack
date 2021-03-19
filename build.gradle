@@ -148,7 +148,7 @@ allprojects {
 		jxmppVersion = '[1.0.0, 1.0.999]'
 		miniDnsVersion = '[1.0.0, 1.0.999]'
 		smackMinAndroidSdk = 19
-		junitVersion = '5.6.2'
+		junitVersion = '5.7.1'
 		commonsIoVersion = '2.6'
 		bouncyCastleVersion = '1.68'
 		guavaVersion = '30.1-jre'
