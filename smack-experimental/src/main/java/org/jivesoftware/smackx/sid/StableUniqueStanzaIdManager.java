@@ -31,6 +31,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
 /**
@@ -48,7 +49,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
 
     private static final Map<XMPPConnection, StableUniqueStanzaIdManager> INSTANCES = new WeakHashMap<>();
 
-    private static boolean enabledByDefault = true;
+    private static boolean enabledByDefault = false;
 
     // Filter for outgoing stanzas.
     private static final StanzaFilter OUTGOING_FILTER = new AndFilter(
@@ -68,6 +69,14 @@ public final class StableUniqueStanzaIdManager extends Manager {
                 if (enabledByDefault) {
                     getInstanceFor(connection).enable();
                 }
+
+                MultiUserChatManager.addDefaultMessageInterceptor((mb, muc) -> {
+                    // No need to add an <origin-id/> if the MUC service supports stable IDs.
+                    if (muc.serviceSupportsStableIds()) {
+                        return;
+                    }
+                    OriginIdElement.addTo(mb);
+                });
             }
         });
     }
