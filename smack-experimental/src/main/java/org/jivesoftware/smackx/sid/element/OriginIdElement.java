@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub
+ * Copyright 2018 Paul Schaub, 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,12 @@ public class OriginIdElement extends StableAndUniqueIdElement {
     @Deprecated
     // TODO: Remove in Smack 4.5.
     public static OriginIdElement addOriginId(Message message) {
-        OriginIdElement originId = new OriginIdElement();
+        OriginIdElement originId = message.getExtension(OriginIdElement.class);
+        if (originId != null) {
+            return originId;
+        }
+
+        originId = new OriginIdElement();
         message.addExtension(originId);
         // TODO: Find solution to have both the originIds stanzaId and a nice to look at incremental stanzaID.
         // message.setStanzaId(originId.getId());
@@ -62,7 +67,12 @@ public class OriginIdElement extends StableAndUniqueIdElement {
      * @return the added origin-id element.
      */
     public static OriginIdElement addTo(MessageBuilder messageBuilder) {
-        OriginIdElement originId = new OriginIdElement();
+        OriginIdElement originId = messageBuilder.getExtension(OriginIdElement.class);
+        if (originId != null) {
+            return originId;
+        }
+
+        originId = new OriginIdElement();
         messageBuilder.addExtension(originId);
         // TODO: Find solution to have both the originIds stanzaId and a nice to look at incremental stanzaID.
         // message.setStanzaId(originId.getId());
