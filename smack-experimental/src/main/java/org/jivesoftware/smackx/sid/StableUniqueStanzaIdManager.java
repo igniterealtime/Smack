@@ -31,6 +31,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ToTypeFilter;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
 /**
@@ -68,6 +69,14 @@ public final class StableUniqueStanzaIdManager extends Manager {
                 if (enabledByDefault) {
                     getInstanceFor(connection).enable();
                 }
+
+                MultiUserChatManager.addDefaultMessageInterceptor((mb, muc) -> {
+                    // No need to add an <origin-id/> if the MUC service supports stable IDs.
+                    if (muc.serviceSupportsStableIds()) {
+                        return;
+                    }
+                    OriginIdElement.addTo(mb);
+                });
             }
         });
     }
