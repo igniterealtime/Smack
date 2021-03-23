@@ -48,7 +48,7 @@ public final class StableUniqueStanzaIdManager extends Manager {
 
     private static final Map<XMPPConnection, StableUniqueStanzaIdManager> INSTANCES = new WeakHashMap<>();
 
-    private static boolean enabledByDefault = true;
+    private static boolean enabledByDefault = false;
 
     // Filter for outgoing stanzas.
     private static final StanzaFilter OUTGOING_FILTER = new AndFilter(
