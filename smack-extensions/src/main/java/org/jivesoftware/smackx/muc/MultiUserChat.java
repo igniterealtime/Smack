@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -156,10 +157,13 @@ public class MultiUserChat {
      */
     private volatile boolean processedReflectedSelfPresence;
 
+    private CopyOnWriteArrayList<MucMessageInterceptor> messageInterceptors;
+
     MultiUserChat(XMPPConnection connection, EntityBareJid room, MultiUserChatManager multiUserChatManager) {
         this.connection = connection;
         this.room = room;
         this.multiUserChatManager = multiUserChatManager;
+        this.messageInterceptors = MultiUserChatManager.getMessageInterceptors();
 
         fromRoomFilter = FromMatchesFilter.create(room);
         fromRoomGroupchatFilter = new AndFilter(fromRoomFilter, MessageTypeFilter.GROUPCHAT);
@@ -778,8 +782,7 @@ public class MultiUserChat {
                                         MUCUserStatusCodeFilter.STATUS_110_PRESENCE_TO_SELF),
                         new AndFilter(fromRoomFilter, PresenceTypeFilter.ERROR)));
 
-        boolean supportsStableId = mucServiceDiscoInfo.containsFeature(MultiUserChatConstants.STABLE_ID_FEATURE);
-        if (supportsStableId) {
+        if (serviceSupportsStableIds()) {
             reflectedLeavePresenceFilters.add(new StanzaIdFilter(leavePresence));
         }
 
@@ -2035,6 +2038,10 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void sendMessage(MessageBuilder messageBuilder) throws NotConnectedException, InterruptedException {
+        for (MucMessageInterceptor interceptor : messageInterceptors) {
+            interceptor.intercept(messageBuilder, this);
+        }
+
         Message message = messageBuilder.to(room).ofType(Message.Type.groupchat).build();
         connection.sendStanza(message);
     }
@@ -2116,6 +2123,14 @@ public class MultiUserChat {
      */
     public boolean removeMessageListener(MessageListener listener) {
         return messageListeners.remove(listener);
+    }
+
+    public boolean addMessageInterceptor(MucMessageInterceptor interceptor) {
+        return messageInterceptors.add(interceptor);
+    }
+
+    public boolean removeMessageInterceptor(MucMessageInterceptor interceptor) {
+        return messageInterceptors.remove(interceptor);
     }
 
     /**
@@ -2537,6 +2552,10 @@ public class MultiUserChat {
      */
     public XMPPConnection getXmppConnection() {
         return connection;
+    }
+
+    public boolean serviceSupportsStableIds() {
+        return mucServiceDiscoInfo.containsFeature(MultiUserChatConstants.STABLE_ID_FEATURE);
     }
 
     @Override

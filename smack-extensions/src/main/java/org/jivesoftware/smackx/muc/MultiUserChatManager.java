@@ -20,10 +20,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -139,6 +141,8 @@ public final class MultiUserChatManager extends Manager {
 
     private static final ExpirationCache<DomainBareJid, DiscoverInfo> KNOWN_MUC_SERVICES = new ExpirationCache<>(
         100, 1000 * 60 * 60 * 24);
+
+    private static final Set<MucMessageInterceptor> DEFAULT_MESSAGE_INTERCEPTORS = new HashSet<>();
 
     private final Set<InvitationListener> invitationsListeners = new CopyOnWriteArraySet<InvitationListener>();
 
@@ -273,6 +277,18 @@ public final class MultiUserChatManager extends Manager {
             return createNewMucAndAddToMap(jid);
         }
         return multiUserChat;
+    }
+
+    public static boolean addDefaultMessageInterceptor(MucMessageInterceptor messageInterceptor) {
+        synchronized (DEFAULT_MESSAGE_INTERCEPTORS) {
+            return DEFAULT_MESSAGE_INTERCEPTORS.add(messageInterceptor);
+        }
+    }
+
+    public static boolean removeDefaultMessageInterceptor(MucMessageInterceptor messageInterceptor) {
+        synchronized (DEFAULT_MESSAGE_INTERCEPTORS) {
+            return DEFAULT_MESSAGE_INTERCEPTORS.remove(messageInterceptor);
+        }
     }
 
     private MultiUserChat createNewMucAndAddToMap(EntityBareJid jid) {
@@ -534,5 +550,11 @@ public final class MultiUserChatManager extends Manager {
 
     void removeJoinedRoom(EntityBareJid room) {
         joinedRooms.remove(room);
+    }
+
+    static CopyOnWriteArrayList<MucMessageInterceptor> getMessageInterceptors() {
+        synchronized (DEFAULT_MESSAGE_INTERCEPTORS) {
+            return new CopyOnWriteArrayList<>(DEFAULT_MESSAGE_INTERCEPTORS);
+        }
     }
 }
