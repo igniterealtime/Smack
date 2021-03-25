@@ -41,6 +41,19 @@ public final class FileUtils {
 
     private static final Logger LOGGER = Logger.getLogger(FileUtils.class.getName());
 
+    public static InputStream getInputStreamForClasspathFile(String path) {
+        return getInputStreamForClasspathFile(path, null);
+    }
+
+    public static InputStream getInputStreamForClasspathFile(String path, ClassLoader loader) {
+        try {
+            return getStreamForClasspathFile(path, loader);
+        } catch (IOException e) {
+            LOGGER.log(Level.FINE, "Suppressed IOException in getInputStreamForClasspathFile", e);
+            return null;
+        }
+    }
+
     public static InputStream getStreamForClasspathFile(String path, ClassLoader loader) throws IOException {
         // Get an array of class loaders to try loading the providers files from.
         List<ClassLoader> classLoaders = getClassLoaders();

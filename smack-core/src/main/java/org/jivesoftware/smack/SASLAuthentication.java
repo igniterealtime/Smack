@@ -42,6 +42,7 @@ import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.sasl.packet.SaslNonza.SASLFailure;
 import org.jivesoftware.smack.sasl.packet.SaslNonza.Success;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -184,7 +185,7 @@ public final class SASLAuthentication {
     SASLMechanism authenticate(String username, String password, EntityBareJid authzid, SSLSession sslSession)
                     throws XMPPErrorException, SASLErrorException, IOException,
                     InterruptedException, SmackSaslException, NotConnectedException, NoResponseException {
-        final SASLMechanism mechanism = selectMechanism(authzid);
+        final SASLMechanism mechanism = selectMechanism(authzid, password);
         final CallbackHandler callbackHandler = configuration.getCallbackHandler();
         final String host = connection.getHost();
         final DomainBareJid xmppServiceDomain = connection.getXMPPServiceDomain();
@@ -311,34 +312,48 @@ public final class SASLAuthentication {
         return lastUsedMech.getName();
     }
 
-    private SASLMechanism selectMechanism(EntityBareJid authzid) throws SmackException.SmackSaslException {
+    private SASLMechanism selectMechanism(EntityBareJid authzid, String password) throws SmackException.SmackSaslException {
+        final boolean passwordAvailable = StringUtils.isNotEmpty(password);
+
         Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
         final List<String> serverMechanisms = getServerMechanisms();
         if (serverMechanisms.isEmpty()) {
             LOGGER.warning("Server did not report any SASL mechanisms");
         }
+
+        List<String> skipReasons = new ArrayList<>();
+
         // Iterate in SASL Priority order over registered mechanisms
         while (it.hasNext()) {
             SASLMechanism mechanism = it.next();
             String mechanismName = mechanism.getName();
+
+            if (!serverMechanisms.contains(mechanismName)) {
+                continue;
+            }
+
             synchronized (BLACKLISTED_MECHANISMS) {
                 if (BLACKLISTED_MECHANISMS.contains(mechanismName)) {
                     continue;
                 }
             }
+
             if (!configuration.isEnabledSaslMechanism(mechanismName)) {
                 continue;
             }
-            if (authzid != null) {
-                if (!mechanism.authzidSupported()) {
-                    LOGGER.fine("Skipping " + mechanism + " because authzid is required by not supported by this SASL mechanism");
-                    continue;
-                }
+
+            if (authzid != null && !mechanism.authzidSupported()) {
+                skipReasons.add("Skipping " + mechanism + " because authzid is required by not supported by this SASL mechanism");
+                continue;
             }
-            if (serverMechanisms.contains(mechanismName)) {
-                // Create a new instance of the SASLMechanism for every authentication attempt.
-                return mechanism.instanceForAuthentication(connection, configuration);
+
+            if (mechanism.requiresPassword() && !passwordAvailable) {
+                skipReasons.add("Skipping " + mechanism + " because a password is required for it, but none was provided to the connection configuration");
+                continue;
             }
+
+            // Create a new instance of the SASLMechanism for every authentication attempt.
+            return mechanism.instanceForAuthentication(connection, configuration);
         }
 
         synchronized (BLACKLISTED_MECHANISMS) {
@@ -348,7 +363,8 @@ public final class SASLAuthentication {
                             "Server announced mechanisms: " + serverMechanisms + ". " +
                             "Registered SASL mechanisms with Smack: " + REGISTERED_MECHANISMS + ". " +
                             "Enabled SASL mechanisms for this connection: " + configuration.getEnabledSaslMechanisms() + ". " +
-                            "Blacklisted SASL mechanisms: " + BLACKLISTED_MECHANISMS + '.'
+                            "Blacklisted SASL mechanisms: " + BLACKLISTED_MECHANISMS + ". " +
+                            "Skip reasons: " + skipReasons
                             );
             // @formatter;on
         }

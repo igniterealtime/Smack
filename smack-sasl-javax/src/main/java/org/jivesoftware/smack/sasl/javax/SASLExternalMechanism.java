@@ -65,4 +65,9 @@ public class SASLExternalMechanism extends SASLJavaXMechanism  {
     public SASLExternalMechanism newInstance() {
         return new SASLExternalMechanism();
     }
+
+    @Override
+    public boolean requiresPassword() {
+        return false;
+    }
 }

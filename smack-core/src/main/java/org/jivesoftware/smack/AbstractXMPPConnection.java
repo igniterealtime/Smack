@@ -1407,6 +1407,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return successNonza;
     }
 
+    private void maybeNotifyDebuggerAboutIncoming(TopLevelStreamElement incomingTopLevelStreamElement) {
+        final SmackDebugger debugger = this.debugger;
+        if (debugger != null) {
+            debugger.onIncomingStreamElement(incomingTopLevelStreamElement);
+        }
+    }
+
     protected final void parseAndProcessNonza(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
 
@@ -1434,6 +1441,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
 
         Nonza nonza = nonzaProvider.parse(parser, incomingStreamXmlEnvironment);
+
+        maybeNotifyDebuggerAboutIncoming(nonza);
 
         for (NonzaCallback nonzaCallback : nonzaCallbacks) {
             nonzaCallback.onNonzaReceived(nonza);
@@ -1474,10 +1483,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected void processStanza(final Stanza stanza) throws InterruptedException {
         assert stanza != null;
 
-        final SmackDebugger debugger = this.debugger;
-        if (debugger != null) {
-            debugger.onIncomingStreamElement(stanza);
-        }
+        maybeNotifyDebuggerAboutIncoming(stanza);
 
         lastStanzaReceived = System.currentTimeMillis();
         // Deliver the incoming packet to listeners.

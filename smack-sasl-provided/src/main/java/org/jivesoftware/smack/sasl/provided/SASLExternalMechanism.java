@@ -76,4 +76,8 @@ public class SASLExternalMechanism extends SASLMechanism {
       return true;
     }
 
+    @Override
+    public boolean requiresPassword() {
+        return false;
+    }
 }
