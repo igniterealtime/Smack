@@ -57,6 +57,7 @@ import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
@@ -2034,16 +2035,18 @@ public class MultiUserChat {
      * Sends a Message to the chat room.
      *
      * @param messageBuilder the message.
+     * @return a read-only view of the send message.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void sendMessage(MessageBuilder messageBuilder) throws NotConnectedException, InterruptedException {
+    public MessageView sendMessage(MessageBuilder messageBuilder) throws NotConnectedException, InterruptedException {
         for (MucMessageInterceptor interceptor : messageInterceptors) {
             interceptor.intercept(messageBuilder, this);
         }
 
         Message message = messageBuilder.to(room).ofType(Message.Type.groupchat).build();
         connection.sendStanza(message);
+        return message;
     }
 
     /**
