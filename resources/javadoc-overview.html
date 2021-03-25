@@ -21,6 +21,8 @@ Message message = connection.getStanzaFactory()
    .build();
 
 connection.sendStanza(message);
+
+connection.disconnect();
   </pre>
 
   <p>Smack doesn't force you to code at the protcol level of XMPP. The library provides intelligent higher level constructs, often called {@link org.jivesoftware.smack.Manager}, which let you program more efficiently. Other examples of those constructs are the Chat and Roster classes.</p>
