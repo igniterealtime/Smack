@@ -14,7 +14,12 @@
 AbstractXMPPConnection connection = new XMPPTCPConnection("mtucker", "password", "jabber.org");
 connection.connect().login();
 
-Message message = new Message("jsmith@igniterealtime.org", "Howdy! How are you?");
+Message message = connection.getStanzaFactory()
+   .buildMessageStanza()
+   .to("jsmith@igniterealtime.org")
+   .setBody("Howdy! How are you?")
+   .build();
+
 connection.sendStanza(message);
   </pre>
 
