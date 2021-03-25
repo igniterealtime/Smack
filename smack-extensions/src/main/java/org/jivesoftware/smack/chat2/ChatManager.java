@@ -161,7 +161,7 @@ public final class ChatManager extends Manager {
                 }
 
                 final EntityFullJid fullFrom = from.asEntityFullJidIfPossible();
-                if (!chat.lockedResource.equals(fullFrom)) {
+                if (chat.lockedResource.equals(fullFrom)) {
                     return;
                 }
 
