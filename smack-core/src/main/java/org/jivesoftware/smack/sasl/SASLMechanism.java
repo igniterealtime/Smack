@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2019 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -309,6 +309,10 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
 
     public boolean authzidSupported() {
         return false;
+    }
+
+    public boolean requiresPassword() {
+        return true;
     }
 
     public boolean isAuthenticationSuccessful() {
