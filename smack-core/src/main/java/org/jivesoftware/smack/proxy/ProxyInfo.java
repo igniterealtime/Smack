@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smack.proxy;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
+
 /**
  * Class which stores proxy information such as proxy type, host, port,
  * authentication etc.
@@ -44,19 +48,10 @@ public class ProxyInfo {
         this.proxyPort = pPort;
         this.proxyUsername = pUser;
         this.proxyPassword = pPass;
-        switch (proxyType) {
-        case HTTP:
-            proxySocketConnection = new HTTPProxySocketConnection(this);
-            break;
-        case SOCKS4:
-            proxySocketConnection = new Socks4ProxySocketConnection(this);
-            break;
-        case SOCKS5:
-            proxySocketConnection = new Socks5ProxySocketConnection(this);
-            break;
-        default:
-            throw new IllegalStateException();
-        }
+        this.proxySocketConnection =
+                ProxySocketConnection
+                        .forProxyType(proxyType)
+                        .apply(this);
     }
 
     public static ProxyInfo forHttpProxy(String pHost, int pPort, String pUser,
@@ -72,6 +67,18 @@ public class ProxyInfo {
     public static ProxyInfo forSocks5Proxy(String pHost, int pPort, String pUser,
                                     String pPass) {
         return new ProxyInfo(ProxyType.SOCKS5, pHost, pPort, pUser, pPass);
+    }
+
+    public Proxy.Type getJavaProxyType() {
+        switch (proxyType) {
+            case HTTP:
+                return Proxy.Type.HTTP;
+            case SOCKS4:
+            case SOCKS5:
+                return Proxy.Type.SOCKS;
+            default:
+                throw new AssertionError("Invalid proxy type: " + proxyType);
+        }
     }
 
     public ProxyType getProxyType() {
@@ -97,4 +104,11 @@ public class ProxyInfo {
     public ProxySocketConnection getProxySocketConnection() {
         return proxySocketConnection;
     }
+
+    public Proxy toJavaProxy() {
+        final SocketAddress proxySocketAddress = new InetSocketAddress(proxyAddress, proxyPort);
+        final Proxy.Type type = getJavaProxyType();
+        return new Proxy(type, proxySocketAddress);
+    }
+
 }
