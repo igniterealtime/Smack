@@ -19,6 +19,8 @@ package org.jivesoftware.smack.proxy;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.jivesoftware.smack.util.Function;
+
 public interface ProxySocketConnection {
 
     /**
@@ -34,4 +36,16 @@ public interface ProxySocketConnection {
     void connect(Socket socket, String host, int port, int timeout)
                     throws IOException;
 
+    static Function<ProxySocketConnection, ProxyInfo> forProxyType(ProxyInfo.ProxyType proxyType) {
+        switch (proxyType) {
+            case HTTP:
+                return HTTPProxySocketConnection::new;
+            case SOCKS4:
+                return Socks4ProxySocketConnection::new;
+            case SOCKS5:
+                return Socks5ProxySocketConnection::new;
+            default:
+                throw new AssertionError("Unknown proxy type: " + proxyType);
+        }
+    }
 }
