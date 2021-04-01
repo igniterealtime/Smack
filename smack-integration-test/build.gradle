@@ -11,7 +11,9 @@ dependencies {
 	api project(':smack-resolver-dnsjava')
 	implementation project(':smack-websocket-java11')
 	implementation "com.google.guava:guava:${guavaVersion}"
-	compile 'org.reflections:reflections:0.9.12'
+	// Do not upgrade to a higher reflections version until
+	// https://github.com/ronmamo/reflections/issues/273 is fixed.
+	compile 'org.reflections:reflections:0.9.11'
 	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
 	compile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
 	api "org.junit.jupiter:junit-jupiter-api:$junitVersion"
