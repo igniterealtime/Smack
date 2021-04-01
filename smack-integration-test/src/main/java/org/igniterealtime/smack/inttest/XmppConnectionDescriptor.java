@@ -154,7 +154,7 @@ public final class XmppConnectionDescriptor<
         WebSocketFactory finalFactory = factory;
 
         return XmppConnectionDescriptor.buildWith(ModularXmppClientToServerConnection.class, ModularXmppClientToServerConnectionConfiguration.class, ModularXmppClientToServerConnectionConfiguration.Builder.class)
-        .withNickname("modular-websocket-java11")
+        .withNickname(nickname)
         .applyExtraConfguration(cb -> {
             cb.removeAllModules();
             ModularXmppClientToServerConnectionModuleDescriptor webSocketModuleDescriptor =
