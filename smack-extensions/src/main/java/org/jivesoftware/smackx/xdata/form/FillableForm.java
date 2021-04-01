@@ -224,9 +224,6 @@ public class FillableForm extends FilledForm {
         if (!getDataForm().hasField(fieldName)) {
             throw new IllegalArgumentException();
         }
-        if (filledFields.containsKey(fieldName)) {
-            throw new IllegalArgumentException();
-        }
 
         // Perform validation, e.g. using XEP-0122.
         // TODO: We could also perform list-* option validation, but this has to take xep122's <open/> into account.
