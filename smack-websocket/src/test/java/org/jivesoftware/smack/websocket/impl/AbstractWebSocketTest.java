@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 public final class AbstractWebSocketTest {
     private static final String OPEN_ELEMENT = "<open from='localhost.org' id='aov9ihhmmn' xmlns='urn:ietf:params:xml:ns:xmpp-framing' xml:lang='en' version='1.0'/>";
-    private static final String OPEN_STREAM = "<stream from='localhost.org' id='aov9ihhmmn' xmlns='jabber:client' xml:lang='en' version='1.0'>";
+    private static final String OPEN_STREAM = "<stream:stream from='localhost.org' id='aov9ihhmmn' xmlns='jabber:client' xml:lang='en' version='1.0' xmlns:stream='http://etherx.jabber.org/streams'>";
     private static final String CLOSE_ELEMENT = "<close xmlns='urn:ietf:params:xml:ns:xmpp-framing'/>";
 
     @Test

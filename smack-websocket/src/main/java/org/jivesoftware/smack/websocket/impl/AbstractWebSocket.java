@@ -93,9 +93,9 @@ public abstract class AbstractWebSocket {
     }
 
     static String getStreamFromOpenElement(String openElement) {
-        String streamElement = openElement.replaceFirst("\\A<open ", "<stream ")
+        String streamElement = openElement.replaceFirst("\\A<open ", "<stream:stream ")
                                           .replace("urn:ietf:params:xml:ns:xmpp-framing", "jabber:client")
-                                          .replaceFirst("/>\\s*\\z", ">");
+                                          .replaceFirst("/>\\s*\\z", " xmlns:stream='http://etherx.jabber.org/streams'>");
         return streamElement;
     }
 
