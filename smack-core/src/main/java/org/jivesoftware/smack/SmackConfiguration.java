@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018-2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -343,11 +343,10 @@ public final class SmackConfiguration {
 
     public enum UnknownIqRequestReplyMode {
         doNotReply,
-        replyFeatureNotImplemented,
-        replyServiceUnavailable,
+        reply,
     }
 
-    private static UnknownIqRequestReplyMode unknownIqRequestReplyMode = UnknownIqRequestReplyMode.replyFeatureNotImplemented;
+    private static UnknownIqRequestReplyMode unknownIqRequestReplyMode = UnknownIqRequestReplyMode.reply;
 
     public static UnknownIqRequestReplyMode getUnknownIqRequestReplyMode() {
         return unknownIqRequestReplyMode;

@@ -377,6 +377,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private final Map<QName, IQRequestHandler> setIqRequestHandler = new HashMap<>();
     private final Map<QName, IQRequestHandler> getIqRequestHandler = new HashMap<>();
+    private final Set<String> iqRequestHandlerNamespaces = new CopyOnWriteArraySet<>();
+    private final Map<String, Integer> iqRequestHandlerNamespacesReferenceCounters = new HashMap<>();
 
     private final StanzaFactory stanzaFactory;
 
@@ -1524,15 +1526,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     throw new IllegalStateException("Should only encounter IQ type 'get' or 'set'");
                 }
                 if (iqRequestHandler == null) {
+                    final String iqNamespace = key.getNamespaceURI();
                     StanzaError.Condition replyCondition;
                     switch (unknownIqRequestReplyMode) {
                     case doNotReply:
                         return;
-                    case replyFeatureNotImplemented:
-                        replyCondition = StanzaError.Condition.feature_not_implemented;
-                        break;
-                    case replyServiceUnavailable:
-                        replyCondition = StanzaError.Condition.service_unavailable;
+                    case reply:
+                        boolean isKnownNamespace = iqRequestHandlerNamespaces.contains(iqNamespace);
+                        if (isKnownNamespace) {
+                            replyCondition = StanzaError.Condition.feature_not_implemented;
+                        } else {
+                            replyCondition = StanzaError.Condition.service_unavailable;
+                        }
                         break;
                     default:
                         throw new AssertionError();
@@ -2043,18 +2048,35 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public IQRequestHandler registerIQRequestHandler(final IQRequestHandler iqRequestHandler) {
         final QName key = iqRequestHandler.getQName();
+        IQRequestHandler previous;
         switch (iqRequestHandler.getType()) {
         case set:
             synchronized (setIqRequestHandler) {
-                return setIqRequestHandler.put(key, iqRequestHandler);
+                previous = setIqRequestHandler.put(key, iqRequestHandler);
             }
+            break;
         case get:
             synchronized (getIqRequestHandler) {
-                return getIqRequestHandler.put(key, iqRequestHandler);
+                previous = getIqRequestHandler.put(key, iqRequestHandler);
             }
+            break;
         default:
             throw new IllegalArgumentException("Only IQ type of 'get' and 'set' allowed");
         }
+
+        final String iqNamespace = key.getNamespaceURI();
+        synchronized (iqRequestHandlerNamespacesReferenceCounters) {
+            Integer newValue;
+            Integer counter = iqRequestHandlerNamespacesReferenceCounters.get(iqNamespace);
+            if (counter == null) {
+                iqRequestHandlerNamespaces.add(iqNamespace);
+                newValue = 0;
+            } else {
+                newValue = counter.intValue() + 1;
+            }
+            iqRequestHandlerNamespacesReferenceCounters.put(iqNamespace, newValue);
+        }
+        return previous;
     }
 
     @Override
@@ -2065,19 +2087,38 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public IQRequestHandler unregisterIQRequestHandler(String element, String namespace, IQ.Type type) {
+        IQRequestHandler unregisteredHandler;
         final QName key = new QName(namespace, element);
         switch (type) {
         case set:
             synchronized (setIqRequestHandler) {
-                return setIqRequestHandler.remove(key);
+                unregisteredHandler = setIqRequestHandler.remove(key);
             }
+            break;
         case get:
             synchronized (getIqRequestHandler) {
-                return getIqRequestHandler.remove(key);
+                unregisteredHandler = getIqRequestHandler.remove(key);
             }
+            break;
         default:
             throw new IllegalArgumentException("Only IQ type of 'get' and 'set' allowed");
         }
+
+        if (unregisteredHandler == null) {
+            return null;
+        }
+
+        synchronized (iqRequestHandlerNamespacesReferenceCounters) {
+            int newValue = iqRequestHandlerNamespacesReferenceCounters.get(namespace).intValue() - 1;
+            if (newValue == 0) {
+                iqRequestHandlerNamespacesReferenceCounters.remove(namespace);
+                iqRequestHandlerNamespaces.remove(namespace);
+            } else {
+                iqRequestHandlerNamespacesReferenceCounters.put(namespace, newValue);
+            }
+        }
+
+        return unregisteredHandler;
     }
 
     private long lastStanzaReceived;
