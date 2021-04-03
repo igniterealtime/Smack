@@ -193,7 +193,6 @@ public class SmackIntegrationTestFramework {
             testPackages = new String[] { "org.jivesoftware.smackx", "org.jivesoftware.smack" };
         }
         else {
-            LOGGER.info("Using sinttest java packages provided by configuration: " + config.testPackages);
             testPackages = config.testPackages.toArray(new String[config.testPackages.size()]);
         }
         Reflections reflections = new Reflections(testPackages, new SubTypesScanner(),
@@ -219,7 +218,7 @@ public class SmackIntegrationTestFramework {
         }
 
         if (classes.isEmpty()) {
-            throw new IllegalStateException("No test classes found");
+            throw new IllegalStateException("No test classes in " + Arrays.toString(testPackages) + " found");
         }
 
         LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId
