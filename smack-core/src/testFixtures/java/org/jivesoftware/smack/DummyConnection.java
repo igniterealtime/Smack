@@ -56,7 +56,7 @@ public class DummyConnection extends AbstractXMPPConnection {
 
     public static DummyConnectionConfiguration.Builder getDummyConfigurationBuilder() {
         return DummyConnectionConfiguration.builder().setXmppDomain(JidTestUtil.EXAMPLE_ORG).setUsernameAndPassword("dummy",
-                        "dummypass");
+                        "dummypass").setHost("dummyHost");
     }
 
     public DummyConnection() {

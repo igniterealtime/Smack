@@ -161,6 +161,10 @@ public class Base32 {
         return res;
     }
 
+    public static char encodeIntValue(int i) {
+        return ALPHABET.charAt(i);
+    }
+
     private static int lenToPadding(int blocklen) {
         switch (blocklen) {
         case 1:

@@ -10,6 +10,7 @@ dependencies {
 	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
 	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
 	compile "org.minidns:minidns-core:$miniDnsVersion"
+    compile "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
 
 	testFixturesImplementation project(':smack-xmlparser-stax')
 	testFixturesImplementation project(':smack-xmlparser-xpp3')
