@@ -13,12 +13,12 @@ dependencies {
 	implementation "com.google.guava:guava:${guavaVersion}"
 	// Do not upgrade to a higher reflections version until
 	// https://github.com/ronmamo/reflections/issues/273 is fixed.
-	compile 'org.reflections:reflections:0.9.11'
-	compile 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
-	compile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
+	implementation 'org.reflections:reflections:0.9.11'
+	api 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
+	implementation group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
 	api "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 	testFixturesApi(testFixtures(project(":smack-core")))
-	testCompile "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
+	testImplementation "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 }
 
 run {

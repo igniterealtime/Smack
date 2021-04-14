@@ -4,14 +4,14 @@ Smack API for XEP-0373: OpenPGP for XMPP."""
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
-	compile project(':smack-core')
-	compile project(':smack-extensions')
-	compile project(':smack-experimental')
+	api project(':smack-core')
+	api project(':smack-extensions')
+	api project(':smack-experimental')
 
 	api 'org.pgpainless:pgpainless-core:0.1.0'
 
 	testImplementation "org.bouncycastle:bcprov-jdk15on:${bouncyCastleVersion}"
 
 	testFixturesApi(testFixtures(project(":smack-core")))
-	testCompile group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
+	testImplementation group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
 }

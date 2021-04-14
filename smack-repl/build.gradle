@@ -19,8 +19,8 @@ dependencies {
     api project(':smack-integration-test')
     api project(':smack-omemo-signal')
 
-    compile "org.scala-lang:scala-library:$scalaVersion"
-    compile "com.lihaoyi:ammonite_$scalaVersion:1.3.2"
+    implementation "org.scala-lang:scala-library:$scalaVersion"
+    implementation "com.lihaoyi:ammonite_$scalaVersion:1.3.2"
 }
 
 scalaStyle {

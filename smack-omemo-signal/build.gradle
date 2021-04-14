@@ -3,11 +3,11 @@ Smack API for XEP-0384: OMEMO Encryption using libsignal
 """
 
 dependencies {
-	compile project(":smack-im")
-	compile project(":smack-extensions")
-	compile project(":smack-omemo")
-	compile 'org.whispersystems:signal-protocol-java:2.6.2'
+	api project(":smack-im")
+	api project(":smack-extensions")
+	api project(":smack-omemo")
+	implementation 'org.whispersystems:signal-protocol-java:2.6.2'
 
 	testFixturesApi(testFixtures(project(":smack-core")))
-	testCompile project(path: ":smack-omemo", configuration: "testRuntime")
+	testImplementation project(path: ":smack-omemo", configuration: "testRuntime")
 }

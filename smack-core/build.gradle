@@ -6,10 +6,10 @@ ext {
 }
 
 dependencies {
-	compile project(':smack-xmlparser')
-	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
-	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
-	compile "org.minidns:minidns-core:$miniDnsVersion"
+	api project(':smack-xmlparser')
+	api "org.jxmpp:jxmpp-core:$jxmppVersion"
+	api "org.jxmpp:jxmpp-jid:$jxmppVersion"
+	api "org.minidns:minidns-core:$miniDnsVersion"
 
 	testFixturesImplementation project(':smack-xmlparser-stax')
 	testFixturesImplementation project(':smack-xmlparser-xpp3')

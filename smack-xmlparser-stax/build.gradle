@@ -2,6 +2,6 @@ description = """\
 Smack XML parser using Stax."""
 
 dependencies {
-	compile project(':smack-xmlparser')
+	api project(':smack-xmlparser')
 	//testCompile project(path: ":smack-xmlparser", configuration: "testRuntime")
 }
