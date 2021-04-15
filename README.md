@@ -6,12 +6,12 @@ Smack
 About
 -----
 
-[Smack] is an open source, highly modular, easy to use, XMPP client library written in Java for Java SE compatible JVMs and Android.
+[Smack] is an open-source, highly modular, easy to use, XMPP client library written in Java for Java SE compatible JVMs and Android.
 
-A pure Java library, it can be embedded into your applications to create anything from a full XMPP instant messaging client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
-Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
+Being a pure Java library, it can be embedded into your applications to create anything from a full XMPP instant messaging client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
+Smack and XMPP allow you to easily exchange data in various ways e.g., fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
 
-More information are provided by the [Overview](documentation/overview.md).
+More information is provided by the [Overview](documentation/overview.md).
 
 Getting started
 ---------------
@@ -32,10 +32,12 @@ Some subprojects of Smack are governed by other licenses. Please refer to the in
 Professional Services
 ---------------------
 
-Smack is a collaborative effort of many open source, professionally and spare-time, paid and unpaid, contributors.
-While we try to provide the best possible XMPP library for Android and Java SE compatible execution environments by following state of the art software engineering practices, the API may not always perfectly fit your requirements.
-We welcome contributions and encourage discussion about how Smack can be further improved.
-We also provide **paid services** ranging from **XMPP/Smack related consulting** to **designing and developing features** in order to accommodate your needs.
+Smack is a collaborative effort of many people.
+Some are paid, e.g., by their employer or a third party, for their contributions.
+But many contribute in their spare time for free.
+While we try to provide the best possible XMPP library for Android and Java SE-compatible execution environments by following state-of-the-art software engineering practices, the API may not always perfectly fit your requirements.
+Hence welcome contributions and encourage discussion about how Smack can be further improved.
+We also provide **paid services** ranging from **XMPP/Smack related consulting** to **designing and developing features** to accommodate your needs.
 Please contact [Florian Schmaus](mailto:flo@geekplace.eu) for further information.
 
 Bug Reporting
