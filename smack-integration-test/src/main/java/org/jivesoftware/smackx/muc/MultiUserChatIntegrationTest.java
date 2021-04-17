@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.muc;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,6 +47,7 @@ import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -644,6 +647,104 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
+    }
+
+    /**
+     * Asserts that a user who gets kicked receives that change as a presence update
+     *
+     * <p>From XEP-0045 § 8.2:</p>
+     * <blockquote>
+     * The kick is performed based on the occupant's room nickname and is completed by setting the role of a
+     * participant or visitor to a value of "none".
+     *
+     * The service MUST remove the kicked occupant by sending a presence stanza of type "unavailable" to each kicked
+     * occupant, including status code 307 in the extended presence information, optionally along with the reason (if
+     * provided) and the roomnick or bare JID of the user who initiated the kick.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucPresenceTestForGettingKicked() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        createMUC(mucAsSeenByOne, "one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        mucAsSeenByTwo.join(nicknameTwo);
+
+        final ResultSyncPoint<Presence, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByTwo.addParticipantListener(kickPresence -> resultSyncPoint.signal(kickPresence));
+
+        mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
+        try {
+            Presence kickPresence = resultSyncPoint.waitForResult(timeout);
+            MUCUser mucUser = MUCUser.from(kickPresence);
+            assertNotNull(mucUser);
+            assertAll(
+                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Missing self-presence status code in kick presence"),
+                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.KICKED_307), "Missing kick status code in kick presence"),
+                    () -> assertEquals(MUCRole.none, mucUser.getItem().getRole(), "Role other than 'none' in kick presence")
+            );
+            Jid itemJid = mucUser.getItem().getJid();
+            if (itemJid != null) {
+                assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), itemJid, "Incorrect kicked user in kick presence");
+            }
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that a user who is present when another user gets kicked receives that change as a presence update
+     *
+     * <p>From XEP-0045 § 8.2:</p>
+     * <blockquote>
+     * ...the service MUST then inform all of the remaining occupants that the kicked occupant is no longer in the room
+     * by sending presence stanzas of type "unavailable" from the individual's roomnick (&lt;room@service/nick&gt;) to all
+     * the remaining occupants (just as it does when occupants exit the room of their own volition), including the
+     * status code and optionally the reason and actor.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucPresenceTestForWitnessingKick() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        createMUC(mucAsSeenByOne, "one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+        mucAsSeenByTwo.join(nicknameTwo);
+        mucAsSeenByThree.join(nicknameThree);
+
+        final ResultSyncPoint<Presence, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByThree.addParticipantListener(kickPresence -> resultSyncPoint.signal(kickPresence));
+
+        mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
+        try {
+            Presence kickPresence = resultSyncPoint.waitForResult(timeout);
+            MUCUser mucUser = MUCUser.from(kickPresence);
+            assertNotNull(mucUser);
+            assertAll(
+                    () -> assertFalse(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Incorrect self-presence status code in kick presence"),
+                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.KICKED_307), "Missing kick status code in kick presence"),
+                    () -> assertEquals(MUCRole.none, mucUser.getItem().getRole(), "Role other than 'none' in kick presence")
+            );
+            Jid itemJid = mucUser.getItem().getJid();
+            if (itemJid != null) {
+                assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), itemJid, "Incorrect kicked user in kick presence");
+            }
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+
     }
 
     @SmackIntegrationTest
