@@ -928,12 +928,12 @@ public class MultiUserChat {
      * should be the room's owner. If the sender of the destroy request is not the room's owner
      * then the server will answer a "Forbidden" error (403).
      *
-     * @param reason the reason for the room destruction.
-     * @param alternateJID the JID of an alternate location.
+     * @param reason an optional reason for the room destruction.
+     * @param alternateJID an optional JID of an alternate location.
      * @throws XMPPErrorException if an error occurs while trying to destroy the room.
      *      An error can occur which will be wrapped by an XMPPException --
      *      XMPP error code 403. The error code can be used to present more
-     *      appropiate error messages to end-users.
+     *      appropriate error messages to end-users.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
