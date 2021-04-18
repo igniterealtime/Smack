@@ -703,8 +703,9 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
         }
         try {
             muc.destroy("test fixture teardown", null);
-        } catch (Exception ex) {
-            LOGGER.log(Level.FINEST, "Failed to tear down a randomly generated MUC (" + muc.getRoom().toString() + ") used as a test fixture. Continuing anyway.", ex);
+        } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException ex) {
+            LOGGER.log(Level.FINEST, "Failed to tear down a randomly generated MUC (" + muc.getRoom()
+                            + ") used as a test fixture. Continuing anyway.", ex);
         }
     }
 
