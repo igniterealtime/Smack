@@ -13,7 +13,7 @@ dependencies {
 	implementation "com.google.guava:guava:${guavaVersion}"
 	// Do not upgrade to a higher reflections version until
 	// https://github.com/ronmamo/reflections/issues/273 is fixed.
-	implementation 'org.reflections:reflections:0.9.11'
+	implementation "org.reflections:reflections:${orgReflectionsVersion}"
 	api 'eu.geekplace.javapinning:java-pinning-java7:1.1.0-alpha1'
 	implementation group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
 	api "org.junit.jupiter:junit-jupiter-api:$junitVersion"

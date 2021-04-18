@@ -101,7 +101,7 @@ public class StreamErrorTest {
         assertNotNull(error);
         assertEquals(Condition.conflict, error.getCondition());
         assertEquals("Replaced by new connection", error.getDescriptiveText());
-        ExtensionElement appSpecificElement = error.getExtension("appSpecificElement", "myns");
+        XmlElement appSpecificElement = error.getExtension("appSpecificElement", "myns");
         assertNotNull(appSpecificElement);
     }
 

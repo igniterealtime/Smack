@@ -20,6 +20,8 @@ package org.jivesoftware.smackx.workgroup;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
@@ -38,6 +40,8 @@ public class MetaData implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jivesoftware.com/protocol/workgroup";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
     private final Map<String, List<String>> metaData;
 

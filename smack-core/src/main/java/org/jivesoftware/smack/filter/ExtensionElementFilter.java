@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmppElementUtil;
 
 public class ExtensionElementFilter<E extends ExtensionElement> implements StanzaFilter {
@@ -34,7 +35,7 @@ public class ExtensionElementFilter<E extends ExtensionElement> implements Stanz
 
     @Override
     public final boolean accept(Stanza stanza) {
-        ExtensionElement extensionElement = stanza.getExtension(extensionElementQName);
+        XmlElement extensionElement = stanza.getExtension(extensionElementQName);
         if (extensionElement == null) {
             return false;
         }

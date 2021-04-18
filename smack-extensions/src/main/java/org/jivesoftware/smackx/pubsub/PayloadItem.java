@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
@@ -55,7 +56,7 @@ import org.jivesoftware.smackx.pubsub.provider.ItemProvider;
  *
  * @author Robin Collier
  */
-public class PayloadItem<E extends ExtensionElement> extends Item {
+public class PayloadItem<E extends XmlElement> extends Item {
     private final E payload;
 
     /**

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -28,6 +28,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.stanza_content_encryption.element.AffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElement;
@@ -102,7 +103,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
             if (tag == XmlPullParser.Event.START_ELEMENT) {
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
-                ExtensionElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment);
+                XmlElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment);
                 builder.addPayloadItem(element);
             }
 

@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.stanza_content_encryption.element;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -28,13 +28,13 @@ public class PayloadElement implements NamedElement {
 
     public static final String ELEMENT = "payload";
 
-    private final List<ExtensionElement> payloadElements;
+    private final List<XmlElement> payloadElements;
 
-    public PayloadElement(List<ExtensionElement> payloadElements) {
+    public PayloadElement(List<XmlElement> payloadElements) {
         this.payloadElements = Collections.unmodifiableList(payloadElements);
     }
 
-    public List<ExtensionElement> getItems() {
+    public List<XmlElement> getItems() {
         return payloadElements;
     }
 

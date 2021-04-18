@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2015 Florian Schmaus
+ * Copyright 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,18 +32,18 @@ public class AbstractError {
 
     protected final String textNamespace;
     protected final Map<String, String> descriptiveTexts;
-    protected final List<ExtensionElement> extensions;
+    protected final List<XmlElement> extensions;
 
 
     protected AbstractError(Map<String, String> descriptiveTexts) {
         this(descriptiveTexts, null);
     }
 
-    protected AbstractError(Map<String, String> descriptiveTexts, List<ExtensionElement> extensions) {
+    protected AbstractError(Map<String, String> descriptiveTexts, List<XmlElement> extensions) {
         this(descriptiveTexts, null, extensions);
     }
 
-    protected AbstractError(Map<String, String> descriptiveTexts, String textNamespace, List<ExtensionElement> extensions) {
+    protected AbstractError(Map<String, String> descriptiveTexts, String textNamespace, List<XmlElement> extensions) {
         if (descriptiveTexts != null) {
             this.descriptiveTexts = descriptiveTexts;
         } else {
@@ -108,7 +108,7 @@ public class AbstractError {
      * @param <PE> type of the ExtensionElement.
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
-    public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {
+    public <PE extends XmlElement> PE getExtension(String elementName, String namespace) {
         return PacketUtil.extensionElementFrom(extensions, elementName, namespace);
     }
 
@@ -128,7 +128,7 @@ public class AbstractError {
     public abstract static class Builder<B extends Builder<B>> {
         protected String textNamespace;
         protected Map<String, String> descriptiveTexts;
-        protected List<ExtensionElement> extensions;
+        protected List<XmlElement> extensions;
 
         public B setDescriptiveTexts(Map<String, String> descriptiveTexts) {
             if (descriptiveTexts == null) {
@@ -173,7 +173,7 @@ public class AbstractError {
             return getThis();
         }
 
-        public B setExtensions(List<ExtensionElement> extensions) {
+        public B setExtensions(List<XmlElement> extensions) {
             if (this.extensions == null) {
                 this.extensions = extensions;
             }
@@ -183,7 +183,7 @@ public class AbstractError {
             return getThis();
         }
 
-        public B addExtension(ExtensionElement extension) {
+        public B addExtension(XmlElement extension) {
             if (extensions == null) {
                 extensions = new ArrayList<>();
             }

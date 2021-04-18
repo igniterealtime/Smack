@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingle.element;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -27,7 +27,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * A jingle transport extension.
  *
  */
-public abstract class JingleContentTransport implements ExtensionElement {
+public abstract class JingleContentTransport implements XmlElement {
 
     public static final String ELEMENT = "transport";
 

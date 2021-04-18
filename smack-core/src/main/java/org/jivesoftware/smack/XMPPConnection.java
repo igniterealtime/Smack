@@ -27,7 +27,6 @@ import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
@@ -36,6 +35,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaFactory;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.Predicate;
 import org.jivesoftware.smack.util.XmppElementUtil;
@@ -583,7 +583,7 @@ public interface XMPPConnection {
      */
     // TODO: Remove in Smack 4.5.
     @Deprecated
-    default <F extends FullyQualifiedElement> F getFeature(String element, String namespace) {
+    default <F extends XmlElement> F getFeature(String element, String namespace) {
         QName qname = new QName(namespace, element);
         return getFeature(qname);
     }
@@ -597,7 +597,7 @@ public interface XMPPConnection {
      * @return a stanza extensions of the feature or <code>null</code>
      * @since 4.4
      */
-    <F extends FullyQualifiedElement> F getFeature(QName qname);
+    <F extends XmlElement> F getFeature(QName qname);
 
     /**
      * Get the feature stanza extensions for a given stream feature of the
@@ -608,7 +608,7 @@ public interface XMPPConnection {
      * @return a stanza extensions of the feature or <code>null</code>
      * @since 4.4
      */
-    default <F extends FullyQualifiedElement> F getFeature(Class<F> featureClass) {
+    default <F extends XmlElement> F getFeature(Class<F> featureClass) {
         QName qname = XmppElementUtil.getQNameFor(featureClass);
         return getFeature(qname);
     }

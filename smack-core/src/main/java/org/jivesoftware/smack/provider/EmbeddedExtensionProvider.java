@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -82,7 +82,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *
  * @author Robin Collier
  */
-public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
+public abstract class EmbeddedExtensionProvider<PE extends XmlElement> extends ExtensionElementProvider<PE> {
 
     @Override
     public final PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
@@ -95,7 +95,7 @@ public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> ext
             attMap.put(parser.getAttributeName(i), parser.getAttributeValue(i));
         }
 
-        List<ExtensionElement> extensions = new ArrayList<>();
+        List<XmlElement> extensions = new ArrayList<>();
         XmlPullParser.Event event;
         do {
             event = parser.next();
@@ -109,5 +109,5 @@ public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> ext
     }
 
     protected abstract PE createReturnExtension(String currentElement, String currentNamespace,
-                    Map<String, String> attributeMap, List<? extends ExtensionElement> content);
+                    Map<String, String> attributeMap, List<? extends XmlElement> content);
 }

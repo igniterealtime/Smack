@@ -33,11 +33,11 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -643,7 +643,7 @@ public final class PubSubManager extends Manager {
         return true;
     }
 
-    private PubSub sendPubsubPacket(IQ.Type type, ExtensionElement ext, PubSubNamespace ns)
+    private PubSub sendPubsubPacket(IQ.Type type, XmlElement ext, PubSubNamespace ns)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sendPubsubPacket(pubSubService, type, Collections.singletonList(ext), ns);
     }
@@ -652,12 +652,12 @@ public final class PubSubManager extends Manager {
         return connection();
     }
 
-    PubSub sendPubsubPacket(Jid to, IQ.Type type, List<ExtensionElement> extList, PubSubNamespace ns)
+    PubSub sendPubsubPacket(Jid to, IQ.Type type, List<XmlElement> extList, PubSubNamespace ns)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
 // CHECKSTYLE:OFF
         PubSub pubSub = new PubSub(to, type, ns);
-        for (ExtensionElement pe : extList) {
+        for (XmlElement pe : extList) {
             pubSub.addExtension(pe);
         }
 // CHECKSTYLE:ON

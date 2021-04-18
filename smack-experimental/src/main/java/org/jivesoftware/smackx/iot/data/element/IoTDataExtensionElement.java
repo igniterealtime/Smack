@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.iot.data.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
-public abstract class IoTDataExtensionElement implements ExtensionElement {
+public abstract class IoTDataExtensionElement implements XmlElement {
 
     @Override
     public final String getNamespace() {

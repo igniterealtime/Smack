@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.util.Collections;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.hints.element.StoreHint;
 import org.jivesoftware.smackx.sid.element.StanzaIdElement;
 

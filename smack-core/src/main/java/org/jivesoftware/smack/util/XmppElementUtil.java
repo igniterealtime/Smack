@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,19 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.provider.ProviderManager;
 
 import org.jxmpp.util.cache.LruCache;
 
 public class XmppElementUtil {
 
-    private static final LruCache<Class<? extends FullyQualifiedElement>, QName> CLASS_TO_QNAME_CACHE = new LruCache<>(512);
+    private static final LruCache<Class<? extends XmlElement>, QName> CLASS_TO_QNAME_CACHE = new LruCache<>(512);
 
     public static final Logger LOGGER = Logger.getLogger(XmppElementUtil.class.getName());
 
-    public static QName getQNameFor(Class<? extends FullyQualifiedElement> fullyQualifiedElement) {
+    public static QName getQNameFor(Class<? extends XmlElement> fullyQualifiedElement) {
         QName qname = CLASS_TO_QNAME_CACHE.get(fullyQualifiedElement);
         if (qname != null) {
             return qname;
@@ -72,24 +72,24 @@ public class XmppElementUtil {
     }
 
     public static <E extends ExtensionElement> List<E> getElementsFrom(
-                    MultiMap<QName, ExtensionElement> elementMap, Class<E> extensionElementClass) {
+                    MultiMap<QName, XmlElement> elementMap, Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);
 
-        List<ExtensionElement> extensionElements = elementMap.getAll(qname);
+        List<XmlElement> extensionElements = elementMap.getAll(qname);
 
         if (extensionElements.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<E> res = new ArrayList<>(extensionElements.size());
-        for (ExtensionElement extensionElement : extensionElements) {
+        for (XmlElement extensionElement : extensionElements) {
             E e = castOrThrow(extensionElement, extensionElementClass);
             res.add(e);
         }
         return res;
     }
 
-    public static <E extends ExtensionElement> E castOrThrow(ExtensionElement extensionElement, Class<E> extensionElementClass) {
+    public static <E extends ExtensionElement> E castOrThrow(XmlElement extensionElement, Class<E> extensionElementClass) {
         if (!extensionElementClass.isInstance(extensionElement)) {
             final QName qname = getQNameFor(extensionElementClass);
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,16 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * Interface to represent extension elements.
+ * Interface to represent XMPP extension elements. Unlike {@link XmlElement}, every non-abstract class that implements
+ * {@link ExtensionElement} must have a static final QNAME member of the type {@link javax.xml.namespace.QName}. This
+ * allows type-safe functions like {@link StanzaView#getExtension(Class)}. Hence this is a marker interface.
  * <p>
- * An extension element is an XML subdocument
- * with a root element name and namespace. Extension elements are used to provide
- * extended functionality beyond what is in the base XMPP specification. Examples of
- * extensions elements include message events, message properties, and extra presence data.
- * IQ stanzas have limited support for extension elements.
- * <p>
- * This class is used primarily for extended content in XMPP Stanzas, to act as so called "extension elements". For more
- * information see <a href="https://tools.ietf.org/html/rfc6120#section-8.4">RFC 6120 § 8.4 Extended Content</a>.
+ * Use this class when implementing new extension elements when possible. This means that every instance of your
+ * implemented class must represent an XML element of the same qualified name.
  * </p>
  *
- * @see org.jivesoftware.smack.provider.ExtensionElementProvider
- * @author Matt Tucker
+ * @see <a href="https://tools.ietf.org/html/rfc6120#section-8.4">RFC 6120 § 8.4 Extended Content</a>
  */
-public interface ExtensionElement extends FullyQualifiedElement {
+public interface ExtensionElement extends XmlElement {
 
 }

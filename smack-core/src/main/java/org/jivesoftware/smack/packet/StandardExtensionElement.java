@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus.
+ * Copyright 2015-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * @since 4.2
  * @author Florian Schmaus
  */
-public final class StandardExtensionElement implements ExtensionElement {
+public final class StandardExtensionElement implements XmlElement {
 
     private final String name;
     private final String namespace;

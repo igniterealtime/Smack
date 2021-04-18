@@ -33,11 +33,11 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -516,8 +516,8 @@ public class Workgroup {
         if (packet instanceof Message) {
             Message msg = (Message) packet;
             // Check to see if the user left the queue.
-            ExtensionElement pe = msg.getExtensionElement("depart-queue", "http://jabber.org/protocol/workgroup");
-            ExtensionElement queueStatus = msg.getExtensionElement("queue-status", "http://jabber.org/protocol/workgroup");
+            XmlElement pe = msg.getExtensionElement("depart-queue", "http://jabber.org/protocol/workgroup");
+            XmlElement queueStatus = msg.getExtensionElement("queue-status", "http://jabber.org/protocol/workgroup");
 
             if (pe != null) {
                 fireQueueDepartedEvent();

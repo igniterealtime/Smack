@@ -24,7 +24,7 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.datatypes.UInt16;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
@@ -130,7 +130,7 @@ public class MediaElement implements FormFieldChildElement {
         }
     }
 
-    public static final class Uri implements FullyQualifiedElement {
+    public static final class Uri implements XmlElement {
         public static final String ELEMENT = "uri";
 
         public static final QName QNAME = new QName(NAMESPACE, ELEMENT);

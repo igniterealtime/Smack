@@ -99,7 +99,7 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                                     "Message Markup ListElement MUST contain a 'end' attribute.");
                             break;
 
-                        case ListElement.ELEM_LI:
+                        case ListElement.ListEntryElement.ELEMENT:
                             start = ParserUtils.getIntegerAttributeOrThrow(parser, MarkupChildElement.ATTR_START,
                                     "Message Markup ListElement 'li' MUST contain a 'start' attribute.");
                             lis.add(new ListElement.ListEntryElement(start));

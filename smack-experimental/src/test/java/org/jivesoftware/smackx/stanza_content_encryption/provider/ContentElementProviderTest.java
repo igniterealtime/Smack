@@ -29,6 +29,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.RandomPaddingAffixElement;

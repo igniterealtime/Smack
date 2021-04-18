@@ -26,6 +26,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.message_retraction.element.RetractedElement;
 import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;

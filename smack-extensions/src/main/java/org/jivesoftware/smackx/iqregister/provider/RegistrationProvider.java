@@ -22,8 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
@@ -39,7 +39,7 @@ public class RegistrationProvider extends IQProvider<Registration> {
     public Registration parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
-        List<ExtensionElement> packetExtensions = new LinkedList<>();
+        List<XmlElement> packetExtensions = new LinkedList<>();
         outerloop:
         while (true) {
             XmlPullParser.Event eventType = parser.next();

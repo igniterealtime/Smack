@@ -21,7 +21,7 @@ import java.math.BigInteger;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.datatypes.UInt32;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -374,7 +374,7 @@ public abstract class ValidateElement implements FormFieldChildElement {
      * This element indicates for "list-multi", that a minimum and maximum number of options should be selected and/or
      * entered.
      */
-    public static class ListRange implements FullyQualifiedElement {
+    public static class ListRange implements XmlElement {
 
         public static final String ELEMENT = "list-range";
         private final UInt32 min;

@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smackx.chatstates.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.chatstates.ChatState;
@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.chatstates.ChatState;
  * @author Alexander Wenckus
  * @see org.jivesoftware.smackx.chatstates.ChatState
  */
-public class ChatStateExtension implements ExtensionElement {
+public class ChatStateExtension implements XmlElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/chatstates";
 

@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub.provider;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
@@ -33,7 +33,7 @@ import org.jivesoftware.smackx.pubsub.ItemsExtension;
 public class ItemsProvider extends EmbeddedExtensionProvider<ItemsExtension> {
 
     @Override
-    protected ItemsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
+    protected ItemsExtension createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends XmlElement> content) {
         return new ItemsExtension(ItemsExtension.ItemsElementType.items, attributeMap.get("node"), content);
     }
 

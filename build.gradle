@@ -153,6 +153,7 @@ allprojects {
 		bouncyCastleVersion = '1.68'
 		guavaVersion = '30.1-jre'
 		mockitoVersion = '3.7.7'
+		orgReflectionsVersion = '0.9.11'
 
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()

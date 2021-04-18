@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -30,7 +30,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  *
  * @author Robin Collier
  */
-public class NodeExtension implements ExtensionElement {
+public class NodeExtension implements XmlElement {
     private final PubSubElementType element;
     private final String node;
 

@@ -19,9 +19,9 @@ package org.jivesoftware.smackx.mood.element;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -158,7 +158,7 @@ public class MoodElement implements ExtensionElement {
      * {@link NamedElement} which represents the mood.
      * This element has the element name of the mood selected from {@link Mood}.
      */
-    public static class MoodSubjectElement implements FullyQualifiedElement {
+    public static class MoodSubjectElement implements XmlElement {
 
         private final Mood mood;
         private final MoodConcretisation concretisation;

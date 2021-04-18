@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -319,7 +319,7 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
             buf.attribute("type", type);
         }
 
-        List<ExtensionElement> extensions = getExtensions();
+        List<XmlElement> extensions = getExtensions();
         if (status == null
                         && priority == null
                         && (mode == null || mode == Mode.available)

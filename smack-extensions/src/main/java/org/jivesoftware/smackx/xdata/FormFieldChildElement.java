@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.xdata;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
-public interface FormFieldChildElement extends FullyQualifiedElement {
+public interface FormFieldChildElement extends XmlElement {
 
     default boolean isExclusiveElement() {
         return false;

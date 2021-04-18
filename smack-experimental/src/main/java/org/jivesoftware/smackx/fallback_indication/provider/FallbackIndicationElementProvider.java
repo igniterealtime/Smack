@@ -23,6 +23,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.fallback_indication.element.FallbackIndicationElement;
 
 public class FallbackIndicationElementProvider extends ExtensionElementProvider<FallbackIndicationElement> {

@@ -74,7 +74,6 @@ import org.jivesoftware.smack.packet.AbstractStreamOpen;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Message;
@@ -92,6 +91,7 @@ import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -239,7 +239,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected final Lock connectionLock = new ReentrantLock();
 
-    protected final Map<QName, FullyQualifiedElement> streamFeatures = new HashMap<>();
+    protected final Map<QName, XmlElement> streamFeatures = new HashMap<>();
 
     /**
      * The full JID of the authenticated user, as returned by the resource binding response of the server.
@@ -1859,7 +1859,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             XmlPullParser.Event eventType = parser.next();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getDepth() == initialDepth + 1) {
-                FullyQualifiedElement streamFeature = null;
+                XmlElement streamFeature = null;
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (name) {
@@ -1928,7 +1928,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <F extends FullyQualifiedElement> F getFeature(QName qname) {
+    public <F extends XmlElement> F getFeature(QName qname) {
         return (F) streamFeatures.get(qname);
     }
 
@@ -1937,7 +1937,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return streamFeatures.containsKey(qname);
     }
 
-    protected void addStreamFeature(FullyQualifiedElement feature) {
+    protected void addStreamFeature(XmlElement feature) {
         QName key = feature.getQName();
         streamFeatures.put(key, feature);
     }

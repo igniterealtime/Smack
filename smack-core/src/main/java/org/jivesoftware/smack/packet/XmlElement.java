@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,23 @@ package org.jivesoftware.smack.packet;
 
 import javax.xml.namespace.QName;
 
-public interface FullyQualifiedElement extends NamedElement, XmlLangElement {
+/**
+ * Interface to represent XML elements. Every XML element in XMPP has a qualified XML name ({@link QName}). This name
+ * can be obtained via {@link #getQName()}.
+ * <p>
+ * XMPP uses "extension elements", i.e. XML elements, to provide extended functionality beyond what is in the base XMPP
+ * specification. Examples of extensions elements include message events, message properties, and extra presence data.
+ * IQ stanzas have limited support for extension elements. See {@link ExtensionElement} for more information about XMPP
+ * extension elements.
+ * </p>
+ * <p>
+ * It is recommend to use {@link ExtensionElement} over this class when creating new extension elements.
+ * </p>
+ *
+ * @see org.jivesoftware.smack.provider.ExtensionElementProvider
+ * @since 4.5
+ */
+public interface XmlElement extends NamedElement, XmlLangElement {
 
     /**
      * Returns the root element XML namespace.

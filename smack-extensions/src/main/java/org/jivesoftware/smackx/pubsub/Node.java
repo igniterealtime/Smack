@@ -28,10 +28,10 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.FlexibleStanzaTypeFilter;
 import org.jivesoftware.smack.filter.OrFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -163,7 +163,7 @@ public abstract class Node {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public List<Subscription> getSubscriptions(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
+    public List<Subscription> getSubscriptions(List<XmlElement> additionalExtensions, Collection<XmlElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return getSubscriptions(SubscriptionsNamespace.basic, additionalExtensions, returnedExtensions);
     }
@@ -207,20 +207,20 @@ public abstract class Node {
      *      Retrieve Subscriptions List</a>
      * @since 4.1
      */
-    public List<Subscription> getSubscriptionsAsOwner(List<ExtensionElement> additionalExtensions,
-                    Collection<ExtensionElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
+    public List<Subscription> getSubscriptionsAsOwner(List<XmlElement> additionalExtensions,
+                    Collection<XmlElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         return getSubscriptions(SubscriptionsNamespace.owner, additionalExtensions, returnedExtensions);
     }
 
-    private List<Subscription> getSubscriptions(SubscriptionsNamespace subscriptionsNamespace, List<ExtensionElement> additionalExtensions,
-                    Collection<ExtensionElement> returnedExtensions)
+    private List<Subscription> getSubscriptions(SubscriptionsNamespace subscriptionsNamespace, List<XmlElement> additionalExtensions,
+                    Collection<XmlElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSubElementType pubSubElementType = subscriptionsNamespace.type;
 
         PubSub pubSub = createPubsubPacket(IQ.Type.get, new NodeExtension(pubSubElementType, getId()));
         if (additionalExtensions != null) {
-            for (ExtensionElement pe : additionalExtensions) {
+            for (XmlElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
             }
         }
@@ -286,7 +286,7 @@ public abstract class Node {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public List<Affiliation> getAffiliations(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
+    public List<Affiliation> getAffiliations(List<XmlElement> additionalExtensions, Collection<XmlElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
         return getAffiliations(AffiliationNamespace.basic, additionalExtensions, returnedExtensions);
@@ -326,20 +326,20 @@ public abstract class Node {
      * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-retrieve">XEP-60 § 8.9.1 Retrieve Affiliations List</a>
      * @since 4.2
      */
-    public List<Affiliation> getAffiliationsAsOwner(List<ExtensionElement> additionalExtensions, Collection<ExtensionElement> returnedExtensions)
+    public List<Affiliation> getAffiliationsAsOwner(List<XmlElement> additionalExtensions, Collection<XmlElement> returnedExtensions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
         return getAffiliations(AffiliationNamespace.owner, additionalExtensions, returnedExtensions);
     }
 
-    private List<Affiliation> getAffiliations(AffiliationNamespace affiliationsNamespace, List<ExtensionElement> additionalExtensions,
-                    Collection<ExtensionElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
+    private List<Affiliation> getAffiliations(AffiliationNamespace affiliationsNamespace, List<XmlElement> additionalExtensions,
+                    Collection<XmlElement> returnedExtensions) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         PubSubElementType pubSubElementType = affiliationsNamespace.type;
 
         PubSub pubSub = createPubsubPacket(IQ.Type.get, new NodeExtension(pubSubElementType, getId()));
         if (additionalExtensions != null) {
-            for (ExtensionElement pe : additionalExtensions) {
+            for (XmlElement pe : additionalExtensions) {
                 pubSub.addExtension(pe);
             }
         }
@@ -717,7 +717,7 @@ public abstract class Node {
 // CHECKSTYLE:OFF
             EventElement event = (EventElement) packet.getExtensionElement("event", PubSubNamespace.event.getXmlns());
 
-            List<ExtensionElement> extList = event.getExtensions();
+            List<XmlElement> extList = event.getExtensions();
 
             if (extList.get(0).getElementName().equals(PubSubElementType.PURGE_EVENT.getElementName())) {
                 listener.handlePurge();
@@ -804,7 +804,7 @@ public abstract class Node {
                     return true;
 
                 if (embedEvent instanceof EmbeddedPacketExtension) {
-                    List<ExtensionElement> secondLevelList = ((EmbeddedPacketExtension) embedEvent).getExtensions();
+                    List<XmlElement> secondLevelList = ((EmbeddedPacketExtension) embedEvent).getExtensions();
 
                     // XEP-0060 allows no elements on second level for notifications. See schema or
                     // for example § 4.3:

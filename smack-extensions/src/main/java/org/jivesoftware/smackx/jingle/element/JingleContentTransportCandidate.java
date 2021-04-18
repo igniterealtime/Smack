@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
 /**
  * An element found usually in Jingle 'transport' elements.
  *
  */
-public abstract class JingleContentTransportCandidate implements FullyQualifiedElement {
+public abstract class JingleContentTransportCandidate implements XmlElement {
 
     public static final String ELEMENT = "candidate";
 

@@ -24,9 +24,11 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.message_fastening.MessageFasteningManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
@@ -43,12 +45,12 @@ public final class FasteningElement implements ExtensionElement {
 
     private final OriginIdElement referencedStanzasOriginId;
     private final List<ExternalElement> externalPayloads = new ArrayList<>();
-    private final List<ExtensionElement> wrappedPayloads = new ArrayList<>();
+    private final List<XmlElement> wrappedPayloads = new ArrayList<>();
     private final boolean clear;
     private final boolean shell;
 
     private FasteningElement(OriginIdElement originId,
-                             List<ExtensionElement> wrappedPayloads,
+                             List<XmlElement> wrappedPayloads,
                              List<ExternalElement> externalPayloads,
                              boolean clear,
                              boolean shell) {
@@ -76,7 +78,7 @@ public final class FasteningElement implements ExtensionElement {
      *
      * @return wrapped payloads.
      */
-    public List<ExtensionElement> getWrappedPayloads() {
+    public List<XmlElement> getWrappedPayloads() {
         return Collections.unmodifiableList(wrappedPayloads);
     }
 
@@ -162,7 +164,7 @@ public final class FasteningElement implements ExtensionElement {
         for (ExternalElement external : externalPayloads) {
             xml.append(external);
         }
-        for (ExtensionElement wrapped : wrappedPayloads) {
+        for (XmlElement wrapped : wrappedPayloads) {
             xml.append(wrapped);
         }
     }
@@ -204,7 +206,7 @@ public final class FasteningElement implements ExtensionElement {
 
     public static class Builder {
         private OriginIdElement originId;
-        private final List<ExtensionElement> wrappedPayloads = new ArrayList<>();
+        private final List<XmlElement> wrappedPayloads = new ArrayList<>();
         private final List<ExternalElement> externalPayloads = new ArrayList<>();
         private boolean isClear = false;
         private boolean isShell = false;
@@ -236,7 +238,7 @@ public final class FasteningElement implements ExtensionElement {
          * @param wrappedPayload wrapped payload
          * @return builder instance
          */
-        public Builder addWrappedPayload(ExtensionElement wrappedPayload) {
+        public Builder addWrappedPayload(XmlElement wrappedPayload) {
             return addWrappedPayloads(Collections.singletonList(wrappedPayload));
         }
 
@@ -246,7 +248,7 @@ public final class FasteningElement implements ExtensionElement {
          * @param wrappedPayloads list of wrapped payloads
          * @return builder instance
          */
-        public Builder addWrappedPayloads(List<ExtensionElement> wrappedPayloads) {
+        public Builder addWrappedPayloads(List<XmlElement> wrappedPayloads) {
             this.wrappedPayloads.addAll(wrappedPayloads);
             return this;
         }

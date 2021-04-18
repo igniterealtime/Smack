@@ -19,13 +19,15 @@ package org.jivesoftware.smackx.message_markup.element;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class ListElement extends MarkupElement.NonEmptyChildElement {
 
     public static final String ELEMENT = "list";
-    public static final String ELEM_LI = "li";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final List<ListEntryElement> entries;
 
@@ -52,7 +54,7 @@ public class ListElement extends MarkupElement.NonEmptyChildElement {
 
     @Override
     public String getElementName() {
-        return ELEMENT;
+        return QNAME.getLocalPart();
     }
 
     @Override
@@ -61,6 +63,10 @@ public class ListElement extends MarkupElement.NonEmptyChildElement {
     }
 
     public static class ListEntryElement implements ExtensionElement {
+
+        public static final String ELEMENT = "li";
+
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final int start;
 
@@ -83,12 +89,12 @@ public class ListElement extends MarkupElement.NonEmptyChildElement {
 
         @Override
         public String getElementName() {
-            return ELEM_LI;
+            return QNAME.getLocalPart();
         }
 
         @Override
         public String getNamespace() {
-            return MarkupElement.NAMESPACE;
+            return QNAME.getNamespaceURI();
         }
 
         @Override

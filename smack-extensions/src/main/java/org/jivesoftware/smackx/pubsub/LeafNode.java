@@ -23,8 +23,8 @@ import java.util.List;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
@@ -71,7 +71,7 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return getItems((List<ExtensionElement>) null, null);
+        return getItems((List<XmlElement>) null, null);
     }
 
     /**
@@ -177,8 +177,8 @@ public class LeafNode extends Node {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public <T extends Item> List<T> getItems(List<ExtensionElement> additionalExtensions,
-                    List<ExtensionElement> returnedExtensions) throws NoResponseException,
+    public <T extends Item> List<T> getItems(List<XmlElement> additionalExtensions,
+                    List<XmlElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(IQ.Type.get, new GetItemsRequest(getId()));
         request.addExtensions(additionalExtensions);
@@ -192,7 +192,7 @@ public class LeafNode extends Node {
 
     @SuppressWarnings("unchecked")
     private <T extends Item> List<T> getItems(PubSub request,
-                    List<ExtensionElement> returnedExtensions) throws NoResponseException,
+                    List<XmlElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub result = pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
         ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
