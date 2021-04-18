@@ -924,6 +924,23 @@ public class MultiUserChat {
     }
 
     /**
+     * Sends a request to destroy the room.
+     *
+     * @throws XMPPErrorException if an error occurs while trying to destroy the room.
+     *      An error can occur which will be wrapped by an XMPPException --
+     *      XMPP error code 403. The error code can be used to present more
+     *      appropriate error messages to end-users.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @see #destroy(String, EntityBareJid)
+     * @since 4.5
+     */
+    public void destroy() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        destroy(null, null);
+    }
+
+    /**
      * Sends a request to the server to destroy the room. The sender of the request
      * should be the room's owner. If the sender of the destroy request is not the room's owner
      * then the server will answer a "Forbidden" error (403).
