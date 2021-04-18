@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2016 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2015-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 
 package org.jivesoftware.smack.packet;
+
+import javax.xml.namespace.QName;
 
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -73,6 +75,7 @@ public final class Bind extends IQ {
 
     public static final class Feature implements ExtensionElement {
 
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
         public static final Feature INSTANCE = new Feature();
 
         private Feature() {

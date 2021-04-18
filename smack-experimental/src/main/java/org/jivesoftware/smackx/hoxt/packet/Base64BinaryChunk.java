@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Andriy Tsykholyas, 2015 Florian Schmaus
+ * Copyright 2014 Andriy Tsykholyas, 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.hoxt.packet;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.Objects;
@@ -35,6 +37,8 @@ public class Base64BinaryChunk implements ExtensionElement {
     public static final String ATTRIBUTE_STREAM_ID = "streamId";
     public static final String ATTRIBUTE_LAST = "last";
     public static final String ATTRIBUTE_NR = "nr";
+
+    public static final QName QNAME = new QName(HOXTManager.NAMESPACE, ELEMENT_CHUNK);
 
     private final String streamId;
     private final boolean last;
@@ -108,12 +112,12 @@ public class Base64BinaryChunk implements ExtensionElement {
 
     @Override
     public String getElementName() {
-        return ELEMENT_CHUNK;
+        return QNAME.getLocalPart();
     }
 
     @Override
     public String getNamespace() {
-        return HOXTManager.NAMESPACE;
+        return QNAME.getNamespaceURI();
     }
 
     @Override

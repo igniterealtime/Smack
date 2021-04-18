@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smackx.message_markup.element;
 
+import javax.xml.namespace.QName;
+
 public class BlockQuoteElement extends MarkupElement.BlockLevelMarkupElement {
 
     public static final String ELEMENT = "bquote";
+    public static final QName QNAME = new QName(MarkupElement.NAMESPACE, ELEMENT);
 
     /**
      * Create a new Block Quote element.
@@ -32,7 +35,7 @@ public class BlockQuoteElement extends MarkupElement.BlockLevelMarkupElement {
 
     @Override
     public String getElementName() {
-        return ELEMENT;
+        return QNAME.getLocalPart();
     }
 
 }
