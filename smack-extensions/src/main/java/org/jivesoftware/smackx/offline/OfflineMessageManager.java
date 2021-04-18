@@ -65,7 +65,7 @@ public final class OfflineMessageManager extends Manager {
 
     private static final Logger LOGGER = Logger.getLogger(OfflineMessageManager.class.getName());
 
-    private static final String namespace = "http://jabber.org/protocol/offline";
+    public static final String NAMESPACE = "http://jabber.org/protocol/offline";
 
     private static final Map<XMPPConnection, OfflineMessageManager> INSTANCES = new WeakHashMap<>();
 
@@ -100,7 +100,7 @@ public final class OfflineMessageManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public boolean supportsFlexibleRetrieval() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return serviceDiscoveryManager.serverSupportsFeature(namespace);
+        return serviceDiscoveryManager.serverSupportsFeature(NAMESPACE);
     }
 
     /**
@@ -114,8 +114,8 @@ public final class OfflineMessageManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public int getMessageCount() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        DiscoverInfo info = serviceDiscoveryManager.discoverInfo(null, namespace);
-        DataForm dataForm = DataForm.from(info, namespace);
+        DiscoverInfo info = serviceDiscoveryManager.discoverInfo(null, NAMESPACE);
+        DataForm dataForm = DataForm.from(info, NAMESPACE);
         if (dataForm == null) {
             return 0;
         }
@@ -138,7 +138,7 @@ public final class OfflineMessageManager extends Manager {
      */
     public List<OfflineMessageHeader> getHeaders() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<OfflineMessageHeader> answer = new ArrayList<>();
-        DiscoverItems items = serviceDiscoveryManager.discoverItems(null, namespace);
+        DiscoverItems items = serviceDiscoveryManager.discoverItems(null, NAMESPACE);
         for (DiscoverItems.Item item : items.getItems()) {
             answer.add(new OfflineMessageHeader(item));
         }

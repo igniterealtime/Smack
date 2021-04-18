@@ -328,6 +328,7 @@ public class MUCUser implements ExtensionElement {
      */
     public static class Decline implements ExtensionElement {
         public static final String ELEMENT = "decline";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String reason;
         private final EntityBareJid from;
@@ -384,12 +385,12 @@ public class MUCUser implements ExtensionElement {
 
         @Override
         public String getElementName() {
-            return ELEMENT;
+            return QNAME.getLocalPart();
         }
 
         @Override
         public String getNamespace() {
-            return NAMESPACE;
+            return QNAME.getNamespaceURI();
         }
     }
 

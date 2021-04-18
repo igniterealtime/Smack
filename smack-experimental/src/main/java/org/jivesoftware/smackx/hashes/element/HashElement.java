@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Paul Schaub
+ * Copyright © 2017 Paul Schaub, 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.hashes.element;
 
 import static org.jivesoftware.smack.util.Objects.requireNonNull;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
@@ -33,6 +35,8 @@ public class HashElement implements ExtensionElement {
 
     public static final String ELEMENT = "hash";
     public static final String ATTR_ALGO = "algo";
+
+    public static final QName QNAME = new QName(HashManager.NAMESPACE.V2.toString(), ELEMENT);
 
     private final HashManager.ALGORITHM algorithm;
     private final byte[] hash;
@@ -89,7 +93,12 @@ public class HashElement implements ExtensionElement {
 
     @Override
     public String getElementName() {
-        return ELEMENT;
+        return QNAME.getLocalPart();
+    }
+
+    @Override
+    public String getNamespace() {
+        return QNAME.getNamespaceURI();
     }
 
     @Override
@@ -100,11 +109,6 @@ public class HashElement implements ExtensionElement {
         sb.append(hashB64);
         sb.closeElement(this);
         return sb;
-    }
-
-    @Override
-    public String getNamespace() {
-        return HashManager.NAMESPACE.V2.toString();
     }
 
     @Override

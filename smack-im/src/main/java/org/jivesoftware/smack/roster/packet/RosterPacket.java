@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
@@ -119,6 +121,8 @@ public final class RosterPacket extends IQ {
          */
         public static final String ELEMENT = Stanza.ITEM;
 
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         public static final String GROUP = "group";
 
         private final BareJid jid;
@@ -160,12 +164,12 @@ public final class RosterPacket extends IQ {
 
         @Override
         public String getElementName() {
-            return ELEMENT;
+            return QNAME.getLocalPart();
         }
 
         @Override
         public String getNamespace() {
-            return NAMESPACE;
+            return QNAME.getNamespaceURI();
         }
 
         /**

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2019 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
@@ -73,6 +75,8 @@ public class StanzaError extends AbstractError implements ExtensionElement {
     public static final String NAMESPACE = ERROR_CONDITION_AND_TEXT_NAMESPACE;
 
     public static final String ERROR = "error";
+
+    public static final QName QNAME = new QName(StreamOpen.CLIENT_NAMESPACE, ERROR);
 
     private static final Logger LOGGER = Logger.getLogger(StanzaError.class.getName());
     static final Map<Condition, Type> CONDITION_TO_TYPE = new HashMap<Condition, Type>();
@@ -199,12 +203,12 @@ public class StanzaError extends AbstractError implements ExtensionElement {
 
     @Override
     public String getElementName() {
-        return ERROR;
+        return QNAME.getLocalPart();
     }
 
     @Override
     public String getNamespace() {
-        return StreamOpen.CLIENT_NAMESPACE;
+        return QNAME.getNamespaceURI();
     }
 
     @Override

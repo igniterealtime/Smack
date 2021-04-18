@@ -27,6 +27,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jivesoftware.smackx.offline.OfflineMessageManager;
 
 /**
  * Represents a request to get some or all the offline messages of a user. This class can also
@@ -37,7 +38,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 public class OfflineMessageRequest extends IQ {
 
     public static final String ELEMENT = "offline";
-    public static final String NAMESPACE = "http://jabber.org/protocol/offline";
+    public static final String NAMESPACE = OfflineMessageManager.NAMESPACE;
 
     private final List<Item> items = new ArrayList<>();
     private boolean purge = false;

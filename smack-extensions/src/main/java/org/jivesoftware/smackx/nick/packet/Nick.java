@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.nick.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -30,7 +32,16 @@ public class Nick implements ExtensionElement {
 
     public static final String NAMESPACE = "http://jabber.org/protocol/nick";
 
-    public static final String ELEMENT_NAME = "nick";
+    public static final QName QNAME = new QName(NAMESPACE, "nick");
+
+    /**
+     * Deprected, do not use.
+     *
+     * @deprecated use {@link #QNAME} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.6.
+    public static final String ELEMENT_NAME = QNAME.getLocalPart();
 
     private final String name;
 
@@ -49,12 +60,12 @@ public class Nick implements ExtensionElement {
 
     @Override
     public String getElementName() {
-        return ELEMENT_NAME;
+        return QNAME.getLocalPart();
     }
 
     @Override
     public String getNamespace() {
-        return NAMESPACE;
+        return QNAME.getNamespaceURI();
     }
 
     @Override
