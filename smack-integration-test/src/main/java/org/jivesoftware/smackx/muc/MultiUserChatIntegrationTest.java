@@ -324,7 +324,7 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
      * to all occupants...
      * </blockquote>
      *
-     * <p>From XEP-0045 § 9.6:</p>
+     * <p>From XEP-0045 § 9.7:</p>
      * <blockquote>
      * The service MUST then send updated presence from this individual to all occupants, indicating the removal of
      * moderator status...
