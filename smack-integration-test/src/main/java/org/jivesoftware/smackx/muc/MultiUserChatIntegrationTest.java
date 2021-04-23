@@ -746,7 +746,18 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
     }
 
-    @SmackIntegrationTest
+     /**
+     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update
+     *
+     * <p>From XEP-0045 § 10.9:</p>
+     * <blockquote>
+     * A room owner MUST be able to destroy a room, especially if the room is persistent... The room removes all users from the room... and destroys the room
+     * </blockquote>
+     *
+     * @throws TimeoutException when roomDestroyed event doesn't get fired
+     * @throws Exception when other errors occur
+     */
+     @SmackIntegrationTest
     public void mucDestroyTest() throws TimeoutException, Exception {
 
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-join-leave");
