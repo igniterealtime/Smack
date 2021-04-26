@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -797,17 +796,16 @@ public class MultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
      * Destroys a MUC room, ignoring any exceptions.
      *
      * @param muc The room to destroy (can be null).
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    static void tryDestroy(final MultiUserChat muc) {
+    static void tryDestroy(final MultiUserChat muc) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         if (muc == null) {
             return;
         }
-        try {
-            muc.destroy("test fixture teardown", null);
-        } catch (NoResponseException | XMPPErrorException | NotConnectedException | InterruptedException ex) {
-            LOGGER.log(Level.FINEST, "Failed to tear down a randomly generated MUC (" + muc.getRoom()
-                            + ") used as a test fixture. Continuing anyway.", ex);
-        }
+        muc.destroy("test fixture teardown", null);
     }
 
     private static void createMUC(MultiUserChat muc, String resourceName) throws NoResponseException, XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
