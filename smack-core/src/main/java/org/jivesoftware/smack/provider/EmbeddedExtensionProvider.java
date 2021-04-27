@@ -41,9 +41,9 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * <b>smack.properties</b> file.  Then they will be automatically picked up and used to parse
  * any child elements.
  *
- * <pre>
  * For example, given the following message
  *
+ * <pre>
  * &lt;message from='pubsub.shakespeare.lit' to='francisco@denmark.lit' id='foo&gt;
  *    &lt;event xmlns='http://jabber.org/protocol/pubsub#event&gt;
  *       &lt;items node='princely_musings'&gt;
@@ -57,6 +57,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *       &lt;/items&gt;
  *    &lt;/event&gt;
  * &lt;/message&gt;
+ * </pre>
  *
  * I would have a classes
  * <code>ItemsProvider</code> extends {@link EmbeddedExtensionProvider}
@@ -67,6 +68,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * These classes are then registered in the meta-inf/smack.providers file
  * as follows.
  *
+ * <pre>
  *   &lt;extensionProvider&gt;
  *      &lt;elementName&gt;items&lt;/elementName&gt;
  *      &lt;namespace&gt;http://jabber.org/protocol/pubsub#event&lt;/namespace&gt;
@@ -77,7 +79,6 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *       &lt;namespace&gt;http://jabber.org/protocol/pubsub#event&lt;/namespace&gt;
  *       &lt;className&gt;org.jivesoftware.smackx.provider.ItemProvider&lt;/className&gt;
  *   &lt;/extensionProvider&gt;
- *
  * </pre>
  *
  * @author Robin Collier
