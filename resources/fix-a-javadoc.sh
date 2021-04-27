@@ -15,7 +15,7 @@ cd "`dirname "${SCRIPTDIR}"`" > /dev/null
 SCRIPTDIR="`pwd`";
 popd  > /dev/null
 
-SMACK_DIR=$(readlink "${SCRIPTDIR}"/..)
+SMACK_DIR=$(realpath "${SCRIPTDIR}"/..)
 
 FIND_ALL_JAVA_SRC="find ${SMACK_DIR} \
 	 -type f \
