@@ -24,7 +24,10 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -36,6 +39,8 @@ import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 import org.jivesoftware.smackx.ox.element.SignElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKey;
@@ -166,9 +171,9 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
             try {
                 sender.updateKeys(connection);
                 announcedPublicKeys = sender.getAnnouncedPublicKeys();
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Fetching keys of " + sender.getJid() + " failed. Abort decryption and discard message.", e);
-                throw new PGPException("Abort decryption due to lack of keys.", e);
+            } catch (InterruptedException | NotALeafNodeException | NotAPubSubNodeException | NotConnectedException
+                            | NoResponseException | XMPPErrorException e) {
+                throw new PGPException("Abort decryption due to lack of keys", e);
             }
         }
 
@@ -178,7 +183,8 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
                 try {
                     sender.updateKeys(connection);
                     return sender.getAnyPublicKeys().getPublicKey(keyId);
-                } catch (Exception e) {
+                } catch (InterruptedException | NotALeafNodeException | NotAPubSubNodeException | NotConnectedException
+                                | NoResponseException | XMPPErrorException | IOException | PGPException e) {
                     LOGGER.log(Level.WARNING, "Cannot fetch missing key " + keyId, e);
                     return null;
                 }
