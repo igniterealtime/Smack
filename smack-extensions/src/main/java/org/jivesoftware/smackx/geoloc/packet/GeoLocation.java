@@ -357,7 +357,7 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
      *  <br><br>
      *  To set GeoLocation parameters, use their respective setters.
      */
-    public static class Builder {
+    public static final class Builder {
 
         private Double accuracy;
         private Double alt;
