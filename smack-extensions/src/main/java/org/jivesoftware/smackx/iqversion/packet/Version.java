@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,10 @@
 
 package org.jivesoftware.smackx.iqversion.packet;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.util.StringUtils;
-
-import org.jxmpp.jid.Jid;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
@@ -29,7 +28,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gaston Dombiak
  */
-public class Version extends IQ {
+public class Version extends IQ implements VersionView {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:version";
 
@@ -37,44 +36,17 @@ public class Version extends IQ {
     private final String version;
     private String os;
 
-    public Version() {
-        super(ELEMENT, NAMESPACE);
-        name = null;
-        version = null;
-        setType(Type.get);
-    }
+    Version(VersionBuilder versionBuilder) {
+        super(versionBuilder, ELEMENT, NAMESPACE);
+        name = versionBuilder.getName();
+        version = versionBuilder.getVersion();
+        os = versionBuilder.getOs();
 
-    /**
-     * Request version IQ.
-     *
-     * @param to the jid where to request version from
-     */
-    public Version(Jid to) {
-        this();
-        setTo(to);
-    }
-
-    public Version(String name, String version) {
-        this(name, version, null);
-    }
-
-    /**
-     * Creates a new Version object with given details.
-     *
-     * @param name The natural-language name of the software. This element is REQUIRED.
-     * @param version The specific version of the software. This element is REQUIRED.
-     * @param os The operating system of the queried entity. This element is OPTIONAL.
-     */
-    public Version(String name, String version, String os) {
-        super(ELEMENT, NAMESPACE);
-        this.setType(IQ.Type.result);
-        this.name = StringUtils.requireNotNullNorEmpty(name, "name must not be null");
-        this.version = StringUtils.requireNotNullNorEmpty(version, "version must not be null");
-        this.os = os;
-    }
-
-    public Version(Version original) {
-        this(original.name, original.version, original.os);
+        if (getType() != IQ.Type.result) {
+            return;
+        }
+        StringUtils.requireNotNullNorEmpty(name, "Version results must contain a name");
+        StringUtils.requireNotNullNorEmpty(version, "Version results must contain a version");
     }
 
     /**
@@ -83,6 +55,7 @@ public class Version extends IQ {
      *
      * @return the natural-language name of the software.
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -93,6 +66,7 @@ public class Version extends IQ {
      *
      * @return the specific version of the software.
      */
+    @Override
     public String getVersion() {
         return version;
     }
@@ -103,18 +77,9 @@ public class Version extends IQ {
      *
      * @return the operating system of the queried entity.
      */
+    @Override
     public String getOs() {
         return os;
-    }
-
-    /**
-     * Sets the operating system of the queried entity. This message should only be
-     * invoked when parsing the XML and setting the property to a Version instance.
-     *
-     * @param os operating system of the queried entity.
-     */
-    public void setOs(String os) {
-        this.os = os;
     }
 
     @Override
@@ -128,10 +93,16 @@ public class Version extends IQ {
         return xml;
     }
 
-    public static Version createResultFor(Stanza request, Version version) {
-        Version result = new Version(version);
-        result.setStanzaId(request.getStanzaId());
-        result.setTo(request.getFrom());
-        return result;
+    public static VersionBuilder builder(XMPPConnection connection) {
+        return new VersionBuilder(connection);
+    }
+
+    public static VersionBuilder builder(IqData iqData) {
+        return new VersionBuilder(iqData);
+    }
+
+    public static VersionBuilder builder(Version versionRequest) {
+        IqData iqData = IqData.createResponseData(versionRequest);
+        return builder(iqData);
     }
 }

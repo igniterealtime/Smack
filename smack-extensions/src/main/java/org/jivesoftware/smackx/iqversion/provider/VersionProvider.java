@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Georg Lukas.
+ * Copyright 2014 Georg Lukas, 2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.iqversion.provider;
 
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqversion.packet.Version;
+import org.jivesoftware.smackx.iqversion.packet.VersionBuilder;
 
-public class VersionProvider extends IQProvider<Version> {
+public class VersionProvider extends IqProvider<Version> {
 
     @Override
-    public Version parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
-        String name = null, version = null, os = null;
+    public Version parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException {
+        VersionBuilder versionBuilder = Version.builder(iqData);
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -40,13 +42,16 @@ public class VersionProvider extends IQProvider<Version> {
                 String tagName = parser.getName();
                 switch (tagName) {
                 case "name":
-                    name = parser.nextText();
+                    String name = parser.nextText();
+                    versionBuilder.setName(name);
                     break;
                 case "version":
-                    version = parser.nextText();
+                    String version = parser.nextText();
+                    versionBuilder.setVersion(version);
                     break;
                 case "os":
-                    os = parser.nextText();
+                    String os = parser.nextText();
+                    versionBuilder.setOs(os);
                     break;
                 }
                 break;
@@ -60,9 +65,7 @@ public class VersionProvider extends IQProvider<Version> {
                 break;
             }
         }
-        if (name == null && version == null && os == null) {
-            return new Version();
-        }
-        return new Version(name, version, os);
+
+        return versionBuilder.build();
     }
 }
