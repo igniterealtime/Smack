@@ -71,11 +71,12 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
         ArrayList<PGPPublicKeyRingCollection> recipientKeys = new ArrayList<>();
         for (OpenPgpContact contact : recipients) {
             PGPPublicKeyRingCollection keys = contact.getTrustedAnnouncedKeys();
-            if (keys != null) {
-                recipientKeys.add(keys);
-            } else {
-                LOGGER.log(Level.WARNING, "There are no suitable keys for contact " + contact.getJid().toString());
+            if (keys == null) {
+                LOGGER.log(Level.WARNING, "There are no suitable keys for contact " + contact.getJid());
+
             }
+
+            recipientKeys.add(keys);
         }
 
         EncryptionStream cipherStream = PGPainless.createEncryptor().onOutputStream(cipherText)
