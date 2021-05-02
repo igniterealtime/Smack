@@ -46,4 +46,12 @@ public final class IqData extends AbstractIqBuilder<IqData> {
     public Stanza build() {
         throw new UnsupportedOperationException();
     }
+
+    public static IqData createResponseData(IqView request) {
+        return createResponse(request, IQ.ResponseType.result);
+    }
+
+    public static IqData createErrorResponseDAta(IqView request) {
+        return createResponse(request, IQ.ResponseType.error);
+    }
 }
