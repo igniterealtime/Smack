@@ -26,10 +26,22 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+/**
+ * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
+ * @deprecated use a proper parser.
+ */
+// TODO: Remove in Smack 4.6.
+@Deprecated
 public class IntrospectionProvider{
 
     // Unfortunately, we have to create two introspection providers, with the exactly the same code here
 
+    /**
+     * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
+     * @deprecated use a proper parser.
+     */
+    // TODO: Remove in Smack 4.6.
+    @Deprecated
     public abstract static class IQIntrospectionProvider<I extends IQ> extends IQProvider<I> {
         private final Class<I> elementClass;
 
@@ -51,6 +63,12 @@ public class IntrospectionProvider{
         }
     }
 
+    /**
+     * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
+     * @deprecated use a proper parser.
+     */
+    // TODO: Remove in Smack 4.6.
+    @Deprecated
     public abstract static class PacketExtensionIntrospectionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
         private final Class<PE> elementClass;
 
