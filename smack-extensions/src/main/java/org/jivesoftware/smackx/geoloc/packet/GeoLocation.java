@@ -389,6 +389,15 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         private URI uri;
 
         /**
+         * Deprecated, do not use.
+         * @deprecated use {@link GeoLocation#builder()} instead.
+         */
+        @Deprecated
+        // TODO Make constructor private in Smack 4.6.
+        public Builder() {
+        }
+
+        /**
          * Sets accuracy of horizontal GPS error in meters.
          *
          * @param accuracy accuracy in meters
