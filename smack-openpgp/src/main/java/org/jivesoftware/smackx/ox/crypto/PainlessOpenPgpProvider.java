@@ -162,7 +162,6 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
 
         PGPPublicKeyRingCollection announcedPublicKeys = sender.getAnnouncedPublicKeys();
         if (announcedPublicKeys == null) {
-            LOGGER.log(Level.INFO, "Received a message from " + sender.getJid() + " but we have no keys yet. Try fetching them.");
             try {
                 sender.updateKeys(connection);
                 announcedPublicKeys = sender.getAnnouncedPublicKeys();
