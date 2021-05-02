@@ -822,8 +822,8 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the room's configuration form that the room's owner can use or <code>null</code> if
-     * no configuration is possible. The configuration form allows to set the room's language,
+     * Returns the room's configuration form that the room's owner can use.
+     * The configuration form allows to set the room's language,
      * enable logging, specify room's type, etc..
      *
      * @return the Form that contains the fields to complete together with the instrucions or
