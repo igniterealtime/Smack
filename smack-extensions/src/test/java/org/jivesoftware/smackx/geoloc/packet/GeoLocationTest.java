@@ -27,8 +27,6 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.time.packet.Time;
-
 import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
 
@@ -44,9 +42,11 @@ public class GeoLocationTest extends SmackTestSuite {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT-830"));
 
-        Time time = new Time(calendar);
+        String tzo = XmppDateTime.asString(calendar.getTimeZone());
 
-        GeoLocation geoLocation = new GeoLocation.Builder().setTzo(time.getTzo()).build();
+        GeoLocation geoLocation = GeoLocation.builder()
+                        .setTzo(tzo)
+                        .build();
 
         assertEquals("-8:30", geoLocation.getTzo());
     }
@@ -56,9 +56,11 @@ public class GeoLocationTest extends SmackTestSuite {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+530"));
 
-        Time time = new Time(calendar);
+        String tzo = XmppDateTime.asString(calendar.getTimeZone());
 
-        GeoLocation geoLocation = new GeoLocation.Builder().setTzo(time.getTzo()).build();
+        GeoLocation geoLocation = GeoLocation.builder()
+                        .setTzo(tzo)
+                        .build();
 
         assertEquals("+5:30", geoLocation.getTzo());
 
@@ -67,7 +69,7 @@ public class GeoLocationTest extends SmackTestSuite {
     @Test
     public void accuracyTest() {
 
-        GeoLocation geoLocation = new GeoLocation.Builder().setAccuracy(1.34d).build();
+        GeoLocation geoLocation = GeoLocation.builder().setAccuracy(1.34d).build();
 
         assertEquals((Double) 1.34, geoLocation.getAccuracy());
     }
@@ -75,7 +77,7 @@ public class GeoLocationTest extends SmackTestSuite {
     @Test
     public void altAccuracyTest() {
 
-        GeoLocation geoLocation = new GeoLocation.Builder().setAltAccuracy(1.52d).build();
+        GeoLocation geoLocation = GeoLocation.builder().setAltAccuracy(1.52d).build();
 
         assertEquals((Double) 1.52, geoLocation.getAltAccuracy());
     }
