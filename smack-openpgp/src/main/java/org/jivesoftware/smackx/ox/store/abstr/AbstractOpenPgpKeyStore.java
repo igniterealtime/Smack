@@ -196,8 +196,8 @@ public abstract class AbstractOpenPgpKeyStore implements OpenPgpKeyStore {
                 publicKeyRings = BCUtil.keyRingsToKeyRingCollection(importKeys);
             }
         } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.INFO, "Skipping public key ring " + Long.toHexString(importKeys.getPublicKey().getKeyID()) +
-                    " as it is already in the key ring of " + owner.toString());
+            LOGGER.log(Level.FINE, "Skipping public key ring " + Long.toHexString(importKeys.getPublicKey().getKeyID()) +
+                    " as it is already in the key ring of " + owner.toString(), e);
         }
         this.publicKeyRingCollections.put(owner, publicKeyRings);
         writePublicKeysOf(owner, publicKeyRings);
