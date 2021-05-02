@@ -21,6 +21,8 @@ import java.util.WeakHashMap;
 
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -75,12 +77,13 @@ public final class EntityTimeManager extends Manager {
                         Mode.async) {
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
-                if (enabled) {
-                    return Time.createResponse(iqRequest);
-                }
-                else {
+                if (!enabled) {
                     return IQ.createErrorResponse(iqRequest, Condition.not_acceptable);
                 }
+
+                Time timeRequest = (Time) iqRequest;
+                Time timeResponse = Time.builder(timeRequest).build();
+                return timeResponse;
             }
         });
     }
@@ -105,13 +108,16 @@ public final class EntityTimeManager extends Manager {
         return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, Time.NAMESPACE);
     }
 
-    public Time getTime(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        if (!isTimeSupported(jid))
-            return null;
+    public Time getTime(Jid jid) throws NoResponseException, XMPPErrorException, NotConnectedException,
+                    InterruptedException, FeatureNotSupportedException {
+        if (!isTimeSupported(jid)) {
+            throw new SmackException.FeatureNotSupportedException(Time.NAMESPACE);
+        }
 
-        Time request = new Time();
-        // TODO Add Time(Jid) constructor and use this constructor instead
-        request.setTo(jid);
-        return connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        XMPPConnection connection = connection();
+        Time request = Time.builder(connection)
+                        .to(jid)
+                        .build();
+        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
     }
 }
