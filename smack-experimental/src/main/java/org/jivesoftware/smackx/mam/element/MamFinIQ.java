@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.mam.element;
 
 import org.jivesoftware.smack.packet.IQ;
-
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
 /**
@@ -34,11 +33,6 @@ public class MamFinIQ extends IQ {
      * fin element.
      */
     public static final String ELEMENT = "fin";
-
-    /**
-     * the IQ NAMESPACE.
-     */
-    public static final String NAMESPACE = MamElements.NAMESPACE;
 
     /**
      * RSM set.
@@ -63,13 +57,14 @@ public class MamFinIQ extends IQ {
     /**
      * MamFinIQ constructor.
      *
+     * @param mamNamespace TODO javadoc me please
      * @param queryId TODO javadoc me please
      * @param rsmSet TODO javadoc me please
      * @param complete TODO javadoc me please
      * @param stable TODO javadoc me please
      */
-    public MamFinIQ(String queryId, RSMSet rsmSet, boolean complete, boolean stable) {
-        super(ELEMENT, NAMESPACE);
+    public MamFinIQ(String mamNamespace, String queryId, RSMSet rsmSet, boolean complete, boolean stable) {
+        super(ELEMENT, mamNamespace);
         if (rsmSet == null) {
             throw new IllegalArgumentException("rsmSet must not be null");
         }

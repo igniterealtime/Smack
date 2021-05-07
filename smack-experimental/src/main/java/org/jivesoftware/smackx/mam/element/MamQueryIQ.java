@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.mam.element;
 
 import org.jivesoftware.smack.packet.IQ;
-
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
@@ -35,11 +34,6 @@ public class MamQueryIQ extends IQ {
      */
     public static final String ELEMENT = QUERY_ELEMENT;
 
-    /**
-     * the MAM query IQ NAMESPACE.
-     */
-    public static final String NAMESPACE = MamElements.NAMESPACE;
-
     private final String queryId;
     private final String node;
     private final DataForm dataForm;
@@ -47,41 +41,45 @@ public class MamQueryIQ extends IQ {
     /**
      * MAM query IQ constructor.
      *
+     * @param mamNamespace TODO javadoc me please
      * @param queryId TODO javadoc me please
      */
-    public MamQueryIQ(String queryId) {
-        this(queryId, null, null);
+    public MamQueryIQ(String mamNamespace, String queryId) {
+        this(mamNamespace, queryId, null, null);
         setType(IQ.Type.get);
     }
 
     /**
      * MAM query IQ constructor.
      *
+     * @param mamNamespace TODO javadoc me please
      * @param form TODO javadoc me please
      */
-    public MamQueryIQ(DataForm form) {
-        this(null, null, form);
+    public MamQueryIQ(String mamNamespace, DataForm form) {
+        this(mamNamespace,null, null, form);
     }
 
     /**
      * MAM query IQ constructor.
      *
+     * @param mamNamespace TODO javadoc me please
      * @param queryId TODO javadoc me please
      * @param form TODO javadoc me please
      */
-    public MamQueryIQ(String queryId, DataForm form) {
-        this(queryId, null, form);
+    public MamQueryIQ(String mamNamespace, String queryId, DataForm form) {
+        this(mamNamespace, queryId, null, form);
     }
 
     /**
      * MAM query IQ constructor.
      *
+     * @param mamNamespace TODO javadoc me please
      * @param queryId TODO javadoc me please
      * @param node TODO javadoc me please
      * @param dataForm TODO javadoc me please
      */
-    public MamQueryIQ(String queryId, String node, DataForm dataForm) {
-        super(ELEMENT, NAMESPACE);
+    public MamQueryIQ(String mamNamespace, String queryId, String node, DataForm dataForm) {
+        super(ELEMENT, mamNamespace);
         this.queryId = queryId;
         this.node = node;
         this.dataForm = dataForm;
@@ -91,9 +89,9 @@ public class MamQueryIQ extends IQ {
             if (formType == null) {
                 throw new IllegalArgumentException("If a data form is given it must posses a hidden form type field");
             }
-            if (!formType.equals(MamElements.NAMESPACE)) {
+            if (!formType.equals(mamNamespace)) {
                 throw new IllegalArgumentException(
-                        "Value of the hidden form type field must be '" + MamElements.NAMESPACE + "'");
+                        "Value of the hidden form type field must be '" + mamNamespace + "'");
             }
             addExtension(dataForm);
         }

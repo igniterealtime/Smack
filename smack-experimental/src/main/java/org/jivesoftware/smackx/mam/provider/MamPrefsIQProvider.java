@@ -16,20 +16,20 @@
  */
 package org.jivesoftware.smackx.mam.provider;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
+import org.jivesoftware.smackx.mam.MamManager;
+import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
-
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MAM Preferences IQ Provider class.
@@ -56,6 +56,12 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
         List<Jid> alwaysJids = null;
         List<Jid> neverJids = null;
+        MamElementFactory mamElementFactory = null;
+        try {
+            mamElementFactory = MamManager.getMamElementFactory(xmlEnvironment.getEffectiveNamespace());
+        } catch (IllegalArgumentException e) {
+            // do nothing, try to get the namespace from the parser later
+        }
 
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
@@ -63,6 +69,9 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
             switch (eventType) {
             case START_ELEMENT:
                 switch (name) {
+                case "prefs":
+                    mamElementFactory = MamManager.getMamElementFactory(parser.getNamespace());
+                    break;
                 case "always":
                     alwaysJids = iterateJids(parser);
                     break;
@@ -82,7 +91,7 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
             }
         }
 
-        return new MamPrefsIQ(alwaysJids, neverJids, defaultBehavior);
+        return mamElementFactory.newPrefsIQ(alwaysJids, neverJids, defaultBehavior);
     }
 
     private static List<Jid> iterateJids(XmlPullParser parser) throws XmlPullParserException, IOException {

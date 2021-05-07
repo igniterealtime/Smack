@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2020-2021 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2020 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,20 @@
  */
 package org.jivesoftware.smackx.mam.provider;
 
-import java.io.IOException;
-import java.text.ParseException;
-
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
+import org.jivesoftware.smackx.mam.MamManager;
+import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
+
+import java.io.IOException;
+import java.text.ParseException;
 
 /**
  * MAM Result Provider class.
@@ -42,7 +43,8 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
 
     @Override
     public MamResultExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+        MamElementFactory mamElementFactory = MamManager.getMamElementFactory(xmlEnvironment.getEffectiveNamespace());
         Forwarded<Message> forwarded = null;
         String queryId = parser.getAttributeValue("", "queryid");
         String id = parser.getAttributeValue("", "id");
@@ -69,7 +71,7 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
             }
         }
 
-        return new MamResultExtension(queryId, id, forwarded);
+        return mamElementFactory.newResultExtension(queryId, id, forwarded);
     }
 
 }

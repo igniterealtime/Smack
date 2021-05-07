@@ -16,16 +16,15 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-
+import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
 import org.junit.jupiter.api.BeforeAll;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MamTest extends SmackTestSuite {
 
@@ -47,9 +46,9 @@ public class MamTest extends SmackTestSuite {
 
     protected DataForm getNewMamForm() throws NoSuchMethodException, SecurityException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
-        Method methodGetNewMamForm = MamManager.class.getDeclaredMethod("getNewMamForm");
+        Method methodGetNewMamForm = MamManager.class.getDeclaredMethod("getNewMamForm", String.class);
         methodGetNewMamForm.setAccessible(true);
-        DataForm.Builder dataFormBuilder = (DataForm.Builder) methodGetNewMamForm.invoke(mamManager);
+        DataForm.Builder dataFormBuilder = (DataForm.Builder) methodGetNewMamForm.invoke(mamManager, MamElements.MAM2_NAMESPACE);
         return dataFormBuilder.build();
     }
 

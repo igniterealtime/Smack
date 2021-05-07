@@ -16,14 +16,12 @@
  */
 package org.jivesoftware.smackx.mam.element;
 
-import java.util.List;
-
 import org.jivesoftware.smack.packet.IQ;
-
 import org.jivesoftware.smackx.mam.element.MamElements.AlwaysJidListElement;
 import org.jivesoftware.smackx.mam.element.MamElements.NeverJidListElement;
-
 import org.jxmpp.jid.Jid;
+
+import java.util.List;
 
 /**
  * MAM Preferences IQ class.
@@ -47,11 +45,6 @@ public class MamPrefsIQ extends IQ {
     public static final String ELEMENT = "prefs";
 
     /**
-     * the IQ NAMESPACE.
-     */
-    public static final String NAMESPACE = MamElements.NAMESPACE;
-
-    /**
      * list of always.
      */
     private final List<Jid> alwaysJids;
@@ -68,9 +61,11 @@ public class MamPrefsIQ extends IQ {
 
     /**
      * Construct a new MAM {@code <prefs/>} IQ retrieval request (IQ type 'get').
+     *
+     * @param mamNamespace TODO javadoc me please
      */
-    public MamPrefsIQ() {
-        super(ELEMENT, NAMESPACE);
+    public MamPrefsIQ(String mamNamespace) {
+        super(ELEMENT, mamNamespace);
         alwaysJids = null;
         neverJids = null;
         defaultBehavior = null;
@@ -79,12 +74,13 @@ public class MamPrefsIQ extends IQ {
     /**
      * MAM preferences IQ constructor.
      *
+     * @param mamNamespace TODO javadoc me please
      * @param alwaysJids TODO javadoc me please
      * @param neverJids TODO javadoc me please
      * @param defaultBehavior TODO javadoc me please
      */
-    public MamPrefsIQ(List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
-        super(ELEMENT, NAMESPACE);
+    public MamPrefsIQ(String mamNamespace, List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
+        super(ELEMENT, mamNamespace);
         setType(Type.set);
         this.alwaysJids = alwaysJids;
         this.neverJids = neverJids;

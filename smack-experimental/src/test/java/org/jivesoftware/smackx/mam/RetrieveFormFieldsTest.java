@@ -16,34 +16,32 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.jivesoftware.smack.packet.StreamOpen;
-
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;
 
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class RetrieveFormFieldsTest extends MamTest {
 
-    private static final String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamElements.NAMESPACE
+    private static final String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamElements.MAM2_NAMESPACE
             + "' queryid='testid'></query>" + "</iq>";
 
     private static final String additionalFieldsStanza = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>"
-            + "<value>" + MamElements.NAMESPACE + "</value>" + "</field>"
+            + "<value>" + MamElements.MAM2_NAMESPACE + "</value>" + "</field>"
             + "<field var='urn:example:xmpp:free-text-search'>" + "<value>Hi</value>" + "</field>"
             + "<field var='urn:example:xmpp:stanza-content'>" + "<value>one@exampleone.org</value>" + "</field>"
             + "</x>";
 
     @Test
     public void checkRetrieveFormFieldsStanza() throws Exception {
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(MamElements.MAM2_NAMESPACE, queryId);
         mamQueryIQ.setStanzaId("sarasa");
 
         assertEquals(retrieveFormFieldStanza, mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
@@ -63,7 +61,7 @@ public class RetrieveFormFieldsTest extends MamTest {
                         .withAdditionalFormField(field1)
                         .withAdditionalFormField(field2)
                         .build();
-        DataForm dataForm = mamQueryArgs.getDataForm();
+        DataForm dataForm = mamQueryArgs.getDataForm(MamElements.MAM2_NAMESPACE);
 
         String dataFormResult = dataForm.toXML().toString();
 

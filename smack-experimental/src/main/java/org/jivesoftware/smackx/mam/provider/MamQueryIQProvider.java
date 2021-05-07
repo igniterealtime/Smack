@@ -16,17 +16,18 @@
  */
 package org.jivesoftware.smackx.mam.provider;
 
-import java.io.IOException;
-
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
+import org.jivesoftware.smackx.mam.MamManager;
+import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
+
+import java.io.IOException;
 
 /**
  * MAM Query IQ Provider class.
@@ -41,6 +42,7 @@ public class MamQueryIQProvider extends IQProvider<MamQueryIQ> {
     @Override
     public MamQueryIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException {
+        MamElementFactory mamElementFactory = MamManager.getMamElementFactory(xmlEnvironment.getEffectiveNamespace());
         DataForm dataForm = null;
         String queryId = parser.getAttributeValue("", "queryid");
         String node = parser.getAttributeValue("", "node");
@@ -68,7 +70,7 @@ public class MamQueryIQProvider extends IQProvider<MamQueryIQ> {
             }
         }
 
-        return new MamQueryIQ(queryId, node, dataForm);
+        return mamElementFactory.newQueryIQ(queryId, node, dataForm);
     }
 
 }

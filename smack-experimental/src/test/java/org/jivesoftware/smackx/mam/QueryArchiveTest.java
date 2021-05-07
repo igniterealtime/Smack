@@ -16,32 +16,31 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smackx.delay.packet.DelayInformation;
+import org.jivesoftware.smackx.forward.packet.Forwarded;
+import org.jivesoftware.smackx.mam.element.Mam2ElementFactory;
+import org.jivesoftware.smackx.mam.element.MamElements;
+import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
+import org.jivesoftware.smackx.mam.element.MamQueryIQ;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
+import org.junit.jupiter.api.Test;
+import org.jxmpp.jid.impl.JidCreate;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.StanzaBuilder;
-import org.jivesoftware.smack.packet.StreamOpen;
-
-import org.jivesoftware.smackx.delay.packet.DelayInformation;
-import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.jivesoftware.smackx.mam.element.MamElements;
-import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
-import org.jivesoftware.smackx.mam.element.MamQueryIQ;
-import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import org.junit.jupiter.api.Test;
-import org.jxmpp.jid.impl.JidCreate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class QueryArchiveTest extends MamTest {
 
     private static final String mamSimpleQueryIQ = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:2' queryid='testid'>"
             + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>" + "<value>"
-            + MamElements.NAMESPACE + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
+            + MamElements.MAM2_NAMESPACE + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
 
     private static final String mamQueryResultExample = "<message to='hag66@shakespeare.lit/pda' from='coven@chat.shakespeare.lit' id='iasd207'>"
             + "<result xmlns='urn:xmpp:mam:2' queryid='g27' id='34482-21985-73620'>"
@@ -54,7 +53,7 @@ public class QueryArchiveTest extends MamTest {
     @Test
     public void checkMamQueryIQ() throws Exception {
         DataForm dataForm = getNewMamForm();
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(MamElements.MAM2_NAMESPACE, queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
         assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamSimpleQueryIQ);
@@ -80,7 +79,7 @@ public class QueryArchiveTest extends MamTest {
 
         Forwarded<Message> forwarded = new Forwarded<>(forwardedMessage, delay);
 
-        message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
+        message.addExtension(new Mam2ElementFactory().newResultExtension("g27", "34482-21985-73620", forwarded));
 
         assertEquals(mamQueryResultExample, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 

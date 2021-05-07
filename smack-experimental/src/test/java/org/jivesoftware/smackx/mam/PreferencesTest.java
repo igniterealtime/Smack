@@ -16,33 +16,31 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jivesoftware.smack.packet.StreamOpen;
-
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
-
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class PreferencesTest {
 
-    private static final String retrievePrefsStanzaExample = "<iq id='sarasa' type='get'>" + "<prefs xmlns='" + MamElements.NAMESPACE
+    private static final String retrievePrefsStanzaExample = "<iq id='sarasa' type='get'>" + "<prefs xmlns='" + MamElements.MAM2_NAMESPACE
             + "'/>" + "</iq>";
 
-    private static final String updatePrefsStanzaExample = "<iq id='sarasa' type='set'>" + "<prefs xmlns='" + MamElements.NAMESPACE
+    private static final String updatePrefsStanzaExample = "<iq id='sarasa' type='set'>" + "<prefs xmlns='" + MamElements.MAM2_NAMESPACE
             + "' default='roster'>" + "<always>" + "<jid>romeo@montague.lit</jid>" + "<jid>other@montague.lit</jid>"
             + "</always>" + "<never>" + "<jid>montague@montague.lit</jid>" + "</never>" + "</prefs>" + "</iq>";
 
     @Test
     public void checkRetrievePrefsStanza() throws Exception {
-        MamPrefsIQ mamPrefIQ = new MamPrefsIQ();
+        MamPrefsIQ mamPrefIQ = new MamPrefsIQ(MamElements.MAM2_NAMESPACE);
         mamPrefIQ.setStanzaId("sarasa");
         assertEquals(mamPrefIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), retrievePrefsStanzaExample);
     }
@@ -56,7 +54,7 @@ public class PreferencesTest {
         List<Jid> neverJids = new ArrayList<>();
         neverJids.add(JidCreate.from("montague@montague.lit"));
 
-        MamPrefsIQ mamPrefIQ =  new MamPrefsIQ(alwaysJids, neverJids, DefaultBehavior.roster);
+        MamPrefsIQ mamPrefIQ =  new MamPrefsIQ(MamElements.MAM2_NAMESPACE, alwaysJids, neverJids, DefaultBehavior.roster);
         mamPrefIQ.setStanzaId("sarasa");
         assertEquals(mamPrefIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), updatePrefsStanzaExample);
     }

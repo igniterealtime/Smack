@@ -16,26 +16,10 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import org.jivesoftware.smack.ConnectionCreationListener;
-import org.jivesoftware.smack.Manager;
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
-import org.jivesoftware.smack.StanzaCollector;
-import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPConnectionRegistry;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -43,27 +27,25 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.commands.AdHocCommandManager;
 import org.jivesoftware.smackx.commands.RemoteCommand;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
-import org.jivesoftware.smackx.mam.element.MamElements;
+import org.jivesoftware.smackx.mam.element.*;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
-import org.jivesoftware.smackx.mam.element.MamFinIQ;
-import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
-import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.filter.MamResultFilter;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
+
+import java.text.ParseException;
+import java.util.*;
 
 /**
  * A Manager for Message Archive Management (MAM, <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313</a>).
@@ -179,6 +161,94 @@ public final class MamManager extends Manager {
 
     private static final String ADVANCED_CONFIG_NODE = "urn:xmpp:mam#configure";
 
+    // a linked hashmap keeps values in the order they were inserted in
+    private static final Map<String, MamElementFactory> mamElementFactories = Collections.synchronizedMap(new LinkedHashMap<>());
+    private static String mamNamespace;
+
+    static {
+        addMamElementFactory(Mam2ElementFactory.MAM2_NAMESPACE, new Mam2ElementFactory());
+        addMamElementFactory(Mam1ElementFactory.MAM1_NAMESPACE, new Mam1ElementFactory());
+        setMamNamespace(Mam2ElementFactory.MAM2_NAMESPACE);
+    }
+
+    /**
+     * Add a {@link MamElementFactory} used to create IQ's and extensions for a specific MAM namespace
+     * @param mamNamespace the namespace of the MAM version that this factory creates elements for
+     * @param factory the factory that creates elements for the specified namespace
+     * @since 4.5.0
+     */
+    public static void addMamElementFactory(String mamNamespace, MamElementFactory factory) {
+        mamElementFactories.put(Objects.requireNonNull(mamNamespace), Objects.requireNonNull(factory));
+    }
+
+    /**
+     * Removes support for a MAM namespace/version.
+     * @param mamNamespace the namespace of the MAM version
+     * @since 4.5.0
+     */
+    public static void removeMamElementFactory(String mamNamespace) {
+        mamElementFactories.remove(mamNamespace);
+    }
+
+    /**
+     * Returns a {@link MamElementFactory} for the namespace.
+     * @param mamNamespace the namespace of the MAM version
+     * @return the factory that creates elements for the specified MAM namespace
+     * @throws IllegalArgumentException if no factory is configured for the namespace
+     * @since 4.5.0
+     */
+    public static MamElementFactory getMamElementFactory(String mamNamespace) {
+        MamElementFactory mamElementFactory = mamElementFactories.get(mamNamespace);
+        if (mamElementFactory == null) {
+            throw new IllegalArgumentException("no MAM support for " + mamNamespace);
+        }
+        return mamElementFactory;
+    }
+
+    /**
+     * Returns all MAM namespaces supported by {@link MamManager}.
+     * @return a list of namespaces supported by the manager
+     * @since 4.5.0
+     */
+    public static List<String> getSupportedMamNamespaces() {
+        return new ArrayList<>(mamElementFactories.keySet());
+    }
+
+    /**
+     * Sets the MAM namespace to use. When the set to null, the manager will determine which namespace
+     * is supported by the archive. If a MAM namespace is set, a manager will do no discovery of the supported
+     * MAM namespace. You can enable discovery on a manager using {@link #enableMamVersionDiscovery()}.
+     *
+     * The initial value is "urn:xmpp:mam:2", only supporting mam version 2.
+     *
+     * @param mamNamespace the namespace used by manager instances, or null if the manager should detect the
+     *                            namespace supported by the server
+     * @since 4.5.0
+     */
+    public static void setMamNamespace(String mamNamespace) {
+        if (mamNamespace != null && !mamElementFactories.keySet().contains(mamNamespace)) {
+            throw new IllegalArgumentException("unknown mam namespace");
+        }
+        MamManager.mamNamespace = mamNamespace;
+    }
+
+    /**
+     * Returns the MAM namespace to be used by managers. If null, managers will discover which namespace
+     * is supported by the archive.
+     * @return the mam namespace used the manager, or null if a manager discovers the namespace supported by the server.
+     * @since 4.5.0
+     */
+    public static String getMamNamespace() {
+        return mamNamespace;
+    }
+
+    /**
+     * Enables automatic discovery of the supported MAM version by the archive.
+     */
+    public static void enableMamVersionDiscovery() {
+        setMamNamespace(null);
+    }
+
     /**
      * Get a MamManager for the MAM archive of the local entity (the "user") of the given connection.
      *
@@ -225,11 +295,44 @@ public final class MamManager extends Manager {
 
     private final AdHocCommandManager adHocCommandManager;
 
+    private MamElementFactory mamElementFactory;
+
     private MamManager(XMPPConnection connection, Jid archiveAddress) {
         super(connection);
         this.archiveAddress = archiveAddress;
         serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
         adHocCommandManager = AdHocCommandManager.getAddHocCommandsManager(connection);
+        mamElementFactory = mamElementFactories.get(getMamNamespace());
+    }
+
+    /**
+     * Returns the mam namespace used by this manager. If unknown, the manager will discover what namespace is supported
+     * by the archive.
+     *
+     * @return the mam namespace used by this manager.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.5.0
+     */
+    public String getMamNamespaceOfArchive() throws XMPPErrorException, NotConnectedException, NoResponseException, InterruptedException {
+        MamElementFactory mamElementFactory = getMamElementFactory();
+        return mamElementFactory == null ? null : mamElementFactory.getSupportedMamNamespace();
+    }
+
+    private MamElementFactory getMamElementFactory() throws XMPPErrorException, NotConnectedException, InterruptedException, NoResponseException {
+        if (mamElementFactory == null) {
+            DiscoverInfo info = serviceDiscoveryManager.discoverInfo(getArchiveAddress());
+            for (String ns : getSupportedMamNamespaces()) {
+                if (info.containsFeature(ns)) {
+                    mamElementFactory = getMamElementFactory(ns);
+                    break;
+                }
+            }
+        }
+
+        return mamElementFactory;
     }
 
     /**
@@ -275,14 +378,17 @@ public final class MamManager extends Manager {
 
         private DataForm dataForm;
 
-        DataForm getDataForm() {
+        DataForm getDataForm(String mamNamespace) {
+            DataForm result;
             if (dataForm != null) {
-                return dataForm;
+                result = dataForm;
+            } else {
+                DataForm.Builder dataFormBuilder = getNewMamForm(mamNamespace);
+                dataFormBuilder.addFields(formFields.values());
+                dataForm = dataFormBuilder.build();
+                result = dataForm;
             }
-            DataForm.Builder dataFormBuilder = getNewMamForm();
-            dataFormBuilder.addFields(formFields.values());
-            dataForm = dataFormBuilder.build();
-            return dataForm;
+            return result;
         }
 
         void maybeAddRsmSet(MamQueryIQ mamQueryIQ) {
@@ -472,9 +578,9 @@ public final class MamManager extends Manager {
                     NotConnectedException, NotLoggedInException, InterruptedException {
         String queryId = StringUtils.secureUniqueRandomString();
         String node = mamQueryArgs.node;
-        DataForm dataForm = mamQueryArgs.getDataForm();
+        DataForm dataForm = mamQueryArgs.getDataForm(getMamElementFactory().getSupportedMamNamespace());
 
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, node, dataForm);
+        MamQueryIQ mamQueryIQ = getMamElementFactory().newQueryIQ(queryId, node, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setTo(archiveAddress);
 
@@ -530,7 +636,7 @@ public final class MamManager extends Manager {
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
             InterruptedException, NotLoggedInException {
         String queryId = StringUtils.secureUniqueRandomString();
-        MamQueryIQ mamQueryIq = new MamQueryIQ(queryId, node, null);
+        MamQueryIQ mamQueryIq = getMamElementFactory().newQueryIQ(queryId, node, null);
         mamQueryIq.setTo(archiveAddress);
 
         MamQueryIQ mamResponseQueryIq = connection().createStanzaCollectorAndSend(mamQueryIq).nextResultOrThrow();
@@ -592,7 +698,7 @@ public final class MamManager extends Manager {
         private List<Message> page(RSMSet requestRsmSet) throws NoResponseException, XMPPErrorException,
                         NotConnectedException, NotLoggedInException, InterruptedException {
             String queryId = StringUtils.secureUniqueRandomString();
-            MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, node, form);
+            MamQueryIQ mamQueryIQ = getMamElementFactory().newQueryIQ(queryId, node, form);
             mamQueryIQ.setType(IQ.Type.set);
             mamQueryIQ.setTo(archiveAddress);
             mamQueryIQ.addExtension(requestRsmSet);
@@ -696,9 +802,19 @@ public final class MamManager extends Manager {
      * @see <a href="https://xmpp.org/extensions/xep-0313.html#support">XEP-0313 § 7. Determining support</a>
      */
     public boolean isSupported() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        // Note that this may return 'null' but SDM's supportsFeature() does the right thing™ then.
         Jid archiveAddress = getArchiveAddress();
-        return serviceDiscoveryManager.supportsFeature(archiveAddress, MamElements.NAMESPACE);
+
+        if (mamElementFactory != null) {
+            return serviceDiscoveryManager.supportsFeature(archiveAddress, mamElementFactory.getSupportedMamNamespace());
+        }
+
+        for (String ns : getSupportedMamNamespaces()) {
+            if (serviceDiscoveryManager.supportsFeature(archiveAddress, ns)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean isAdvancedConfigurationSupported() throws InterruptedException, XMPPException, SmackException {
@@ -720,8 +836,8 @@ public final class MamManager extends Manager {
         throw new SmackException.FeatureNotSupportedException(ADVANCED_CONFIG_NODE, archiveAddress);
     }
 
-    private static DataForm.Builder getNewMamForm() {
-        FormField field = FormField.buildHiddenFormType(MamElements.NAMESPACE);
+    private static DataForm.Builder getNewMamForm(String mamNamespace) {
+        FormField field = FormField.buildHiddenFormType(mamNamespace);
         DataForm.Builder form = DataForm.builder();
         form.addField(field);
         return form;
@@ -765,7 +881,7 @@ public final class MamManager extends Manager {
      */
     public MamPrefsResult retrieveArchivingPreferences() throws NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, NotLoggedInException {
-        MamPrefsIQ mamPrefIQ = new MamPrefsIQ();
+        MamPrefsIQ mamPrefIQ = getMamElementFactory().newPrefsIQ();
         return queryMamPrefs(mamPrefIQ);
     }
 
@@ -830,10 +946,12 @@ public final class MamManager extends Manager {
     public static final class MamPrefs {
         private final List<Jid> alwaysJids;
         private final List<Jid> neverJids;
+        private final String mamNamespace;
         private DefaultBehavior defaultBehavior;
 
         private MamPrefs(MamPrefsResult mamPrefsResult) {
             MamPrefsIQ mamPrefsIq = mamPrefsResult.mamPrefs;
+            this.mamNamespace = mamPrefsIq.getNamespace();
             this.alwaysJids = new ArrayList<>(mamPrefsIq.getAlwaysJids());
             this.neverJids = new ArrayList<>(mamPrefsIq.getNeverJids());
             this.defaultBehavior = mamPrefsIq.getDefault();
@@ -856,7 +974,7 @@ public final class MamManager extends Manager {
         }
 
         private MamPrefsIQ constructMamPrefsIq() {
-            return new MamPrefsIQ(alwaysJids, neverJids, defaultBehavior);
+            return getMamElementFactory(mamNamespace).newPrefsIQ(alwaysJids, neverJids, defaultBehavior);
         }
     }
 

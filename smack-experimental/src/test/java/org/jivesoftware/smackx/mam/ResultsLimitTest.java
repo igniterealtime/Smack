@@ -16,29 +16,27 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResultsLimitTest extends MamTest {
 
     private static final String resultsLimitStanza = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:2' queryid='testid'>"
             + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>" + "<value>"
-            + MamElements.NAMESPACE + "</value>" + "</field>" + "</x>" + "<set xmlns='http://jabber.org/protocol/rsm'>"
+            + MamElements.MAM2_NAMESPACE + "</value>" + "</field>" + "</x>" + "<set xmlns='http://jabber.org/protocol/rsm'>"
             + "<max>10</max>" + "</set>" + "</query>" + "</iq>";
 
     @Test
     public void checkResultsLimit() throws Exception {
         DataForm dataForm = getNewMamForm();
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(MamElements.MAM2_NAMESPACE, queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
 
