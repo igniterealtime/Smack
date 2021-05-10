@@ -16,14 +16,20 @@
  */
 package org.jivesoftware.smackx.mam.element;
 
-import org.jivesoftware.smack.packet.*;
+import java.util.List;
+import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageView;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
+
 import org.jxmpp.jid.Jid;
 
-import javax.xml.namespace.QName;
-import java.util.List;
 
 /**
  * MAM elements.

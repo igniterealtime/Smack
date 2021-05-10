@@ -56,7 +56,7 @@ public class MamQueryIQ extends IQ {
      * @param form TODO javadoc me please
      */
     public MamQueryIQ(String mamNamespace, DataForm form) {
-        this(mamNamespace,null, null, form);
+        this(mamNamespace, null, null, form);
     }
 
     /**

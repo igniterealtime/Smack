@@ -16,18 +16,19 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smackx.mam.element.MamElements;
-import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
-import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
-import org.junit.jupiter.api.Test;
-import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smackx.mam.element.MamElements;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
+
+import org.junit.jupiter.api.Test;
+import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 
 public class PreferencesTest {
 

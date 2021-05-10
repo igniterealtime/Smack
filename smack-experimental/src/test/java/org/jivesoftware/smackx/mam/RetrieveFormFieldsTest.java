@@ -16,17 +16,18 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;
-
-import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RetrieveFormFieldsTest extends MamTest {
 

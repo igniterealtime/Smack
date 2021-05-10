@@ -16,15 +16,16 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.junit.jupiter.api.BeforeAll;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.junit.jupiter.api.BeforeAll;
 
 public class MamTest extends SmackTestSuite {
 

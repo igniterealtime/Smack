@@ -16,6 +16,12 @@
  */
 package org.jivesoftware.smackx.mam;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaBuilder;
@@ -27,14 +33,9 @@ import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
-
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class QueryArchiveTest extends MamTest {
 

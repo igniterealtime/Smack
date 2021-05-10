@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.mam.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -27,9 +30,6 @@ import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
-
-import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * MAM Result Provider class.

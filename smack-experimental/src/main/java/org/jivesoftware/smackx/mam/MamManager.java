@@ -16,10 +16,26 @@
  */
 package org.jivesoftware.smackx.mam;
 
-import org.jivesoftware.smack.*;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.Manager;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.StanzaCollector;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPConnectionRegistry;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.packet.IQ;
@@ -33,19 +49,23 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.jivesoftware.smackx.mam.element.*;
+import org.jivesoftware.smackx.mam.element.Mam1ElementFactory;
+import org.jivesoftware.smackx.mam.element.Mam2ElementFactory;
+import org.jivesoftware.smackx.mam.element.MamElementFactory;
+import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
+import org.jivesoftware.smackx.mam.element.MamFinIQ;
+import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
+import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.mam.filter.MamResultFilter;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
+
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
-
-import java.text.ParseException;
-import java.util.*;
 
 /**
  * A Manager for Message Archive Management (MAM, <a href="http://xmpp.org/extensions/xep-0313.html">XEP-0313</a>).
@@ -172,7 +192,7 @@ public final class MamManager extends Manager {
     }
 
     /**
-     * Add a {@link MamElementFactory} used to create IQ's and extensions for a specific MAM namespace
+     * Add a {@link MamElementFactory} used to create IQ's and extensions for a specific MAM namespace.
      * @param mamNamespace the namespace of the MAM version that this factory creates elements for
      * @param factory the factory that creates elements for the specified namespace
      * @since 4.5.0
