@@ -119,7 +119,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
             request.setType(IQ.Type.get);
             request.setTo(proxy);
             try {
-                Bytestream response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+                Bytestream response = connection.sendIqRequestAndWaitForResponse(request);
                 streamHosts.addAll(response.getStreamHosts());
             }
             catch (Exception e) {

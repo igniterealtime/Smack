@@ -302,7 +302,7 @@ public final class PubSubManager extends Manager {
                     .setNode(id)
                     .build();
 
-            DiscoverInfo infoReply = connection.createStanzaCollectorAndSend(info).nextResultOrThrow();
+            DiscoverInfo infoReply = connection.sendIqRequestAndWaitForResponse(info);
 
             if (infoReply.hasIdentity(PubSub.ELEMENT, "leaf")) {
                 node = new LeafNode(this, id);
@@ -492,7 +492,7 @@ public final class PubSubManager extends Manager {
         if (nodeId != null)
             items.setNode(nodeId);
         items.setTo(pubSubService);
-        DiscoverItems nodeItems = connection().createStanzaCollectorAndSend(items).nextResultOrThrow();
+        DiscoverItems nodeItems = connection().sendIqRequestAndWaitForResponse(items);
         return nodeItems;
     }
 
@@ -666,7 +666,7 @@ public final class PubSubManager extends Manager {
 
     PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
-        IQ resultIQ = connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        IQ resultIQ = connection().sendIqRequestAndWaitForResponse(packet);
         if (resultIQ instanceof EmptyResultIQ) {
             return null;
         }

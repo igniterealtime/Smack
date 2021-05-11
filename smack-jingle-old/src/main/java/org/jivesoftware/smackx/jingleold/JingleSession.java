@@ -27,10 +27,12 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.AbstractConnectionClosedListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
@@ -847,7 +849,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
         JingleTransportListener jingleTransportListener = new JingleTransportListener() {
 
             @Override
-            public void transportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException {
+            public void transportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
                 if (isFullyEstablished()) {
                 // CHECKSTYLE:OFF
                     // Indicate that this session is active.

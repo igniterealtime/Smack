@@ -112,7 +112,7 @@ public abstract class Node {
     public void sendConfigurationForm(FillableConfigureForm configureForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(IQ.Type.set, new FormNode(FormNodeType.CONFIGURE_OWNER,
                         getId(), configureForm.getDataFormToSubmit()));
-        pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        pubSubManager.getConnection().sendIqRequestAndWaitForResponse(packet);
     }
 
     /**
@@ -130,7 +130,7 @@ public abstract class Node {
                 .to(pubSubManager.getServiceJid())
                 .setNode(getId())
                 .build();
-        return connection.createStanzaCollectorAndSend(discoverInfoRequest).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(discoverInfoRequest);
     }
 
     /**

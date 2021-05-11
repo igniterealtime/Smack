@@ -163,8 +163,8 @@ public final class PrivateDataManager extends Manager {
         // Create an IQ packet to get the private data.
         IQ privateDataGet = new PrivateDataIQ(elementName, namespace);
 
-        PrivateDataIQ response = connection().createStanzaCollectorAndSend(
-                        privateDataGet).nextResultOrThrow();
+        PrivateDataIQ response = connection().sendIqRequestAndWaitForResponse(
+                        privateDataGet);
         return response.getPrivateData();
     }
 
@@ -183,7 +183,7 @@ public final class PrivateDataManager extends Manager {
         // Create an IQ packet to set the private data.
         IQ privateDataSet = new PrivateDataIQ(privateData);
 
-        connection().createStanzaCollectorAndSend(privateDataSet).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(privateDataSet);
     }
 
     private static final PrivateData DUMMY_PRIVATE_DATA = new PrivateData() {

@@ -279,7 +279,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
         mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(mucLightBlockingIQ);
     }
 
     /**
@@ -323,7 +323,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
         mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(mucLightBlockingIQ);
     }
 
     /**
@@ -367,7 +367,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
         mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(mucLightBlockingIQ);
     }
 
     /**
@@ -411,7 +411,7 @@ public final class MultiUserChatLightManager extends Manager {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
         mucLightBlockingIQ.setType(IQ.Type.set);
         mucLightBlockingIQ.setTo(mucLightService);
-        connection().createStanzaCollectorAndSend(mucLightBlockingIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(mucLightBlockingIQ);
     }
 
 }

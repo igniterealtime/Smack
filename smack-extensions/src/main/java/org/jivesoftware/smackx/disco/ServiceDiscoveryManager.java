@@ -603,7 +603,7 @@ public final class ServiceDiscoveryManager extends Manager {
                 .setNode(node)
                 .build();
 
-        Stanza result = connection.createStanzaCollectorAndSend(discoInfoRequest).nextResultOrThrow();
+        Stanza result = connection.sendIqRequestAndWaitForResponse(discoInfoRequest);
 
         return (DiscoverInfo) result;
     }
@@ -642,7 +642,7 @@ public final class ServiceDiscoveryManager extends Manager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Stanza result = connection().createStanzaCollectorAndSend(disco).nextResultOrThrow();
+        Stanza result = connection().sendIqRequestAndWaitForResponse(disco);
         return (DiscoverItems) result;
     }
 

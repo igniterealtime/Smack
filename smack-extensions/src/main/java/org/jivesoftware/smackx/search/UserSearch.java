@@ -73,7 +73,7 @@ public class UserSearch extends SimpleIQ {
         search.setType(IQ.Type.get);
         search.setTo(searchService);
 
-        IQ response = con.createStanzaCollectorAndSend(search).nextResultOrThrow();
+        IQ response = con.sendIqRequestAndWaitForResponse(search);
         return DataForm.from(response, NAMESPACE);
     }
 
@@ -95,7 +95,7 @@ public class UserSearch extends SimpleIQ {
         search.setTo(searchService);
         search.addExtension(searchForm);
 
-        IQ response = con.createStanzaCollectorAndSend(search).nextResultOrThrow();
+        IQ response = con.sendIqRequestAndWaitForResponse(search);
         return ReportedData.getReportedDataFrom(response);
     }
 
@@ -117,7 +117,7 @@ public class UserSearch extends SimpleIQ {
         search.setType(IQ.Type.set);
         search.setTo(searchService);
 
-        SimpleUserSearch response = con.createStanzaCollectorAndSend(search).nextResultOrThrow();
+        SimpleUserSearch response = con.sendIqRequestAndWaitForResponse(search);
         return response.getReportedData();
     }
 

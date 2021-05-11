@@ -236,7 +236,7 @@ public final class LastActivityManager extends Manager {
     public LastActivity getLastActivity(Jid jid) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
         LastActivity activity = new LastActivity(jid);
-        return (LastActivity) connection().createStanzaCollectorAndSend(activity).nextResultOrThrow();
+        return (LastActivity) connection().sendIqRequestAndWaitForResponse(activity);
     }
 
     /**

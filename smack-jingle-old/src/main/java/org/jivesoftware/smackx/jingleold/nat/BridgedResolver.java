@@ -68,9 +68,10 @@ public class BridgedResolver extends TransportResolver {
      * The BridgedResolver takes the IP address and ports of a jmf proxy service.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     @Override
-    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException {
+    public synchronized void resolve(JingleSession session) throws XMPPException, NotConnectedException, InterruptedException, NoResponseException {
 
         setResolveInit();
 

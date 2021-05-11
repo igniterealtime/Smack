@@ -118,6 +118,6 @@ public final class EntityTimeManager extends Manager {
         Time request = Time.builder(connection)
                         .to(jid)
                         .build();
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 }

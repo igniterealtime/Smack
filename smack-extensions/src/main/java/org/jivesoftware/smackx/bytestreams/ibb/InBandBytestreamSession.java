@@ -228,7 +228,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             Close close = new Close(this.byteStreamRequest.getSessionID());
             close.setTo(this.remoteJID);
             try {
-                connection.createStanzaCollectorAndSend(close).nextResultOrThrow();
+                connection.sendIqRequestAndWaitForResponse(close);
             }
             catch (Exception e) {
                 // Sadly we are unable to use the IOException(Throwable) constructor because this
@@ -823,7 +823,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             iq.setTo(remoteJID);
 
             try {
-                connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+                connection.sendIqRequestAndWaitForResponse(iq);
             }
             catch (Exception e) {
                 // close session unless it is already closed

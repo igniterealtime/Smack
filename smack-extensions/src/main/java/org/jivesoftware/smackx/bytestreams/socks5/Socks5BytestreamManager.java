@@ -624,8 +624,8 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         for (Jid proxy : proxies) {
             Bytestream streamHostRequest = createStreamHostRequest(proxy);
             try {
-                Bytestream response = connection.createStanzaCollectorAndSend(
-                                streamHostRequest).nextResultOrThrow();
+                Bytestream response = connection.sendIqRequestAndWaitForResponse(
+                                streamHostRequest);
                 streamHosts.addAll(response.getStreamHosts());
             }
             catch (Exception e) {

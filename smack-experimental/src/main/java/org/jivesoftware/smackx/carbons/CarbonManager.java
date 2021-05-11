@@ -339,7 +339,7 @@ public final class CarbonManager extends Manager {
 
         IQ setIQ = carbonsEnabledIQ(new_state);
 
-        connection().createStanzaCollectorAndSend(setIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(setIQ);
         enabled_state = new_state;
     }
 

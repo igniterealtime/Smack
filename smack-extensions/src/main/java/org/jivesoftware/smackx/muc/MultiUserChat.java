@@ -838,7 +838,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.get);
 
-        IQ answer = connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        IQ answer = connection.sendIqRequestAndWaitForResponse(iq);
         DataForm dataForm = DataForm.from(answer, MucConfigFormManager.FORM_TYPE);
         return new Form(dataForm);
     }
@@ -867,7 +867,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
         iq.addExtension(dataForm);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     /**
@@ -892,7 +892,7 @@ public class MultiUserChat {
         reg.setType(IQ.Type.get);
         reg.setTo(room);
 
-        IQ result = connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
+        IQ result = connection.sendIqRequestAndWaitForResponse(reg);
         DataForm dataForm = DataForm.from(result);
         return new Form(dataForm);
     }
@@ -920,7 +920,7 @@ public class MultiUserChat {
         reg.setTo(room);
         reg.addExtension(form.getDataFormToSubmit());
 
-        connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(reg);
     }
 
     /**
@@ -965,7 +965,7 @@ public class MultiUserChat {
         iq.setDestroy(destroy);
 
         try {
-            connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+            connection.sendIqRequestAndWaitForResponse(iq);
         }
         catch (XMPPErrorException e) {
             // Note that we do not call userHasLeft() here because an XMPPErrorException would usually indicate that the
@@ -1718,7 +1718,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(affiliation, jid, reason);
         iq.addItem(item);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     private void changeAffiliationByAdmin(Collection<? extends Jid> jids, MUCAffiliation affiliation)
@@ -1732,7 +1732,7 @@ public class MultiUserChat {
             iq.addItem(item);
         }
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     private void changeRole(Resourcepart nickname, MUCRole role, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -1743,7 +1743,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(role, nickname, reason);
         iq.addItem(item);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     private void changeRole(Collection<Resourcepart> nicknames, MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
@@ -1756,7 +1756,7 @@ public class MultiUserChat {
             iq.addItem(item);
         }
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     /**
@@ -1914,7 +1914,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(affiliation);
         iq.addItem(item);
 
-        MUCAdmin answer = (MUCAdmin) connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        MUCAdmin answer = (MUCAdmin) connection.sendIqRequestAndWaitForResponse(iq);
 
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
@@ -1969,7 +1969,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(role);
         iq.addItem(item);
 
-        MUCAdmin answer = (MUCAdmin) connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        MUCAdmin answer = (MUCAdmin) connection.sendIqRequestAndWaitForResponse(iq);
         // Get the list of participants from the server's answer
         List<Occupant> participants = new ArrayList<Occupant>();
         for (MUCItem mucadminItem : answer.getItems()) {

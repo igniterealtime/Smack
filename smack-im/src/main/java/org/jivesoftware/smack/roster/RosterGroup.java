@@ -85,7 +85,7 @@ public class RosterGroup extends Manager {
                 item.removeGroupName(this.name);
                 item.addGroupName(name);
                 packet.addRosterItem(item);
-                connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+                connection().sendIqRequestAndWaitForResponse(packet);
             }
         }
     }
@@ -180,7 +180,7 @@ public class RosterGroup extends Manager {
                 item.addGroupName(getName());
                 packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
-                connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+                connection().sendIqRequestAndWaitForResponse(packet);
             }
         }
     }
@@ -211,7 +211,7 @@ public class RosterGroup extends Manager {
                 item.removeGroupName(this.getName());
                 packet.addRosterItem(item);
                 // Wait up to a certain number of seconds for a reply from the server.
-                connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+                connection().sendIqRequestAndWaitForResponse(packet);
             }
         }
     }

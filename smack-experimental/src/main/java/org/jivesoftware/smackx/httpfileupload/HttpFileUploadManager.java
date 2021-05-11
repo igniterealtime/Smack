@@ -418,7 +418,7 @@ public final class HttpFileUploadManager extends Manager {
             throw new AssertionError();
         }
 
-        return connection.createStanzaCollectorAndSend(slotRequest).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(slotRequest);
     }
 
     public void setTlsContext(SSLContext tlsContext) {

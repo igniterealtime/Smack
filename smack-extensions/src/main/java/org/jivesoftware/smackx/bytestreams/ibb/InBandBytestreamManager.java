@@ -424,7 +424,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
         final XMPPConnection connection = connection();
 
         // sending packet will throw exception on timeout or error reply
-        connection.createStanzaCollectorAndSend(byteStreamRequest).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(byteStreamRequest);
 
         InBandBytestreamSession inBandBytestreamSession = new InBandBytestreamSession(
                         connection, byteStreamRequest, targetJID);

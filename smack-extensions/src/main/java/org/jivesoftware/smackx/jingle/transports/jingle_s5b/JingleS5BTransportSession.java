@@ -137,8 +137,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
             Jingle jingle = transportManager().createCandidateUsed(jingleSession.getRemote(), jingleSession.getInitiator(), jingleSession.getSessionId(),
                     content.getSenders(), content.getCreator(), content.getName(), theirProposal.getStreamId(), ourChoice.candidate.getCandidateId());
             try {
-                jingleSession.getConnection().createStanzaCollectorAndSend(jingle)
-                        .nextResultOrThrow();
+                jingleSession.getConnection().sendIqRequestAndWaitForResponse(jingle);
             } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
                 LOGGER.log(Level.WARNING, "Could not send candidate-used.", e);
             }
@@ -303,7 +302,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
                 activate.setToActivate(jingleSession.getRemote());
                 activate.setFrom(jingleSession.getLocal());
                 try {
-                    jingleSession.getConnection().createStanzaCollectorAndSend(activate).nextResultOrThrow();
+                    jingleSession.getConnection().sendIqRequestAndWaitForResponse(activate);
                 } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.WARNING, "Could not activate proxy.", e);
                     return;
@@ -315,8 +314,7 @@ public class JingleS5BTransportSession extends JingleTransportSession<JingleS5BT
                         content.getSenders(), content.getCreator(), content.getName(), nominated.transport.getStreamId(),
                         nominated.candidate.getCandidateId());
                 try {
-                    jingleSession.getConnection().createStanzaCollectorAndSend(candidateActivate)
-                            .nextResultOrThrow();
+                    jingleSession.getConnection().sendIqRequestAndWaitForResponse(candidateActivate);
                 } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.WARNING, "Could not send candidate-activated", e);
                     return;

@@ -699,7 +699,7 @@ public final class Roster extends Manager {
             }
         }
         rosterPacket.addRosterItem(item);
-        connection.createStanzaCollectorAndSend(rosterPacket).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(rosterPacket);
     }
 
     /**
@@ -852,7 +852,7 @@ public final class Roster extends Manager {
         // Set the item type as REMOVE so that the server will delete the entry
         item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
-        connection.createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(packet);
     }
 
     /**

@@ -129,6 +129,17 @@ public class ConnectionUtils {
         when(collector.nextResultOrThrow()).thenAnswer(answerOrThrow);
         when(collector.nextResultOrThrow(anyLong())).thenAnswer(answerOrThrow);
 
+        Answer<IQ> responseIq = new Answer<IQ>() {
+            @Override
+            public IQ answer(InvocationOnMock invocation) throws Throwable {
+                collectorAndSend.answer(invocation);
+
+                IQ response = (IQ) answerOrThrow.answer(invocation);
+                return response;
+            }
+        };
+        when(connection.sendIqRequestAndWaitForResponse(isA(IQ.class))).thenAnswer(responseIq);
+
         // initialize service discovery manager for this connection
         ServiceDiscoveryManager.getInstanceFor(connection);
 

@@ -155,7 +155,7 @@ public final class VersionManager extends Manager {
         }
         XMPPConnection connection = connection();
         Version version = Version.builder(connection).to(jid).build();
-        return connection().createStanzaCollectorAndSend(version).nextResultOrThrow();
+        return connection().sendIqRequestAndWaitForResponse(version);
     }
 
     private static VersionInformation generateVersionFrom(String name, String version, String os) {

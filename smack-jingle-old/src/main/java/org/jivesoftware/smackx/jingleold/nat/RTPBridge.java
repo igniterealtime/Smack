@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
@@ -400,8 +399,10 @@ public class RTPBridge extends IQ {
      * @return the new RTPBridge
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException, InterruptedException {
+    public static RTPBridge getRTPBridge(XMPPConnection connection, String sessionID) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         if (!connection.isConnected()) {
             return null;
@@ -416,12 +417,7 @@ public class RTPBridge extends IQ {
         }
         rtpPacket.setTo(jid);
 
-        StanzaCollector collector = connection.createStanzaCollectorAndSend(rtpPacket);
-
-        RTPBridge response = collector.nextResult();
-
-        // Cancel the collector.
-        collector.cancel();
+        RTPBridge response = connection.sendIqRequestAndWaitForResponse(rtpPacket);
 
         return response;
     }
@@ -477,8 +473,10 @@ public class RTPBridge extends IQ {
      * @return the RTPBridge
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException, InterruptedException {
+    public static RTPBridge relaySession(XMPPConnection connection, String sessionID, String pass, TransportCandidate proxyCandidate, TransportCandidate localCandidate) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         if (!connection.isConnected()) {
             return null;
@@ -502,12 +500,7 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        StanzaCollector collector = connection.createStanzaCollectorAndSend(rtpPacket);
-
-        RTPBridge response = collector.nextResult();
-
-        // Cancel the collector.
-        collector.cancel();
+        RTPBridge response = connection.sendIqRequestAndWaitForResponse(rtpPacket);
 
         return response;
     }
@@ -519,8 +512,10 @@ public class RTPBridge extends IQ {
      * @return public IP String or null if not found
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException, InterruptedException {
+    public static String getPublicIP(XMPPConnection xmppConnection) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         if (!xmppConnection.isConnected()) {
             return null;
@@ -538,12 +533,7 @@ public class RTPBridge extends IQ {
 
         // LOGGER.debug("Relayed to: " + candidate.getIp() + ":" + candidate.getPort());
 
-        StanzaCollector collector = xmppConnection.createStanzaCollectorAndSend(rtpPacket);
-
-        RTPBridge response = collector.nextResult();
-
-        // Cancel the collector.
-        collector.cancel();
+        RTPBridge response = xmppConnection.sendIqRequestAndWaitForResponse(rtpPacket);
 
         if (response == null) return null;
 

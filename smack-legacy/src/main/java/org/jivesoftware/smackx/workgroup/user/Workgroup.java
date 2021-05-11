@@ -355,7 +355,7 @@ public class Workgroup {
 
         JoinQueuePacket joinPacket = new JoinQueuePacket(workgroupJID, answerForm, userID);
 
-        connection.createStanzaCollectorAndSend(joinPacket).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(joinPacket);
         // Notify listeners that we've joined the queue.
         fireQueueJoinedEvent();
     }
@@ -436,7 +436,7 @@ public class Workgroup {
         }
 
         DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
-        connection.createStanzaCollectorAndSend(departPacket).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(departPacket);
 
         // Notify listeners that we're no longer in the queue.
         fireQueueDepartedEvent();
@@ -657,7 +657,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        ChatSettings response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        ChatSettings response = connection.sendIqRequestAndWaitForResponse(request);
 
         return response;
     }
@@ -697,7 +697,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -714,7 +714,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -731,7 +731,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -750,8 +750,8 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(
-                        request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(
+                        request);
     }
 
 
@@ -771,8 +771,8 @@ public class Workgroup {
         workgroupForm.setType(IQ.Type.get);
         workgroupForm.setTo(workgroupJID);
 
-        WorkgroupForm response = connection.createStanzaCollectorAndSend(
-                        workgroupForm).nextResultOrThrow();
+        WorkgroupForm response = connection.sendIqRequestAndWaitForResponse(
+                        workgroupForm);
         return Form.from(response);
     }
 }

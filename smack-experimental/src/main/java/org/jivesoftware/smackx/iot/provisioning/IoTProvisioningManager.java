@@ -344,7 +344,7 @@ public final class IoTProvisioningManager extends Manager {
 
         IoTIsFriend iotIsFriend = new IoTIsFriend(friendInQuestion);
         iotIsFriend.setTo(provisioningServer);
-        IoTIsFriendResponse response = connection().createStanzaCollectorAndSend(iotIsFriend).nextResultOrThrow();
+        IoTIsFriendResponse response = connection().sendIqRequestAndWaitForResponse(iotIsFriend);
         assert response.getJid().equals(friendInQuestion);
         boolean isFriend = response.getIsFriendResult();
         if (!isFriend) {

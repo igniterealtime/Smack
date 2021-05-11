@@ -533,7 +533,7 @@ public final class MamManager extends Manager {
         MamQueryIQ mamQueryIq = new MamQueryIQ(queryId, node, null);
         mamQueryIq.setTo(archiveAddress);
 
-        MamQueryIQ mamResponseQueryIq = connection().createStanzaCollectorAndSend(mamQueryIq).nextResultOrThrow();
+        MamQueryIQ mamResponseQueryIq = connection().sendIqRequestAndWaitForResponse(mamQueryIq);
 
         return mamResponseQueryIq.getDataForm().getFields();
     }
@@ -864,7 +864,7 @@ public final class MamManager extends Manager {
             NotConnectedException, InterruptedException, NotLoggedInException {
         final XMPPConnection connection = getAuthenticatedConnectionOrThrow();
 
-        MamPrefsIQ mamPrefsResultIQ = connection.createStanzaCollectorAndSend(mamPrefsIQ).nextResultOrThrow();
+        MamPrefsIQ mamPrefsResultIQ = connection.sendIqRequestAndWaitForResponse(mamPrefsIQ);
 
         return new MamPrefsResult(mamPrefsResultIQ, DataForm.from(mamPrefsIQ));
     }

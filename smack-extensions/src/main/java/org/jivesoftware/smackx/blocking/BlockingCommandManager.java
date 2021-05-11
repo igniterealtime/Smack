@@ -184,7 +184,7 @@ public final class BlockingCommandManager extends Manager {
 
         if (blockListCached == null) {
             BlockListIQ blockListIQ = new BlockListIQ();
-            BlockListIQ blockListIQResult = connection().createStanzaCollectorAndSend(blockListIQ).nextResultOrThrow();
+            BlockListIQ blockListIQResult = connection().sendIqRequestAndWaitForResponse(blockListIQ);
             blockListCached = blockListIQResult.getBlockedJidsCopy();
         }
 
@@ -203,7 +203,7 @@ public final class BlockingCommandManager extends Manager {
     public void blockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         BlockContactsIQ blockContactIQ = new BlockContactsIQ(jids);
-        connection().createStanzaCollectorAndSend(blockContactIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(blockContactIQ);
     }
 
     /**
@@ -218,7 +218,7 @@ public final class BlockingCommandManager extends Manager {
     public void unblockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(jids);
-        connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(unblockContactIQ);
     }
 
     /**
@@ -232,7 +232,7 @@ public final class BlockingCommandManager extends Manager {
     public void unblockAll()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ();
-        connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(unblockContactIQ);
     }
 
     public void addJidsBlockedListener(JidsBlockedListener jidsBlockedListener) {

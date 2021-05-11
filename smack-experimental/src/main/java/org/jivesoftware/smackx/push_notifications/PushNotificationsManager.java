@@ -164,7 +164,7 @@ public final class PushNotificationsManager extends Manager {
     private boolean changePushNotificationsStatus(IQ iq)
             throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         final XMPPConnection connection = connection();
-        IQ responseIQ = connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        IQ responseIQ = connection.sendIqRequestAndWaitForResponse(iq);
         return responseIQ.getType() != IQ.Type.error;
     }
 

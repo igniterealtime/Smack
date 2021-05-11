@@ -246,7 +246,7 @@ public final class IoTDiscoveryManager extends Manager {
         final XMPPConnection connection = connection();
         IoTRegister iotRegister = new IoTRegister(thing.getMetaTags(), thing.getNodeInfo(), thing.isSelfOwened());
         iotRegister.setTo(registry);
-        IQ result = connection.createStanzaCollectorAndSend(iotRegister).nextResultOrThrow();
+        IQ result = connection.sendIqRequestAndWaitForResponse(iotRegister);
         if (result instanceof IoTClaimed) {
             IoTClaimed iotClaimedResult = (IoTClaimed) result;
             throw new IoTClaimedException(iotClaimedResult);
@@ -293,7 +293,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTMine iotMine = new IoTMine(metaTags, publicThing);
         iotMine.setTo(registry);
-        IoTClaimed iotClaimed = connection().createStanzaCollectorAndSend(iotMine).nextResultOrThrow();
+        IoTClaimed iotClaimed = connection().sendIqRequestAndWaitForResponse(iotMine);
 
         // The 'jid' attribute of the <claimed/> response now represents the XMPP address of the thing we just successfully claimed.
         Jid thing = iotClaimed.getJid();
@@ -322,7 +322,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTRemove iotRemove = new IoTRemove(thing, nodeInfo);
         iotRemove.setTo(registry);
-        connection().createStanzaCollectorAndSend(iotRemove).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(iotRemove);
 
         // We no not update the ThingState here, as this is done in the <removed/> IQ handler above.;
     }
@@ -346,7 +346,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTUnregister iotUnregister = new IoTUnregister(nodeInfo);
         iotUnregister.setTo(registry);
-        connection().createStanzaCollectorAndSend(iotUnregister).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(iotUnregister);
 
         ThingState state = getStateFor(nodeInfo);
         state.setUnregistered();
@@ -375,7 +375,7 @@ public final class IoTDiscoveryManager extends Manager {
 
         IoTDisown iotDisown = new IoTDisown(thing, nodeInfo);
         iotDisown.setTo(registry);
-        connection().createStanzaCollectorAndSend(iotDisown).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(iotDisown);
     }
 
     // Registry utility methods

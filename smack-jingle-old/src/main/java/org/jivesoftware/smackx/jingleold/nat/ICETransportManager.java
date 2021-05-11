@@ -20,10 +20,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.CreatedJingleSessionListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleSessionListener;
@@ -59,7 +60,7 @@ public class ICETransportManager extends JingleTransportManager implements Jingl
     // Implement a Session Listener to relay candidates after establishment
 
     @Override
-    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException {
+    public void sessionEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc, JingleSession jingleSession) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         if (lc instanceof ICECandidate) {
             if (((ICECandidate) lc).getType().equals(ICECandidate.Type.relay)) {
                 RTPBridge rtpBridge = RTPBridge.relaySession(lc.getConnection(), lc.getSessionId(), lc.getPassword(), rc, lc);
