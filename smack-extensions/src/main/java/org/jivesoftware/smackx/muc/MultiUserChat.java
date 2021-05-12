@@ -2101,7 +2101,7 @@ public class MultiUserChat {
         if (messageCollector == null) {
             throw new MucNotJoinedException(this);
         }
-        return  messageCollector.nextResult();
+        return  messageCollector.nextResultBlockForever();
     }
 
     /**

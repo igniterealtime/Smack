@@ -225,7 +225,7 @@ public class MultiUserChatLight {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public Message nextMessage() throws InterruptedException {
-        return messageCollector.nextResult();
+        return messageCollector.nextResultBlockForever();
     }
 
     /**
