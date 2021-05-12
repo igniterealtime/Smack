@@ -17,8 +17,10 @@
 package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 
@@ -100,12 +102,12 @@ public class JingleUtil {
                                   JingleContent.Senders contentSenders,
                                   JingleContentDescription description,
                                   JingleContentTransport transport)
-            throws SmackException.NotConnectedException, InterruptedException {
+            throws SmackException.NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         Jingle jingle = createSessionInitiate(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
 
-        return connection.createStanzaCollectorAndSend(jingle).nextResult();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionAccept(FullJid recipient,
@@ -142,12 +144,12 @@ public class JingleUtil {
                                 JingleContent.Senders contentSenders,
                                 JingleContentDescription description,
                                 JingleContentTransport transport)
-            throws SmackException.NotConnectedException, InterruptedException {
+            throws SmackException.NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         Jingle jingle = createSessionAccept(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
 
-        return connection.createStanzaCollectorAndSend(jingle).nextResult();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason reason) {
