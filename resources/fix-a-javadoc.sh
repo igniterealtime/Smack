@@ -17,11 +17,6 @@ popd  > /dev/null
 
 SMACK_DIR=$(realpath "${SCRIPTDIR}"/..)
 
-FIND_ALL_JAVA_SRC="find ${SMACK_DIR} \
-	 -type f \
-	 -name *.java \
-	 -print"
-
 declare -A SMACK_EXCEPTIONS
 SMACK_EXCEPTIONS[NotConnectedException]="if the XMPP connection is not connected."
 SMACK_EXCEPTIONS[InterruptedException]="if the calling thread was interrupted."
@@ -71,13 +66,17 @@ SMACK_EXCEPTIONS[FailedNonzaException]="if an XMPP protocol failure was received
 
 MODE=""
 
-while getopts dm: OPTION "$@"; do
+SMACK_DIR=$(realpath "${SCRIPTDIR}"/..)
+while getopts dm:p: OPTION "$@"; do
 	case $OPTION in
 	d)
 		set -x
 		;;
 	m)
 		MODE=${OPTARG}
+		;;
+	p)
+		SMACK_DIR=${OPTARG}
 		;;
 	*)
 		echo "Unknown option ${OPTION}"
@@ -86,26 +85,43 @@ while getopts dm: OPTION "$@"; do
 	esac
 done
 
+JAVA_SOURCES_LIST=$(mktemp)
+onExit() {
+	rm "${JAVA_SOURCES_LIST}"
+}
+trap onExit EXIT
+
+find ${SMACK_DIR} \
+	 -type f \
+	 -name "*.java" \
+	 -print > "${JAVA_SOURCES_LIST}"
+
+NPROC=$(nproc)
+
 sed_sources() {
 	sedScript=${1}
-	${FIND_ALL_JAVA_SRC} |\
-		xargs sed \
-			  --in-place \
-			  --follow-symlinks \
-			  --regexp-extended \
-			  "${sedScript}"
+
+	xargs \
+		--max-procs="${NPROC}" \
+		--max-args=8  \
+		-- \
+		sed \
+		  --in-place \
+		  --follow-symlinks \
+		  --regexp-extended \
+		  "${sedScript}" < "${JAVA_SOURCES_LIST}"
 }
 
 show_affected() {
 	echo ${!SMACK_EXCEPTIONS{@}}
 	for exception in ${!SMACK_EXCEPTIONS[@]}; do
-		${FIND_ALL_JAVA_SRC} |\
-			xargs grep " \* @throws $exception$" || true
+		xargs grep " \* @throws $exception$" < "${JAVA_SOURCES_LIST}"
 	done
 	for exception in ${!SMACK_EXCEPTIONS[@]}; do
-		count=$(${FIND_ALL_JAVA_SRC} |\
-					xargs grep " \* @throws $exception$" | wc -l)
-		echo "$exception $count"
+		local count
+		count=$(<"${JAVA_SOURCES_LIST}" xargs grep " \* @throws $exception$" |\
+						  wc -l)
+		echo "$exception $count"q
 	done
 
 }
@@ -113,7 +129,7 @@ show_affected() {
 fix_affected() {
 	for exception in "${!SMACK_EXCEPTIONS[@]}"; do
 		exceptionJavadoc=${SMACK_EXCEPTIONS[${exception}]}
-		sed_sources "s;@throws ((\w*\.)?${exception})\$;@throws \1 ${exceptionJavadoc};"
+		sed_sources "s;@throws ((\w*\.)?${exception}) ?\$;@throws \1 ${exceptionJavadoc};"
 	done
 }
 
