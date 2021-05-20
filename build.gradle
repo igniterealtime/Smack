@@ -5,7 +5,6 @@ buildscript {
         maven { url 'https://dl.bintray.com/content/aalmiray/kordamp' }
     }
     dependencies {
-        classpath 'org.kordamp:markdown-gradle-plugin:1.0.0'
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
     }
@@ -17,8 +16,6 @@ plugins {
 	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
 	id 'com.dorongold.task-tree' version '1.5'
 }
-
-apply plugin: 'org.kordamp.gradle.markdown'
 
 allprojects {
 	apply plugin: 'java-library'
@@ -34,7 +31,7 @@ allprojects {
 		isSnapshot = version.endsWith('-SNAPSHOT')
 		gitCommit = getGitCommit()
 		javadocAllDir = new File(buildDir, 'javadoc')
-		documentationDir = new File(buildDir, 'documentation')
+		documentationDir = new File(projectDir, 'documentation')
 		releasedocsDir = new File(buildDir, 'releasedocs')
 		rootConfigDir = new File(rootDir, 'config')
 		sonatypeCredentialsAvailable = project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
@@ -366,13 +363,7 @@ task prepareReleasedocs(type: Copy) {
 	filter(ReplaceTokens, tokens: [version: version, releasedate: builtDate, targetCompatibility: targetCompatibility.toString()])
 }
 
-markdownToHtml {
-	sourceDir = new File(projectDir, "/documentation")
-	outputDir documentationDir
-	configuration = [tables: true, fencedCodeBlocks: true]
-}
-
-task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs, markdownToHtml]) {
+task distributionZip(type: Zip, dependsOn: [javadocAll, prepareReleasedocs]) {
 	classifier builtDate
 	into ('javadoc') {
 		from(javadocAllDir)
