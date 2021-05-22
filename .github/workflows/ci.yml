@@ -15,6 +15,8 @@ jobs:
         java:
           - 11
           - 15
+    env:
+      PRIMARY_JAVA_VERSION: 11
 
     steps:
       - name: Checkout
@@ -78,12 +80,12 @@ jobs:
 
       # Javadoc
       - name: Javadoc
-        if: ${{ matrix.java == 11 }}
+        if: ${{ matrix.java == env.PRIMARY_JAVA_VERSION }}
         run: ${PATH_TO_GRADLE} javadocAll --stacktrace
 
       # Test Coverage Report
       - name: Jacoco Test Coverage
-        if: ${{ matrix.java == 1.8 }}
+        if: ${{ matrix.java == env.PRIMARY_JAVA_VERSION }}
         run: ${PATH_TO_GRADLE} jacocoRootReport coveralls
         env:
           COVERALLS_REPO_TOKEN: S2ecSJja2cKJa9yv45C8ZFPohXuRrTXKd
