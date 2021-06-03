@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.address;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
@@ -228,18 +229,16 @@ public class MultipleRecipientManager {
             throw new AssertionError();
         }
 
+        if (to == null) to = Collections.emptyList();
+        if (cc == null) cc = Collections.emptyList();
+        if (bcc == null) bcc = Collections.emptyList();
+
         final int numRecipients = to.size() + cc.size() + bcc.size();
         final List<Jid> recipients = new ArrayList<>(numRecipients);
 
-        if (to != null) {
-            recipients.addAll(to);
-        }
-        if (cc != null) {
-            recipients.addAll(cc);
-        }
-        if (bcc != null) {
-            recipients.addAll(bcc);
-        }
+        recipients.addAll(to);
+        recipients.addAll(cc);
+        recipients.addAll(bcc);
 
         final List<Stanza> stanzasToSend = new ArrayList<>(numRecipients);
         for (Jid recipient : recipients) {
