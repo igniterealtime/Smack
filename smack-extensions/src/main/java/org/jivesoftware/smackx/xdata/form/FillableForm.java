@@ -59,7 +59,13 @@ public class FillableForm extends FilledForm {
             if (formField.isRequired()) {
                 String fieldName = formField.getFieldName();
                 requiredFields.add(fieldName);
-                missingRequiredFields.add(fieldName);
+
+                if (formField.hasValueSet()) {
+                    // This is a form field with a default value.
+                    write(formField);
+                } else {
+                    missingRequiredFields.add(fieldName);
+                }
             }
         }
         this.requiredFields = Collections.unmodifiableSet(requiredFields);
@@ -222,9 +228,6 @@ public class FillableForm extends FilledForm {
 
         String fieldName = filledFormField.getFieldName();
         if (!getDataForm().hasField(fieldName)) {
-            throw new IllegalArgumentException();
-        }
-        if (filledFields.containsKey(fieldName)) {
             throw new IllegalArgumentException();
         }
 
