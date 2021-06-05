@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.ox.crypto;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,14 +42,18 @@ import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotAPubSubNodeException;
 
 import org.bouncycastle.openpgp.PGPException;
-import org.bouncycastle.openpgp.PGPPublicKey;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.util.io.Streams;
 import org.pgpainless.PGPainless;
+import org.pgpainless.algorithm.DocumentSignatureType;
 import org.pgpainless.decryption_verification.DecryptionStream;
 import org.pgpainless.decryption_verification.MissingPublicKeyCallback;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
+import org.pgpainless.encryption_signing.EncryptionOptions;
 import org.pgpainless.encryption_signing.EncryptionStream;
+import org.pgpainless.encryption_signing.ProducerOptions;
+import org.pgpainless.encryption_signing.SigningOptions;
 
 public class PainlessOpenPgpProvider implements OpenPgpProvider {
 
@@ -73,23 +76,26 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
         InputStream plainText = element.toInputStream();
         ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
-        ArrayList<PGPPublicKeyRingCollection> recipientKeys = new ArrayList<>();
+        EncryptionOptions encOpts = EncryptionOptions.encryptCommunications();
         for (OpenPgpContact contact : recipients) {
             PGPPublicKeyRingCollection keys = contact.getTrustedAnnouncedKeys();
             if (keys == null) {
                 LOGGER.log(Level.WARNING, "There are no suitable keys for contact " + contact.getJid());
-
             }
-
-            recipientKeys.add(keys);
+            encOpts.addRecipients(keys);
         }
 
-        EncryptionStream cipherStream = PGPainless.createEncryptor().onOutputStream(cipherText)
-                .toRecipients(recipientKeys.toArray(new PGPPublicKeyRingCollection[] {}))
-                .andToSelf(self.getTrustedAnnouncedKeys())
-                .usingSecureAlgorithms()
-                .signWith(getStore().getKeyRingProtector(), self.getSigningKeyRing())
-                .noArmor();
+        encOpts.addRecipients(self.getTrustedAnnouncedKeys());
+
+        SigningOptions signOpts = new SigningOptions();
+        signOpts.addInlineSignature(getStore().getKeyRingProtector(), self.getSigningKeyRing(),
+                "xmpp:" + self.getJid().toString(), DocumentSignatureType.BINARY_DOCUMENT);
+
+        EncryptionStream cipherStream = PGPainless.encryptAndOrSign()
+                .onOutputStream(cipherText)
+                .withOptions(ProducerOptions
+                        .signAndEncrypt(encOpts, signOpts)
+                        .setAsciiArmor(false));
 
         Streams.pipeAll(plainText, cipherStream);
         plainText.close();
@@ -109,10 +115,12 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
         InputStream plainText = element.toInputStream();
         ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
-        EncryptionStream cipherStream = PGPainless.createEncryptor().onOutputStream(cipherText)
-                .doNotEncrypt()
-                .signWith(getStore().getKeyRingProtector(), self.getSigningKeyRing())
-                .noArmor();
+        EncryptionStream cipherStream = PGPainless.encryptAndOrSign()
+                .onOutputStream(cipherText)
+                .withOptions(ProducerOptions.sign(new SigningOptions()
+                        .addInlineSignature(getStore().getKeyRingProtector(), self.getSigningKeyRing(),
+                                "xmpp:" + self.getJid().toString(), DocumentSignatureType.BINARY_DOCUMENT)
+                ).setAsciiArmor(false));
 
         Streams.pipeAll(plainText, cipherStream);
         plainText.close();
@@ -132,22 +140,23 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
         InputStream plainText = element.toInputStream();
         ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
-        ArrayList<PGPPublicKeyRingCollection> recipientKeys = new ArrayList<>();
+        EncryptionOptions encOpts = EncryptionOptions.encryptCommunications();
         for (OpenPgpContact contact : recipients) {
             PGPPublicKeyRingCollection keys = contact.getTrustedAnnouncedKeys();
-            if (keys != null) {
-                recipientKeys.add(keys);
-            } else {
-                LOGGER.log(Level.WARNING, "There are no suitable keys for contact " + contact.getJid().toString());
+            if (keys == null) {
+                LOGGER.log(Level.WARNING, "There are no suitable keys for contact " + contact.getJid());
             }
+            encOpts.addRecipients(keys);
         }
 
-        EncryptionStream cipherStream = PGPainless.createEncryptor().onOutputStream(cipherText)
-                .toRecipients(recipientKeys.toArray(new PGPPublicKeyRingCollection[] {}))
-                .andToSelf(self.getTrustedAnnouncedKeys())
-                .usingSecureAlgorithms()
-                .doNotSign()
-                .noArmor();
+        encOpts.addRecipients(self.getTrustedAnnouncedKeys());
+
+        EncryptionStream cipherStream = PGPainless.encryptAndOrSign()
+                .onOutputStream(cipherText)
+                .withOptions(ProducerOptions
+                        .encrypt(encOpts)
+                        .setAsciiArmor(false)
+                );
 
         Streams.pipeAll(plainText, cipherStream);
         plainText.close();
@@ -172,26 +181,34 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
                 sender.updateKeys(connection);
                 announcedPublicKeys = sender.getAnnouncedPublicKeys();
             } catch (InterruptedException | NotALeafNodeException | NotAPubSubNodeException | NotConnectedException
-                            | NoResponseException | XMPPErrorException e) {
+                    | NoResponseException | XMPPErrorException e) {
                 throw new PGPException("Abort decryption due to lack of keys", e);
             }
         }
 
         MissingPublicKeyCallback missingPublicKeyCallback = new MissingPublicKeyCallback() {
+
             @Override
-            public PGPPublicKey onMissingPublicKeyEncountered(Long keyId) {
+            public PGPPublicKeyRing onMissingPublicKeyEncountered(Long keyId) {
                 try {
                     sender.updateKeys(connection);
-                    return sender.getAnyPublicKeys().getPublicKey(keyId);
+                    PGPPublicKeyRingCollection anyKeys = sender.getAnyPublicKeys();
+                    for (PGPPublicKeyRing ring : anyKeys) {
+                        if (ring.getPublicKey(keyId) != null) {
+                            return ring;
+                        }
+                    }
+                    return null;
                 } catch (InterruptedException | NotALeafNodeException | NotAPubSubNodeException | NotConnectedException
-                                | NoResponseException | XMPPErrorException | IOException | PGPException e) {
+                        | NoResponseException | XMPPErrorException | IOException | PGPException e) {
                     LOGGER.log(Level.WARNING, "Cannot fetch missing key " + keyId, e);
                     return null;
                 }
             }
         };
 
-        DecryptionStream cipherStream = PGPainless.createDecryptor().onInputStream(cipherText)
+        DecryptionStream cipherStream = PGPainless.decryptAndOrVerify()
+                .onInputStream(cipherText)
                 .decryptWith(getStore().getKeyRingProtector(), self.getSecretKeys())
                 .verifyWith(announcedPublicKeys)
                 .handleMissingPublicKeysWith(missingPublicKeyCallback)

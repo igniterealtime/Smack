@@ -16,10 +16,10 @@
  */
 package org.jivesoftware.smackx.ox_im;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,14 +32,12 @@ import java.util.Date;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpManager;
@@ -137,7 +135,7 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
         assertFalse(ExplicitMessageEncryptionElement.hasProtocol(messageBuilder.build(), ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0));
 
         aliceOxim.addOxMessage(messageBuilder, bobForAlice,
-                Collections.<ExtensionElement>singletonList(new Message.Body(null, "Hello World!")));
+                Collections.singletonList(new Message.Body(null, "Hello World!")));
 
         Message message = messageBuilder.build();
         assertTrue(ExplicitMessageEncryptionElement.hasProtocol(message, ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.openpgpV0));
