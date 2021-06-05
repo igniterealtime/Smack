@@ -16,15 +16,13 @@
  */
 package org.jivesoftware.smackx.ox;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Collections;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -40,12 +38,12 @@ import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.pgpainless.PGPainless;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.pgpainless.key.collection.PGPKeyRing;
 
 public class SecretKeyBackupHelperTest extends SmackTestSuite {
 
@@ -72,7 +70,7 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
 
     @Test
     public void createAndDecryptSecretKeyElementTest()
-            throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException,
+            throws PGPException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
             IOException, MissingUserIdOnKeyException, MissingOpenPgpKeyException, InvalidBackupCodeException {
 
         // Prepare store and provider and so on...
@@ -80,18 +78,18 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
         PainlessOpenPgpProvider provider = new PainlessOpenPgpProvider(store);
 
         // Generate and import key
-        PGPKeyRing keyRing = PGPainless.generateKeyRing().simpleEcKeyRing("xmpp:alice@wonderland.lit");
+        PGPSecretKeyRing secretKeys = PGPainless.generateKeyRing().simpleEcKeyRing("xmpp:alice@wonderland.lit");
         BareJid jid = JidCreate.bareFrom("alice@wonderland.lit");
-        provider.getStore().importSecretKey(jid, keyRing.getSecretKeys());
+        provider.getStore().importSecretKey(jid, secretKeys);
 
         // Create encrypted backup
         OpenPgpSecretKeyBackupPassphrase backupCode = SecretKeyBackupHelper.generateBackupPassword();
         SecretkeyElement element = SecretKeyBackupHelper.createSecretkeyElement(provider, jid,
-                Collections.singleton(new OpenPgpV4Fingerprint(keyRing.getSecretKeys())), backupCode);
+                Collections.singleton(new OpenPgpV4Fingerprint(secretKeys)), backupCode);
 
         // Decrypt backup and compare
         PGPSecretKeyRing secretKeyRing = SecretKeyBackupHelper.restoreSecretKeyBackup(element, backupCode);
-        assertArrayEquals(keyRing.getSecretKeys().getEncoded(), secretKeyRing.getEncoded());
+        Assertions.assertArrayEquals(secretKeys.getEncoded(), secretKeyRing.getEncoded());
     }
 
     @AfterClass
