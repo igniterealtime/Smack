@@ -4,8 +4,8 @@ Smack's Integration Test Framework
 Introduction
 ------------
 
-Smack's Integration Test Framwork is used to run a set of tests against a real XMPP service.
-The framework discovers on startup the available tests by reflection.
+Smack's Integration Test Framework is used to run a set of tests against a real XMPP service.
+The framework discovers on start-up the available tests by reflection.
 
 Quickstart
 ----------
@@ -120,7 +120,7 @@ The methods are supposed to throw an exception if their integration test fails.
 
 ### `TestNotPossibleException`
 
-Can be thrown by test methods or constructors to signal that their test it no possible, e.g. because the service does not support the required feature.
+Can be thrown by test methods or constructors to signal that their test is not possible, e.g. because the service does not support the required feature.
 
 Running the integration tests
 -----------------------------
@@ -130,6 +130,7 @@ Smack's Gradle build system is configured with a special task called `integratio
 ```bash
 $ gradle integrationTest -Dsinttest.service=my.xmppservice.org
 ```
+
 If one of `accountOneUsername`, `accountOnePassword`, `accountTwoUsername` or `accountTwoPassword` is not configured, then the framework will automatically create the accounts on the service. Of course this requires account registration (IBR) to be enabled.
 If the accounts got created automatically by the framework, then they will also be deleted at the end of the test.
 
