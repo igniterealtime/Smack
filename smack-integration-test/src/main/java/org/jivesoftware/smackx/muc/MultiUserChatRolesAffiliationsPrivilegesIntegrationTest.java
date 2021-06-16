@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus
+ * Copyright 2021 Florian Schmaus, Dan Caseley
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.SmackException;
@@ -35,6 +36,7 @@ import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 
 
@@ -617,6 +619,294 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             tryDestroy(mucAsSeenByOne);
         }
 
+    }
+
+    /**
+     * Asserts that an affiliation is persistent between visits to the room.
+     *
+     * <p>From XEP-0045 § 5.2:</p>
+     * <blockquote>
+     * These affiliations are long-lived in that they persist across a user's visits to the room and are not affected
+     * by happenings in the room...Affiliations are granted, revoked, and maintained based on the user's bare JID, not
+     * the nick as with roles.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestPersistentAffiliation() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+
+        try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            mucAsSeenByOne.grantOwnership(conTwo.getUser().asBareJid());
+            mucAsSeenByOne.grantAdmin(conThree.getUser().asBareJid());
+
+            mucAsSeenByTwo.leave();
+            mucAsSeenByThree.leave();
+            Presence p2 = mucAsSeenByTwo.join(nicknameTwo);
+            Presence p3 = mucAsSeenByThree.join(nicknameThree);
+            assertEquals(MUCAffiliation.owner, MUCUser.from(p2).getItem().getAffiliation());
+            assertEquals(MUCAffiliation.admin, MUCUser.from(p3).getItem().getAffiliation());
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that a moderator cannot revoke voice from an owner
+     *
+     * <p>From XEP-0045 § 5.1.1:</p>
+     * <blockquote>
+     * A moderator MUST NOT be able to revoke voice privileges from an admin or owner
+     * </blockquote>
+     *
+     * <p>From XEP-0045 § 8.4:</p>
+     * <blockquote>
+     * A moderator MUST NOT be able to revoke voice from a user whose affiliation is at or above the moderator's level.
+     * In addition, a service MUST NOT allow the voice privileges of an admin or owner to be removed by anyone. If a
+     * moderator attempts to revoke voice privileges from such a user, the service MUST deny the request and return a
+     * &lt;not-allowed/&gt; error to the sender along with the offending item(s)
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestModeratorCannotRevokeVoiceFromOwner() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createModeratedMuc(mucAsSeenByOne, nicknameOne);
+
+        try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByOne.grantModerator(nicknameTwo);
+            XMPPException.XMPPErrorException xe = assertThrows(XMPPException.XMPPErrorException.class,
+                            () -> mucAsSeenByTwo.revokeVoice(nicknameOne));
+            assertEquals(xe.getStanzaError().getCondition().toString(), "not-allowed");
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that a moderator cannot revoke moderator privileges from a moderator with a higher affiliation
+     * than themselves.
+     *
+     * <p>From XEP-0045 § 5.1.3 and §5.2.1:</p>
+     * <blockquote>
+     * A moderator SHOULD NOT be allowed to revoke moderation privileges from someone with a higher affiliation than
+     * themselves (i.e., an unaffiliated moderator SHOULD NOT be allowed to revoke moderation privileges from an admin
+     * or an owner, and an admin SHOULD NOT be allowed to revoke moderation privileges from an owner)
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestModeratorCannotBeRevokedFromHigherAffiliation() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        createModeratedMuc(mucAsSeenByOne, nicknameOne);
+
+        mucAsSeenByTwo.join(nicknameTwo);
+        mucAsSeenByThree.join(nicknameThree);
+
+        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+        mucAsSeenByOne.grantModerator(nicknameThree);
+
+        try {
+            // Admin cannot revoke from Owner
+            XMPPException.XMPPErrorException xe1 = assertThrows(XMPPException.XMPPErrorException.class,
+                            () -> mucAsSeenByTwo.revokeModerator(nicknameOne));
+            // Moderator cannot revoke from Admin
+            XMPPException.XMPPErrorException xe2 = assertThrows(XMPPException.XMPPErrorException.class,
+                            () -> mucAsSeenByThree.revokeModerator(nicknameOne));
+            // Moderator cannot revoke from Owner
+            XMPPException.XMPPErrorException xe3 = assertThrows(XMPPException.XMPPErrorException.class,
+                            () -> mucAsSeenByThree.revokeModerator(nicknameTwo));
+            assertEquals(xe1.getStanzaError().getCondition().toString(), "not-allowed");
+            assertEquals(xe2.getStanzaError().getCondition().toString(), "not-allowed");
+            assertEquals(xe3.getStanzaError().getCondition().toString(), "not-allowed");
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that an unmoderated room assigns the correct default roles for a given affiliation
+     *
+     * <p>From XEP-0045 § 5.1.2:</p>
+     * <blockquote>
+     * ...the initial default roles that a service SHOULD set based on the user's affiliation...
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestDefaultRoleForAffiliationInUnmoderatedRoom() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-unmoderatedroles");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+        mucAsSeenByTwo.join(nicknameTwo);
+        mucAsSeenByThree.join(nicknameThree);
+
+        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
+            @Override
+            public void adminGranted(EntityFullJid participant) {
+                resultSyncPoint.signal("done");
+            }
+        });
+        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+        resultSyncPoint.waitForResult(timeout);
+
+        try {
+            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
+                            JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
+                            JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
+            assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(
+                            JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that a moderated room assigns the correct default roles for a given affiliation
+     *
+     * <p>From XEP-0045 § 5.1.2:</p>
+     * <blockquote>
+     * ...the initial default roles that a service SHOULD set based on the user's affiliation...
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestDefaultRoleForAffiliationInModeratedRoom() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-moderatedroles");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
+            @Override
+            public void adminGranted(EntityFullJid participant) {
+                resultSyncPoint.signal("done");
+            }
+        });
+
+        createModeratedMuc(mucAsSeenByOne, nicknameOne);
+
+        try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+            resultSyncPoint.waitForResult(timeout);
+
+            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
+                            JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
+                            JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
+            assertEquals(MUCRole.visitor, mucAsSeenByOne.getOccupant(
+                            JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that a members-only room assigns the correct default roles for a given affiliation
+     *
+     * <p>From XEP-0045 § 5.1.2:</p>
+     * <blockquote>
+     * ...the initial default roles that a service SHOULD set based on the user's affiliation...
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestDefaultRoleForAffiliationInMembersOnlyRoom() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-membersonlyroles");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        final EntityFullJid jidOne = JidCreate.entityFullFrom(mucAddress, nicknameOne);
+        final EntityFullJid jidTwo = JidCreate.entityFullFrom(mucAddress, nicknameTwo);
+        final EntityFullJid jidThree = JidCreate.entityFullFrom(mucAddress, nicknameThree);
+
+        createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
+
+        final ResultSyncPoint<String, Exception> adminResultSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
+            @Override
+            public void adminGranted(EntityFullJid participant) {
+                adminResultSyncPoint.signal("done");
+            }
+        });
+
+        try {
+            mucAsSeenByOne.grantMembership(conTwo.getUser().asBareJid());
+            mucAsSeenByOne.grantMembership(conThree.getUser().asBareJid());
+
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+            adminResultSyncPoint.waitForResult(timeout);
+            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidOne).getRole());
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidTwo).getRole());
+            assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(jidThree).getRole());
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
     }
 
 }
