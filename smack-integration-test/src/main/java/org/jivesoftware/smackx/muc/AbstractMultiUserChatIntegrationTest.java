@@ -97,6 +97,13 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         }
     }
 
+    static void createMembersOnlyMuc(MultiUserChat muc, String resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.MucConfigurationNotSupportedException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
+        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(Resourcepart.from(resourceName));
+        if (handle != null) {
+            handle.getConfigFormManager().makeMembersOnly().submitConfigurationForm();
+        }
+    }
+
     static void createModeratedMuc(MultiUserChat muc, String resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
         muc.create(Resourcepart.from(resourceName));
         Form configForm = muc.getConfigurationForm();
