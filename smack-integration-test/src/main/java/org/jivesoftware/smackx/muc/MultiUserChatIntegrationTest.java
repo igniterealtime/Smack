@@ -17,9 +17,7 @@
 package org.jivesoftware.smackx.muc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.TimeoutException;
 
@@ -27,9 +25,6 @@ import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Presence;
-
-import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -46,62 +41,6 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             InterruptedException, TestNotPossibleException {
         super(environment);
-    }
-
-    /**
-     * Asserts that when a user joins a room, they are themselves included on the list of users notified (self-presence).
-     *
-     * @throws Exception when errors occur
-     */
-    @SmackIntegrationTest(section = "7.2.2", quote =
-        "... the service MUST also send presence from the new participant's occupant JID to the full JIDs of all the " +
-        "occupants (including the new occupant)")
-    public void mucJoinTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-join");
-
-        MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
-        try {
-            Presence reflectedJoinPresence = muc.join(Resourcepart.from("nick-one"));
-
-            MUCUser mucUser = MUCUser.from(reflectedJoinPresence);
-
-            assertNotNull(mucUser, "Expected, but unable, to create a MUCUser instance from reflected join presence: " + reflectedJoinPresence);
-            assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Expected the reflected join presence of " + conOne.getUser() + " of room " + mucAddress + " to include 'presence-to-self' (" + MUCUser.Status.PRESENCE_TO_SELF_110 + ") but it did not.");
-            assertEquals(mucAddress + "/nick-one", reflectedJoinPresence.getFrom().toString(), "Unexpected 'from' attribute value in the reflected join presence of " + conOne.getUser() + " of room " + mucAddress);
-            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedJoinPresence.getTo().toString(), "Unexpected 'to' attribute value in the reflected join presence of " + conOne.getUser() + " of room " + mucAddress);
-        } finally {
-            tryDestroy(muc);
-        }
-    }
-
-    /**
-     * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
-     *
-     * @throws Exception when errors occur
-     */
-    @SmackIntegrationTest(section = "7.14", quote =
-        "The service MUST then send a presence stanzas of type \"unavailable\" from the departing user's occupant " +
-        "JID to the departing occupant's full JIDs, including a status code of \"110\" to indicate that this " +
-        "notification is \"self-presence\"")
-    public void mucLeaveTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-leave");
-
-        MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
-        try {
-            muc.join(Resourcepart.from("nick-one"));
-
-            Presence reflectedLeavePresence = muc.leave();
-
-            MUCUser mucUser = MUCUser.from(reflectedLeavePresence);
-            assertNotNull(mucUser, "Expected, but unable, to create a MUCUser instance from reflected leave presence: " + reflectedLeavePresence);
-
-            assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Expected the reflected leave presence of " + conOne.getUser() + " of room " + mucAddress + " to include 'presence-to-self' (" + MUCUser.Status.PRESENCE_TO_SELF_110 + ") but it did not.");
-            assertEquals(mucAddress + "/nick-one", reflectedLeavePresence.getFrom().toString(), "Unexpected 'from' attribute value in the reflected leave presence of " + conOne.getUser() + " of room " + mucAddress);
-            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedLeavePresence.getTo().toString(), "Unexpected 'to' attribute value in the reflected leave presence of " + conOne.getUser() + " of room " + mucAddress);
-        } finally {
-            muc.join(Resourcepart.from("nick-one")); // We need to be in the room to destroy the room
-            tryDestroy(muc);
-        }
     }
 
     @SmackIntegrationTest
@@ -150,7 +89,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
-        muc.join(Resourcepart.from("nick-one"));
+        createMuc(muc, Resourcepart.from("one-" + randomString));
 
         final SimpleResultSyncPoint mucDestroyed = new SimpleResultSyncPoint();
 
@@ -165,8 +104,8 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         muc.addUserStatusListener(userStatusListener);
 
         // These would be a test implementation bug, not assertion failure.
-        if (mucManagerOne.getJoinedRooms().size() != 1) {
-            throw new IllegalStateException("Expected user to have joined a room.");
+        if (mucManagerOne.getJoinedRooms().stream().noneMatch(room -> room.equals(mucAddress))) {
+            throw new IllegalStateException("Expected user to have joined a room '" + mucAddress + "' (but does not appear to have done so).");
         }
 
         try {

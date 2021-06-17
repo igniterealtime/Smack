@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2024 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,11 @@
  */
 package org.igniterealtime.smack.inttest.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeoutException;
@@ -28,43 +29,66 @@ import org.jivesoftware.smack.util.Async;
 
 import org.junit.jupiter.api.Test;
 
-public class ResultSyncPointTest {
-
+public class MultiResultSyncPointTest {
     @Test
     public void testResultSyncPoint() throws Exception {
-        final String result = "Hip Hip Hurrary!!111!";
+        final String result1 = "r1";
+        final String result2 = "r2";
         final CyclicBarrier barrier = new CyclicBarrier(2);
-        final ResultSyncPoint<String, Exception> rsp = new ResultSyncPoint<>();
+        final MultiResultSyncPoint<String, Exception> rsp = new MultiResultSyncPoint<>(2);
         Async.go(new Async.ThrowingRunnable() {
             @Override
             public void runOrThrow() throws InterruptedException, BrokenBarrierException {
                 barrier.await();
-                rsp.signal(result);
+                rsp.signal(result1);
+                rsp.signal(result2);
             }
         });
         barrier.await();
-        String receivedResult = rsp.waitForResult(60 * 1000);
-        assertEquals(result, receivedResult);
+        List<String> receivedResult = rsp.waitForResults(60 * 1000);
+        assertTrue(receivedResult.contains(result1));
+        assertTrue(receivedResult.contains(result2));
     }
 
     @Test
     public void exceptionTestResultSyncPoint() throws Exception {
         final CyclicBarrier barrier = new CyclicBarrier(2);
-        final ResultSyncPoint<String, TestException> rsp = new ResultSyncPoint<>();
+        final ResultSyncPoint<String, MultiResultSyncPointTest.TestException> rsp = new ResultSyncPoint<>();
         Async.go(new Async.ThrowingRunnable() {
             @Override
             public void runOrThrow() throws InterruptedException, BrokenBarrierException {
                 barrier.await();
-                rsp.signal(new TestException());
+                rsp.signal(new MultiResultSyncPointTest.TestException());
             }
         });
         barrier.await();
-        assertThrows(TestException.class, () -> rsp.waitForResult(60 * 1000));
+        assertThrows(MultiResultSyncPointTest.TestException.class, () -> rsp.waitForResult(60 * 1000));
     }
 
     @Test
     public void testTimeout() throws Exception {
         final MultiResultSyncPoint<String, Exception> rsp = new MultiResultSyncPoint<>(2);
+        try {
+            rsp.waitForResults(100);
+            fail("A timeout exception should have been thrown.");
+        } catch (TimeoutException e) {
+            // Expected
+        }
+    }
+
+    @Test
+    public void testTimeoutWithOneResult() throws Exception {
+        final String result1 = "partial";
+        final CyclicBarrier barrier = new CyclicBarrier(2);
+        final MultiResultSyncPoint<String, Exception> rsp = new MultiResultSyncPoint<>(2);
+        Async.go(new Async.ThrowingRunnable() {
+            @Override
+            public void runOrThrow() throws InterruptedException, BrokenBarrierException {
+                barrier.await();
+                rsp.signal(result1);
+            }
+        });
+        barrier.await();
         try {
             rsp.waitForResults(100);
             fail("A timeout exception should have been thrown.");
