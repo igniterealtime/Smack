@@ -131,7 +131,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             }
         });
 
-        createMUC(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, "one-" + randomString);
         mucAsSeenByTwo.join(Resourcepart.from("two-" + randomString));
         mucAsSeenByOne.sendMessage(mucMessage);
         try {

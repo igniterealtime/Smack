@@ -90,14 +90,14 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         muc.destroy("test fixture teardown", null);
     }
 
-    static void createMUC(MultiUserChat muc, String resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
+    static void createMuc(MultiUserChat muc, String resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
         MultiUserChat.MucCreateConfigFormHandle handle = muc.create(Resourcepart.from(resourceName));
         if (handle != null) {
             handle.makeInstant();
         }
     }
 
-    static void createModeratedMUC(MultiUserChat muc, String resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
+    static void createModeratedMuc(MultiUserChat muc, String resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
         muc.create(Resourcepart.from(resourceName));
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
