@@ -162,6 +162,19 @@ The test methods can declare as many parameters as they need to, but every param
 The framework will automatically create, register and login the connections.
 After the test is finished, the connections will be unregistered with the XMPP service and terminated.
 
+Debugging Integration Tests
+------------------------------
+
+A test, like any other code, may not be perfect on the first attempt, and you may require more information in order to ascertain quite what's wrong.
+
+### Smack Debugger options
+
+As listed in the main Smack [Debugging](../debugging.md) doc, there are two built-in debuggers that could surface you more information. Using the 'enhanced' debugger config option listed above, you'll get the Smack Debug Window launching when your tests launch, and you'll get a stanza-by-stanza account of what happened on each connection, hopefully enough to diagnose what went wrong.
+
+### Debugging in the IDE
+
+If the output isn't enough, you may need to debug and inspect running code within the IDE. Depending on the IDE, in order to get execution to pause at your breakpoints, you may need to switch your configuration. Instead of running `gradle integrationTest`, instead run the `SmackIntegrationTestFramework` class directly with the same command-line options.
+
 Running your own integration tests
 ----------------------------------
 
