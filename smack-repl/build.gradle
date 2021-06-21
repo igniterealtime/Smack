@@ -9,7 +9,7 @@ apply plugin: 'scala'
 apply plugin: 'com.github.alisiikh.scalastyle_2.12'
 
 ext {
-    scalaVersion = '2.12.1'
+    scalaVersion = '2.13.6'
 }
 
 dependencies {
@@ -20,7 +20,7 @@ dependencies {
     api project(':smack-omemo-signal')
 
     implementation "org.scala-lang:scala-library:$scalaVersion"
-    implementation "com.lihaoyi:ammonite_$scalaVersion:1.3.2"
+    implementation "com.lihaoyi:ammonite_$scalaVersion:2.4.0"
 }
 
 scalaStyle {
