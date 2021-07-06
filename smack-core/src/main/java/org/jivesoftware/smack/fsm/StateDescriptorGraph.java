@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.DisconnectedStateDescriptor;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
@@ -46,8 +45,6 @@ import org.jivesoftware.smack.util.MultiMap;
  *
  */
 public class StateDescriptorGraph {
-
-    private static final Logger LOGGER = Logger.getLogger(StateDescriptorGraph.class.getName());
 
     private static GraphVertex<StateDescriptor> addNewStateDescriptorGraphVertex(
                     Class<? extends StateDescriptor> stateDescriptorClass,
@@ -102,7 +99,8 @@ public class StateDescriptorGraph {
     }
 
     private static void handleStateDescriptorGraphVertex(GraphVertex<StateDescriptor> node,
-                    HandleStateDescriptorGraphVertexContext context)
+                    HandleStateDescriptorGraphVertexContext context,
+                    boolean failOnUnknownStates)
                     throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         Class<? extends StateDescriptor> stateDescriptorClass = node.element.getClass();
         boolean alreadyHandled = context.recurseInto(stateDescriptorClass);
@@ -126,7 +124,7 @@ public class StateDescriptorGraph {
         case 1:
             GraphVertex<StateDescriptor> soleSuccessorNode = successorStateDescriptors.values().iterator().next();
             node.addOutgoingEdge(soleSuccessorNode);
-            handleStateDescriptorGraphVertex(soleSuccessorNode, context);
+            handleStateDescriptorGraphVertex(soleSuccessorNode, context, failOnUnknownStates);
             return;
         }
 
@@ -144,9 +142,8 @@ public class StateDescriptorGraph {
             StateDescriptor successorStateDescriptor = successorStateDescriptorGraphNode.element;
             Class<? extends StateDescriptor> successorStateDescriptorClass = successorStateDescriptor.getClass();
             for (Class<? extends StateDescriptor> subordinateClass : successorStateDescriptor.getSubordinates()) {
-                if (!successorClasses.contains(subordinateClass)) {
-                    LOGGER.severe(successorStateDescriptor + " points to a subordinate '" + subordinateClass + "' which is not part of the successor set");
-                    continue;
+                if (failOnUnknownStates && !successorClasses.contains(subordinateClass)) {
+                    throw new IllegalStateException(successorStateDescriptor + " points to a subordinate '" + subordinateClass + "' which is not part of the successor set");
                 }
 
                 GraphVertex<Class<? extends StateDescriptor>> superiorClassNode = lookupAndCreateIfRequired(
@@ -157,10 +154,9 @@ public class StateDescriptorGraph {
                 superiorClassNode.addOutgoingEdge(subordinateClassNode);
             }
             for (Class<? extends StateDescriptor> superiorClass : successorStateDescriptor.getSuperiors()) {
-                if (!successorClasses.contains(superiorClass)) {
-                    LOGGER.severe(successorStateDescriptor + " points to a superior '" + superiorClass
+                if (failOnUnknownStates && !successorClasses.contains(superiorClass)) {
+                    throw new IllegalStateException(successorStateDescriptor + " points to a superior '" + superiorClass
                                     + "' which is not part of the successor set");
-                    continue;
                 }
 
                 GraphVertex<Class<? extends StateDescriptor>> subordinateClassNode = lookupAndCreateIfRequired(
@@ -193,11 +189,13 @@ public class StateDescriptorGraph {
             node.addOutgoingEdge(successorVertex);
 
             // Recurse further.
-            handleStateDescriptorGraphVertex(successorVertex, context);
+            handleStateDescriptorGraphVertex(successorVertex, context, failOnUnknownStates);
         }
     }
 
-    public static GraphVertex<StateDescriptor> constructStateDescriptorGraph(Set<Class<? extends StateDescriptor>> backwardEdgeStateDescriptors)
+    public static GraphVertex<StateDescriptor> constructStateDescriptorGraph(
+                    Set<Class<? extends StateDescriptor>> backwardEdgeStateDescriptors,
+                    boolean failOnUnknownStates)
                     throws InstantiationException, IllegalAccessException, IllegalArgumentException,
                     InvocationTargetException, NoSuchMethodException, SecurityException {
         Map<Class<? extends StateDescriptor>, GraphVertex<StateDescriptor>> graphVertexes = new HashMap<>();
@@ -219,7 +217,7 @@ public class StateDescriptorGraph {
         }
 
         HandleStateDescriptorGraphVertexContext context = new HandleStateDescriptorGraphVertexContext(graphVertexes, inferredForwardEdges);
-        handleStateDescriptorGraphVertex(initialNode, context);
+        handleStateDescriptorGraphVertex(initialNode, context, failOnUnknownStates);
 
         return initialNode;
     }
