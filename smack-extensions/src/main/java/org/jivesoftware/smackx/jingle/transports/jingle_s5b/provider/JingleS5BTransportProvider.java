@@ -31,7 +31,6 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
@@ -62,9 +61,9 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
         JingleS5BTransportCandidate.Builder cb;
         outerloop: while (true) {
             XmlPullParser.TagEvent tag = parser.nextTag();
-            String name = parser.getName();
             switch (tag) {
                 case START_ELEMENT: {
+                    String name = parser.getName();
                     switch (name) {
 
                         case JingleContentTransportCandidate.ELEMENT:
@@ -110,8 +109,7 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
                 break;
 
                 case END_ELEMENT: {
-                    switch (name) {
-                        case JingleContentTransport.ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
                             break outerloop;
                     }
                 }

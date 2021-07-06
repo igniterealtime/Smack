@@ -340,7 +340,6 @@ public class RTPBridge extends IQ {
             boolean done = false;
 
             XmlPullParser.Event eventType;
-            String elementName;
 
             if (!parser.getNamespace().equals(RTPBridge.NAMESPACE))
                 // TODO: Should be SmackParseException.
@@ -356,9 +355,9 @@ public class RTPBridge extends IQ {
             // Start processing sub-elements
             while (!done) {
                 eventType = parser.next();
-                elementName = parser.getName();
 
                 if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                    String elementName = parser.getName();
                     if (elementName.equals("candidate")) {
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
                             if (parser.getAttributeName(i).equals("ip"))

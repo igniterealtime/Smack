@@ -46,8 +46,6 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
 
     @Override
     public StreamInitiation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        boolean done = false;
-
         // si
         String id = parser.getAttributeValue("", "id");
         String mimeType = parser.getAttributeValue("", "mime-type");
@@ -66,13 +64,11 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
         DataForm form = null;
         DataFormProvider dataFormProvider = new DataFormProvider();
 
-        String elementName;
-        String namespace;
-        while (!done) {
+        outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
-            elementName = parser.getName();
-            namespace = parser.getNamespace();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                String elementName = parser.getName();
+                String namespace = parser.getNamespace();
                 if (elementName.equals("file")) {
                     name = parser.getAttributeValue("", "name");
                     size = parser.getAttributeValue("", "size");
@@ -87,9 +83,10 @@ public class StreamInitiationProvider extends IQProvider<StreamInitiation> {
                     form = dataFormProvider.parse(parser);
                 }
             } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (elementName.equals("si")) {
-                    done = true;
-                } else if (elementName.equals("file")) {
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                if (parser.getName().equals("file")) {
                     long fileSize = 0;
                     if (size != null && size.trim().length() != 0) {
                         try {

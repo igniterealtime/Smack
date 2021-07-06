@@ -42,8 +42,8 @@ public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElemen
         Date date = ParserUtils.getDateFromOptionalXep82String(dateString);
         while (true) {
             XmlPullParser.Event tag = parser.next();
-            String name = parser.getName();
             if (tag == XmlPullParser.Event.START_ELEMENT) {
+                String name = parser.getName();
                 switch (name) {
                     case PubkeyElement.PubkeyDataElement.ELEMENT:
                         String base64EncodedOpenPgpPubKey = parser.nextText();

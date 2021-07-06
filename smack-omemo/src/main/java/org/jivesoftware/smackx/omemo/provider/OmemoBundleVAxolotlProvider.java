@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.provider;
 
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.BUNDLE;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.IDENTITY_KEY;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEYS;
 import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEY_ID;
@@ -43,7 +42,6 @@ import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
 public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
     @Override
     public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
-        boolean stop = false;
         boolean inPreKeys = false;
 
         int signedPreKeyId = -1;
@@ -52,11 +50,11 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
         String identityKey = null;
         HashMap<Integer, String> preKeys = new HashMap<>();
 
-        while (!stop) {
+        outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();
-            String name = parser.getName();
             switch (tag) {
                 case START_ELEMENT:
+                    String name = parser.getName();
                     final int attributeCount = parser.getAttributeCount();
                     // <signedPreKeyPublic>
                     if (name.equals(SIGNED_PRE_KEY_PUB)) {
@@ -91,8 +89,8 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                     }
                     break;
                 case END_ELEMENT:
-                    if (name.equals(BUNDLE)) {
-                        stop = true;
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
                     }
                     break;
                 default:

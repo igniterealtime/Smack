@@ -59,9 +59,9 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
-            final String name = parser.getName();
             switch (eventType) {
             case START_ELEMENT:
+                final String name = parser.getName();
                 switch (name) {
                 case "always":
                     alwaysJids = iterateJids(parser);
@@ -92,9 +92,9 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
-            final String name = parser.getName();
             switch (eventType) {
             case START_ELEMENT:
+                final String name = parser.getName();
                 switch (name) {
                 case "jid":
                     parser.next();

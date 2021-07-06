@@ -108,14 +108,13 @@ public class QueueUpdate implements ExtensionElement {
             int timeRemaining = -1;
             while (!done) {
                 parser.next();
-                String elementName = parser.getName();
-                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "position".equals(elementName)) {
+                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "position".equals(parser.getName())) {
                     position = Integer.parseInt(parser.nextText());
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "time".equals(elementName)) {
+                else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "time".equals(parser.getName())) {
                     timeRemaining = Integer.parseInt(parser.nextText());
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "queue-status".equals(elementName)) {
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "queue-status".equals(parser.getName())) {
                     done = true;
                 }
             }

@@ -84,10 +84,10 @@ public class JingleProvider extends IQProvider<Jingle> {
         // Start processing sub-elements
         while (!done) {
             eventType = parser.next();
-            elementName = parser.getName();
-            namespace = parser.getNamespace();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                elementName = parser.getName();
+                namespace = parser.getNamespace();
 
                 // Parse some well know subelements, depending on the namespaces
                 // and element names...

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017 Paul Schaub, 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.omemo.provider;
 
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.DEVICE;
 import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.ID;
-import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.LIST;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -41,12 +40,11 @@ public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<Om
     @Override
     public OmemoDeviceListElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         Set<Integer> deviceListIds = new HashSet<>();
-        boolean stop = false;
-        while (!stop) {
+        outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();
-            String name = parser.getName();
             switch (tag) {
                 case START_ELEMENT:
+                    String name = parser.getName();
                     if (name.equals(DEVICE)) {
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
                             if (parser.getAttributeName(i).equals(ID)) {
@@ -57,8 +55,8 @@ public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<Om
                     }
                     break;
                 case END_ELEMENT:
-                    if (name.equals(LIST)) {
-                        stop = true;
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
                     }
                     break;
                 default:

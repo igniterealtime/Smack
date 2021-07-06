@@ -174,11 +174,10 @@ public class RoomTransfer implements ExtensionElement {
             final RoomTransfer invitation = new RoomTransfer();
             invitation.type = RoomTransfer.Type.valueOf(parser.getAttributeValue("", "type"));
 
-            boolean done = false;
-            while (!done) {
+            outerloop: while (true) {
                 parser.next();
-                String elementName = parser.getName();
                 if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT) {
+                    String elementName = parser.getName();
                     if ("session".equals(elementName)) {
                         invitation.sessionID = parser.getAttributeValue("", "id");
                     }
@@ -195,8 +194,8 @@ public class RoomTransfer implements ExtensionElement {
                         invitation.room = parser.nextText();
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && ELEMENT_NAME.equals(elementName)) {
-                    done = true;
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
             }
             return invitation;
