@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016-2019 Florian Schmaus
+ * Copyright © 2016-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,9 +39,9 @@ public class IoTSetRequestProvider extends IQProvider<IoTSetRequest> {
         List<SetData> data = new ArrayList<>(4);
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
-            final String name = parser.getName();
             switch (eventType) {
             case START_ELEMENT:
+                final String name = parser.getName();
                 switch (name) {
                 case "bool": {
                     String valueName = parser.getAttributeValue(null, "name");

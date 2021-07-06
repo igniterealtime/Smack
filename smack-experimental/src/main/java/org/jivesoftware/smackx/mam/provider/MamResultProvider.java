@@ -47,9 +47,9 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
 
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
-            final String name = parser.getName();
             switch (eventType) {
             case START_ELEMENT:
+                final String name = parser.getName();
                 switch (name) {
                 case Forwarded.ELEMENT:
                     forwarded = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment);

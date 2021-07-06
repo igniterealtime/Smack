@@ -47,10 +47,10 @@ public class MamQueryIQProvider extends IQProvider<MamQueryIQ> {
 
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
-            final String name = parser.getName();
 
             switch (eventType) {
             case START_ELEMENT:
+                final String name = parser.getName();
                 switch (name) {
                 case DataForm.ELEMENT:
                     dataForm = DataFormProvider.INSTANCE.parse(parser);

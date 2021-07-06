@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -41,6 +43,8 @@ public class QueueUpdate implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
     private final int position;
     private final int remainingTime;
@@ -104,22 +108,13 @@ public class QueueUpdate implements ExtensionElement {
             int timeRemaining = -1;
             while (!done) {
                 parser.next();
-                String elementName = parser.getName();
-                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "position".equals(elementName)) {
-                    try {
-                        position = Integer.parseInt(parser.nextText());
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
+                if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "position".equals(parser.getName())) {
+                    position = Integer.parseInt(parser.nextText());
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "time".equals(elementName)) {
-                    try {
-                        timeRemaining = Integer.parseInt(parser.nextText());
-                    }
-                    catch (NumberFormatException nfe) {
-                    }
+                else if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT && "time".equals(parser.getName())) {
+                    timeRemaining = Integer.parseInt(parser.nextText());
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "queue-status".equals(elementName)) {
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && "queue-status".equals(parser.getName())) {
                     done = true;
                 }
             }

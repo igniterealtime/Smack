@@ -71,14 +71,12 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
      */
     @Override
     public JingleDescription parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
-        boolean done = false;
         JingleDescription desc = getInstance();
 
-        while (!done) {
+        outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
-            String name = parser.getName();
-
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                String name = parser.getName();
                 if (name.equals(PayloadType.NODENAME)) {
                     desc.addPayloadType(parsePayload(parser));
                 } else {
@@ -86,8 +84,8 @@ public abstract class JingleDescriptionProvider extends ExtensionElementProvider
                     throw new IOException("Unknow element \"" + name + "\" in content.");
                 }
             } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (name.equals(JingleDescription.NODENAME)) {
-                    done = true;
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
             }
         }

@@ -115,9 +115,9 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
         List<IoTDataField> fields = new ArrayList<>();
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();
-            final String name = parser.getName();
             switch (eventType) {
             case START_ELEMENT:
+                final String name = parser.getName();
                 IoTDataField field = null;
                 final String fieldName = parser.getAttributeValue(null, "name");
                 final String fieldValue = parser.getAttributeValue(null, "value");

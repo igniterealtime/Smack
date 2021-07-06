@@ -50,10 +50,11 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
 
         while (true) {
             XmlPullParser.Event tag = parser.next();
-            String name = parser.getName();
+            String name;
             int start, end;
             switch (tag) {
                 case START_ELEMENT:
+                    name = parser.getName();
                     switch (name) {
                         case BlockQuoteElement.ELEMENT:
                             start = ParserUtils.getIntegerAttributeOrThrow(parser, MarkupChildElement.ATTR_START,
@@ -108,6 +109,11 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                     break;
 
                 case END_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        return markup.build();
+                    }
+
+                    name = parser.getName();
                     switch (name) {
                         case SpanElement.ELEMENT:
                             markup.addSpan(spanStart, spanEnd, spanStyles);
@@ -128,9 +134,6 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                             }
                             listBuilder.endList();
                             break;
-
-                        case MarkupElement.ELEMENT:
-                            return markup.build();
                     }
                     break;
 

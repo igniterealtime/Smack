@@ -175,11 +175,10 @@ public class RoomInvitation implements ExtensionElement {
             final RoomInvitation invitation = new RoomInvitation();
             invitation.type = Type.valueOf(parser.getAttributeValue("", "type"));
 
-            boolean done = false;
-            while (!done) {
+            outerloop: while (true) {
                 parser.next();
-                String elementName = parser.getName();
                 if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT) {
+                    String elementName = parser.getName();
                     if ("session".equals(elementName)) {
                         invitation.sessionID = parser.getAttributeValue("", "id");
                     }
@@ -199,8 +198,8 @@ public class RoomInvitation implements ExtensionElement {
                         invitation.room = JidCreate.entityBareFrom(roomString);
                     }
                 }
-                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && ELEMENT_NAME.equals(elementName)) {
-                    done = true;
+                else if (parser.getEventType() == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
             }
             return invitation;

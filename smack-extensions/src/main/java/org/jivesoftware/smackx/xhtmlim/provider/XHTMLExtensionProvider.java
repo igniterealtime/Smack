@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2019 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ public class XHTMLExtensionProvider extends ExtensionElementProvider<XHTMLExtens
 
         while (true) {
             XmlPullParser.Event eventType = parser.getEventType();
-            String name = parser.getName();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                String name = parser.getName();
                 if (name.equals(Message.BODY)) {
                     xhtmlExtension.addBody(PacketParserUtils.parseElement(parser));
                 }

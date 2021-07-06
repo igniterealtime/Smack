@@ -54,14 +54,13 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
      */
     @Override
     public JingleTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException  {
-        boolean done = false;
         JingleTransport trans = getInstance();
 
-        while (!done) {
+        outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
-            String name = parser.getName();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
+                String name = parser.getName();
                 if (name.equals(JingleTransportCandidate.NODENAME)) {
                     JingleTransportCandidate jtc = parseCandidate(parser);
                     if (jtc != null) trans.addCandidate(jtc);
@@ -72,8 +71,8 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
-                if (name.equals(JingleTransport.NODENAME)) {
-                    done = true;
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
                 }
             }
         }
