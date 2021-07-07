@@ -23,9 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -239,9 +241,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         });
 
         try {
+            // Will block until all self-presence is received, prior to which all others presences will have been received.
             mucAsSeenByThree.join(nicknameThree);
 
-            assertEquals(3, results.size()); // The 3rd will be self-presence
+            assertEquals(3, results.size()); // The 3rd will be self-presence.
             assertNotNull(MUCUser.from(results.get(0))); // Smack implementation guarantees the "x" element and muc#user namespace
             assertEquals(MUCAffiliation.owner, MUCUser.from(results.get(0)).getItem().getAffiliation());
             assertEquals(MUCAffiliation.none, MUCUser.from(results.get(1)).getItem().getAffiliation());
@@ -282,31 +285,32 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         createMuc(mucAsSeenByOne, nicknameOne);
         mucAsSeenByTwo.join(nicknameTwo);
 
-        List<Presence> results = new ArrayList<Presence>();
-        mucAsSeenByOne.addParticipantListener(new PresenceListener() {
-            @Override public void processPresence(Presence presence) {
-                results.add(presence);
+        final MultiResultSyncPoint<Presence, Exception> syncPoint = new MultiResultSyncPoint<>(2);
+
+        mucAsSeenByOne.addParticipantListener(presence -> {
+            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                syncPoint.signal(presence);
             }
         });
 
-        mucAsSeenByTwo.addParticipantListener(new PresenceListener() {
-            @Override public void processPresence(Presence presence) {
-                results.add(presence);
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                syncPoint.signal(presence);
             }
         });
 
         try {
             mucAsSeenByThree.join(nicknameThree);
 
-            assertEquals(2, results.size()); // The 3rd will be self-presence
-            assertEquals(JidCreate.fullFrom(mucAddress, nicknameThree), results.get(0).getFrom());
-            assertEquals(JidCreate.fullFrom(mucAddress, nicknameThree), results.get(1).getFrom());
-            assertEquals(conOne.getUser().asEntityFullJidIfPossible(), results.get(0).getTo());
-            assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), results.get(1).getTo());
+            Collection<Presence> results = syncPoint.waitForResults(timeout);
+            assertTrue(results.stream().allMatch(result -> JidCreate.fullFrom(mucAddress, nicknameThree).equals(result.getFrom())));
+            assertTrue(results.stream().anyMatch(result -> result.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())));
+            assertTrue(results.stream().anyMatch(result -> result.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())));
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
     }
+
     /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
