@@ -81,7 +81,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
 
@@ -129,7 +129,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -177,7 +177,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
 
@@ -224,7 +224,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -272,7 +272,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByOne.revokeVoice(nicknameTwo);
@@ -317,7 +317,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -365,7 +365,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
 
@@ -413,7 +413,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -460,7 +460,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
 
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -508,7 +508,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -545,7 +545,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
 
@@ -592,7 +592,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
         mucAsSeenByTwo.join(nicknameTwo);
@@ -645,7 +645,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne.toString());
+        createMuc(mucAsSeenByOne, Resourcepart.from(nicknameOne.toString()));
 
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByThree.join(nicknameThree);
@@ -693,7 +693,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
-        createModeratedMuc(mucAsSeenByOne, nicknameOne.toString());
+        createModeratedMuc(mucAsSeenByOne, nicknameOne);
 
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByOne.grantModerator(nicknameTwo);
@@ -732,7 +732,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createModeratedMuc(mucAsSeenByOne, nicknameOne.toString());
+        createModeratedMuc(mucAsSeenByOne, nicknameOne);
 
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByThree.join(nicknameThree);
@@ -780,7 +780,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne.toString());
+        createMuc(mucAsSeenByOne, Resourcepart.from(nicknameOne.toString()));
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByThree.join(nicknameThree);
 
@@ -797,11 +797,11 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         try {
             assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress + "/" + nicknameOne.toString())).getRole());
+                            JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress + "/" + nicknameTwo.toString())).getRole());
+                            JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
             assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress + "/" + nicknameThree.toString())).getRole());
+                            JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -829,7 +829,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createModeratedMuc(mucAsSeenByOne, nicknameOne.toString());
+        createModeratedMuc(mucAsSeenByOne, nicknameOne);
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByThree.join(nicknameThree);
 
@@ -846,11 +846,11 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         try {
             assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress + "/" + nicknameOne.toString())).getRole());
+                            JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress + "/" + nicknameTwo.toString())).getRole());
+                            JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
             assertEquals(MUCRole.visitor, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress + "/" + nicknameThree.toString())).getRole());
+                            JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -878,11 +878,11 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        final EntityFullJid jidOne = JidCreate.entityFullFrom(mucAddress + "/" + nicknameOne.toString());
-        final EntityFullJid jidTwo = JidCreate.entityFullFrom(mucAddress + "/" + nicknameTwo.toString());
-        final EntityFullJid jidThree = JidCreate.entityFullFrom(mucAddress + "/" + nicknameThree.toString());
+        final EntityFullJid jidOne = JidCreate.entityFullFrom(mucAddress, nicknameOne);
+        final EntityFullJid jidTwo = JidCreate.entityFullFrom(mucAddress, nicknameTwo);
+        final EntityFullJid jidThree = JidCreate.entityFullFrom(mucAddress, nicknameThree);
 
-        createMembersOnlyMuc(mucAsSeenByOne, nicknameOne.toString());
+        createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
 
         mucAsSeenByOne.grantMembership(conTwo.getUser().asBareJid());
         mucAsSeenByOne.grantMembership(conThree.getUser().asBareJid());
