@@ -241,7 +241,15 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         createMuc(mucAsSeenByOne, nicknameOne);
         mucAsSeenByTwo.join(nicknameTwo);
+
+        SimpleResultSyncPoint oneSeesTwo = new SimpleResultSyncPoint();
+        mucAsSeenByOne.addParticipantListener(presence -> {
+            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                oneSeesTwo.signal();
+            }
+        });
         mucAsSeenByOne.grantModerator(nicknameTwo);
+        oneSeesTwo.waitForResult(timeout);
 
         List<Presence> results = new ArrayList<Presence>();
         mucAsSeenByThree.addParticipantListener(new PresenceListener() {
