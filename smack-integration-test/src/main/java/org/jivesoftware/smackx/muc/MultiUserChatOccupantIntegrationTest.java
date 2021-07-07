@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -96,8 +97,18 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        mucAsSeenByOne.changeSubject(mucSubject);
+        mucAsSeenByOne.changeSubject(mucSubject); // Blocks until confirmed.
+
+        // Send and wait for the message to have been reflected, so that we can be sure it's part of the MUC history.
+        final SimpleResultSyncPoint messageReflectionSyncPoint = new SimpleResultSyncPoint();
+        mucAsSeenByOne.addMessageListener( message -> {
+            if (message.getBody().equals(mucMessage)) {
+                messageReflectionSyncPoint.signal();
+            }
+        });
+
         mucAsSeenByOne.sendMessage(mucMessage);
+        messageReflectionSyncPoint.waitForResult(timeout);
 
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
         List<Object> results = new ArrayList<Object>();
