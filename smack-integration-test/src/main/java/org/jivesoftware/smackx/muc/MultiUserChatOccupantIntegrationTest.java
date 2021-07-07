@@ -44,7 +44,9 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.jid.util.JidUtil;
 
 public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
@@ -91,7 +93,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne.toString());
+        createMuc(mucAsSeenByOne, nicknameOne);
         mucAsSeenByOne.changeSubject(mucSubject);
         mucAsSeenByOne.sendMessage(mucMessage);
 
@@ -130,8 +132,8 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             subjectResultSyncPoint.waitForResult(timeout); // Wait for subject, as it should be 4th (last)
 
             assertEquals(4, results.size());
-            assertEquals(mucAddress + "/" + nicknameOne.toString(), results.get(0).toString());
-            assertEquals(mucAddress + "/" + nicknameTwo.toString(), results.get(1).toString());
+            assertEquals(JidCreate.fullFrom(mucAddress, nicknameOne), results.get(0));
+            assertEquals(JidCreate.fullFrom(mucAddress, nicknameTwo), results.get(1));
             assertEquals(mucMessage, results.get(2));
             assertEquals(mucSubject, results.get(3));
         } finally {
@@ -164,7 +166,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
 
         ResultSyncPoint<Message, Exception> errorMessageResultSyncPoint = new ResultSyncPoint<>();
         conTwo.addStanzaListener(new StanzaListener() {
@@ -225,7 +227,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne.toString());
+        createMuc(mucAsSeenByOne, nicknameOne);
         mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByOne.grantModerator(nicknameTwo);
 
@@ -277,7 +279,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne.toString());
+        createMuc(mucAsSeenByOne, nicknameOne);
         mucAsSeenByTwo.join(nicknameTwo);
 
         List<Presence> results = new ArrayList<Presence>();
@@ -297,8 +299,8 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             mucAsSeenByThree.join(nicknameThree);
 
             assertEquals(2, results.size()); // The 3rd will be self-presence
-            assertEquals(mucAddress + "/" + nicknameThree.toString(), results.get(0).getFrom().toString());
-            assertEquals(mucAddress + "/" + nicknameThree.toString(), results.get(1).getFrom().toString());
+            assertEquals(JidCreate.fullFrom(mucAddress, nicknameThree), results.get(0).getFrom());
+            assertEquals(JidCreate.fullFrom(mucAddress, nicknameThree), results.get(1).getFrom());
             assertEquals(conOne.getUser().asEntityFullJidIfPossible(), results.get(0).getTo());
             assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), results.get(1).getTo());
         } finally {
