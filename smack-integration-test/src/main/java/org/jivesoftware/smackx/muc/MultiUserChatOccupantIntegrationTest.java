@@ -22,9 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.MessageListener;
@@ -37,6 +35,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 
+import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -225,6 +224,12 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      * this presence refers to itself as an occupant
      * </blockquote>
      *
+     * <p>From XEP-0045 § 7.2.2:</p>
+     * <blockquote>
+     * The service MUST first send the complete list of the existing occupants to the new occupant and only then send
+     * the new occupant's own presence to the new occupant.
+     * </blockquote>
+     *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
@@ -264,12 +269,20 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
             assertEquals(3, results.size()); // The 3rd will be self-presence.
             assertNotNull(MUCUser.from(results.get(0))); // Smack implementation guarantees the "x" element and muc#user namespace
-            assertEquals(MUCAffiliation.owner, MUCUser.from(results.get(0)).getItem().getAffiliation());
-            assertEquals(MUCAffiliation.none, MUCUser.from(results.get(1)).getItem().getAffiliation());
-            assertEquals(MUCAffiliation.none, MUCUser.from(results.get(2)).getItem().getAffiliation());
-            assertEquals(MUCRole.moderator, MUCUser.from(results.get(0)).getItem().getRole());
-            assertEquals(MUCRole.moderator, MUCUser.from(results.get(1)).getItem().getRole());
-            assertEquals(MUCRole.participant, MUCUser.from(results.get(2)).getItem().getRole());
+
+            // The order of all but the last presence (which should be the self-presence) is unpredictable.
+            MUCItem mucItemSelf = MUCUser.from(results.get(2)).getItem();
+            Set<MUCItem> others = new HashSet<>();
+            others.add(MUCUser.from(results.get(0)).getItem());
+            others.add(MUCUser.from(results.get(1)).getItem());
+
+            assertEquals(MUCAffiliation.none, mucItemSelf.getAffiliation());
+            assertEquals(1, others.stream().filter(item -> MUCAffiliation.owner.equals(item.getAffiliation())).count());
+            assertEquals(1, others.stream().filter(item -> MUCAffiliation.none.equals(item.getAffiliation())).count());
+
+            assertEquals(MUCRole.participant, mucItemSelf.getRole());
+            assertEquals(2, others.stream().filter(item -> MUCRole.moderator.equals(item.getRole())).count());
+
             assertTrue(MUCUser.from(results.get(2)).getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110));
         } finally {
             tryDestroy(mucAsSeenByOne);
