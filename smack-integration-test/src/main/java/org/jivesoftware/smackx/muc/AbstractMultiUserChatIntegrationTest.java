@@ -90,21 +90,46 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         muc.destroy("test fixture teardown", null);
     }
 
-    static void createMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+    static void createMuc(MultiUserChat muc, Resourcepart resourceName) throws
+            SmackException.NoResponseException, XMPPException.XMPPErrorException,
+            InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
+            SmackException.NotConnectedException,
+            MultiUserChatException.MissingMucCreationAcknowledgeException,
+            MultiUserChatException.NotAMucServiceException {
         MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
         if (handle != null) {
             handle.makeInstant();
         }
     }
 
-    static void createMembersOnlyMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.MucConfigurationNotSupportedException, MultiUserChatException.NotAMucServiceException {
+    static void createMuc(MultiUserChat muc, String nickname) throws
+            XmppStringprepException, MultiUserChatException.MucAlreadyJoinedException,
+            XMPPException.XMPPErrorException, SmackException.NotConnectedException,
+            MultiUserChatException.MissingMucCreationAcknowledgeException,
+            SmackException.NoResponseException, InterruptedException,
+            MultiUserChatException.NotAMucServiceException {
+        createMuc(muc, Resourcepart.from(nickname));
+    }
+
+    static void createMembersOnlyMuc(MultiUserChat muc, Resourcepart resourceName) throws
+            SmackException.NoResponseException, XMPPException.XMPPErrorException,
+            InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
+            SmackException.NotConnectedException,
+            MultiUserChatException.MissingMucCreationAcknowledgeException,
+            MultiUserChatException.MucConfigurationNotSupportedException,
+            MultiUserChatException.NotAMucServiceException {
         MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
         if (handle != null) {
             handle.getConfigFormManager().makeMembersOnly().submitConfigurationForm();
         }
     }
 
-    static void createModeratedMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+    static void createModeratedMuc(MultiUserChat muc, Resourcepart resourceName) throws
+            SmackException.NoResponseException, XMPPException.XMPPErrorException,
+            InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
+            SmackException.NotConnectedException,
+            MultiUserChatException.MissingMucCreationAcknowledgeException,
+            MultiUserChatException.NotAMucServiceException {
         muc.create(resourceName);
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
