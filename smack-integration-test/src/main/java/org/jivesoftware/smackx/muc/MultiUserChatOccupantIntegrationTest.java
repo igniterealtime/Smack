@@ -617,6 +617,40 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
     }
 
     /**
+     * Asserts that a user can not enter a room with the same nickname as an other user who is already present.
+     *
+     * <p>From XEP-0045 § 7.2.8:</p>
+     * <blockquote>
+     * If the room already contains another user with the nickname desired by the user seeking to enter the room (or if
+     * the nickname is reserved by another user on the member list), the service MUST deny access to the room and inform
+     * the user of the conflict; this is done by returning a presence stanza of type "error" specifying a
+     * &lt;conflict/&gt; error condition.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucNicknameConflictJoinRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-nicknameclash");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+
+        try {
+            XMPPException.XMPPErrorException conflictErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameOne));
+            assertNotNull(conflictErrorException);
+            assertNotNull(conflictErrorException.getStanzaError());
+            assertEquals("conflict", conflictErrorException.getStanzaError().getCondition().toString());
+        } finally {
+            mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
      * <p>From XEP-0045 § 7.14:</p>
