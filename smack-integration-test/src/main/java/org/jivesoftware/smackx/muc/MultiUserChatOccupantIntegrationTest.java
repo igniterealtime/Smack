@@ -545,6 +545,42 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
     }
 
     /**
+     * Asserts that a user can not enter a members-only room while not being a member.
+     *
+     * This test does not cover § 9.3, aka the happy path.
+     *
+     * <p>From XEP-0045 § 7.2.6:</p>
+     * <blockquote>
+     * If the room is members-only but the user is not on the member list, the service MUST deny access to the room and
+     * inform the user that they are not allowed to enter the room; this is done by returning a presence stanza of type
+     * "error" specifying a &lt;registration-required/&gt; error condition.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucJoinMembersOnlyRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-entermembersonlyroom");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
+
+        try {
+            XMPPException.XMPPErrorException registrationRequiredErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            assertNotNull(registrationRequiredErrorException);
+            assertNotNull(registrationRequiredErrorException.getStanzaError());
+            assertEquals("registration-required", registrationRequiredErrorException.getStanzaError().getCondition().toString());
+        } finally {
+            mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
      * <p>From XEP-0045 § 7.14:</p>
