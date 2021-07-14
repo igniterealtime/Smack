@@ -45,6 +45,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jxmpp.jid.EntityBareJid;
@@ -483,6 +484,63 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             assertEquals(conThree.getUser().asEntityFullJidOrThrow(), announcedParticipantThreeUser.getItem().getJid());
         } finally {
             tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that a user can not enter a password-protected room without supplying a correct password.
+     *
+     * <p>From XEP-0045 § 7.2.5:</p>
+     * <blockquote>
+     * If the room requires a password and the user did not supply one (or the password provided is incorrect), the
+     * service MUST deny access to the room and inform the user that they are unauthorized; this is done by returning a
+     * presence stanza of type "error" specifying a &lt;not-authorized/&gt; error.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucJoinPasswordProtectedRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-enterpasswordprotectedroom");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        final String correctPassword = StringUtils.insecureRandomString(8);
+
+        createPasswordProtectedMuc(mucAsSeenByOne, nicknameOne, correctPassword);
+
+        // Set up to receive presence responses on successful join
+        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantTwoSyncPoint.signal(presence);
+            }
+        });
+
+        try {
+            // First try: no password
+            XMPPException.XMPPErrorException noPasswordErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            assertNotNull(noPasswordErrorException);
+            assertNotNull(noPasswordErrorException.getStanzaError());
+            assertEquals("not-authorized", noPasswordErrorException.getStanzaError().getCondition().toString());
+
+            // Second try: wrong password
+            XMPPException.XMPPErrorException wrongPasswordErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo, correctPassword + "_"));
+            assertNotNull(wrongPasswordErrorException);
+            assertNotNull(wrongPasswordErrorException.getStanzaError());
+            assertEquals("not-authorized", wrongPasswordErrorException.getStanzaError().getCondition().toString());
+
+            // Third try: correct password
+            mucAsSeenByTwo.join(nicknameTwo, correctPassword);
+            Presence presenceCorrectPassword = participantTwoSyncPoint.waitForResult(timeout);
+            assertNotNull(presenceCorrectPassword);
+            assertNull(presenceCorrectPassword.getError());
+        } finally {
+            mucAsSeenByOne.destroy();
         }
     }
 

@@ -179,4 +179,16 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         answerForm.setAnswer("muc#roomconfig_whois", "moderators");
         muc.sendConfigurationForm(answerForm);
     }
+
+    /**
+     * Creates a password-protected room.
+     */
+    static void createPasswordProtectedMuc(MultiUserChat muc, Resourcepart resourceName, String password) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+        muc.create(resourceName);
+        Form configForm = muc.getConfigurationForm();
+        FillableForm answerForm = configForm.getFillableForm();
+        answerForm.setAnswer("muc#roomconfig_passwordprotectedroom", true);
+        answerForm.setAnswer("muc#roomconfig_roomsecret", password);
+        muc.sendConfigurationForm(answerForm);
+    }
 }
