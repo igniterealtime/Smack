@@ -17,18 +17,12 @@
 
 package org.jivesoftware.smackx.muc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeoutException;
-
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -38,20 +32,21 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
-
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
-
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
-import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
@@ -341,6 +336,73 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             assertTrue(results.stream().allMatch(result -> JidCreate.fullFrom(mucAddress, nicknameThree).equals(result.getFrom())));
             assertTrue(results.stream().anyMatch(result -> result.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())));
             assertTrue(results.stream().anyMatch(result -> result.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())));
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that when a user enters a non-anonymous room, the presence notifications contain extended presence
+     * information.
+     *
+     * <p>From XEP-0045 § 7.2.3:</p>
+     * <blockquote>
+     * If the room is non-anonymous, the service MUST send the new occupant's full JID to all occupants using extended
+     * presence information in an &lt;x/&gt; element qualified by the 'http://jabber.org/protocol/muc#user' namespace
+     * and containing an &lt;item/&gt; child with a 'jid' attribute specifying the occupant's full JID.
+     * </blockquote>
+     *
+     * <p>From XEP-0045 § 7.2.3:</p>
+     * <blockquote>
+     * If the user is entering a room that is non-anonymous (i.e., which informs all occupants of each occupant's full
+     * JID as shown above), the service MUST warn the user by including a status code of "100" in the initial presence
+     * that the room sends to the new occupant.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucJoinNonAnonymousRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinnonanonymousroom");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createNonAnonymousMuc(mucAsSeenByOne, nicknameOne);
+
+        final ResultSyncPoint<Presence, ?> participantOneSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByOne.addParticipantListener(presence -> {
+            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantOneSyncPoint.signal(presence);
+            }
+        });
+
+        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantTwoSyncPoint.signal(presence);
+            }
+        });
+
+        try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            Presence presenceReceivedByOne = participantOneSyncPoint.waitForResult(timeout);
+            Presence presenceReceivedByTwo = participantTwoSyncPoint.waitForResult(timeout);
+
+            // Check the presence received by participant one for inclusion of full jid of participant two
+            assertNotNull(presenceReceivedByOne);
+            MUCUser announcedParticipantTwoUser = MUCUser.from(presenceReceivedByOne);
+            assertNotNull(announcedParticipantTwoUser); // Smack implementation guarantees the "x" element and muc#user namespace
+            assertNotNull(announcedParticipantTwoUser.getItem());
+            assertEquals(conTwo.getUser().asEntityFullJidOrThrow(), announcedParticipantTwoUser.getItem().getJid());
+
+            // Check the presence received by participant two for inclusion of status 100
+            assertNotNull(presenceReceivedByTwo);
+            assertTrue(MUCUser.from(presenceReceivedByTwo).getStatus().stream().anyMatch(status -> 100 == status.getCode()));
+
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
