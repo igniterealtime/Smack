@@ -17,6 +17,19 @@
 
 package org.jivesoftware.smackx.muc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeoutException;
+
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
@@ -38,15 +51,6 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
@@ -403,6 +407,80 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             assertNotNull(presenceReceivedByTwo);
             assertTrue(MUCUser.from(presenceReceivedByTwo).getStatus().stream().anyMatch(status -> 100 == status.getCode()));
 
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that when a user enters a semi-anonymous room, the presence notifications contain extended presence
+     * information only when sent to moderators.
+     *
+     * <p>From XEP-0045 § 7.2.4:</p>
+     * <blockquote>
+     * If the room is semi-anonymous, the service MUST send presence from the new occupant to all occupants as specified
+     * above (i.e., unless the room is configured to not broadcast presence from new occupants below a certain
+     * affiliation level as controlled by the "muc#roomconfig_presencebroadcast" room configuration option), but MUST
+     * include the new occupant's full JID only in the presence notifications it sends to occupants with a role of
+     * "moderator" and not to non-moderator occupants.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucJoinSemiAnonymousRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinsemianonymousroom");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        createSemiAnonymousMuc(mucAsSeenByOne, nicknameOne);
+
+        mucAsSeenByTwo.join(nicknameTwo);
+
+        // First pass: participant two is not a moderator yet
+        final ResultSyncPoint<Presence, ?> participantTwoSyncPointFirstPass = new ResultSyncPoint<>();
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantTwoSyncPointFirstPass.signal(presence);
+            }
+        });
+
+        try {
+            mucAsSeenByThree.join(nicknameThree);
+            Presence presenceReceivedByTwo = participantTwoSyncPointFirstPass.waitForResult(timeout);
+
+            // Check the presence received by participant two for exclusion of full jid of participant three
+            assertNotNull(presenceReceivedByTwo);
+            assertNull(MUCUser.from(presenceReceivedByTwo).getItem().getJid());
+        } finally {
+            mucAsSeenByThree.leave(); // Reset to have a second go
+        }
+
+        // Second pass: participant two is now a moderator
+        mucAsSeenByOne.grantModerator(nicknameTwo);
+        final ResultSyncPoint<Presence, ?> participantTwoSyncPointSecondPass = new ResultSyncPoint<>();
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantTwoSyncPointSecondPass.signal(presence);
+            }
+        });
+
+        try {
+            mucAsSeenByThree.join(nicknameThree);
+            Presence presenceReceivedByTwo = participantTwoSyncPointSecondPass.waitForResult(timeout);
+
+            // Check the presence received by participant two for inclusion of full jid of participant three
+            assertNotNull(presenceReceivedByTwo);
+            MUCUser announcedParticipantThreeUser = MUCUser.from(presenceReceivedByTwo);
+            assertNotNull(announcedParticipantThreeUser); // Smack implementation guarantees the "x" element and muc#user namespace
+            assertNotNull(announcedParticipantThreeUser.getItem());
+            assertEquals(conThree.getUser().asEntityFullJidOrThrow(), announcedParticipantThreeUser.getItem().getJid());
         } finally {
             tryDestroy(mucAsSeenByOne);
         }

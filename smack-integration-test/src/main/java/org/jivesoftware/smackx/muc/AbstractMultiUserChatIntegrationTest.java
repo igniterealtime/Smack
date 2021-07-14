@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smackx.muc;
 
+import java.util.List;
+
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -35,8 +37,6 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import java.util.List;
 
 
 public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
@@ -163,4 +163,20 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         muc.sendConfigurationForm(answerForm);
     }
 
+    /**
+     * Creates a semi-anonymous room.
+     *
+     * <p>From XEP-0045 § 10.1.3:</p>
+     * <blockquote>
+     * Note: The _whois configuration option specifies whether the room is non-anonymous (a value of "anyone"),
+     * semi-anonymous (a value of "moderators"), or fully anonmyous (a value of "none", not shown here).
+     * </blockquote>
+     */
+    static void createSemiAnonymousMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+        muc.create(resourceName);
+        Form configForm = muc.getConfigurationForm();
+        FillableForm answerForm = configForm.getFillableForm();
+        answerForm.setAnswer("muc#roomconfig_whois", "moderators");
+        muc.sendConfigurationForm(answerForm);
+    }
 }
