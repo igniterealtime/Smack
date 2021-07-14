@@ -282,7 +282,9 @@ public class Bookmarks implements PrivateData {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT && "nick".equals(parser.getName())) {
                 String nickString = parser.nextText();
-                conf.setNickname(Resourcepart.from(nickString));
+                if (nickString != null && !nickString.isEmpty()) {
+                    conf.setNickname(Resourcepart.from(nickString));
+                }
             }
             else if (eventType == XmlPullParser.Event.START_ELEMENT && "password".equals(parser.getName())) {
                 conf.setPassword(parser.nextText());
