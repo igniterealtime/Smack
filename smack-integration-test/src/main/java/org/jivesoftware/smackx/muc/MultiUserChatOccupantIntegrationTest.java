@@ -581,6 +581,42 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
     }
 
     /**
+     * Asserts that a user can not enter a room while being banned.
+     *
+     * <p>From XEP-0045 § 7.2.7:</p>
+     * <blockquote>
+     * If the user has been banned from the room (i.e., has an affiliation of "outcast"), the service MUST deny access
+     * to the room and inform the user of the fact that they are banned; this is done by returning a presence stanza of
+     * type "error" specifying a &lt;forbidden/&gt; error condition.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucBannedUserJoinRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-banneduser");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+
+        mucAsSeenByOne.banUser(conTwo.getUser().asBareJid(), "Insufficient witchcraft");
+
+        try {
+            XMPPException.XMPPErrorException forbiddenErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            assertNotNull(forbiddenErrorException);
+            assertNotNull(forbiddenErrorException.getStanzaError());
+            assertEquals("forbidden", forbiddenErrorException.getStanzaError().getCondition().toString());
+        } finally {
+            mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
      * <p>From XEP-0045 § 7.14:</p>
