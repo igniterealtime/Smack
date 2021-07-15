@@ -44,6 +44,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
@@ -85,12 +86,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinEventOrderingTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinEventOrderingTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-eventordering");
         final String mucSubject = "Subject smack-inttest-eventordering " + randomString;
         final String mucMessage = "Message smack-inttest-eventordering " + randomString;
-
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -116,8 +115,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         List<Object> results = new ArrayList<Object>();
 
         mucAsSeenByTwo.addMessageListener(new MessageListener() {
-            @Override
-            public void processMessage(Message message) {
+            @Override public void processMessage(Message message) {
                 String body = message.getBody();
                 if (mucMessage.equals(body)) {
                     results.add(body);
@@ -126,15 +124,13 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         });
 
         mucAsSeenByTwo.addParticipantStatusListener(new ParticipantStatusListener() {
-            @Override
-            public void joined(EntityFullJid participant) {
+            @Override public void joined(EntityFullJid participant) {
                 results.add(participant);
             }
         });
 
         mucAsSeenByTwo.addSubjectUpdatedListener(new SubjectUpdatedListener() {
-            @Override
-            public void subjectUpdated(String subject, EntityFullJid from) {
+            @Override public void subjectUpdated(String subject, EntityFullJid from) {
                 results.add(subject);
                 subjectResultSyncPoint.signal(subject);
             }
@@ -174,8 +170,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucSendBeforeJoiningTest() throws Exception {
+    @SmackIntegrationTest public void mucSendBeforeJoiningTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-send-without-joining");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -202,7 +197,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         try {
             mucAsSeenByTwo.sendMessage("Message without Joining");
             Message response = errorMessageResultSyncPoint.waitForResult(timeout);
-            assertEquals("not-acceptable", response.getError().getCondition().toString());
+            assertEquals(StanzaError.Condition.not_acceptable, response.getError().getCondition());
             assertThrows(TimeoutException.class, () -> distributedMessageResultSyncPoint.waitForResult(1000));
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -236,8 +231,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinPresenceInformationTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinPresenceInformationTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-presenceinfo");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -272,7 +266,8 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             mucAsSeenByThree.join(nicknameThree);
 
             assertEquals(3, results.size()); // The 3rd will be self-presence.
-            assertNotNull(MUCUser.from(results.get(0))); // Smack implementation guarantees the "x" element and muc#user namespace
+            assertNotNull(MUCUser.from(
+                            results.get(0))); // Smack implementation guarantees the "x" element and muc#user namespace
 
             // The order of all but the last presence (which should be the self-presence) is unpredictable.
             MUCItem mucItemSelf = MUCUser.from(results.get(2)).getItem();
@@ -305,8 +300,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinPresenceBroadcastTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinPresenceBroadcastTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-presenceinfo");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -338,9 +332,12 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             mucAsSeenByThree.join(nicknameThree);
 
             Collection<Presence> results = syncPoint.waitForResults(timeout);
-            assertTrue(results.stream().allMatch(result -> JidCreate.fullFrom(mucAddress, nicknameThree).equals(result.getFrom())));
-            assertTrue(results.stream().anyMatch(result -> result.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())));
-            assertTrue(results.stream().anyMatch(result -> result.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())));
+            assertTrue(results.stream().allMatch(
+                            result -> JidCreate.fullFrom(mucAddress, nicknameThree).equals(result.getFrom())));
+            assertTrue(results.stream().anyMatch(
+                            result -> result.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())));
+            assertTrue(results.stream().anyMatch(
+                            result -> result.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())));
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -366,8 +363,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinNonAnonymousRoomTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinNonAnonymousRoomTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinnonanonymousroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -406,7 +402,8 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
             // Check the presence received by participant two for inclusion of status 100
             assertNotNull(presenceReceivedByTwo);
-            assertTrue(MUCUser.from(presenceReceivedByTwo).getStatus().stream().anyMatch(status -> 100 == status.getCode()));
+            assertTrue(MUCUser.from(presenceReceivedByTwo).getStatus().stream().anyMatch(
+                            status -> 100 == status.getCode()));
 
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -428,8 +425,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinSemiAnonymousRoomTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinSemiAnonymousRoomTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinsemianonymousroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -499,8 +495,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinPasswordProtectedRoomTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinPasswordProtectedRoomTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-enterpasswordprotectedroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -523,16 +518,21 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         try {
             // First try: no password
-            XMPPException.XMPPErrorException noPasswordErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            XMPPException.XMPPErrorException noPasswordErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
             assertNotNull(noPasswordErrorException);
             assertNotNull(noPasswordErrorException.getStanzaError());
-            assertEquals("not-authorized", noPasswordErrorException.getStanzaError().getCondition().toString());
+            assertEquals(StanzaError.Condition.not_authorized,
+                            noPasswordErrorException.getStanzaError().getCondition());
 
             // Second try: wrong password
-            XMPPException.XMPPErrorException wrongPasswordErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo, correctPassword + "_"));
+            XMPPException.XMPPErrorException wrongPasswordErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class,
+                            () -> mucAsSeenByTwo.join(nicknameTwo, correctPassword + "_"));
             assertNotNull(wrongPasswordErrorException);
             assertNotNull(wrongPasswordErrorException.getStanzaError());
-            assertEquals("not-authorized", wrongPasswordErrorException.getStanzaError().getCondition().toString());
+            assertEquals(StanzaError.Condition.not_authorized,
+                            wrongPasswordErrorException.getStanzaError().getCondition());
 
             // Third try: correct password
             mucAsSeenByTwo.join(nicknameTwo, correctPassword);
@@ -558,8 +558,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucJoinMembersOnlyRoomTest() throws Exception {
+    @SmackIntegrationTest public void mucJoinMembersOnlyRoomTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-entermembersonlyroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -571,10 +570,12 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
 
         try {
-            XMPPException.XMPPErrorException registrationRequiredErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            XMPPException.XMPPErrorException registrationRequiredErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
             assertNotNull(registrationRequiredErrorException);
             assertNotNull(registrationRequiredErrorException.getStanzaError());
-            assertEquals("registration-required", registrationRequiredErrorException.getStanzaError().getCondition().toString());
+            assertEquals(StanzaError.Condition.registration_required,
+                            registrationRequiredErrorException.getStanzaError().getCondition());
         } finally {
             mucAsSeenByOne.destroy();
         }
@@ -592,8 +593,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucBannedUserJoinRoomTest() throws Exception {
+    @SmackIntegrationTest public void mucBannedUserJoinRoomTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-banneduser");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -607,10 +607,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         mucAsSeenByOne.banUser(conTwo.getUser().asBareJid(), "Insufficient witchcraft");
 
         try {
-            XMPPException.XMPPErrorException forbiddenErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            XMPPException.XMPPErrorException forbiddenErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
             assertNotNull(forbiddenErrorException);
             assertNotNull(forbiddenErrorException.getStanzaError());
-            assertEquals("forbidden", forbiddenErrorException.getStanzaError().getCondition().toString());
+            assertEquals(StanzaError.Condition.forbidden, forbiddenErrorException.getStanzaError().getCondition());
         } finally {
             mucAsSeenByOne.destroy();
         }
@@ -629,8 +630,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucNicknameConflictJoinRoomTest() throws Exception {
+    @SmackIntegrationTest public void mucNicknameConflictJoinRoomTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-nicknameclash");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
@@ -641,10 +641,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         createMuc(mucAsSeenByOne, nicknameOne);
 
         try {
-            XMPPException.XMPPErrorException conflictErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameOne));
+            XMPPException.XMPPErrorException conflictErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameOne));
             assertNotNull(conflictErrorException);
             assertNotNull(conflictErrorException.getStanzaError());
-            assertEquals("conflict", conflictErrorException.getStanzaError().getCondition().toString());
+            assertEquals(StanzaError.Condition.conflict, conflictErrorException.getStanzaError().getCondition());
         } finally {
             mucAsSeenByOne.destroy();
         }
@@ -711,8 +712,9 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             } catch (XMPPException.XMPPErrorException unavailableErrorException) {
                 // This exception is expected if the muc implementation employs the strategy to deny access beyond the
                 // maxusers value
-                if (unavailableErrorException.getStanzaError() == null || !"service-unavailable".equals(
-                                unavailableErrorException.getStanzaError().getCondition().toString())) {
+                if (unavailableErrorException.getStanzaError() == null
+                                || !StanzaError.Condition.service_unavailable.equals(
+                                unavailableErrorException.getStanzaError().getCondition())) {
                     throw unavailableErrorException;
                 }
             }
@@ -866,10 +868,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         createLockedMuc(mucAsSeenByOne, nicknameOne);
 
         try {
-            XMPPException.XMPPErrorException conflictErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            XMPPException.XMPPErrorException conflictErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
             assertNotNull(conflictErrorException);
             assertNotNull(conflictErrorException.getStanzaError());
-            assertEquals("item-not-found", conflictErrorException.getStanzaError().getCondition().toString());
+            assertEquals(StanzaError.Condition.item_not_found, conflictErrorException.getStanzaError().getCondition());
 
         } finally {
             mucAsSeenByOne.destroy();
@@ -921,8 +924,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
      *
      * @throws Exception when errors occur
      */
-    @SmackIntegrationTest
-    public void mucLeaveTest() throws Exception {
+    @SmackIntegrationTest public void mucLeaveTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-leave");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
@@ -936,7 +938,8 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
             assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110));
             assertEquals(mucAddress + "/nick-one", reflectedLeavePresence.getFrom().toString());
-            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedLeavePresence.getTo().toString());
+            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(),
+                            reflectedLeavePresence.getTo().toString());
         } finally {
             muc.join(Resourcepart.from("nick-one")); // We need to be in the room to destroy the room
             tryDestroy(muc);
