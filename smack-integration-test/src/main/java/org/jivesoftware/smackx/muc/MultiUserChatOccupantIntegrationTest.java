@@ -843,6 +843,40 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
     }
 
     /**
+     * Asserts that a room can not be entered while it still being created (locked).
+     *
+     * <p>From XEP-0045 § 7.2.10:</p>
+     * <blockquote>
+     * If a user attempts to enter a room while it is "locked" (i.e., before the room creator provides an initial
+     * configuration and therefore before the room officially exists), the service MUST refuse entry and return an
+     * &lt;item-not-found/&gt; error to the user.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest public void mucJoinLockedRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-lockedroom");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createLockedMuc(mucAsSeenByOne, nicknameOne);
+
+        try {
+            XMPPException.XMPPErrorException conflictErrorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo));
+            assertNotNull(conflictErrorException);
+            assertNotNull(conflictErrorException.getStanzaError());
+            assertEquals("item-not-found", conflictErrorException.getStanzaError().getCondition().toString());
+
+        } finally {
+            mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
      * <p>From XEP-0045 § 7.14:</p>

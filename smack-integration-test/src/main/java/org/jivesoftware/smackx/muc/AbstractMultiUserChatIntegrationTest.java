@@ -192,6 +192,19 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         muc.sendConfigurationForm(answerForm);
     }
 
+    static void createLockedMuc(MultiUserChat muc, Resourcepart resourceName) throws
+                    SmackException.NoResponseException, XMPPException.XMPPErrorException,
+                    InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
+                    SmackException.NotConnectedException,
+                    MultiUserChatException.MissingMucCreationAcknowledgeException,
+                    MultiUserChatException.NotAMucServiceException {
+        muc.create(resourceName);
+        // Note the absence of handle.makeInstant() here. The room is still being created at this point, until a
+        // configuration is set.
+    }
+
+
+
     static void setMaxUsers(MultiUserChat muc, int maxUsers) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException {
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
