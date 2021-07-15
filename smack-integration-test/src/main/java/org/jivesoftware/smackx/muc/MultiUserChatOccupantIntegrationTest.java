@@ -877,6 +877,39 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
     }
 
     /**
+     * Asserts that a user is warned when entering a room that allows public logging.
+     *
+     * <p>From XEP-0045 § 7.2.12:</p>
+     * <blockquote>
+     * If the user is entering a room in which the discussions are logged to a public archive (often accessible via
+     * HTTP), the service SHOULD allow the user to enter the room but MUST also warn the user that the discussions are
+     * logged. This is done by including a status code of "170" in the initial presence that the room sends to the new
+     * occupant.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest public void mucJoinRoomWithPublicLoggingTest() throws Exception {
+        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-publiclogging");
+
+        final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        final MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+        setPublicLogging(mucAsSeenByOne, true);
+
+        try {
+            Presence twoPresence = mucAsSeenByTwo.join(nicknameTwo);
+            assertTrue(MUCUser.from(twoPresence).getStatus().stream().anyMatch(status -> 170 == status.getCode()));
+        } finally {
+            mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
      * <p>From XEP-0045 § 7.14:</p>
