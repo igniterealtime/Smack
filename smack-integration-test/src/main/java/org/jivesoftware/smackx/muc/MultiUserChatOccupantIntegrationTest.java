@@ -48,6 +48,7 @@ import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -645,6 +646,94 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             assertNotNull(conflictErrorException);
             assertNotNull(conflictErrorException.getStanzaError());
             assertEquals("conflict", conflictErrorException.getStanzaError().getCondition().toString());
+        } finally {
+            mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
+     * Asserts that a user can not enter a room with the same nickname as an other user who is already present.
+     *
+     * <p>From XEP-0045 § 7.2.9:</p>
+     * <blockquote>
+     * If the room has reached its maximum number of occupants, the service SHOULD deny access to the room and inform
+     * the user of the restriction; this is done by returning a presence stanza of type "error" specifying a
+     * &lt;service-unavailable/&gt; error condition.
+     *
+     * Alternatively, the room could kick an "idle user" in order to free up space (where the definition of "idle user"
+     * is up to the implementation).
+     *
+     * If the room has reached its maximum number of occupants and a room admin or owner attempts to join, the room MUST
+     * allow the admin or owner to join, up to some reasonable number of additional occupants; this helps to prevent
+     * denial of service attacks caused by stuffing the room with non-admin users.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucMaxUsersJoinRoomTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-maxusersreached");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+        setMaxUsers(mucAsSeenByOne, 2);
+
+        // Set up to receive presence responses on successful join of participant 2
+        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantTwoSyncPoint.signal(presence);
+            }
+        });
+
+        try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            participantTwoSyncPoint.waitForResult(timeout);
+
+            assertEquals(2, mucAsSeenByOne.getOccupantsCount());
+
+            // PART 1: non-admin non-owner new user does not cause a max users overflow
+
+            // Now user 3 may or may not be able to join the room. The service can either deny access to user three, or
+            // it can kick user 2. Both strategies would comply with the specification. So the only thing we can
+            // reasonably test here is whether the room doesn't have more occupants than its max size.
+
+            try {
+                mucAsSeenByThree.join(nicknameThree);
+            } catch (XMPPException.XMPPErrorException unavailableErrorException) {
+                // This exception is expected if the muc implementation employs the strategy to deny access beyond the
+                // maxusers value
+                if (unavailableErrorException.getStanzaError() == null || !"service-unavailable".equals(unavailableErrorException.getStanzaError().getCondition().toString())) {
+                    throw unavailableErrorException;
+                }
+            }
+
+            assertEquals(2, mucAsSeenByOne.getOccupantsCount());
+
+            final EntityFullJid user3EntityJid = JidCreate.entityFullFrom(mucAddress, nicknameThree);
+            final BareJid user3BareJid = conThree.getUser().asBareJid();
+
+            // PART 2: admin can join despite max users reached
+            mucAsSeenByOne.grantAdmin(user3BareJid); // blocking call
+            mucAsSeenByThree.join(nicknameThree); // should not throw an XMPP error exception now
+            assertNotNull(mucAsSeenByOne.getOccupant(user3EntityJid));
+
+            // Clean up from part 2
+            mucAsSeenByThree.leave();
+            mucAsSeenByOne.revokeAdmin(user3EntityJid); // blocking call
+
+            // PART 3: owner can join despite max users reached
+            mucAsSeenByOne.grantOwnership(user3BareJid);
+            mucAsSeenByThree.join(nicknameThree); // should not throw an XMPP error exception now
+            assertNotNull(mucAsSeenByOne.getOccupant(user3EntityJid));
+
         } finally {
             mucAsSeenByOne.destroy();
         }

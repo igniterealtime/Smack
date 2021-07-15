@@ -191,4 +191,11 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         answerForm.setAnswer("muc#roomconfig_roomsecret", password);
         muc.sendConfigurationForm(answerForm);
     }
+
+    static void setMaxUsers(MultiUserChat muc, int maxUsers) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException {
+        Form configForm = muc.getConfigurationForm();
+        FillableForm answerForm = configForm.getFillableForm();
+        answerForm.setAnswer("muc#roomconfig_maxusers", maxUsers);
+        muc.sendConfigurationForm(answerForm);
+    }
 }
