@@ -590,6 +590,14 @@ public class SmackIntegrationTestFramework {
         if (e instanceof InterruptedException) {
             throw (InterruptedException) e;
         }
+
+        // We handle NullPointerException as a non fatal exception, as they are mostly caused by an invalid reply where
+        // a extension element is missing. Consider for example
+        // assertEquals(StanzaError.Condition.foo, response.getError().getCondition())
+        // Otherwise NPEs could be caused by an internal bug in Smack, e.g. missing null handling.
+        if (e instanceof NullPointerException) {
+            return (NullPointerException) e;
+        }
         if (e instanceof RuntimeException) {
             throw (RuntimeException) e;
         }
