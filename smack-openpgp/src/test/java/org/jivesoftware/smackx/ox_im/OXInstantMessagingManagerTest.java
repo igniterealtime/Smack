@@ -50,6 +50,7 @@ import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
 import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
 
 import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
@@ -156,9 +157,13 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
         // Check, if one of Bobs keys was used for decryption
         assertNotNull(bobSelf.getSigningKeyRing().getPublicKey(metadata.getDecryptionFingerprint().getKeyId()));
 
+        // TODO: I observed this assertTrue() to fail sporadically. As a first attempt to diagnose this, a message was
+        // added to the assertion. However since most (all?) objects used in the message do not implement a proper
+        // toString() this is probably not really helpful as it is.
+        PGPPublicKeyRingCollection pubKeys = aliceForBob.getTrustedAnnouncedKeys();
         // Check if one of Alice' keys was used for signing
         assertTrue(metadata.containsVerifiedSignatureFrom(
-                aliceForBob.getTrustedAnnouncedKeys().iterator().next()));
+                pubKeys.iterator().next()), metadata + " did not contain one of alice' keys " + pubKeys);
     }
 
     @AfterClass
