@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.jxmpp.util.XmppDateTime;
 
 public class AbstractMultiFormField extends FormField {
 
-    private final List<String> values;
+    private final List<Value> values;
 
     protected AbstractMultiFormField(Builder<?, ?> builder) {
         super(builder);
@@ -35,19 +35,18 @@ public class AbstractMultiFormField extends FormField {
     }
 
     @Override
-    public final List<String> getValues() {
+    public final List<Value> getRawValues() {
         return values;
     }
 
-
-    public abstract static class Builder<F extends FormField, B extends FormField.Builder<F, B>>
+    public abstract static class Builder<F extends AbstractMultiFormField, B extends FormField.Builder<F, B>>
                     extends FormField.Builder<F, B> {
 
-        private List<String> values;
+        private List<Value> values;
 
         protected Builder(AbstractMultiFormField formField) {
             super(formField);
-            values = CollectionUtil.newListWith(formField.getValues());
+            values = CollectionUtil.newListWith(formField.getRawValues());
         }
 
         protected Builder(String fieldName, FormField.Type type) {
@@ -68,9 +67,13 @@ public class AbstractMultiFormField extends FormField {
         public abstract B addValue(CharSequence value);
 
         public B addValueVerbatim(CharSequence value) {
+            return addValueVerbatim(new Value(value));
+        }
+
+        public B addValueVerbatim(Value value) {
             ensureValuesAreInitialized();
 
-            values.add(value.toString());
+            values.add(value);
             return getThis();
         }
 
@@ -83,7 +86,7 @@ public class AbstractMultiFormField extends FormField {
             ensureValuesAreInitialized();
 
             for (CharSequence value : values) {
-                this.values.add(value.toString());
+                addValueVerbatim(value);
             }
 
             return getThis();
