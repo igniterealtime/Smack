@@ -300,6 +300,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
     private static FormField.Builder<?, ?> parseBooleanFormField(String fieldName, List<FormField.Value> values) throws SmackParsingException {
         BooleanFormField.Builder builder = FormField.booleanBuilder(fieldName);
+        ensureAtMostSingleValue(builder.getType(), values);
         if (values.size() == 1) {
             String value = values.get(0).getValue().toString();
             builder.setValue(value);
