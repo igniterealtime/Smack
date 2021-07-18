@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,5 +81,12 @@ public class CollectionUtil {
             return null;
         }
         return new HashSet<>(collection);
+    }
+
+    public static <T> List<T> emptyOrSingletonListFrom(T element) {
+        if (element == null) {
+            return Collections.emptyList();
+        }
+        return Collections.singletonList(element);
     }
 }

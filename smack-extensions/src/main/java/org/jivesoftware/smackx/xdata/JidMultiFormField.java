@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,28 @@ import java.util.List;
 import org.jivesoftware.smack.util.CollectionUtil;
 
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.util.JidUtil;
 
-public class JidMultiFormField extends FormField {
+public final class JidMultiFormField extends FormField {
 
     private final List<Jid> values;
+
+    private final List<String> rawValues;
 
     protected JidMultiFormField(Builder builder) {
         super(builder);
         values = CollectionUtil.cloneAndSeal(builder.values);
+        rawValues = CollectionUtil.cloneAndSeal(builder.rawValues);
     }
 
     @Override
     public List<Jid> getValues() {
         return values;
+    }
+
+    @Override
+    public List<String> getRawValues() {
+        return rawValues;
     }
 
     public Builder asBuilder() {
@@ -44,6 +53,8 @@ public class JidMultiFormField extends FormField {
 
     public static final class Builder extends FormField.Builder<JidMultiFormField, JidMultiFormField.Builder> {
         private List<Jid> values;
+
+        private List<String> rawValues;
 
         private Builder(JidMultiFormField jidMultiFormField) {
             super(jidMultiFormField);
@@ -57,18 +68,30 @@ public class JidMultiFormField extends FormField {
         private void ensureValuesAreInitialized() {
             if (values == null) {
                 values = new ArrayList<>();
+                rawValues = new ArrayList<>();
             }
         }
 
         @Override
         protected void resetInternal() {
             values = null;
+            rawValues = null;
         }
 
         public Builder addValue(Jid jid) {
+            return addValue(jid, null);
+        }
+
+        public Builder addValue(Jid jid, String rawValue) {
+            if (rawValue == null) {
+                rawValue = jid.toString();
+            }
+
             ensureValuesAreInitialized();
 
             values.add(jid);
+            rawValues.add(rawValue);
+
             return this;
         }
 
@@ -76,6 +99,7 @@ public class JidMultiFormField extends FormField {
             ensureValuesAreInitialized();
 
             values.addAll(jids);
+            rawValues.addAll(JidUtil.toStringList(jids));
             return this;
         }
 

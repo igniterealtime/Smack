@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019-2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -270,6 +270,8 @@ public abstract class FormField implements FullyQualifiedElement {
      * @return a List of the default values or answered values of the question.
      */
     public abstract List<? extends CharSequence> getValues();
+
+    public abstract List<String> getRawValues();
 
     public boolean hasValueSet() {
         List<?> values = getValues();
