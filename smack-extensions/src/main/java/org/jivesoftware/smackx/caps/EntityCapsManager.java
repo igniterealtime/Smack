@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2020 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -700,7 +700,7 @@ public final class EntityCapsManager extends Manager {
             for (FormField f : fs) {
                 sb.append(f.getFieldName());
                 sb.append('<');
-                formFieldValuesToCaps(f.getValues(), sb);
+                formFieldValuesToCaps(f.getRawValues(), sb);
             }
         }
 
