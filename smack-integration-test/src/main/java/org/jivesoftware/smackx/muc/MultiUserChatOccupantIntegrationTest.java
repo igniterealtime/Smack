@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -909,6 +910,158 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             assertTrue(MUCUser.from(twoPresence).getStatus().stream().anyMatch(status -> 170 == status.getCode()));
         } finally {
             mucAsSeenByOne.destroy();
+        }
+    }
+
+    /**
+     * Asserts that all users in a room are correctly informed about nickname change of a participant.
+     * <p>From XEP-0045 § 7.6:</p>
+     * <blockquote>
+     * A common feature of chat rooms is the ability for an occupant to change his or her nickname within the room. In
+     * MUC this is done by sending updated presence information to the room, specifically by sending presence to a new
+     * occupant JID in the same room (changing only the resource identifier in the occupant JID).
+     * The service then sends two presence stanzas to the full JID of each occupant (including the occupant who is
+     * changing his or her room nickname), one of type "unavailable" for the old nickname and one indicating
+     * availability for the new nickname.
+     * The unavailable presence MUST contain the following as extended presence information in an &lt;x/&gt; element
+     * qualified by the 'http://jabber.org/protocol/muc#user' namespace:
+     * - The new nickname (in this case, nick='oldhag')
+     * - A status code of 303
+     * This enables the recipients to correlate the old roomnick with the new roomnick.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest public void mucChangeNicknameInformationTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-changenickname");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwoOriginal = Resourcepart.from("two-original-" + randomString);
+        final Resourcepart nicknameTwoNew = Resourcepart.from("two-new-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+
+        SimpleResultSyncPoint participantOneSeesTwoEnter = new SimpleResultSyncPoint();
+        mucAsSeenByOne.addParticipantListener(presence -> {
+            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantOneSeesTwoEnter.signal();
+            }
+        });
+
+        // Have participant two enter the room
+        mucAsSeenByTwo.join(nicknameTwoOriginal);
+        participantOneSeesTwoEnter.waitForResult(timeout);
+
+        // Although logic dictates that the 'unavailable' presence stanzas for the old nick should precede the presence
+        // stanza for the new nick - the specification does not dictate that. So we should allow for the order to be
+        // reversed. Here we will expect an unavailable and an available presence stanza sent to both participant one
+        // and participant two. So that adds up to a total of four.
+        MultiResultSyncPoint<Presence, ?> participantTwoPresencesSyncPoint = new MultiResultSyncPoint<>(4);
+        mucAsSeenByOne.addParticipantListener(presence -> {
+            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty()) || nicknameTwoNew.equals(
+                            presence.getFrom().getResourceOrEmpty())) {
+                participantTwoPresencesSyncPoint.signal(presence);
+            }
+        });
+        mucAsSeenByTwo.addParticipantListener(presence -> {
+            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty()) || nicknameTwoNew.equals(
+                            presence.getFrom().getResourceOrEmpty())) {
+                participantTwoPresencesSyncPoint.signal(presence);
+            }
+        });
+
+        try {
+            // Participant two changes nickname
+            mucAsSeenByTwo.changeNickname(nicknameTwoNew);
+            final Collection<Presence> partTwoPresencesReceived = participantTwoPresencesSyncPoint.waitForResults(
+                            timeout);
+
+            final List<Presence> unavailablePresencesReceivedByOne = partTwoPresencesReceived.stream().filter(
+                            presence -> !presence.isAvailable()).filter(
+                            presence -> presence.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())).collect(
+                            Collectors.toList());
+            final List<Presence> unavailablePresencesReceivedByTwo = partTwoPresencesReceived.stream().filter(
+                            presence -> !presence.isAvailable()).filter(
+                            presence -> presence.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())).collect(
+                            Collectors.toList());
+            final List<Presence> availablePresencesReceivedByOne = partTwoPresencesReceived.stream().filter(
+                            presence -> presence.isAvailable()).filter(
+                            presence -> presence.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())).collect(
+                            Collectors.toList());
+            final List<Presence> availablePresencesReceivedByTwo = partTwoPresencesReceived.stream().filter(
+                            presence -> presence.isAvailable()).filter(
+                            presence -> presence.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())).collect(
+                            Collectors.toList());
+
+            // Validate that both users received both 'available' and 'unavailable' presence stanzas
+            assertEquals(1, unavailablePresencesReceivedByOne.size());
+            assertEquals(1, unavailablePresencesReceivedByTwo.size());
+            assertEquals(1, availablePresencesReceivedByOne.size());
+            assertEquals(1, availablePresencesReceivedByTwo.size());
+
+            // Validate that the received 'unavailable' presence stanzas contain the status and items elements as specified
+            assertTrue(MUCUser.from(unavailablePresencesReceivedByOne.get(0)).getStatus().stream().anyMatch(
+                            status -> 303 == status.getCode()));
+            assertEquals(nicknameTwoNew, MUCUser.from(unavailablePresencesReceivedByOne.get(0)).getItem().getNick());
+            assertTrue(MUCUser.from(unavailablePresencesReceivedByTwo.get(0)).getStatus().stream().anyMatch(
+                            status -> 303 == status.getCode()));
+            assertEquals(nicknameTwoNew, MUCUser.from(unavailablePresencesReceivedByTwo.get(0)).getItem().getNick());
+
+            // Validate that the received 'available' presence stanzas have the new nickname as from
+            assertEquals(nicknameTwoNew, availablePresencesReceivedByOne.get(0).getFrom().getResourceOrEmpty());
+            assertEquals(nicknameTwoNew, availablePresencesReceivedByTwo.get(0).getFrom().getResourceOrEmpty());
+
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    /**
+     * Asserts that user can not change nickname to one that is already in use.
+     * <p>From XEP-0045 § 7.6:</p>
+     * <blockquote>
+     * If the user attempts to change his or her room nickname to a room nickname that is already in use by another user
+     * (or that is reserved by another user affiliated with the room, e.g., a member or owner), the service MUST deny
+     * the nickname change request and inform the user of the conflict; this is done by returning a presence stanza of
+     * type "error" specifying a &lt;conflict/&gt; error condition:
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest public void mucBlockChangeNicknameInformationTest() throws Exception {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-blockchangenickname");
+
+        MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwoOriginal = Resourcepart.from("two-original-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+
+        SimpleResultSyncPoint participantOneSeesTwoEnter = new SimpleResultSyncPoint();
+        mucAsSeenByOne.addParticipantListener(presence -> {
+            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty())) {
+                participantOneSeesTwoEnter.signal();
+            }
+        });
+
+        // Have participant two enter the room
+        mucAsSeenByTwo.join(nicknameTwoOriginal);
+        participantOneSeesTwoEnter.waitForResult(timeout);
+
+        try {
+            // Participant two changes nickname
+            XMPPException.XMPPErrorException conflictErrorException = assertThrows(
+                            XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.changeNickname(nicknameOne));
+            assertNotNull(conflictErrorException);
+            assertNotNull(conflictErrorException.getStanzaError());
+            assertEquals(StanzaError.Condition.conflict, conflictErrorException.getStanzaError().getCondition());
+        } finally {
+            tryDestroy(mucAsSeenByOne);
         }
     }
 
