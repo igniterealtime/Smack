@@ -42,10 +42,13 @@ import org.jxmpp.jid.parts.Resourcepart;
 
 public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
+    SmackIntegrationTestEnvironment environment;
+
     public MultiUserChatRolesAffiliationsPrivilegesIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws SmackException.NoResponseException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, InterruptedException, TestNotPossibleException {
         super(environment);
+        this.environment = environment;
     }
 
     /**
@@ -769,6 +772,10 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
      */
     @SmackIntegrationTest
     public void mucTestDefaultRoleForAffiliationInUnmoderatedRoom() throws Exception {
+        if (!environment.configuration.enableNonMandatoryXepChecks) {
+            return; //Don't test this
+        }
+
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-unmoderatedroles");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);

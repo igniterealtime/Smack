@@ -117,6 +117,8 @@ public final class Configuration {
 
     public final DnsResolver dnsResolver;
 
+    public final boolean enableNonMandatoryXepChecks;
+
     private Configuration(Configuration.Builder builder) throws KeyManagementException, NoSuchAlgorithmException {
         service = Objects.requireNonNull(builder.service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
@@ -192,6 +194,8 @@ public final class Configuration {
         this.verbose = builder.verbose;
 
         this.dnsResolver = builder.dnsResolver;
+
+        this.enableNonMandatoryXepChecks = builder.enableNonMandatoryXepChecks;
     }
 
     public boolean isAccountRegistrationPossible() {
@@ -245,6 +249,8 @@ public final class Configuration {
         private boolean verbose;
 
         private DnsResolver dnsResolver = DnsResolver.minidns;
+
+        private boolean enableNonMandatoryXepChecks;
 
         private Builder() {
         }
@@ -427,6 +433,20 @@ public final class Configuration {
             return setDnsResolver(dnsResolver);
         }
 
+        public Builder setEnableNonMandatoryXepChecks(boolean enableNonMandatoryXepChecks) {
+            this.enableNonMandatoryXepChecks = enableNonMandatoryXepChecks;
+            return this;
+        }
+
+        public Builder setEnableNonMandatoryXepChecks(String enableNonMandatoryXepChecksString) {
+            if (enableNonMandatoryXepChecksString == null) {
+                return this;
+            }
+
+            boolean enableNonMandatoryXepChecks = ParserUtils.parseXmlBoolean(enableNonMandatoryXepChecksString);
+            return setEnableNonMandatoryXepChecks(enableNonMandatoryXepChecks);
+        }
+
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
             return new Configuration(this);
         }
@@ -499,6 +519,8 @@ public final class Configuration {
         builder.setVerbose(properties.getProperty("verbose"));
 
         builder.setDnsResolver(properties.getProperty("dnsResolver"));
+
+        builder.setEnableNonMandatoryXepChecks(properties.getProperty("enableNonMandatoryXepChecks"));
 
         return builder.build();
     }
