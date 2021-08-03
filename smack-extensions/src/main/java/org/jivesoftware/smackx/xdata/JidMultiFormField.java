@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,19 +23,29 @@ import java.util.List;
 import org.jivesoftware.smack.util.CollectionUtil;
 
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
-public class JidMultiFormField extends FormField {
+public final class JidMultiFormField extends FormField {
 
     private final List<Jid> values;
+
+    private final List<Value> rawValues;
 
     protected JidMultiFormField(Builder builder) {
         super(builder);
         values = CollectionUtil.cloneAndSeal(builder.values);
+        rawValues = CollectionUtil.cloneAndSeal(builder.rawValues);
     }
 
     @Override
     public List<Jid> getValues() {
         return values;
+    }
+
+    @Override
+    public List<Value> getRawValues() {
+        return rawValues;
     }
 
     public Builder asBuilder() {
@@ -44,6 +54,8 @@ public class JidMultiFormField extends FormField {
 
     public static final class Builder extends FormField.Builder<JidMultiFormField, JidMultiFormField.Builder> {
         private List<Jid> values;
+
+        private List<Value> rawValues;
 
         private Builder(JidMultiFormField jidMultiFormField) {
             super(jidMultiFormField);
@@ -57,25 +69,40 @@ public class JidMultiFormField extends FormField {
         private void ensureValuesAreInitialized() {
             if (values == null) {
                 values = new ArrayList<>();
+                rawValues = new ArrayList<>();
             }
         }
 
         @Override
         protected void resetInternal() {
             values = null;
+            rawValues = null;
         }
 
         public Builder addValue(Jid jid) {
-            ensureValuesAreInitialized();
+            Value value = new Value(jid);
 
+            ensureValuesAreInitialized();
             values.add(jid);
+            rawValues.add(value);
+
+            return getThis();
+        }
+
+        public Builder addValue(Value value) throws XmppStringprepException {
+            Jid jid = JidCreate.from(value.getValue());
+
+            ensureValuesAreInitialized();
+            values.add(jid);
+            rawValues.add(value);
+
             return this;
         }
 
         public Builder addValues(Collection<? extends Jid> jids) {
-            ensureValuesAreInitialized();
-
-            values.addAll(jids);
+            for (Jid jid : jids) {
+                addValue(jid);
+            }
             return this;
         }
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.xdata.AbstractMultiFormField;
 import org.jivesoftware.smackx.xdata.AbstractSingleStringValueFormField;
@@ -54,7 +56,8 @@ public interface FormReader {
             return Collections.emptyList();
         }
         AbstractMultiFormField multiFormField = formField.ifPossibleAs(AbstractMultiFormField.class);
-        return multiFormField.getValues();
+        List<? extends CharSequence> charSequences =  multiFormField.getValues();
+        return StringUtils.toStrings(charSequences);
     }
 
     default Boolean readBoolean(String fieldName) {
