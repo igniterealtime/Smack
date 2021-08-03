@@ -31,7 +31,7 @@ public final class JidMultiFormField extends FormField {
 
     private final List<String> rawValues;
 
-    protected JidMultiFormField(Builder builder) {
+    JidMultiFormField(Builder builder) {
         super(builder);
         values = CollectionUtil.cloneAndSeal(builder.values);
         rawValues = CollectionUtil.cloneAndSeal(builder.rawValues);
