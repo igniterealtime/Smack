@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,8 @@ public class AbstractSingleStringValueFormField extends SingleValueFormField {
         return Integer.valueOf(value);
     }
 
-    public abstract static class Builder<F extends FormField, B extends FormField.Builder<F, B>> extends FormField.Builder<F, B> {
+    public abstract static class Builder<F extends SingleValueFormField, B extends SingleValueFormField.Builder<F, B>>
+                    extends SingleValueFormField.Builder<F, B> {
 
         private String value;
 
@@ -74,18 +75,16 @@ public class AbstractSingleStringValueFormField extends SingleValueFormField {
         }
 
         public B setValue(CharSequence value) {
-            this.value = value.toString();
+            this.rawValue = this.value = value.toString();
             return getThis();
         }
 
         public B setValue(Enum<?> value) {
-            this.value = value.toString();
-            return getThis();
+            return setValue(value.toString());
         }
 
         public B setValue(int value) {
-            this.value = Integer.toString(value);
-            return getThis();
+            return setValue(Integer.toString(value));
         }
 
         public B setValue(URL value) {

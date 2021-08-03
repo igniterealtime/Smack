@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public class JidSingleFormField extends SingleValueFormField {
         return new Builder(this);
     }
 
-    public static final class Builder extends FormField.Builder<JidSingleFormField, JidSingleFormField.Builder> {
+    public static final class Builder extends SingleValueFormField.Builder<JidSingleFormField, JidSingleFormField.Builder> {
         private Jid value;
 
         private Builder(JidSingleFormField jidSingleFormField) {
@@ -50,11 +50,21 @@ public class JidSingleFormField extends SingleValueFormField {
 
         @Override
         protected void resetInternal() {
+            super.resetInternal();
             value = null;
         }
 
         public Builder setValue(Jid value) {
+            return setValue(value, null);
+        }
+
+        public Builder setValue(Jid value, String rawValue) {
             this.value = value;
+            if (rawValue != null) {
+                this.rawValue = rawValue;
+            } else {
+                this.rawValue = value.toString();
+            }
             return this;
         }
 

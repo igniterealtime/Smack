@@ -237,8 +237,9 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         case jid_multi:
             JidMultiFormField.Builder jidMultiBuilder = FormField.jidMultiBuilder(fieldName);
             for (FormField.Value value : values) {
-                Jid jid = JidCreate.from(value.getValue());
-                jidMultiBuilder.addValue(jid);
+                String rawValue = value.getValue().toString();
+                Jid jid = JidCreate.from(rawValue);
+                jidMultiBuilder.addValue(jid, rawValue);
             }
             builder = jidMultiBuilder;
             break;
@@ -246,9 +247,9 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
             ensureAtMostSingleValue(type, values);
             JidSingleFormField.Builder jidSingleBuilder = FormField.jidSingleBuilder(fieldName);
             if (!values.isEmpty()) {
-                CharSequence jidCharSequence = values.get(0).getValue();
-                Jid jid = JidCreate.from(jidCharSequence);
-                jidSingleBuilder.setValue(jid);
+                String rawValue = values.get(0).getValue().toString();
+                Jid jid = JidCreate.from(rawValue);
+                jidSingleBuilder.setValue(jid, rawValue);
             }
             builder = jidSingleBuilder;
             break;
@@ -300,6 +301,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
     private static FormField.Builder<?, ?> parseBooleanFormField(String fieldName, List<FormField.Value> values) throws SmackParsingException {
         BooleanFormField.Builder builder = FormField.booleanBuilder(fieldName);
+        ensureAtMostSingleValue(builder.getType(), values);
         if (values.size() == 1) {
             String value = values.get(0).getValue().toString();
             builder.setValue(value);
@@ -321,7 +323,8 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     private static AbstractMultiFormField.Builder<?, ?> parseMultiKindFormField(AbstractMultiFormField.Builder<?, ?> builder,
                     List<FormField.Value> values) {
         for (FormField.Value value : values) {
-            builder.addValue(value.getValue());
+            String rawValue = value.getValue().toString();
+            builder.addValue(rawValue);
         }
         return builder;
     }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,12 @@ public class AbstractMultiFormField extends FormField {
 
     private final List<String> values;
 
+    private final List<String> rawValues;
+
     protected AbstractMultiFormField(Builder<?, ?> builder) {
         super(builder);
         values = CollectionUtil.cloneAndSeal(builder.values);
+        rawValues = CollectionUtil.cloneAndSeal(builder.rawValues);
     }
 
     @Override
@@ -39,11 +42,16 @@ public class AbstractMultiFormField extends FormField {
         return values;
     }
 
+    @Override
+    public final List<String> getRawValues() {
+        return rawValues;
+    }
 
-    public abstract static class Builder<F extends FormField, B extends FormField.Builder<F, B>>
+    public abstract static class Builder<F extends AbstractMultiFormField, B extends FormField.Builder<F, B>>
                     extends FormField.Builder<F, B> {
 
         private List<String> values;
+        private List<String> rawValues;
 
         protected Builder(AbstractMultiFormField formField) {
             super(formField);
@@ -57,6 +65,7 @@ public class AbstractMultiFormField extends FormField {
         private void ensureValuesAreInitialized() {
             if (values == null) {
                 values = new ArrayList<>();
+                rawValues = new ArrayList<>();
             }
         }
 
@@ -70,7 +79,9 @@ public class AbstractMultiFormField extends FormField {
         public B addValueVerbatim(CharSequence value) {
             ensureValuesAreInitialized();
 
-            values.add(value.toString());
+            String valueString = value.toString();
+            values.add(valueString);
+            rawValues.add(valueString);
             return getThis();
         }
 
@@ -83,7 +94,7 @@ public class AbstractMultiFormField extends FormField {
             ensureValuesAreInitialized();
 
             for (CharSequence value : values) {
-                this.values.add(value.toString());
+                addValueVerbatim(value);
             }
 
             return getThis();

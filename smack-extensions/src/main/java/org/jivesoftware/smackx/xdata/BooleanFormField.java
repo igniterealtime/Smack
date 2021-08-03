@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class BooleanFormField extends SingleValueFormField {
         return new Builder(this);
     }
 
-    public static final class Builder extends FormField.Builder<BooleanFormField, BooleanFormField.Builder> {
+    public static final class Builder extends SingleValueFormField.Builder<BooleanFormField, BooleanFormField.Builder> {
         private Boolean value;
 
         private Builder(BooleanFormField booleanFormField) {
@@ -57,6 +57,7 @@ public class BooleanFormField extends SingleValueFormField {
 
         @Override
         protected void resetInternal() {
+            super.resetInternal();
             value = null;
         }
 
@@ -74,11 +75,13 @@ public class BooleanFormField extends SingleValueFormField {
         }
 
         public Builder setValue(CharSequence value) {
-            boolean valueBoolean = ParserUtils.parseXmlBoolean(value.toString());
+            rawValue = value.toString();
+            boolean valueBoolean = ParserUtils.parseXmlBoolean(rawValue);
             return setValue(valueBoolean);
         }
 
         public Builder setValue(boolean value) {
+            rawValue = Boolean.toString(value);
             this.value = value;
             return this;
         }
