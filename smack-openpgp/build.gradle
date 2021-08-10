@@ -8,7 +8,7 @@ dependencies {
 	api project(':smack-extensions')
 	api project(':smack-experimental')
 
-	api 'org.pgpainless:pgpainless-core:0.2.0'
+	api 'org.pgpainless:pgpainless-core:0.2.8'
 
 	testImplementation "org.bouncycastle:bcprov-jdk15on:${bouncyCastleVersion}"
 

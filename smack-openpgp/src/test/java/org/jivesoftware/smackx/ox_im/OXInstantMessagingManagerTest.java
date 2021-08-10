@@ -155,7 +155,7 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
         assertTrue(metadata.isSigned() && metadata.isEncrypted());
 
         // Check, if one of Bobs keys was used for decryption
-        assertNotNull(bobSelf.getSigningKeyRing().getPublicKey(metadata.getDecryptionFingerprint().getKeyId()));
+        assertNotNull(bobSelf.getSigningKeyRing().getPublicKey(metadata.getDecryptionKey().getKeyId()));
 
         // TODO: I observed this assertTrue() to fail sporadically. As a first attempt to diagnose this, a message was
         // added to the assertion. However since most (all?) objects used in the message do not implement a proper

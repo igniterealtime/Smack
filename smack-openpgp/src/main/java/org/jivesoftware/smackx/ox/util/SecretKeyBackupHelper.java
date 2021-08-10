@@ -37,6 +37,7 @@ import org.bouncycastle.util.io.Streams;
 import org.jxmpp.jid.BareJid;
 import org.pgpainless.PGPainless;
 import org.pgpainless.algorithm.SymmetricKeyAlgorithm;
+import org.pgpainless.decryption_verification.ConsumerOptions;
 import org.pgpainless.decryption_verification.DecryptionStream;
 import org.pgpainless.encryption_signing.EncryptionOptions;
 import org.pgpainless.encryption_signing.EncryptionStream;
@@ -153,9 +154,8 @@ public class SecretKeyBackupHelper {
         try {
             DecryptionStream decryptionStream = PGPainless.decryptAndOrVerify()
                     .onInputStream(encryptedIn)
-                    .decryptWith(Passphrase.fromPassword(backupCode.toString()))
-                    .doNotVerify()
-                    .build();
+                    .withOptions(new ConsumerOptions()
+                            .addDecryptionPassphrase(Passphrase.fromPassword(backupCode.toString())));
 
             Streams.pipeAll(decryptionStream, plaintextOut);
             decryptionStream.close();
