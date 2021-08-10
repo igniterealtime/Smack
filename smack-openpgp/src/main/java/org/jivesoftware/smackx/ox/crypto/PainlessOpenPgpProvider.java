@@ -47,6 +47,7 @@ import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.util.io.Streams;
 import org.pgpainless.PGPainless;
 import org.pgpainless.algorithm.DocumentSignatureType;
+import org.pgpainless.decryption_verification.ConsumerOptions;
 import org.pgpainless.decryption_verification.DecryptionStream;
 import org.pgpainless.decryption_verification.MissingPublicKeyCallback;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
@@ -209,10 +210,10 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
 
         DecryptionStream cipherStream = PGPainless.decryptAndOrVerify()
                 .onInputStream(cipherText)
-                .decryptWith(getStore().getKeyRingProtector(), self.getSecretKeys())
-                .verifyWith(announcedPublicKeys)
-                .handleMissingPublicKeysWith(missingPublicKeyCallback)
-                .build();
+                .withOptions(new ConsumerOptions()
+                        .addDecryptionKeys(self.getSecretKeys(), getStore().getKeyRingProtector())
+                        .addVerificationCerts(announcedPublicKeys)
+                        .setMissingCertificateCallback(missingPublicKeyCallback));
 
         Streams.pipeAll(cipherStream, plainText);
 
