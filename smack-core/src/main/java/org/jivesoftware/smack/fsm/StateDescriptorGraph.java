@@ -186,6 +186,10 @@ public class StateDescriptorGraph {
 
         for (GraphVertex<Class<? extends StateDescriptor>> successor : sortedSuccessors) {
             GraphVertex<StateDescriptor> successorVertex = successorStateDescriptors.get(successor.element);
+            if (successorVertex == null) {
+                // The successor does not exist, probably because its module was not enabled.
+                continue;
+            }
             node.addOutgoingEdge(successorVertex);
 
             // Recurse further.
