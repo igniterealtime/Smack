@@ -47,6 +47,28 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     }
 
     /**
+     * Asserts that a MUC service can be discovered
+     *
+     * <p>From XEP-0045 § 6:</p>
+     * <blockquote>
+     * A MUC implementation MUST support Service Discovery (XEP-0030) [9] ("disco").
+     * </blockquote>
+     *
+     * <p>From XEP-0045 § 6.1:</p>
+     * <blockquote>
+     * An entity often discovers a MUC service by sending a Service Discovery items ("disco#items") request to its own
+     * server. The server then returns the services that are associated with it.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestForDiscoveringMUC() throws Exception {
+        DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(conOne).discoverItems(conOne.getXMPPServiceDomain());
+        assertTrue(items.getItems().stream().anyMatch(i -> i.getEntityID().toString().contains("conference"))); //TODO remove magic string, without making it disco=disco.
+    }
+
+    /**
      * Asserts that a MUC service can have its features discovered
      *
      * <p>From XEP-0045 § 6.2:</p>
