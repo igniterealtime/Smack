@@ -22,8 +22,6 @@ import java.util.List;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.xdata.form.FillableForm;
-import org.jivesoftware.smackx.xdata.form.Form;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -124,16 +122,22 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         }
     }
 
-    static void createModeratedMuc(MultiUserChat muc, Resourcepart resourceName) throws
-            SmackException.NoResponseException, XMPPException.XMPPErrorException,
-            InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
-            SmackException.NotConnectedException,
-            MultiUserChatException.MissingMucCreationAcknowledgeException,
-            MultiUserChatException.NotAMucServiceException {
-        muc.create(resourceName);
-        Form configForm = muc.getConfigurationForm();
-        FillableForm answerForm = configForm.getFillableForm();
-        answerForm.setAnswer("muc#roomconfig_moderatedroom", true); //TODO Add this to the MucConfigFormManager?
-        muc.sendConfigurationForm(answerForm);
+    static void createModeratedMuc(MultiUserChat muc, Resourcepart resourceName)
+                    throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException,
+                    MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException,
+                    MultiUserChatException.MissingMucCreationAcknowledgeException,
+                    MultiUserChatException.NotAMucServiceException,
+                    MultiUserChatException.MucConfigurationNotSupportedException {
+        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
+        handle.getConfigFormManager().makeModerated().submitConfigurationForm();
+    }
+
+    static void createHiddenMuc(MultiUserChat muc, Resourcepart resourceName)
+                    throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException,
+                    MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException,
+                    MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException,
+                    MultiUserChatException.MucConfigurationNotSupportedException {
+        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
+        handle.getConfigFormManager().makeHidden().submitConfigurationForm();
     }
 }
