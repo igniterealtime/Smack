@@ -136,4 +136,12 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         answerForm.setAnswer("muc#roomconfig_moderatedroom", true); //TODO Add this to the MucConfigFormManager?
         muc.sendConfigurationForm(answerForm);
     }
+
+    static void createHiddenMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException {
+        muc.create(resourceName);
+        Form configForm = muc.getConfigurationForm();
+        FillableForm answerForm = configForm.getFillableForm();
+        answerForm.setAnswer("muc#roomconfig_publicroom", false); //TODO Add this to the MucConfigFormManager?
+        muc.sendConfigurationForm(answerForm);
+    }
 }
