@@ -838,6 +838,16 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
         createModeratedMuc(mucAsSeenByOne, nicknameOne);
 
+        final MUCRole threeRole;
+        switch (sinttestConfiguration.compatibilityMode) {
+        default:
+            threeRole = MUCRole.visitor;
+            break;
+        case ejabberd:
+            threeRole = MUCRole.participant;
+            break;
+        }
+
         try {
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByThree.join(nicknameThree);
@@ -849,7 +859,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
                             JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
                             JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
-            assertEquals(MUCRole.visitor, mucAsSeenByOne.getOccupant(
+            assertEquals(threeRole, mucAsSeenByOne.getOccupant(
                             JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
         } finally {
             tryDestroy(mucAsSeenByOne);

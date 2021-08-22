@@ -117,6 +117,13 @@ public final class Configuration {
 
     public final DnsResolver dnsResolver;
 
+    public enum CompatibilityMode {
+        standardsCompliant,
+        ejabberd,
+    }
+
+    public final CompatibilityMode compatibilityMode;
+
     private Configuration(Configuration.Builder builder) throws KeyManagementException, NoSuchAlgorithmException {
         service = Objects.requireNonNull(builder.service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
@@ -192,6 +199,7 @@ public final class Configuration {
         this.verbose = builder.verbose;
 
         this.dnsResolver = builder.dnsResolver;
+        this.compatibilityMode = builder.compatibilityMode;
     }
 
     public boolean isAccountRegistrationPossible() {
@@ -245,6 +253,8 @@ public final class Configuration {
         private boolean verbose;
 
         private DnsResolver dnsResolver = DnsResolver.minidns;
+
+        private CompatibilityMode compatibilityMode = CompatibilityMode.standardsCompliant;
 
         private Builder() {
         }
@@ -425,6 +435,20 @@ public final class Configuration {
 
             DnsResolver dnsResolver = DnsResolver.valueOf(dnsResolverString);
             return setDnsResolver(dnsResolver);
+        }
+
+        public Builder setCompatibilityMode(CompatibilityMode compatibilityMode) {
+            this.compatibilityMode = compatibilityMode;
+            return this;
+        }
+
+        public Builder setCompatibilityMode(String compatibilityModeString) {
+            if (compatibilityModeString == null) {
+                return this;
+            }
+
+            CompatibilityMode compatibilityMode = CompatibilityMode.valueOf(compatibilityModeString);
+            return setCompatibilityMode(compatibilityMode);
         }
 
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
