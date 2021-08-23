@@ -23,7 +23,7 @@ import org.jivesoftware.smack.util.CollectionUtil;
 
 public abstract class SingleValueFormField extends FormField {
 
-    private final String rawValue;
+    private final Value rawValue;
 
     protected SingleValueFormField(Builder<?, ?> builder) {
         super(builder);
@@ -38,24 +38,23 @@ public abstract class SingleValueFormField extends FormField {
 
     public abstract CharSequence getValue();
 
-    public final String getRawValue() {
+    public final Value getRawValue() {
         return rawValue;
     }
 
     @Override
-    public final List<String> getRawValues() {
-        String rawValue = getRawValue();
+    public final List<Value> getRawValues() {
+        Value rawValue = getRawValue();
         return CollectionUtil.emptyOrSingletonListFrom(rawValue);
     }
 
     @Override
     protected void populateExtraXmlChildElements() {
-        CharSequence value = getValue();
-        if (value == null) {
+        if (rawValue == null) {
             return;
         }
 
-        extraXmlChildElements = Collections.singletonList(new Value(value));
+        extraXmlChildElements = Collections.singletonList(rawValue);
     }
 
     public abstract static class Builder<F extends SingleValueFormField, B extends Builder<F, B>>
@@ -65,11 +64,12 @@ public abstract class SingleValueFormField extends FormField {
             super(fieldName, type);
         }
 
-        protected Builder(FormField formField) {
+        protected Builder(SingleValueFormField formField) {
             super(formField);
+            rawValue = formField.getRawValue();
         }
 
-        protected String rawValue;
+        protected Value rawValue;
 
         @Override
         protected void resetInternal() {

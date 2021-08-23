@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.xdata;
 
 import org.jxmpp.jid.Jid;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class JidSingleFormField extends SingleValueFormField {
 
@@ -60,11 +62,13 @@ public class JidSingleFormField extends SingleValueFormField {
 
         public Builder setValue(Jid value, String rawValue) {
             this.value = value;
-            if (rawValue != null) {
-                this.rawValue = rawValue;
-            } else {
-                this.rawValue = value.toString();
-            }
+            this.rawValue = new Value(value);
+            return getThis();
+        }
+
+        public Builder setValue(Value value) throws XmppStringprepException {
+            this.value = JidCreate.from(value.getValue());
+            this.rawValue = value;
             return this;
         }
 

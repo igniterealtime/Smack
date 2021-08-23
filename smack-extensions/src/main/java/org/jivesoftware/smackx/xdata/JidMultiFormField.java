@@ -23,13 +23,14 @@ import java.util.List;
 import org.jivesoftware.smack.util.CollectionUtil;
 
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.util.JidUtil;
+import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public final class JidMultiFormField extends FormField {
 
     private final List<Jid> values;
 
-    private final List<String> rawValues;
+    private final List<Value> rawValues;
 
     JidMultiFormField(Builder builder) {
         super(builder);
@@ -43,7 +44,7 @@ public final class JidMultiFormField extends FormField {
     }
 
     @Override
-    public List<String> getRawValues() {
+    public List<Value> getRawValues() {
         return rawValues;
     }
 
@@ -54,7 +55,7 @@ public final class JidMultiFormField extends FormField {
     public static final class Builder extends FormField.Builder<JidMultiFormField, JidMultiFormField.Builder> {
         private List<Jid> values;
 
-        private List<String> rawValues;
+        private List<Value> rawValues;
 
         private Builder(JidMultiFormField jidMultiFormField) {
             super(jidMultiFormField);
@@ -79,27 +80,29 @@ public final class JidMultiFormField extends FormField {
         }
 
         public Builder addValue(Jid jid) {
-            return addValue(jid, null);
-        }
-
-        public Builder addValue(Jid jid, String rawValue) {
-            if (rawValue == null) {
-                rawValue = jid.toString();
-            }
+            Value value = new Value(jid);
 
             ensureValuesAreInitialized();
-
             values.add(jid);
-            rawValues.add(rawValue);
+            rawValues.add(value);
+
+            return getThis();
+        }
+
+        public Builder addValue(Value value) throws XmppStringprepException {
+            Jid jid = JidCreate.from(value.getValue());
+
+            ensureValuesAreInitialized();
+            values.add(jid);
+            rawValues.add(value);
 
             return this;
         }
 
         public Builder addValues(Collection<? extends Jid> jids) {
-            ensureValuesAreInitialized();
-
-            values.addAll(jids);
-            rawValues.addAll(JidUtil.toStringList(jids));
+            for (Jid jid : jids) {
+                addValue(jid);
+            }
             return this;
         }
 

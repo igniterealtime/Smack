@@ -49,9 +49,6 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider;
 
-import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
-
 /**
  * The DataFormProvider parses DataForm packets.
  *
@@ -237,9 +234,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         case jid_multi:
             JidMultiFormField.Builder jidMultiBuilder = FormField.jidMultiBuilder(fieldName);
             for (FormField.Value value : values) {
-                String rawValue = value.getValue().toString();
-                Jid jid = JidCreate.from(rawValue);
-                jidMultiBuilder.addValue(jid, rawValue);
+                jidMultiBuilder.addValue(value);
             }
             builder = jidMultiBuilder;
             break;
@@ -247,9 +242,8 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
             ensureAtMostSingleValue(type, values);
             JidSingleFormField.Builder jidSingleBuilder = FormField.jidSingleBuilder(fieldName);
             if (!values.isEmpty()) {
-                String rawValue = values.get(0).getValue().toString();
-                Jid jid = JidCreate.from(rawValue);
-                jidSingleBuilder.setValue(jid, rawValue);
+                FormField.Value value = values.get(0);
+                jidSingleBuilder.setValue(value);
             }
             builder = jidSingleBuilder;
             break;
@@ -303,7 +297,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         BooleanFormField.Builder builder = FormField.booleanBuilder(fieldName);
         ensureAtMostSingleValue(builder.getType(), values);
         if (values.size() == 1) {
-            String value = values.get(0).getValue().toString();
+            FormField.Value value = values.get(0);
             builder.setValue(value);
         }
         return builder;

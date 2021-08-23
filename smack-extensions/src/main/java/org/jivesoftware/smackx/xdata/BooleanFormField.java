@@ -71,17 +71,21 @@ public class BooleanFormField extends SingleValueFormField {
         @Deprecated
         // TODO: Remove in Smack 4.6.
         public Builder addValue(CharSequence value) {
-            return setValue(value);
+            return setValue(new Value(value));
         }
 
         public Builder setValue(CharSequence value) {
-            rawValue = value.toString();
-            boolean valueBoolean = ParserUtils.parseXmlBoolean(rawValue);
-            return setValue(valueBoolean);
+            return setValue(new Value(value));
+        }
+
+        public Builder setValue(Value value) {
+            this.value = ParserUtils.parseXmlBoolean(value.getValue().toString());
+            rawValue = value;
+            return getThis();
         }
 
         public Builder setValue(boolean value) {
-            rawValue = Boolean.toString(value);
+            rawValue = new Value(Boolean.toString(value));
             this.value = value;
             return this;
         }

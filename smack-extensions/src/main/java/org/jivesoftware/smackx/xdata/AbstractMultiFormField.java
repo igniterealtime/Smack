@@ -27,35 +27,26 @@ import org.jxmpp.util.XmppDateTime;
 
 public class AbstractMultiFormField extends FormField {
 
-    private final List<String> values;
-
-    private final List<String> rawValues;
+    private final List<Value> values;
 
     protected AbstractMultiFormField(Builder<?, ?> builder) {
         super(builder);
         values = CollectionUtil.cloneAndSeal(builder.values);
-        rawValues = CollectionUtil.cloneAndSeal(builder.rawValues);
     }
 
     @Override
-    public final List<String> getValues() {
+    public final List<Value> getRawValues() {
         return values;
-    }
-
-    @Override
-    public final List<String> getRawValues() {
-        return rawValues;
     }
 
     public abstract static class Builder<F extends AbstractMultiFormField, B extends FormField.Builder<F, B>>
                     extends FormField.Builder<F, B> {
 
-        private List<String> values;
-        private List<String> rawValues;
+        private List<Value> values;
 
         protected Builder(AbstractMultiFormField formField) {
             super(formField);
-            values = CollectionUtil.newListWith(formField.getValues());
+            values = CollectionUtil.newListWith(formField.getRawValues());
         }
 
         protected Builder(String fieldName, FormField.Type type) {
@@ -65,7 +56,6 @@ public class AbstractMultiFormField extends FormField {
         private void ensureValuesAreInitialized() {
             if (values == null) {
                 values = new ArrayList<>();
-                rawValues = new ArrayList<>();
             }
         }
 
@@ -77,11 +67,13 @@ public class AbstractMultiFormField extends FormField {
         public abstract B addValue(CharSequence value);
 
         public B addValueVerbatim(CharSequence value) {
+            return addValueVerbatim(new Value(value));
+        }
+
+        public B addValueVerbatim(Value value) {
             ensureValuesAreInitialized();
 
-            String valueString = value.toString();
-            values.add(valueString);
-            rawValues.add(valueString);
+            values.add(value);
             return getThis();
         }
 

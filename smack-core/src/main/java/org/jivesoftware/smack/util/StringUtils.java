@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ package org.jivesoftware.smack.util;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -604,5 +605,14 @@ public class StringUtils {
     public static List<String> splitLinesPortable(String input) {
         String[] lines = input.split(PORTABLE_NEWLINE_REGEX);
         return Arrays.asList(lines);
+    }
+
+    public static List<String> toStrings(Collection<? extends CharSequence> charSequences) {
+        List<String> res = new ArrayList<>(charSequences.size());
+        for (CharSequence cs : charSequences) {
+            String string = cs.toString();
+            res.add(string);
+        }
+        return res;
     }
 }

@@ -35,6 +35,11 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 public class FormNodeProvider extends EmbeddedExtensionProvider<FormNode> {
     @Override
     protected FormNode createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends XmlElement> content) {
-        return new FormNode(FormNodeType.valueOfFromElementName(currentElement, currentNamespace), attributeMap.get("node"), (DataForm) content.iterator().next());
+        DataForm dataForm = null;
+        if (!content.isEmpty()) {
+            dataForm = (DataForm) content.get(0);
+        }
+
+        return new FormNode(FormNodeType.valueOfFromElementName(currentElement, currentNamespace), attributeMap.get("node"), dataForm);
     }
 }

@@ -700,7 +700,7 @@ public final class EntityCapsManager extends Manager {
             for (FormField f : fs) {
                 sb.append(f.getFieldName());
                 sb.append('<');
-                formFieldValuesToCaps(f.getRawValues(), sb);
+                formFieldValuesToCaps(f.getRawValueCharSequences(), sb);
             }
         }
 

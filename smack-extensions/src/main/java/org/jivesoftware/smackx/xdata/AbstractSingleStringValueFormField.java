@@ -74,8 +74,15 @@ public class AbstractSingleStringValueFormField extends SingleValueFormField {
             return setValue(value);
         }
 
+        public B setValue(Value value) {
+            this.value = value.getValue().toString();
+            this.rawValue = value;
+            return getThis();
+        }
+
         public B setValue(CharSequence value) {
-            this.rawValue = this.value = value.toString();
+            this.value = value.toString();
+            rawValue = new Value(this.value);
             return getThis();
         }
 

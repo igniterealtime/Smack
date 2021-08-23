@@ -269,9 +269,25 @@ public abstract class FormField implements XmlElement {
      *
      * @return a List of the default values or answered values of the question.
      */
-    public abstract List<? extends CharSequence> getValues();
+    public List<? extends CharSequence> getValues() {
+        return getRawValueCharSequences();
+    }
 
-    public abstract List<String> getRawValues();
+    public abstract List<Value> getRawValues();
+
+    private transient List<CharSequence> rawValueCharSequences;
+
+    public final List<CharSequence> getRawValueCharSequences() {
+        if (rawValueCharSequences == null) {
+            List<Value> rawValues = getRawValues();
+            rawValueCharSequences = new ArrayList<>(rawValues.size());
+            for (Value value : rawValues) {
+                rawValueCharSequences.add(value.value);
+            }
+        }
+
+        return rawValueCharSequences;
+    }
 
     public boolean hasValueSet() {
         List<?> values = getValues();
@@ -385,12 +401,15 @@ public abstract class FormField implements XmlElement {
 
     protected transient List<XmlElement> extraXmlChildElements;
 
+    /**
+     * Populate @{link {@link #extraXmlChildElements}}. Note that this method may be overridden by subclasses.
+     */
     protected void populateExtraXmlChildElements() {
-        List<? extends CharSequence> values = getValues();
+        List<Value> values = getRawValues();
+        // Note that we need to create a new ArrayList here, since subclasses may add to it by overriding
+        // populateExtraXmlChildElements.
         extraXmlChildElements = new ArrayList<>(values.size());
-        for (CharSequence value : values) {
-            extraXmlChildElements.add(new Value(value));
-        }
+        extraXmlChildElements.addAll(values);
     }
 
     @Override
@@ -414,7 +433,8 @@ public abstract class FormField implements XmlElement {
             populateExtraXmlChildElements();
         }
 
-        if (formFieldChildElements.isEmpty() && extraXmlChildElements == null) {
+        if (formFieldChildElements.isEmpty()
+                        && (extraXmlChildElements == null || extraXmlChildElements.isEmpty())) {
             buf.closeEmptyElement();
         } else {
             buf.rightAngleBracket();
