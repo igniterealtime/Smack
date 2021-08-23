@@ -38,11 +38,7 @@ public class FormNode extends NodeExtension {
      * @param submitForm The form
      */
     public FormNode(FormNodeType formType, DataForm submitForm) {
-        super(formType.getNodeElement());
-
-        if (submitForm == null)
-            throw new IllegalArgumentException("Submit form cannot be null");
-        configForm = submitForm;
+        this(formType, null, submitForm);
     }
 
     /**
@@ -55,9 +51,6 @@ public class FormNode extends NodeExtension {
      */
     public FormNode(FormNodeType formType, String nodeId, DataForm submitForm) {
         super(formType.getNodeElement(), nodeId);
-
-        if (submitForm == null)
-            throw new IllegalArgumentException("Submit form cannot be null");
         configForm = submitForm;
     }
 
