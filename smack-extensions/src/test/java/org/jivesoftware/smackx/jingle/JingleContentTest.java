@@ -22,20 +22,21 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContentElement;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Test the JingleContent class.
+ * Test the JingleContentElement class.
  */
 public class JingleContentTest extends SmackTestSuite {
 
     @Test
     public void emptyBuilderThrowsTest() {
-        JingleContent.Builder builder = JingleContent.getBuilder();
+        JingleContentElement.Builder builder = JingleContentElement.getBuilder();
         assertThrows(IllegalArgumentException.class, () -> {
             builder.build();
         });
@@ -43,8 +44,8 @@ public class JingleContentTest extends SmackTestSuite {
 
     @Test
     public void onlyCreatorBuilderThrowsTest() {
-        JingleContent.Builder builder = JingleContent.getBuilder();
-        builder.setCreator(JingleContent.Creator.initiator);
+        JingleContentElement.Builder builder = JingleContentElement.getBuilder();
+        builder.setCreator(JingleContentElement.Creator.initiator);
         assertThrows(IllegalArgumentException.class, () -> {
             builder.build();
         });
@@ -53,29 +54,29 @@ public class JingleContentTest extends SmackTestSuite {
     @Test
     public void parserTest() throws Exception {
 
-        JingleContent.Builder builder = JingleContent.getBuilder();
+        JingleContentElement.Builder builder = JingleContentElement.getBuilder();
 
-        builder.setCreator(JingleContent.Creator.initiator);
+        builder.setCreator(JingleContentElement.Creator.initiator);
         builder.setName("A name");
 
-        JingleContent content = builder.build();
+        JingleContentElement content = builder.build();
         assertNotNull(content);
         assertNull(content.getDescription());
-        assertEquals(JingleContent.Creator.initiator, content.getCreator());
+        assertEquals(JingleContentElement.Creator.initiator, content.getCreator());
         assertEquals("A name", content.getName());
 
-        builder.setSenders(JingleContent.Senders.both);
+        builder.setSenders(JingleContentElement.Senders.both);
         content = builder.build();
-        assertEquals(JingleContent.Senders.both, content.getSenders());
+        assertEquals(JingleContentElement.Senders.both, content.getSenders());
 
         builder.setDisposition("session");
-        JingleContent content1 = builder.build();
+        JingleContentElement content1 = builder.build();
         assertEquals("session", content1.getDisposition());
-        assertNotSame(content.toXML().toString(), content1.toXML().toString());
-        assertEquals(content1.toXML().toString(), builder.build().toXML().toString());
+        assertNotSame(content.toXML(new XmlEnvironment(null)).toString(), content1.toXML(new XmlEnvironment(null)).toString());
+        assertEquals(content1.toXML(new XmlEnvironment(null)).toString(), builder.build().toXML(new XmlEnvironment(null)).toString());
 
         String xml =
-                "<content xmlns='urn:xmpp:jingle:1' creator='initiator' disposition='session' name='A name' senders='both'/>";
+                "<content creator='initiator' disposition='session' name='A name' senders='both'/>";
         assertEquals(xml, content1.toXML().toString());
     }
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,30 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.NamedElement;
 
 /**
  * An element found usually in 'description' elements.
+ * <pre> {@code
  *
+ * <jingle>
+ *     <content>
+ *         <description>
+ *             <XYZ/> <- We live here.
+ *         </description>
+ *         <transport/>
+ *         <security/>
+ *     </content>
+ * </jingle>
+ * }
+ * </pre>
  */
-public interface JingleContentDescriptionChildElement extends XmlElement {
+public abstract class JingleContentDescriptionChildElement implements NamedElement {
 
+    public static final String ELEMENT = "payload-type";
+
+    @Override
+    public String getElementName() {
+        return ELEMENT;
+    }
 }

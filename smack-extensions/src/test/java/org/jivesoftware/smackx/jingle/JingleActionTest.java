@@ -16,14 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static junit.framework.TestCase.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 /**
  * Test the JingleAction class.
@@ -40,10 +39,8 @@ public class JingleActionTest extends SmackTestSuite {
             }
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void nonExistentEnumTest() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            JingleAction.fromString("inexistent-action");
-        });
+        JingleAction.fromString("inexistent-action");
     }
 }

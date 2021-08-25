@@ -26,16 +26,16 @@ public class JingleTest {
 
     @Test
     public void noRedundantNamespaceTest() {
-        Jingle.Builder jingleBuilder = Jingle.builder("test-id");
+        JingleElement.Builder jingleBuilder = JingleElement.builder("test-id");
         jingleBuilder.setSessionId("MySession");
         jingleBuilder.setAction(JingleAction.content_accept);
 
-        JingleContent.Builder jingleContentBuilder = JingleContent.getBuilder();
+        JingleContentElement.Builder jingleContentBuilder = JingleContentElement.getBuilder();
         jingleContentBuilder.setName("Hello world");
-        jingleContentBuilder.setCreator(JingleContent.Creator.initiator);
+        jingleContentBuilder.setCreator(JingleContentElement.Creator.initiator);
 
         jingleBuilder.addJingleContent(jingleContentBuilder.build());
-        Jingle iq = jingleBuilder.build();
+        JingleElement iq = jingleBuilder.build();
 
         String actualXml = iq.toXML(StreamOpen.CLIENT_NAMESPACE).toString();
         String expectedXml

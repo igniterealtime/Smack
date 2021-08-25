@@ -21,55 +21,55 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
 
 import org.junit.jupiter.api.Test;
 
 /**
- * Test JingleReason functionality.
+ * Test JingleReasonElement functionality.
  */
 public class JingleReasonTest extends SmackTestSuite {
 
     @Test
     public void parserTest() {
         assertReasonXml("<reason><success/></reason>",
-                JingleReason.Success);
+                JingleReasonElement.Success);
         assertReasonXml("<reason><busy/></reason>",
-                JingleReason.Busy);
+                JingleReasonElement.Busy);
         assertReasonXml("<reason><cancel/></reason>",
-                JingleReason.Cancel);
+                JingleReasonElement.Cancel);
         assertReasonXml("<reason><connectivity-error/></reason>",
-                JingleReason.ConnectivityError);
+                JingleReasonElement.ConnectivityError);
         assertReasonXml("<reason><decline/></reason>",
-                JingleReason.Decline);
+                JingleReasonElement.Decline);
         assertReasonXml("<reason><expired/></reason>",
-                JingleReason.Expired);
+                JingleReasonElement.Expired);
         assertReasonXml("<reason><unsupported-transports/></reason>",
-                JingleReason.UnsupportedTransports);
+                JingleReasonElement.UnsupportedTransports);
         assertReasonXml("<reason><failed-transport/></reason>",
-                JingleReason.FailedTransport);
+                JingleReasonElement.FailedTransport);
         assertReasonXml("<reason><general-error/></reason>",
-                JingleReason.GeneralError);
+                JingleReasonElement.GeneralError);
         assertReasonXml("<reason><gone/></reason>",
-                JingleReason.Gone);
+                JingleReasonElement.Gone);
         assertReasonXml("<reason><media-error/></reason>",
-                JingleReason.MediaError);
+                JingleReasonElement.MediaError);
         assertReasonXml("<reason><security-error/></reason>",
-                JingleReason.SecurityError);
+                JingleReasonElement.SecurityError);
         assertReasonXml("<reason><unsupported-applications/></reason>",
-                JingleReason.UnsupportedApplications);
+                JingleReasonElement.UnsupportedApplications);
         assertReasonXml("<reason><timeout/></reason>",
-                JingleReason.Timeout);
+                JingleReasonElement.Timeout);
         assertReasonXml("<reason><failed-application/></reason>",
-                JingleReason.FailedApplication);
+                JingleReasonElement.FailedApplication);
         assertReasonXml("<reason><incompatible-parameters/></reason>",
-                JingleReason.IncompatibleParameters);
+                JingleReasonElement.IncompatibleParameters);
         assertReasonXml("<reason><alternative-session><sid>1234</sid></alternative-session></reason>",
-                JingleReason.AlternativeSession("1234"));
+                JingleReasonElement.AlternativeSession("1234"));
     }
 
-    private static void assertReasonXml(String expected, JingleReason reason) {
-        String actualXml = reason.toXML(JingleReason.NAMESPACE).toString();
+    private static void assertReasonXml(String expected, JingleReasonElement reason) {
+        String actualXml = reason.toXML(JingleReasonElement.ELEMENT).toString();
         assertEquals(expected, actualXml);
     }
 
@@ -77,7 +77,7 @@ public class JingleReasonTest extends SmackTestSuite {
     public void alternativeSessionEmptyStringTest() {
         assertThrows(NullPointerException.class, () ->
             // Alternative sessionID must not be empty
-            JingleReason.AlternativeSession("")
+            JingleReasonElement.AlternativeSession("")
         );
     }
 
@@ -85,14 +85,14 @@ public class JingleReasonTest extends SmackTestSuite {
     public void alternativeSessionNullStringTest() {
         assertThrows(NullPointerException.class, () ->
             // Alternative sessionID must not be null
-            JingleReason.AlternativeSession(null)
+            JingleReasonElement.AlternativeSession(null)
         );
     }
 
     @Test
     public void illegalArgumentTest() {
         assertThrows(IllegalArgumentException.class, () ->
-            JingleReason.Reason.fromString("illegal-reason")
+            JingleReasonElement.Reason.fromString("illegal-reason")
         );
     }
 }

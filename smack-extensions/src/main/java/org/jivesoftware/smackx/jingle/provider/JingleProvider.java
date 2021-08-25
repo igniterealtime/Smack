@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
+
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IqData;
@@ -27,152 +29,168 @@ import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParser.Event;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
-import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
-import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
-import org.jivesoftware.smackx.jingle.element.UnknownJingleContentDescription;
-import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
+import org.jivesoftware.smackx.jingle.element.JingleContentElement;
+import org.jivesoftware.smackx.jingle.element.JingleContentSecurityElement;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportElement;
+import org.jivesoftware.smackx.jingle.element.JingleElement;
+import org.jivesoftware.smackx.jingle.element.JingleReasonElement;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentDescriptionElement;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentSecurityElement;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransportElement;
 
 import org.jxmpp.jid.FullJid;
 
-public class JingleProvider extends IqProvider<Jingle> {
+public class JingleProvider extends IqProvider<JingleElement> {
 
     private static final Logger LOGGER = Logger.getLogger(JingleProvider.class.getName());
 
     @Override
-    public Jingle parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        Jingle.Builder builder = Jingle.builder(iqData);
+    public JingleElement parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+        throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+        JingleElement.Builder builder = JingleElement.builder(iqData);
 
-        String actionString = parser.getAttributeValue("", Jingle.ACTION_ATTRIBUTE_NAME);
+        String actionString = parser.getAttributeValue("", JingleElement.ACTION_ATTRIBUTE_NAME);
         if (actionString != null) {
             JingleAction action = JingleAction.fromString(actionString);
             builder.setAction(action);
         }
 
-        FullJid initiator = ParserUtils.getFullJidAttribute(parser, Jingle.INITIATOR_ATTRIBUTE_NAME);
+        FullJid initiator = ParserUtils.getFullJidAttribute(parser, JingleElement.INITIATOR_ATTRIBUTE_NAME);
         builder.setInitiator(initiator);
 
-        FullJid responder = ParserUtils.getFullJidAttribute(parser, Jingle.RESPONDER_ATTRIBUTE_NAME);
+        FullJid responder = ParserUtils.getFullJidAttribute(parser, JingleElement.RESPONDER_ATTRIBUTE_NAME);
         builder.setResponder(responder);
 
-        String sessionId = parser.getAttributeValue("", Jingle.SESSION_ID_ATTRIBUTE_NAME);
+        String sessionId = parser.getAttributeValue("", JingleElement.SESSION_ID_ATTRIBUTE_NAME);
         builder.setSessionId(sessionId);
 
 
         outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
+            Event eventType = parser.next();
             switch (eventType) {
-            case START_ELEMENT:
-                String tagName = parser.getName();
-                switch (tagName) {
-                case JingleContent.ELEMENT:
-                    JingleContent content = parseJingleContent(parser, parser.getDepth());
-                    builder.addJingleContent(content);
-                    break;
-                case JingleReason.ELEMENT:
-                    parser.next();
-                    String reasonString = parser.getName();
-                    JingleReason reason;
-                    if (reasonString.equals("alternative-session")) {
-                        parser.next();
-                        String sid = parser.nextText();
-                        reason = new JingleReason.AlternativeSession(sid);
-                    } else {
-                        reason = new JingleReason(Reason.fromString(reasonString));
+                case START_ELEMENT:
+                    String tagName = parser.getName();
+                    switch (tagName) {
+                        case JingleContentElement.ELEMENT:
+                            JingleContentElement content = parseJingleContent(parser, parser.getDepth());
+                            builder.addJingleContent(content);
+                            break;
+                        case JingleReasonElement.ELEMENT:
+                            parser.next();
+                            String reasonString = parser.getName();
+                            JingleReasonElement reason;
+                            if (reasonString.equals("alternative-session")) {
+                                parser.next();
+                                String sid = parser.nextText();
+                                reason = new JingleReasonElement.AlternativeSession(sid);
+                            } else {
+                                reason = new JingleReasonElement(JingleReasonElement.Reason.fromString(reasonString));
+                            }
+                            builder.setReason(reason);
+                            break;
+                        default:
+                            LOGGER.severe("Unknown Jingle element: " + tagName);
+                            break;
                     }
-                    builder.setReason(reason);
+                    break;
+                case END_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
                     break;
                 default:
-                    LOGGER.severe("Unknown Jingle element: " + tagName);
+                    LOGGER.severe("Unknown Jingle event: " + eventType);
                     break;
-                }
-                break;
-            case END_ELEMENT:
-                if (parser.getDepth() == initialDepth) {
-                    break outerloop;
-                }
-                break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
-                break;
             }
         }
 
         return builder.build();
     }
 
-    public static JingleContent parseJingleContent(XmlPullParser parser, final int initialDepth)
-                    throws XmlPullParserException, IOException, SmackParsingException {
-        JingleContent.Builder builder = JingleContent.getBuilder();
+    private static JingleContentElement parseJingleContent(XmlPullParser parser, final int initialDepth)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+        JingleContentElement.Builder builder = JingleContentElement.getBuilder();
 
-        String creatorString = parser.getAttributeValue("", JingleContent.CREATOR_ATTRIBUTE_NAME);
-        JingleContent.Creator creator = JingleContent.Creator.valueOf(creatorString);
+        String creatorString = parser.getAttributeValue("", JingleContentElement.CREATOR_ATTRIBUTE_NAME);
+        JingleContentElement.Creator creator = JingleContentElement.Creator.valueOf(creatorString);
         builder.setCreator(creator);
 
-        String disposition = parser.getAttributeValue("", JingleContent.DISPOSITION_ATTRIBUTE_NAME);
+        String disposition = parser.getAttributeValue("", JingleContentElement.DISPOSITION_ATTRIBUTE_NAME);
         builder.setDisposition(disposition);
 
-        String name = parser.getAttributeValue("", JingleContent.NAME_ATTRIBUTE_NAME);
+        String name = parser.getAttributeValue("", JingleContentElement.NAME_ATTRIBUTE_NAME);
         builder.setName(name);
 
-        String sendersString = parser.getAttributeValue("", JingleContent.SENDERS_ATTRIBUTE_NAME);
+        String sendersString = parser.getAttributeValue("", JingleContentElement.SENDERS_ATTRIBUTE_NAME);
         if (sendersString != null) {
-            JingleContent.Senders senders = JingleContent.Senders.valueOf(sendersString);
+            JingleContentElement.Senders senders = JingleContentElement.Senders.valueOf(sendersString);
             builder.setSenders(senders);
         }
 
         outerloop: while (true) {
-            XmlPullParser.Event eventType = parser.next();
+            Event eventType = parser.next();
             switch (eventType) {
-            case START_ELEMENT:
-                String tagName = parser.getName();
-                String namespace = parser.getNamespace();
-                switch (tagName) {
-                case JingleContentDescription.ELEMENT: {
-                    JingleContentDescription description;
-                    JingleContentDescriptionProvider<?> provider = JingleContentProviderManager.getJingleContentDescriptionProvider(namespace);
-                    if (provider == null) {
-                        StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
-                        description = new UnknownJingleContentDescription(standardExtensionElement);
+                case START_ELEMENT:
+                    String tagName = parser.getName();
+                    String namespace = parser.getNamespace();
+                    switch (tagName) {
+                        case JingleContentDescriptionElement.ELEMENT: {
+                            JingleContentDescriptionElement description;
+                            JingleContentDescriptionProvider<?> provider = JingleManager.getJingleDescriptionProvider(namespace);
+                            if (provider == null) {
+                                StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                                description = new UnknownJingleContentDescriptionElement(standardExtensionElement);
+                            }
+                            else {
+                                description = provider.parse(parser);
+                            }
+                            builder.setDescription(description);
+                            break;
+                        }
+                        case JingleContentTransportElement.ELEMENT: {
+                            JingleContentTransportElement transport;
+                            JingleContentTransportProvider<?> provider = JingleManager.getJingleTransportProvider(namespace);
+                            if (provider == null) {
+                                StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                                transport = new UnknownJingleContentTransportElement(standardExtensionElement);
+                            }
+                            else {
+                                transport = provider.parse(parser);
+                            }
+                            builder.setTransport(transport);
+                            break;
+                        }
+                        case JingleContentSecurityElement.ELEMENT: {
+                            JingleContentSecurityElement security;
+                            JingleContentSecurityProvider<?> provider = JingleManager.getJingleSecurityProvider(namespace);
+                            if (provider == null) {
+                                StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                                security = new UnknownJingleContentSecurityElement(standardExtensionElement);
+                            } else {
+                                security = provider.parse(parser);
+                            }
+                            builder.setSecurity(security);
+                            break;
+                        }
+                        default:
+                            LOGGER.severe("Unknown Jingle content element: " + tagName);
+                            break;
                     }
-                    else {
-                        description = provider.parse(parser);
-                    }
-                    builder.setDescription(description);
                     break;
-                }
-                case JingleContentTransport.ELEMENT: {
-                    JingleContentTransport transport;
-                    JingleContentTransportProvider<?> provider = JingleContentProviderManager.getJingleContentTransportProvider(namespace);
-                    if (provider == null) {
-                        StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
-                        transport = new UnknownJingleContentTransport(standardExtensionElement);
+                case END_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
                     }
-                    else {
-                        transport = provider.parse(parser);
-                    }
-                    builder.setTransport(transport);
                     break;
-                }
                 default:
-                    LOGGER.severe("Unknown Jingle content element: " + tagName);
+                    LOGGER.severe("Unknown Jingle content event: " + eventType);
                     break;
-                }
-                break;
-            case END_ELEMENT:
-                if (parser.getDepth() == initialDepth) {
-                    break outerloop;
-                }
-                break;
-            default:
-                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
-                break;
             }
         }
 

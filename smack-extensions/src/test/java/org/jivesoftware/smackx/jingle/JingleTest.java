@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
-import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
+import org.jivesoftware.smackx.jingle.element.JingleElement;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.FullJid;
@@ -38,7 +38,7 @@ public class JingleTest extends SmackTestSuite {
 
     @Test
     public void emptyBuilderTest() {
-        Jingle.Builder builder = Jingle.builder("id");
+        JingleElement.Builder builder = JingleElement.builder("id");
         assertThrows(IllegalArgumentException.class, () -> {
             builder.build();
         });
@@ -48,7 +48,7 @@ public class JingleTest extends SmackTestSuite {
     public void onlySessionIdBuilderTest() {
         String sessionId = "testSessionId";
 
-        Jingle.Builder builder = Jingle.builder("id");
+        JingleElement.Builder builder = JingleElement.builder("id");
         builder.setSessionId(sessionId);
         assertThrows(IllegalArgumentException.class, () -> {
             builder.build();
@@ -59,7 +59,7 @@ public class JingleTest extends SmackTestSuite {
     public void parserTest() throws XmppStringprepException {
         String sessionId = "testSessionId";
 
-        Jingle.Builder builder = Jingle.builder("id");
+        JingleElement.Builder builder = JingleElement.builder("id");
         builder.setSessionId(sessionId);
         builder.setAction(JingleAction.session_initiate);
 
@@ -68,7 +68,7 @@ public class JingleTest extends SmackTestSuite {
         builder.setInitiator(romeo);
         builder.setResponder(juliet);
 
-        Jingle jingle = builder.build();
+        JingleElement jingle = builder.build();
         assertNotNull(jingle);
         assertEquals(romeo, jingle.getInitiator());
         assertEquals(juliet, jingle.getResponder());

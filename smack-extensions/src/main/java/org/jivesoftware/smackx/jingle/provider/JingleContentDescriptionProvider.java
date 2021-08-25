@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2021 Florian Schmaus
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,14 +24,14 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionElement;
 
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
-
-public abstract class JingleContentDescriptionProvider<D extends JingleContentDescription>
+public abstract class JingleContentDescriptionProvider<D extends JingleContentDescriptionElement>
                 extends ExtensionElementProvider<D> {
 
     @Override
     public abstract D parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
+    public abstract String getNamespace();
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,24 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.jingle.element.JingleError;
+import org.jivesoftware.smackx.jingle.element.JingleErrorElement;
 
-public class JingleErrorProvider extends ExtensionElementProvider<JingleError> {
+public class JingleErrorProvider extends ExtensionElementProvider<JingleErrorElement> {
 
     @Override
-    public JingleError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public JingleErrorElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String errorName = parser.getName();
-        return JingleError.fromString(errorName);
+        return JingleErrorElement.fromString(errorName);
     }
 
 }

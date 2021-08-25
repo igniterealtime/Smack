@@ -31,6 +31,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
@@ -611,7 +612,7 @@ public class Socks5ByteStreamManagerTest {
         // initiator can't connect to proxy because it is not running
         protocol.verifyAll();
         Throwable actualCause = e.getCause();
-        assertEquals(TimeoutException.class, actualCause.getClass(), "Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause));
+        assertEquals(ExecutionException.class, actualCause.getClass(), "Unexpected throwable: " + actualCause + '.' + ExceptionUtil.getStackTrace(actualCause));
     }
 
     /**
