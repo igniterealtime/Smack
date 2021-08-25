@@ -41,6 +41,8 @@ import org.jxmpp.jid.impl.JidCreate;
  */
 public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
+    public static final MamPrefsIQProvider INSTANCE = new MamPrefsIQProvider();
+
     @Override
     public MamPrefsIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String defaultBehaviorString = parser.getAttributeValue("", "default");
