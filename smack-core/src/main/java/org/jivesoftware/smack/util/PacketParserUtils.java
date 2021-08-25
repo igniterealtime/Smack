@@ -549,8 +549,8 @@ public class PacketParserUtils {
                     if (provider != null) {
                             iqPacket = provider.parse(parser, iqData, outerXmlEnvironment);
                     }
-                    // Note that if we reach this code, it is guranteed that the result IQ contained a child element
-                    // (RFC 6120 § 8.2.3 6) because otherwhise we would have reached the END_ELEMENT first.
+                    // Note that if we reach this code, it is guaranteed that the result IQ contained a child element
+                    // (RFC 6120 § 8.2.3 6) because otherwise we would have reached the END_ELEMENT first.
                     else {
                         // No Provider found for the IQ stanza, parse it to an UnparsedIQ instance
                         // so that the content of the IQ can be examined later on
