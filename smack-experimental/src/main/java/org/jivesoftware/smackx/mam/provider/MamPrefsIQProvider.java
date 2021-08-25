@@ -43,15 +43,10 @@ public class MamPrefsIQProvider extends IQProvider<MamPrefsIQ> {
 
     @Override
     public MamPrefsIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
-        String iqType = parser.getAttributeValue("", "type");
         String defaultBehaviorString = parser.getAttributeValue("", "default");
         DefaultBehavior defaultBehavior = null;
         if (defaultBehaviorString != null) {
             defaultBehavior = DefaultBehavior.valueOf(defaultBehaviorString);
-        }
-
-        if (iqType == null) {
-            iqType = "result";
         }
 
         List<Jid> alwaysJids = null;
