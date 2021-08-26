@@ -29,9 +29,9 @@ import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
-import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
+import org.jivesoftware.smackx.mam.element.MamVersion;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class QueryArchiveTest extends MamTest {
 
     private static final String mamSimpleQueryIQ = "<iq id='sarasa' type='set'>" + "<query xmlns='urn:xmpp:mam:2' queryid='testid'>"
             + "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>" + "<value>"
-            + MamElements.NAMESPACE + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
+            + MamVersion.MAM2.getNamespace() + "</value>" + "</field>" + "</x>" + "</query>" + "</iq>";
 
     private static final String mamQueryResultExample = "<message to='hag66@shakespeare.lit/pda' from='coven@chat.shakespeare.lit' id='iasd207'>"
             + "<result xmlns='urn:xmpp:mam:2' queryid='g27' id='34482-21985-73620'>"
@@ -54,7 +54,7 @@ public class QueryArchiveTest extends MamTest {
     @Test
     public void checkMamQueryIQ() throws Exception {
         DataForm dataForm = getNewMamForm();
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(MamVersion.MAM2, queryId, dataForm);
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.setStanzaId("sarasa");
         assertEquals(mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString(), mamSimpleQueryIQ);
@@ -80,7 +80,7 @@ public class QueryArchiveTest extends MamTest {
 
         Forwarded<Message> forwarded = new Forwarded<>(forwardedMessage, delay);
 
-        message.addExtension(new MamResultExtension("g27", "34482-21985-73620", forwarded));
+        message.addExtension(MamVersion.MAM2.newElementFactory().newResultExtension("g27", "34482-21985-73620", forwarded));
 
         assertEquals(mamQueryResultExample, message.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 

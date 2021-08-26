@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
-import org.jivesoftware.smackx.mam.element.MamElements;
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
+import org.jivesoftware.smackx.mam.element.MamVersion;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -32,18 +32,18 @@ import org.jxmpp.jid.JidTestUtil;
 
 public class RetrieveFormFieldsTest extends MamTest {
 
-    private static final String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamElements.NAMESPACE
+    private static final String retrieveFormFieldStanza = "<iq id='sarasa' type='get'>" + "<query xmlns='" + MamVersion.MAM2.getNamespace()
             + "' queryid='testid'></query>" + "</iq>";
 
     private static final String additionalFieldsStanza = "<x xmlns='jabber:x:data' type='submit'>" + "<field var='FORM_TYPE'>"
-            + "<value>" + MamElements.NAMESPACE + "</value>" + "</field>"
+            + "<value>" + MamVersion.MAM2.getNamespace() + "</value>" + "</field>"
             + "<field var='urn:example:xmpp:free-text-search'>" + "<value>Hi</value>" + "</field>"
             + "<field var='urn:example:xmpp:stanza-content'>" + "<value>one@exampleone.org</value>" + "</field>"
             + "</x>";
 
     @Test
     public void checkRetrieveFormFieldsStanza() throws Exception {
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(MamVersion.MAM2, queryId);
         mamQueryIQ.setStanzaId("sarasa");
 
         assertEquals(retrieveFormFieldStanza, mamQueryIQ.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
@@ -63,7 +63,7 @@ public class RetrieveFormFieldsTest extends MamTest {
                         .withAdditionalFormField(field1)
                         .withAdditionalFormField(field2)
                         .build();
-        DataForm dataForm = mamQueryArgs.getDataForm();
+        DataForm dataForm = mamQueryArgs.getDataForm(MamVersion.MAM2);
 
         String dataFormResult = dataForm.toXML().toString();
 

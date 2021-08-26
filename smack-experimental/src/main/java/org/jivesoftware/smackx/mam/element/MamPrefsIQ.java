@@ -47,11 +47,6 @@ public class MamPrefsIQ extends IQ {
     public static final String ELEMENT = "prefs";
 
     /**
-     * the IQ NAMESPACE.
-     */
-    public static final String NAMESPACE = MamElements.NAMESPACE;
-
-    /**
      * list of always.
      */
     private final List<Jid> alwaysJids;
@@ -68,9 +63,11 @@ public class MamPrefsIQ extends IQ {
 
     /**
      * Construct a new MAM {@code <prefs/>} IQ retrieval request (IQ type 'get').
+     *
+     * @param version TODO javadoc me please     *
      */
-    public MamPrefsIQ() {
-        super(ELEMENT, NAMESPACE);
+    public MamPrefsIQ(MamVersion version) {
+        super(ELEMENT, version.getNamespace());
         alwaysJids = null;
         neverJids = null;
         defaultBehavior = null;
@@ -79,12 +76,13 @@ public class MamPrefsIQ extends IQ {
     /**
      * MAM preferences IQ constructor.
      *
+     * @param version TODO javadoc me please
      * @param alwaysJids TODO javadoc me please
      * @param neverJids TODO javadoc me please
      * @param defaultBehavior TODO javadoc me please
      */
-    public MamPrefsIQ(List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
-        super(ELEMENT, NAMESPACE);
+    public MamPrefsIQ(MamVersion version, List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
+        super(ELEMENT, version.getNamespace());
         setType(Type.set);
         this.alwaysJids = alwaysJids;
         this.neverJids = neverJids;

@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
+import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 
 /**
@@ -43,6 +44,7 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
     @Override
     public MamResultExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+        MamElementFactory elementFactory = MamElementFactory.forParser(parser);
         Forwarded<Message> forwarded = null;
         String queryId = parser.getAttributeValue("", "queryid");
         String id = parser.getAttributeValue("", "id");
@@ -69,7 +71,7 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
             }
         }
 
-        return new MamResultExtension(queryId, id, forwarded);
+        return elementFactory.newResultExtension(queryId, id, forwarded);
     }
 
 }
