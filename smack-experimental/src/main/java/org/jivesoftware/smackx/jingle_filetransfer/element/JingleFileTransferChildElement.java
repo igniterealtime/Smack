@@ -24,11 +24,13 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransfer;
 
 /**
- * Content of type File.
+ * Metadata about the transferred file.
  */
-public class JingleFileTransferChild implements JingleContentDescriptionChildElement {
+public class JingleFileTransferChildElement extends JingleContentDescriptionChildElement {
+
     public static final String ELEMENT = "file";
     public static final String NAMESPACE = JingleFileTransfer.NAMESPACE_V5;
 
@@ -43,10 +45,20 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
     private final HashElement hash;
     private final String mediaType;
     private final String name;
-    private final int size;
+    private final long size;
     private final Range range;
 
-    public JingleFileTransferChild(Date date, String desc, HashElement hash, String mediaType, String name, int size, Range range) {
+    /**
+     * Create a new JingleFileTransferChildElement.
+     * @param date last-modified date of the file.
+     * @param desc description of the file.
+     * @param hash hash value of the file (see XEP-0300).
+     * @param mediaType mediaType (https://www.iana.org/assignments/media-types/media-types.xhtml).
+     * @param name name of the file.
+     * @param size size of the file in bytes.
+     * @param range range of the transfer (see https://xmpp.org/extensions/xep-0234.html#range).
+     */
+    public JingleFileTransferChildElement(Date date, String desc, HashElement hash, String mediaType, String name, long size, Range range) {
         this.date = date;
         this.desc = desc;
         this.hash = hash;
@@ -56,30 +68,58 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         this.range = range;
     }
 
+    /**
+     * Return the last-modified date of the file.
+     * @return date.
+     */
     public Date getDate() {
         return date;
     }
 
+    /**
+     * Return the description of the file.
+     * @return description.
+     */
     public String getDescription() {
         return desc;
     }
 
+    /**
+     * Return the hash of the file.
+     * @return hash.
+     */
     public HashElement getHash() {
         return hash;
     }
 
+    /**
+     * Return the mediaType of the file (https://www.iana.org/assignments/media-types/media-types.xhtml).
+     * @return media-type.
+     */
     public String getMediaType() {
         return mediaType;
     }
 
+    /**
+     * Return the name of the file.
+     * @return filename.
+     */
     public String getName() {
         return name;
     }
 
-    public int getSize() {
+    /**
+     * Return the size of the file in bytes.
+     * @return size.
+     */
+    public long getSize() {
         return size;
     }
 
+    /**
+     * In case of a ranged transfer: Return the range of the transmission. Otherwise return null.
+     * @return range of the transfer.
+     */
     public Range getRange() {
         return range;
     }
@@ -90,13 +130,8 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
     }
 
     @Override
-    public String getNamespace() {
-        return NAMESPACE;
-    }
-
-    @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace);
+        XmlStringBuilder sb = new XmlStringBuilder(this);
         sb.rightAngleBracket();
 
         sb.optElement(ELEM_DATE, date);
@@ -105,7 +140,7 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         sb.optElement(ELEM_NAME, name);
         sb.optElement(range);
         if (size > 0) {
-            sb.element(ELEM_SIZE, Integer.toString(size));
+            sb.element(ELEM_SIZE, Long.toString(size));
         }
         sb.optElement(hash);
         sb.closeElement(this);
@@ -122,7 +157,7 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         private HashElement hash;
         private String mediaType;
         private String name;
-        private int size;
+        private long size;
         private Range range;
 
         private Builder() {
@@ -143,6 +178,14 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
             return this;
         }
 
+        /**
+         * Set the media type of the file.
+         * This is a MIME type from this list:
+         * https://www.iana.org/assignments/media-types/media-types.xhtml
+         * Default should be application/octet-stream.
+         * @param mediaType new media type.
+         * @return builder.
+         */
         public Builder setMediaType(String mediaType) {
             this.mediaType = mediaType;
             return this;
@@ -153,7 +196,7 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
             return this;
         }
 
-        public Builder setSize(int size) {
+        public Builder setSize(long size) {
             this.size = size;
             return this;
         }
@@ -163,8 +206,8 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
             return this;
         }
 
-        public JingleFileTransferChild build() {
-            return new JingleFileTransferChild(date, desc, hash, mediaType, name, size, range);
+        public JingleFileTransferChildElement build() {
+            return new JingleFileTransferChildElement(date, desc, hash, mediaType, name, size, range);
         }
 
         public Builder setFile(File file) {

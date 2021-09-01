@@ -21,52 +21,54 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
-import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle_filetransfer.element.Checksum;
-import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
+import org.jivesoftware.smackx.jingle.element.JingleContentElement;
+import org.jivesoftware.smackx.jingle_filetransfer.element.ChecksumElement;
+import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChildElement;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
 /**
  * Provider for the Checksum element.
  */
-public class ChecksumProvider extends ExtensionElementProvider<Checksum> {
+public class ChecksumProvider extends ExtensionElementProvider<ChecksumElement> {
+
+    private static final HashElementProvider hashProvider = new HashElementProvider();
+
     @Override
-    public Checksum parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        JingleContent.Creator creator = null;
-        String creatorString = parser.getAttributeValue(null, Checksum.ATTR_CREATOR);
+    public ChecksumElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+        JingleContentElement.Creator creator = null;
+        String creatorString = parser.getAttributeValue(null, ChecksumElement.ATTR_CREATOR);
         if (creatorString != null) {
-            creator = JingleContent.Creator.valueOf(creatorString);
+            creator = JingleContentElement.Creator.valueOf(creatorString);
         }
-        String name = parser.getAttributeValue(null, Checksum.ATTR_NAME);
+        String name = parser.getAttributeValue(null, ChecksumElement.ATTR_NAME);
 
 
-        JingleFileTransferChild.Builder cb = JingleFileTransferChild.getBuilder();
+        JingleFileTransferChildElement.Builder cb = JingleFileTransferChildElement.getBuilder();
         HashElement hashElement = null;
         Range range = null;
 
         boolean go = true;
         while (go) {
             XmlPullParser.TagEvent tag = parser.nextTag();
-            String n = parser.getText();
+            String n = parser.getName();
 
             switch (tag) {
             case START_ELEMENT:
                 switch (n) {
                     case HashElement.ELEMENT:
-                        hashElement = new HashElementProvider().parse(parser);
+                        hashElement = hashProvider.parse(parser);
                         break;
 
                     case Range.ELEMENT:
-                        String offset = parser.getAttributeValue(null, Range.ATTR_OFFSET);
-                        String length = parser.getAttributeValue(null, Range.ATTR_LENGTH);
-                        int o = offset == null ? 0 : Integer.parseInt(offset);
-                        int l = length == null ? -1 : Integer.parseInt(length);
-                        range = new Range(o, l);
+                        Long offset = ParserUtils.getLongAttribute(parser, Range.ATTR_OFFSET);
+                        Long length = ParserUtils.getLongAttribute(parser, Range.ATTR_LENGTH);
+                        range = new Range(offset, length);
                 }
                 break;
             case END_ELEMENT:
@@ -78,7 +80,7 @@ public class ChecksumProvider extends ExtensionElementProvider<Checksum> {
                         }
                         break;
 
-                    case JingleFileTransferChild.ELEMENT:
+                    case JingleFileTransferChildElement.ELEMENT:
                         if (hashElement != null) {
                             cb.setHash(hashElement);
                         }
@@ -90,6 +92,6 @@ public class ChecksumProvider extends ExtensionElementProvider<Checksum> {
                 break;
             }
         }
-        return new Checksum(creator, name, cb.build());
+        return new ChecksumElement(creator, name, cb.build());
     }
 }

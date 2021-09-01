@@ -27,12 +27,12 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 public class Range implements XmlElement {
 
     public static final String ELEMENT = "range";
-    public static final String NAMESPACE = JingleFileTransferChild.NAMESPACE;
+    public static final String NAMESPACE = JingleFileTransferChildElement.NAMESPACE;
 
     public static final String ATTR_OFFSET = "offset";
     public static final String ATTR_LENGTH = "length";
 
-    private final Integer offset, length;
+    private final Long offset, length;
     private final HashElement hash;
 
     /**
@@ -46,7 +46,7 @@ public class Range implements XmlElement {
      * Create a Range element with specified length.
      * @param length length of the transmitted data in bytes.
      */
-    public Range(int length) {
+    public Range(Long length) {
         this(null, length, null);
     }
 
@@ -55,7 +55,7 @@ public class Range implements XmlElement {
      * @param offset offset in bytes from the beginning of the transmitted data.
      * @param length number of bytes that shall be transferred.
      */
-    public Range(int offset, int length) {
+    public Range(Long offset, Long length) {
         this(offset, length, null);
     }
 
@@ -65,7 +65,7 @@ public class Range implements XmlElement {
      * @param length number of bytes that shall be transferred.
      * @param hash hash of the bytes in the specified range.
      */
-    public Range(Integer offset, Integer length, HashElement hash) {
+    public Range(Long offset, Long length, HashElement hash) {
         this.offset = offset;
         this.length = length;
         this.hash = hash;
@@ -76,7 +76,7 @@ public class Range implements XmlElement {
      * This marks the begin of the specified range.
      * @return offset TODO javadoc me please
      */
-    public int getOffset() {
+    public Long getOffset() {
         return offset;
     }
 
@@ -84,7 +84,7 @@ public class Range implements XmlElement {
      * Return the length of the range.
      * @return length TODO javadoc me please
      */
-    public int getLength() {
+    public Long getLength() {
         return length;
     }
 
@@ -130,8 +130,13 @@ public class Range implements XmlElement {
         }
 
         Range otherRange = (Range) other;
-        return this.getOffset() == otherRange.getOffset() &&
-            this.getLength() == otherRange.getLength() &&
+
+        return this.getOffset() != null &&
+            otherRange.getOffset() != null &&
+            this.getOffset().longValue() == otherRange.getOffset().longValue() &&
+            this.getLength() != null &&
+            otherRange.getLength() != null &&
+            this.getLength().longValue() == otherRange.getLength().longValue() &&
             this.getHash().equals(otherRange.getHash());
     }
 

@@ -28,11 +28,11 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
 import org.jivesoftware.smackx.jingle.provider.JingleContentDescriptionProvider;
-import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
-import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
+import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransfer;
+import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChildElement;
+import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferElement;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
 import org.jxmpp.util.XmppDateTime;
@@ -41,40 +41,40 @@ import org.jxmpp.util.XmppDateTime;
  * Provider for JingleContentDescriptionFileTransfer elements.
  */
 public class JingleFileTransferProvider
-        extends JingleContentDescriptionProvider<JingleFileTransfer> {
+        extends JingleContentDescriptionProvider<JingleFileTransferElement> {
 
     @Override
-    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
-        JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
-
+    public JingleFileTransferElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+           throws XmlPullParserException, IOException, SmackParsingException, ParseException {
 
         String elementName;
-        while (true) {
+        ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
+        JingleFileTransferChildElement.Builder builder = JingleFileTransferChildElement.getBuilder();
 
+        while (true) {
             XmlPullParser.TagEvent tag = parser.nextTag();
 
             switch (tag) {
             case START_ELEMENT:
                 elementName = parser.getName();
                 switch (elementName) {
-                    case JingleFileTransferChild.ELEM_DATE:
+                    case JingleFileTransferChildElement.ELEM_DATE:
                         builder.setDate(XmppDateTime.parseXEP0082Date(parser.nextText()));
                         break;
 
-                    case JingleFileTransferChild.ELEM_DESC:
+                    case JingleFileTransferChildElement.ELEM_DESC:
                         builder.setDescription(parser.nextText());
                         break;
 
-                    case JingleFileTransferChild.ELEM_MEDIA_TYPE:
+                    case JingleFileTransferChildElement.ELEM_MEDIA_TYPE:
                         builder.setMediaType(parser.nextText());
                         break;
 
-                    case JingleFileTransferChild.ELEM_NAME:
+                    case JingleFileTransferChildElement.ELEM_NAME:
                         builder.setName(parser.nextText());
                         break;
 
-                    case JingleFileTransferChild.ELEM_SIZE:
+                    case JingleFileTransferChildElement.ELEM_SIZE:
                         builder.setSize(Integer.parseInt(parser.nextText()));
                         break;
 
@@ -93,13 +93,13 @@ public class JingleFileTransferProvider
             case END_ELEMENT:
                 elementName = parser.getName();
                 switch (elementName) {
-                    case JingleFileTransferChild.ELEMENT:
+                    case JingleFileTransferChildElement.ELEMENT:
                         payloads.add(builder.build());
-                        builder = JingleFileTransferChild.getBuilder();
+                        builder = JingleFileTransferChildElement.getBuilder();
                         break;
 
-                    case JingleContentDescription.ELEMENT:
-                        return new JingleFileTransfer(payloads);
+                    case JingleFileTransferElement.ELEMENT:
+                        return new JingleFileTransferElement(payloads);
                 }
                 break;
             }
@@ -108,8 +108,8 @@ public class JingleFileTransferProvider
 
     public static Range parseRangeElement(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         final int initialDepth = parser.getDepth();
-        final Integer offset = ParserUtils.getIntegerAttribute(parser, Range.ATTR_OFFSET);
-        final Integer length = ParserUtils.getIntegerAttribute(parser, Range.ATTR_LENGTH);
+        final Long offset = ParserUtils.getLongAttribute(parser, Range.ATTR_OFFSET);
+        final Long length = ParserUtils.getLongAttribute(parser, Range.ATTR_LENGTH);
 
         HashElement hashElement = null;
         outerloop: while (true) {
@@ -139,4 +139,8 @@ public class JingleFileTransferProvider
         return new Range(offset, length, hashElement);
     }
 
+    @Override
+    public String getNamespace() {
+        return JingleFileTransfer.NAMESPACE;
+    }
 }

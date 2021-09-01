@@ -132,6 +132,8 @@ allprojects {
 		junit4Projects = [
 			':smack-core',
 			':smack-extensions',
+			':smack-experimental',
+			':smack-integration-test',
 			':smack-im',
 			':smack-omemo',
 			':smack-omemo-signal',
