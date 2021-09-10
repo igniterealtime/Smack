@@ -405,7 +405,7 @@ public abstract class ConnectionConfiguration {
 
     /**
      * Returns the TLS security mode used when making the connection. By default,
-     * the mode is {@link SecurityMode#ifpossible}.
+     * the mode is {@link SecurityMode#required}.
      *
      * @return the security mode.
      */
@@ -960,7 +960,7 @@ public abstract class ConnectionConfiguration {
 
         /**
          * Sets the TLS security mode used when making the connection. By default,
-         * the mode is {@link SecurityMode#ifpossible}.
+         * the mode is {@link SecurityMode#required}.
          *
          * @param securityMode the security mode.
          * @return a reference to this builder.
