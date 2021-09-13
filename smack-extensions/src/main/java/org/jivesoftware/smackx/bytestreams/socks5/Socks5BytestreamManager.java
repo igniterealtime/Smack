@@ -658,6 +658,9 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      *         is not running
      */
     public List<StreamHost> getLocalStreamHost() {
+        // Ensure that the local SOCKS5 proxy is running (if enabled).
+        Socks5Proxy.getSocks5Proxy();
+
         List<StreamHost> streamHosts = new ArrayList<>();
 
         XMPPConnection connection = connection();
