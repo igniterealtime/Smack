@@ -615,9 +615,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         if (annouceLocalStreamHost) {
             // add local proxy on first position if exists
             List<StreamHost> localProxies = getLocalStreamHost();
-            if (localProxies != null) {
-                streamHosts.addAll(localProxies);
-            }
+            streamHosts.addAll(localProxies);
         }
 
         // query SOCKS5 proxies for network settings
