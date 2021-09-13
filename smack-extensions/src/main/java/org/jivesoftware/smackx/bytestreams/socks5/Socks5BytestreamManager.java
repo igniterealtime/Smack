@@ -652,10 +652,9 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
 
     /**
      * Returns the stream host information of the local SOCKS5 proxy containing the IP address and
-     * the port or null if local SOCKS5 proxy is not running.
+     * the port. The returned list may be empty if the local SOCKS5 proxy is not running.
      *
-     * @return the stream host information of the local SOCKS5 proxy or null if local SOCKS5 proxy
-     *         is not running
+     * @return the stream host information of the local SOCKS5 proxy
      */
     public List<StreamHost> getLocalStreamHost() {
         // Ensure that the local SOCKS5 proxy is running (if enabled).
