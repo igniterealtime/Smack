@@ -79,6 +79,7 @@ public class ParserUtils {
                     throws XmlPullParserException, IOException {
         XmlPullParser.Event event = parser.getEventType();
         while (!(event == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == depth)) {
+            assert event != XmlPullParser.Event.END_DOCUMENT;
             event = parser.next();
         }
     }
