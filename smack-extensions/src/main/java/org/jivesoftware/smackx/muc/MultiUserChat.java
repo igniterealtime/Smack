@@ -2558,7 +2558,7 @@ public class MultiUserChat {
     }
 
     public boolean serviceSupportsStableIds() {
-        return mucServiceDiscoInfo.containsFeature(MultiUserChatConstants.STABLE_ID_FEATURE);
+        return DiscoverInfo.nullSafeContainsFeature(mucServiceDiscoInfo, MultiUserChatConstants.STABLE_ID_FEATURE);
     }
 
     @Override
