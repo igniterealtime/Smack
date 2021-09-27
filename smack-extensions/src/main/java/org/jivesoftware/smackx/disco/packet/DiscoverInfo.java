@@ -258,6 +258,14 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
         return features.contains(new Feature(feature));
     }
 
+    public static boolean nullSafeContainsFeature(DiscoverInfo discoverInfo, CharSequence feature) {
+        if (discoverInfo == null) {
+            return false;
+        }
+
+        return discoverInfo.containsFeature(feature);
+    }
+
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.optAttribute("node", getNode());
