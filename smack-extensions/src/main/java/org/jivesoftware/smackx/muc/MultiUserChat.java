@@ -789,11 +789,14 @@ public class MultiUserChat {
 
         StanzaFilter reflectedLeavePresenceFilter = new AndFilter(reflectedLeavePresenceFilters);
 
-        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
-        // throw.
-        userHasLeft();
-
-        Presence reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
+        Presence reflectedLeavePresence;
+        try {
+            reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
+        } finally {
+            // Reset occupant information after we send the leave presence. This ensures that we only call userHasLeft()
+            // and reset the local MUC state after we successfully left the MUC (or if an exception occurred).
+            userHasLeft();
+        }
 
         return reflectedLeavePresence;
     }
