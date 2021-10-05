@@ -212,7 +212,12 @@ public class MultiUserChat {
                 switch (presence.getType()) {
                 case available:
                     Presence oldPresence = occupantsMap.put(from, presence);
-                    if (oldPresence != null) {
+                    if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
+                        processedReflectedSelfPresence = true;
+                        synchronized (this) {
+                            notify();
+                        }
+                    } else if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
                         MUCUser mucExtension = MUCUser.from(oldPresence);
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
@@ -228,11 +233,6 @@ public class MultiUserChat {
                             newAffiliation,
                             isUserStatusModification,
                             from);
-                    } else if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
-                        processedReflectedSelfPresence = true;
-                        synchronized (this) {
-                            notify();
-                        }
                     } else {
                         // A new occupant has joined the room
                         for (ParticipantStatusListener listener : participantStatusListeners) {
