@@ -65,7 +65,8 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     @SmackIntegrationTest
     public void mucTestForDiscoveringMUC() throws Exception {
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(conOne).discoverItems(conOne.getXMPPServiceDomain());
-        assertTrue(items.getItems().stream().anyMatch(i -> i.getEntityID().toString().contains("conference"))); //TODO remove magic string, without making it disco=disco.
+        // TODO: remove magic string, without making it disco=disco.
+        assertTrue(items.getItems().stream().map(item -> item.toString()).anyMatch(i -> i.contains("conference")));
     }
 
     /**
