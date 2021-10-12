@@ -259,23 +259,24 @@ public class MultiUserChat {
                                 listener.left(from);
                             }
                         }
+                    }
 
-                        Destroy destroy = mucUser.getDestroy();
-                        // The room has been destroyed.
-                        if (destroy != null) {
-                            EntityBareJid alternateMucJid = destroy.getJid();
-                            final MultiUserChat alternateMuc;
-                            if (alternateMucJid == null) {
-                                alternateMuc = null;
-                            } else {
-                                alternateMuc = multiUserChatManager.getMultiUserChat(alternateMucJid);
-                            }
+                    Destroy destroy = mucUser.getDestroy();
+                    // The room has been destroyed.
+                    if (destroy != null) {
+                        EntityBareJid alternateMucJid = destroy.getJid();
+                        final MultiUserChat alternateMuc;
+                        if (alternateMucJid == null) {
+                            alternateMuc = null;
+                        } else {
+                            alternateMuc = multiUserChatManager.getMultiUserChat(alternateMucJid);
+                        }
 
-                            for (UserStatusListener listener : userStatusListeners) {
-                                listener.roomDestroyed(alternateMuc, destroy.getReason());
-                            }
+                        for (UserStatusListener listener : userStatusListeners) {
+                            listener.roomDestroyed(alternateMuc, destroy.getReason());
                         }
                     }
+
                     if (isUserStatusModification) {
                         for (UserStatusListener listener : userStatusListeners) {
                             listener.removed(mucUser, presence);
