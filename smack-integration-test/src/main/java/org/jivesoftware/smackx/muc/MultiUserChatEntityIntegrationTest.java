@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -64,7 +65,8 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     @SmackIntegrationTest
     public void mucTestForDiscoveringMUC() throws Exception {
         DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(conOne).discoverItems(conOne.getXMPPServiceDomain());
-        assertTrue(items.getItems().stream().anyMatch(i -> i.getEntityID().toString().contains("conference"))); //TODO remove magic string, without making it disco=disco.
+        // TODO: remove magic string, without making it disco=disco.
+        assertTrue(items.getItems().stream().map(item -> item.toString()).anyMatch(i -> i.contains("conference")));
     }
 
     /**
@@ -196,7 +198,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
             XMPPException.XMPPErrorException xe = assertThrows(XMPPException.XMPPErrorException.class,
                             () -> ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(
                                             JidCreate.entityFullFrom(mucAddress, nicknameOne), null));
-            assertEquals(xe.getStanzaError().getCondition().toString(), "bad-request");
+            assertEquals(xe.getStanzaError().getCondition(), StanzaError.Condition.bad_request);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }

@@ -78,6 +78,17 @@ public class MucConfigFormManager {
      */
     public static final String MUC_ROOMCONFIG_ROOMSECRET = "muc#roomconfig_roomsecret";
 
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_MODERATEDROOM = "muc#roomconfig_moderatedroom";
+
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM = "muc#roomconfig_publicroom";
+
+
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
     private final List<Jid> owners;
@@ -152,6 +163,15 @@ public class MucConfigFormManager {
     }
 
     /**
+     * Check if the room supports being moderated in the configuration.
+     *
+     * @return <code>true</code> if supported, <code>false</code> if not.
+     */
+    public boolean supportsModeration() {
+        return answerForm.hasField(MUC_ROOMCONFIG_MODERATEDROOM);
+    }
+
+    /**
      * Make the room for members only.
      *
      * @return a reference to this object.
@@ -173,6 +193,68 @@ public class MucConfigFormManager {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MEMBERSONLY);
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_MEMBERSONLY, isMembersOnly);
+        return this;
+    }
+
+
+    /**
+     * Make the room moderated.
+     *
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
+     */
+    public MucConfigFormManager makeModerated() throws MucConfigurationNotSupportedException {
+        return setModerated(true);
+    }
+
+    /**
+     * Set if the room is members only. Rooms are not members only per default.
+     *
+     * @param isModerated if the room should be moderated.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
+     */
+    public MucConfigFormManager setModerated(boolean isModerated) throws MucConfigurationNotSupportedException {
+        if (!supportsModeration()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MODERATEDROOM);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_MODERATEDROOM, isModerated);
+        return this;
+    }
+
+
+    /**
+     * Make the room publicly searchable.
+     *
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
+     */
+    public MucConfigFormManager makePublic() throws MucConfigurationNotSupportedException {
+        return setPublic(true);
+    }
+
+    /**
+     * Make the room hidden (not publicly searchable).
+     *
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
+     */
+    public MucConfigFormManager makeHidden() throws MucConfigurationNotSupportedException {
+        return setPublic(false);
+    }
+
+    /**
+     * Set if the room is publicly searchable (i.e. visible via discovery requests to the MUC service).
+     *
+     * @param isPublic if the room should be publicly searchable.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
+     */
+    public MucConfigFormManager setPublic(boolean isPublic) throws MucConfigurationNotSupportedException {
+        if (!supportsModeration()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM, isPublic);
         return this;
     }
 
