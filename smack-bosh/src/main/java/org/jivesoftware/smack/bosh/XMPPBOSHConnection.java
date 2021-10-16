@@ -43,6 +43,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.igniterealtime.jbosh.AbstractBody;
 import org.igniterealtime.jbosh.BOSHClient;
@@ -199,6 +200,13 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             String errorMessage = "Timeout reached for the connection to "
                     + getHost() + ":" + getPort() + ".";
             throw new SmackException.SmackMessageException(errorMessage);
+        }
+
+        try {
+            XmlPullParser parser = PacketParserUtils.getParserFor("<stream:stream xmlns='jabber:client'/>");
+            onStreamOpen(parser);
+        } catch (XmlPullParserException | IOException e) {
+            throw new AssertionError("Failed to setup stream environment", e);
         }
     }
 
@@ -511,7 +519,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                                 parseAndProcessStanza(parser);
                                 break;
                             case "features":
-                                parseFeatures(parser);
+                                parseFeaturesAndNotify(parser);
                                 break;
                             case "error":
                                 // Some BOSH error isn't stream error.
