@@ -31,12 +31,6 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.TestNotPossibleException;
-import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
-import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
-import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
@@ -50,6 +44,13 @@ import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
+
+import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
+import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
