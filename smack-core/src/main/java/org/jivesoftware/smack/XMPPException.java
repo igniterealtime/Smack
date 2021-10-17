@@ -121,6 +121,16 @@ public abstract class XMPPException extends Exception {
         }
 
         /**
+         * Gets the stanza associated with this exception.
+         *
+         * @return the stanza from which this exception was created or {@code null} if the exception is not from a
+         * stanza.
+         */
+        public Stanza getStanza() {
+            return stanza;
+        }
+
+        /**
          * Get the request which triggered the error response causing this exception.
          *
          * @return the request or {@code null}.
