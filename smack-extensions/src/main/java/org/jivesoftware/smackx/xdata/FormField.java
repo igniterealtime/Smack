@@ -33,6 +33,7 @@ import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.MultiMap;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -600,7 +601,7 @@ public abstract class FormField implements XmlElement {
          * @return a reference to this builder.
          */
         public B setLabel(String label) {
-            this.label = StringUtils.requireNotNullNorEmpty(label, "label must not be null or empty");
+            this.label = Objects.requireNonNull(label, "label must not be null");
             return getThis();
         }
 
