@@ -615,9 +615,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         if (annouceLocalStreamHost) {
             // add local proxy on first position if exists
             List<StreamHost> localProxies = getLocalStreamHost();
-            if (localProxies != null) {
-                streamHosts.addAll(localProxies);
-            }
+            streamHosts.addAll(localProxies);
         }
 
         // query SOCKS5 proxies for network settings
@@ -652,12 +650,14 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
 
     /**
      * Returns the stream host information of the local SOCKS5 proxy containing the IP address and
-     * the port or null if local SOCKS5 proxy is not running.
+     * the port. The returned list may be empty if the local SOCKS5 proxy is not running.
      *
-     * @return the stream host information of the local SOCKS5 proxy or null if local SOCKS5 proxy
-     *         is not running
+     * @return the stream host information of the local SOCKS5 proxy
      */
     public List<StreamHost> getLocalStreamHost() {
+        // Ensure that the local SOCKS5 proxy is running (if enabled).
+        Socks5Proxy.getSocks5Proxy();
+
         List<StreamHost> streamHosts = new ArrayList<>();
 
         XMPPConnection connection = connection();
