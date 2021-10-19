@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2020 Florian Schmaus
+ * Copyright 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,11 +53,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     }
 
     public XmlStringBuilder(FullyQualifiedElement element, XmlEnvironment enclosingXmlEnvironment) {
-        sb = new LazyStringBuilder();
-        halfOpenElement(element);
+        this(element.getElementName(), element.getNamespace(), element.getLanguage(), enclosingXmlEnvironment);
+    }
 
-        String xmlNs = element.getNamespace();
-        String xmlLang = element.getLanguage();
+    public XmlStringBuilder(String elementName, String xmlNs, String xmlLang, XmlEnvironment enclosingXmlEnvironment) {
+        sb = new LazyStringBuilder();
+        halfOpenElement(elementName);
+
         if (enclosingXmlEnvironment == null) {
             xmlnsAttribute(xmlNs);
             xmllangAttribute(xmlLang);
