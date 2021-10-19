@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -333,7 +332,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         try {
             mucAsSeenByThree.join(nicknameThree);
 
-            Collection<Presence> results = syncPoint.waitForResults(timeout);
+            List<Presence> results = syncPoint.waitForResults(timeout);
             assertTrue(results.stream().allMatch(
                             result -> JidCreate.fullFrom(mucAddress, nicknameThree).equals(result.getFrom())));
             assertTrue(results.stream().anyMatch(
@@ -977,7 +976,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         try {
             // Participant two changes nickname
             mucAsSeenByTwo.changeNickname(nicknameTwoNew);
-            final Collection<Presence> partTwoPresencesReceived = participantTwoPresencesSyncPoint.waitForResults(
+            final List<Presence> partTwoPresencesReceived = participantTwoPresencesSyncPoint.waitForResults(
                             timeout);
 
             final List<Presence> unavailablePresencesReceivedByOne = partTwoPresencesReceived.stream().filter(

@@ -17,14 +17,14 @@
 package org.igniterealtime.smack.inttest.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.util.Objects;
 
 public class MultiResultSyncPoint<R, E extends Exception> {
 
-    private Collection<R> results;
+    private final List<R> results;
     private E exception;
     private int expectedResultCount;
 
@@ -33,7 +33,7 @@ public class MultiResultSyncPoint<R, E extends Exception> {
         this.results = new ArrayList<>(expectedResultCount);
     }
 
-    public Collection<R> waitForResults(long timeout) throws E, InterruptedException, TimeoutException {
+    public List<R> waitForResults(long timeout) throws E, InterruptedException, TimeoutException {
         synchronized (this) {
             if (expectedResultCount <= results.size()) {
                 return results;
