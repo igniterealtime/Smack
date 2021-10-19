@@ -212,7 +212,12 @@ public class MultiUserChat {
                 switch (presence.getType()) {
                 case available:
                     Presence oldPresence = occupantsMap.put(from, presence);
-                    if (oldPresence != null) {
+                    if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
+                        processedReflectedSelfPresence = true;
+                        synchronized (this) {
+                            notify();
+                        }
+                    } else if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
                         MUCUser mucExtension = MUCUser.from(oldPresence);
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
@@ -228,11 +233,6 @@ public class MultiUserChat {
                             newAffiliation,
                             isUserStatusModification,
                             from);
-                    } else if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
-                        processedReflectedSelfPresence = true;
-                        synchronized (this) {
-                            notify();
-                        }
                     } else {
                         // A new occupant has joined the room
                         for (ParticipantStatusListener listener : participantStatusListeners) {
@@ -789,11 +789,14 @@ public class MultiUserChat {
 
         StanzaFilter reflectedLeavePresenceFilter = new AndFilter(reflectedLeavePresenceFilters);
 
-        // Reset occupant information first so that we are assume that we left the room even if sendStanza() would
-        // throw.
-        userHasLeft();
-
-        Presence reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
+        Presence reflectedLeavePresence;
+        try {
+            reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
+        } finally {
+            // Reset occupant information after we send the leave presence. This ensures that we only call userHasLeft()
+            // and reset the local MUC state after we successfully left the MUC (or if an exception occurred).
+            userHasLeft();
+        }
 
         return reflectedLeavePresence;
     }
