@@ -36,6 +36,10 @@ public abstract class JingleTransportManager<D extends JingleContentTransport> i
     }
 
     public XMPPConnection getConnection() {
+        return connection();
+    }
+
+    public XMPPConnection connection() {
         return connection;
     }
 

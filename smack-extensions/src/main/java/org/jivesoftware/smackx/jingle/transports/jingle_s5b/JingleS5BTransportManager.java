@@ -148,7 +148,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
     public Jingle createCandidateUsed(FullJid recipient, FullJid initiator, String sessionId, JingleContent.Senders contentSenders,
                                       JingleContent.Creator contentCreator, String contentName, String streamId,
                                       String candidateId) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection());
         jb.setSessionId(sessionId).setInitiator(initiator).setAction(JingleAction.transport_info);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
@@ -165,7 +165,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
     }
 
     public Jingle createCandidateError(FullJid remote, FullJid initiator, String sessionId, JingleContent.Senders senders, JingleContent.Creator creator, String name, String streamId) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection());
         jb.setSessionId(sessionId).setInitiator(initiator).setAction(JingleAction.transport_info);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
@@ -184,7 +184,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
     public Jingle createProxyError(FullJid remote, FullJid initiator, String sessionId,
                                    JingleContent.Senders senders, JingleContent.Creator creator,
                                    String name, String streamId) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection());
         jb.setSessionId(sessionId).setAction(JingleAction.transport_info).setInitiator(initiator);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
@@ -202,7 +202,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
     public Jingle createCandidateActivated(FullJid remote, FullJid initiator, String sessionId,
                                            JingleContent.Senders senders, JingleContent.Creator creator,
                                            String name, String streamId, String candidateId) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection());
         jb.setInitiator(initiator).setSessionId(sessionId).setAction(JingleAction.transport_info);
 
         JingleContent.Builder cb = JingleContent.getBuilder();

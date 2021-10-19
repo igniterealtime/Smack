@@ -51,7 +51,7 @@ public class JingleUtil {
                                         JingleContentDescription description,
                                         JingleContentTransport transport) {
 
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setAction(JingleAction.session_initiate)
                 .setSessionId(sessionId)
                 .setInitiator(connection.getUser());
@@ -116,7 +116,7 @@ public class JingleUtil {
                                       JingleContentDescription description,
                                       JingleContentTransport transport) {
 
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setResponder(connection.getUser())
                 .setAction(JingleAction.session_accept)
                 .setSessionId(sessionId);
@@ -151,7 +151,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason reason) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setAction(JingleAction.session_terminate)
                 .setSessionId(sessionId)
                 .setReason(reason);
@@ -230,7 +230,7 @@ public class JingleUtil {
 
     public Jingle createSessionTerminateContentCancel(FullJid recipient, String sessionId,
                                                       JingleContent.Creator contentCreator, String contentName) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setAction(JingleAction.session_terminate)
                 .setSessionId(sessionId);
 
@@ -312,7 +312,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionPing(FullJid recipient, String sessionId) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setSessionId(sessionId)
                 .setAction(JingleAction.session_info);
 
@@ -341,7 +341,7 @@ public class JingleUtil {
     public Jingle createTransportReplace(FullJid recipient, FullJid initiator, String sessionId,
                                          JingleContent.Creator contentCreator, String contentName,
                                          JingleContentTransport transport) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setInitiator(initiator)
                 .setSessionId(sessionId)
                 .setAction(JingleAction.transport_replace);
@@ -368,7 +368,7 @@ public class JingleUtil {
     public Jingle createTransportAccept(FullJid recipient, FullJid initiator, String sessionId,
                                         JingleContent.Creator contentCreator, String contentName,
                                         JingleContentTransport transport) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setAction(JingleAction.transport_accept)
                 .setInitiator(initiator)
                 .setSessionId(sessionId);
@@ -395,7 +395,7 @@ public class JingleUtil {
     public Jingle createTransportReject(FullJid recipient, FullJid initiator, String sessionId,
                                         JingleContent.Creator contentCreator, String contentName,
                                         JingleContentTransport transport) {
-        Jingle.Builder jb = Jingle.getBuilder();
+        Jingle.Builder jb = Jingle.builder(connection);
         jb.setAction(JingleAction.transport_reject)
                 .setInitiator(initiator)
                 .setSessionId(sessionId);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,12 @@ package org.jivesoftware.smackx.jingle.provider;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -40,13 +41,13 @@ import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 
 import org.jxmpp.jid.FullJid;
 
-public class JingleProvider extends IQProvider<Jingle> {
+public class JingleProvider extends IqProvider<Jingle> {
 
     private static final Logger LOGGER = Logger.getLogger(JingleProvider.class.getName());
 
     @Override
-    public Jingle parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        Jingle.Builder builder = Jingle.getBuilder();
+    public Jingle parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+        Jingle.Builder builder = Jingle.builder(iqData);
 
         String actionString = parser.getAttributeValue("", Jingle.ACTION_ATTRIBUTE_NAME);
         if (actionString != null) {
