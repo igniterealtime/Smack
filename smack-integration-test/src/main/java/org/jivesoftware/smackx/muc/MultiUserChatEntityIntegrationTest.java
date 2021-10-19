@@ -156,6 +156,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
 
         assertTrue(discoInfo.getIdentities().size() > 0);
         assertTrue(discoInfo.getFeatures().size() > 0);
+        assertTrue(discoInfo.getFeatures().stream().anyMatch(feature -> MultiUserChatConstants.NAMESPACE.equals(feature.getVar())));
     }
 
     /**
