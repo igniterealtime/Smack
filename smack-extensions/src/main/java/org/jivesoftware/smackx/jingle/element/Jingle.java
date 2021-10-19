@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2017 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqBuilder;
+import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -65,9 +69,9 @@ public final class Jingle extends IQ {
 
     private final List<JingleContent> contents;
 
-    private Jingle(String sessionId, JingleAction action, FullJid initiator, FullJid responder, JingleReason reason,
+    private Jingle(Builder builder, String sessionId, JingleAction action, FullJid initiator, FullJid responder, JingleReason reason,
                     List<JingleContent> contents) {
-        super(ELEMENT, NAMESPACE);
+        super(builder, ELEMENT, NAMESPACE);
         this.sessionId = StringUtils.requireNotNullNorEmpty(sessionId, "Jingle session ID must not be null");
         this.action = Objects.requireNonNull(action, "Jingle action must not be null");
         this.initiator = initiator;
@@ -169,11 +173,31 @@ public final class Jingle extends IQ {
         return xml;
     }
 
+    /**
+     * Deprecated, do not use.
+     *
+     * @return a builder.
+     * @deprecated use {@link #builder(XMPPConnection)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.6.
     public static Builder getBuilder() {
-        return new Builder();
+        return builder(StandardStanzaIdSource.DEFAULT.getNewStanzaId());
     }
 
-    public static final class Builder {
+    public static Builder builder(XMPPConnection connection) {
+        return new Builder(connection);
+    }
+
+    public static Builder builder(IqData iqData) {
+        return new Builder(iqData);
+    }
+
+    public static Builder builder(String stanzaId) {
+        return new Builder(stanzaId);
+    }
+
+    public static final class Builder extends IqBuilder<Builder, Jingle> {
         private String sid;
 
         private JingleAction action;
@@ -186,7 +210,16 @@ public final class Jingle extends IQ {
 
         private List<JingleContent> contents;
 
-        private Builder() {
+        Builder(IqData iqCommon) {
+            super(iqCommon);
+        }
+
+        Builder(XMPPConnection connection) {
+            super(connection);
+        }
+
+        Builder(String stanzaId) {
+            super(stanzaId);
         }
 
         public Builder setSessionId(String sessionId) {
@@ -228,8 +261,14 @@ public final class Jingle extends IQ {
             return this;
         }
 
+        @Override
         public Jingle build() {
-            return new Jingle(sid, action, initiator, responder, reason, contents);
+            return new Jingle(this, sid, action, initiator, responder, reason, contents);
+        }
+
+        @Override
+        public Builder getThis() {
+            return this;
         }
     }
 }

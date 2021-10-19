@@ -145,6 +145,11 @@ public final class JingleContent implements XmlElement {
         xml.optAttribute(DISPOSITION_ATTRIBUTE_NAME, disposition);
         xml.attribute(NAME_ATTRIBUTE_NAME, name);
         xml.optAttribute(SENDERS_ATTRIBUTE_NAME, senders);
+
+        if (description == null && transport == null) {
+            return xml.closeEmptyElement();
+        }
+
         xml.rightAngleBracket();
 
         xml.optAppend(description);

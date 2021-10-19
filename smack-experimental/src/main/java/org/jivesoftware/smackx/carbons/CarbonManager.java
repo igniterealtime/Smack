@@ -154,8 +154,7 @@ public final class CarbonManager extends Manager {
                 // because we also reset in authenticated() if the stream got not resumed, but for maximum correctness,
                 // also reset here.
                 enabled_state = false;
-                boolean removed = connection().removeSyncStanzaListener(carbonsListener);
-                assert removed;
+                connection().removeSyncStanzaListener(carbonsListener);
             }
             @Override
             public void authenticated(XMPPConnection connection, boolean resumed) {

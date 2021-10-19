@@ -202,7 +202,7 @@ public abstract class IQ extends Stanza implements IqView {
 
         // Add the query section if there is one.
         IQChildElementXmlStringBuilder iqChildElement = getIQChildElementBuilder(
-                        new IQChildElementXmlStringBuilder(this));
+                        new IQChildElementXmlStringBuilder(getChildElementName(), getChildElementNamespace(), null, xml.getXmlEnvironment()));
         // TOOD: Document the cases where iqChildElement is null but childElementName not. And if there are none, change
         // the logic.
         if (iqChildElement == null) {
@@ -399,17 +399,16 @@ public abstract class IQ extends Stanza implements IqView {
 
         private boolean isEmptyElement;
 
-        private IQChildElementXmlStringBuilder(IQ iq) {
-            this(iq.getChildElementName(), iq.getChildElementNamespace());
+        public IQChildElementXmlStringBuilder(ExtensionElement extensionElement,
+                        XmlEnvironment enclosingXmlEnvironment) {
+            this(extensionElement.getElementName(), extensionElement.getNamespace(), extensionElement.getLanguage(),
+                            enclosingXmlEnvironment);
         }
 
-        public IQChildElementXmlStringBuilder(ExtensionElement pe) {
-            this(pe.getElementName(), pe.getNamespace());
-        }
-
-        private IQChildElementXmlStringBuilder(String element, String namespace) {
-            prelude(element, namespace);
-            this.element = element;
+        private IQChildElementXmlStringBuilder(String elementName, String xmlNs, String xmlLang,
+                        XmlEnvironment enclosingXmlEnvironment) {
+            super(elementName, xmlNs, xmlLang, enclosingXmlEnvironment);
+            this.element = elementName;
         }
 
         public void setEmptyElement() {

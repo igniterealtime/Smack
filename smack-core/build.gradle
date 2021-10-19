@@ -1,3 +1,8 @@
+// Note that this is also declared in the main build.gradle for
+// subprojects, but since evaluationDependsOnChildren is enabled we
+// need to declare it here too to have bundle{bnd{...}} available
+apply plugin: 'biz.aQute.bnd.builder'
+
 description = """\
 Smack core components."""
 
@@ -55,3 +60,11 @@ task createVersionResource(type: CreateFileTask) {
 }
 
 compileJava.dependsOn(createVersionResource)
+
+jar {
+	bundle {
+		bnd(
+				'DynamicImport-Package': '*',
+		)
+	}
+}

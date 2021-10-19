@@ -6,6 +6,7 @@ buildscript {
     }
     dependencies {
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
+		classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.0.0"
     }
 }
 
@@ -450,6 +451,7 @@ subprojects {
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
 	apply plugin: 'org.kordamp.gradle.clirr'
+	apply plugin: 'biz.aQute.bnd.builder'
 
 	checkstyle {
 		toolVersion = '8.27'
@@ -612,9 +614,15 @@ project(':smack-omemo').clirr.enabled = false
 project(':smack-omemo-signal').clirr.enabled = false
 
 subprojects*.jar {
-   manifest {
-       from sharedManifest
-   }
+	manifest {
+		from sharedManifest
+	}
+	bundle {
+		bnd(
+				'-removeheaders': 'Tool, Bnd-*',
+				'-exportcontents': '*',
+		)
+	}
 }
 
 configure(subprojects - gplLicensedProjects) {

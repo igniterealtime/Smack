@@ -1,2 +1,16 @@
+// Note that this is also declared in the main build.gradle for
+// subprojects, but since evaluationDependsOnChildren is enabled we
+// need to declare it here too to have bundle{bnd{...}} available
+apply plugin: 'biz.aQute.bnd.builder'
+
 description = """\
 Smack XML parser fundamentals"""
+
+jar {
+    bundle {
+        bnd(
+                // see http://docs.osgi.org/specification/osgi.cmpn/7.0.0/service.loader.html
+                'Require-Capability': 'osgi.extender;filter:="(osgi.extender=osgi.serviceloader.processor)"',
+        )
+    }
+}

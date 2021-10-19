@@ -60,4 +60,8 @@ public class SASLAnonymous extends SASLMechanism {
         // SASL Anonymous is always successful :)
     }
 
+    @Override
+    public boolean requiresPassword() {
+        return false;
+    }
 }
