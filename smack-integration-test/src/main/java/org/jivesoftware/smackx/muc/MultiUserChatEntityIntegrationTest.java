@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
@@ -30,10 +31,13 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -63,10 +67,11 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
-    public void mucTestForDiscoveringMUC() throws Exception {
-        DiscoverItems items = ServiceDiscoveryManager.getInstanceFor(conOne).discoverItems(conOne.getXMPPServiceDomain());
-        // TODO: remove magic string, without making it disco=disco.
-        assertTrue(items.getItems().stream().map(item -> item.toString()).anyMatch(i -> i.contains("conference")));
+    public void mucTestForDiscoveringMuc() throws Exception {
+        // This repeats some logic from the `AbstractMultiUserChatIntegrationTest` constructor, but is preserved here
+        // as an explicit test, because that might not always be true.
+        List<DomainBareJid> services = ServiceDiscoveryManager.getInstanceFor(conOne).findServices(MUCInitialPresence.NAMESPACE, true, false);
+        assertTrue(!services.isEmpty());
     }
 
     /**
