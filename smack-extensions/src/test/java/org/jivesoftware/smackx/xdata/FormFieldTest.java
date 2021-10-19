@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.xdata;
 
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.JidTestUtil;
@@ -35,4 +37,18 @@ class FormFieldTest {
         assertXmlSimilar(expectedXml, xml);
     }
 
+    @Test
+    public void testEmptyLabel() {
+        TextSingleFormField.Builder builder = FormField.textSingleBuilder("type");
+        builder.setLabel("");
+        TextSingleFormField formField = builder.build();
+
+        assertEquals("", formField.getLabel());
+    }
+
+    @Test
+    public void testThrowExceptionWhenNullLabel() {
+        TextSingleFormField.Builder builder = FormField.textSingleBuilder("type");
+        assertThrows(IllegalArgumentException.class, () -> builder.setLabel(null));
+    }
 }
