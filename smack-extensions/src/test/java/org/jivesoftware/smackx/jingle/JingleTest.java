@@ -38,7 +38,7 @@ public class JingleTest extends SmackTestSuite {
 
     @Test
     public void emptyBuilderTest() {
-        Jingle.Builder builder = Jingle.getBuilder();
+        Jingle.Builder builder = Jingle.builder("id");
         assertThrows(IllegalArgumentException.class, () -> {
             builder.build();
         });
@@ -48,7 +48,7 @@ public class JingleTest extends SmackTestSuite {
     public void onlySessionIdBuilderTest() {
         String sessionId = "testSessionId";
 
-        Jingle.Builder builder = Jingle.getBuilder();
+        Jingle.Builder builder = Jingle.builder("id");
         builder.setSessionId(sessionId);
         assertThrows(IllegalArgumentException.class, () -> {
             builder.build();
@@ -59,7 +59,7 @@ public class JingleTest extends SmackTestSuite {
     public void parserTest() throws XmppStringprepException {
         String sessionId = "testSessionId";
 
-        Jingle.Builder builder = Jingle.getBuilder();
+        Jingle.Builder builder = Jingle.builder("id");
         builder.setSessionId(sessionId);
         builder.setAction(JingleAction.session_initiate);
 
