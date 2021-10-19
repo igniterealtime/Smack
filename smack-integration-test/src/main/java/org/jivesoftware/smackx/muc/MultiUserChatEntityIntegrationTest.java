@@ -88,7 +88,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
      */
     @SmackIntegrationTest
     public void mucTestForDiscoveringFeatures() throws Exception {
-        DiscoverInfo info = mucManagerOne.getMucServiceDiscoInfo(mucManagerOne.getMucServiceDomains().get(0));
+        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(conOne).discoverInfo(mucService);
         assertTrue(info.getIdentities().size() > 0);
         assertTrue(info.getFeatures().size() > 0);
     }
