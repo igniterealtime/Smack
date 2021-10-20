@@ -114,4 +114,33 @@ public class DataFormProviderTest {
         assertEquals(2, items.size());
     }
 
+    @Test
+    public void testRetrieveFieldWithEmptyLabel() throws XmlPullParserException, IOException, SmackParsingException {
+
+        String form =
+                "<x xmlns='jabber:x:data' type='form'>" +
+                        "  <title>Advanced User Search</title>" +
+                        "  <instructions>The following fields are available for searching. Wildcard (*) characters are allowed as part of the query.</instructions>" +
+                        "  <field var='FORM_TYPE' label='' type='hidden'>" +
+                        "    <value>jabber:iq:search</value>" +
+                        "  </field>" +
+                        "  <field label='Search' var='search'>" +
+                        "    <required/>" +
+                        "  </field>" +
+                        "  <field label='Username' var='Username' type='boolean'>" +
+                        "    <value>true</value>" +
+                        "  </field>" +
+                        "  <field label='Name' var='Name' type='boolean'>" +
+                        "    <value>true</value>" +
+                        "  </field>" +
+                        "  <field label='Email' var='Email' type='boolean'>" +
+                        "    <value>true</value>" +
+                        "  </field>" +
+                        "</x>";
+        XmlPullParser parser = PacketParserUtils.getParserFor(form);
+        DataForm dataForm = DataFormProvider.INSTANCE.parse(parser);
+        FormField usernameFormField = dataForm.getField("FORM_TYPE");
+        assertEquals(FormField.Type.hidden, usernameFormField.getType());
+        assertEquals("", usernameFormField.getLabel());
+    }
 }
