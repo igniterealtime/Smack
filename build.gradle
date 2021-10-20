@@ -197,10 +197,6 @@ allprojects {
 	repositories {
 		mavenLocal()
 		mavenCentral()
-		// Add OSS Sonatype Snapshot repository
-		maven {
-			url 'https://oss.sonatype.org/content/repositories/snapshots'
-		}
 	}
 
 	tasks.withType(JavaCompile) {
