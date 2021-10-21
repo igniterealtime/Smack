@@ -203,7 +203,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         }
 
         try {
-            XmlPullParser parser = PacketParserUtils.getParserFor("<stream:stream xmlns='jabber:client'/>");
+            XmlPullParser parser = PacketParserUtils.getParserFor(
+                            "<stream:stream xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams'/>");
             onStreamOpen(parser);
         } catch (XmlPullParserException | IOException e) {
             throw new AssertionError("Failed to setup stream environment", e);
