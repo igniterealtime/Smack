@@ -184,6 +184,19 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         return getThis();
     }
 
+    public final B removeExtension(String elementName, String namespace) {
+        QName key = new QName(namespace, elementName);
+        extensionElements.remove(key);
+        return getThis();
+    }
+
+    public final B removeExtension(ExtensionElement extension) {
+        QName key = extension.getQName();
+        List<ExtensionElement> list = extensionElements.getAll(key);
+        list.remove(extension);
+        return getThis();
+    }
+
     public abstract Stanza build();
 
     public abstract B getThis();
