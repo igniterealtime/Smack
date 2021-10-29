@@ -8,9 +8,10 @@ dependencies {
 	api project(':smack-extensions')
 	api project(':smack-experimental')
 
-	api 'org.pgpainless:pgpainless-core:0.2.8'
+	api 'org.pgpainless:pgpainless-core:0.2.19'
 
 	testImplementation "org.bouncycastle:bcprov-jdk15on:${bouncyCastleVersion}"
+	testImplementation 'ch.qos.logback:logback-classic:1.2.6'
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testImplementation group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"

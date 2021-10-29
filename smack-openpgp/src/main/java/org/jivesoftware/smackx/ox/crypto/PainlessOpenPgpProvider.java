@@ -29,7 +29,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpMessage;
 import org.jivesoftware.smackx.ox.OpenPgpSelf;
@@ -90,7 +89,7 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
 
         SigningOptions signOpts = new SigningOptions();
         signOpts.addInlineSignature(getStore().getKeyRingProtector(), self.getSigningKeyRing(),
-                "xmpp:" + self.getJid().toString(), DocumentSignatureType.BINARY_DOCUMENT);
+                DocumentSignatureType.BINARY_DOCUMENT);
 
         EncryptionStream cipherStream = PGPainless.encryptAndOrSign()
                 .onOutputStream(cipherText)
