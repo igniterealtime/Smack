@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SMACK_DIR=$(realpath "${SCRIPT_DIR}/..")
+
+cd "${SMACK_DIR}"
+
+TEMPFILE=$(mktemp)
+
+cleanup() {
+	rm "${TEMPFILE}"
+}
+trap cleanup EXIT
+
+git shortlog -s |\
+	cut -f2- |\
+	grep -v '(no author)' |\
+	grep '\w \w.*' |\
+	sort \
+	> "${TEMPFILE}"
+
+readonly NOTICE_FILE="${SMACK_DIR}/NOTICE"
+
+cat <<EOF > "${NOTICE_FILE}"
+                 Smack
+
+       An open-source XMPP library
+      maintained by Florian Schmaus
+
+ https://igniterealtime.org/projects/smack
+
+
+Authors:
+
+EOF
+
+cat "${TEMPFILE}" >> "${NOTICE_FILE}"
