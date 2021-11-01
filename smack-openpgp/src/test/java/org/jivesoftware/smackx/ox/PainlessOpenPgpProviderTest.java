@@ -47,29 +47,27 @@ import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPPublicKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.JidTestUtil;
+import org.pgpainless.key.OpenPgpFingerprint;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.pgpainless.key.protection.UnprotectedKeysProtector;
 import org.pgpainless.key.util.KeyRingUtils;
 
 public class PainlessOpenPgpProviderTest extends SmackTestSuite {
 
-    private static final File storagePath;
+    private static File storagePath;
     private static final BareJid alice = JidTestUtil.BARE_JID_1;
     private static final BareJid bob = JidTestUtil.BARE_JID_2;
 
-    static {
+    @BeforeEach
+    @AfterEach
+    public void deletePath() throws IOException {
         storagePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "smack-painlessprovidertest");
-    }
-
-    @BeforeClass
-    @AfterClass
-    public static void deletePath() throws IOException {
         org.apache.commons.io.FileUtils.deleteDirectory(storagePath);
     }
 
@@ -142,7 +140,7 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
         // Decrypt and Verify
         decrypted = bobProvider.decryptAndOrVerify(bobConnection, encrypted.getElement(), bobSelf, aliceForBob);
 
-        OpenPgpV4Fingerprint decryptionFingerprint = decrypted.getMetadata().getDecryptionKey().getFingerprint();
+        OpenPgpFingerprint decryptionFingerprint = decrypted.getMetadata().getDecryptionKey().getFingerprint();
         assertTrue(bobSelf.getSecretKeys().contains(decryptionFingerprint.getKeyId()));
         assertTrue(decrypted.getMetadata().containsVerifiedSignatureFrom(alicePubKeys));
 
