@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.DoOnce;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -34,6 +35,8 @@ import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
 public class JivePropertiesExtensionProvider extends ExtensionElementProvider<JivePropertiesExtension> {
+
+    private static final DoOnce LOG_OBJECT_NOT_ENABLED = new DoOnce();
 
     private static final Logger LOGGER = Logger.getLogger(JivePropertiesExtensionProvider.class.getName());
 
@@ -113,7 +116,10 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
                                     }
                                 }
                                 else {
-                                    LOGGER.severe("JavaObject is not enabled. Enable with JivePropertiesManager.setJavaObjectEnabled(true)");
+                                    LOG_OBJECT_NOT_ENABLED.once(
+                                        () -> LOGGER.severe(
+                                            "JavaObject is not enabled. Enable with JivePropertiesManager.setJavaObjectEnabled(true)")
+                                    );
                                 }
                             }
                             if (name != null && value != null) {
