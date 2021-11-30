@@ -39,7 +39,6 @@ public class XHTMLExtensionProviderTest {
     public void parsesWell() throws IOException, XmlPullParserException {
         InputStream inputStream = getClass().getResourceAsStream(XHTML_EXTENSION_SAMPLE_RESOURCE_NAME);
         XmlPullParser parser = PacketParserUtils.getParserFor(inputStream);
-        parser.next();
 
         XHTMLExtensionProvider provider = new XHTMLExtensionProvider();
         ExtensionElement extension = provider.parse(parser, parser.getDepth(), null);

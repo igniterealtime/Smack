@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,9 +76,9 @@ public class PacketParserUtils {
         return getParserFor(new StringReader(stanza));
     }
 
-    public static XmlPullParser getParserFor(InputStream inputStream) throws XmlPullParserException {
+    public static XmlPullParser getParserFor(InputStream inputStream) throws XmlPullParserException, IOException {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        return SmackXmlParser.newXmlParser(inputStreamReader);
+        return getParserFor(inputStreamReader);
     }
 
     public static XmlPullParser getParserFor(Reader reader) throws XmlPullParserException, IOException {
