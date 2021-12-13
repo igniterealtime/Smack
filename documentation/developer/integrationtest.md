@@ -86,6 +86,27 @@ debugger=console
 
 The framework will first load the properties file from `~/.config/smack-integration-test/properties`
 
+### Running selected tests only
+
+Using `enabledTests` is is possible to run only selected tests. The
+tests can be selected on a per class base or by specifying concrete
+test methods. In the latter case, the methods must be qualified by a
+(simple) class name.
+
+For example:
+
+```bash
+$ gradle integrationTest -Dsinttest.enabledTests=SoftwareInfoIntegrationTest.test
+```
+
+will only run the `test()` method of `SoftwareInfoIntegrationTest`, whereas
+
+```bash
+$ gradle integrationTest -Dsinttest.enabledTests=SoftwareInfoIntegrationTest
+```
+
+would run all tests defined in the `SoftwareInfoIntegrationTest` class.
+
 Overview of the components
 --------------------------
 

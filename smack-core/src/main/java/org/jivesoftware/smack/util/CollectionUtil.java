@@ -89,4 +89,11 @@ public class CollectionUtil {
         }
         return Collections.singletonList(element);
     }
+
+    public static <T> Set<T> nullSafeUnmodifiableSet(Set<T> set) {
+        if (set == null) {
+            return Collections.emptySet();
+        }
+        return Collections.unmodifiableSet(set);
+    }
 }

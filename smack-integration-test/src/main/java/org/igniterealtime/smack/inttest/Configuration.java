@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,11 @@ package org.igniterealtime.smack.inttest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +36,7 @@ import javax.net.ssl.SSLContext;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
+import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -101,7 +105,11 @@ public final class Configuration {
 
     public final Set<String> enabledTests;
 
+    private final Map<String, Set<String>> enabledTestsMap;
+
     public final Set<String> disabledTests;
+
+    private final Map<String, Set<String>> disabledTestsMap;
 
     public final String defaultConnectionNickname;
 
@@ -169,8 +177,10 @@ public final class Configuration {
         this.accountTwoPassword = builder.accountTwoPassword;
         this.accountThreeUsername = builder.accountThreeUsername;
         this.accountThreePassword = builder.accountThreePassword;
-        this.enabledTests = builder.enabledTests;
-        this.disabledTests = builder.disabledTests;
+        this.enabledTests = CollectionUtil.nullSafeUnmodifiableSet(builder.enabledTests);
+        this.enabledTestsMap = convertTestsToMap(enabledTests);
+        this.disabledTests =  CollectionUtil.nullSafeUnmodifiableSet(builder.disabledTests);
+        this.disabledTestsMap = convertTestsToMap(disabledTests);
         this.defaultConnectionNickname = builder.defaultConnectionNickname;
         this.enabledConnections = builder.enabledConnections;
         this.disabledConnections = builder.disabledConnections;
@@ -575,6 +585,114 @@ public final class Configuration {
             }
             return s;
         });
+    }
+
+    private static Map<String, Set<String>> convertTestsToMap(Set<String> tests) {
+        Map<String, Set<String>> res = new HashMap<>();
+        for (String test : tests) {
+            String[] testParts = test.split("\\.");
+            if (testParts.length == 1) {
+                // The whole test specification does not contain a dot, assume it is a test class specification.
+                res.put(test, Collections.emptySet());
+                continue;
+            }
+
+            String lastTestPart = testParts[testParts.length - 1];
+            if (lastTestPart.isEmpty()) {
+                throw new IllegalArgumentException("Invalid test specifier: " + test);
+            }
+
+            char firstCharOfLastTestPart = lastTestPart.charAt(0);
+            if (!Character.isLowerCase(firstCharOfLastTestPart)) {
+                // The first character of the last test part is not lowercase, assume this is a fully qualified test
+                // class specification, e.g. org.foo.bar.TestClass.
+                res.put(test, Collections.emptySet());
+            }
+
+            // The first character of the last test part is lowercase, assume this is a test class *and* method name
+            // specification.
+            String testMethodName = lastTestPart;
+            int classPartsCount = testParts.length - 1;
+            String[] classParts = new String[classPartsCount];
+            System.arraycopy(testParts, 0, classParts, 0, classPartsCount);
+            String testClass = String.join(".", classParts);
+
+            res.compute(testClass, (k, v) -> {
+                if (v == null) {
+                    v = new HashSet<>();
+                }
+                v.add(testMethodName);
+                return v;
+            });
+        }
+        return res;
+    }
+
+    private static Set<String> getKey(Class<?> testClass, Map<String, Set<String>> testsMap) {
+        String className = testClass.getName();
+        if (testsMap.containsKey(className)) {
+            return testsMap.get(className);
+        }
+
+        String unqualifiedClassName = testClass.getSimpleName();
+        if (testsMap.containsKey(unqualifiedClassName)) {
+            return testsMap.get(unqualifiedClassName);
+        }
+
+        return null;
+    }
+
+    private static boolean contains(Class<? extends AbstractSmackIntTest> testClass, Map<String, Set<String>> testsMap) {
+        Set<String> enabledMethods = getKey(testClass, testsMap);
+        return enabledMethods != null;
+   }
+
+    public boolean isClassEnabled(Class<? extends AbstractSmackIntTest> testClass) {
+        if (enabledTestsMap.isEmpty()) {
+            return true;
+        }
+
+        return contains(testClass, enabledTestsMap);
+    }
+
+    public boolean isClassDisabled(Class<? extends AbstractSmackIntTest> testClass) {
+        if (disabledTestsMap.isEmpty()) {
+            return false;
+        }
+
+        return contains(testClass, disabledTestsMap);
+    }
+
+    private static boolean contains(Method method, Map<String, Set<String>> testsMap) {
+        Class<?> testClass = method.getDeclaringClass();
+        Set<String> methods = getKey(testClass, testsMap);
+
+        if (methods == null) {
+            return false;
+        }
+
+        if (methods.isEmpty()) {
+            return true;
+        }
+
+        String methodName = method.getName();
+        return methods.contains(methodName);
+    }
+
+    public boolean isMethodEnabled(Method method) {
+        if (enabledTestsMap.isEmpty()) {
+            return true;
+        }
+
+        return contains(method, enabledTestsMap);
+    }
+
+    public boolean isMethodDisabled(Method method) {
+        if (disabledTestsMap.isEmpty()) {
+            return false;
+        }
+
+        return contains(method, disabledTestsMap);
     }
 
 }

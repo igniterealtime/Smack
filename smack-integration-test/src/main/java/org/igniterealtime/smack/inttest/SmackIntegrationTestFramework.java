@@ -282,13 +282,13 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
-            if (config.enabledTests != null && !isInSet(testClass, config.enabledTests)) {
+            if (!config.isClassEnabled(testClass)) {
                 DisabledTestClass disabledTestClass = new DisabledTestClass(testClass, "Skipping test class " + testClassName + " because it is not enabled");
                 testRunResult.disabledTestClasses.add(disabledTestClass);
                 continue;
             }
 
-            if (isInSet(testClass, config.disabledTests)) {
+            if (config.isClassDisabled(testClass)) {
                 DisabledTestClass disabledTestClass = new DisabledTestClass(testClass, "Skipping test class " + testClassName + " because it is disalbed");
                 testRunResult.disabledTestClasses.add(disabledTestClass);
                 continue;
@@ -377,14 +377,13 @@ public class SmackIntegrationTestFramework {
             while (it.hasNext()) {
                 final Method method = it.next();
                 final String methodName = method.getName();
-                if (config.enabledTests != null && !(config.enabledTests.contains(methodName)
-                                || isInSet(testClass, config.enabledTests))) {
+                if (!config.isMethodEnabled(method)) {
                     DisabledTest disabledTest = new DisabledTest(method, "Skipping test method " + methodName + " because it is not enabled");
                     testRunResult.disabledTests.add(disabledTest);
                     it.remove();
                     continue;
                 }
-                if (config.disabledTests != null && config.disabledTests.contains(methodName)) {
+                if (config.isMethodDisabled(method)) {
                     DisabledTest disabledTest = new DisabledTest(method, "Skipping test method " + methodName + " because it is disabled");
                     testRunResult.disabledTests.add(disabledTest);
                     it.remove();
@@ -605,15 +604,6 @@ public class SmackIntegrationTestFramework {
             throw (Error) e;
         }
         return (Exception) e;
-    }
-
-    private static boolean isInSet(Class<?> clz, Set<String> classes) {
-        if (classes == null) {
-            return false;
-        }
-        final String className = clz.getName();
-        final String unqualifiedClassName = clz.getSimpleName();
-        return classes.contains(className) || classes.contains(unqualifiedClassName);
     }
 
     public static final class TestRunResult {
