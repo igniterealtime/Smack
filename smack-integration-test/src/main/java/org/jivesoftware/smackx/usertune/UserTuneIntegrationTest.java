@@ -91,14 +91,10 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
             utm1.publishUserTune(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
 
             // Wait for the data to be received.
-            try {
-                Object result = userTuneReceived.waitForResult(timeout);
+            Object result = userTuneReceived.waitForResult(timeout);
 
-                // Explicitly assert the success case.
-                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
-            } catch (TimeoutException e) {
-                Assertions.fail("Expected to receive a PEP notification, but did not.");
-            }
+            // Explicitly assert the success case.
+            Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
         } finally {
             unregisterListener(utm2, userTuneListener);
         }
