@@ -50,24 +50,25 @@ public class ItemProvider extends ExtensionElementProvider<Item>  {
         String xmlns = parser.getNamespace();
         ItemNamespace itemNamespace = ItemNamespace.fromXmlns(xmlns);
 
-        XmlPullParser.Event tag = parser.next();
+        XmlPullParser.TagEvent event = parser.nextTag();
+        switch (event) {
+            case START_ELEMENT:
+                String payloadElemName = parser.getName();
+                String payloadNS = parser.getNamespace();
 
-        if (tag == XmlPullParser.Event.END_ELEMENT)  {
-            return new Item(itemNamespace, id, node);
-        }
-        else {
-            String payloadElemName = parser.getName();
-            String payloadNS = parser.getNamespace();
-
-            final ExtensionElementProvider<ExtensionElement> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
-            if (extensionProvider == null) {
-                // TODO: Should we use StandardExtensionElement in this case? And probably remove SimplePayload all together.
-                CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
-                return new PayloadItem<>(itemNamespace, id, node, new SimplePayload(payloadText.toString()));
-            }
-            else {
-                return new PayloadItem<>(itemNamespace, id, node, extensionProvider.parse(parser));
-            }
+                final ExtensionElementProvider<ExtensionElement> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
+                if (extensionProvider == null) {
+                    // TODO: Should we use StandardExtensionElement in this case? And probably remove SimplePayload all together.
+                    CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
+                    return new PayloadItem<>(itemNamespace, id, node, new SimplePayload(payloadText.toString()));
+                }
+                else {
+                    return new PayloadItem<>(itemNamespace, id, node, extensionProvider.parse(parser));
+                }
+            case END_ELEMENT:
+                return new Item(itemNamespace, id, node);
+            default:
+                throw new AssertionError("unknown: " + event);
         }
     }
 
