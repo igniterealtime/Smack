@@ -211,13 +211,16 @@ public class MultiUserChat {
 
                 switch (presence.getType()) {
                 case available:
-                    Presence oldPresence = occupantsMap.put(from, presence);
-                    if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
+                    if (!processedReflectedSelfPresence
+                                    && mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
                         processedReflectedSelfPresence = true;
                         synchronized (this) {
                             notify();
                         }
-                    } else if (oldPresence != null) {
+                    }
+
+                    Presence oldPresence = occupantsMap.put(from, presence);
+                    if (oldPresence != null) {
                         // Get the previous occupant's affiliation & role
                         MUCUser mucExtension = MUCUser.from(oldPresence);
                         MUCAffiliation oldAffiliation = mucExtension.getItem().getAffiliation();
