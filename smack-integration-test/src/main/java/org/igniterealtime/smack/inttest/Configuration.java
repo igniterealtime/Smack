@@ -524,6 +524,8 @@ public final class Configuration {
 
         builder.setDnsResolver(properties.getProperty("dnsResolver"));
 
+        builder.setCompatibilityMode(properties.getProperty("compatibilityMode"));
+
         return builder.build();
     }
 
