@@ -211,7 +211,8 @@ public class MultiUserChat {
 
                 switch (presence.getType()) {
                 case available:
-                    if (mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
+                    if (!processedReflectedSelfPresence
+                                    && mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110)) {
                         processedReflectedSelfPresence = true;
                         synchronized (this) {
                             notify();
