@@ -82,13 +82,14 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        // This implicitly tests "The service MUST add the user to the moderator list and then inform the admin of
-        // success" in §9.6, since it'll throw on either an error IQ or on no response.
-        mucAsSeenByOne.grantModerator(nicknameTwo);
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            // This implicitly tests "The service MUST add the user to the moderator list and then inform the admin of
+            // success" in §9.6, since it'll throw on either an error IQ or on no response.
+            mucAsSeenByOne.grantModerator(nicknameTwo);
+
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -130,13 +131,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        mucAsSeenByOne.grantModerator(nicknameTwo);
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            mucAsSeenByOne.grantModerator(nicknameTwo);
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -178,12 +179,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        mucAsSeenByOne.grantModerator(nicknameTwo);
-        mucAsSeenByOne.revokeModerator(nicknameTwo);
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            mucAsSeenByOne.grantModerator(nicknameTwo);
+            mucAsSeenByOne.revokeModerator(nicknameTwo);
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -225,14 +226,14 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        mucAsSeenByOne.grantModerator(nicknameTwo);
-        mucAsSeenByOne.revokeModerator(nicknameTwo);
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            mucAsSeenByOne.grantModerator(nicknameTwo);
+            mucAsSeenByOne.revokeModerator(nicknameTwo);
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -273,10 +274,10 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByOne.revokeVoice(nicknameTwo);
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByOne.revokeVoice(nicknameTwo);
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -318,13 +319,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        mucAsSeenByOne.revokeVoice(nicknameTwo);
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            mucAsSeenByOne.revokeVoice(nicknameTwo);
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -366,12 +367,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        // This implicitly tests "The service MUST add the user to the admin list and then inform the owner of success" in §10.6, since it'll throw on either an error IQ or on no response.
-        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            // This implicitly tests "The service MUST add the user to the admin list and then inform the owner of success" in §10.6, since it'll throw on either an error IQ or on no response.
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -414,13 +415,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -461,13 +462,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-        mucAsSeenByOne.revokeAdmin(conTwo.getUser().asEntityBareJid());
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+            mucAsSeenByOne.revokeAdmin(conTwo.getUser().asEntityBareJid());
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -509,14 +509,14 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         });
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-
-        mucAsSeenByOne.revokeAdmin(conTwo.getUser().asEntityBareJid());
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+
+            mucAsSeenByOne.revokeAdmin(conTwo.getUser().asEntityBareJid());
             resultSyncPoint.waitForResult(timeout);
         } finally {
             tryDestroy(mucAsSeenByOne);
@@ -546,14 +546,14 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        final ResultSyncPoint<Presence, Exception> resultSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByTwo.addParticipantListener(kickPresence -> resultSyncPoint.signal(kickPresence));
-
-        mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            final ResultSyncPoint<Presence, Exception> resultSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByTwo.addParticipantListener(kickPresence -> resultSyncPoint.signal(kickPresence));
+
+            mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
             Presence kickPresence = resultSyncPoint.waitForResult(timeout);
             MUCUser mucUser = MUCUser.from(kickPresence);
             assertNotNull(mucUser);
@@ -593,16 +593,16 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
         createMuc(mucAsSeenByOne, "one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        final ResultSyncPoint<Presence, Exception> resultSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByThree.addParticipantListener(kickPresence -> resultSyncPoint.signal(kickPresence));
-
-        mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
         try {
+            final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+            final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            final ResultSyncPoint<Presence, Exception> resultSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByThree.addParticipantListener(kickPresence -> resultSyncPoint.signal(kickPresence));
+
+            mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
             Presence kickPresence = resultSyncPoint.waitForResult(timeout);
             MUCUser mucUser = MUCUser.from(kickPresence);
             assertNotNull(mucUser);
@@ -646,7 +646,6 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-
         try {
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByThree.join(nicknameThree);
@@ -694,7 +693,6 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         createModeratedMuc(mucAsSeenByOne, nicknameOne);
-
         try {
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByOne.grantModerator(nicknameTwo);
@@ -732,14 +730,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createModeratedMuc(mucAsSeenByOne, nicknameOne);
-
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-        mucAsSeenByOne.grantModerator(nicknameThree);
-
         try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+            mucAsSeenByOne.grantModerator(nicknameThree);
+
             // Admin cannot revoke from Owner
             XMPPException.XMPPErrorException xe1 = assertThrows(XMPPException.XMPPErrorException.class,
                             () -> mucAsSeenByTwo.revokeModerator(nicknameOne));
@@ -780,20 +777,20 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        mucAsSeenByTwo.join(nicknameTwo);
-        mucAsSeenByThree.join(nicknameThree);
-
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
-            @Override
-            public void adminGranted(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
-            }
-        });
-        mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-        resultSyncPoint.waitForResult(timeout);
-
         try {
+            mucAsSeenByTwo.join(nicknameTwo);
+            mucAsSeenByThree.join(nicknameThree);
+
+            final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
+                @Override
+                public void adminGranted(EntityFullJid participant) {
+                    resultSyncPoint.signal("done");
+                }
+            });
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+            resultSyncPoint.waitForResult(timeout);
+
             assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
                             JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
