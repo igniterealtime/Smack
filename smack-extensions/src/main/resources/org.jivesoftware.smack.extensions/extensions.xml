@@ -20,5 +20,6 @@
 		<className>org.jivesoftware.smackx.receipts.DeliveryReceiptManager</className>
 		<className>org.jivesoftware.smackx.iqversion.VersionManager</className>
 		<className>org.jivesoftware.smackx.caps.EntityCapsManager</className>
+		<className>org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm</className>
     </startupClasses>
 </smack>
