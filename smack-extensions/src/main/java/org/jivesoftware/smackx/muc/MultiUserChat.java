@@ -205,7 +205,7 @@ public class MultiUserChat {
                 if (from == null) {
                     return;
                 }
-                final EntityFullJid myRoomJID = myRoomJid;
+                final EntityFullJid myRoomJID = getMyRoomJid();
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
                 final MUCUser mucUser = MUCUser.from(packet);
 
@@ -732,7 +732,7 @@ public class MultiUserChat {
      * @return true if currently in the multi user chat room.
      */
     public boolean isJoined() {
-        return myRoomJid != null;
+        return getMyRoomJid() != null;
     }
 
     /**
@@ -768,7 +768,7 @@ public class MultiUserChat {
         // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
         // state does not reflect the actual state.
 
-        final EntityFullJid myRoomJid = this.myRoomJid;
+        final EntityFullJid myRoomJid = getMyRoomJid();
         if (myRoomJid == null) {
             throw new MucNotJoinedException(this);
         }
@@ -1200,11 +1200,21 @@ public class MultiUserChat {
      * @return the nickname currently being used.
      */
     public Resourcepart getNickname() {
-        final EntityFullJid myRoomJid = this.myRoomJid;
+        final EntityFullJid myRoomJid = getMyRoomJid();
         if (myRoomJid == null) {
             return null;
         }
         return myRoomJid.getResourcepart();
+    }
+
+    /**
+     * Return the full JID of the user in the room, or <code>null</code> if the room is not joined.
+     *
+     * @return the full JID of the user in the room, or <code>null</code>.
+     * @since 4.5.0
+     */
+    public EntityFullJid getMyRoomJid() {
+        return myRoomJid;
     }
 
     /**
@@ -1263,7 +1273,7 @@ public class MultiUserChat {
      * @throws MucNotJoinedException if not joined to the Multi-User Chat.
      */
     public void changeAvailabilityStatus(String status, Presence.Mode mode) throws NotConnectedException, InterruptedException, MucNotJoinedException {
-        final EntityFullJid myRoomJid = this.myRoomJid;
+        final EntityFullJid myRoomJid = getMyRoomJid();
         if (myRoomJid == null) {
             throw new MucNotJoinedException(this);
         }
