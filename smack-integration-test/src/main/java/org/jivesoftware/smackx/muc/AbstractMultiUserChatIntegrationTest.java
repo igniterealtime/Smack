@@ -55,9 +55,8 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
         if (services.isEmpty()) {
             throw new TestNotPossibleException("No MUC (XEP-45) service found");
         }
-        else {
-            mucService = services.get(0);
-        }
+
+        mucService = services.get(0);
     }
 
     /**
@@ -94,10 +93,7 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
             SmackException.NotConnectedException,
             MultiUserChatException.MissingMucCreationAcknowledgeException,
             MultiUserChatException.NotAMucServiceException {
-        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
-        if (handle != null) {
-            handle.makeInstant();
-        }
+        muc.create(resourceName).makeInstant();
     }
 
     static void createMuc(MultiUserChat muc, String nickname) throws
@@ -116,10 +112,10 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
             MultiUserChatException.MissingMucCreationAcknowledgeException,
             MultiUserChatException.MucConfigurationNotSupportedException,
             MultiUserChatException.NotAMucServiceException {
-        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
-        if (handle != null) {
-            handle.getConfigFormManager().makeMembersOnly().submitConfigurationForm();
-        }
+        muc.create(resourceName)
+            .getConfigFormManager()
+            .makeMembersOnly()
+            .submitConfigurationForm();
     }
 
     static void createModeratedMuc(MultiUserChat muc, Resourcepart resourceName)
@@ -128,8 +124,10 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
                     MultiUserChatException.MissingMucCreationAcknowledgeException,
                     MultiUserChatException.NotAMucServiceException,
                     MultiUserChatException.MucConfigurationNotSupportedException {
-        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
-        handle.getConfigFormManager().makeModerated().submitConfigurationForm();
+        muc.create(resourceName)
+            .getConfigFormManager()
+            .makeModerated()
+            .submitConfigurationForm();
     }
 
     static void createHiddenMuc(MultiUserChat muc, Resourcepart resourceName)
@@ -137,7 +135,9 @@ public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrati
                     MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException,
                     MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, XmppStringprepException,
                     MultiUserChatException.MucConfigurationNotSupportedException {
-        MultiUserChat.MucCreateConfigFormHandle handle = muc.create(resourceName);
-        handle.getConfigFormManager().makeHidden().submitConfigurationForm();
+        muc.create(resourceName)
+            .getConfigFormManager()
+            .makeHidden()
+            .submitConfigurationForm();
     }
 }
