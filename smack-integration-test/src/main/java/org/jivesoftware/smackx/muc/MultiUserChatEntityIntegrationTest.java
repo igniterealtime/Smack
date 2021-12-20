@@ -121,7 +121,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         DiscoverInfo discoInfo;
         try {
             // Use SDM because mucManagerOne.getRoomInfo(mucAddress) might not use Disco
-            discoInfo = ServiceDiscoveryManager.getInstanceFor(conOne).discoverInfo(mucAddress, null);
+            discoInfo = ServiceDiscoveryManager.getInstanceFor(conOne).discoverInfo(mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -150,7 +150,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
 
         DiscoverItems roomItems;
         try {
-            roomItems = ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(mucAddress, null);
+            roomItems = ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
