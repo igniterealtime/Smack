@@ -35,7 +35,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatIntegrationTest {
@@ -176,12 +176,17 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         createMuc(mucAsSeenByOne, nicknameOne);
+        final EntityFullJid mucAsSeenByOneUserJid = mucAsSeenByOne.getMyRoomJid();
+        // Ensure that we do not invoke discoverItems() with null below. This should not happen, as the room JID should
+        // be non-null after we created and joined the room. But it can not hurt to explicitly test for it either.
+        if (mucAsSeenByOneUserJid == null) {
+            throw new AssertionError();
+        }
 
         XMPPException.XMPPErrorException xe;
         try {
             xe = assertThrows(XMPPException.XMPPErrorException.class,
-                            () -> ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(
-                                            JidCreate.entityFullFrom(mucAddress, nicknameOne), null));
+                            () -> ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(mucAsSeenByOneUserJid));
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
