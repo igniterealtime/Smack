@@ -428,50 +428,8 @@ public class EnhancedDebugger extends SmackDebugger {
             private final PriorityBlockingQueue<String> buffer = new PriorityBlockingQueue<>();
 
             @Override
-            public void read(final String line) {
-
-                buffer.add(line);
-
-                SwingUtilities.invokeLater(() -> {
-                    List<String> linesToAdd = new ArrayList<>();
-                    String data;
-                    Instant start = Instant.now();
-                    try {
-                        // To reduce overhead/increase performance, try to process up to a certain amount of lines at the
-                        // same time, when they arrive in rapid succession.
-                        while (linesToAdd.size() < 50
-                                && Duration.between(start, Instant.now()).compareTo(Duration.ofMillis(100)) < 0
-                                && (data = buffer.poll(10, TimeUnit.MILLISECONDS)) != null) {
-                            linesToAdd.add(data);
-                        }
-                    } catch (InterruptedException e) {
-                        // Interrupted wait-for-poll. Process all data now.
-                    }
-
-                    if (linesToAdd.isEmpty()) {
-                        return;
-                    }
-
-                    if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER &&
-                            !EnhancedDebuggerWindow.getInstance().isVisible()) {
-                        // Do not add content if the parent is not visible
-                        return;
-                    }
-
-                    // Delete lines from the top, if lines to be added will exceed the maximum.
-                    int linesToDelete = receivedText.getLineCount() + linesToAdd.size() - EnhancedDebuggerWindow.MAX_TABLE_ROWS;
-                    if (linesToDelete > 0) {
-                        try {
-                            receivedText.replaceRange("", 0, receivedText.getLineEndOffset(linesToDelete - 1));
-                        }
-                        catch (BadLocationException e) {
-                            LOGGER.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: " + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
-                        }
-                    }
-
-                    // Add the new content.
-                    receivedText.append(String.join(NEWLINE, linesToAdd));
-                });
+            public void read(final String string) {
+                addBatched(string, buffer, receivedText);
             }
         };
         debugReader.addReaderListener(readerListener);
@@ -482,50 +440,8 @@ public class EnhancedDebugger extends SmackDebugger {
             private final PriorityBlockingQueue<String> buffer = new PriorityBlockingQueue<>();
 
             @Override
-            public void write(final String line) {
-
-                buffer.add(line);
-
-                SwingUtilities.invokeLater(() -> {
-                    List<String> linesToAdd = new ArrayList<>();
-                    String data;
-                    Instant start = Instant.now();
-                    try {
-                        // To reduce overhead/increase performance, try to process up to a certain amount of lines at the
-                        // same time, when they arrive in rapid succession.
-                        while (linesToAdd.size() < 50
-                                && Duration.between(start, Instant.now()).compareTo(Duration.ofMillis(100)) < 0
-                                && (data = buffer.poll(10, TimeUnit.MILLISECONDS)) != null) {
-                            linesToAdd.add(data);
-                        }
-                    } catch (InterruptedException e) {
-                        // Interrupted wait-for-poll. Process all data now.
-                    }
-
-                    if (linesToAdd.isEmpty()) {
-                        return;
-                    }
-
-                    if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER &&
-                            !EnhancedDebuggerWindow.getInstance().isVisible()) {
-                        // Do not add content if the parent is not visible
-                        return;
-                    }
-
-                    // Delete lines from the top, if lines to be added will exceed the maximum.
-                    int linesToDelete = sentText.getLineCount() + linesToAdd.size() - EnhancedDebuggerWindow.MAX_TABLE_ROWS;
-                    if (linesToDelete > 0) {
-                        try {
-                            sentText.replaceRange("", 0, sentText.getLineEndOffset(linesToDelete - 1));
-                        }
-                        catch (BadLocationException e) {
-                            LOGGER.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: " + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
-                        }
-                    }
-
-                    // Add the new content.
-                    sentText.append(String.join(NEWLINE, linesToAdd));
-                });
+            public void write(final String string) {
+                addBatched(string, buffer, sentText);
             }
         };
         debugWriter.addWriterListener(writerListener);
@@ -535,6 +451,50 @@ public class EnhancedDebugger extends SmackDebugger {
         reader = debugReader;
         writer = debugWriter;
 
+    }
+
+    private static void addBatched(String string, PriorityBlockingQueue<String> buffer, JTextArea jTextArea) {
+        buffer.add(string);
+
+        SwingUtilities.invokeLater(() -> {
+            List<String> linesToAdd = new ArrayList<>();
+            String data;
+            Instant start = Instant.now();
+            try {
+                // To reduce overhead/increase performance, try to process up to a certain amount of lines at the
+                // same time, when they arrive in rapid succession.
+                while (linesToAdd.size() < 50
+                                && Duration.between(start, Instant.now()).compareTo(Duration.ofMillis(100)) < 0
+                                && (data = buffer.poll(10, TimeUnit.MILLISECONDS)) != null) {
+                    linesToAdd.add(data);
+                }
+            } catch (InterruptedException e) {
+                LOGGER.log(Level.FINER, "Interrupted wait-for-poll in addBatched(). Process all data now.", e);
+            }
+
+            if (linesToAdd.isEmpty()) {
+                return;
+            }
+
+            if (EnhancedDebuggerWindow.PERSISTED_DEBUGGER && !EnhancedDebuggerWindow.getInstance().isVisible()) {
+                // Do not add content if the parent is not visible
+                return;
+            }
+
+            // Delete lines from the top, if lines to be added will exceed the maximum.
+            int linesToDelete = jTextArea.getLineCount() + linesToAdd.size() - EnhancedDebuggerWindow.MAX_TABLE_ROWS;
+            if (linesToDelete > 0) {
+                try {
+                    jTextArea.replaceRange("", 0, jTextArea.getLineEndOffset(linesToDelete - 1));
+                } catch (BadLocationException e) {
+                    LOGGER.log(Level.SEVERE, "Error with line offset, MAX_TABLE_ROWS is set too low: "
+                                    + EnhancedDebuggerWindow.MAX_TABLE_ROWS, e);
+                }
+            }
+
+            // Add the new content.
+            jTextArea.append(String.join(NEWLINE, linesToAdd));
+        });
     }
 
     private void addAdhocPacketPanel() {
