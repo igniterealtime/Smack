@@ -68,6 +68,12 @@ public class FormFieldRegistry {
         }
     }
 
+    public static void register(String formType, FormField.Type fieldType, String... fieldNames) {
+        for (String fieldName : fieldNames) {
+            register(formType, fieldName, fieldType);
+        }
+    }
+
     public static void register(String formType, String fieldName, FormField.Type fieldType) {
         StringUtils.requireNotNullNorEmpty(fieldName, "fieldName must be provided");
         Objects.requireNonNull(fieldType);

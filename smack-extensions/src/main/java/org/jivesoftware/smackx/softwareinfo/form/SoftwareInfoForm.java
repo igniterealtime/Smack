@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2020 Aditya Borikar, 2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
-
+import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
 import org.jivesoftware.smackx.mediaelement.element.MediaElement;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormFieldChildElement;
@@ -46,6 +46,11 @@ public final class SoftwareInfoForm extends FilledForm {
     public static final String SOFTWARE = "software";
     public static final String SOFTWARE_VERSION = "software_version";
     public static final String ICON = "icon";
+
+    static {
+        FormFieldRegistry.register(FORM_TYPE, FormField.Type.text_single,
+                        OS, OS_VERSION, SOFTWARE, SOFTWARE_VERSION);
+    }
 
     private SoftwareInfoForm(DataForm dataForm) {
         super(dataForm);

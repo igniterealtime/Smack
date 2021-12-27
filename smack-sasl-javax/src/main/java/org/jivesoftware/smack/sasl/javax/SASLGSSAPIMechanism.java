@@ -66,4 +66,8 @@ public class SASLGSSAPIMechanism extends SASLJavaXMechanism {
         return new SASLGSSAPIMechanism();
     }
 
+    @Override
+    public boolean requiresPassword() {
+        return false;
+    }
 }
