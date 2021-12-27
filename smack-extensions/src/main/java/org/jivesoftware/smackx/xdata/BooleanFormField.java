@@ -49,6 +49,20 @@ public class BooleanFormField extends SingleValueFormField {
         return value;
     }
 
+    /**
+     * Get the value of the boolean field or maybe <code>null</code>. Note that you usually want to use
+     * {@link #getValueAsBoolean()} instead of this method, as {@link #getValueAsBoolean()} considers the default value
+     * of boolean fields. That is, boolean form fields have the value <code>false</code> if not explicitly set to
+     * something else.
+     *
+     * @return the boolean value of this form field or <code>null</code> if no value was explicitly provided.
+     * @see #getValueAsBoolean()
+     * @since 4.4.5
+     */
+    public Boolean getValueAsBooleanOrNull() {
+        return value;
+    }
+
     public Builder asBuilder() {
         return new Builder(this);
     }
