@@ -30,7 +30,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 /**
  * <p>
- * <b>Deprecation Notice:</b> This class is deprecated, use {@link IQProvider} instead.
+ * <b>Deprecation Notice:</b> This class is deprecated, use {@link IqProvider} instead.
  * </p>
  * An abstract class for parsing custom IQ packets. Each IQProvider must be registered with
  * the ProviderManager class for it to be used. Every implementation of this
