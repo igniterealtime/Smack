@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2021 Florian Schmaus
+ * Copyright 2017-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,14 @@ package org.jivesoftware.smackx.jingle.provider;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -76,16 +78,7 @@ public class JingleProvider extends IqProvider<Jingle> {
                     builder.addJingleContent(content);
                     break;
                 case JingleReason.ELEMENT:
-                    parser.next();
-                    String reasonString = parser.getName();
-                    JingleReason reason;
-                    if (reasonString.equals("alternative-session")) {
-                        parser.next();
-                        String sid = parser.nextText();
-                        reason = new JingleReason.AlternativeSession(sid);
-                    } else {
-                        reason = new JingleReason(Reason.fromString(reasonString));
-                    }
+                    JingleReason reason = parseJingleReason(parser);
                     builder.setReason(reason);
                     break;
                 default:
@@ -177,5 +170,58 @@ public class JingleProvider extends IqProvider<Jingle> {
         }
 
         return builder.build();
+    }
+
+    public static JingleReason parseJingleReason(XmlPullParser parser)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        ParserUtils.assertAtStartTag(parser);
+        final int initialDepth = parser.getDepth();
+        final String jingleNamespace = parser.getNamespace();
+
+        JingleReason.Reason reason = null;
+        ExtensionElement element = null;
+        String text = null;
+
+        // 'sid' is only set if the reason is 'alternative-session'.
+        String sid = null;
+
+        outerloop: while (true) {
+            XmlPullParser.TagEvent event = parser.nextTag();
+            switch (event) {
+            case START_ELEMENT:
+                String elementName = parser.getName();
+                String namespace = parser.getNamespace();
+                if (namespace.equals(jingleNamespace)) {
+                    switch (elementName) {
+                    case "text":
+                        text = parser.nextText();
+                        break;
+                    case "alternative-session":
+                        parser.next();
+                        sid = parser.nextText();
+                        break;
+                    default:
+                        reason = Reason.fromString(elementName);
+                        break;
+                    }
+                } else {
+                    element = PacketParserUtils.parseExtensionElement(elementName, namespace, parser, null);
+                }
+                break;
+            case END_ELEMENT:
+                if (parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
+                break;
+            }
+        }
+
+        JingleReason res;
+        if (sid != null) {
+            res = new JingleReason.AlternativeSession(sid, text, element);
+        } else {
+            res = new JingleReason(reason, text, element);
+        }
+        return res;
     }
 }
