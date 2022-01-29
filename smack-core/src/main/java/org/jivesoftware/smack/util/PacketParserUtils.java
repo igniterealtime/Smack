@@ -500,6 +500,23 @@ public class PacketParserUtils {
         return parseIQ(parser, null);
     }
 
+    public static IqData parseIqData(XmlPullParser parser) throws XmppStringprepException {
+        final String id = parser.getAttributeValue("", "id");
+        IqData iqData = StanzaBuilder.buildIqData(id);
+
+        final Jid to = ParserUtils.getJidAttribute(parser, "to");
+        iqData.to(to);
+
+        final Jid from = ParserUtils.getJidAttribute(parser, "from");
+        iqData.from(from);
+
+        String typeString = parser.getAttributeValue("", "type");
+        final IQ.Type type = IQ.Type.fromString(typeString);
+        iqData.ofType(type);
+
+        return iqData;
+    }
+
     /**
      * Parses an IQ packet.
      *
@@ -517,18 +534,7 @@ public class PacketParserUtils {
         XmlEnvironment iqXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
         IQ iqPacket = null;
         StanzaError error = null;
-
-        final String id = parser.getAttributeValue("", "id");
-        IqData iqData = StanzaBuilder.buildIqData(id);
-
-        final Jid to = ParserUtils.getJidAttribute(parser, "to");
-        iqData.to(to);
-
-        final Jid from = ParserUtils.getJidAttribute(parser, "from");
-        iqData.from(from);
-
-        final IQ.Type type = IQ.Type.fromString(parser.getAttributeValue("", "type"));
-        iqData.ofType(type);
+        IqData iqData = parseIqData(parser);
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -570,7 +576,7 @@ public class PacketParserUtils {
         }
         // Decide what to do when an IQ packet was not understood
         if (iqPacket == null) {
-            switch (type) {
+            switch (iqData.getType()) {
             case error:
                 // If an IQ packet wasn't created above, create an empty error IQ packet.
                 iqPacket = new ErrorIQ(error);
@@ -584,10 +590,10 @@ public class PacketParserUtils {
         }
 
         // Set basic values on the iq packet.
-        iqPacket.setStanzaId(id);
-        iqPacket.setTo(to);
-        iqPacket.setFrom(from);
-        iqPacket.setType(type);
+        iqPacket.setStanzaId(iqData.getStanzaId());
+        iqPacket.setTo(iqData.getTo());
+        iqPacket.setFrom(iqData.getFrom());
+        iqPacket.setType(iqData.getType());
         iqPacket.setError(error);
 
         return iqPacket;
