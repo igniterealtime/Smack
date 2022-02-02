@@ -162,16 +162,20 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
         return result;
     }
 
+    private boolean callbacksInvoked;
+
     protected final synchronized void maybeInvokeCallbacks() {
-        if (cancelled) {
+        if (cancelled || callbacksInvoked) {
             return;
         }
 
         if ((result != null || exception != null) && completionCallback != null) {
+            callbacksInvoked = true;
             completionCallback.accept(this);
         }
 
         if (result != null && successCallback != null) {
+            callbacksInvoked = true;
             AbstractXMPPConnection.asyncGo(new Runnable() {
                 @Override
                 public void run() {
@@ -180,6 +184,7 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
             });
         }
         else if (exception != null && exceptionCallback != null) {
+            callbacksInvoked = true;
             AbstractXMPPConnection.asyncGo(new Runnable() {
                 @Override
                 public void run() {
