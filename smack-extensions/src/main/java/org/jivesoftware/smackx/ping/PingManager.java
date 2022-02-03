@@ -432,7 +432,7 @@ public final class PingManager extends Manager {
             return;
         }
 
-        final long minimumTimeout = TimeUnit.MINUTES.toMillis(2);
+        final long minimumTimeout = TimeUnit.SECONDS.toMillis(pingInterval);
         final long connectionReplyTimeout = connection.getReplyTimeout();
         final long timeout = connectionReplyTimeout > minimumTimeout ? connectionReplyTimeout : minimumTimeout;
 
