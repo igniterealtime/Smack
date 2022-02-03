@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,13 @@ import java.util.function.Predicate;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.Element;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.AbstractProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.Provider;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smack.xml.XmlPullParserFactory;
@@ -57,41 +62,56 @@ public class SmackTestUtil {
         }
     }
 
-    public static <E extends Element, P extends Provider<E>> E parse(CharSequence xml, Class<P> providerClass, XmlPullParserKind parserKind)
+    public static <E extends Element, P extends AbstractProvider<E>> E parse(CharSequence xml, Class<P> providerClass, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         P provider = providerClassToProvider(providerClass);
         return parse(xml, provider, parserKind);
     }
 
-    public static <E extends Element, P extends Provider<E>> E parse(InputStream inputStream, Class<P> providerClass, XmlPullParserKind parserKind)
+    public static <E extends Element, P extends AbstractProvider<E>> E parse(InputStream inputStream, Class<P> providerClass, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         P provider = providerClassToProvider(providerClass);
         return parse(inputStream, provider, parserKind);
     }
 
-    public static <E extends Element, P extends Provider<E>> E parse(Reader reader, Class<P> providerClass, XmlPullParserKind parserKind)
+    public static <E extends Element, P extends AbstractProvider<E>> E parse(Reader reader, Class<P> providerClass, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         P provider = providerClassToProvider(providerClass);
         return parse(reader, provider, parserKind);
     }
 
-    public static <E extends Element> E parse(CharSequence xml, Provider<E> provider, XmlPullParserKind parserKind)
+    public static <E extends Element> E parse(CharSequence xml, AbstractProvider<E> provider, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String xmlString = xml.toString();
         Reader reader = new StringReader(xmlString);
         return parse(reader, provider, parserKind);
     }
 
-    public static <E extends Element> E parse(InputStream inputStream, Provider<E> provider, XmlPullParserKind parserKind)
+    public static <E extends Element> E parse(InputStream inputStream, AbstractProvider<E> provider, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
         return parse(inputStreamReader, provider, parserKind);
     }
 
-    public static <E extends Element> E parse(Reader reader, Provider<E> provider, XmlPullParserKind parserKind)
+    @SuppressWarnings("unchecked")
+    public static <E extends Element> E parse(Reader reader, AbstractProvider<E> abstractProvider, XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         XmlPullParser parser = getParserFor(reader, parserKind);
-        E element = provider.parse(parser);
+
+        final E element;
+        if (abstractProvider instanceof Provider) {
+            Provider<E> provider = (Provider<E>) abstractProvider;
+            element = provider.parse(parser);
+        } else if (abstractProvider instanceof IqProvider) {
+            IqData iqData = PacketParserUtils.parseIqData(parser);
+            parser.next();
+            ParserUtils.forwardToStartElement(parser);
+            IqProvider<?> iqProvider = (IqProvider<?>) abstractProvider;
+            element = (E) iqProvider.parse(parser, iqData);
+        } else {
+            throw new AssertionError();
+        }
+
         return element;
     }
 
@@ -126,7 +146,7 @@ public class SmackTestUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static <E extends Element, P extends Provider<E>> P providerClassToProvider(Class<P> providerClass) {
+    private static <E extends Element, P extends AbstractProvider<E>> P providerClassToProvider(Class<P> providerClass) {
         P provider;
 
         try {

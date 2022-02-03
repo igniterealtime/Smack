@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.jingle.element;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
@@ -105,9 +106,17 @@ public class JingleReason implements FullyQualifiedElement {
     }
 
     protected final Reason reason;
+    private final String text;
+    private final ExtensionElement element;
 
     public JingleReason(Reason reason) {
+        this(reason, null, null);
+    }
+
+    public JingleReason(Reason reason, String text, ExtensionElement element) {
         this.reason = reason;
+        this.text = text;
+        this.element = element;
     }
 
     @Override
@@ -118,6 +127,26 @@ public class JingleReason implements FullyQualifiedElement {
     @Override
     public String getNamespace() {
         return NAMESPACE;
+    }
+
+    /**
+     * An optional text that provides human-readable information about the reason for the action.
+     *
+     * @return a human-readable text with information regarding this reason or <code>null</code>.
+     * @since 4.4.5
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * An optional element that provides more detailed machine-readable information about the reason for the action.
+     *
+     * @return an elemnet with machine-readable information about this reason or <code>null</code>.
+     * @since 4.4.5
+     */
+    public ExtensionElement getElement() {
+        return element;
     }
 
     @Override
@@ -142,7 +171,11 @@ public class JingleReason implements FullyQualifiedElement {
         private final String sessionId;
 
         public AlternativeSession(String sessionId) {
-            super(Reason.alternative_session);
+            this(sessionId, null, null);
+        }
+
+        public AlternativeSession(String sessionId, String text, ExtensionElement element) {
+            super(Reason.alternative_session, text, element);
             if (StringUtils.isNullOrEmpty(sessionId)) {
                 throw new NullPointerException("SessionID must not be null or empty.");
             }
