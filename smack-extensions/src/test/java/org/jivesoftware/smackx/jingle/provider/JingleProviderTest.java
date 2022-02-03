@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,23 +17,30 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class JingleProviderTest {
 
-    @Test
-    public void testParseUnknownJingleContentDescrption() throws Exception {
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseUnknownJingleContentDescrption(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final String unknownJingleContentDescriptionNamespace = "urn:xmpp:jingle:unknown-description:5";
         final String unknownJingleContentDescription =
                         // @formatter:off
@@ -50,8 +57,8 @@ public class JingleProviderTest {
                           "</file>" +
                         "</description>";
                         // @formatter:on
-        XmlPullParser parser = createTestJingle(unknownJingleContentDescription);
-        Jingle jingle = (Jingle) PacketParserUtils.parseIQ(parser);
+        CharSequence xml = createTestJingle(unknownJingleContentDescription);
+        Jingle jingle = SmackTestUtil.parse(xml, JingleProvider.class, parserKind);
 
         JingleContentDescription jingleContentDescription = jingle.getSoleContentOrThrow().getDescription();
 
@@ -59,8 +66,10 @@ public class JingleProviderTest {
         assertEquals(unknownJingleContentDescriptionNamespace, parsedUnknownJingleContentDescriptionNamespace);
     }
 
-    @Test
-    public void testParseUnknownJingleContentTransport() throws Exception {
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseUnknownJingleContentTransport(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final String unknownJingleContentTransportNamespace = "urn:xmpp:jingle:unknown-transport:foo:1";
         final String unknownJingleContentTransport =
                         // @formatter:off
@@ -81,8 +90,8 @@ public class JingleProviderTest {
                                    " type='direct'/>" +
                         "</transport>";
                         // @formatter:on
-        XmlPullParser parser = createTestJingle(unknownJingleContentTransport);
-        Jingle jingle = (Jingle) PacketParserUtils.parseIQ(parser);
+        CharSequence xml = createTestJingle(unknownJingleContentTransport);
+        Jingle jingle = SmackTestUtil.parse(xml, JingleProvider.class, parserKind);
 
         JingleContentTransport jingleContentTransport = jingle.getSoleContentOrThrow().getTransport();
 
@@ -90,7 +99,38 @@ public class JingleProviderTest {
         assertEquals(unknownJingleContentTransportNamespace, parsedUnknownJingleContentTransportNamespace);
     }
 
-    private static XmlPullParser createTestJingle(String... childs) throws XmlPullParserException, IOException {
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testReasonElementWithExtraElement(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        String xml = "<iq from='juliet@capulet.lit/balcony'"
+                        +      " id='le71fa63'"
+                        +      " to='romeo@montague.lit/orchard'"
+                        +      " type='set'>"
+                        +    "<jingle xmlns='urn:xmpp:jingle:1'"
+                        +            " action='session-terminate'"
+                        +            " sid='a73sjjvkla37jfea'>"
+                        +      "<reason>"
+                        +        "<success/>"
+                        +        "<my-element xmlns='https://example.org' foo='bar'/>"
+                        +      "</reason>"
+                        +    "</jingle>"
+                        + "</iq>";
+        Jingle jingle = SmackTestUtil.parse(xml, JingleProvider.class, parserKind);
+        JingleReason jingleReason = jingle.getReason();
+
+        assertEquals(JingleReason.Reason.success, jingleReason.asEnum());
+
+        XmlElement element = jingleReason.getElement();
+        // TODO: Use JUnit 5.8's assertInstanceOf when possible
+        // assertInstanceOf(StandardExtesionElement.class, extraElement);
+        assertTrue(element instanceof StandardExtensionElement);
+        StandardExtensionElement extraElement = (StandardExtensionElement) element;
+        assertEquals("https://example.org", extraElement.getNamespace());
+        assertEquals("bar", extraElement.getAttributes().get("foo"));
+    }
+
+    private static CharSequence createTestJingle(String... childs) throws XmlPullParserException, IOException {
         StringBuilder sb = new StringBuilder();
         sb.append(// @formatter:off
                         "<iq from='romeo@montague.example/dr4hcr0st3lup4c'" +
@@ -98,9 +138,9 @@ public class JingleProviderTest {
                              " to='juliet@capulet.example/yn0cl4bnw0yr3vym'" +
                              " type='set'>" +
                           "<jingle xmlns='urn:xmpp:jingle:1' " +
-                                " action='session-initiate' " +
-                             " initiator='romeo@montague.example/dr4hcr0st3lup4c' " +
-                                   " sid='851ba2'>" +
+                                "action='session-initiate' " +
+                                "initiator='romeo@montague.example/dr4hcr0st3lup4c' " +
+                                "sid='851ba2'>" +
                         "<content creator='initiator' name='a-file-offer' senders='initiator'>"
                    // @formatter:on
                   );
@@ -114,9 +154,6 @@ public class JingleProviderTest {
                   // @formatter:on
                  );
 
-        String jingleStanza = sb.toString();
-
-        XmlPullParser parser = PacketParserUtils.getParserFor(jingleStanza);
-        return parser;
+        return sb;
     }
 }
