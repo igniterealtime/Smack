@@ -221,11 +221,10 @@ public class SmackReactor {
                     selectWait = 0;
                 } else {
                     selectWait = nextScheduledAction.getTimeToDueMillis();
-                }
-
-                if (selectWait < 0) {
-                    // A scheduled action was just released and became ready to execute.
-                    return;
+                    if (selectWait <= 0) {
+                        // A scheduled action was just released and became ready to execute.
+                        return;
+                    }
                 }
 
                 // Before we call select, we handle the pending the interest Ops. This will not block since no other
