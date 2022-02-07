@@ -469,11 +469,14 @@ public final class Roster extends Manager {
             @Override
             public void processException(Exception exception) {
                 rosterState = RosterState.uninitialized;
-                Level logLevel;
+                Level logLevel = Level.SEVERE;
                 if (exception instanceof NotConnectedException) {
                     logLevel = Level.FINE;
-                } else {
-                    logLevel = Level.SEVERE;
+                } else if (exception instanceof XMPPErrorException) {
+                    Condition condition = ((XMPPErrorException) exception).getStanzaError().getCondition();
+                    if (condition == Condition.feature_not_implemented || condition == Condition.service_unavailable) {
+                        logLevel = Level.FINE;
+                    }
                 }
                 LOGGER.log(logLevel, "Exception reloading roster", exception);
                 for (RosterLoadedListener listener : rosterLoadedListeners) {
