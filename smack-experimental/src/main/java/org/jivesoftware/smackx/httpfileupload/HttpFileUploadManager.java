@@ -49,6 +49,8 @@ import org.jivesoftware.smack.proxy.ProxyInfo;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+import org.jivesoftware.smackx.httpfileupload.AbstractHttpUploadException.HttpUploadErrorException;
+import org.jivesoftware.smackx.httpfileupload.AbstractHttpUploadException.HttpUploadIOException;
 import org.jivesoftware.smackx.httpfileupload.UploadService.Version;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.SlotRequest;
@@ -494,10 +496,11 @@ public final class HttpFileUploadManager extends Manager {
             case HttpURLConnection.HTTP_NO_CONTENT:
                 break;
             default:
-                throw new IOException("Error response " + status + " from server during file upload: "
-                                + urlConnection.getResponseMessage() + ", file size: " + fileSize + ", put URL: "
-                                + putUrl);
+                throw new HttpUploadErrorException(status, urlConnection.getResponseMessage(), fileSize, slot);
             }
+        }
+        catch (IOException e) {
+            throw new HttpUploadIOException(fileSize, slot, e);
         }
         finally {
             urlConnection.disconnect();

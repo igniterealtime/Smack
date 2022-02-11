@@ -288,8 +288,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
 
     public XmlStringBuilder attribute(String name, Enum<?> value) {
         assert value != null;
-        // TODO: Should use toString() instead of name().
-        attribute(name, value.name());
+        attribute(name, value.toString());
         return this;
     }
 

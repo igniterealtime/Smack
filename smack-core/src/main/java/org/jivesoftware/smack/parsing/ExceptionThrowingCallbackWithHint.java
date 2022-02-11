@@ -34,7 +34,7 @@ public class ExceptionThrowingCallbackWithHint extends ExceptionThrowingCallback
 
     @Override
     public void handleUnparsableStanza(UnparseableStanza packetData) throws IOException {
-        LOGGER.warning("Parsing exception encountered."
+        LOGGER.warning("Parsing exception \"" + packetData.getParsingException().getMessage() + "\" encountered."
                         + " This exception will be re-thrown, leading to a disconnect."
                         + " You can change this behavior by setting a different ParsingExceptionCallback using setParsingExceptionCallback()."
                         + " More information an be found in AbstractXMPPConnection's javadoc.");
