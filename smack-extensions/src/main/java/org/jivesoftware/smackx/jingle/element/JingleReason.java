@@ -132,7 +132,7 @@ public class JingleReason implements XmlElement {
      * @param reason the reason string that we'd like to transport in this packet extension, which may or
      * may not be one of the static strings defined here.
      * @param text an element providing human-readable information about the reason for the action or
-     * <tt>null</tt> if no such information is currently available.
+     * <code>null</code>  if no such information is currently available.
      * @param element any other element that MAY be providing further information or <code>null</code> if no
      * such element has been specified.
      */
