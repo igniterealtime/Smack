@@ -35,6 +35,11 @@ public class JingleReason implements XmlElement {
     public static final String ELEMENT = "reason";
     public static final String NAMESPACE = Jingle.NAMESPACE;
 
+    /**
+     * The name of the text element.
+     */
+    public static final String TEXT_ELEMENT = "text";
+
     public static AlternativeSession AlternativeSession(String sessionId) {
         return new AlternativeSession(sessionId);
     }
@@ -105,13 +110,32 @@ public class JingleReason implements XmlElement {
     }
 
     protected final Reason reason;
+
+    /**
+     * The content of the text element (if any) providing human-readable information about the reason for the action.
+     */
     private final String text;
+
+    /**
+     * XEP-0166 mentions that the "reason" element MAY contain an element qualified by some other
+     * namespace that provides more detailed machine- readable information about the reason for the action.
+     */
     private final XmlElement element;
 
     public JingleReason(Reason reason) {
         this(reason, null, null);
     }
 
+    /**
+     * Creates a new <tt>JingleReason</tt> instance with the specified reason String.
+     *
+     * @param reason the reason string that we'd like to transport in this packet extension, which may or
+     * may not be one of the static strings defined here.
+     * @param text an element providing human-readable information about the reason for the action or
+     * <tt>null</tt> if no such information is currently available.
+     * @param element any other element that MAY be providing further information or <tt>null</tt> if no
+     * such element has been specified.
+     */
     public JingleReason(Reason reason, String text, XmlElement element) {
         this.reason = reason;
         this.text = text;
@@ -141,7 +165,7 @@ public class JingleReason implements XmlElement {
     /**
      * An optional element that provides more detailed machine-readable information about the reason for the action.
      *
-     * @return an elemnet with machine-readable information about this reason or <code>null</code>.
+     * @return an element with machine-readable information about this reason or <code>null</code>.
      * @since 4.4.5
      */
     public XmlElement getElement() {
@@ -155,6 +179,14 @@ public class JingleReason implements XmlElement {
 
         xml.emptyElement(reason);
 
+        // add reason "text" if we have it
+        xml.optElement(TEXT_ELEMENT, text);
+
+        // add the extra element if it has been specified.
+        if (element != null) {
+            xml.append(element.toXML(XmlEnvironment.EMPTY));
+        }
+
         xml.closeElement(this);
         return xml;
     }
@@ -162,7 +194,6 @@ public class JingleReason implements XmlElement {
     public Reason asEnum() {
         return reason;
     }
-
 
     public static class AlternativeSession extends JingleReason {
 
@@ -182,7 +213,7 @@ public class JingleReason implements XmlElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
             xml.rightAngleBracket();
 
