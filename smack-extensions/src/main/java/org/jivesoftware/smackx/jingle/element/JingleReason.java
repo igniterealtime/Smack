@@ -133,7 +133,7 @@ public class JingleReason implements XmlElement {
      * may not be one of the static strings defined here.
      * @param text an element providing human-readable information about the reason for the action or
      * <tt>null</tt> if no such information is currently available.
-     * @param element any other element that MAY be providing further information or <tt>null</tt> if no
+     * @param element any other element that MAY be providing further information or <code>null</code> if no
      * such element has been specified.
      */
     public JingleReason(Reason reason, String text, XmlElement element) {
