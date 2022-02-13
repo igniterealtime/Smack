@@ -35,6 +35,7 @@ public class JingleReason implements FullyQualifiedElement {
 
     public static final String ELEMENT = "reason";
     public static final String NAMESPACE = Jingle.NAMESPACE;
+    public static final String TEXT_ELEMENT = "text";
 
     public static AlternativeSession AlternativeSession(String sessionId) {
         return new AlternativeSession(sessionId);
@@ -142,7 +143,7 @@ public class JingleReason implements FullyQualifiedElement {
     /**
      * An optional element that provides more detailed machine-readable information about the reason for the action.
      *
-     * @return an elemnet with machine-readable information about this reason or <code>null</code>.
+     * @return an element with machine-readable information about this reason or <code>null</code>.
      * @since 4.4.5
      */
     public ExtensionElement getElement() {
@@ -155,6 +156,8 @@ public class JingleReason implements FullyQualifiedElement {
         xml.rightAngleBracket();
 
         xml.emptyElement(reason);
+        xml.optElement(TEXT_ELEMENT, text);
+        xml.optAppend(element);
 
         xml.closeElement(this);
         return xml;
