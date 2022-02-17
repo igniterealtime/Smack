@@ -48,6 +48,7 @@ import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -713,9 +714,11 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         SmackTlsContext smackTlsContext = getSmackTlsContext();
 
         Socket plain = socket;
+        int port = plain.getPort();
+        String xmppServiceDomainString = config.getXMPPServiceDomain().toString();
+        SSLSocketFactory sslSocketFactory = smackTlsContext.sslContext.getSocketFactory();
         // Secure the plain connection
-        socket = smackTlsContext.sslContext.getSocketFactory().createSocket(plain,
-                config.getXMPPServiceDomain().toString(), plain.getPort(), true);
+        socket = sslSocketFactory.createSocket(plain, xmppServiceDomainString, port, true);
 
         final SSLSocket sslSocket = (SSLSocket) socket;
         // Immediately set the enabled SSL protocols and ciphers. See SMACK-712 why this is
