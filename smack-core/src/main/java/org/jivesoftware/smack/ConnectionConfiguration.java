@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2017-2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2017-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Provider;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
@@ -189,7 +190,7 @@ public abstract class ConnectionConfiguration {
     protected ConnectionConfiguration(Builder<?, ?> builder) {
         try {
             smackTlsContext = getSmackTlsContext(builder.dnssecMode, builder.sslContextFactory,
-                            builder.customX509TrustManager, builder.keystoreType, builder.keystorePath,
+                            builder.customX509TrustManager, builder.keyManagers, builder.sslContextSecureRandom, builder.keystoreType, builder.keystorePath,
                             builder.callbackHandler, builder.pkcs11Library);
         } catch (UnrecoverableKeyException | KeyManagementException | NoSuchAlgorithmException | CertificateException
                         | KeyStoreException | NoSuchProviderException | IOException | NoSuchMethodException
@@ -252,7 +253,7 @@ public abstract class ConnectionConfiguration {
     }
 
     private static SmackTlsContext getSmackTlsContext(DnssecMode dnssecMode, SslContextFactory sslContextFactory,
-                    X509TrustManager trustManager, String keystoreType, String keystorePath,
+                    X509TrustManager trustManager, KeyManager[] keyManagers, SecureRandom secureRandom, String keystoreType, String keystorePath,
                     CallbackHandler callbackHandler, String pkcs11Library) throws NoSuchAlgorithmException,
                     CertificateException, IOException, KeyStoreException, NoSuchProviderException,
                     UnrecoverableKeyException, KeyManagementException, UnsupportedCallbackException,
@@ -266,69 +267,10 @@ public abstract class ConnectionConfiguration {
             context = SSLContext.getInstance("TLS");
         }
 
-        KeyStore ks = null;
-        PasswordCallback pcb = null;
-        KeyManager[] kms = null;
-
-        if ("PKCS11".equals(keystoreType)) {
-                Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
-                String pkcs11Config = "name = SmartCard\nlibrary = " + pkcs11Library;
-                ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
-                Provider p = (Provider) c.newInstance(config);
-                Security.addProvider(p);
-                ks = KeyStore.getInstance("PKCS11", p);
-                pcb = new PasswordCallback("PKCS11 Password: ", false);
-                callbackHandler.handle(new Callback[] { pcb });
-                ks.load(null, pcb.getPassword());
-        } else if ("Apple".equals(keystoreType)) {
-            ks = KeyStore.getInstance("KeychainStore", "Apple");
-            ks.load(null, null);
-            // pcb = new PasswordCallback("Apple Keychain",false);
-            // pcb.setPassword(null);
-        } else if (keystoreType != null) {
-            ks = KeyStore.getInstance(keystoreType);
-            if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
-                pcb = new PasswordCallback("Keystore Password: ", false);
-                callbackHandler.handle(new Callback[] { pcb });
-                ks.load(new FileInputStream(keystorePath), pcb.getPassword());
-            } else {
-                InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
-                try {
-                    // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
-                    // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
-                    char[] password = "changeit".toCharArray();
-                    try {
-                        ks.load(stream, password);
-                    } finally {
-                        CloseableUtil.maybeClose(stream);
-                    }
-                } catch (IOException e) {
-                    LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
-
-                    ks = KeyStore.getInstance("jks");
-                    // Open the stream again, so that we read it from the beginning.
-                    stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
-                    try {
-                        ks.load(stream, null);
-                    } finally {
-                        CloseableUtil.maybeClose(stream);
-                    }
-                }
-            }
-        }
-
-        if (ks != null) {
-            String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
-            if (kmf != null) {
-                if (pcb == null) {
-                    kmf.init(ks, null);
-                } else {
-                    kmf.init(ks, pcb.getPassword());
-                    pcb.clearPassword();
-                }
-                kms = kmf.getKeyManagers();
-            }
+        // TODO: Remove the block below once we removed setKeystorePath(), setKeystoreType(), setCallbackHanlder() and
+        // setPKCS11Library() in the builder, and all related fields and the parameters of this function.
+        if (keyManagers == null) {
+            keyManagers = Builder.getKeyManagersFrom(keystoreType, keystorePath, callbackHandler, pkcs11Library);
         }
 
         SmackDaneVerifier daneVerifier = null;
@@ -343,7 +285,7 @@ public abstract class ConnectionConfiguration {
             }
 
             // User requested DANE verification.
-            daneVerifier.init(context, kms, trustManager, null);
+            daneVerifier.init(context, keyManagers, trustManager, secureRandom);
         } else {
             final TrustManager[] trustManagers;
             if (trustManager != null) {
@@ -354,7 +296,7 @@ public abstract class ConnectionConfiguration {
                 trustManagers = null;
             }
 
-            context.init(kms, trustManagers, null);
+            context.init(keyManagers, trustManagers, secureRandom);
         }
 
         return new SmackTlsContext(context, daneVerifier);
@@ -688,6 +630,8 @@ public abstract class ConnectionConfiguration {
     public abstract static class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
         private SecurityMode securityMode = SecurityMode.required;
         private DnssecMode dnssecMode = DnssecMode.disabled;
+        private KeyManager[] keyManagers;
+        private SecureRandom sslContextSecureRandom;
         private String keystorePath;
         private String keystoreType;
         private String pkcs11Library = "pkcs11.config";
@@ -942,7 +886,12 @@ public abstract class ConnectionConfiguration {
          * @param callbackHandler to obtain information, such as the password or
          * principal information during the SASL authentication.
          * @return a reference to this builder.
+         * @deprecated set a callback-handler aware {@link KeyManager} via {@link #setKeyManager(KeyManager)} or
+         *             {@link #setKeyManagers(KeyManager[])}, created by
+         *             {@link #getKeyManagersFrom(String, String, CallbackHandler, String)}, instead.
          */
+        // TODO: Remove in Smack 4.6.
+        @Deprecated
         public B setCallbackHandler(CallbackHandler callbackHandler) {
             this.callbackHandler = callbackHandler;
             return getThis();
@@ -971,13 +920,59 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
+         * Set the {@link KeyManager}s to initialize the {@link SSLContext} used by Smack to establish the XMPP connection.
+         *
+         * @param keyManagers an array of {@link KeyManager}s to initialize the {@link SSLContext} with.
+         * @return a reference to this builder.
+         * @since 4.4.5
+         */
+        public B setKeyManagers(KeyManager[] keyManagers) {
+            this.keyManagers = keyManagers;
+            return getThis();
+        }
+
+        /**
+         * Set the {@link KeyManager}s to initialize the {@link SSLContext} used by Smack to establish the XMPP connection.
+         *
+         * @param keyManager the {@link KeyManager}s to initialize the {@link SSLContext} with.
+         * @return a reference to this builder.
+         * @see #setKeyManagers(KeyManager[])
+         * @since 4.4.5
+         */
+        public B setKeyManager(KeyManager keyManager) {
+            KeyManager[] keyManagers = new KeyManager[] { keyManager };
+            return setKeyManagers(keyManagers);
+        }
+
+        /**
+         * Set the {@link SecureRandom} used to initialize the {@link SSLContext} used by Smack to establish the XMPP
+         * connection. Note that you usually do not need (nor want) to set this. Because if the {@link SecureRandom} is
+         * not explicitly set, Smack will initialize the {@link SSLContext} with <code>null</code> as
+         * {@link SecureRandom} argument. And all sane {@link SSLContext} implementations will then select a safe secure
+         * random source by default.
+         *
+         * @param secureRandom the {@link SecureRandom} to initialize the {@link SSLContext} with.
+         * @return a reference to this builder.
+         * @since 4.4.5
+         */
+        public B setSslContextSecureRandom(SecureRandom secureRandom) {
+            this.sslContextSecureRandom = secureRandom;
+            return getThis();
+        }
+
+        /**
          * Sets the path to the keystore file. The key store file contains the
          * certificates that may be used to authenticate the client to the server,
          * in the event the server requests or requires it.
          *
          * @param keystorePath the path to the keystore file.
          * @return a reference to this builder.
+         * @deprecated set a keystore-path aware {@link KeyManager} via {@link #setKeyManager(KeyManager)} or
+         *             {@link #setKeyManagers(KeyManager[])}, created by
+         *             {@link #getKeyManagersFrom(String, String, CallbackHandler, String)}, instead.
          */
+        // TODO: Remove in Smack 4.6.
+        @Deprecated
         public B setKeystorePath(String keystorePath) {
             this.keystorePath = keystorePath;
             return getThis();
@@ -988,7 +983,12 @@ public abstract class ConnectionConfiguration {
          *
          * @param keystoreType the keystore type.
          * @return a reference to this builder.
+         * @deprecated set a key-type aware {@link KeyManager} via {@link #setKeyManager(KeyManager)} or
+         *             {@link #setKeyManagers(KeyManager[])}, created by
+         *             {@link #getKeyManagersFrom(String, String, CallbackHandler, String)}, instead.
          */
+        // TODO: Remove in Smack 4.6.
+        @Deprecated
         public B setKeystoreType(String keystoreType) {
             this.keystoreType = keystoreType;
             return getThis();
@@ -1000,7 +1000,12 @@ public abstract class ConnectionConfiguration {
          *
          * @param pkcs11Library the path to the PKCS11 library file.
          * @return a reference to this builder.
+         * @deprecated set a PKCS11-library aware {@link KeyManager} via {@link #setKeyManager(KeyManager)} or
+         *             {@link #setKeyManagers(KeyManager[])}, created by
+         *             {@link #getKeyManagersFrom(String, String, CallbackHandler, String)}, instead.
          */
+        // TODO: Remove in Smack 4.6.
+        @Deprecated
         public B setPKCS11Library(String pkcs11Library) {
             this.pkcs11Library = pkcs11Library;
             return getThis();
@@ -1276,5 +1281,77 @@ public abstract class ConnectionConfiguration {
         public abstract C build();
 
         protected abstract B getThis();
+
+        public static KeyManager[] getKeyManagersFrom(String keystoreType, String keystorePath,
+                        CallbackHandler callbackHandler, String pkcs11Library)
+                        throws NoSuchMethodException, SecurityException, ClassNotFoundException, KeyStoreException,
+                        NoSuchProviderException, NoSuchAlgorithmException, CertificateException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, UnsupportedCallbackException, UnrecoverableKeyException {
+            KeyManager[] keyManagers = null;
+            KeyStore ks = null;
+            PasswordCallback pcb = null;
+
+            if ("PKCS11".equals(keystoreType)) {
+                    Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
+                    String pkcs11Config = "name = SmartCard\nlibrary = " + pkcs11Library;
+                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
+                    Provider p = (Provider) c.newInstance(config);
+                    Security.addProvider(p);
+                    ks = KeyStore.getInstance("PKCS11", p);
+                    pcb = new PasswordCallback("PKCS11 Password: ", false);
+                    callbackHandler.handle(new Callback[] { pcb });
+                    ks.load(null, pcb.getPassword());
+            } else if ("Apple".equals(keystoreType)) {
+                ks = KeyStore.getInstance("KeychainStore", "Apple");
+                ks.load(null, null);
+                // pcb = new PasswordCallback("Apple Keychain",false);
+                // pcb.setPassword(null);
+            } else if (keystoreType != null) {
+                ks = KeyStore.getInstance(keystoreType);
+                if (callbackHandler != null && StringUtils.isNotEmpty(keystorePath)) {
+                    pcb = new PasswordCallback("Keystore Password: ", false);
+                    callbackHandler.handle(new Callback[] { pcb });
+                    ks.load(new FileInputStream(keystorePath), pcb.getPassword());
+                } else {
+                    InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                    try {
+                        // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
+                        // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
+                        char[] password = "changeit".toCharArray();
+                        try {
+                            ks.load(stream, password);
+                        } finally {
+                            CloseableUtil.maybeClose(stream);
+                        }
+                    } catch (IOException e) {
+                        LOGGER.log(Level.FINE, "KeyStore load() threw, attempting 'jks' fallback", e);
+
+                        ks = KeyStore.getInstance("jks");
+                        // Open the stream again, so that we read it from the beginning.
+                        stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
+                        try {
+                            ks.load(stream, null);
+                        } finally {
+                            CloseableUtil.maybeClose(stream);
+                        }
+                    }
+                }
+            }
+
+            if (ks != null) {
+                String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+                KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);
+                if (kmf != null) {
+                    if (pcb == null) {
+                        kmf.init(ks, null);
+                    } else {
+                        kmf.init(ks, pcb.getPassword());
+                        pcb.clearPassword();
+                    }
+                    keyManagers = kmf.getKeyManagers();
+                }
+            }
+
+            return keyManagers;
+        }
     }
 }
