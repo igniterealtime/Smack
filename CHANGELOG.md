@@ -1,5 +1,19 @@
 # Smack Changelog
 
+# 4.4.5 -- 2022-03-02
+
+### Bug
+
+- [SMACK-923](https://igniterealtime.atlassian.net/browse/SMACK-923) Smack reactor should immediately handle scheduled actions that are due in zero milliseconds
+- [SMACK-921](https://igniterealtime.atlassian.net/browse/SMACK-921) XmlStringBuilder.attribute\(String name, Enum<?> value\) should use value.toString\(\) \(and not value.name\(\)\)
+- [SMACK-920](https://igniterealtime.atlassian.net/browse/SMACK-920) SASL GSSAPI mechanism should be marked to not require a password
+- [SMACK-918](https://igniterealtime.atlassian.net/browse/SMACK-918) Self presences in MUC are no longer handled correctly
+
+### Improvement
+
+- [SMACK-922](https://igniterealtime.atlassian.net/browse/SMACK-922) Support 'optional text' and arbitrary element in Jingle 'reason' element
+- [SMACK-919](https://igniterealtime.atlassian.net/browse/SMACK-919) PubSub ItemProvider should ignore character data in <item/>s
+
 ## 4.4.4 -- 2021-11-01
 
 ### Bug
