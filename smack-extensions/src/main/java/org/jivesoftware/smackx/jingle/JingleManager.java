@@ -35,7 +35,6 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager;
 
@@ -92,7 +91,7 @@ public final class JingleManager extends Manager {
                         if (jingle.getAction() == JingleAction.session_initiate) {
 
                             JingleContent content = jingle.getContents().get(0);
-                            JingleContentDescription description = content.getDescription();
+                            RtpDescription description = content.getFirstChildElement(RtpDescription.class);
                             JingleHandler jingleDescriptionHandler = descriptionHandlers.get(
                                     description.getNamespace());
 

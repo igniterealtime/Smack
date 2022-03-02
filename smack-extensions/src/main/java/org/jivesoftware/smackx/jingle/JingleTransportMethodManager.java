@@ -80,7 +80,7 @@ public final class JingleTransportMethodManager extends Manager {
             return null;
         }
 
-        JingleContentTransport transport = content.getTransport();
+        JingleContentTransport transport = content.getFirstChildElement(JingleContentTransport.class);
         if (transport == null) {
             return null;
         }
