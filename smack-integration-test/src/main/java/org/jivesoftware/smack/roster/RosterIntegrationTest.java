@@ -179,54 +179,6 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     /**
-     * Asserts that when a user sends out a presence subscription request to an entity for which the user already has
-     * an approved subscription, the server sends an auto-reply back to the user.
-     *
-     * <p>From RFC6121 § 3.1.3:</p>
-     * <blockquote>
-     * If the contact exists and the user already has a subscription to the contact's presence, then the contact's
-     * server MUST auto-reply on behalf of the contact by sending a presence stanza of type "subscribed" from the
-     * contact's bare JID to the user's bare JID.
-     * </blockquote>
-     *
-     * @throws Exception when errors occur
-     */
-    @SmackIntegrationTest
-    public void testAutoReplyForRequestWhenAlreadySubscribed() throws Exception {
-        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, connection.getReplyTimeout());
-
-        final SimpleResultSyncPoint added = new SimpleResultSyncPoint();
-
-        final StanzaListener stanzaListener = stanza -> {
-            final Presence presence = (Presence) stanza;
-            if (!presence.getTo().isEntityBareJid()) {
-                added.signalFailure("'to' address should be a bare JID, but is a full JID.");
-            } else if (!presence.getFrom().isEntityBareJid()) {
-                added.signalFailure("'from' address should be a bare JID, but is a full JID.");
-            } else if (presence.getType() != Presence.Type.subscribed) {
-                added.signalFailure("Incorrect subscription type on auto-reply: " + presence.getType());
-            } else {
-                added.signal();
-            }
-        };
-
-        conOne.addAsyncStanzaListener(stanzaListener, new AndFilter(StanzaTypeFilter.PRESENCE, FromMatchesFilter.createBare(conTwo.getUser())));
-
-        final Presence subscribe = PresenceBuilder.buildPresence()
-                .ofType(Presence.Type.subscribe)
-                .to(conTwo.getUser().asBareJid())
-                .build();
-
-        try {
-            conOne.sendStanza(subscribe);
-
-            assertTrue(added.waitForResult(2 * connection.getReplyTimeout()));
-        } finally {
-            conOne.removeAsyncStanzaListener(stanzaListener);
-        }
-    }
-
-    /**
      * Asserts that when a user sends out a presence subscription request to an entity for which the user does not have
      * a pre-existing subscription, the server will deliver the subscription request to that entity.
      *
