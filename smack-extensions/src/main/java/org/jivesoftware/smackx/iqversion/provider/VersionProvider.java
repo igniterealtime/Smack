@@ -21,14 +21,14 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqversion.packet.Version;
 import org.jivesoftware.smackx.iqversion.packet.VersionBuilder;
 
-public class VersionProvider extends IqProvider<Version> {
+public class VersionProvider extends IQProvider<Version> {
 
     @Override
     public Version parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)

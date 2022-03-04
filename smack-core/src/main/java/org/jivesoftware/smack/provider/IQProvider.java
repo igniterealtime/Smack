@@ -26,7 +26,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
+public abstract class IQProvider<I extends IQ> extends AbstractProvider<I> {
 
     public final I parse(XmlPullParser parser, IqData iqCommon)
                     throws XmlPullParserException, IOException, SmackParsingException {

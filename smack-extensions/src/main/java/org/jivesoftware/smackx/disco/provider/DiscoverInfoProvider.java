@@ -22,7 +22,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -36,7 +36,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 *
 * @author Gaston Dombiak
 */
-public class DiscoverInfoProvider extends IqProvider<DiscoverInfo> {
+public class DiscoverInfoProvider extends IQProvider<DiscoverInfo> {
 
     @Override
     public DiscoverInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)

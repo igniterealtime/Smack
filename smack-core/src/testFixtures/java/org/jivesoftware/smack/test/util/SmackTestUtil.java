@@ -31,7 +31,7 @@ import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.AbstractProvider;
-import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.provider.Provider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
@@ -102,11 +102,11 @@ public class SmackTestUtil {
         if (abstractProvider instanceof Provider) {
             Provider<E> provider = (Provider<E>) abstractProvider;
             element = provider.parse(parser);
-        } else if (abstractProvider instanceof IqProvider) {
+        } else if (abstractProvider instanceof IQProvider) {
             IqData iqData = PacketParserUtils.parseIqData(parser);
             parser.next();
             ParserUtils.forwardToStartElement(parser);
-            IqProvider<?> iqProvider = (IqProvider<?>) abstractProvider;
+            IQProvider<?> iqProvider = (IQProvider<?>) abstractProvider;
             element = (E) iqProvider.parse(parser, iqData);
         } else {
             throw new AssertionError();

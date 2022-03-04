@@ -25,7 +25,7 @@ import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
-import org.jivesoftware.smack.provider.IqProvider;
+import org.jivesoftware.smack.provider.IQProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -43,7 +43,7 @@ import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 
 import org.jxmpp.jid.FullJid;
 
-public class JingleProvider extends IqProvider<Jingle> {
+public class JingleProvider extends IQProvider<Jingle> {
 
     private static final Logger LOGGER = Logger.getLogger(JingleProvider.class.getName());
 
