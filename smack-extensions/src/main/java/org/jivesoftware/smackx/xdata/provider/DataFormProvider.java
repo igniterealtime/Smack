@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software 2020-2021 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software 2020-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
@@ -30,6 +32,8 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
+import org.jivesoftware.smack.util.EqualsUtil;
+import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -140,6 +144,37 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return parseField(parser, xmlEnvironment, formType, null);
     }
 
+    private static final class FieldNameAndFormType {
+        private final String fieldName;
+        private final String formType;
+
+        private FieldNameAndFormType(String fieldName, String formType) {
+            this.fieldName = fieldName;
+            this.formType = formType;
+        }
+
+        private final HashCode.Cache hashCodeCache = new HashCode.Cache();
+
+        @Override
+        public int hashCode() {
+            return hashCodeCache.getHashCode(b ->
+                           b.append(fieldName)
+                            .append(formType)
+                            .build()
+            );
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return EqualsUtil.equals(this, other, (e, o) ->
+                e.append(fieldName, o.fieldName)
+                 .append(formType, o.formType)
+            );
+        }
+    }
+
+    private static final Set<FieldNameAndFormType> UNKNOWN_FIELDS = new CopyOnWriteArraySet<>();
+
     private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType, DataForm.ReportedData reportedData)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
@@ -212,8 +247,12 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 // field's type in the registry.
                 type = FormFieldRegistry.lookup(formType, fieldName);
                 if (type == null) {
-                    LOGGER.warning("The Field '" + fieldName + "' from FORM_TYPE '" + formType
-                                    + "' is not registered. Field type is unknown, assuming text-single.");
+                    FieldNameAndFormType fieldNameAndFormType = new FieldNameAndFormType(fieldName, formType);
+                    if (!UNKNOWN_FIELDS.contains(fieldNameAndFormType)) {
+                        LOGGER.warning("The Field '" + fieldName + "' from FORM_TYPE '" + formType
+                                        + "' is not registered. Field type is unknown, assuming text-single.");
+                        UNKNOWN_FIELDS.add(fieldNameAndFormType);
+                    }
                     // As per XEP-0004, text-single is the default form field type, which we use as emergency fallback here.
                     type = FormField.Type.text_single;
                 }
