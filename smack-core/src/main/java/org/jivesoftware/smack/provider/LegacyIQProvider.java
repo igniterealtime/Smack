@@ -37,8 +37,11 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * abstract class <b>must</b> have a public, no-argument constructor.
  *
  * @author Matt Tucker
+ * @deprecated Use {@link IqProvider} instead
  */
-public abstract class IQProvider<I extends IQ> extends IqProvider<I> {
+@Deprecated
+// TODO: Remove in Smack 4.6.
+public abstract class LegacyIQProvider<I extends IQ> extends IqProvider<I> {
 
     public final I parse(XmlPullParser parser) throws IOException, XmlPullParserException, SmackParsingException {
         return parse(parser, (XmlEnvironment) null);

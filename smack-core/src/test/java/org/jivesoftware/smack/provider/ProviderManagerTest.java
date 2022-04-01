@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -37,10 +38,10 @@ public class ProviderManagerTest {
         assertTrue(SmackConfiguration.isSmackInitialized());
     }
 
-    public static class TestIQProvider extends IQProvider<IQ> {
+    public static class TestIQProvider extends IqProvider<IQ> {
 
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
             return null;
         }
 

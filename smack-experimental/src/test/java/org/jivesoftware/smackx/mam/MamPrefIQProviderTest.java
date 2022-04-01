@@ -60,21 +60,21 @@ public class MamPrefIQProviderTest extends MamTest {
     public void checkMamPrefsIQProvider(XmlPullParserKind parserKind)
                     throws XmlPullParserException, IOException, SmackParsingException {
         XmlPullParser parser1 = SmackTestUtil.getParserFor(exampleMamPrefsIQ1, parserKind);
-        MamPrefsIQ mamPrefIQ1 = MamPrefsIQProvider.INSTANCE.parse(parser1);
+        MamPrefsIQ mamPrefIQ1 = MamPrefsIQProvider.INSTANCE.parse(parser1, null);
 
         assertEquals(IQ.Type.set, mamPrefIQ1.getType());
         assertEquals(mamPrefIQ1.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
         assertEquals(mamPrefIQ1.getNeverJids().get(0).toString(), "montague@montague.lit");
 
         XmlPullParser parser2 = SmackTestUtil.getParserFor(exampleMamPrefsIQ2, parserKind);
-        MamPrefsIQ mamPrefIQ2 = MamPrefsIQProvider.INSTANCE.parse(parser2);
+        MamPrefsIQ mamPrefIQ2 = MamPrefsIQProvider.INSTANCE.parse(parser2, null);
         assertEquals(IQ.Type.set, mamPrefIQ2.getType());
         assertEquals(mamPrefIQ2.getAlwaysJids().get(0).toString(), "romeo@montague.lit");
         assertEquals(mamPrefIQ2.getAlwaysJids().get(1).toString(), "montague@montague.lit");
         assertTrue(mamPrefIQ2.getNeverJids().isEmpty());
 
         XmlPullParser parser3 = SmackTestUtil.getParserFor(exampleMamPrefsIQ3, parserKind);
-        MamPrefsIQ mamPrefIQ3 = MamPrefsIQProvider.INSTANCE.parse(parser3);
+        MamPrefsIQ mamPrefIQ3 = MamPrefsIQProvider.INSTANCE.parse(parser3, null);
         assertEquals(IQ.Type.set, mamPrefIQ3.getType());
     }
 

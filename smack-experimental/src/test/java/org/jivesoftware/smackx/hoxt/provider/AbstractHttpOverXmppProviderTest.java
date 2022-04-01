@@ -63,7 +63,7 @@ public class AbstractHttpOverXmppProviderTest {
         HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        IQ iq = provider.parse(parser);
+        IQ iq = provider.parse(parser, null);
         assertTrue(iq instanceof HttpOverXmppResp);
         HttpOverXmppResp body = (HttpOverXmppResp) iq;
 
@@ -83,7 +83,7 @@ public class AbstractHttpOverXmppProviderTest {
         HttpOverXmppReqProvider provider = new HttpOverXmppReqProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(string);
 
-        IQ iq = provider.parse(parser);
+        IQ iq = provider.parse(parser, null);
         assertTrue(iq instanceof HttpOverXmppReq);
         HttpOverXmppReq body = (HttpOverXmppReq) iq;
 
@@ -205,7 +205,7 @@ public class AbstractHttpOverXmppProviderTest {
         HttpOverXmppRespProvider provider = new HttpOverXmppRespProvider();
         XmlPullParser parser = SmackTestUtil.getParserFor(string, tag, parserKind);
 
-        IQ iq = provider.parse(parser);
+        IQ iq = provider.parse(parser, null);
         assertTrue(iq instanceof HttpOverXmppResp);
         return (HttpOverXmppResp) iq;
     }

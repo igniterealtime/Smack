@@ -30,8 +30,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -330,10 +331,10 @@ public class RTPBridge extends IQ {
      *
      * @author Thiago Rocha
      */
-    public static class Provider extends IQProvider<RTPBridge> {
+    public static class Provider extends IqProvider<RTPBridge> {
 
         @Override
-        public RTPBridge parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public RTPBridge parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException,
                         IOException {
 

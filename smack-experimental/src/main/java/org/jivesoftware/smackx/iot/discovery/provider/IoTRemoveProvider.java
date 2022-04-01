@@ -18,8 +18,9 @@ package org.jivesoftware.smackx.iot.discovery.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -30,10 +31,10 @@ import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
-public class IoTRemoveProvider extends IQProvider<IoTRemove> {
+public class IoTRemoveProvider extends IqProvider<IoTRemove> {
 
     @Override
-    public IoTRemove parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
+    public IoTRemove parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws IOException {
         Jid jid = ParserUtils.getJidAttribute(parser);
         if (jid.hasResource()) {
             // TODO: Should be SmackParseException.

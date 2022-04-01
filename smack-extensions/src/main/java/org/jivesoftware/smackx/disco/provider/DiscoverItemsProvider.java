@@ -19,8 +19,9 @@ package org.jivesoftware.smackx.disco.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -34,10 +35,10 @@ import org.jxmpp.jid.Jid;
 *
 * @author Gaston Dombiak
 */
-public class DiscoverItemsProvider extends IQProvider<DiscoverItems> {
+public class DiscoverItemsProvider extends IqProvider<DiscoverItems> {
 
     @Override
-    public DiscoverItems parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public DiscoverItems parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         DiscoverItems discoverItems = new DiscoverItems();
         boolean done = false;

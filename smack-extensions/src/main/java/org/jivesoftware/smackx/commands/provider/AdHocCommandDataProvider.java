@@ -19,11 +19,12 @@ package org.jivesoftware.smackx.commands.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -39,10 +40,10 @@ import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
  *
  * @author Gabriel Guardincerri
  */
-public class AdHocCommandDataProvider extends IQProvider<AdHocCommandData> {
+public class AdHocCommandDataProvider extends IqProvider<AdHocCommandData> {
 
     @Override
-    public AdHocCommandData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public AdHocCommandData parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         boolean done = false;
         AdHocCommandData adHocCommandData = new AdHocCommandData();
         DataFormProvider dataFormProvider = new DataFormProvider();

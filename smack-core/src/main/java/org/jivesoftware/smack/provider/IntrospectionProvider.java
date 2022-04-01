@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -42,7 +43,7 @@ public class IntrospectionProvider{
      */
     // TODO: Remove in Smack 4.6.
     @Deprecated
-    public abstract static class IQIntrospectionProvider<I extends IQ> extends IQProvider<I> {
+    public abstract static class IQIntrospectionProvider<I extends IQ> extends IqProvider<I> {
         private final Class<I> elementClass;
 
         protected IQIntrospectionProvider(Class<I> elementClass) {
@@ -51,7 +52,7 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public I parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             try {
                 return (I) parseWithIntrospection(elementClass, parser, initialDepth);
             }

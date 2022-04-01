@@ -19,7 +19,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.test.SmackTestCase;
 import org.jivesoftware.smackx.jingle.packet.Jingle;

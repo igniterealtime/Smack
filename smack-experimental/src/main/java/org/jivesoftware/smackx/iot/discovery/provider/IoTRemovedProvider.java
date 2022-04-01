@@ -16,18 +16,19 @@
  */
 package org.jivesoftware.smackx.iot.discovery.provider;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.discovery.element.IoTRemoved;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
-public class IoTRemovedProvider extends IQProvider<IoTRemoved> {
+public class IoTRemovedProvider extends IqProvider<IoTRemoved> {
 
     @Override
-    public IoTRemoved parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public IoTRemoved parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTRemoved(nodeInfo);
     }

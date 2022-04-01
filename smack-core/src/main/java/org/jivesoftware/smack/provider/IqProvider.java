@@ -23,9 +23,17 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+/**
+ * An abstract class for parsing custom {@link IQ} packets. Each IqProvider must be registered with the {@link
+ * ProviderManager} for it to be used. Every implementation of this abstract class <b>must</b> have a public,
+ * no-argument constructor.
+ *
+ * @param <I> the {@link IQ} that is parsed by implementations.
+ */
 public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
 
     public final I parse(XmlPullParser parser, IqData iqCommon)
@@ -40,6 +48,8 @@ public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
 
         I i = wrapExceptions(() -> parse(parser, initialDepth, iqData, xmlEnvironment));
 
+        // Parser should be at end tag of the consumed/parsed element
+        ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
         return i;
     }
 

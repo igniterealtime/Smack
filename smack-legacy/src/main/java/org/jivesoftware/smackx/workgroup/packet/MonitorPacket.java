@@ -19,8 +19,9 @@ package org.jivesoftware.smackx.workgroup.packet;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -75,10 +76,10 @@ public class MonitorPacket extends IQ {
     /**
      * Stanza extension provider for Monitor Packets.
      */
-    public static class InternalProvider extends IQProvider<MonitorPacket> {
+    public static class InternalProvider extends IqProvider<MonitorPacket> {
 
         @Override
-        public MonitorPacket parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public MonitorPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             MonitorPacket packet = new MonitorPacket();
 
             boolean done = false;
