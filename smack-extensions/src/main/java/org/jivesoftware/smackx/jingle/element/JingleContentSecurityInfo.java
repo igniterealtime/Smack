@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 
 /**
- * An element found usually in 'description' elements.
- *
+ * Created by vanitas on 19.07.17.
  */
-public interface JingleContentDescriptionChildElement extends ExtensionElement {
+public abstract class JingleContentSecurityInfo implements NamedElement {
 
 }

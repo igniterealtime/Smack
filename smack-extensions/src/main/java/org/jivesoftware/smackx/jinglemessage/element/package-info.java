@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.jingle.element;
-
-import org.jivesoftware.smack.packet.ExtensionElement;
-
 /**
- * An element found usually in 'description' elements.
+ * Classes and interfaces of XEP-0353: Jingle Message Initiation.
  *
+ * @author Eng Chong Meng
+ * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  */
-public interface JingleContentDescriptionChildElement extends ExtensionElement {
-
-}
+package org.jivesoftware.smackx.jinglemessage.element;

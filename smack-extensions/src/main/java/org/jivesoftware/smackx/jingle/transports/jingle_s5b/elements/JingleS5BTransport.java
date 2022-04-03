@@ -87,15 +87,19 @@ public class JingleS5BTransport extends JingleContentTransport {
     }
 
     public static Builder getBuilder() {
-        return new Builder();
+        return new Builder(ELEMENT, NAMESPACE_V1);
     }
 
-    public static class Builder {
+    public static class Builder extends JingleContentTransport.Builder{
         private String streamId;
         private String dstAddr;
         private Bytestream.Mode mode;
         private final ArrayList<JingleContentTransportCandidate> candidates = new ArrayList<>();
         private JingleContentTransportInfo info;
+
+        protected Builder(String element, String namespace) {
+            super(element, namespace);
+        }
 
         public Builder setStreamId(String sid) {
             this.streamId = sid;
@@ -149,6 +153,7 @@ public class JingleS5BTransport extends JingleContentTransport {
             return setTransportInfo(JingleS5BTransportInfo.ProxyError.INSTANCE);
         }
 
+        @Override
         public JingleS5BTransport build() {
             return new JingleS5BTransport(candidates, info, streamId, dstAddr, mode);
         }

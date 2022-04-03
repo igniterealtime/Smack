@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jinglemessage;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smackx.jinglemessage.packet.JingleMessage;
+import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
 
 /**
  * Interface for listening to jingle Message events.

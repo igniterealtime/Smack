@@ -45,7 +45,7 @@ import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
 /**
- * Manager for Jingle SOCKS5 Bytestream transports (XEP-0261).
+ * Manager for Jingle SOCKS5 Bytestream transports (XEP-0260).
  */
 public final class JingleS5BTransportManager extends JingleTransportManager<JingleS5BTransport> {
 
@@ -151,13 +151,13 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         Jingle.Builder jb = Jingle.builder(connection());
         jb.setSessionId(sessionId).setInitiator(initiator).setAction(JingleAction.transport_info);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setName(contentName).setCreator(contentCreator).setSenders(contentSenders);
 
         JingleS5BTransport.Builder tb = JingleS5BTransport.getBuilder();
         tb.setCandidateUsed(candidateId).setStreamId(streamId);
 
-        Jingle jingle = jb.addJingleContent(cb.addChildElement(tb.build()).build()).build();
+        Jingle jingle = jb.addJingleContent(cb.setTransport(tb.build()).build()).build();
         jingle.setFrom(getConnection().getUser().asFullJidOrThrow());
         jingle.setTo(recipient);
 
@@ -168,13 +168,13 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         Jingle.Builder jb = Jingle.builder(connection());
         jb.setSessionId(sessionId).setInitiator(initiator).setAction(JingleAction.transport_info);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setName(name).setCreator(creator).setSenders(senders);
 
         JingleS5BTransport.Builder tb = JingleS5BTransport.getBuilder();
         tb.setCandidateError().setStreamId(streamId);
 
-        Jingle jingle = jb.addJingleContent(cb.addChildElement(tb.build()).build()).build();
+        Jingle jingle = jb.addJingleContent(cb.setTransport(tb.build()).build()).build();
         jingle.setFrom(getConnection().getUser().asFullJidOrThrow());
         jingle.setTo(remote);
 
@@ -187,13 +187,13 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         Jingle.Builder jb = Jingle.builder(connection());
         jb.setSessionId(sessionId).setAction(JingleAction.transport_info).setInitiator(initiator);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setSenders(senders).setCreator(creator).setName(name);
 
         JingleS5BTransport.Builder tb = JingleS5BTransport.getBuilder();
         tb.setStreamId(sessionId).setProxyError().setStreamId(streamId);
 
-        Jingle jingle = jb.addJingleContent(cb.addChildElement(tb.build()).build()).build();
+        Jingle jingle = jb.addJingleContent(cb.setTransport(tb.build()).build()).build();
         jingle.setTo(remote);
         jingle.setFrom(getConnection().getUser().asFullJidOrThrow());
         return jingle;
@@ -205,13 +205,13 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         Jingle.Builder jb = Jingle.builder(connection());
         jb.setInitiator(initiator).setSessionId(sessionId).setAction(JingleAction.transport_info);
 
-        JingleContent.Builder cb = JingleContent.builder();
+        JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setName(name).setCreator(creator).setSenders(senders);
 
         JingleS5BTransport.Builder tb = JingleS5BTransport.getBuilder();
         tb.setStreamId(streamId).setCandidateActivated(candidateId);
 
-        Jingle jingle = jb.addJingleContent(cb.addChildElement(tb.build()).build()).build();
+        Jingle jingle = jb.addJingleContent(cb.setTransport(tb.build()).build()).build();
         jingle.setFrom(getConnection().getUser().asFullJidOrThrow());
         jingle.setTo(remote);
         return jingle;

@@ -47,7 +47,6 @@ public class JingleIBBTransport extends JingleContentTransport {
     }
 
     public JingleIBBTransport(short blockSize, String sid) {
-        super(null);
         if (blockSize > 0) {
             this.blockSize = blockSize;
         } else {

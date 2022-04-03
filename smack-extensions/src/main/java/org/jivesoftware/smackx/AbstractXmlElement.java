@@ -39,9 +39,8 @@ import javax.xml.namespace.QName;
  * An {@link ExtensionElement} modeling the often required and used XML features when using XMPP.
  * It is therefore suitable for most use cases. Use
  * {@link AbstractXmlElement(Builder)} to build these elements.
- * <p>
+ *
  * Note this is meant as base class to ease most jingle extension elements creation.
- * </p>
  *
  * @author Florian Schmaus
  * @author Eng Chong Meng
@@ -300,7 +299,7 @@ public class AbstractXmlElement implements ExtensionElement {
         if (elements != null) {
             elements.put(key, element);
         } else {
-            LOGGER.log(Level.SEVERE,  "Element Name: " + element.getElementName());
+            LOGGER.log(Level.SEVERE, "Element Name: " + element.getElementName());
         }
     }
 

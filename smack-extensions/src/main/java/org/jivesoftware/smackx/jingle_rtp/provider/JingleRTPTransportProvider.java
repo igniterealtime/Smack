@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.jivesoftware.smackx.jingle_rtp.provider;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -23,49 +23,24 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A provider that parses incoming stanza extensions into instances of the {@link Class} that it has
- * been instantiated for.
- *
- * @param <EE> Class that the stanzas we will be parsing belong to
- * @author Emil Ivov
+ * Provider for IceUdpTransport elements.
  * @author Eng Chong Meng
  */
-public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends ExtensionElementProvider<EE> {
-    /**
-     * The {@link Class} that the stanza we will be parsing here belong to.
-     */
-    private final Class<EE> stanzaClass;
-
-    private final String nameSpace;
-
-    private static final Logger LOGGER = Logger.getLogger(DefaultXmlElementProvider.class.getName());
+public class JingleRTPTransportProvider extends JingleContentTransportProvider<IceUdpTransport> {
+    private static final Logger LOGGER = Logger.getLogger(JingleRTPTransportProvider.class.getName());
 
     /**
-     * Creates a new stanza provider for the specified stanza extensions.
-     *
-     * @param c the {@link Class} that the stanza we will be parsing belong to.
-     * @param nameSpace stanzas builder with the modified nameSpace
-     */
-    public DefaultXmlElementProvider(Class<EE> c, String nameSpace) {
-        stanzaClass = c;
-        this.nameSpace = nameSpace;
-    }
-
-    public DefaultXmlElementProvider(Class<EE> c) {
-        stanzaClass = c;
-        nameSpace = null;
-    }
-
-    /**
-     * Parse an extension sub-stanza and create a <code>EE</code> instance. At the beginning of the
-     * method call, the xml parser will be positioned on the opening element of the stanza extension
+     * Parse an extension sub-stanza and create a <code>IceUdpTransport</code> instance. At the beginning
+     * of the method call, the xml parser will be positioned on the opening element of the stanza extension
      * and at the end of the method call it will be on the closing element of the stanza extension.
      *
      * @param parser an XML parser positioned at the stanza's starting element.
@@ -73,16 +48,9 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
      * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
      */
     @Override
-    public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
-            throws IOException, XmlPullParserException, SmackParsingException {
-        EE stanzaExtension;
-        try {
-            stanzaExtension = stanzaClass.getDeclaredConstructor().newInstance();
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException ignore) {
-            LOGGER.log(Level.WARNING, "Unknown stanza class: " + parser.getName());
-            return null;
-        }
-        AbstractXmlElement.Builder<?, ?> mBuilder = stanzaExtension.getBuilder(nameSpace);
+    public IceUdpTransport parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)
+            throws IOException, XmlPullParserException {
+        IceUdpTransport.Builder mBuilder = IceUdpTransport.getBuilder();
 
         // first, set all the attributes
         int attrCount = parser.getAttributeCount();
@@ -101,15 +69,18 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                     // Timber.d("<%s %s/> class: %s", elementName, namespace, stanzaExtension.getClass().getSimpleName());
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(name, namespace);
                     // Extension element provider may not have been added properly if null
-                    if (provider == null) {
-                        LOGGER.log(Level.WARNING, "No provider for EE<" + name + " " + namespace + "/>");
+                    if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
+                        LOGGER.log(Level.WARNING, "No provider for EE<", name + " " + namespace + "/>");
                     } else {
-                        ExtensionElement childExtension = provider.parse(parser);
-                        if (childExtension instanceof AbstractXmlElement) {
-                            mBuilder.addChildElement(childExtension);
-                        } else
-                            LOGGER.log(Level.INFO, "Invalid Abstract Element: " + childExtension.getQName());
-
+                        try {
+                            ExtensionElement childExtension = provider.parse(parser);
+                            if (childExtension instanceof AbstractXmlElement) {
+                                mBuilder.addChildElement(childExtension);
+                            } else
+                                LOGGER.log(Level.WARNING, "Invalid Abstract Element: " + childExtension.getQName());
+                        } catch (SmackParsingException e) {
+                            LOGGER.log(Level.WARNING, "Parse childElement exception: " + e.getMessage());
+                        }
                     }
                     break;
 
@@ -128,6 +99,6 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                     break;
             }
         }
-        return stanzaClass.cast(mBuilder.build());
+        return mBuilder.build();
     }
 }

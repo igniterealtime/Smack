@@ -18,8 +18,10 @@ package org.jivesoftware.smackx.jingle.provider;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -27,34 +29,37 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.DefaultXmlElementProvider;
-import org.jivesoftware.smackx.jingle.Grouping;
-import org.jivesoftware.smackx.jingle.IceUdpTransport;
-import org.jivesoftware.smackx.jingle.IceUdpTransportCandidate;
-import org.jivesoftware.smackx.jingle.IceUdpTransportRemoteCandidate;
-import org.jivesoftware.smackx.jingle.InputEvent;
-import org.jivesoftware.smackx.jingle.ParameterElement;
-import org.jivesoftware.smackx.jingle.PayloadType;
-import org.jivesoftware.smackx.jingle.RawUdpTransport;
-import org.jivesoftware.smackx.jingle.RtcpFb;
-import org.jivesoftware.smackx.jingle.RtcpMux;
-import org.jivesoftware.smackx.jingle.RtpDescription;
-import org.jivesoftware.smackx.jingle.RtpExtmap;
-import org.jivesoftware.smackx.jingle.RtpHeader;
-import org.jivesoftware.smackx.jingle.SdpCrypto;
-import org.jivesoftware.smackx.jingle.SdpSource;
-import org.jivesoftware.smackx.jingle.SdpTransfer;
-import org.jivesoftware.smackx.jingle.SdpTransferred;
-import org.jivesoftware.smackx.jingle.SessionInfo;
-import org.jivesoftware.smackx.jingle.SessionInfoType;
-import org.jivesoftware.smackx.jingle.SrtpEncryption;
-import org.jivesoftware.smackx.jingle.SrtpFingerprint;
-import org.jivesoftware.smackx.jingle.WebSocketExtension;
-import org.jivesoftware.smackx.jingle.ZrtpHash;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.Grouping;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.IceUdpTransportRemoteCandidate;
+import org.jivesoftware.smackx.jingle_rtp.element.InputEvent;
+import org.jivesoftware.smackx.jingle_rtp.element.ParameterElement;
+import org.jivesoftware.smackx.jingle_rtp.element.PayloadType;
+import org.jivesoftware.smackx.jingle_rtp.element.RawUdpTransport;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpFb;
+import org.jivesoftware.smackx.jingle_rtp.element.RtcpMux;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpExtmap;
+import org.jivesoftware.smackx.jingle_rtp.element.RtpHeader;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpCrypto;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpSource;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpTransfer;
+import org.jivesoftware.smackx.jingle_rtp.element.SdpTransferred;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
+import org.jivesoftware.smackx.jingle_rtp.element.SrtpEncryption;
+import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
+import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jxmpp.jid.FullJid;
 
 import java.io.IOException;
@@ -78,11 +83,6 @@ public class JingleProvider extends IqProvider<Jingle> {
      * Note: All sub Elements without its own NAMESPACE use their parent NAMESPACE for provider support (Parser implementation)
      */
     public JingleProvider() {
-        // <description/> provider
-        ProviderManager.addExtensionProvider(
-                RtpDescription.ELEMENT, RtpDescription.NAMESPACE,
-                new DefaultXmlElementProvider<>(RtpDescription.class));
-
         // <payload-type/> provider
         ProviderManager.addExtensionProvider(
                 PayloadType.ELEMENT, RtpDescription.NAMESPACE,
@@ -112,11 +112,6 @@ public class JingleProvider extends IqProvider<Jingle> {
         ProviderManager.addExtensionProvider(
                 RtpExtmap.ELEMENT, RtpExtmap.NAMESPACE,
                 new DefaultXmlElementProvider<>(RtpExtmap.class));
-
-        // ice-udp transport - IceUdpTransport
-        ProviderManager.addExtensionProvider(
-                IceUdpTransport.ELEMENT, IceUdpTransport.NAMESPACE,
-                new DefaultXmlElementProvider<>(IceUdpTransport.class));
 
         // <raw-udp/> provider - RawUdpTransport
         ProviderManager.addExtensionProvider(
@@ -196,11 +191,13 @@ public class JingleProvider extends IqProvider<Jingle> {
                 new DefaultXmlElementProvider<>(RtcpFb.class));
 
         // web-socket
-        ProviderManager.addExtensionProvider(
-                WebSocketExtension.ELEMENT, WebSocketExtension.NAMESPACE,
-                new DefaultXmlElementProvider<>(WebSocketExtension.class));
-
+//        ProviderManager.addExtensionProvider(
+//                WebSocketExtension.ELEMENT, WebSocketExtension.NAMESPACE,
+//                new DefaultXmlElementProvider<>(WebSocketExtension.class));
     }
+
+    // Sub-elements providers
+    DefaultXmlElementProvider<SdpTransfer> transferProvider = new DefaultXmlElementProvider<>(SdpTransfer.class);
 
     /**
      * Parses a Jingle IQ sub-document and returns a {@link Jingle} instance.
@@ -229,10 +226,6 @@ public class JingleProvider extends IqProvider<Jingle> {
         String sessionId = parser.getAttributeValue("", Jingle.ATTR_SESSION_ID);
         builder.setSessionId(sessionId);
 
-        // Sub-elements providers
-        DefaultXmlElementProvider<JingleContent> contentProvider = new DefaultXmlElementProvider<>(JingleContent.class);
-        DefaultXmlElementProvider<SdpTransfer> transferProvider = new DefaultXmlElementProvider<>(SdpTransfer.class);
-
         outerloop:
         while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -242,8 +235,7 @@ public class JingleProvider extends IqProvider<Jingle> {
                     String namespace = parser.getNamespace();
                     switch (tagName) {
                         case JingleContent.ELEMENT:
-                            // JingleContent content = parseJingleContent(parser, parser.getDepth());
-                            JingleContent content = contentProvider.parse(parser);
+                            JingleContent content = parseJingleContent(parser, parser.getDepth());
                             builder.addJingleContent(content);
                             break;
 
@@ -306,6 +298,77 @@ public class JingleProvider extends IqProvider<Jingle> {
                     break;
             }
         }
+        return builder.build();
+    }
+
+    public static JingleContent parseJingleContent(XmlPullParser parser, final int initialDepth)
+            throws XmlPullParserException, IOException, SmackParsingException {
+        JingleContent.Builder builder = JingleContent.getBuilder();
+
+        String creatorString = parser.getAttributeValue("", JingleContent.ATTR_CREATOR);
+        JingleContent.Creator creator = JingleContent.Creator.valueOf(creatorString);
+        builder.setCreator(creator);
+
+        String disposition = parser.getAttributeValue("", JingleContent.ATTR_DISPOSITION);
+        builder.setDisposition(disposition);
+
+        String name = parser.getAttributeValue("", JingleContent.ATTR_NAME);
+        builder.setName(name);
+
+        String sendersString = parser.getAttributeValue("", JingleContent.ATTR_SENDERS);
+        if (sendersString != null) {
+            JingleContent.Senders senders = JingleContent.Senders.valueOf(sendersString);
+            builder.setSenders(senders);
+        }
+
+        outerloop:
+        while (true) {
+            XmlPullParser.Event eventType = parser.next();
+            switch (eventType) {
+                case START_ELEMENT:
+                    String tagName = parser.getName();
+                    String namespace = parser.getNamespace();
+                    switch (tagName) {
+                        case JingleContentDescription.ELEMENT: {
+                            JingleContentDescription description;
+                            JingleContentDescriptionProvider<?> provider = JingleContentProviderManager.getJingleContentDescriptionProvider(namespace);
+                            if (provider == null) {
+                                StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                                description = new UnknownJingleContentDescription(standardExtensionElement);
+                            } else {
+                                description = provider.parse(parser);
+                            }
+                            builder.setDescription(description);
+                            break;
+                        }
+                        case JingleContentTransport.ELEMENT: {
+                            JingleContentTransport transport;
+                            JingleContentTransportProvider<?> provider = JingleContentProviderManager.getJingleContentTransportProvider(namespace);
+                            if (provider == null) {
+                                StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                                transport = new UnknownJingleContentTransport(standardExtensionElement);
+                            } else {
+                                transport = provider.parse(parser);
+                            }
+                            builder.setTransport(transport);
+                            break;
+                        }
+                        default:
+                            LOGGER.severe("Unknown Jingle content element: " + tagName);
+                            break;
+                    }
+                    break;
+                case END_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
+            }
+        }
+
         return builder.build();
     }
 

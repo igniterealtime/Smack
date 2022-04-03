@@ -68,7 +68,7 @@ public enum JingleAction {
      * definition(s). Upon receiving a content-remove from the other party, the recipient MUST NOT
      * send a <code>content-accept</code> and MUST NOT continue to negotiate the transport method or
      * send application data related to that content definition.
-     * <p>
+     *
      * If the <code>content-remove</code> results in zero content definitions for the session, the
      * entity that receives the <code>content-remove</code> SHOULD send a <code>session-terminate</code>
      * action to the other party (since a session with no content definitions is void).
@@ -161,6 +161,7 @@ public enum JingleAction {
     ;
 
     private static final Map<String, JingleAction> map = new HashMap<>(JingleAction.values().length);
+
     static {
         for (JingleAction jingleAction : JingleAction.values()) {
             map.put(jingleAction.toString(), jingleAction);

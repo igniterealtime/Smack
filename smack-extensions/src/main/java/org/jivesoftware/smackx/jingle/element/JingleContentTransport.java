@@ -16,37 +16,60 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.AbstractXmlElement;
+
 import java.util.Collections;
 import java.util.List;
-
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * A jingle transport extension.
  *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
-public abstract class JingleContentTransport implements ExtensionElement {
-
+public class JingleContentTransport extends AbstractXmlElement {
     public static final String ELEMENT = "transport";
+    private static Builder mBuilder;
 
-    protected final List<JingleContentTransportCandidate> candidates;
-    protected final JingleContentTransportInfo info;
+    protected List<JingleContentTransportCandidate> candidates;
+    protected JingleContentTransportInfo info;
+
+    public JingleContentTransport() {
+        this(getBuilder());
+    }
+
+    /**
+     * Creates a new <code>RtpDescription</code>.
+     *
+     * @param builder Builder instance
+     */
+    public JingleContentTransport(Builder builder) {
+        super(builder);
+    }
 
     protected JingleContentTransport(List<JingleContentTransportCandidate> candidates) {
         this(candidates, null);
     }
 
     protected JingleContentTransport(List<JingleContentTransportCandidate> candidates, JingleContentTransportInfo info) {
+        super(mBuilder = getBuilder());
         if (candidates != null) {
             this.candidates = Collections.unmodifiableList(candidates);
         }
         else {
             this.candidates = Collections.emptyList();
         }
-
         this.info = info;
+
+        mBuilder.addTransportCandidate(candidates)
+                .addTransportInfo(info)
+                .build();
+    }
+
+    @Override
+    public String getElementName() {
+        return ELEMENT;
     }
 
     public List<JingleContentTransportCandidate> getCandidates() {
@@ -57,31 +80,38 @@ public abstract class JingleContentTransport implements ExtensionElement {
         return info;
     }
 
-    @Override
-    public String getElementName() {
-        return ELEMENT;
-    }
-
     protected void addExtraAttributes(XmlStringBuilder xml) {
-
     }
 
-    @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
-        XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
-        addExtraAttributes(xml);
+    public static Builder getBuilder() {
+        return new Builder(ELEMENT, null);
+    }
 
-        if (candidates.isEmpty() && info == null) {
-            xml.closeEmptyElement();
-
-        } else {
-
-            xml.rightAngleBracket();
-            xml.append(candidates);
-            xml.optElement(info);
-            xml.closeElement(this);
+    /**
+     * Builder for JingleContentTransport. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the RtpDescription.
+     */
+    public static class Builder extends AbstractXmlElement.Builder<Builder, JingleContentTransport> {
+        protected Builder(String element, String namespace) {
+            super(element, namespace);
         }
 
-        return xml;
+        public Builder addTransportInfo(JingleContentTransportInfo info) {
+            return (info == null) ? this : addChildElement(info);
+        }
+
+        public Builder addTransportCandidate(List<JingleContentTransportCandidate> xElements) {
+            return addChildElements(xElements);
+        }
+
+        @Override
+        public JingleContentTransport build() {
+            return new JingleContentTransport(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
     }
 }

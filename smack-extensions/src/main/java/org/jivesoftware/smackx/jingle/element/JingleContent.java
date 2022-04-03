@@ -35,6 +35,10 @@ public final class JingleContent extends AbstractXmlElement {
     public static final String ATTR_NAME = "name";
     public static final String ATTR_SENDERS = "senders";
 
+    private JingleContentDescription mDescription;
+    private JingleContentTransport mTransport;
+    private JingleContentSecurity mSecurity;
+
     /**
      * The values we currently support for the creator field.
      */
@@ -79,16 +83,19 @@ public final class JingleContent extends AbstractXmlElement {
      * <code>JingleContent</code> default constructor; use in DefaultXmlElementProvider, and newInstance() etc.
      */
     public JingleContent() {
-        super(builder());
+        super(getBuilder());
     }
 
     /**
      * Creates a new <code>JingleContent</code> element; required by DefaultXmlElementProvider().
      *
-     * @param build the builder for this extension element.
+     * @param builder Builder instance
      */
-    public JingleContent(Builder build) {
-        super(build);
+    public JingleContent(Builder builder) {
+        super(builder);
+        mDescription = builder.description;
+        mTransport = builder.transport;
+        mSecurity = builder.security;
     }
 
     public Creator getCreator() {
@@ -113,7 +120,29 @@ public final class JingleContent extends AbstractXmlElement {
         setAttribute(ATTR_SENDERS, senders.toString());
     }
 
-    public static Builder builder() {
+    /**
+     * Gets the description for this Jingle content.
+     *
+     * @return The description.
+     */
+    public JingleContentDescription getDescription() {
+        return mDescription;
+    }
+
+    /**
+     * Returns an Iterator for the JingleTransports in the packet.
+     *
+     * @return an Iterator for the JingleTransports in the packet.
+     */
+    public JingleContentTransport getTransport() {
+        return mTransport;
+    }
+
+    public JingleContentSecurity getSecurity() {
+        return mSecurity;
+    }
+
+    public static Builder getBuilder() {
         return new Builder(ELEMENT, NAMESPACE);
     }
 
@@ -122,6 +151,10 @@ public final class JingleContent extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the JingleContent.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, JingleContent> {
+        protected JingleContentDescription description;
+        protected JingleContentTransport transport;
+        protected JingleContentSecurity security;
+
         protected Builder(String element, String namespace) {
             super(element, namespace);
         }
@@ -153,7 +186,20 @@ public final class JingleContent extends AbstractXmlElement {
             if (elements != null && elements.containsKey(description.getQName())) {
                 throw new IllegalStateException("Jingle content description already set");
             }
+            this.description = description;
             addChildElement(description);
+            return this;
+        }
+
+        public Builder setTransport(JingleContentTransport transport) {
+            this.transport = transport;
+            addChildElement(transport);
+            return this;
+        }
+
+        public Builder setSecurity(JingleContentSecurity security) {
+            this.security = security;
+            addChildElement(security);
             return this;
         }
 

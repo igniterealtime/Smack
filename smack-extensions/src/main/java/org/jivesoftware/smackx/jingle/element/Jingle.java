@@ -23,7 +23,7 @@ import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.jingle.SessionInfo;
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jxmpp.jid.FullJid;
 
 import java.math.BigInteger;

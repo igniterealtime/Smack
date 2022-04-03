@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus
+ * Copyright 2017 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,34 @@ package org.jivesoftware.smackx.jingle.element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
- * An element found usually in Jingle 'transport' elements.
- *
+ * Jingle security element.
+ * <jingle>
+ *     <content>
+ *         <description/>
+ *         <transport/>
+ *         <security/> <- That's me :)
+ *     </content>
+ * </jingle>
  */
-public abstract class JingleContentTransportCandidate implements ExtensionElement {
-    public static final String ELEMENT = "candidate";
+public abstract class JingleContentSecurity implements ExtensionElement {
+
+    public static final String ELEMENT = "security";
+    private JingleContentSecurityInfo securityInfo;
+
+    public JingleContentSecurity() {
+
+    }
+
+    public JingleContentSecurity(JingleContentSecurityInfo info) {
+        this.securityInfo = info;
+    }
 
     @Override
     public String getElementName() {
         return ELEMENT;
+    }
+
+    public JingleContentSecurityInfo getSecurityInfo() {
+        return securityInfo;
     }
 }
