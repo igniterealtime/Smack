@@ -80,9 +80,6 @@ public class JingleContentTransport extends AbstractXmlElement {
         return info;
     }
 
-    protected void addExtraAttributes(XmlStringBuilder xml) {
-    }
-
     public static Builder getBuilder() {
         return new Builder(ELEMENT, null);
     }

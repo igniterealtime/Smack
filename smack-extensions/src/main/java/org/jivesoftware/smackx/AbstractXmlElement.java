@@ -310,8 +310,7 @@ public class AbstractXmlElement implements ExtensionElement {
 
     // =========================================
 
-    protected void addExtraAttributes(XmlStringBuilder xml)
-    {
+    protected void addExtraAttributes(XmlStringBuilder xml) {
     }
 
     @Override

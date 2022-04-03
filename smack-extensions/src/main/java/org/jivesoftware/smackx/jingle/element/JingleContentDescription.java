@@ -69,9 +69,6 @@ public class JingleContentDescription extends AbstractXmlElement {
         return payloads;
     }
 
-    protected void addExtraAttributes(XmlStringBuilder xml) {
-    }
-
     public static Builder getBuilder() {
         return new Builder(ELEMENT, null);
     }
