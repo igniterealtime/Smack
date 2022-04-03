@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2022 Jive Software
+ * Copyright 2017-2019 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ import org.jivesoftware.smackx.AbstractXmlElement;
 /**
  * Jingle content element.
  *
- * @author Florian Schmaus
- * @author Eng Chong Meng
  * @see <a href="https://xmpp.org/extensions/xep-0166.html">XEP-0166: Jingle 1.1.2 (2018-09-19)</a>
  * @see <a href="https://xmpp.org/extensions/xep-0166.html#def-content">XEP-0166 § 7.3 Content Element</a>
+ *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
 public final class JingleContent extends AbstractXmlElement {
     public static final String ELEMENT = "content";
