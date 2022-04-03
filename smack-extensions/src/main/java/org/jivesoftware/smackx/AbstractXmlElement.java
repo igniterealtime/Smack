@@ -310,12 +310,17 @@ public class AbstractXmlElement implements ExtensionElement {
 
     // =========================================
 
+    protected void addExtraAttributes(XmlStringBuilder xml)
+    {
+    }
+
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
         if (xmlCache != null) {
             return xmlCache;
         }
         XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        addExtraAttributes(xml);
 
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
             xml.attribute(entry.getKey(), entry.getValue());
