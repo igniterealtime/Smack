@@ -34,11 +34,11 @@ import org.jivesoftware.smack.util.XmppElementUtil;
 /**
  * Manages providers for parsing custom XML sub-documents of XMPP packets. Two types of
  * providers exist:<ul>
- *      <li>IQProvider -- parses IQ requests into Java objects.
+ *      <li>IqProvider -- parses IQ requests into Java objects.
  *      <li>PacketExtension -- parses XML sub-documents attached to packets into
  *          PacketExtension instances.</ul>
  *
- * <b>IQProvider</b><p>
+ * <b>IqProvider</b><p>
  *
  * By default, Smack only knows how to process IQ packets with sub-packets that
  * are in a few namespaces such as:<ul>
@@ -63,8 +63,8 @@ import org.jivesoftware.smack.util.XmppElementUtil;
  *
  * Each IQ provider is associated with an element name and a namespace. If multiple provider
  * entries attempt to register to handle the same namespace, the first entry loaded from the
- * classpath will take precedence. The IQ provider class can either implement the IQProvider
- * interface, or extend the IQ class. In the former case, each IQProvider is responsible for
+ * classpath will take precedence. The IQ provider class can either implement the IqProvider
+ * interface, or extend the IQ class. In the former case, each IqProvider is responsible for
  * parsing the raw XML stream to create an IQ instance. In the latter case, bean introspection
  * is used to try to automatically set properties of the IQ instance using the values found
  * in the IQ stanza XML. For example, an XMPP time stanza resembles the following:
@@ -173,11 +173,11 @@ public final class ProviderManager {
     }
 
     /**
-     * Returns an unmodifiable collection of all IQProvider instances. Each object
-     * in the collection will either be an IQProvider instance, or a Class object
-     * that implements the IQProvider interface.
+     * Returns an unmodifiable collection of all IqProvider instances. Each object
+     * in the collection will either be an IqProvider instance, or a Class object
+     * that implements the IqProvider interface.
      *
-     * @return all IQProvider instances.
+     * @return all IqProvider instances.
      */
     public static List<IqProvider<IQ>> getIQProviders() {
         List<IqProvider<IQ>> providers = new ArrayList<>(iqProviders.size());
@@ -186,7 +186,7 @@ public final class ProviderManager {
     }
 
     /**
-     * Adds an IQ provider (must be an instance of IQProvider or Class object that is an IQ)
+     * Adds an IQ provider (must be an instance of IqProvider or Class object that is an IQ)
      * with the specified element name and name space. The provider will override any providers
      * loaded through the classpath.
      *

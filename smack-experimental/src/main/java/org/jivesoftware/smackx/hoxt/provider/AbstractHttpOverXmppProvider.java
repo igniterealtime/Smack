@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -35,7 +35,7 @@ import org.jivesoftware.smackx.shim.provider.HeadersProvider;
  * @author Andriy Tsykholyas
  * @see <a href="http://xmpp.org/extensions/xep-0332.html">XEP-0332: HTTP over XMPP transport</a>
  */
-public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmpp> extends IQProvider<H> {
+public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmpp> extends IqProvider<H> {
 
     private static final String ELEMENT_DATA = "data";
     private static final String ELEMENT_TEXT = "text";

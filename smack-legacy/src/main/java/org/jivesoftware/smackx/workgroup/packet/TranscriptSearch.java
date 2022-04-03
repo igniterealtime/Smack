@@ -19,10 +19,11 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -54,10 +55,10 @@ public class TranscriptSearch extends SimpleIQ {
      *
      * @author Gaston Dombiak
      */
-    public static class Provider extends IQProvider<TranscriptSearch> {
+    public static class Provider extends IqProvider<TranscriptSearch> {
 
         @Override
-        public TranscriptSearch parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+        public TranscriptSearch parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
             TranscriptSearch answer = new TranscriptSearch();
 
             boolean done = false;

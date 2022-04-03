@@ -27,9 +27,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -118,10 +119,10 @@ public class STUN extends SimpleIQ {
      *
      * @author Thiago Rocha
      */
-    public static class Provider extends IQProvider<STUN> {
+    public static class Provider extends IqProvider<STUN> {
 
         @Override
-        public STUN parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public STUN parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException,
                         IOException {
 

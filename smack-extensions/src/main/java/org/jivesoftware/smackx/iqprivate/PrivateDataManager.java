@@ -31,9 +31,10 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -234,10 +235,10 @@ public final class PrivateDataManager extends Manager {
     /**
      * An IQ provider to parse IQ results containing private data.
      */
-    public static class PrivateDataIQProvider extends IQProvider<PrivateDataIQ> {
+    public static class PrivateDataIQProvider extends IqProvider<PrivateDataIQ> {
 
         @Override
-        public PrivateDataIQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public PrivateDataIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             PrivateData privateData = null;
             boolean done = false;

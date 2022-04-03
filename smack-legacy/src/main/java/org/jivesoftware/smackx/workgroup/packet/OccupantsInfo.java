@@ -27,8 +27,9 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -132,10 +133,10 @@ public class OccupantsInfo extends IQ {
     /**
      * Stanza extension provider for AgentStatusRequest packets.
      */
-    public static class Provider extends IQProvider<OccupantsInfo> {
+    public static class Provider extends IqProvider<OccupantsInfo> {
 
         @Override
-        public OccupantsInfo parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public OccupantsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException, ParseException {
             OccupantsInfo occupantsInfo = new OccupantsInfo(parser.getAttributeValue("", "roomID"));
 

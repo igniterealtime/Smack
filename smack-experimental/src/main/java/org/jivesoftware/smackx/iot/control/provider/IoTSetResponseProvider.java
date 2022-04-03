@@ -16,16 +16,17 @@
  */
 package org.jivesoftware.smackx.iot.control.provider;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.control.element.IoTSetResponse;
 
-public class IoTSetResponseProvider extends IQProvider<IoTSetResponse> {
+public class IoTSetResponseProvider extends IqProvider<IoTSetResponse> {
 
     @Override
-    public IoTSetResponse parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public IoTSetResponse parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
         return new IoTSetResponse();
     }
 

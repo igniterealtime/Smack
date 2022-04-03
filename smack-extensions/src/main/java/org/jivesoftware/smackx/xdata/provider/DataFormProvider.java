@@ -115,7 +115,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
                 case RosterPacket.ELEMENT:
                     if (namespace.equals(RosterPacket.NAMESPACE)) {
-                        dataForm.addExtensionElement(RosterPacketProvider.INSTANCE.parse(parser));
+                        dataForm.addExtensionElement(RosterPacketProvider.INSTANCE.parse(parser, null));
                     }
                     break;
                 // See XEP-141 Data Forms Layout

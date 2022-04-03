@@ -25,8 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -38,7 +39,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gaston Dombiak
  */
-public class TranscriptsProvider extends IQProvider<Transcripts> {
+public class TranscriptsProvider extends IqProvider<Transcripts> {
 
     @SuppressWarnings("DateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
@@ -47,7 +48,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     }
 
     @Override
-    public Transcripts parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Transcripts parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, TextParseException, ParseException {
         Jid userID = ParserUtils.getJidAttribute(parser, "userID");
         List<Transcripts.TranscriptSummary> summaries = new ArrayList<>();

@@ -40,7 +40,7 @@ public class MamFinProviderTest extends MamTest {
     @Test
     public void checkMamFinProvider() throws Exception {
         XmlPullParser parser = PacketParserUtils.getParserFor(exmapleMamFinXml);
-        MamFinIQ mamFinIQ = new MamFinIQProvider().parse(parser);
+        MamFinIQ mamFinIQ = new MamFinIQProvider().parse(parser, null);
 
         assertFalse(mamFinIQ.isComplete());
         assertTrue(mamFinIQ.isStable());
