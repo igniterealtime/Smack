@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2022 Jive Software
+ * Copyright 2017-2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,11 @@ import org.jivesoftware.smackx.AbstractXmlElement;
 /**
  * An {@link AbstractXmlElement} implementation for Raw UDP transport elements.
  *
+ * @see <a href="https://xmpp.org/extensions/xep-0177.html">XEP-0177: Jingle Raw UDP Transport Method 1.1.1 (2020-12-10)</a>
+ *
  * @author Emil Ivov
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/xep-0177.html">XEP-0177: Jingle Raw UDP Transport Method 1.1.1 (2020-12-10)</a>
  */
 public class RawUdpTransport extends IceUdpTransport {
     /**
