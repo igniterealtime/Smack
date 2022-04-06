@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.jivesoftware.smackx.jingle_rtp;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -47,7 +47,6 @@ import javax.xml.namespace.QName;
  */
 public class AbstractXmlElement implements ExtensionElement {
     private static final Logger LOGGER = Logger.getLogger(AbstractXmlElement.class.getName());
-
     private final String element;
     private final String namespace;
     private final String text;
@@ -101,6 +100,7 @@ public class AbstractXmlElement implements ExtensionElement {
      * @return the set mBuilder or a modified mBuilder with the given namespace
      * @see DefaultXmlElementProvider on usage
      */
+    // public <B extends Builder<?, ?>> B getBuilder(String namespace)
     public AbstractXmlElement.Builder<?, ?> getBuilder(String namespace) {
         if (namespace != null) {
             mBuilder.namespace = namespace;

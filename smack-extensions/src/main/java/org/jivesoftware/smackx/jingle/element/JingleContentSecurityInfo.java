@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017-2022 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,10 @@ package org.jivesoftware.smackx.jingle.element;
 import org.jivesoftware.smack.packet.NamedElement;
 
 /**
- * Created by vanitas on 19.07.17.
+ * Class for jingle content security info NamedElement implementation.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public abstract class JingleContentSecurityInfo implements NamedElement {
 

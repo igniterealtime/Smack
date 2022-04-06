@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * An {@link AbstractXmlElement} implementation for Raw UDP transport elements.

@@ -21,6 +21,8 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 /**
  * An element found usually in Jingle 'transport' elements.
  *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
 public abstract class JingleContentTransportCandidate implements ExtensionElement {
     public static final String ELEMENT = "candidate";

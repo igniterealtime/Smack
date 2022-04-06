@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx;
+package org.jivesoftware.smackx.jingle_rtp;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -101,7 +101,7 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                     // Timber.d("<%s %s/> class: %s", elementName, namespace, stanzaExtension.getClass().getSimpleName());
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(name, namespace);
                     // Extension element provider may not have been added properly if null
-                    if (provider == null) {
+                    if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {
                         LOGGER.log(Level.WARNING, "No provider for EE<" + name + " " + namespace + "/>");
                     } else {
                         ExtensionElement childExtension = provider.parse(parser);

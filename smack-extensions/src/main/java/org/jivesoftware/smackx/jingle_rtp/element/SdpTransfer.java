@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;

@@ -17,8 +17,7 @@
 package org.jivesoftware.smackx.jingle.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 import java.util.Collections;
 import java.util.List;

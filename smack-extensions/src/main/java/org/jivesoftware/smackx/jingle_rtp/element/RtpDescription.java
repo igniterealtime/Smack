@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.jingle_rtp.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents the content <code>description</code> elements described below.

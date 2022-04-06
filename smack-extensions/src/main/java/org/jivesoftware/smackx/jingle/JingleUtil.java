@@ -85,8 +85,8 @@ public class JingleUtil {
         cb.setCreator(contentCreator)
                 .setName(contentName)
                 .setSenders(contentSenders)
-                .addChildElement(description)
-                .addChildElement(transport);
+                .setDescription(description)
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setFrom(mConnection.getUser());
@@ -170,8 +170,8 @@ public class JingleUtil {
         cb.setCreator(contentCreator)
                 .setName(contentName)
                 .setSenders(contentSenders)
-                .addChildElement(description)
-                .addChildElement(transport);
+                .setDescription(description)
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);
@@ -625,7 +625,7 @@ public class JingleUtil {
         JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setName(contentName)
                 .setCreator(contentCreator)
-                .addChildElement(transport);
+                .setTransport(transport);
         Jingle jingle = jb.addJingleContent(cb.build()).build();
 
         jingle.setTo(recipient);
@@ -654,7 +654,7 @@ public class JingleUtil {
         JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName)
-                .addChildElement(transport);
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);
@@ -683,7 +683,7 @@ public class JingleUtil {
         JingleContent.Builder cb = JingleContent.getBuilder();
         cb.setCreator(contentCreator)
                 .setName(contentName)
-                .addChildElement(transport);
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);

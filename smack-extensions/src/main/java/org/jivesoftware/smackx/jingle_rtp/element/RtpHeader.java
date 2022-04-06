@@ -17,8 +17,8 @@
 package org.jivesoftware.smackx.jingle_rtp.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle.element.JingleContent.Senders;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 import java.net.URI;
 

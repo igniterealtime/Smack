@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents <code>rid-group</code> elements which we use to represent a simulcast sdp lines (from unified plan).

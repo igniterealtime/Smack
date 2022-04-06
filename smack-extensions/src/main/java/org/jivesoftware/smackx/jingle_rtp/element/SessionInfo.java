@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents <code>session-info</code> elements such as active, ringing, or hold for example.

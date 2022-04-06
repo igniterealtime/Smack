@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Jingle content element.

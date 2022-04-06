@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.AbstractXmlElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * A 'rtcp-mux' extension: Multiplexing RTP Data and Control Packets on a Single Port.

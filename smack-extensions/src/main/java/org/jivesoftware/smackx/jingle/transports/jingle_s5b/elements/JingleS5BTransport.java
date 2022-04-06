@@ -29,6 +29,9 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 
 /**
  * Socks5Bytestream transport element.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class JingleS5BTransport extends JingleContentTransport {
     public static final String NAMESPACE_V1 = "urn:xmpp:jingle:transports:s5b:1";

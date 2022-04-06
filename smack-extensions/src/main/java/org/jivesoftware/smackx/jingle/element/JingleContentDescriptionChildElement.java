@@ -21,6 +21,9 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 /**
  * An element found usually in 'description' elements.
  *
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public interface JingleContentDescriptionChildElement extends ExtensionElement {
 
