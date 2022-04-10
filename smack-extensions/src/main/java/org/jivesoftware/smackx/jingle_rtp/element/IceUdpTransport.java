@@ -30,7 +30,6 @@ import javax.xml.namespace.QName;
  * @see <a href="https://xmpp.org/extensions/xep-0176.html">XEP-0176: Jingle ICE-UDP Transport Method 1.1.1 (2021-03-04)</a>
  */
 public class IceUdpTransport extends JingleContentTransport {
-    public static final String ELEMENT = "transport";
 
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:ice-udp:1";
 
@@ -153,11 +152,6 @@ public class IceUdpTransport extends JingleContentTransport {
             }
             // Copy "web-socket" extensions.
             // cmeng - NPE for src during testing; force to use final hopefully it helps
-//            for (WebSocketExtension wspe : src.getChildElements(WebSocketExtension.class)) {
-//                dst.addChildElement(WebSocketExtension.getBuilder()
-//                        .setUrl(wspe.getUrl())
-//                        .build());
-//            }
 
             // Copy RTCP MUX
             if (src.isRtcpMux()) {

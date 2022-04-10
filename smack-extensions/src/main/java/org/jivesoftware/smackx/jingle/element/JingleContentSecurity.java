@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub
+ * Copyright 2017-2022 Paul Schaub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Jingle security element.
+ *
  * <jingle>
  *     <content>
  *         <description/>
@@ -27,6 +28,9 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  *         <security/> <- That's me :)
  *     </content>
  * </jingle>
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public abstract class JingleContentSecurity implements ExtensionElement {
 

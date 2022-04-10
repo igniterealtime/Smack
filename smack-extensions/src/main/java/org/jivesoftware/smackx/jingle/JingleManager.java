@@ -16,14 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
@@ -31,15 +23,20 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.JingleIBBTransportManager;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.JingleS5BTransportManager;
-
 import org.jxmpp.jid.FullJid;
+
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 public final class JingleManager extends Manager {
 
@@ -93,19 +90,19 @@ public final class JingleManager extends Manager {
 
                             JingleContent content = jingle.getContents().get(0);
                             JingleContentDescription description = content.getDescription();
-                            JingleHandler jingleDescriptionHandler = descriptionHandlers.get(
-                                    description.getNamespace());
+                            JingleHandler jingleDescriptionHandler
+                                    = descriptionHandlers.get(description.getNamespace());
 
                             if (jingleDescriptionHandler == null) {
                                 // Unsupported Application
-                                LOGGER.log(Level.WARNING, "Unsupported Jingle application.");
+                                LOGGER.warning("Unsupported Jingle application: (" + iqRequest.getStanzaId() + ") " + sid);
                                 return jutil.createSessionTerminateUnsupportedApplications(fullFrom, sid);
                             }
                             return jingleDescriptionHandler.handleJingleRequest(jingle);
                         }
 
                         // Unknown session
-                        LOGGER.log(Level.WARNING, "Unknown session.");
+                        LOGGER.warning("Unknown session: (" + iqRequest.getStanzaId() + ") " + sid);
                         return jutil.createErrorUnknownSession(jingle);
                     }
                 });

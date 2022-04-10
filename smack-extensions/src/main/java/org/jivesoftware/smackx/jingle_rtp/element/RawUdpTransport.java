@@ -29,11 +29,6 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  */
 public class RawUdpTransport extends IceUdpTransport {
     /**
-     * The elementName of the "transport" element.
-     */
-    public static final String ELEMENT = "transport";
-
-    /**
      * The nameSpace of the "transport" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transports:raw-udp:1";

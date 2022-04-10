@@ -20,6 +20,15 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * An element found usually in Jingle 'transport' elements.
+ * <jingle>
+ *     <content>
+ *         <description/>
+ *         <transport>
+ *             <candidate/> <- We are those guys.
+ *             <candidate/> <-/
+ *         </transport>
+ *     </content>
+ * </jingle>
  *
  * @author Florian Schmaus
  * @author Eng Chong Meng

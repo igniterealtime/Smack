@@ -226,29 +226,13 @@ public class JingleUtil {
     }
 
     /**
-     * Creates a {@link Jingle} <code>session-terminate</code> packet with the specified src, dst, sessionId, and reason.
+     * Creates a {@link Jingle} <code>session-terminate</code> packet with the specified recipient, sessionId, and reason.
      *
-     * @param recipient the destination Jid
+     * @param recipient the remote Jid
      * @param sessionId the ID of the Jingle session that this message will be terminating.
      * @param reason the reason for the termination
-     * @param reasonText a human readable reason for the termination or <code>null</code> for none.
      * @return the newly constructed {@link Jingle} <code>session-terminate</code> packet. .
      */
-    public Jingle createSessionTerminate(FullJid recipient, String sessionId, Reason reason, String reasonText) {
-        Jingle.Builder jb = Jingle.builder(mConnection);
-        jb.setAction(JingleAction.session_terminate)
-                .setSessionId(sessionId)
-                .setReason(reason);
-
-        JingleReason jingleReason = new JingleReason(reason, reasonText, null);
-        jb.setReason(jingleReason);
-
-        Jingle terminate = jb.build();
-        terminate.setFrom(mConnection.getUser());
-        terminate.setTo(recipient);
-        return terminate;
-    }
-
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason reason) {
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setAction(JingleAction.session_terminate)
