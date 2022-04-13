@@ -21,7 +21,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 /**
  * SDP extmap-allow-mixed extension.
  * Jingle's Discovery Info URN for "XEP-0294: Jingle RTP Header Extensions Negotiation" support.
- * @see <a href="https://xmpp.org/extensions/xep-0294.html">XEP-0294: Jingle RTP Header Extensions Negotiation  1.1.1 (2021-10-23)</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0294.html">XEP-0294: Jingle RTP Header Extensions Negotiation 1.1.1 (2021-10-23)</a>
  *
  * Note: This specification defines a new element, <extmap-allow-mixed/>, that can be inserted in the <description/>
  * element of a XEP-0167 RTP session. The element has no attributes.

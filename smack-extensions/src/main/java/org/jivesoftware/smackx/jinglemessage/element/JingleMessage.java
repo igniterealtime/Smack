@@ -29,9 +29,9 @@ import javax.xml.namespace.QName;
 
 /**
  * Implements <code>ExtensionElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).
+ * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  *
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/xep-0353.html">XEP-0353: Jingle Message Initiation</a>
  */
 public class JingleMessage implements ExtensionElement {
     public static String ELEMENT = "propose";

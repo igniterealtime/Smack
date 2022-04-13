@@ -26,4 +26,6 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 public interface BasicTelephony
 {
     void handleJingleSession(Jingle jingle, JingleCallSessionImpl session);
+
+    void handleJingleSession(Jingle jingle);
 }

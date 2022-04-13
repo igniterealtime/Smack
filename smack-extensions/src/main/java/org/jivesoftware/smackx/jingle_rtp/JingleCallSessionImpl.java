@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 
 /**
  * Class that represents a Jingle session.
+ * <a href="https://xmpp.org/extensions/xep-0167.html">XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)</a>
  *
  * @author Eng Chong Meng
  */
@@ -42,7 +43,7 @@ public class JingleCallSessionImpl extends JingleSession {
     private static final Logger LOGGER = Logger.getLogger(JingleCallSessionImpl.class.getName());
 
     /**
-     * The <code>BasicTelephony</code> instance which has been used to create calls
+     * The <code>BasicTelephony</code> instance which has been used to create calls.
      */
     private final BasicTelephony mBasicTelephony;
 
@@ -53,10 +54,10 @@ public class JingleCallSessionImpl extends JingleSession {
     private final JingleUtil jutil;
 
     /**
-     * Create a JingleSessionHandler to start a session-initiate for making call.
+     * Create a JingleSessionHandler as an initiator to start a session-initiate for making call.
      *
      * @param connection XMPPConnection
-     * @param recipient The remote file-recipient
+     * @param recipient The remote call responder
      * @param sid Jingle session Id
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
@@ -65,15 +66,18 @@ public class JingleCallSessionImpl extends JingleSession {
     }
 
     /**
-     * Create a JingleSessionHandler for the newly received jingleSI (session-initiate).
+     * Create a JingleSessionHandler as a responder for the newly received jingleSI (session-initiate).
      * Attempt to use initiator (optional) as first priority, fallback to use IQ from otherwise.
      *
      * @param connection XMPPConnection
-     * @param jingleSI The received JingleIQ for session-initiate
+     * @param initiator JingleSI initiator
+     * @param sid Jingle session Id
+     * @param contents Jingle contents list; may be null when call via <code>JingleMessage</code>
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
-    public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, Jingle jingleSI, BasicTelephony basicTelephony) {
-        this(connection, initiator, connection.getUser(), Role.responder, jingleSI.getSid(), jingleSI.getContents(), basicTelephony);
+    public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, String sid,
+            List<JingleContent> contents, BasicTelephony basicTelephony) {
+        this(connection, initiator, connection.getUser(), Role.responder, sid, contents, basicTelephony);
     }
 
     /**
@@ -84,7 +88,7 @@ public class JingleCallSessionImpl extends JingleSession {
      * @param responder JingleSI responder
      * @param role Acting role for the this session-initial
      * @param sessionId Jingle session Id
-     * @param contents Jingle contents
+     * @param contents Jingle contents list
      * @param basicTelephony a reference of the Basic Telephony implementation
      */
     public JingleCallSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role,
@@ -100,26 +104,20 @@ public class JingleCallSessionImpl extends JingleSession {
         mManager.registerJingleSessionHandler(remote, sid, this);
     }
 
-    public static void got() {
-
-    }
-
     /**
-     * Pass on to BasicTelephony implementation to handle all call session request
+     * Pass on to BasicTelephony implementation to handle all call session request.
      *
      * @param request Jingle request
      * @return IQResult
      */
     @Override
     public IQ handleJingleSessionRequest(Jingle request) {
-        Async.go(() -> mBasicTelephony.handleJingleSession(request, this));
+        Async.go(() -> mBasicTelephony.handleJingleSession(request));
         return IQ.createResultIQ(request);
     }
 
     /**
-     * Send session-terminate and unregister the associated Jingle Session Handler.
-     * Any stray remote jingle stanzas received after that will be responded with i.e.
-     * createErrorUnknownSession(jingle)
+     * Send session-terminate without unregister the associated Jingle Session Handler.
      *
      * @param reason reason for session-terminate
      * @param reasonText reason text string for session-terminate
@@ -131,6 +129,18 @@ public class JingleCallSessionImpl extends JingleSession {
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
         }
+    }
+
+    /**
+     * Send session-terminate and unregister the associated Jingle Session Handler.
+     * Any stray remote jingle stanzas received after that will be responded with i.e.
+     * createErrorUnknownSession(jingle)
+     *
+     * @param reason reason for session-terminate
+     * @param reasonText reason text string for session-terminate
+     */
+    public void terminateSessionAndUnregister(JingleReason.Reason reason, String reasonText) {
+        terminateSession(reason, reasonText);
         unregisterJingleSessionHandler();
     }
 

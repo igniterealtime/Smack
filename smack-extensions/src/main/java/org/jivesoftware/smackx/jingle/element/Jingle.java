@@ -26,8 +26,6 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jxmpp.jid.FullJid;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -206,15 +204,6 @@ public final class Jingle extends IQ {
         xml.append(contents);
 
         return xml;
-    }
-
-    /**
-     * Generates a random <code>String</code> usable as a jingle session ID.
-     *
-     * @return a newly generated random sid <code>String</code>
-     */
-    public static String generateSid() {
-        return new BigInteger(64, new SecureRandom()).toString(32);
     }
 
     /**

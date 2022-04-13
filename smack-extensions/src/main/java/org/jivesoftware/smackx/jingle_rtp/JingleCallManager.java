@@ -54,10 +54,10 @@ import org.jxmpp.jid.FullJid;
 import java.util.WeakHashMap;
 
 /**
- * Manager for Jingle Encrypted Transfers (>XEP-0391).
+ * Manager for Jingle RTP session i.e.
+ * <a href="https://xmpp.org/extensions/xep-0167.html">XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)</a>
  *
  * @author Eng Chong Meng
- * @see <a href="https://xmpp.org/extensions/xep-0391.html">XEP-0391: Jingle Encrypted Transports 0.1.2 (2018-07-31))</a>
  */
 public final class JingleCallManager extends Manager implements JingleHandler {
     private static final WeakHashMap<XMPPConnection, JingleCallManager> INSTANCES = new WeakHashMap<>();
@@ -66,6 +66,16 @@ public final class JingleCallManager extends Manager implements JingleHandler {
      * The <code>BasicTelephony</code> instance which has been used to create calls
      */
     private final BasicTelephony mBasicTelephony;
+
+    public static synchronized JingleCallManager getInstanceFor(XMPPConnection connection, BasicTelephony operation) {
+        JingleCallManager manager = INSTANCES.get(connection);
+
+        if (manager == null) {
+            manager = new JingleCallManager(connection, operation);
+            INSTANCES.put(connection, manager);
+        }
+        return manager;
+    }
 
     private JingleCallManager(XMPPConnection connection, BasicTelephony basicTelephony) {
         super(connection);
@@ -196,32 +206,23 @@ public final class JingleCallManager extends Manager implements JingleHandler {
                 new DefaultXmlElementProvider<>(RtcpFb.class));
     }
 
-    public static synchronized JingleCallManager getInstanceFor(XMPPConnection connection, BasicTelephony operation) {
-        JingleCallManager manager = INSTANCES.get(connection);
-
-        if (manager == null) {
-            manager = new JingleCallManager(connection, operation);
-            INSTANCES.put(connection, manager);
-        }
-        return manager;
-    }
-
     /**
-     * Handler when a new session-initiate is received.
+     * Register a new JingleSessionHandler with JingleManager when a new session-initiate is received.
+     * Note: this will not get call if the media call setup is via JingleMessage protocol
      *
      * @param jingle Jingle session-initiate
-     * @return IQ.Result or null
+     * @return IQ.Result for ack
      */
     @Override
     public IQ handleJingleRequest(Jingle jingle) {
-
-        /*
-         * Register a new JingleSessionHandler with JingleManager when a new session-initiate is received.
-         * @see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
-         * conversations exclude initiator attribute in session-initiate
-         */
-        FullJid initiator = (jingle.getInitiator() != null) ? jingle.getInitiator() : jingle.getFrom().asEntityFullJidIfPossible();
-        final JingleCallSessionImpl session = new JingleCallSessionImpl(connection(), initiator, jingle, mBasicTelephony);
+        // see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
+        FullJid initiator = jingle.getInitiator();
+        if (initiator == null) {
+            // conversations excludes initiator attribute in session-initiate
+            initiator = jingle.getFrom().asEntityFullJidIfPossible();
+        }
+        final JingleCallSessionImpl session = new JingleCallSessionImpl(connection(), initiator, jingle.getSid(),
+                jingle.getContents(), mBasicTelephony);
         Async.go(() -> mBasicTelephony.handleJingleSession(jingle, session));
         return IQ.createResultIQ(jingle);
     }

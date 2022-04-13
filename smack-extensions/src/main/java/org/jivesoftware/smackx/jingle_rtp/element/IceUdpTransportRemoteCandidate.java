@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 /**
  * A representation of the <code>remote-candidate</code> ICE transport element.
- * XEP-0371: Jingle ICE Transport Method  0.3.1 (2021-03-04)
+ * XEP-0371: Jingle ICE Transport Method 0.3.1 (2021-03-04)
  * @see <a href="https://xmpp.org/extensions/xep-0371.html#protocol-acceptance">XEP-0371 § 5.8 Acceptance of Successful Candidate</a>
  *
  * cmeng: Seems not use in aTalk
