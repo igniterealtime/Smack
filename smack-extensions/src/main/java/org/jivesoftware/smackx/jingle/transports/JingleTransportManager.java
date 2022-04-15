@@ -20,6 +20,8 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.XMPPConnection;
 
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
+import org.jivesoftware.smackx.jingle.component.JingleTransport;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 
 /**
@@ -47,19 +49,32 @@ public abstract class JingleTransportManager<D extends JingleContentTransport> i
 
     public abstract JingleTransportSession<D> transportSession(JingleSession jingleSession);
 
-
     @Override
     public void connected(XMPPConnection connection) {
     }
 
     @Override
     public void connectionClosed() {
-
     }
 
     @Override
     public void connectionClosedOnError(Exception e) {
-
     }
+
+    /**
+     * Return a (usually) positive integer, which is used to define a strict order over the set of available transport managers.
+     * @return priority.
+     */
+    public abstract int getPriority();
+
+    public int compareTo(JingleTransportManager<?> other) {
+        return getPriority() > other.getPriority() ? 1 : -1;
+    }
+
+    public abstract JingleTransport<?> createTransportForInitiator(JingleContentImpl content);
+
+    // JingleTransport<?> createTransportForResponder(JingleContentImpl content, JingleTransport<?> peersTransport);
+
+    public abstract JingleTransport<?> createTransportForResponder(JingleContentImpl content, JingleContentTransport peersTransportElement);
 
 }

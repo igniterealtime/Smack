@@ -24,6 +24,12 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Jingle content element.
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0166.html">XEP-0166: Jingle 1.1.2 (2018-09-19)</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0166.html#def-content">XEP-0166 § 7.3 Content Element</a>
+ *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
 public final class JingleContent implements FullyQualifiedElement {
 
@@ -51,6 +57,8 @@ public final class JingleContent implements FullyQualifiedElement {
 
     private final String name;
 
+    private JingleContentSecurity security;
+
     public static final String SENDERS_ATTRIBUTE_NAME = "senders";
 
     public enum Senders {
@@ -74,13 +82,14 @@ public final class JingleContent implements FullyQualifiedElement {
      * Creates a content description..
      */
     private JingleContent(Creator creator, String disposition, String name, Senders senders,
-                    JingleContentDescription description, JingleContentTransport transport) {
+                    JingleContentDescription description, JingleContentTransport transport, JingleContentSecurity security) {
         this.creator = Objects.requireNonNull(creator, "Jingle content creator must not be null");
         this.disposition = disposition;
         this.name = StringUtils.requireNotNullNorEmpty(name, "Jingle content name must not be null nor empty");
         this.senders = senders;
         this.description = description;
         this.transport = transport;
+        this.security = security;
     }
 
     public Creator getCreator() {
@@ -128,6 +137,10 @@ public final class JingleContent implements FullyQualifiedElement {
         return transport;
     }
 
+    public JingleContentSecurity getSecurity() {
+        return security;
+    }
+
     @Override
     public String getElementName() {
         return ELEMENT;
@@ -154,6 +167,7 @@ public final class JingleContent implements FullyQualifiedElement {
 
         xml.optAppend(description);
         xml.optElement(transport);
+        xml.optElement(security);
 
         xml.closeElement(this);
         return xml;
@@ -175,6 +189,8 @@ public final class JingleContent implements FullyQualifiedElement {
         private JingleContentDescription description;
 
         private JingleContentTransport transport;
+
+        private JingleContentSecurity security;
 
         private Builder() {
         }
@@ -212,8 +228,13 @@ public final class JingleContent implements FullyQualifiedElement {
             return this;
         }
 
+        public Builder setSecurity(JingleContentSecurity security) {
+            this.security = security;
+            return this;
+        }
+
         public JingleContent build() {
-            return new JingleContent(creator, disposition, name, senders, description, transport);
+            return new JingleContent(creator, disposition, name, senders, description, transport, security);
         }
     }
 }

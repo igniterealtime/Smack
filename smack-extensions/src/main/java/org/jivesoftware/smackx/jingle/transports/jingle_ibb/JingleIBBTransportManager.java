@@ -21,6 +21,9 @@ import java.util.WeakHashMap;
 import org.jivesoftware.smack.XMPPConnection;
 
 import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
+import org.jivesoftware.smackx.jingle.component.JingleTransport;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.provider.JingleContentProviderManager;
 import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 import org.jivesoftware.smackx.jingle.transports.JingleTransportSession;
@@ -29,6 +32,9 @@ import org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider.JingleIBBTr
 
 /**
  * Manager for Jingle InBandBytestream transports (XEP-0261).
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public final class JingleIBBTransportManager extends JingleTransportManager<JingleIBBTransport> {
 
@@ -37,6 +43,7 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
     private JingleIBBTransportManager(XMPPConnection connection) {
         super(connection);
         JingleContentProviderManager.addJingleContentTransportProvider(getNamespace(), new JingleIBBTransportProvider());
+        JingleContentProviderManager.addJingleTransportAdapter(new JingleIBBTransportAdapter());
     }
 
     public static synchronized JingleIBBTransportManager getInstanceFor(XMPPConnection connection) {
@@ -61,5 +68,21 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
         // Nothing to do.
+    }
+
+    @Override
+    public int getPriority() {
+        return -1;
+    };
+
+    @Override
+    public JingleTransport<?> createTransportForInitiator(JingleContentImpl content) {
+        return new JingleIBBTransportImpl();
+    }
+
+    @Override
+    public JingleTransport<?> createTransportForResponder(JingleContentImpl content, JingleContentTransport peersTransportElement) {
+        JingleIBBTransportImpl other = new JingleIBBTransportAdapter().transportFromElement(peersTransportElement);
+        return new JingleIBBTransportImpl((short) Math.min(other.getBlockSize(), JingleIBBTransportImpl.MAX_BLOCKSIZE), other.getStreamId());
     }
 }

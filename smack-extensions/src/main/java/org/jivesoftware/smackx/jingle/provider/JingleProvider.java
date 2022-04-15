@@ -35,10 +35,12 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
 import org.jivesoftware.smackx.jingle.element.UnknownJingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentSecurity;
 import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 
 import org.jxmpp.jid.FullJid;
@@ -153,6 +155,21 @@ public class JingleProvider extends IqProvider<Jingle> {
                     builder.setTransport(transport);
                     break;
                 }
+
+                case JingleContentSecurity.ELEMENT: {
+                    JingleContentSecurity jetSecurity;
+                    JingleContentSecurityProvider<?> provider = JingleContentProviderManager.getJingleContentSecurityProvider(namespace);
+                    if (provider == null) {
+                        StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                        jetSecurity = new UnknownJingleContentSecurity(standardExtensionElement);
+                    }
+                    else {
+                        jetSecurity = provider.parse(parser);
+                    }
+                    builder.setSecurity(jetSecurity);
+                    break;
+                }
+
                 default:
                     LOGGER.severe("Unknown Jingle content element: " + tagName);
                     break;
