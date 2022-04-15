@@ -16,11 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Abstract JingleContentTransportInfo element.
+ *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
-public interface JingleContentTransportInfo extends FullyQualifiedElement {
+public interface JingleContentTransportInfo extends ExtensionElement {
 
 }

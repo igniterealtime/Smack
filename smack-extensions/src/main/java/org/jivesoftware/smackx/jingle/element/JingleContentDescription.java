@@ -20,20 +20,21 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
  * Jingle content description.
  *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
 public abstract class JingleContentDescription implements ExtensionElement {
 
     public static final String ELEMENT = "description";
 
-    private final List<NamedElement> payloads;
+    private final List<ExtensionElement> payloads;
 
-    protected JingleContentDescription(List<? extends NamedElement> payloads) {
+    protected JingleContentDescription(List<? extends ExtensionElement> payloads) {
         if (payloads != null) {
             this.payloads = Collections.unmodifiableList(payloads);
         }
@@ -47,7 +48,7 @@ public abstract class JingleContentDescription implements ExtensionElement {
         return ELEMENT;
     }
 
-    public List<NamedElement> getJingleContentDescriptionChildren() {
+    public List<ExtensionElement> getJingleContentDescriptionChildren() {
         return payloads;
     }
 

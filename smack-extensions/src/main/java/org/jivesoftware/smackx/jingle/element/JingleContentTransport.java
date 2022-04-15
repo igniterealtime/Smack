@@ -26,6 +26,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 /**
  * A jingle transport extension.
  *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
 public abstract class JingleContentTransport implements ExtensionElement {
 

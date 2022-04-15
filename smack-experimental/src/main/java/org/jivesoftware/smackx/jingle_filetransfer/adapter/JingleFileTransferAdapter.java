@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
@@ -43,7 +43,7 @@ public class JingleFileTransferAdapter implements JingleDescriptionAdapter<Jingl
     public JingleFileTransferImpl descriptionFromElement(JingleContent.Creator creator, JingleContent.Senders senders,
             String contentName, String contentDisposition, JingleContentDescription contentDescription) {
         JingleFileTransfer description = (JingleFileTransfer) contentDescription;
-        List<NamedElement> children = description.getJingleContentDescriptionChildren();
+        List<ExtensionElement> children = description.getJingleContentDescriptionChildren();
         assert children.size() == 1;
         JingleFileTransferChild file = (JingleFileTransferChild) children.get(0);
 

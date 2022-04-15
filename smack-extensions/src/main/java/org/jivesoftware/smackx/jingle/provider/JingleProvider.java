@@ -53,19 +53,19 @@ public class JingleProvider extends IqProvider<Jingle> {
     public Jingle parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         Jingle.Builder builder = Jingle.builder(iqData);
 
-        String actionString = parser.getAttributeValue("", Jingle.ACTION_ATTRIBUTE_NAME);
+        String actionString = parser.getAttributeValue("", Jingle.ATTR_ACTION);
         if (actionString != null) {
             JingleAction action = JingleAction.fromString(actionString);
             builder.setAction(action);
         }
 
-        FullJid initiator = ParserUtils.getFullJidAttribute(parser, Jingle.INITIATOR_ATTRIBUTE_NAME);
+        FullJid initiator = ParserUtils.getFullJidAttribute(parser, Jingle.ATTR_INITIATOR);
         builder.setInitiator(initiator);
 
-        FullJid responder = ParserUtils.getFullJidAttribute(parser, Jingle.RESPONDER_ATTRIBUTE_NAME);
+        FullJid responder = ParserUtils.getFullJidAttribute(parser, Jingle.ATTR_RESPONDER);
         builder.setResponder(responder);
 
-        String sessionId = parser.getAttributeValue("", Jingle.SESSION_ID_ATTRIBUTE_NAME);
+        String sessionId = parser.getAttributeValue("", Jingle.ATTR_SESSION_ID);
         builder.setSessionId(sessionId);
 
 
@@ -106,17 +106,17 @@ public class JingleProvider extends IqProvider<Jingle> {
                     throws XmlPullParserException, IOException, SmackParsingException {
         JingleContent.Builder builder = JingleContent.getBuilder();
 
-        String creatorString = parser.getAttributeValue("", JingleContent.CREATOR_ATTRIBUTE_NAME);
+        String creatorString = parser.getAttributeValue("", JingleContent.ATTR_CREATOR);
         JingleContent.Creator creator = JingleContent.Creator.valueOf(creatorString);
         builder.setCreator(creator);
 
-        String disposition = parser.getAttributeValue("", JingleContent.DISPOSITION_ATTRIBUTE_NAME);
+        String disposition = parser.getAttributeValue("", JingleContent.ATTR_DISPOSITION);
         builder.setDisposition(disposition);
 
-        String name = parser.getAttributeValue("", JingleContent.NAME_ATTRIBUTE_NAME);
+        String name = parser.getAttributeValue("", JingleContent.ATTR_NAME);
         builder.setName(name);
 
-        String sendersString = parser.getAttributeValue("", JingleContent.SENDERS_ATTRIBUTE_NAME);
+        String sendersString = parser.getAttributeValue("", JingleContent.ATTR_SENDERS);
         if (sendersString != null) {
             JingleContent.Senders senders = JingleContent.Senders.valueOf(sendersString);
             builder.setSenders(senders);

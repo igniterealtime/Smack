@@ -29,6 +29,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleError;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
 
 import org.jxmpp.jid.FullJid;
 
@@ -81,11 +82,11 @@ public class JingleUtil {
     }
 
     public IQ sendSessionInitiateFileOffer(FullJid recipient,
-                                           String sessionId,
-                                           JingleContent.Creator contentCreator,
-                                           String contentName,
-                                           JingleContentDescription description,
-                                           JingleContentTransport transport)
+            String sessionId,
+            JingleContent.Creator contentCreator,
+            String contentName,
+            JingleContentDescription description,
+            JingleContentTransport transport)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
 
@@ -163,12 +164,12 @@ public class JingleUtil {
         return jingle;
     }
 
-    public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason.Reason reason) {
+    public Jingle createSessionTerminate(FullJid recipient, String sessionId, Reason reason) {
         return createSessionTerminate(recipient, sessionId, new JingleReason(reason));
     }
 
     public Jingle createSessionTerminateDecline(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.decline);
+        return createSessionTerminate(recipient, sessionId, Reason.decline);
     }
 
     public IQ sendSessionTerminateDecline(FullJid recipient, String sessionId)
@@ -180,7 +181,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateSuccess(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.success);
+        return createSessionTerminate(recipient, sessionId, JingleReason.Success);
     }
 
     public IQ sendSessionTerminateSuccess(FullJid recipient, String sessionId)
@@ -192,7 +193,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateBusy(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.busy);
+        return createSessionTerminate(recipient, sessionId, Reason.busy);
     }
 
     public IQ sendSessionTerminateBusy(FullJid recipient, String sessionId)
@@ -216,11 +217,10 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateCancel(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.cancel);
+        return createSessionTerminate(recipient, sessionId, Reason.cancel);
     }
 
-    public IQ sendSessionTerminateCancel(FullJid recipient,
-                                  String sessionId)
+    public IQ sendSessionTerminateCancel(FullJid recipient, String sessionId)
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
 
@@ -245,7 +245,7 @@ public class JingleUtil {
     }
 
     public IQ sendSessionTerminateContentCancel(FullJid recipient, String sessionId,
-                                  JingleContent.Creator contentCreator, String contentName)
+            JingleContent.Creator contentCreator, String contentName)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateContentCancel(recipient, sessionId, contentCreator, contentName);
@@ -253,7 +253,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateUnsupportedTransports(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.unsupported_transports);
+        return createSessionTerminate(recipient, sessionId, Reason.unsupported_transports);
     }
 
     public IQ sendSessionTerminateUnsupportedTransports(FullJid recipient, String sessionId)
@@ -264,7 +264,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateFailedTransport(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.failed_transport);
+        return createSessionTerminate(recipient, sessionId, Reason.failed_transport);
     }
 
     public IQ sendSessionTerminateFailedTransport(FullJid recipient, String sessionId)
@@ -275,7 +275,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateUnsupportedApplications(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.unsupported_applications);
+        return createSessionTerminate(recipient, sessionId, Reason.unsupported_applications);
     }
 
     public IQ sendSessionTerminateUnsupportedApplications(FullJid recipient, String sessionId)
@@ -286,7 +286,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateFailedApplication(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.failed_application);
+        return createSessionTerminate(recipient, sessionId, Reason.failed_application);
     }
 
     public IQ sendSessionTerminateFailedApplication(FullJid recipient, String sessionId)
@@ -297,7 +297,7 @@ public class JingleUtil {
     }
 
     public Jingle createSessionTerminateIncompatibleParameters(FullJid recipient, String sessionId) {
-        return createSessionTerminate(recipient, sessionId, JingleReason.Reason.incompatible_parameters);
+        return createSessionTerminate(recipient, sessionId, Reason.incompatible_parameters);
     }
 
     public IQ sendSessionTerminateIncompatibleParameters(FullJid recipient, String sessionId)
@@ -339,15 +339,17 @@ public class JingleUtil {
     }
 
     public Jingle createTransportReplace(FullJid recipient, FullJid initiator, String sessionId,
-                                         JingleContent.Creator contentCreator, String contentName,
-                                         JingleContentTransport transport) {
+            JingleContent.Creator contentCreator, String contentName,
+            JingleContentTransport transport) {
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setInitiator(initiator)
                 .setSessionId(sessionId)
                 .setAction(JingleAction.transport_replace);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
-        cb.setName(contentName).setCreator(contentCreator).setTransport(transport);
+        cb.setName(contentName)
+                .setCreator(contentCreator)
+                .setTransport(transport);
         Jingle jingle = jb.addJingleContent(cb.build()).build();
 
         jingle.setTo(recipient);
@@ -357,8 +359,8 @@ public class JingleUtil {
     }
 
     public IQ sendTransportReplace(FullJid recipient, FullJid initiator, String sessionId,
-                                   JingleContent.Creator contentCreator, String contentName,
-                                   JingleContentTransport transport)
+            JingleContent.Creator contentCreator, String contentName,
+            JingleContentTransport transport)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createTransportReplace(recipient, initiator, sessionId, contentCreator, contentName, transport);
@@ -366,15 +368,17 @@ public class JingleUtil {
     }
 
     public Jingle createTransportAccept(FullJid recipient, FullJid initiator, String sessionId,
-                                        JingleContent.Creator contentCreator, String contentName,
-                                        JingleContentTransport transport) {
+            JingleContent.Creator contentCreator, String contentName,
+            JingleContentTransport transport) {
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setAction(JingleAction.transport_accept)
                 .setInitiator(initiator)
                 .setSessionId(sessionId);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
-        cb.setCreator(contentCreator).setName(contentName).setTransport(transport);
+        cb.setCreator(contentCreator)
+                .setName(contentName)
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);
@@ -384,8 +388,8 @@ public class JingleUtil {
     }
 
     public IQ sendTransportAccept(FullJid recipient, FullJid initiator, String sessionId,
-                                  JingleContent.Creator contentCreator, String contentName,
-                                  JingleContentTransport transport)
+            JingleContent.Creator contentCreator, String contentName,
+            JingleContentTransport transport)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createTransportAccept(recipient, initiator, sessionId, contentCreator, contentName, transport);
@@ -393,15 +397,17 @@ public class JingleUtil {
     }
 
     public Jingle createTransportReject(FullJid recipient, FullJid initiator, String sessionId,
-                                        JingleContent.Creator contentCreator, String contentName,
-                                        JingleContentTransport transport) {
+            JingleContent.Creator contentCreator, String contentName,
+            JingleContentTransport transport) {
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setAction(JingleAction.transport_reject)
                 .setInitiator(initiator)
                 .setSessionId(sessionId);
 
         JingleContent.Builder cb = JingleContent.getBuilder();
-        cb.setCreator(contentCreator).setName(contentName).setTransport(transport);
+        cb.setCreator(contentCreator)
+                .setName(contentName)
+                .setTransport(transport);
 
         Jingle jingle = jb.addJingleContent(cb.build()).build();
         jingle.setTo(recipient);
@@ -411,8 +417,8 @@ public class JingleUtil {
     }
 
     public IQ sendTransportReject(FullJid recipient, FullJid initiator, String sessionId,
-                                  JingleContent.Creator contentCreator, String contentName,
-                                  JingleContentTransport transport)
+            JingleContent.Creator contentCreator, String contentName,
+            JingleContentTransport transport)
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createTransportReject(recipient, initiator, sessionId, contentCreator, contentName, transport);
@@ -425,9 +431,9 @@ public class JingleUtil {
 
     public IQ createErrorUnknownSession(Jingle request) {
         StanzaError error = StanzaError.getBuilder()
-                        .setCondition(StanzaError.Condition.item_not_found)
-                        .addExtension(JingleError.UNKNOWN_SESSION)
-                        .build();
+                .setCondition(StanzaError.Condition.item_not_found)
+                .addExtension(JingleError.UNKNOWN_SESSION)
+                .build();
         return IQ.createErrorResponse(request, error);
     }
 
@@ -447,9 +453,9 @@ public class JingleUtil {
 
     public IQ createErrorUnsupportedInfo(Jingle request) {
         StanzaError error = StanzaError.getBuilder()
-                        .setCondition(StanzaError.Condition.feature_not_implemented)
-                        .addExtension(JingleError.UNSUPPORTED_INFO)
-                        .build();
+                .setCondition(StanzaError.Condition.feature_not_implemented)
+                .addExtension(JingleError.UNSUPPORTED_INFO)
+                .build();
         return IQ.createErrorResponse(request, error);
     }
 
@@ -460,9 +466,9 @@ public class JingleUtil {
 
     public IQ createErrorTieBreak(Jingle request) {
         StanzaError error = StanzaError.getBuilder()
-                        .setCondition(StanzaError.Condition.conflict)
-                        .addExtension(JingleError.TIE_BREAK)
-                        .build();
+                .setCondition(StanzaError.Condition.conflict)
+                .addExtension(JingleError.TIE_BREAK)
+                .build();
         return IQ.createErrorResponse(request, error);
     }
 
@@ -473,9 +479,9 @@ public class JingleUtil {
 
     public IQ createErrorOutOfOrder(Jingle request) {
         StanzaError error = StanzaError.getBuilder()
-                        .setCondition(StanzaError.Condition.unexpected_request)
-                        .addExtension(JingleError.OUT_OF_ORDER)
-                        .build();
+                .setCondition(StanzaError.Condition.unexpected_request)
+                .addExtension(JingleError.OUT_OF_ORDER)
+                .build();
         return IQ.createErrorResponse(request, error);
     }
 
