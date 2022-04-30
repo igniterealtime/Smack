@@ -694,7 +694,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * We use an extra object for {@link #notifyWaitingThreads()} and {@link #waitFor(Supplier)}, because all state
      * changing methods of the connection are synchronized using the connection instance as monitor. If we now would
      * also use the connection instance for the internal process to wait for a condition, the {@link Object#wait()}
-     * would leave the monitor when it waites, which would allow for another potential call to a state changing function
+     * would leave the monitor when it waits, which would allow for another potential call to a state changing function
      * to proceed.
      */
     private final Object internalMonitor = new Object();
