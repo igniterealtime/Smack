@@ -54,7 +54,7 @@ public class JingleCallSessionImpl extends JingleSession {
     private final JingleUtil jutil;
 
     /**
-     * Create a JingleSessionHandler as an initiator to start a session-initiate for making call.
+     * Create a JingleSessionHandler as an 'initiator' to start a session-initiate for making call.
      *
      * @param connection XMPPConnection
      * @param recipient The remote call responder
@@ -66,7 +66,7 @@ public class JingleCallSessionImpl extends JingleSession {
     }
 
     /**
-     * Create a JingleSessionHandler as a responder for the newly received jingleSI (session-initiate).
+     * Create a JingleSessionHandler as a 'responder' for the newly received jingleSI (session-initiate).
      * Attempt to use initiator (optional) as first priority, fallback to use IQ from otherwise.
      *
      * @param connection XMPPConnection

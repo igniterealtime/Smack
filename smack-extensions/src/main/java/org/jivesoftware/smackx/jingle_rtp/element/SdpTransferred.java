@@ -33,21 +33,16 @@ import javax.xml.namespace.QName;
  */
 public class SdpTransferred extends AbstractXmlElement {
     /**
-     * The name of the "transfer" element.
+     * The name of the "transferred" element.
      */
     public static final String ELEMENT = "transferred";
 
     /**
-     * The namespace of the "transfer" element.
+     * The namespace of the "transferred" element.
      */
     public static final String NAMESPACE = "urn:xmpp:jingle:transfer:0";
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
-
-    /**
-     * The name of the "to" attribute of the "transfer" element.
-     */
-    public static final String ATTR_TO = "to";
 
     public SdpTransferred() {
         super(getBuilder());

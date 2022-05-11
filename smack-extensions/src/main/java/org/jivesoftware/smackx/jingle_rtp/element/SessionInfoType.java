@@ -56,5 +56,5 @@ public enum SessionInfoType {
     /**
      * Ends a <code>mute</code> state.
      */
-    unmute;
+    unmute
 }

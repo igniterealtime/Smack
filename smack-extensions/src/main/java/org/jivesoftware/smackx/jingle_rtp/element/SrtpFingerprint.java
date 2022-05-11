@@ -87,6 +87,8 @@ public class SrtpFingerprint extends AbstractXmlElement {
     }
 
     /**
+     * Gets the setup attribute value.
+     *
      * @return value of 'setup' attribute. See {@link #ATTR_SETUP} for more info.
      */
     public String getSetup() {

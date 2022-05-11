@@ -29,7 +29,7 @@ import javax.xml.namespace.QName;
  * @see <a href="https://xmpp.org/extensions/xep-0251.html#unattended">XEP-0251 § 2. Unattended Transfer</a>
  * @see <a href="https://xmpp.org/extensions/xep-0251.html#attended ">XEP-0251 § 3. Attended Transfer</a>
  *
- * @see <a href="https://datatracker.ietf.org/doc/html/rfc5359#page-50">RFC5359 § 2.4.  Transfer - Unattended /Attended</a>
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc5359#page-50">RFC5359 § 2.4. Transfer-Unattended/Attended</a>
  *
  * @author Lyubomir Marinov
  * @author Eng Chong Meng
@@ -49,11 +49,14 @@ public class SdpTransfer extends AbstractXmlElement {
 
     /**
      * The name of the "from" attribute of the "transfer" element.
+     * Both the ATTR_FROM and ATTR_TO are mutually exclusive in a Unattended Transfer
+     * @see <a href="https://xmpp.org/extensions/xep-0251.html#unattended">XEP-0251 § 2. Unattended Transfer</a>
      */
     public static final String ATTR_FROM = "from";
 
     /**
-     * The name of the "sid" attribute of the "transfer" element.
+     * The name of the "sid" attribute of the "transfer" element. Used only in Attended Transfer (Example 17).
+     * @see <a href="https://xmpp.org/extensions/xep-0251.html#attended ">XEP-0251 § 3. Attended Transfer</a>
      */
     public static final String ATTR_SID = "sid";
 

@@ -49,7 +49,7 @@ public class ParameterElement extends AbstractXmlElement {
     public static final String ATTR_VALUE = "value";
 
     /**
-     * <code>ParameterElement</code> default constructor use by DefaultXmlElementProvider newInstance() etc
+     * <code>ParameterElement</code> default constructor use by DefaultXmlElementProvider newInstance() etc.
      * Default to use RtpDescription.NAMESPACE, to be modified/
      *
      * @see #getBuilder(String)
