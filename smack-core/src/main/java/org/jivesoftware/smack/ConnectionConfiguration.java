@@ -302,6 +302,16 @@ public abstract class ConnectionConfiguration {
         return new SmackTlsContext(context, daneVerifier);
     }
 
+    public String getHostString() {
+        if (hostAddress != null) {
+            return hostAddress.toString();
+        }
+        if (host != null) {
+            return host.toString();
+        }
+        return xmppServiceDomain.toString();
+    }
+
     public DnsName getHost() {
         return host;
     }
