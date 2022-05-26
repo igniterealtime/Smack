@@ -941,9 +941,12 @@ public final class ServiceDiscoveryManager extends Manager {
             }
         }
 
-        final XMPPConnection connection = connection();
-
         renewEntityCapsScheduledAction = scheduleBlocking(() -> {
+            final XMPPConnection connection = connection();
+            if (connection == null) {
+                return;
+            }
+
             renewEntityCapsPerformed.incrementAndGet();
 
             DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
