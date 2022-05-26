@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018-2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -937,6 +937,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * Notify the {@link EntityCapabilitiesChangedListener} about changed capabilities.
      */
     private synchronized void renewEntityCapsVersion() {
+        if (entityCapabilitiesChangedListeners.isEmpty()) {
+            return;
+        }
+
         renewEntityCapsRequested++;
         if (renewEntityCapsScheduledAction != null) {
             boolean canceled = renewEntityCapsScheduledAction.cancel();
@@ -945,9 +949,12 @@ public final class ServiceDiscoveryManager extends Manager {
             }
         }
 
-        final XMPPConnection connection = connection();
-
         renewEntityCapsScheduledAction = scheduleBlocking(() -> {
+            final XMPPConnection connection = connection();
+            if (connection == null) {
+                return;
+            }
+
             renewEntityCapsPerformed.incrementAndGet();
 
             DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
