@@ -62,6 +62,7 @@ import org.jivesoftware.smack.SmackException.ConnectionException;
 import org.jivesoftware.smack.SmackException.EndpointConnectionException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
 import org.jivesoftware.smack.SmackException.SecurityNotPossibleException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
 import org.jivesoftware.smack.SmackFuture;
@@ -79,12 +80,12 @@ import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.proxy.ProxyInfo;
 import org.jivesoftware.smack.sasl.packet.SaslNonza;
 import org.jivesoftware.smack.sm.SMUtils;
@@ -464,7 +465,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
         } else {
             for (Stanza stanza : previouslyUnackedStanzas) {
-                sendStanzaInternal(stanza);
+                sendInternal(stanza);
             }
         }
 
@@ -570,22 +571,36 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         initState();
     }
 
-    @Override
-    public void sendNonza(Nonza element) throws NotConnectedException, InterruptedException {
-        packetWriter.sendStreamElement(element);
+    private interface SmAckAction<E extends Exception> {
+        void run() throws NotConnectedException, E;
     }
 
-    @Override
-    protected void sendStanzaInternal(Stanza packet) throws NotConnectedException, InterruptedException {
-        packetWriter.sendStreamElement(packet);
-        if (isSmEnabled()) {
+    private <E extends Exception> void requestSmAckIfNecessary(TopLevelStreamElement element,
+                    SmAckAction<E> smAckAction) throws NotConnectedException, E {
+        if (!isSmEnabled())
+            return;
+
+        if (element instanceof Stanza) {
+            Stanza stanza = (Stanza) element;
             for (StanzaFilter requestAckPredicate : requestAckPredicates) {
-                if (requestAckPredicate.accept(packet)) {
-                    requestSmAcknowledgementInternal();
+                if (requestAckPredicate.accept(stanza)) {
+                    smAckAction.run();
                     break;
                 }
             }
         }
+    }
+
+    @Override
+    protected void sendInternal(TopLevelStreamElement element) throws NotConnectedException, InterruptedException {
+        packetWriter.sendStreamElement(element);
+        requestSmAckIfNecessary(element, () -> requestSmAcknowledgementInternal());
+    }
+
+    @Override
+    protected void sendNonBlockingInternal(TopLevelStreamElement element) throws NotConnectedException, OutgoingQueueFullException {
+        packetWriter.sendNonBlocking(element);
+        requestSmAckIfNecessary(element, () -> requestSmAcknowledgementNonBlockingInternal());
     }
 
     private void connectUsingConfiguration() throws ConnectionException, IOException, InterruptedException {
@@ -1067,7 +1082,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             List<Stanza> stanzasToResend = new ArrayList<>(unacknowledgedStanzas.size());
                             unacknowledgedStanzas.drainTo(stanzasToResend);
                             for (Stanza stanza : stanzasToResend) {
-                                sendStanzaInternal(stanza);
+                                XMPPTCPConnection.this.sendInternal(stanza);
                             }
                             // If there where stanzas resent, then request a SM ack for them.
                             // Writer's sendStreamElement() won't do it automatically based on
@@ -1267,6 +1282,22 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
                 // If the method above did not throw, then the sending thread was interrupted
                 throw e;
+            }
+        }
+
+        /**
+         * Sends the specified element to the server.
+         *
+         * @param element the element to send.
+         * @throws NotConnectedException if the XMPP connection is not connected.
+         * @throws OutgoingQueueFullException if there is no space in the outgoing queue.
+         */
+        protected void sendNonBlocking(Element element) throws NotConnectedException, OutgoingQueueFullException {
+            throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
+            boolean enqueued = queue.offer(element);
+            if (!enqueued) {
+                throwNotConnectedExceptionIfDoneAndResumptionNotPossible();
+                throw new OutgoingQueueFullException();
             }
         }
 
@@ -1586,6 +1617,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
 
     private void requestSmAcknowledgementInternal() throws NotConnectedException, InterruptedException {
         packetWriter.sendStreamElement(AckRequest.INSTANCE);
+    }
+
+    private void requestSmAcknowledgementNonBlockingInternal() throws NotConnectedException, OutgoingQueueFullException {
+        packetWriter.sendNonBlocking(AckRequest.INSTANCE);
     }
 
     /**
