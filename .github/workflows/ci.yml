@@ -1,8 +1,5 @@
 name: CI
 
-env:
-  GRADLE_VERSION: 6.7.1
-
 on: [push, pull_request]
 
 jobs:
@@ -41,12 +38,6 @@ jobs:
           key: gradle-caches-${{ hashFiles('**/build.gradle') }}
           restore-keys:
             gradle-caches
-      - name: Cache Gradle Binary
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/gradle-bin-${GRADLE_VERSION}/
-          key: gradle-bin-${GRADLE_VERSION}
       - name: Cache Android SDK
         uses: actions/cache@v2
         with:
@@ -57,11 +48,6 @@ jobs:
             android-
 
       # Pre-reqs
-      - name: Grab gradle wrapper
-        run: |
-          wget https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
-          unzip gradle-${GRADLE_VERSION}-all.zip
-          echo "PATH_TO_GRADLE=./gradle-${GRADLE_VERSION}/bin/gradle" >> $GITHUB_ENV
       - name: Install GraphViz
         run: sudo apt update && sudo apt install graphviz
       - name: Install Android SDK Manager
@@ -72,21 +58,21 @@ jobs:
 
       # Testing
       - name: Gradle Check
-        run: ${PATH_TO_GRADLE} check --stacktrace
+        run: ./gradlew check --stacktrace
 
       # Test local publish
       - name: Gradle publish
-        run: ${PATH_TO_GRADLE} publishToMavenLocal --stacktrace
+        run: ./gradlew publishToMavenLocal --stacktrace
 
       # Javadoc
       - name: Javadoc
         if: ${{ matrix.java == env.PRIMARY_JAVA_VERSION }}
-        run: ${PATH_TO_GRADLE} javadocAll --stacktrace
+        run: ./gradlew javadocAll --stacktrace
 
       # Test Coverage Report
       - name: Jacoco Test Coverage
         if: ${{ matrix.java == env.PRIMARY_JAVA_VERSION }}
-        run: ${PATH_TO_GRADLE} jacocoRootReport coveralls
+        run: ./gradlew jacocoRootReport coveralls
         env:
           COVERALLS_REPO_TOKEN: S2ecSJja2cKJa9yv45C8ZFPohXuRrTXKd
 
