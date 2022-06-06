@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2020 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2000,11 +2000,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }, timeout, TimeUnit.MILLISECONDS);
 
         addAsyncStanzaListener(stanzaListener, replyFilter);
-        try {
-            sendStanza(stanza);
-        }
-        catch (NotConnectedException | InterruptedException exception) {
-            future.setException(exception);
+        Runnable sendOperation = () -> {
+            try {
+                sendStanza(stanza);
+            }
+            catch (NotConnectedException | InterruptedException exception) {
+                future.setException(exception);
+            }
+        };
+        if (SmackConfiguration.TRUELY_ASYNC_SENDS) {
+            Async.go(sendOperation);
+        } else {
+            sendOperation.run();
         }
 
         return future;
