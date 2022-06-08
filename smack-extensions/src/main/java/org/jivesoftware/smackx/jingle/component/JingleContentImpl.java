@@ -352,7 +352,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     }
 
     public void setParent(JingleSessionImpl session) {
-        if (!this.parent.equals(session)) {
+        if (!session.equals(parent)) {
             this.parent = session;
         }
     }
