@@ -1,5 +1,12 @@
 # Smack Changelog
 
+# 4.4.6 -- 2022-06-29
+
+### Bug
+
+- [SMACK-926](https://igniterealtime.atlassian.net/browse/SMACK-926) Memory-leak in ServiceDiscoveryManager
+- [SMACK-925](https://igniterealtime.atlassian.net/browse/SMACK-925) MultiUserChat Presence interceptors do not intercept
+
 # 4.4.5 -- 2022-03-02
 
 ### Bug
