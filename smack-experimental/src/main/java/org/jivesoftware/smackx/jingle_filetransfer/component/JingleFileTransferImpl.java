@@ -42,7 +42,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     public static final String NAMESPACE_V5 = "urn:xmpp:jingle:apps:file-transfer:5";
     public static final String NAMESPACE = NAMESPACE_V5;
 
-    protected State state;
+    protected State mState;
     protected JingleFile metadata;
 
     private final List<ProgressListener> progressListeners = Collections.synchronizedList(new ArrayList<>());
@@ -75,7 +75,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
             throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         JingleSessionImpl session = getParent().getParent();
         JingleUtil jutil = new JingleUtil(connection);
-        switch (state) {
+        switch (mState) {
             case pending:
                 if (session.isResponder()) {
                     jutil.sendSessionTerminateDecline(session.getRemote(), session.getSessionId());
@@ -131,7 +131,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     @Override
     public State getState() {
-        return state;
+        return mState;
     }
 
     @Override

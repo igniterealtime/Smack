@@ -85,10 +85,10 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
 
         JingleContentProviderManager.addJingleContentDescriptionProvider(getNamespace(), new JingleFileTransferProvider());
         JingleContentProviderManager.addJingleDescriptionAdapter(new JingleFileTransferAdapter());
+        JingleContentProviderManager.addJingleDescriptionManager(this);
 
         JingleManager jingleManager = JingleManager.getInstanceFor(connection);
         jingleManager.registerDescriptionHandler(getNamespace(), this);
-        JingleContentProviderManager.addJingleDescriptionManager(this);
     }
 
     public static synchronized JingleFileTransferManager getInstanceFor(XMPPConnection connection) {

@@ -53,7 +53,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
 
     public JingleIncomingFileOffer(JingleFileTransferChild offer) {
         super(new JingleFile(offer));
-        this.state = State.pending;
+        mState = State.pending;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
         }
 
         notifyProgressListenersStarted();
-        state = State.active;
+        mState = State.active;
 
         HashElement hashElement = metadata.getHashElement();
         MessageDigest digest = null;
@@ -104,7 +104,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession: " + e, e);
             notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
         } finally {
-            state = State.ended;
+            mState = State.ended;
             if (inputStream != null) {
                 try {
                     inputStream.close();
@@ -150,7 +150,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     public void accept(XMPPConnection connection, File target)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             SmackException.NoResponseException, IOException {
-        state = State.negotiating;
+        mState = State.negotiating;
 
         if (!target.exists()) {
             target.createNewFile();
@@ -168,7 +168,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     public void accept(XMPPConnection connection, OutputStream stream)
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             SmackException.NoResponseException {
-        state  = State.negotiating;
+        mState = State.negotiating;
 
         target = stream;
 

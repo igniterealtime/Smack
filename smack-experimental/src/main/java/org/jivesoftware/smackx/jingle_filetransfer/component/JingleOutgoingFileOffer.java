@@ -39,17 +39,17 @@ import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferC
  */
 public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements OutgoingFileOfferController {
     private static final Logger LOGGER = Logger.getLogger(JingleOutgoingFileOffer.class.getName());
-
-    private final InputStream source;
+    private final InputStream mSource;
 
     public JingleOutgoingFileOffer(File file, JingleFile metadata) throws FileNotFoundException {
         super(metadata);
-        this.source = new FileInputStream(file);
+        mSource = new FileInputStream(file);
+        mState = State.pending;
     }
 
     public JingleOutgoingFileOffer(InputStream inputStream, JingleFile metadata) {
         super(metadata);
-        this.source = inputStream;
+        mSource = inputStream;
     }
 
     @Override
@@ -59,11 +59,13 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
 
     @Override
     public void onBytestreamReady(BytestreamSession bytestreamSession) {
-        if (source == null) {
+        if (mSource == null) {
             throw new IllegalStateException("Source InputStream is null!");
         }
 
         notifyProgressListenersStarted();
+        mState = State.active;
+
         OutputStream outputStream;
         try {
             outputStream = bytestreamSession.getOutputStream();
@@ -71,7 +73,7 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             int writeByte = 0;
             byte[] buf = new byte[8192];
             while (true) {
-                int length = source.read(buf);
+                int length = mSource.read(buf);
                 if (length < 0) {
                     break;
                 }
@@ -87,8 +89,9 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
             notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
         } finally {
+            mState = State.ended;
             try {
-                source.close();
+                mSource.close();
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Could not close FileInputStream: " + e, e);
             }
