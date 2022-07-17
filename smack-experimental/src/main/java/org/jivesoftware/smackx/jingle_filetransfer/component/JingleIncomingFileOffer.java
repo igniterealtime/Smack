@@ -67,6 +67,12 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             throw new IllegalStateException("Target OutputStream is null");
         }
 
+        // User cancels incoming file transfer in protocol negotiation phase.
+        if (mState == State.cancelled) {
+            LOGGER.log(Level.INFO, "User canceled file offer (in protocol negotiation).");
+            return;
+        }
+
         notifyProgressListenersStarted();
         mState = State.active;
 
@@ -91,6 +97,12 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             long fileSize = metadata.getSize();
             byte[] bufbuf = new byte[4096];
             while ((length = inputStream.read(bufbuf)) >= 0) {
+                // User cancels incoming file transfer in active progress.
+                if (mState == State.cancelled) {
+                    LOGGER.log(Level.INFO, "User canceled file offer (in active transfer).");
+                    break;
+                }
+
                 target.write(bufbuf, 0, length);
                 readByte += length;
                 // LOGGER.log(Level.INFO, "Read " + readByte + " (" + length + ") of " + fileSize + " bytes.");
@@ -169,7 +181,6 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             throws InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             SmackException.NoResponseException {
         mState = State.negotiating;
-
         target = stream;
 
         JingleSessionImpl session = getParent().getParent();

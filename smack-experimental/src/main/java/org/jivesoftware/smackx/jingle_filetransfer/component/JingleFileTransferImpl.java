@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.jingle_filetransfer.component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
@@ -41,6 +43,8 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     public static final String NAMESPACE_V5 = "urn:xmpp:jingle:apps:file-transfer:5";
     public static final String NAMESPACE = NAMESPACE_V5;
+
+    private static final Logger LOGGER = Logger.getLogger(JingleSessionImpl.class.getName());
 
     protected State mState;
     protected JingleFile metadata;
@@ -75,6 +79,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
             throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         JingleSessionImpl session = getParent().getParent();
         JingleUtil jutil = new JingleUtil(connection);
+        LOGGER.log(Level.INFO, "Cancel file transfer session @ state: " + mState);
         switch (mState) {
             case pending:
                 if (session.isResponder()) {
@@ -84,9 +89,17 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
                 }
                 break;
 
+            // negotiating: remote will send => XMPPError: item-not-found - cancel; due to async negotiation process
+            case negotiating:
             case active:
+                mState = State.cancelled;
                 jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
                 break;
+
+            case ended:
+                // user cancels while the file transfer has ended in JingleIncomingFileOffer#onBytestreamReady().
+                getParent().onContentFinished();
+                return;
 
             default: break;
         }
