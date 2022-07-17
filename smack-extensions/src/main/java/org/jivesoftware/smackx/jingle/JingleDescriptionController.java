@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.jingle;
 
 /**
  * Created by vanitas on 27.07.17.
+ * Enum State is used by <code>JingleIncomingFileOffer</code> and <code>JingleOutgoingFileOffer</code>
+ * file transfer progress status update
  *
  * @author Paul Schaub
  * @author Eng Chong Meng

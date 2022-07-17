@@ -30,7 +30,6 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
 import org.jivesoftware.smackx.jingle.JingleManager;
 import org.jivesoftware.smackx.jingle.JingleSession;
@@ -61,7 +60,7 @@ public class JingleSessionImpl extends JingleSession {
     private final JingleManager mManager;
     private final XMPPConnection mConnection;
     private final JingleUtil jutil;
-    private SessionState sessionState;
+    private SessionState mSessionState;
 
     public enum SessionState {
         fresh,      // pre-session-initiate
@@ -77,7 +76,7 @@ public class JingleSessionImpl extends JingleSession {
      * @param recipient The remote file-recipient
      */
     public JingleSessionImpl(XMPPConnection connection, FullJid recipient) {
-        this(connection, connection.getUser(), recipient, Role.initiator, StringUtils.randomString(24), null);
+        this(connection, connection.getUser(), recipient, Role.initiator, JingleManager.randomId(), null);
     }
 
     /**
@@ -91,7 +90,7 @@ public class JingleSessionImpl extends JingleSession {
         for (JingleContent content : getContents()) {
             this.addContent(content);
         }
-        sessionState = SessionState.pending;
+        mSessionState = SessionState.pending;
     }
 
     /**
@@ -106,7 +105,7 @@ public class JingleSessionImpl extends JingleSession {
      */
     public JingleSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role, String sid, List<JingleContent> contents) {
         super(initiator, responder, role, sid, contents);
-        sessionState = SessionState.fresh;
+        mSessionState = SessionState.fresh;
 
         mConnection = connection;
         jutil = new JingleUtil(connection);
@@ -115,17 +114,17 @@ public class JingleSessionImpl extends JingleSession {
     }
 
     public void sendInitiate(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
-        if (this.sessionState != SessionState.fresh) {
+        if (mSessionState != SessionState.fresh) {
             throw new IllegalStateException("Session is not in fresh state.");
         }
 
         connection.createStanzaCollectorAndSend(createSessionInitiate()).nextResultOrThrow();
-        this.sessionState = SessionState.pending;
+        mSessionState = SessionState.pending;
     }
 
     public void sendAccept(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
         LOGGER.log(Level.INFO, "Accepted session.");
-        if (this.sessionState != SessionState.pending) {
+        if (mSessionState != SessionState.pending) {
             throw new IllegalStateException("Session is not in pending state.");
         }
 
@@ -138,7 +137,7 @@ public class JingleSessionImpl extends JingleSession {
         }
 
         connection.createStanzaCollectorAndSend(createSessionAccept()).nextResultOrThrow();
-        this.sessionState = SessionState.active;
+        mSessionState = SessionState.active;
     }
 
     public Jingle createSessionInitiate() {
@@ -194,7 +193,7 @@ public class JingleSessionImpl extends JingleSession {
             terminateSession(JingleReason.Reason.success, "success");
         }
 
-        // Session has still active contents left.
+        // Session still has active contents to handle.
         /*
         try {
             mConnection.createStanzaCollectorAndSend(Jingle.createSessionTerminateContentCancel(
@@ -280,11 +279,12 @@ public class JingleSessionImpl extends JingleSession {
      */
     @Override
     protected IQ handleSessionAccept(final Jingle sessionAccept) {
-        this.sessionState = SessionState.active;
+        mSessionState = SessionState.active;
 
         for (final JingleContentImpl content : contentImpls.values()) {
             JingleSecurity<?> security = content.getSecurity();
-            if (security != null && sessionAccept.getSoleContentOrThrow().getSecurity() == null) {
+            JingleContent aContent = sessionAccept.getSoleContentOrThrow();
+            if (security != null && aContent != null && aContent.getSecurity() == null) {
                 terminateSession(JingleReason.Reason.security_error, "JetSecurity protocol not supported by client");
                 contentImpls.remove(content.getName());
                 continue;
@@ -319,7 +319,7 @@ public class JingleSessionImpl extends JingleSession {
 
     @Override
     protected IQ handleSessionTerminate(Jingle sessionTerminate) {
-        this.sessionState = SessionState.ended;
+        mSessionState = SessionState.ended;
         JingleReason reason = sessionTerminate.getReason();
 
         if (reason == null) {
@@ -468,7 +468,7 @@ public class JingleSessionImpl extends JingleSession {
     }
 
     public SessionState getSessionState() {
-        return sessionState;
+        return mSessionState;
     }
 
     @Override

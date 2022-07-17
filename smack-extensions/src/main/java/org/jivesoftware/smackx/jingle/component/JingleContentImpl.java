@@ -232,16 +232,13 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         if (pendingReplacingTransport == null) {
             throw new AssertionError("We didn't try to replace the transport.");
         }
-        Async.go(new Runnable() {
-            @Override
-            public void run() {
-                transportBlacklist.add(pendingReplacingTransport.getNamespace());
-                pendingReplacingTransport = null;
-                try {
-                    replaceTransport(transportBlacklist, connection);
-                } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
-                    LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
-                }
+        Async.go(() -> {
+            transportBlacklist.add(pendingReplacingTransport.getNamespace());
+            pendingReplacingTransport = null;
+            try {
+                replaceTransport(transportBlacklist, connection);
+            } catch (SmackException.NotConnectedException | SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "Could not replace transport: " + e, e);
             }
         });
         return IQ.createResultIQ(request);
@@ -250,14 +247,11 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     private IQ handleTransportReplace(final Jingle request, final XMPPConnection connection) {
         // Tie Break?
         if (pendingReplacingTransport != null) {
-            Async.go(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        jutil.sendErrorTieBreak(request);
-                    } catch (SmackException.NotConnectedException | InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, "Could not send tie-break: " + e, e);
-                    }
+            Async.go(() -> {
+                try {
+                    jutil.sendErrorTieBreak(request);
+                } catch (SmackException.NotConnectedException | InterruptedException e) {
+                    LOGGER.log(Level.SEVERE, "Could not send tie-break: " + e, e);
                 }
             });
             return IQ.createResultIQ(request);
@@ -439,17 +433,24 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
             throw new AssertionError("bytestreamSession MUST NOT be null at this point.");
         }
 
-        if (security != null) {
-            if (isReceiving()) {
-                LOGGER.info("Decrypt incoming Bytestream.");
-                getSecurity().decryptIncomingBytestream(bytestreamSession, this);
-            } else if (isSending()) {
-                LOGGER.info("Encrypt outgoing Bytestream.");
-                getSecurity().encryptOutgoingBytestream(bytestreamSession, this);
+        /*
+         * Must execute byteStream sending in Async; large file sending may take > 5 seconds,
+         * and sending IQ.createResultIQ() will be timeout: SmackException$NoResponseException
+         * JingleS5BTransportImpl.connectIfReady() Could not send candidate-activated
+         */
+        Async.go(() -> {
+            if (security != null) {
+                if (isReceiving()) {
+                    LOGGER.info("Decrypt incoming Bytestream.");
+                    getSecurity().decryptIncomingBytestream(bytestreamSession, this);
+                } else if (isSending()) {
+                    LOGGER.info("Encrypt outgoing Bytestream.");
+                    getSecurity().encryptOutgoingBytestream(bytestreamSession, this);
+                }
+            } else {
+                description.onBytestreamReady(bytestreamSession);
             }
-        } else {
-            description.onBytestreamReady(bytestreamSession);
-        }
+        });
     }
 
     @Override
