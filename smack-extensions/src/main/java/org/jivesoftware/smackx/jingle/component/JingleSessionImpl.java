@@ -326,7 +326,7 @@ public class JingleSessionImpl extends JingleSession {
         }
 
         // the resultant state is currently not used by JingleSessionImpl
-        switch(reason.asEnum()) {
+        switch (reason.asEnum()) {
             case cancel:
                 mSessionState = SessionState.canceled;
                 break;

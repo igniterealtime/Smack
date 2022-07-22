@@ -168,7 +168,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     @Override
     public void onSessionTerminated(JingleReason reason) {
-        switch(reason.asEnum()) {
+        switch (reason.asEnum()) {
             case cancel:
                 mState = State.cancelled;
                 break;
