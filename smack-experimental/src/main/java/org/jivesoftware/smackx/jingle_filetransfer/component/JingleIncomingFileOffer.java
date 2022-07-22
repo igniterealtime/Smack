@@ -67,14 +67,8 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             throw new IllegalStateException("Target OutputStream is null");
         }
 
-        // User cancels incoming file transfer in protocol negotiation phase.
-        if (mState == State.cancelled) {
-            LOGGER.log(Level.INFO, "User canceled file offer (in protocol negotiation).");
-            return;
-        }
-
-        notifyProgressListenersStarted();
         mState = State.active;
+        notifyProgressListenersStarted();
 
         HashElement hashElement = metadata.getHashElement();
         MessageDigest digest = null;
@@ -83,7 +77,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             LOGGER.log(Level.INFO, "File offer had checksum: " + digest.toString());
         }
 
-        LOGGER.log(Level.INFO, "Receive file");
+        LOGGER.log(Level.INFO, "Receiving file");
         InputStream inputStream = null;
         try {
             inputStream = bytestreamSession.getInputStream();
@@ -99,7 +93,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             while ((length = inputStream.read(bufbuf)) >= 0) {
                 // User cancels incoming file transfer in active progress.
                 if (mState == State.cancelled) {
-                    LOGGER.log(Level.INFO, "User canceled file offer (in active transfer).");
+                    LOGGER.log(Level.INFO, "User canceled file offer in active transfer.");
                     break;
                 }
 
@@ -122,7 +116,8 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                     inputStream.close();
                     LOGGER.log(Level.INFO, "CipherInputStream closed.");
                 } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Could not close InputStream: " + e, e);
+                    // For omemo encrypted cancled: java.io.IOException: javax.crypto.AEADBadTagException: mac check in GCM failed (ignored)
+                    LOGGER.log(Level.WARNING, "Could not close InputStream: " + e, e);
                 }
             }
 

@@ -63,14 +63,8 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             throw new IllegalStateException("Source InputStream is null!");
         }
 
-        // User cancels incoming file transfer in protocol negotiation phase.
-        if (mState == State.cancelled) {
-            LOGGER.log(Level.INFO, "User canceled file offer (in protocol negotiation).");
-            return;
-        }
-
-        notifyProgressListenersStarted();
         mState = State.active;
+        notifyProgressListenersStarted();
 
         OutputStream outputStream;
         try {
@@ -83,9 +77,9 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
                 if (length < 0) {
                     break;
                 }
-                // User cancels incoming file transfer in active progress.
+                // User cancels JFT file transfer in active data streaming.
                 if (mState == State.cancelled) {
-                    LOGGER.log(Level.INFO, "User canceled file offer (in active transfer).");
+                    LOGGER.log(Level.INFO, "User canceled file offer in active streaming.");
                     break;
                 }
 

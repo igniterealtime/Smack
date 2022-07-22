@@ -175,6 +175,9 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
             throw new AssertionError("Session Accept did not contain this content.");
         }
 
+        // Notify session listener that remote has accepted the file transfer.
+        getParent().notifySessionAccepted();
+
         mConnection = connection;
         getTransport().handleSessionAccept(contentElement.getTransport(), mConnection);
         start(mConnection);
