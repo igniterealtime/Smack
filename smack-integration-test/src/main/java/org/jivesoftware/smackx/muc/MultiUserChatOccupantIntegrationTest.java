@@ -126,7 +126,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         mucAsSeenByTwo.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override public void joined(EntityFullJid participant) {
-                results.add(participant);
+                // Ignore self-presence, but record all other participants.
+                final EntityFullJid participantTwo = JidCreate.entityFullFrom(mucAddress, nicknameTwo);
+                if (!participantTwo.equals(participant)) {
+                    results.add(participant);
+                }
             }
         });
 
