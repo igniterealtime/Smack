@@ -115,12 +115,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
         List<Object> results = new ArrayList<Object>();
 
-        mucAsSeenByTwo.addMessageListener(new MessageListener() {
-            @Override public void processMessage(Message message) {
-                String body = message.getBody();
-                if (mucMessage.equals(body)) {
-                    results.add(body);
-                }
+        mucAsSeenByTwo.addMessageListener(message -> {
+            String body = message.getBody();
+            if (mucMessage.equals(body)) {
+                results.add(body);
             }
         });
 
@@ -134,11 +132,9 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             }
         });
 
-        mucAsSeenByTwo.addSubjectUpdatedListener(new SubjectUpdatedListener() {
-            @Override public void subjectUpdated(String subject, EntityFullJid from) {
-                results.add(subject);
-                subjectResultSyncPoint.signal(subject);
-            }
+        mucAsSeenByTwo.addSubjectUpdatedListener((subject, from) -> {
+            results.add(subject);
+            subjectResultSyncPoint.signal(subject);
         });
 
         try {
@@ -184,20 +180,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
 
         ResultSyncPoint<Message, Exception> errorMessageResultSyncPoint = new ResultSyncPoint<>();
-        conTwo.addStanzaListener(new StanzaListener() {
-            @Override public void processStanza(Stanza packet)
-                            throws SmackException.NotConnectedException, InterruptedException,
-                            SmackException.NotLoggedInException {
-                errorMessageResultSyncPoint.signal((Message) packet);
-            }
-        }, ForEveryMessage.INSTANCE);
+        conTwo.addStanzaListener(packet -> errorMessageResultSyncPoint.signal((Message) packet), ForEveryMessage.INSTANCE);
 
         ResultSyncPoint<Message, Exception> distributedMessageResultSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addMessageListener(new MessageListener() {
-            @Override public void processMessage(Message message) {
-                distributedMessageResultSyncPoint.signal(message);
-            }
-        });
+        mucAsSeenByOne.addMessageListener(message -> distributedMessageResultSyncPoint.signal(message));
 
         try {
             mucAsSeenByTwo.sendMessage("Message without Joining");
@@ -260,11 +246,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         oneSeesTwo.waitForResult(timeout);
 
         List<Presence> results = new ArrayList<Presence>();
-        mucAsSeenByThree.addParticipantListener(new PresenceListener() {
-            @Override public void processPresence(Presence presence) {
-                results.add(presence);
-            }
-        });
+        mucAsSeenByThree.addParticipantListener(presence -> results.add(presence));
 
         try {
             // Will block until all self-presence is received, prior to which all others presences will have been received.
