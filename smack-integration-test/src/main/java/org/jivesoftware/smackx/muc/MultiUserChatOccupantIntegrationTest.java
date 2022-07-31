@@ -183,7 +183,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         conTwo.addStanzaListener(packet -> errorMessageResultSyncPoint.signal((Message) packet), ForEveryMessage.INSTANCE);
 
         ResultSyncPoint<Message, Exception> distributedMessageResultSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addMessageListener(message -> distributedMessageResultSyncPoint.signal(message));
+        mucAsSeenByOne.addMessageListener(distributedMessageResultSyncPoint::signal);
 
         try {
             mucAsSeenByTwo.sendMessage("Message without Joining");
@@ -246,7 +246,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         oneSeesTwo.waitForResult(timeout);
 
         List<Presence> results = new ArrayList<Presence>();
-        mucAsSeenByThree.addParticipantListener(presence -> results.add(presence));
+        mucAsSeenByThree.addParticipantListener(results::add);
 
         try {
             // Will block until all self-presence is received, prior to which all others presences will have been received.
@@ -974,11 +974,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
                             presence -> presence.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())).collect(
                             Collectors.toList());
             final List<Presence> availablePresencesReceivedByOne = partTwoPresencesReceived.stream().filter(
-                            presence -> presence.isAvailable()).filter(
+                            Presence::isAvailable).filter(
                             presence -> presence.getTo().equals(conOne.getUser().asEntityFullJidIfPossible())).collect(
                             Collectors.toList());
             final List<Presence> availablePresencesReceivedByTwo = partTwoPresencesReceived.stream().filter(
-                            presence -> presence.isAvailable()).filter(
+                            Presence::isAvailable).filter(
                             presence -> presence.getTo().equals(conTwo.getUser().asEntityFullJidIfPossible())).collect(
                             Collectors.toList());
 
