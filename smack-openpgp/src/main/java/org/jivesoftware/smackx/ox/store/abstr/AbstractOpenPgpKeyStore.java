@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.ox.store.abstr;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -247,7 +246,7 @@ public abstract class AbstractOpenPgpKeyStore implements OpenPgpKeyStore {
 
     @Override
     public PGPSecretKeyRing generateKeyRing(BareJid owner)
-            throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
-        return PGPainless.generateKeyRing().modernKeyRing("xmpp:" + owner.toString(), null);
+            throws PGPException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+        return PGPainless.generateKeyRing().modernKeyRing("xmpp:" + owner.toString());
     }
 }

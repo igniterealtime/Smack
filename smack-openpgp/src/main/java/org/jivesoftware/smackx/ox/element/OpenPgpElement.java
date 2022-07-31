@@ -26,6 +26,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.ox.util.Util;
 
 /**
@@ -51,7 +52,8 @@ public class OpenPgpElement implements ExtensionElement {
     }
 
     public InputStream toInputStream() {
-        return new ByteArrayInputStream(base64EncodedOpenPgpMessage.getBytes(Util.UTF8));
+        return new ByteArrayInputStream(
+                Base64.decode(base64EncodedOpenPgpMessage.getBytes(Util.UTF8)));
     }
 
     /**
