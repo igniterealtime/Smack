@@ -113,7 +113,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         messageReflectionSyncPoint.waitForResult(timeout);
 
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
-        List<Object> results = new ArrayList<Object>();
+        List<Object> results = new ArrayList<>();
 
         mucAsSeenByTwo.addMessageListener(message -> {
             String body = message.getBody();
@@ -245,7 +245,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         mucAsSeenByOne.grantModerator(nicknameTwo);
         oneSeesTwo.waitForResult(timeout);
 
-        List<Presence> results = new ArrayList<Presence>();
+        List<Presence> results = new ArrayList<>();
         mucAsSeenByThree.addParticipantListener(results::add);
 
         try {
