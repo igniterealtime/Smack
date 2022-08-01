@@ -158,8 +158,6 @@ public class Socks5Proxy {
         startServerThread();
     }
 
-
-
    /**
     * Returns true if the local Socks5 proxy should be started. Default is true.
     *
@@ -212,6 +210,7 @@ public class Socks5Proxy {
        checkLocalSocks5ProxyPortArgument(localSocks5ProxyPort);
        this.localSocks5ProxyPort = localSocks5ProxyPort;
    }
+
 
     /**
      * Returns the local SOCKS5 proxy server.

@@ -1903,4 +1903,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         this.bundleAndDeferCallback = bundleAndDeferCallback;
     }
 
+
+    /**
+     * Returns the local address currently in use for this connection.
+     *
+     * @return the local address
+     */
+    @Override
+    public InetAddress getLocalAddress() {
+        InetAddress xmppAddress = (socket != null) ? socket.getLocalAddress() : null;
+        if (xmppAddress != null && !xmppAddress.isAnyLocalAddress()) {
+            return xmppAddress;
+        }
+        return null;
+    }
 }

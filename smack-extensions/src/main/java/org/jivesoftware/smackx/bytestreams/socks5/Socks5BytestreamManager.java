@@ -656,12 +656,22 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      */
     public List<StreamHost> getLocalStreamHost() {
         // Ensure that the local SOCKS5 proxy is running (if enabled).
-        Socks5Proxy.getSocks5Proxy();
+        Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
 
         List<StreamHost> streamHosts = new ArrayList<>();
 
         XMPPConnection connection = connection();
         EntityFullJid myJid = connection.getUser();
+
+        // The default local address is often just 'the first address found in the
+        // list of addresses read from the OS' and this might mean an internal
+        // IP address that cannot reach external servers. So wherever possible
+        // use the same IP address being used to connect to the XMPP server
+        // because this local address has a better chance of being suitable.
+        InetAddress xmppLocalAddress = connection.getLocalAddress();
+        if (xmppLocalAddress != null) {
+            socks5Proxy.replaceLocalAddresses(Collections.singletonList(xmppLocalAddress));
+        }
 
         for (Socks5Proxy socks5Server : Socks5Proxy.getRunningProxies()) {
             List<InetAddress> addresses = socks5Server.getLocalAddresses();
