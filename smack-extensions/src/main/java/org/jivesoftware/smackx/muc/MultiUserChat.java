@@ -74,6 +74,7 @@ import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.filter.MUCUserStatusCodeFilter;
 import org.jivesoftware.smackx.muc.packet.Destroy;
+import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
 import org.jivesoftware.smackx.muc.packet.MUCAdmin;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
@@ -1060,6 +1061,51 @@ public class MultiUserChat {
         messageBuilder.addExtension(mucUser);
 
         Message message = messageBuilder.build();
+        connection.sendStanza(message);
+    }
+
+    /**
+     * Invites another user to the room in which one is an occupant. In contrast
+     * to the method "invite", the invitation is sent directly to the user rather
+     * than via the chat room.  This is useful when the user being invited is
+     * offline, as otherwise the invitation would be dropped.
+     *
+     * @param address the user to send the invitation to
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public void inviteDirectly(EntityBareJid address) throws NotConnectedException, InterruptedException {
+        inviteDirectly(address, null, null, false, null);
+    }
+
+     /**
+     * Invites another user to the room in which one is an occupant. In contrast
+     * to the method "invite", the invitation is sent directly to the user rather
+     * than via the chat room.  This is useful when the user being invited is
+     * offline, as otherwise the invitation would be dropped.
+     *
+     * @param address the user to send the invitation to
+     * @param reason the purpose for the invitation
+     * @param password specifies a password needed for entry
+     * @param continueAsOneToOneChat specifies if the groupchat room continues a one-to-one chat having the designated thread
+     * @param thread the thread to continue
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public void inviteDirectly(EntityBareJid address, String reason, String password, boolean continueAsOneToOneChat, String thread)
+        throws NotConnectedException, InterruptedException {
+        // Add the extension for direct invitation
+        GroupChatInvitation invitationExt = new GroupChatInvitation(room,
+                                                                    reason,
+                                                                    password,
+                                                                    continueAsOneToOneChat,
+                                                                    thread);
+
+        Message message = connection.getStanzaFactory().buildMessageStanza()
+                .to(address)
+                .addExtension(invitationExt)
+                .build();
+
         connection.sendStanza(message);
     }
 

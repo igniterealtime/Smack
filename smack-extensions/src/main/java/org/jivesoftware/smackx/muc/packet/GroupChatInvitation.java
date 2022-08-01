@@ -69,6 +69,10 @@ public class GroupChatInvitation implements ExtensionElement {
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final EntityBareJid roomAddress;
+    private final String reason;
+    private final String password;
+    private final String thread;
+    private final boolean continueAsOneToOneChat;
 
     /**
      * Creates a new group chat invitation to the specified room address.
@@ -79,7 +83,67 @@ public class GroupChatInvitation implements ExtensionElement {
      * @param roomAddress the address of the group chat room.
      */
     public GroupChatInvitation(EntityBareJid roomAddress) {
+        this(roomAddress, null, null, false, null);
+    }
+
+    /**
+     * Creates a new group chat invitation to the specified room address.
+     * GroupChat room addresses are in the form <code>room@service</code>,
+     * where <code>service</code> is the name of group chat server, such as
+     * <code>chat.example.com</code>.
+     *
+     * @param roomAddress the address of the group chat room.
+     * @param reason the purpose for the invitation
+     * @param password specifies a password needed for entry
+     * @param continueAsOneToOneChat specifies if the groupchat room continues a one-to-one chat having the designated thread
+     * @param thread the thread to continue
+     */
+    public GroupChatInvitation(EntityBareJid roomAddress,
+                               String reason,
+                               String password,
+                               boolean continueAsOneToOneChat,
+                               String thread) {
         this.roomAddress = Objects.requireNonNull(roomAddress);
+        this.reason = reason;
+        this.password = password;
+        this.continueAsOneToOneChat = continueAsOneToOneChat;
+        this.thread = thread;
+    }
+
+    /**
+     * Returns the purpose for the invitation.
+     *
+     * @return the address of the group chat room.
+     */
+    public String getReason() {
+        return reason;
+    }
+
+    /**
+     * Returns the password needed for entry.
+     *
+     * @return the password needed for entry
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Returns the thread to continue.
+     *
+     * @return the thread to continue.
+     */
+    public String getThread() {
+        return thread;
+    }
+
+    /**
+     * Returns whether the groupchat room continues a one-to-one chat.
+     *
+     * @return whether the groupchat room continues a one-to-one chat.
+     */
+    public boolean continueAsOneToOneChat() {
+        return continueAsOneToOneChat;
     }
 
     /**
@@ -107,6 +171,13 @@ public class GroupChatInvitation implements ExtensionElement {
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("jid", getRoomAddress());
+        xml.optAttribute("reason", getReason());
+        xml.optAttribute("password", getPassword());
+        xml.optAttribute("thread", getThread());
+
+        if (continueAsOneToOneChat())
+            xml.optBooleanAttribute("continue", true);
+
         xml.closeEmptyElement();
         return xml;
     }

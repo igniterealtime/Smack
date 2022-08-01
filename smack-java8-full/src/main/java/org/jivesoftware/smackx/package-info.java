@@ -352,6 +352,12 @@
  * <td>Efficient roster synchronization.</td>
  * </tr>
  * <tr>
+ * <td>Direct MUC Invitations</td>
+ * <td><a href="https://xmpp.org/extensions/xep-0249.html">XEP-0249</a></td>
+ * <td></td>
+ * <td>Allows sending a MUC invitation directly from the user to the contact with mediation by the room.</td>
+ * </tr>
+ * <tr>
  * <td>Message Carbons</td>
  * <td><a href="https://xmpp.org/extensions/xep-0280.html">XEP-0280</a></td>
  * <td>{@link org.jivesoftware.smackx.carbons}</td>
