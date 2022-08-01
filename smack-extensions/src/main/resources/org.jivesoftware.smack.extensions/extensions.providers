@@ -516,7 +516,7 @@
     <extensionProvider>
         <elementName>x</elementName>
         <namespace>jabber:x:conference</namespace>
-        <className>org.jivesoftware.smackx.muc.packet.GroupChatInvitation$Provider</className>
+        <className>org.jivesoftware.smackx.muc.provider.GroupChatInvitationProvider</className>
     </extensionProvider>
 
     <!-- XEP-0297: Stanza Forwarding -->

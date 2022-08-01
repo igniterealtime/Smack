@@ -14,20 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.muc.packet;
-
-import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jxmpp.jid.EntityBareJid;
 
 /**
  * A group chat invitation stanza extension, which is used to invite other
@@ -72,7 +67,7 @@ public class GroupChatInvitation implements ExtensionElement {
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    private final String roomAddress;
+    private final EntityBareJid roomAddress;
 
     /**
      * Creates a new group chat invitation to the specified room address.
@@ -82,7 +77,7 @@ public class GroupChatInvitation implements ExtensionElement {
      *
      * @param roomAddress the address of the group chat room.
      */
-    public GroupChatInvitation(String roomAddress) {
+    public GroupChatInvitation(EntityBareJid roomAddress) {
         this.roomAddress = roomAddress;
     }
 
@@ -93,7 +88,7 @@ public class GroupChatInvitation implements ExtensionElement {
      *
      * @return the address of the group chat room.
      */
-    public String getRoomAddress() {
+    public EntityBareJid getRoomAddress() {
         return roomAddress;
     }
 
@@ -124,16 +119,4 @@ public class GroupChatInvitation implements ExtensionElement {
         return packet.getExtension(GroupChatInvitation.class);
     }
 
-    public static class Provider extends ExtensionElementProvider<GroupChatInvitation> {
-
-        @Override
-        public GroupChatInvitation parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
-                        IOException {
-            String roomAddress = parser.getAttributeValue("", "jid");
-            // Advance to end of extension.
-            parser.next();
-            return new GroupChatInvitation(roomAddress);
-        }
-    }
 }
