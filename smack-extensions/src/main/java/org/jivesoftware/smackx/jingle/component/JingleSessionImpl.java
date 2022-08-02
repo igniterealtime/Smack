@@ -533,8 +533,7 @@ public class JingleSessionImpl extends JingleSession {
         }
     }
 
-    public interface JingleSessionListener
-    {
+    public interface JingleSessionListener {
         void onSessionTerminated(JingleReason reason);
 
         void onSessionAccepted();
