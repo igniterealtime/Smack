@@ -20,6 +20,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -78,7 +79,7 @@ public class GroupChatInvitation implements ExtensionElement {
      * @param roomAddress the address of the group chat room.
      */
     public GroupChatInvitation(EntityBareJid roomAddress) {
-        this.roomAddress = roomAddress;
+        this.roomAddress = Objects.requireNonNull(null);
     }
 
     /**
