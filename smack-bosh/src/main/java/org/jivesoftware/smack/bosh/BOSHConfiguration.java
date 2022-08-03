@@ -47,10 +47,14 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
             }
         }
         https = builder.https;
-        if (builder.file.charAt(0) != '/') {
-            file = '/' + builder.file;
+        if (builder.file != null)  {
+            if (builder.file.charAt(0) != '/') {
+                file = '/' + builder.file;
+            } else {
+                file = builder.file;
+            }
         } else {
-            file = builder.file;
+            file = null;
         }
         httpHeaders = builder.httpHeaders;
     }
@@ -77,7 +81,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
     }
 
     public URI getURI() throws URISyntaxException {
-        String uri = (https ? "https://" : "http://") + getHostString() + ":" + this.port + file;
+        String uri = (https ? "https://" : "http://") + getHostString() + ":" + this.port + (file != null ? file : "");
         return new URI(uri);
     }
 
