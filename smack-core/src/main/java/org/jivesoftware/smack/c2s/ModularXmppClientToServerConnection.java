@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2021 Florian Schmaus
+ * Copyright 2018-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.FailedNonzaException;
@@ -67,7 +68,6 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -438,22 +438,28 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     @Override
-    protected void sendStanzaInternal(Stanza stanza) throws NotConnectedException, InterruptedException {
-        sendTopLevelStreamElement(stanza);
-    }
-
-    @Override
-    public void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException {
-        sendTopLevelStreamElement(nonza);
-    }
-
-    private void sendTopLevelStreamElement(TopLevelStreamElement element) throws NotConnectedException, InterruptedException {
+    protected void sendInternal(TopLevelStreamElement element) throws NotConnectedException, InterruptedException {
         final XmppClientToServerTransport transport = activeTransport;
         if (transport == null) {
             throw new NotConnectedException();
         }
 
         outgoingElementsQueue.put(element);
+        transport.notifyAboutNewOutgoingElements();
+    }
+
+    @Override
+    protected void sendNonBlockingInternal(TopLevelStreamElement element) throws NotConnectedException, OutgoingQueueFullException {
+        final XmppClientToServerTransport transport = activeTransport;
+        if (transport == null) {
+            throw new NotConnectedException();
+        }
+
+        boolean enqueued = outgoingElementsQueue.offer(element);
+        if (!enqueued) {
+            throw new OutgoingQueueFullException();
+        }
+
         transport.notifyAboutNewOutgoingElements();
     }
 

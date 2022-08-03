@@ -387,13 +387,4 @@ public final class SmackConfiguration {
         }
     }
 
-    /**
-     * If enabled, causes {@link AbstractXMPPConnection} to create a thread for every asynchronous send operation. This
-     * is meant to work-around a shortcoming of Smack 4.4, where certain send operations are not asynchronous even if
-     * they should be. This is an expert setting, do not toggle if you do not understand the consequences or have been
-     * told to do so. Note that it is expected that this will not be needed in future Smack versions.
-     *
-     * @since 4.4.6
-     */
-    public static boolean TRUELY_ASYNC_SENDS = false;
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2010 Jive Software.
+ * Copyright 2010 Jive Software, 2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 
@@ -127,13 +127,16 @@ public class DummyConnection extends AbstractXMPPConnection {
     }
 
     @Override
-    public void sendNonza(Nonza element) {
+    protected void sendInternal(TopLevelStreamElement element) {
         queue.add(element);
     }
 
     @Override
-    protected void sendStanzaInternal(Stanza packet) {
-        queue.add(packet);
+    protected void sendNonBlockingInternal(TopLevelStreamElement element) throws OutgoingQueueFullException {
+        boolean enqueued = queue.add(element);
+        if (!enqueued) {
+            throw new OutgoingQueueFullException();
+        }
     }
 
     /**

@@ -22,6 +22,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.IQReplyFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
@@ -199,6 +200,8 @@ public interface XMPPConnection {
      * */
     void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException;
 
+    void sendStanzaNonBlocking(Stanza stanza) throws NotConnectedException, OutgoingQueueFullException;
+
     /**
      * Try to send the given stanza. Returns {@code true} if the stanza was successfully put into the outgoing stanza
      * queue, otherwise, if {@code false} is returned, the stanza could not be scheduled for sending (for example
@@ -213,7 +216,10 @@ public interface XMPPConnection {
      * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
      * @since 4.4.0
+     * @deprecated use {@link #sendStanzaNonBlocking(Stanza)} instead.
      */
+    // TODO: Remove in Smack 4.7.
+    @Deprecated
     boolean trySendStanza(Stanza stanza) throws NotConnectedException;
 
     /**
@@ -234,7 +240,10 @@ public interface XMPPConnection {
      * @throws NotConnectedException if the connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.4.0
+     * @deprecated use {@link #sendStanzaNonBlocking(Stanza)} instead.
      */
+    // TODO: Remove in Smack 4.7.
+    @Deprecated
     boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)  throws NotConnectedException, InterruptedException;
 
     /**
@@ -250,6 +259,8 @@ public interface XMPPConnection {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException;
+
+    void sendNonzaNonBlocking(Nonza stanza) throws NotConnectedException, OutgoingQueueFullException;
 
     /**
      * Adds a connection listener to this connection that will be notified when
