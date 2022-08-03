@@ -225,8 +225,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
     @Override
     public boolean isSecureConnection() {
-        // TODO: Implement SSL usage
-        return false;
+        return config.isUsingHTTPS();
     }
 
     @Override
