@@ -79,7 +79,7 @@ public class GroupChatInvitation implements ExtensionElement {
      * @param roomAddress the address of the group chat room.
      */
     public GroupChatInvitation(EntityBareJid roomAddress) {
-        this.roomAddress = Objects.requireNonNull(null);
+        this.roomAddress = Objects.requireNonNull(roomAddress);
     }
 
     /**
