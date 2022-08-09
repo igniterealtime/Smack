@@ -191,7 +191,8 @@ public class JingleSessionImpl extends JingleSession {
 
         // Only content has finished i.e. SessionState.ended; skip if the remote cancel the file transfer.
         if (mSessionState == SessionState.ended && contentImpls.size() == 1) {
-            terminateSession(JingleReason.Reason.success, "success");
+            JingleReason jingleReason = new JingleReason(JingleReason.Reason.success, "success", null);
+            terminateSession(jingleReason);
         }
 
         // Session still has active contents to handle.
@@ -225,12 +226,16 @@ public class JingleSessionImpl extends JingleSession {
         contentImpls.remove(jingleContent.getName());
     }
 
-    public void terminateSession(JingleReason.Reason reason, String reasonText) {
-        JingleReason jingleReason = new JingleReason(reason, reasonText, null);
+    /**
+     * Send session-terminate and wait for response; before unregisterJingleSessionHandler.
+     *
+     * @param jingleReason reason for session-terminate
+     */
+    public void terminateSession(JingleReason jingleReason) {
         notifySessionTerminated(jingleReason);
         try {
-            mConnection.createStanzaCollectorAndSend(jutil.createSessionTerminate(remote, sid, jingleReason));
-        } catch (SmackException.NotConnectedException | InterruptedException e) {
+            mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
+        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
         }
         mManager.unregisterJingleSessionHandler(remote, sid, this);
@@ -286,7 +291,9 @@ public class JingleSessionImpl extends JingleSession {
             JingleSecurity<?> security = content.getSecurity();
             JingleContent aContent = sessionAccept.getSoleContentOrThrow();
             if (security != null && aContent != null && aContent.getSecurity() == null) {
-                terminateSession(JingleReason.Reason.security_error, "JetSecurity protocol not supported by client");
+                JingleReason jingleReason = new JingleReason(JingleReason.Reason.security_error,
+                        "JetSecurity protocol not supported by client", null);
+                terminateSession(jingleReason);
                 contentImpls.remove(content.getName());
                 continue;
             }
