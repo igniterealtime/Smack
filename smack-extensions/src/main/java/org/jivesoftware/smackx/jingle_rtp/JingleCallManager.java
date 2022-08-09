@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_rtp;
 
+import java.util.WeakHashMap;
+
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
@@ -49,9 +51,8 @@ import org.jivesoftware.smackx.jingle_rtp.element.SrtpFingerprint;
 import org.jivesoftware.smackx.jingle_rtp.element.ZrtpHash;
 import org.jivesoftware.smackx.jingle_rtp.provider.JingleRTPDescriptionProvider;
 import org.jivesoftware.smackx.jingle_rtp.provider.JingleRTPTransportProvider;
-import org.jxmpp.jid.FullJid;
 
-import java.util.WeakHashMap;
+import org.jxmpp.jid.FullJid;
 
 /**
  * Manager for Jingle RTP session i.e.

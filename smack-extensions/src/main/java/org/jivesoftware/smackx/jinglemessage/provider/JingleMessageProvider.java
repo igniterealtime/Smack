@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jinglemessage.provider;
 
+import java.io.IOException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -24,8 +26,6 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
 import org.jivesoftware.smackx.jinglemessage.element.JingleMessage;
-
-import java.io.IOException;
 
 /**
  * The JingleMessageProvider parses Jingle Message extension.

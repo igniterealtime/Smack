@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * IceUdpTransport element.

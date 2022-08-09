@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Implements <code>AbstractExtensionElement</code> for the <code>source</code> element defined below.

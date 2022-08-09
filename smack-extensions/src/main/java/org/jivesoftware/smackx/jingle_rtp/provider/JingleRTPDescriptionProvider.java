@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.provider;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -26,10 +30,6 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle.provider.JingleContentDescriptionProvider;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Provider for RtpDescription elements.

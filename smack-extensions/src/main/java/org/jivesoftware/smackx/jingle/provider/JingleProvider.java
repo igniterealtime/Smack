@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle.provider;
 
+import java.io.IOException;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
@@ -41,10 +44,8 @@ import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
-import org.jxmpp.jid.FullJid;
 
-import java.io.IOException;
-import java.util.logging.Logger;
+import org.jxmpp.jid.FullJid;
 
 /**
  * An implementation of a Jingle IQ provider that parses incoming Jingle IQs.

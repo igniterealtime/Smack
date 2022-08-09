@@ -18,17 +18,17 @@ package org.jivesoftware.smackx.jingle_rtp.element;
 
 import static org.jivesoftware.smack.xml.XmlPullParser.Event.END_ELEMENT;
 
+import java.io.IOException;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.DefaultXmlElementProvider;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 /**
  * Jingle group packet extension.

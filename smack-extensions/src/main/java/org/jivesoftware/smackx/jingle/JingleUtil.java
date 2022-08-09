@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle;
 
+import java.util.List;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -33,9 +35,8 @@ import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
 import org.jivesoftware.smackx.jingle_rtp.element.Grouping;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfoType;
-import org.jxmpp.jid.FullJid;
 
-import java.util.List;
+import org.jxmpp.jid.FullJid;
 
 /**
  * Util to quickly create and send jingle stanzas.

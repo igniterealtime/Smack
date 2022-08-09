@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle_rtp.element;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
+
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
-
-import javax.xml.namespace.QName;
 
 /**
  * Implements <code>ExtensionElement</code> for the "transfer" element defined below.

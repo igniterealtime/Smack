@@ -16,11 +16,11 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Jingle content description.

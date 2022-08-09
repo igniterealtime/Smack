@@ -16,6 +16,10 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqBuilder;
@@ -24,11 +28,8 @@ import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
-import org.jxmpp.jid.FullJid;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.jxmpp.jid.FullJid;
 
 /**
  * The Jingle element.

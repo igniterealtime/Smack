@@ -16,8 +16,13 @@
  */
 package org.jivesoftware.smackx.jingle_rtp;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.jingle.JingleManager;
@@ -27,11 +32,8 @@ import org.jivesoftware.smackx.jingle.Role;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jxmpp.jid.FullJid;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jxmpp.jid.FullJid;
 
 /**
  * Class that represents a Jingle session.
@@ -117,30 +119,30 @@ public class JingleCallSessionImpl extends JingleSession {
     }
 
     /**
-     * Send session-terminate without unregister the associated Jingle Session Handler.
+     * Send session-terminate and wait for response; without unregister the associated Jingle Session Handler.
      *
-     * @param reason reason for session-terminate
-     * @param reasonText reason text string for session-terminate
+     * @param jingleReason reason for session-terminate
+     * @return IQ response, null if exception occurred.
      */
-    public void terminateSession(JingleReason.Reason reason, String reasonText) {
+    public IQ terminateSession(JingleReason jingleReason) {
         try {
-            JingleReason jingleReason = new JingleReason(reason, reasonText, null);
-            mConnection.createStanzaCollectorAndSend(jutil.createSessionTerminate(remote, sid, jingleReason));
-        } catch (SmackException.NotConnectedException | InterruptedException e) {
+            return mConnection.sendIqRequestAndWaitForResponse(jutil.createSessionTerminate(remote, sid, jingleReason));
+        } catch (SmackException.NotConnectedException | InterruptedException | SmackException.NoResponseException | XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
+            return null;
         }
     }
 
     /**
-     * Send session-terminate and unregister the associated Jingle Session Handler.
-     * Any stray remote jingle stanzas received after that will be responded with i.e.
-     * createErrorUnknownSession(jingle)
+     * Send session-terminate and wait for response, before unregister the associated Jingle Session Handler.
+     * Any stray remote jingle stanzas received after that will be responded with i.e. createErrorUnknownSession(jingle)
      *
      * @param reason reason for session-terminate
      * @param reasonText reason text string for session-terminate
      */
     public void terminateSessionAndUnregister(JingleReason.Reason reason, String reasonText) {
-        terminateSession(reason, reasonText);
+        JingleReason jingleReason = new JingleReason(reason, reasonText, null);
+        terminateSession(jingleReason);
         unregisterJingleSessionHandler();
     }
 

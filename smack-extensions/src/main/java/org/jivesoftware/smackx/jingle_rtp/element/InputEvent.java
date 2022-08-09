@@ -28,9 +28,9 @@ public class InputEvent extends AbstractXmlElement {
     /**
      * Name of the XML element representing the extension.
      */
-    public final static String ELEMENT = "inputevt";
+    public static final String ELEMENT = "inputevt";
 
-    public final static String NAMESPACE = "http://jitsi.org/protocol/inputevt";
+    public static final String NAMESPACE = "http://jitsi.org/protocol/inputevt";
 
     public InputEvent() {
         super(getBuilder());

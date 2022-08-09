@@ -16,16 +16,16 @@
  */
 package org.jivesoftware.smackx.jinglemessage.element;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smackx.jingle_rtp.element.RtpDescription;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.namespace.QName;
 
 /**
  * Implements <code>ExtensionElement</code> for XEP-0353: Jingle Message Initiation 0.4.0 (2021-11-27).

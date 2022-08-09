@@ -16,14 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The Jingle 'reason' element.
