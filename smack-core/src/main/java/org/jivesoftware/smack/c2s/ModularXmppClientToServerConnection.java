@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.c2s;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1126,6 +1127,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         WalkStateGraphContext walkStateGraphContext = buildNewWalkTo(
                         ConnectedButUnauthenticatedStateDescriptor.class).build();
         walkStateGraph(walkStateGraphContext);
+    }
+
+    @Override
+    public InetAddress getLocalAddress() {
+        return null;
     }
 
     private Map<String, Object> getFilterStats() {
