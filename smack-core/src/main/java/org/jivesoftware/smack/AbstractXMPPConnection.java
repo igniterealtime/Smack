@@ -51,6 +51,7 @@ import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
@@ -460,8 +461,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public abstract boolean isSecureConnection();
 
-    protected abstract void sendStanzaInternal(Stanza packet) throws NotConnectedException, InterruptedException;
+    // Usually batching is a good idea. So the two
+    // send(Internal|NonBlockingInternal) methods below could be using
+    // Collection<? extends TopLevelStreamElement> as parameter type instead.
+    // TODO: Add "batched send" support. Note that for the non-blocking variant, this probably requires a change in
+    // return type, so that it is possible to signal which messages could be "send" and which not.
 
+    protected abstract void sendInternal(TopLevelStreamElement element) throws NotConnectedException, InterruptedException;
+
+    protected abstract void sendNonBlockingInternal(TopLevelStreamElement element) throws NotConnectedException, OutgoingQueueFullException;
+
+    @SuppressWarnings("deprecation")
     @Override
     public boolean trySendStanza(Stanza stanza) throws NotConnectedException {
         // Default implementation which falls back to sendStanza() as mentioned in the methods javadoc. May be
@@ -476,6 +486,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)
                     throws NotConnectedException, InterruptedException {
@@ -486,7 +497,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public abstract void sendNonza(Nonza element) throws NotConnectedException, InterruptedException;
+    public final void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException {
+        sendInternal(nonza);
+    }
+
+    @Override
+    public final void sendNonzaNonBlocking(Nonza nonza) throws NotConnectedException, OutgoingQueueFullException {
+        sendNonBlockingInternal(nonza);
+    }
 
     @Override
     public abstract boolean isUsingCompression();
@@ -853,8 +871,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return stanzaFactory;
     }
 
-    @Override
-    public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+    private Stanza preSendStanza(Stanza stanza) throws NotConnectedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
         assert stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ;
 
@@ -873,7 +890,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Invoke interceptors for the new stanza that is about to be sent. Interceptors may modify
         // the content of the stanza.
         Stanza stanzaAfterInterceptors = firePacketInterceptors(stanza);
-        sendStanzaInternal(stanzaAfterInterceptors);
+        return stanzaAfterInterceptors;
+    }
+
+    @Override
+    public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+        stanza = preSendStanza(stanza);
+        sendInternal(stanza);
+    }
+
+    @Override
+    public final void sendStanzaNonBlocking(Stanza stanza) throws NotConnectedException, OutgoingQueueFullException {
+        stanza = preSendStanza(stanza);
+        sendNonBlockingInternal(stanza);
     }
 
     /**
@@ -2006,18 +2035,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }, timeout, TimeUnit.MILLISECONDS);
 
         addAsyncStanzaListener(stanzaListener, replyFilter);
-        Runnable sendOperation = () -> {
-            try {
-                sendStanza(stanza);
-            }
-            catch (NotConnectedException | InterruptedException exception) {
-                future.setException(exception);
-            }
-        };
-        if (SmackConfiguration.TRUELY_ASYNC_SENDS) {
-            Async.go(sendOperation);
-        } else {
-            sendOperation.run();
+        try {
+            sendStanzaNonBlocking(stanza);
+        }
+        catch (NotConnectedException | OutgoingQueueFullException exception) {
+            future.setException(exception);
         }
 
         return future;

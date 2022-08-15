@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020-2021 Florian Schmaus
+ * Copyright 2020-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class ExtensionElementFilter<E extends ExtensionElement> implements Stanz
     private final Class<E> extensionElementClass;
     private final QName extensionElementQName;
 
-    protected ExtensionElementFilter(Class<E> extensionElementClass) {
+    public ExtensionElementFilter(Class<E> extensionElementClass) {
         this.extensionElementClass = extensionElementClass;
         extensionElementQName = XmppElementUtil.getQNameFor(extensionElementClass);
     }
