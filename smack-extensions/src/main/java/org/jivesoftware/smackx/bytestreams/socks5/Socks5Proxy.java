@@ -211,7 +211,6 @@ public class Socks5Proxy {
        this.localSocks5ProxyPort = localSocks5ProxyPort;
    }
 
-
     /**
      * Returns the local SOCKS5 proxy server.
      *

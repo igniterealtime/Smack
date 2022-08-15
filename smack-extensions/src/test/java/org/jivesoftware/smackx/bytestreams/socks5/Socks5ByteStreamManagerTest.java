@@ -1010,10 +1010,9 @@ public class Socks5ByteStreamManagerTest {
         protocol.verifyAll();
     }
 
-        /**
-     * A test for MSFT Customization to prefer XMPP connection local address for Socks5 proxy.
+     /**
      * Invoking {@link Socks5BytestreamManager#getLocalStreamHost()} should return only a local address
-     * from XMPP connection when it's connected and have a socket with the bound non-localhost IP address.
+     * from XMPP connection when it is connected and has a socket with a bound non-localhost IP address.
      *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
@@ -1041,9 +1040,8 @@ public class Socks5ByteStreamManagerTest {
     }
 
     /**
-     * A test for MSFT Customization to prefer XMPP connection local address for Socks5 proxy.
      * Invoking {@link Socks5BytestreamManager#getLocalStreamHost()} should return all non-localhost
-     * local addresses when it's XMPP connection's socket is null.
+     * local addresses when its XMPP connection's socket is null.
      *
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws SmackException if Smack detected an exceptional situation.
