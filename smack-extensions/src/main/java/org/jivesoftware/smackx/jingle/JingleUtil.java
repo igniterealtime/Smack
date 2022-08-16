@@ -116,7 +116,6 @@ public class JingleUtil {
                                       JingleContent.Senders contentSenders,
                                       JingleContentDescription description,
                                       JingleContentTransport transport) {
-
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setResponder(mConnection.getUser())
                 .setAction(JingleAction.session_accept)
@@ -199,7 +198,6 @@ public class JingleUtil {
     public IQ sendSessionTerminateBusy(FullJid recipient, String sessionId)
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
-
         Jingle jingle = createSessionTerminateBusy(recipient, sessionId);
         return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
@@ -211,7 +209,6 @@ public class JingleUtil {
     public IQ sendSessionTerminateAlternativeSession(FullJid recipient, String sessionId, String altSessionId)
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
-
         Jingle jingle = createSessionTerminateAlternativeSession(recipient, sessionId, altSessionId);
         return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
     }
@@ -223,13 +220,12 @@ public class JingleUtil {
     public IQ sendSessionTerminateCancel(FullJid recipient, String sessionId)
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
-
         Jingle jingle = createSessionTerminateCancel(recipient, sessionId);
-        return mConnection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return mConnection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateContentCancel(FullJid recipient, String sessionId,
-                                                      JingleContent.Creator contentCreator, String contentName) {
+            JingleContent.Creator contentCreator, String contentName) {
         Jingle.Builder jb = Jingle.builder(mConnection);
         jb.setAction(JingleAction.session_terminate)
                 .setSessionId(sessionId);

@@ -93,20 +93,14 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
                 break;
 
             /*
-             * Remote will send => XMPPError: item-not-found - cancel; due to async negotiation process
              * App should block user cancel while in protocol negotiation phase; both legacy si and JFT
              * cannot support transfer cancel during protocol negotiation. Only allow cancel in active mode.
+             * Sender may experience "SocketException: Connection reset" due to async file transfer process.
              */
             // case negotiating:
             case active:
-                // Always allow sender to stop stream sending before recipient take action
-                if (this instanceof JingleIncomingFileOffer) {
-                    jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
-                    mState = State.cancelled; // set flag to inform local only after remote has been notified.
-                } else {
-                    mState = State.cancelled; // set flag to inform local before the remote is notified.
-                    jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
-                }
+                mState = State.cancelled;
+                jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
                 break;
 
             case ended:
