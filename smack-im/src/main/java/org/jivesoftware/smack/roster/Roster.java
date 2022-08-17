@@ -947,7 +947,8 @@ public final class Roster extends Manager {
     }
 
     /**
-     * Returns true if the specified XMPP address is an entry in the roster.
+     * Returns true if the specified XMPP address is an entry in the roster, or is
+     * a resource of the logged in user.
      *
      * @param jid the XMPP address of the user (eg "jsmith@example.com"). The
      *             address must be a bare JID e.g. "domain/resource" or
@@ -955,7 +956,9 @@ public final class Roster extends Manager {
      * @return true if the XMPP address is an entry in the roster.
      */
     public boolean contains(BareJid jid) {
-        return getEntry(jid) != null;
+        RosterEntry entry = getEntry(jid);
+        EntityFullJid user = connection().getUser();
+        return entry != null || (user != null && jid.isParentOf(user));
     }
 
     /**
