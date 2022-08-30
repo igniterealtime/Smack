@@ -1154,7 +1154,7 @@ public class MultiUserChat {
         if (!removed) return;
         int currentCount = presenceInterceptorCount.decrementAndGet();
         if (currentCount == 0) {
-            connection.removePresenceInterceptor(presenceInterceptor);
+            connection.removePresenceInterceptor(this.presenceInterceptor);
         }
     }
 
