@@ -53,13 +53,6 @@ users should:
 
 Please search for your issues in the bug tracker before reporting.
 
-Donate
-------
-
-If you find Smack useful and feel like donating, then you can use one of the following systems:
-
-- Donate via Bitcoin: 1LiU78z3498wu3jwRPKbvovKAHjTcpVbuK
-
 Contact
 -------
 
