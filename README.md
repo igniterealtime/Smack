@@ -1,7 +1,7 @@
 Smack
 =====
 
-[![Build Status](https://github.com/igniterealtime/Smack/workflows/CI/badge.svg)](https://github.com/igniterealtime/Smack/actions?query=workflow%3A%22CI%22)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smack/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smack)  [![Link to XMPP chat smack@conference.igniterealtime.org](https://inverse.chat/badge.svg?room=smack@conference.igniterealtime.org)](https://inverse.chat/#converse/room?jid=smack@conference.igniterealtime.org)
+[![Build Status](https://github.com/igniterealtime/Smack/workflows/CI/badge.svg)](https://github.com/igniterealtime/Smack/actions?query=workflow%3A%22CI%22)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smack/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smack)  [![Link to XMPP chat smack@conference.igniterealtime.org](https://search.jabber.network/api/1.0/badge?address=smack@conference.igniterealtime.org)](https://inverse.chat/#converse/room?jid=smack@conference.igniterealtime.org)
 
 About
 -----
