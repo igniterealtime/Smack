@@ -2232,9 +2232,6 @@ public class MultiUserChat {
      * Remove all callbacks and resources necessary when the user has left the room for some reason.
      */
     private synchronized void userHasLeft() {
-        // We do not reset nickname here, in case this method has been called erroneously, it should still be possible
-        // to call leave() in order to resync the state. And leave() requires the nickname to send the unsubscribe
-        // presence.
         occupantsMap.clear();
         myRoomJid = null;
         // Update the list of joined rooms
