@@ -406,6 +406,23 @@ public class MultiUserChat {
             // This stanza collector is used to reset the timeout of the selfPresenceCollector.
             presenceStanzaCollector = connection.createStanzaCollector(presenceStanzaCollectorConfguration);
             reflectedSelfPresence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
+
+            synchronized (presenceListener) {
+                // Only continue after we have received *and* processed the reflected self-presence. Since presences are
+                // handled in an extra listener, we may return from enter() without having processed all presences of the
+                // participants, resulting in a e.g. to low participant counter after enter(). Hence we wait here until the
+                // processing is done.
+                long now = System.currentTimeMillis();
+                long timeout = connection.getReplyTimeout() + 120_000;
+                long deadline = now + timeout;
+                while (!processedReflectedSelfPresence && now < deadline) {
+                    presenceListener.wait(deadline - now);
+                    now = System.currentTimeMillis();
+                }
+                if (!processedReflectedSelfPresence) {
+                    throw NoResponseException.newWith(connection, "processing the reflected self-presence on MUC join");
+                }
+            }
         }
         catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
             // Ensure that all callbacks are removed if there is an exception
@@ -415,16 +432,6 @@ public class MultiUserChat {
         finally {
             if (presenceStanzaCollector != null) {
                 presenceStanzaCollector.cancel();
-            }
-        }
-
-        synchronized (presenceListener) {
-            // Only continue after we have received *and* processed the reflected self-presence. Since presences are
-            // handled in an extra listener, we may return from enter() without having processed all presences of the
-            // participants, resulting in a e.g. to low participant counter after enter(). Hence we wait here until the
-            // processing is done.
-            while (!processedReflectedSelfPresence) {
-                presenceListener.wait();
             }
         }
 
