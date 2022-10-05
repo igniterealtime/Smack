@@ -33,6 +33,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -347,8 +348,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     });
 
     protected static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
-
-    protected final AsyncButOrdered<StanzaListener> inOrderListeners = new AsyncButOrdered<>();
 
     /**
      * The used host to establish the connection to
@@ -1613,8 +1612,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
         listenersToNotify.clear();
         extractMatchingListeners(packet, recvListeners, listenersToNotify);
+        final Semaphore listenerSemaphore = new Semaphore(1 - listenersToNotify.size());
         for (StanzaListener stanzaListener : listenersToNotify) {
-            inOrderListeners.performAsyncButOrdered(stanzaListener, () -> {
+            asyncGoLimited(() -> {
                 try {
                     stanzaListener.processStanza(packet);
                 }
@@ -1623,9 +1623,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 }
                 catch (Exception e) {
                     LOGGER.log(Level.SEVERE, "Exception in packet listener", e);
+                } finally {
+                    listenerSemaphore.release();
                 }
             });
         }
+        listenerSemaphore.acquireUninterruptibly();
 
         // Notify the receive listeners interested in the packet
         listenersToNotify.clear();
