@@ -85,8 +85,8 @@ public class ParameterElement extends AbstractXmlElement {
         return getAttributeValue(ATTR_VALUE);
     }
 
-    public static Builder builder(String nameSapce) {
-        return new Builder(ELEMENT, nameSapce);
+    public static Builder builder(String nameSpace) {
+        return new Builder(ELEMENT, nameSpace);
     }
 
     /**

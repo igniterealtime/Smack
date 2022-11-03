@@ -10,6 +10,8 @@ dependencies {
 	// Some implementations need APIs provided by smack-im,
 	// e.g. message delivery receipts the roster
 	compile project(':smack-im')
+
+	implementation 'org.threeten:threetenbp:1.6.4'
 	testFixturesApi(testFixtures(project(":smack-core")))
 	//testCompile project(path: ":smack-core", configuration: "testRuntime")
 }
