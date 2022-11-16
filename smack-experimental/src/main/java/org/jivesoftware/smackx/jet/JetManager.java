@@ -102,7 +102,14 @@ public final class JetManager extends Manager implements JingleDescriptionManage
      */
     @Override
     public IQ handleJingleRequest(Jingle jingle) {
-        JingleSessionImpl session = new JingleSessionImpl(mConnection, jingle);
+        // see <a href="https://xmpp.org/extensions/xep-0166.html#def">XEP-0166 Jingle#7. Formal Definition</a>
+        // conversations excludes initiator attribute in session-initiate
+        FullJid initiator = jingle.getInitiator();
+        if (initiator == null) {
+            initiator = jingle.getFrom().asEntityFullJidIfPossible();
+        }
+
+        JingleSessionImpl session = new JingleSessionImpl(mConnection, initiator, jingle);
         return session.handleJingleSessionRequest(jingle);
     }
 

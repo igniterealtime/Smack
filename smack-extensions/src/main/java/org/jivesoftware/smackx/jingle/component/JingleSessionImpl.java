@@ -84,10 +84,11 @@ public class JingleSessionImpl extends JingleSession {
      * Create a JingleSessionHandler for the newly received jingleSI (session-initiate).
      *
      * @param connection XMPPConnection
+     * @param initiator JingleSI initiator; conversations excludes initiator attribute in session-initiate
      * @param jingleSI The received JingleIQ for session-initiate
      */
-    public JingleSessionImpl(XMPPConnection connection, Jingle jingleSI) {
-        this(connection, jingleSI.getInitiator(), connection.getUser(), Role.responder, jingleSI.getSid(), jingleSI.getContents());
+    public JingleSessionImpl(XMPPConnection connection, FullJid initiator,  Jingle jingleSI) {
+        this(connection, initiator, connection.getUser(), Role.responder, jingleSI.getSid(), jingleSI.getContents());
         for (JingleContent content : getContents()) {
             this.addContent(content);
         }
