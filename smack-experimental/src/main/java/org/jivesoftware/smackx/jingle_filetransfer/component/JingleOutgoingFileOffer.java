@@ -89,7 +89,9 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             }
 
             outputStream.flush();
-            outputStream.close();
+            // Must close both input and output streams to trigger sending of (expected by Conversations to work)
+            // <close xmlns='http://jabber.org/protocol/ibb' sid='RA88X8VSQG'/>
+            bytestreamSession.close();
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
