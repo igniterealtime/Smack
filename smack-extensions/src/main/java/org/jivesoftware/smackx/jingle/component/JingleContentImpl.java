@@ -282,7 +282,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         if (jtManager == null || getTransportBlacklist().contains(transportElement.getNamespace())) {
             Async.go(() -> {
                 try {
-                    jutil.sendTransportReject(session.getLocal(), session.getRemote(), session.getSessionId(), getCreator(), getName(), transportElement);
+                    jutil.sendTransportReject(session.getRemote(), session.getLocal(), session.getSessionId(), getCreator(), getName(), transportElement);
                 } catch (SmackException.NotConnectedException | InterruptedException
                         | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.SEVERE, "Could not send transport-reject: " + e, e);
@@ -296,7 +296,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
             this.transport = jtManager.createTransportForResponder(this, transportElement);
             Async.go(() -> {
                 try {
-                    jutil.sendTransportAccept(session.getLocal(), session.getRemote(), session.getSessionId(), getCreator(), getName(), transport.getElement());
+                    jutil.sendTransportAccept(session.getRemote(), session.getLocal(), session.getSessionId(), getCreator(), getName(), transport.getElement());
                 } catch (SmackException.NotConnectedException | InterruptedException
                         | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.SEVERE, "Could not send transport-accept: " + e, e);
@@ -512,7 +512,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         }
 
         pendingReplacingTransport = jtManager.createTransportForInitiator(this);
-        jutil.sendTransportReplace(session.getInitiator(), session.getRemote(),
+        jutil.sendTransportReplace(session.getRemote(), session.getLocal(),
                 session.getSessionId(), getCreator(), getName(), pendingReplacingTransport.getElement());
     }
 
