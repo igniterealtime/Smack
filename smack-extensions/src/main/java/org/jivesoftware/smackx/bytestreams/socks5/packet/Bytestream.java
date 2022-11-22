@@ -295,11 +295,11 @@ public class Bytestream extends IQ {
          * @param port port of the stream host.
          */
         public StreamHost(final Jid jid, final String address, int port) {
-            this(jid, InternetAddress.from(address), port);
+            this(jid, InternetAddress.from(address.split("%")[0]), port);
         }
 
         public StreamHost(Jid jid, InetAddress address, int port) {
-            this(jid, InternetAddress.from(address), port);
+            this(jid, InternetAddress.from(address.getHostAddress().split("%")[0]), port);
         }
 
         /**
