@@ -252,6 +252,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
         if (ourSelectedCandidate == CANDIDATE_FAILURE) {
             connection.createStanzaCollectorAndSend(mTransportManager.createCandidateError(this));
+            connectIfReady();
             return;
         }
 
@@ -364,7 +365,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
         }
         // Our choice
         else {
-            LOGGER.log(Level.INFO, "Our choice, so their candidate was used.");
+            LOGGER.log(Level.INFO, "Our choice, so their candidate is used.");
             if (!isProxy) {
                 LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
                 this.bytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
@@ -429,6 +430,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             JingleS5BTransportCandidateImpl candidate = (JingleS5BTransportCandidateImpl) jingleTransportCandidate;
             if (candidate.getCandidateId().equals(candidateId)) {
                 theirSelectedCandidate = candidate;
+                break;
             }
         }
 

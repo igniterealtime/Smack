@@ -119,7 +119,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         // Local host
         if (JingleS5BTransportManager.isUseLocalCandidates()) {
             for (Bytestream.StreamHost host : getLocalStreamHosts()) {
-                candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, 100, JingleS5BTransportCandidate.Type.proxy));
+                candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, 100, JingleS5BTransportCandidate.Type.direct));
             }
         }
 
