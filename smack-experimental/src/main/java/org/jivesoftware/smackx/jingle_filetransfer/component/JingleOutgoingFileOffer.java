@@ -16,6 +16,12 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
+import org.jivesoftware.smackx.bytestreams.BytestreamSession;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,12 +30,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.jivesoftware.smackx.bytestreams.BytestreamSession;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
-import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 
 /**
  * Behind the scenes logic of an outgoing Jingle file offer.
@@ -89,9 +89,7 @@ public class JingleOutgoingFileOffer extends AbstractJingleFileOffer implements 
             }
 
             outputStream.flush();
-            // Must close both input and output streams to trigger sending of (expected by Conversations to work)
-            // <close xmlns='http://jabber.org/protocol/ibb' sid='RA88X8VSQG'/>
-            bytestreamSession.close();
+            outputStream.close();
 
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Exception while sending file: " + e, e);
