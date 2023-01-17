@@ -391,7 +391,7 @@ public final class HttpFileUploadManager extends Manager {
                 DiscoverInfo discoverInfo = ServiceDiscoveryManager.getInstanceFor(connection).discoverInfo(uploadServiceAddress);
                 if (!containsHttpFileUploadNamespace(discoverInfo)) {
                     throw new IllegalArgumentException("There is no HTTP upload service running at the given address '"
-                                    + uploadServiceAddress + '\'');
+                            + uploadServiceAddress + '\'');
                 }
                 uploadService = uploadServiceFrom(discoverInfo);
             }
@@ -403,19 +403,19 @@ public final class HttpFileUploadManager extends Manager {
 
         if (!uploadService.acceptsFileOfSize(fileSize)) {
             throw new IllegalArgumentException(
-                            "Requested file size " + fileSize + " is greater than max allowed size " + uploadService.getMaxFileSize());
+                    "Requested file size " + fileSize + " is greater than max allowed size " + uploadService.getMaxFileSize());
         }
 
         SlotRequest slotRequest;
         switch (uploadService.getVersion()) {
-        case v0_3:
-            slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
-            break;
-        case v0_2:
-            slotRequest = new SlotRequest_V0_2(uploadService.getAddress(), filename, fileSize, contentType);
-            break;
-        default:
-            throw new AssertionError();
+            case v0_3:
+                slotRequest = new SlotRequest(uploadService.getAddress(), filename, fileSize, contentType);
+                break;
+            case v0_2:
+                slotRequest = new SlotRequest_V0_2(uploadService.getAddress(), filename, fileSize, contentType);
+                break;
+            default:
+                throw new AssertionError();
         }
 
         return connection.createStanzaCollectorAndSend(slotRequest).nextResultOrThrow();
@@ -471,35 +471,33 @@ public final class HttpFileUploadManager extends Manager {
                         listener.onUploadProgress(bytesSend, fileSize);
                     }
                 }
-            }
-            finally {
+            } finally {
                 try {
                     inputStream.close();
                 }
-                catch (IOException e) {
+                // Must include IllegalStateException: GCM cipher cannot be reused for encryption (happen on Note-5)
+                catch (IOException | IllegalStateException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing input stream", e);
                 }
                 try {
                     outputStream.close();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Exception while closing output stream", e);
                 }
             }
 
             int status = urlConnection.getResponseCode();
             switch (status) {
-            case HttpURLConnection.HTTP_OK:
-            case HttpURLConnection.HTTP_CREATED:
-            case HttpURLConnection.HTTP_NO_CONTENT:
-                break;
-            default:
-                throw new IOException("Error response " + status + " from server during file upload: "
-                                + urlConnection.getResponseMessage() + ", file size: " + fileSize + ", put URL: "
-                                + putUrl);
+                case HttpURLConnection.HTTP_OK:
+                case HttpURLConnection.HTTP_CREATED:
+                case HttpURLConnection.HTTP_NO_CONTENT:
+                    break;
+                default:
+                    throw new IOException("Error response " + status + " from server during file upload: "
+                            + urlConnection.getResponseMessage() + ", file size: " + fileSize + ", put URL: "
+                            + putUrl);
             }
-        }
-        finally {
+        } finally {
             urlConnection.disconnect();
         }
     }
@@ -531,15 +529,15 @@ public final class HttpFileUploadManager extends Manager {
     public static UploadService.Version namespaceToVersion(String namespace) {
         UploadService.Version version;
         switch (namespace) {
-        case NAMESPACE:
-            version = Version.v0_3;
-            break;
-        case NAMESPACE_0_2:
-            version = Version.v0_2;
-            break;
-        default:
-            version = null;
-            break;
+            case NAMESPACE:
+                version = Version.v0_3;
+                break;
+            case NAMESPACE_0_2:
+                version = Version.v0_2;
+                break;
+            default:
+                version = null;
+                break;
         }
         return version;
     }

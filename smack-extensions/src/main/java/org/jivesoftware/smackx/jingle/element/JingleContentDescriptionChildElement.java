@@ -20,16 +20,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * An element found usually in 'description' elements.
- * <jingle>
- *     <content>
- *         <description>
- *             <XYZ/> <- We live here.
- *         </description>
- *         <transport/>
- *         <security/>
- *     </content>
- * </jingle>
- *
  *
  * @author Paul Schaub
  * @author Eng Chong Meng

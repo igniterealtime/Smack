@@ -20,17 +20,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * Abstract JingleContentTransportInfo element.
- * The JingleContentTransportInfo element can have certain states defined by the respective Transport XEP.
- * Examples are Jingle Socks5Bytestream's <candidate-used/> (Example 5), <candidate-error/> (Example 7) etc.
- * <jingle>
- *     <content>
- *         <description/>
- *         <transport>
- *             <xyz/> <- This is us.
- *         </transport>
- *         <security/>
- *     </content>
- * </jingle>
  *
  * @author Florian Schmaus
  * @author Eng Chong Meng

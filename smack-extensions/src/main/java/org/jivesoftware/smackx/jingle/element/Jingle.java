@@ -41,6 +41,7 @@ import org.jxmpp.jid.FullJid;
  */
 public final class Jingle extends IQ {
     public static final String ELEMENT = "jingle";
+
     public static final String NAMESPACE = "urn:xmpp:jingle:1";
 
     public static final String ATTR_ACTION = "action";
@@ -85,7 +86,7 @@ public final class Jingle extends IQ {
     private final SessionInfo sessionInfo;
 
     private Jingle(Builder builder, String sessionId, JingleAction action, FullJid initiator, FullJid responder,
-                   JingleReason reason, SessionInfo sessionInfo, List<JingleContent> contents) {
+            JingleReason reason, SessionInfo sessionInfo, List<JingleContent> contents) {
         super(builder, ELEMENT, NAMESPACE);
         this.sessionId = StringUtils.requireNotNullNorEmpty(sessionId, "Jingle session ID must not be null");
         this.action = Objects.requireNonNull(action, "Jingle action must not be null");

@@ -21,14 +21,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 /**
  * Jingle security element.
  *
- * <jingle>
- *     <content>
- *         <description/>
- *         <transport/>
- *         <security/> <- That's me :)
- *     </content>
- * </jingle>
- *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
