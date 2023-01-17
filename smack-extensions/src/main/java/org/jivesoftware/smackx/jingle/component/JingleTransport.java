@@ -39,7 +39,7 @@ public abstract class JingleTransport<D extends JingleContentTransport> {
     private final ArrayList<JingleTransportCandidate<?>> ourCandidates = new ArrayList<>();
     private final ArrayList<JingleTransportCandidate<?>> theirCandidates = new ArrayList<>();
 
-    protected BytestreamSession bytestreamSession;
+    protected BytestreamSession mBytestreamSession;
 
     public abstract D getElement();
 

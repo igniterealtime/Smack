@@ -56,7 +56,6 @@ import org.jxmpp.jid.Jid;
  * Manager for Jingle SOCKS5 Bytestream transports (XEP-0260).
  */
 public final class JingleS5BTransportManager extends JingleTransportManager<JingleS5BTransport> {
-
     private static final Logger LOGGER = Logger.getLogger(JingleS5BTransportManager.class.getName());
     private final Socks5BytestreamManager s5Manager = Socks5BytestreamManager.getBytestreamManager(connection());
 
@@ -136,7 +135,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         }
 
         // proxy server
-        priority = 65536  * JingleS5BTransportCandidate.Type.proxy.getWeight();
+        priority = 65536 * JingleS5BTransportCandidate.Type.proxy.getWeight();
         for (Bytestream.StreamHost host : remoteHosts) {
             candidates.add(new JingleS5BTransportCandidateImpl(StringUtils.randomString(16), host, priority, JingleS5BTransportCandidate.Type.proxy));
         }
@@ -154,7 +153,8 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
 
         if (session.isInitiator()) {
             jb.setInitiator(session.getInitiator());
-        } else {
+        }
+        else {
             jb.setResponder(session.getResponder());
         }
 

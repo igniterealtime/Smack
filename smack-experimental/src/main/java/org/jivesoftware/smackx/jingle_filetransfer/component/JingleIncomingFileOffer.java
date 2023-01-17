@@ -16,6 +16,18 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
@@ -28,17 +40,6 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileOfferController;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Behind the scenes logic of an incoming Jingle file offer.

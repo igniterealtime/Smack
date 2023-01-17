@@ -24,10 +24,10 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smackx.bytestreams.BytestreamSession;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamListener;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamRequest;
+import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamSession;
 import org.jivesoftware.smackx.jingle.callbacks.JingleTransportCallback;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.component.JingleTransport;
@@ -97,17 +97,17 @@ public class JingleIBBTransportImpl extends JingleTransport<JingleIBBTransport> 
                         && request.getSessionID().equals(getStreamId())) {
 
                     inBandBytestreamManager.removeIncomingBytestreamListener(this);
-
-                    BytestreamSession bytestreamSession;
+                    InBandBytestreamSession ibbSession;
                     try {
-                        bytestreamSession = request.accept();
+                        ibbSession = request.accept();
+
+                        // Must close both input and output streams to trigger sending of IBB <close/> element as defined in XEP-0047
+                        ibbSession.setCloseBothStreamsEnabled(true);
+                        mBytestreamSession = ibbSession;
+                        callback.onTransportReady(mBytestreamSession);
                     } catch (InterruptedException | SmackException e) {
                         callback.onTransportFailed(e);
-                        return;
                     }
-
-                    JingleIBBTransportImpl.this.bytestreamSession = bytestreamSession;
-                    callback.onTransportReady(JingleIBBTransportImpl.this.bytestreamSession);
                 }
             }
         };
@@ -117,12 +117,16 @@ public class JingleIBBTransportImpl extends JingleTransport<JingleIBBTransport> 
     }
 
     @Override
-    public void establishOutgoingBytestreamSession(XMPPConnection connection, JingleTransportCallback callback, final JingleSessionImpl session) {
+    public void establishOutgoingBytestreamSession(final XMPPConnection connection, final JingleTransportCallback callback, final JingleSessionImpl session) {
         InBandBytestreamManager inBandBytestreamManager = InBandBytestreamManager.getByteStreamManager(connection);
         inBandBytestreamManager.setDefaultBlockSize(blockSize);
         try {
-            JingleIBBTransportImpl.this.bytestreamSession = inBandBytestreamManager.establishSession(session.getRemote(), getStreamId());
-            callback.onTransportReady(this.bytestreamSession);
+            InBandBytestreamSession ibbSession = inBandBytestreamManager.establishSession(session.getRemote(), getStreamId());
+
+            // Must close both input and output streams to trigger sending of IBB <close/> element as defined in XEP-0047
+            ibbSession.setCloseBothStreamsEnabled(true);
+            mBytestreamSession = ibbSession;
+            callback.onTransportReady(mBytestreamSession);
         } catch (SmackException.NoResponseException | XMPPException.XMPPErrorException | InterruptedException | SmackException.NotConnectedException e) {
             callback.onTransportFailed(e);
         }

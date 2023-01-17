@@ -37,7 +37,6 @@ import org.jivesoftware.smackx.jingle.transports.jingle_ibb.provider.JingleIBBTr
  * @author Eng Chong Meng
  */
 public final class JingleIBBTransportManager extends JingleTransportManager<JingleIBBTransport> {
-
     private static final WeakHashMap<XMPPConnection, JingleIBBTransportManager> INSTANCES = new WeakHashMap<>();
 
     private JingleIBBTransportManager(XMPPConnection connection) {
@@ -73,7 +72,7 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
     @Override
     public int getPriority() {
         return -1;
-    };
+    }
 
     @Override
     public JingleTransport<?> createTransportForInitiator(JingleContentImpl content) {

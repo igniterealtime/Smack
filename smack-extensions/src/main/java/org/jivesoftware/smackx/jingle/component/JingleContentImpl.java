@@ -52,7 +52,6 @@ import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
  * @author Eng Chong Meng
  */
 public class JingleContentImpl implements JingleTransportCallback, JingleSecurityCallback {
-
     private static final Logger LOGGER = Logger.getLogger(JingleContentImpl.class.getName());
 
     private final JingleContent.Creator creator;
@@ -99,7 +98,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                     = JingleContentProviderManager.getJingleDescriptionAdapter(contentDescription.getNamespace());
             if (descriptionAdapter != null) {
                 description = descriptionAdapter.descriptionFromElement(content.getCreator(), content.getSenders(), content.getName(), content.getDisposition(), contentDescription);
-            } else {
+            }
+            else {
                 throw new AssertionError("Unsupported Description: " + contentDescription.getNamespace());
             }
         }
@@ -110,7 +110,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                     = JingleContentProviderManager.getJingleTransportAdapter(contentTransport.getNamespace());
             if (transportAdapter != null) {
                 transport = transportAdapter.transportFromElement(contentTransport);
-            } else {
+            }
+            else {
                 throw new AssertionError("Unsupported Transport: " + contentTransport.getNamespace());
             }
         }
@@ -121,7 +122,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                     = JingleContentProviderManager.getJingleSecurityAdapter(content.getSecurity().getNamespace());
             if (securityAdapter != null) {
                 security = securityAdapter.securityFromElement(securityElement);
-            } else {
+            }
+            else {
                 throw new AssertionError("Unsupported Security: " + securityElement.getNamespace());
             }
         }
@@ -209,7 +211,6 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     }
 
     private IQ handleTransportAccept(Jingle request, XMPPConnection connection) {
-
         if (pendingReplacingTransport == null) {
             LOGGER.warning("Received transport-accept, but apparently we did not try to replace the transport.");
             return jutil.createErrorOutOfOrder(request);
@@ -289,7 +290,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                 }
             });
 
-        } else {
+        }
+        else {
             // Blacklist current transport
             this.getTransportBlacklist().add(this.transport.getNamespace());
 
@@ -416,10 +418,12 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                 if (isReceiving()) {
                     LOGGER.info("Establish incoming bytestream.");
                     getTransport().establishIncomingBytestreamSession(connection, JingleContentImpl.this, getParent());
-                } else if (isSending()) {
+                }
+                else if (isSending()) {
                     LOGGER.info("Establish outgoing bytestream.");
                     getTransport().establishOutgoingBytestreamSession(connection, JingleContentImpl.this, getParent());
-                } else {
+                }
+                else {
                     LOGGER.info("Neither receiving, nor sending. Assume receiving.");
                     getTransport().establishIncomingBytestreamSession(connection, JingleContentImpl.this, getParent());
                 }
@@ -446,11 +450,13 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
                 if (isReceiving()) {
                     LOGGER.info("Decrypt incoming Bytestream.");
                     getSecurity().decryptIncomingBytestream(bytestreamSession, this);
-                } else if (isSending()) {
+                }
+                else if (isSending()) {
                     LOGGER.info("Encrypt outgoing Bytestream.");
                     getSecurity().encryptOutgoingBytestream(bytestreamSession, this);
                 }
-            } else {
+            }
+            else {
                 description.onBytestreamReady(bytestreamSession);
             }
         });
@@ -487,7 +493,6 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     }
 
     public void onContentFailed(Exception e) {
-
     }
 
     public void onContentCancel() {

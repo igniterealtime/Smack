@@ -87,7 +87,7 @@ public class JingleSessionImpl extends JingleSession {
      * @param initiator JingleSI initiator; conversations excludes initiator attribute in session-initiate
      * @param jingleSI The received JingleIQ for session-initiate
      */
-    public JingleSessionImpl(XMPPConnection connection, FullJid initiator,  Jingle jingleSI) {
+    public JingleSessionImpl(XMPPConnection connection, FullJid initiator, Jingle jingleSI) {
         this(connection, initiator, connection.getUser(), Role.responder, jingleSI.getSid(), jingleSI.getContents());
         for (JingleContent content : getContents()) {
             this.addContent(content);
@@ -216,7 +216,8 @@ public class JingleSessionImpl extends JingleSession {
 
         if (contentImpls.size() == 1) {
             mManager.unregisterJingleSessionHandler(remote, sid, this);
-        } else {
+        }
+        else {
             try {
                 jutil.sendSessionTerminateContentCancel(remote, sid, jingleContent.getCreator(), jingleContent.getName());
             } catch (SmackException.NotConnectedException | InterruptedException
@@ -319,7 +320,8 @@ public class JingleSessionImpl extends JingleSession {
                         | XMPPException.XMPPErrorException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.SEVERE, "Could not send session-terminate: " + e, e);
                 }
-            } else {
+            }
+            else {
                 descriptionManager.notifySessionInitiate(JingleSessionImpl.this);
             }
         });

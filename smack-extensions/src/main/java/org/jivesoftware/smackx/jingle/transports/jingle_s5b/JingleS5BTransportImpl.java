@@ -323,9 +323,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
         }
 
         boolean isProxy = nominated.getType() == JingleS5BTransportCandidate.Type.proxy;
-
         if (nominated == theirSelectedCandidate) {
-
             LOGGER.log(Level.INFO, "Their choice, so our proposed candidate is used.");
 
             try {
@@ -359,8 +357,8 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             }
 
             LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
-            this.bytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), !isProxy);
-            callback.onTransportReady(this.bytestreamSession);
+            this.mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), !isProxy);
+            callback.onTransportReady(this.mBytestreamSession);
 
         }
         // Our choice
@@ -368,8 +366,8 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             LOGGER.log(Level.INFO, "Our choice, so their candidate is used.");
             if (!isProxy) {
                 LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
-                this.bytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
-                callback.onTransportReady(this.bytestreamSession);
+                this.mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
+                callback.onTransportReady(this.mBytestreamSession);
             } else {
                 LOGGER.log(Level.INFO, "Our choice was their external proxy. wait for candidate-activate.");
             }
@@ -438,15 +436,14 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             LOGGER.severe("ILLEGAL CANDIDATE ID!!!");
             // TODO: Alert! Illegal candidateId!
         }
-
         connectIfReady();
     }
 
     private void handleCandidateActivate(JingleS5BTransportInfo info) {
         mInfo = info;
-        this.bytestreamSession = new Socks5BytestreamSession(ourSelectedCandidate.getSocket(),
+        this.mBytestreamSession = new Socks5BytestreamSession(ourSelectedCandidate.getSocket(),
                 ourSelectedCandidate.getStreamHost().getJID().asBareJid().equals(getParent().getParent().getRemote().asBareJid()));
-        callback.onTransportReady(this.bytestreamSession);
+        callback.onTransportReady(this.mBytestreamSession);
     }
 
     private void handleCandidateError(JingleS5BTransportInfo info) {
