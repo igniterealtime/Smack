@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -40,11 +41,17 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
 
     protected final DomainBareJid service;
 
+    protected XmppConnectionDescriptor<? extends AbstractXMPPConnection, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> defaultConnectionDescriptor;
+
     protected AbstractSmackLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
         this.environment = environment;
         this.configuration = environment.configuration;
         this.service = configuration.service;
+    }
+
+    public void overrideDefaultConnectionDescriptor(XmppConnectionDescriptor<? extends AbstractXMPPConnection, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> defaultConnectionDescriptor) {
+        this.defaultConnectionDescriptor = defaultConnectionDescriptor;
     }
 
     protected AbstractXMPPConnection getConnectedConnection() throws InterruptedException, XMPPException, SmackException, IOException {
@@ -55,7 +62,11 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
 
     protected AbstractXMPPConnection getUnconnectedConnection()
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return environment.connectionManager.constructConnection();
+        if (defaultConnectionDescriptor == null) {
+            return environment.connectionManager.constructConnection();
+        } else {
+            return environment.connectionManager.constructConnection(defaultConnectionDescriptor);
+        }
     }
 
     protected List<AbstractXMPPConnection> getUnconnectedConnections(int count)

@@ -851,6 +851,7 @@ public class SmackIntegrationTestFramework {
                 connectionCount = testMethod.getParameterCount();
             }
 
+            test.overrideDefaultConnectionDescriptor(connectionDescriptor);
             List<? extends AbstractXMPPConnection> connections = connectionManager.constructConnectedConnections(
                             connectionDescriptor, connectionCount);
 
