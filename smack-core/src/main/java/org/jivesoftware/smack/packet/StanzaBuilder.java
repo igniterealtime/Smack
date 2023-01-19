@@ -111,7 +111,7 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
     }
 
     /**
-     * Sets who the the stanza is being sent "from".
+     * Sets who the stanza is being sent "from".
      *
      * @param from who the stanza is being sent from.
      * @return a reference to this builder.

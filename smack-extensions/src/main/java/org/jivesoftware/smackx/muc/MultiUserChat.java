@@ -994,7 +994,7 @@ public class MultiUserChat {
      * will be sent to the room which in turn will forward the invitation to the invitee.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
      * @param reason the reason why the user is being invited.
@@ -1010,7 +1010,7 @@ public class MultiUserChat {
      * will be sent to the room which in turn will forward the invitation to the invitee.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param message the message to use for sending the invitation.
      * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
@@ -1040,7 +1040,7 @@ public class MultiUserChat {
      * will be sent to the room which in turn will forward the invitation to the invitee.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param messageBuilder the message to use for sending the invitation.
      * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)

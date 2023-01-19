@@ -111,7 +111,7 @@ public class IncomingFileTransfer extends FileTransfer {
      * @param file The location to save the file.
      * @throws SmackException when the file transfer fails
      * @throws IOException if an I/O error occurred.
-     * @throws IllegalArgumentException This exception is thrown when the the provided file is
+     * @throws IllegalArgumentException This exception is thrown when the provided file is
      *         either null, or cannot be written to.
      */
     public void receiveFile(final File file) throws SmackException, IOException {

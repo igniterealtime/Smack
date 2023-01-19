@@ -31,7 +31,7 @@ public interface SigncryptElementReceivedListener {
      * This listener is intended to be used by implementors of different OX usage profiles. In order to listen for
      * OX-IM messages, please refer to the {@link OxMessageListener} instead.
      * @param contact sender of the message
-     * @param originalMessage original message containing the the {@link SigncryptElement}
+     * @param originalMessage original message containing the {@link SigncryptElement}
      * @param signcryptElement the {@link SigncryptElement} itself
      * @param metadata metadata about the encryption and signing
      */

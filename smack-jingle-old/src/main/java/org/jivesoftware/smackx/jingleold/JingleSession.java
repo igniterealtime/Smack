@@ -487,7 +487,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
                 }
             }
 
-            // The the packet.
+            // the packet.
             // CHECKSTYLE:OFF
             if ((getConnection() != null) && getConnection().isConnected())
                 getConnection().sendStanza(jout);

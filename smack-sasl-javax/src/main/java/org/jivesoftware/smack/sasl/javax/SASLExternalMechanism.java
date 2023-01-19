@@ -31,7 +31,7 @@ package org.jivesoftware.smack.sasl.javax;
  *  <li>javax.net.ssl.keyStore to the location of the keyStore
  *  <li>javax.net.ssl.keyStorePassword to the password of the keyStore
  *  <li>javax.net.ssl.trustStore to the location of the trustStore
- *  <li>javax.net.ssl.trustStorePassword to the the password of the trustStore
+ *  <li>javax.net.ssl.trustStorePassword to the password of the trustStore
  *  </ul>
  *
  * Then, when the server requests or requires the client certificate, java will

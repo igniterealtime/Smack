@@ -28,7 +28,7 @@ Note that not all extensions work with every transport.
 For example compression only works with TCP-based transport bindings.
 
 
-Connection modules are plugged into the the modular connection via their constructor. and they usually declare backwards edges to some common, generic connection state of the FSM.
+Connection modules are plugged into the modular connection via their constructor. and they usually declare backwards edges to some common, generic connection state of the FSM.
 
 Modules and states always have an accompanying *descriptor* type.
 `ModuleDescriptor` and `StateDescriptor` exist without an connection instance.

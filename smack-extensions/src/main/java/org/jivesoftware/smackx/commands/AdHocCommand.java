@@ -108,7 +108,7 @@ public abstract class AdHocCommand {
     }
 
     /**
-     * Set the the human readable name of the command, usually used for
+     * Set the human readable name of the command, usually used for
      * displaying in a UI.
      *
      * @param name the name.
