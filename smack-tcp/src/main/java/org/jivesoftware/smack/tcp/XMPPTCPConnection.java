@@ -1443,7 +1443,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 // closed in shutdown().
             }
             catch (Exception e) {
-                // The exception can be ignored if the the connection is 'done'
+                // The exception can be ignored if the connection is 'done'
                 // or if the it was caused because the socket got closed
                 if (!(done() || queue.isShutdown())) {
                     // Set running to false since this thread will exit here and notifyConnectionError() will wait until

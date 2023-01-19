@@ -35,7 +35,7 @@ public interface InvitationListener {
      * Called when the an invitation to join a MUC room is received.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param conn the XMPPConnection that received the invitation.
      * @param room the room that invitation refers to.

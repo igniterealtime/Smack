@@ -237,7 +237,7 @@ public final class MamManager extends Manager {
     }
 
     /**
-     * The the XMPP address of this MAM archive. Note that this method may return {@code null} if this MamManager
+     * the XMPP address of this MAM archive. Note that this method may return {@code null} if this MamManager
      * handles the local entity's archive and if the connection has never been authenticated at least once.
      *
      * @return the XMPP address of this MAM archive or {@code null}.

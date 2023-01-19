@@ -94,7 +94,7 @@ public final class ChatStateManager extends Manager {
      * not yet exist.
      *
      * @param connection the connection to return the ChatStateManager
-     * @return the ChatStateManager related the the connection.
+     * @return the ChatStateManager related the connection.
      */
     public static synchronized ChatStateManager getInstance(final XMPPConnection connection) {
             ChatStateManager manager = INSTANCES.get(connection);

@@ -799,7 +799,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Indicate that we're now authenticated.
         this.authenticated = true;
 
-        // If debugging is enabled, change the the debug window title to include the
+        // If debugging is enabled, change the debug window title to include the
         // name we are now logged-in as.
         // If DEBUG was set to true AFTER the connection was created the debugger
         // will be null

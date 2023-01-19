@@ -380,7 +380,7 @@ public interface XMPPConnection {
     /**
      * Registers a stanza listener with this connection. The listener will be invoked when a (matching) incoming stanza
      * is received. The stanza filter determines which stanzas will be delivered to the listener. It is guaranteed that
-     * the same listener will not be invoked concurrently and the the order of invocation will reflect the order in
+     * the same listener will not be invoked concurrently and the order of invocation will reflect the order in
      * which the stanzas have been received. If the same stanza listener is added again with a different filter, only
      * the new filter will be used.
      *

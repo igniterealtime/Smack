@@ -463,7 +463,7 @@ public class Workgroup {
 
     /**
      * Adds an invitation listener that will be notified of groupchat invitations
-     * from the workgroup for the the user that created this Workgroup instance.
+     * from the workgroup for the user that created this Workgroup instance.
      *
      * @param invitationListener the invitation listener.
      */

@@ -785,7 +785,7 @@ public final class Roster extends Manager {
      *
      * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
      * @param name the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <code>null</code> if the the roster entry won't
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the roster entry won't
      *        belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
