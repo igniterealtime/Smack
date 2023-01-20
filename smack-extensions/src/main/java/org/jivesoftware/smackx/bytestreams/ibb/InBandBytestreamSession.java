@@ -197,6 +197,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         // acknowledge close request
         IQ confirmClose = IQ.createResultIQ(closeRequest);
         this.connection.sendStanza(confirmClose);
+
     }
 
     /**
@@ -250,6 +251,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             // now to remove(byteStreamRequest.getSessionID).
             InBandBytestreamManager.getByteStreamManager(this.connection).getSessions().remove(byteStreamRequest.getSessionID());
         }
+
     }
 
     /**
@@ -438,6 +440,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
             this.closeInvoked = true;
+
             InBandBytestreamSession.this.closeByLocal(true);
         }
 
@@ -525,6 +528,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                     IQ confirmData = IQ.createResultIQ((IQ) packet);
                     connection.sendStanza(confirmData);
                 }
+
             };
         }
 
@@ -536,6 +540,7 @@ public class InBandBytestreamSession implements BytestreamSession {
              */
             return new AndFilter(new StanzaTypeFilter(Data.class), new IBBDataPacketFilter());
         }
+
     }
 
     /**
@@ -616,8 +621,10 @@ public class InBandBytestreamSession implements BytestreamSession {
             if (!data.getSessionID().equals(byteStreamRequest.getSessionID())) {
                 return false;
             }
+
             return true;
         }
+
     }
 
     /**
@@ -772,6 +779,7 @@ public class InBandBytestreamSession implements BytestreamSession {
 
             // increment sequence, considering sequence overflow
             seq = seq.incrementedByOne();
+
         }
 
         @Override
@@ -805,6 +813,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                  */
             }
         }
+
     }
 
     /**
@@ -835,6 +844,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
         }
+
     }
 
     /**
@@ -853,6 +863,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             connection.sendStanza(message);
 
         }
+
     }
 
     /**
@@ -865,4 +876,5 @@ public class InBandBytestreamSession implements BytestreamSession {
     public void processIQPacket(Data data) throws NotConnectedException, InterruptedException, NotLoggedInException {
         inputStream.dataPacketListener.processStanza(data);
     }
+
 }
