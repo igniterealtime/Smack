@@ -61,6 +61,7 @@ import org.jxmpp.jid.Jid;
  * automatically if one of them is closed.
  *
  * @author Henning Staib
+ * @author Eng Chong Meng
  */
 public class InBandBytestreamSession implements BytestreamSession {
 
@@ -92,6 +93,9 @@ public class InBandBytestreamSession implements BytestreamSession {
 
     /* flag to indicate if session is closed */
     private boolean isClosed = false;
+
+    /* flag to indicate if session is already closed by peer */
+    private boolean closedByPeer = false;
 
     /**
      * Constructor.
@@ -188,11 +192,11 @@ public class InBandBytestreamSession implements BytestreamSession {
         this.inputStream.closeInternal();
         this.inputStream.cleanup();
         this.outputStream.closeInternal(false);
+        this.closedByPeer = true;
 
         // acknowledge close request
         IQ confirmClose = IQ.createResultIQ(closeRequest);
         this.connection.sendStanza(confirmClose);
-
     }
 
     /**
@@ -224,18 +228,19 @@ public class InBandBytestreamSession implements BytestreamSession {
         if (this.inputStream.isClosed && this.outputStream.isClosed) {
             this.isClosed = true;
 
-            // send close request
-            Close close = new Close(this.byteStreamRequest.getSessionID());
-            close.setTo(this.remoteJID);
-            try {
-                connection.createStanzaCollectorAndSend(close).nextResultOrThrow();
-            }
-            catch (Exception e) {
-                // Sadly we are unable to use the IOException(Throwable) constructor because this
-                // constructor is only supported from Android API 9 on.
-                IOException ioException = new IOException();
-                ioException.initCause(e);
-                throw ioException;
+            // send close stream request if not already closed by peer
+            if (!closedByPeer) {
+                Close close = new Close(this.byteStreamRequest.getSessionID());
+                close.setTo(this.remoteJID);
+                try {
+                    connection.createStanzaCollectorAndSend(close).nextResultOrThrow();
+                } catch (Exception e) {
+                    // Sadly we are unable to use the IOException(Throwable) constructor because this
+                    // constructor is only supported from Android API 9 on.
+                    IOException ioException = new IOException();
+                    ioException.initCause(e);
+                    throw ioException;
+                }
             }
 
             this.inputStream.cleanup();
@@ -245,7 +250,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             // now to remove(byteStreamRequest.getSessionID).
             InBandBytestreamManager.getByteStreamManager(this.connection).getSessions().remove(byteStreamRequest.getSessionID());
         }
-
     }
 
     /**
@@ -434,7 +438,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
             this.closeInvoked = true;
-
             InBandBytestreamSession.this.closeByLocal(true);
         }
 
@@ -522,7 +525,6 @@ public class InBandBytestreamSession implements BytestreamSession {
                     IQ confirmData = IQ.createResultIQ((IQ) packet);
                     connection.sendStanza(confirmData);
                 }
-
             };
         }
 
@@ -534,7 +536,6 @@ public class InBandBytestreamSession implements BytestreamSession {
              */
             return new AndFilter(new StanzaTypeFilter(Data.class), new IBBDataPacketFilter());
         }
-
     }
 
     /**
@@ -615,10 +616,8 @@ public class InBandBytestreamSession implements BytestreamSession {
             if (!data.getSessionID().equals(byteStreamRequest.getSessionID())) {
                 return false;
             }
-
             return true;
         }
-
     }
 
     /**
@@ -773,7 +772,6 @@ public class InBandBytestreamSession implements BytestreamSession {
 
             // increment sequence, considering sequence overflow
             seq = seq.incrementedByOne();
-
         }
 
         @Override
@@ -807,7 +805,6 @@ public class InBandBytestreamSession implements BytestreamSession {
                  */
             }
         }
-
     }
 
     /**
@@ -838,7 +835,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
         }
-
     }
 
     /**
@@ -857,7 +853,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             connection.sendStanza(message);
 
         }
-
     }
 
     /**
@@ -870,5 +865,4 @@ public class InBandBytestreamSession implements BytestreamSession {
     public void processIQPacket(Data data) throws NotConnectedException, InterruptedException, NotLoggedInException {
         inputStream.dataPacketListener.processStanza(data);
     }
-
 }
