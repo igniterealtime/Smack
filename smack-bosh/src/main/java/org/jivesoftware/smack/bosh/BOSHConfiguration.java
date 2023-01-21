@@ -77,8 +77,7 @@ public final class BOSHConfiguration extends ConnectionConfiguration {
     }
 
     public URI getURI() throws URISyntaxException {
-        String uri = (https ? "https://" : "http://") + getHostString() + ":" + this.port + file;
-        return new URI(uri);
+        return new URI((https ? "https://" : "http://") + this.host + ":" + this.port + file);
     }
 
     public Map<String, String> getHttpHeaders() {
