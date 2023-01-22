@@ -333,9 +333,18 @@ public final class HttpFileUploadManager extends Manager {
      *
      * @param file file
      * @return AESGCM URL which contains the key and IV of the encrypted file.
+     * @throws InterruptedException  If the calling thread was interrupted.
+     * @throws IOException If an I/O error occurred.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException If Smack detected an exceptional situation.
+     * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
+     * @throws InvalidKeyException if the key is invalid.
+     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      *
      * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
      */
+    /**
     public AesgcmUrl uploadFileEncrypted(File file) throws InterruptedException, IOException,
             XMPPException.XMPPErrorException, SmackException, InvalidAlgorithmParameterException,
             NoSuchAlgorithmException, InvalidKeyException, NoSuchPaddingException {
@@ -358,6 +367,14 @@ public final class HttpFileUploadManager extends Manager {
      * @param file file
      * @param listener progress listener or null
      * @return AESGCM URL which contains the key and IV of the encrypted file.
+     * @throws IOException If an I/O error occurred.
+     * @throws InterruptedException  If the calling thread was interrupted.
+     * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
+     * @throws SmackException If Smack detected an exceptional situation.
+     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
+     * @throws NoSuchAlgorithmException if no such algorithm is available.
+     * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
+     * @throws InvalidKeyException if the key is invalid.
      *
      * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
      */

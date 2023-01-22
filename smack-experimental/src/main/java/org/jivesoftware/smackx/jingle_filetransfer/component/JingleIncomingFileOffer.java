@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,7 +116,6 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                     inputStream.close();
                     LOGGER.log(Level.INFO, "CipherInputStream closed.");
                 } catch (IOException e) {
-                    // When closing omemo encrypted stream: CipherInputStream#close() throws AEADBadTagException (just ignored)
                     LOGGER.log(Level.WARNING, "Could not close InputStream: " + e, e);
                 }
             }

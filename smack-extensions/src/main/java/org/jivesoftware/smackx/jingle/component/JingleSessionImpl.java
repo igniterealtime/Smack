@@ -63,11 +63,22 @@ public class JingleSessionImpl extends JingleSession {
     private SessionState mSessionState;
 
     public enum SessionState {
-        fresh,      // pre-session-initiate
-        pending,    // pre-session-accept
-        active,     // post-session-accept
-        canceled,   // cancel after accept
-        ended       // post-session-terminate with JingleReason.Success
+        fresh("Prior to session-initiate"),
+        pending("Prior to session-accept"),
+        active("Post session-accept"),
+        cancelled("Session cancel after accept"),
+        ended("Session terminated with JingleReason.Success");
+
+        private final String state;
+
+        SessionState(String state) {
+            this.state = state;
+        }
+
+        @Override
+        public String toString() {
+            return state;
+        }
     }
 
     /**
@@ -92,7 +103,7 @@ public class JingleSessionImpl extends JingleSession {
         for (JingleContent content : getContents()) {
             this.addContent(content);
         }
-        mSessionState = SessionState.pending;
+        updateSessionState(SessionState.pending);
     }
 
     /**
@@ -107,7 +118,7 @@ public class JingleSessionImpl extends JingleSession {
      */
     public JingleSessionImpl(XMPPConnection connection, FullJid initiator, FullJid responder, Role role, String sid, List<JingleContent> contents) {
         super(initiator, responder, role, sid, contents);
-        mSessionState = SessionState.fresh;
+        updateSessionState(SessionState.fresh);
 
         mConnection = connection;
         jutil = new JingleUtil(connection);
@@ -121,7 +132,7 @@ public class JingleSessionImpl extends JingleSession {
         }
 
         connection.createStanzaCollectorAndSend(createSessionInitiate()).nextResultOrThrow();
-        mSessionState = SessionState.pending;
+        updateSessionState(SessionState.pending);
     }
 
     public void sendAccept(XMPPConnection connection) throws SmackException.NotConnectedException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NoResponseException {
@@ -139,7 +150,7 @@ public class JingleSessionImpl extends JingleSession {
         }
 
         connection.createStanzaCollectorAndSend(createSessionAccept()).nextResultOrThrow();
-        mSessionState = SessionState.active;
+        updateSessionState(SessionState.active);
     }
 
     public Jingle createSessionInitiate() {
@@ -287,7 +298,7 @@ public class JingleSessionImpl extends JingleSession {
      */
     @Override
     protected IQ handleSessionAccept(final Jingle sessionAccept) {
-        mSessionState = SessionState.active;
+        updateSessionState(SessionState.active);
 
         for (final JingleContentImpl content : contentImpls.values()) {
             JingleSecurity<?> security = content.getSecurity();
@@ -338,11 +349,11 @@ public class JingleSessionImpl extends JingleSession {
         // the resultant state is currently not used by JingleSessionImpl
         switch (reason.asEnum()) {
             case cancel:
-                mSessionState = SessionState.canceled;
+                updateSessionState(SessionState.cancelled);
                 break;
 
             case success:
-                mSessionState = SessionState.ended;
+                updateSessionState(SessionState.ended);
                 break;
 
             default:
@@ -495,6 +506,16 @@ public class JingleSessionImpl extends JingleSession {
         return mSessionState;
     }
 
+    public void updateSessionState(SessionState newState) {
+        if (mSessionState != newState) {
+            List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
+            for (JingleSessionListener sl : copySl) {
+                sl.sessionStateUpdated(mSessionState, newState);
+            }
+            mSessionState = newState;
+        }
+    }
+
     @Override
     public XMPPConnection getConnection() {
         return mConnection;
@@ -522,6 +543,13 @@ public class JingleSessionImpl extends JingleSession {
         jingleSessionListeners.remove(sl);
     }
 
+    public void notifySessionAccepted() {
+        List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
+        for (JingleSessionListener sl : copySl) {
+            sl.onSessionAccepted();
+        }
+    }
+
     /**
      * Notify all the registered JingleSessionListener when the Jingle Session is terminated.
      * Use a copy of the jingleSessionListeners to avoid ConcurrentModificationException
@@ -536,16 +564,25 @@ public class JingleSessionImpl extends JingleSession {
         }
     }
 
-    public void notifySessionAccepted() {
-        List<JingleSessionListener> copySl = new ArrayList<>(jingleSessionListeners);
-        for (JingleSessionListener sl : copySl) {
-            sl.onSessionAccepted();
-        }
-    }
-
     public interface JingleSessionListener {
-        void onSessionTerminated(JingleReason reason);
+        /**
+         * Called when the session status changes.
+         *
+         * @param oldState the previous session state.
+         * @param newState the new session state.
+         */
+        void sessionStateUpdated(SessionState oldState, SessionState newState);
 
+        /**
+         * Once the session is accepted by peer.
+         */
         void onSessionAccepted();
+
+        /**
+         * Called when an session is terminated for the given reason.
+         *
+         * @param reason the jingleReason to terminate the session.
+         */
+        void onSessionTerminated(JingleReason reason);
     }
 }

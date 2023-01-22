@@ -28,6 +28,8 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.component.JingleDescription;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.JingleSessionListener;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl.SessionState;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.JingleFileTransferController;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
@@ -41,7 +43,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.listener.ProgressListener;
  * @author Eng Chong Meng
  */
 public abstract class JingleFileTransferImpl extends JingleDescription<JingleFileTransfer>
-        implements JingleFileTransferController, JingleSessionImpl.JingleSessionListener {
+        implements JingleFileTransferController {
 
     public static final String NAMESPACE_V5 = "urn:xmpp:jingle:apps:file-transfer:5";
     public static final String NAMESPACE = NAMESPACE_V5;
@@ -55,7 +57,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
 
     JingleFileTransferImpl(JingleFile metadata) {
         this.metadata = metadata;
-        JingleSessionImpl.addJingleSessionListener(this);
+        JingleSessionImpl.addJingleSessionListener(jingleSessionListener);
     }
 
     public abstract boolean isOffer();
@@ -87,7 +89,8 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
             case pending:
                 if (session.isResponder()) {
                     jutil.sendSessionTerminateDecline(session.getRemote(), session.getSessionId());
-                } else {
+                }
+                else {
                     jutil.sendSessionTerminateCancel(session.getRemote(), session.getSessionId());
                 }
                 break;
@@ -108,7 +111,8 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
                 // just ignore and do nothing
                 return;
 
-            default: break;
+            default:
+                break;
         }
         getParent().onContentCancel();
     }
@@ -120,7 +124,7 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
     }
 
     public void notifyProgressListenersFinished() {
-        JingleSessionImpl.removeJingleSessionListener(this);
+        JingleSessionImpl.removeJingleSessionListener(jingleSessionListener);
         for (ProgressListener p : progressListeners) {
             p.onFinished();
         }
@@ -160,26 +164,32 @@ public abstract class JingleFileTransferImpl extends JingleDescription<JingleFil
         return metadata;
     }
 
-    @Override
-    public void onSessionTerminated(JingleReason reason) {
-        switch (reason.asEnum()) {
-            case cancel:
-                mState = State.cancelled;
-                break;
-
-            case success:
-                mState = State.ended;
-                break;
-
-            default:
-                break;
+    JingleSessionListener jingleSessionListener = new JingleSessionListener() {
+        @Override
+        public void sessionStateUpdated(SessionState oldState, SessionState newState) {
+            // nothing to do here.
         }
 
-        JingleSessionImpl.removeJingleSessionListener(this);
-    }
+        @Override
+        public void onSessionAccepted() {
+            // nothing to do here.
+        }
 
-    @Override
-    public void onSessionAccepted() {
-        // nothing to do here.
-    }
+        @Override
+        public void onSessionTerminated(JingleReason reason) {
+            switch (reason.asEnum()) {
+                case cancel:
+                    mState = State.cancelled;
+                    break;
+
+                case success:
+                    mState = State.ended;
+                    break;
+
+                default:
+                    break;
+            }
+            JingleSessionImpl.removeJingleSessionListener(this);
+        }
+    };
 }
