@@ -395,7 +395,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (isSmResumptionPossible()) {
             smResumedSyncPoint = SyncPointState.request_sent;
             sendNonza(new Resume(clientHandledStanzasCount, smSessionId));
-            waitForConditionOrConnectionException(() -> smResumedSyncPoint == SyncPointState.successful || smResumptionFailed != null, "resume previous stream");
+            waitForConditionOrThrowConnectionException(() -> smResumedSyncPoint == SyncPointState.successful || smResumptionFailed != null, "resume previous stream");
             if (smResumedSyncPoint == SyncPointState.successful) {
                 // We successfully resumed the stream, be done here
                 afterSuccessfulLogin(true);

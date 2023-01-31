@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2020 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -690,10 +690,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     /**
-     * We use an extra object for {@link #notifyWaitingThreads()} and {@link #waitForConditionOrConnectionException(Supplier)}, because all state
+     * We use an extra object for {@link #notifyWaitingThreads()} and {@link #waitFor(Supplier)}, because all state
      * changing methods of the connection are synchronized using the connection instance as monitor. If we now would
      * also use the connection instance for the internal process to wait for a condition, the {@link Object#wait()}
-     * would leave the monitor when it waites, which would allow for another potential call to a state changing function
+     * would leave the monitor when it waits, which would allow for another potential call to a state changing function
      * to proceed.
      */
     private final Object internalMonitor = new Object();
@@ -718,22 +718,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return true;
     }
 
-    protected final boolean waitForConditionOrConnectionException(Supplier<Boolean> condition) throws InterruptedException {
-        return waitFor(() -> condition.get().booleanValue() || hasCurrentConnectionException());
-    }
-
-    protected final void waitForConditionOrConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, NoResponseException {
-        boolean success = waitForConditionOrConnectionException(condition);
-        if (!success) {
-            throw NoResponseException.newWith(this, waitFor);
-        }
-    }
-
     protected final void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException {
-        waitForConditionOrConnectionException(condition, waitFor);
+        boolean success = waitFor(() -> condition.get().booleanValue() || hasCurrentConnectionException());
         if (hasCurrentConnectionException()) {
             throwCurrentConnectionException();
         }
+
+        // If there was no connection exception and we still did not successfully wait for the condition to hold, then
+        // we ran into a no-response timeout.
+        if (!success) {
+            throw NoResponseException.newWith(this, waitFor);
+        }
+        // Otherwise we successfully awaited the condition.
     }
 
     protected Resourcepart bindResourceAndEstablishSession(Resourcepart resource)
@@ -2007,11 +2003,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }, timeout, TimeUnit.MILLISECONDS);
 
         addAsyncStanzaListener(stanzaListener, replyFilter);
-        try {
-            sendStanza(stanza);
-        }
-        catch (NotConnectedException | InterruptedException exception) {
-            future.setException(exception);
+        Runnable sendOperation = () -> {
+            try {
+                sendStanza(stanza);
+            }
+            catch (NotConnectedException | InterruptedException exception) {
+                future.setException(exception);
+            }
+        };
+        if (SmackConfiguration.TRUELY_ASYNC_SENDS) {
+            Async.go(sendOperation);
+        } else {
+            sendOperation.run();
         }
 
         return future;
