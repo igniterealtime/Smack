@@ -1046,7 +1046,10 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected final boolean waitForClosingStreamTagFromServer() {
         try {
-            waitForConditionOrThrowConnectionException(() -> closingStreamReceived, "closing stream tag from the server");
+            waitForConditionOrThrowConnectionException(() -> closingStreamReceived,
+                    "closing stream tag from the server");
+        } catch (NoResponseException e) {
+            LOGGER.log(Level.INFO, "Did not receive closing stream tag from the server within timeout.");
         } catch (InterruptedException | SmackException | XMPPException e) {
             LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
             return false;
