@@ -15,6 +15,24 @@
  * limitations under the License.
  */
 /**
- * Smack's API for XEP-0382: Spoiler Messages.
-  */
+ * Smack's API for XEP-0382: Spoiler Messages, that can be used to indicate that
+ * the body of a message is a spoiler and should be displayed as such.
+ * <h2>Usage</h2>
+ * <p>
+ * Invoke {@link SpoilerManager#startAnnounceSupport()} to announce support for
+ * spoiler messages.
+ * </p>
+ * <p>
+ * Add spoilers to messages via
+ * {@link org.jivesoftware.smackx.spoiler.element.SpoilerElement#addSpoiler(Message)},
+ * {@link org.jivesoftware.smackx.spoiler.element.SpoilerElement#addSpoiler(Message, String)},
+ * or
+ * {@link org.jivesoftware.smackx.spoiler.element.SpoilerElement#addSpoiler(Message, String, String)}.
+ * To get spoilers use
+ * {@link org.jivesoftware.smackx.spoiler.element.SpoilerElement#getSpoilers(Message)}.
+ * </p>
+ *
+ * @see <a href="https://xmpp.org/extensions/xep-0382.html">XEP-0382: Spoiler
+ *      Messages</a>
+ */
 package org.jivesoftware.smackx.spoiler;

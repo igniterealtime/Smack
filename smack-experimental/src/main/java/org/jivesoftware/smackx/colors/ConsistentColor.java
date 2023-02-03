@@ -22,7 +22,19 @@ import org.jivesoftware.smack.util.SHA1;
 import org.hsluv.HUSLColorConverter;
 
 /**
- * Implementation of XEP-0392: Consistent Color Generation version 0.6.0.
+ * Smack API for Consistent Color Generation (XEP-0392).
+ * <p>
+ * Since XMPP can be used on multiple platforms at the same time, it might be a
+ * good idea to render given Strings like nicknames in the same color on all
+ * platforms to provide a consistent user experience.
+ * </p>
+ * <h2>Usage</h2>
+ *
+ * <h2>Color Deficiency Corrections</h2>
+ * <p>
+ * Some users might suffer from color vision deficiencies. To compensate those
+ * deficiencies, the API allows for color correction.
+ * </p>
  *
  * @author Paul Schaub
  */

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2017 Fernando Ramirez, 2016-2020 Florian Schmaus
+ * Copyright 2016-2017 Fernando Ramirez, 2016-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,15 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.jid.Jid;
 
 /**
- * Blocking command manager class.
+ * Block communications with contancts and other entities using XEP-0191.
+ * Allows to
+ * <ul>
+ * <li>Check push notifications support</li>
+ * <li>Get blocking list</li>
+ * <li>Block contact</li>
+ * <li>Unblock conact</li>
+ * <li>Unblock all</li>
+ * </ul>
  *
  * @author Fernando Ramirez
  * @author Florian Schmaus

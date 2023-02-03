@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
  */
 
 /**
- * Smacks implementation of XEP-0115: Entity Capabilities.
+ * Smacks implementation of XEP-0115: Entity Capabilities, see {@link EntityCapsManager} for more information.
  */
 package org.jivesoftware.smackx.caps;

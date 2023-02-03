@@ -86,9 +86,55 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
 
+/**
+ * The superclass of Smack's Modular Connection Architecture.
+ * <p>
+ * <b>Note:</b> Everything related to the modular connection architecture is currently considered experimental and
+ * should not be used in production. Use the mature {@code XMPPTCPConnection} if you do not feel adventurous.
+ * </p>
+ * <p>
+ * Smack's modular connection architecture allows to extend a XMPP c2s (client-to-server) connection with additional
+ * functionality by adding modules. Those modules extend the Finite State Machine (FSM) within the connection with new
+ * states. Connection modules can either be
+ * <ul>
+ * <li>Transports</li>
+ * <li>Extensions</li>
+ * </ul>
+ * <p>
+ * Transports bind the XMPP XML stream to an underlying transport like TCP, WebSockets, BOSH, and allow for the
+ * different particularities of transports like DirectTLS
+ * (<a href="https://xmpp.org/extensions/xep-0368.html">XEP-0368</a>). This eventually means that a single transport
+ * module can implement multiple transport mechanisms. For example the TCP transport module implements the RFC6120 TCP
+ * and the XEP-0368 direct TLS TCP transport bindings.
+ * </p>
+ * <p>
+ * Extensions allow for a richer functionality of the connection. Those include
+ * <ul>
+ * <li>Compression</li>
+ *   <li><ul>
+ *   <li>zlib ([XEP-0138](https://xmpp.org/extensions/xep-0138.html))</li>
+ *   <li>[Efficient XML Interchange (EXI)](https://www.w3.org/TR/exi/)</li>
+ *   </ul></li>
+ * <li>Instant Stream Resumption ([XEP-0397](https://xmpp.org/extensions/xep-0397.html)</li>
+ * <li>Bind2</li>
+ * <li>Stream Management</li>
+ * </ul>
+ * Note that not all extensions work with every transport. For example compression only works with TCP-based transport
+ * bindings.
+ * <p>
+ * Connection modules are plugged into the the modular connection via their constructor. and they usually declare
+ * backwards edges to some common, generic connection state of the FSM.
+ * </p>
+ * <p>
+ * Modules and states always have an accompanying *descriptor* type. `ModuleDescriptor` and `StateDescriptor` exist
+ * without an connection instance. They describe the module and state metadata, while their modules and states are
+ * Instantiated once a modular connection is instantiated.
+ * </p>
+ */
 public final class ModularXmppClientToServerConnection extends AbstractXMPPConnection {
 
-    private static final Logger LOGGER = Logger.getLogger(ModularXmppClientToServerConnectionConfiguration.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(
+                    ModularXmppClientToServerConnectionConfiguration.class.getName());
 
     private final ArrayBlockingQueueWithShutdown<TopLevelStreamElement> outgoingElementsQueue = new ArrayBlockingQueueWithShutdown<>(
                     100, true);
@@ -126,7 +172,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         this.configuration = configuration;
 
         // Construct the internal connection API.
-        connectionInternal = new ModularXmppClientToServerConnectionInternal(this, getReactor(), debugger, outgoingElementsQueue) {
+        connectionInternal = new ModularXmppClientToServerConnectionInternal(this, getReactor(), debugger,
+                        outgoingElementsQueue) {
 
             @Override
             public void parseAndProcessElement(String wrappedCompleteElement) {
@@ -180,13 +227,14 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public void waitForFeaturesReceived(String waitFor) throws InterruptedException, SmackException, XMPPException {
+            public void waitForFeaturesReceived(String waitFor)
+                            throws InterruptedException, SmackException, XMPPException {
                 ModularXmppClientToServerConnection.this.waitForFeaturesReceived(waitFor);
             }
 
             @Override
-            public void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
-                            SmackException, XMPPException {
+            public void newStreamOpenWaitForFeaturesSequence(String waitFor)
+                            throws InterruptedException, SmackException, XMPPException {
                 ModularXmppClientToServerConnection.this.newStreamOpenWaitForFeaturesSequence(waitFor);
             }
 
@@ -196,9 +244,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza, Class<SN> successNonzaClass,
-                            Class<FN> failedNonzaClass) throws NoResponseException, NotConnectedException, FailedNonzaException, InterruptedException {
-                return ModularXmppClientToServerConnection.this.sendAndWaitForResponse(nonza, successNonzaClass, failedNonzaClass);
+            public <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
+                            Class<SN> successNonzaClass, Class<FN> failedNonzaClass) throws NoResponseException,
+                            NotConnectedException, FailedNonzaException, InterruptedException {
+                return ModularXmppClientToServerConnection.this.sendAndWaitForResponse(nonza, successNonzaClass,
+                                failedNonzaClass);
             }
 
             @Override
@@ -234,7 +284,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         // modules are sometimes used to construct the states.
         for (ModularXmppClientToServerConnectionModuleDescriptor moduleDescriptor : configuration.moduleDescriptors) {
             Class<? extends ModularXmppClientToServerConnectionModuleDescriptor> moduleDescriptorClass = moduleDescriptor.getClass();
-            ModularXmppClientToServerConnectionModule<? extends ModularXmppClientToServerConnectionModuleDescriptor> connectionModule = moduleDescriptor.constructXmppConnectionModule(connectionInternal);
+            ModularXmppClientToServerConnectionModule<? extends ModularXmppClientToServerConnectionModuleDescriptor> connectionModule = moduleDescriptor.constructXmppConnectionModule(
+                            connectionInternal);
             connectionModules.put(moduleDescriptorClass, connectionModule);
 
             XmppClientToServerTransport transport = connectionModule.getTransport();
@@ -265,7 +316,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private WalkStateGraphContext.Builder buildNewWalkTo(Class<? extends StateDescriptor> finalStateClass) {
-        return WalkStateGraphContext.builder(currentStateVertex.getElement().getStateDescriptor().getClass(), finalStateClass);
+        return WalkStateGraphContext.builder(currentStateVertex.getElement().getStateDescriptor().getClass(),
+                        finalStateClass);
     }
 
     /**
@@ -316,7 +368,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         List<GraphVertex<State>> outgoingStateEdges = initialStateVertex.getOutgoingEdges();
 
         // See if we need to handle mandatory intermediate states.
-        GraphVertex<State> mandatoryIntermediateStateVertex = walkStateGraphContext.maybeReturnMandatoryImmediateState(outgoingStateEdges);
+        GraphVertex<State> mandatoryIntermediateStateVertex = walkStateGraphContext.maybeReturnMandatoryImmediateState(
+                        outgoingStateEdges);
         if (mandatoryIntermediateStateVertex != null) {
             StateTransitionResult reason = attemptEnterState(mandatoryIntermediateStateVertex, walkStateGraphContext);
 
@@ -340,7 +393,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             // state.
             if (walkStateGraphContext.wouldCauseCycle(successorStateVertex)) {
                 // Ignore this successor.
-                invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionIgnoredDueCycle(initialStateVertex, successorStateVertex));
+                invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionIgnoredDueCycle(
+                                initialStateVertex, successorStateVertex));
             } else {
                 StateTransitionResult result = attemptEnterState(successorStateVertex, walkStateGraphContext);
 
@@ -348,9 +402,11 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                     break;
                 }
 
-                // If attemptEnterState did not throw and did not return a value of type TransitionSuccessResult, then we
+                // If attemptEnterState did not throw and did not return a value of type TransitionSuccessResult, then
+                // we
                 // just record this value and go on from there. Note that reason may be null, which is returned by
-                // attemptEnterState in case the state was already successfully handled. If this is the case, then we don't
+                // attemptEnterState in case the state was already successfully handled. If this is the case, then we
+                // don't
                 // record it.
                 if (result != null) {
                     walkStateGraphContext.recordFailedState(successorState, result);
@@ -379,8 +435,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
      * @throws InterruptedException if the calling thread was interrupted.
      */
     private StateTransitionResult attemptEnterState(GraphVertex<State> successorStateVertex,
-                    WalkStateGraphContext walkStateGraphContext) throws SmackException, XMPPException,
-                    IOException, InterruptedException {
+                    WalkStateGraphContext walkStateGraphContext)
+                    throws SmackException, XMPPException, IOException, InterruptedException {
         final GraphVertex<State> initialStateVertex = currentStateVertex;
         final State initialState = initialStateVertex.getElement();
         final State successorState = successorStateVertex.getElement();
@@ -396,8 +452,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         if (successorStateDescriptor.isNotImplemented()) {
             StateTransitionResult.TransitionImpossibleBecauseNotImplemented transtionImpossibleBecauseNotImplemented = new StateTransitionResult.TransitionImpossibleBecauseNotImplemented(
                             successorStateDescriptor);
-            invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionNotPossible(initialState, successorState,
-                            transtionImpossibleBecauseNotImplemented));
+            invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionNotPossible(initialState,
+                            successorState, transtionImpossibleBecauseNotImplemented));
             return transtionImpossibleBecauseNotImplemented;
         }
 
@@ -406,12 +462,13 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             StateTransitionResult.TransitionImpossible transitionImpossible = successorState.isTransitionToPossible(
                             walkStateGraphContext);
             if (transitionImpossible != null) {
-                invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionNotPossible(initialState, successorState,
-                                transitionImpossible));
+                invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionNotPossible(initialState,
+                                successorState, transitionImpossible));
                 return transitionImpossible;
             }
 
-            invokeConnectionStateMachineListener(new ConnectionStateEvent.AboutToTransitionInto(initialState, successorState));
+            invokeConnectionStateMachineListener(
+                            new ConnectionStateEvent.AboutToTransitionInto(initialState, successorState));
             transitionAttemptResult = successorState.transitionInto(walkStateGraphContext);
         } catch (SmackException | IOException | InterruptedException | XMPPException e) {
             // Unwind the state here too, since this state will not be unwound by walkStateGraph(), as it will not
@@ -421,8 +478,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         }
         if (transitionAttemptResult instanceof StateTransitionResult.Failure) {
             StateTransitionResult.Failure transitionFailureResult = (StateTransitionResult.Failure) transitionAttemptResult;
-            invokeConnectionStateMachineListener(
-                            new ConnectionStateEvent.TransitionFailed(initialState, successorState, transitionFailureResult));
+            invokeConnectionStateMachineListener(new ConnectionStateEvent.TransitionFailed(initialState, successorState,
+                            transitionFailureResult));
             return transitionAttemptResult;
         }
 
@@ -566,8 +623,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         featuresReceived = false;
     }
 
-    private void waitForFeaturesReceived(String waitFor)
-                    throws InterruptedException, SmackException, XMPPException {
+    private void waitForFeaturesReceived(String waitFor) throws InterruptedException, SmackException, XMPPException {
         waitForConditionOrThrowConnectionException(() -> featuresReceived, waitFor);
     }
 
@@ -577,8 +633,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         return streamOpenAndCloseFactory.createStreamOpen(to, from, id, lang);
     }
 
-    private void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
-                    SmackException, XMPPException {
+    private void newStreamOpenWaitForFeaturesSequence(String waitFor)
+                    throws InterruptedException, SmackException, XMPPException {
         prepareToWaitForFeaturesReceived();
 
         // Create StreamOpen from StreamOpenAndCloseFactory via underlying transport.
@@ -589,7 +645,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         if (localpart != null) {
             from = XmppStringUtils.completeJidFrom(localpart, xmppServiceDomain);
         }
-        AbstractStreamOpen streamOpen = streamOpenAndCloseFactory.createStreamOpen(xmppServiceDomain, from, getStreamId(), getConfiguration().getXmlLang());
+        AbstractStreamOpen streamOpen = streamOpenAndCloseFactory.createStreamOpen(xmppServiceDomain, from,
+                        getStreamId(), getConfiguration().getXmlLang());
         sendStreamOpen(streamOpen);
 
         waitForFeaturesReceived(waitFor);
@@ -609,7 +666,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
     private final class DisconnectedState extends State {
 
-        private DisconnectedState(StateDescriptor stateDescriptor, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        private DisconnectedState(StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
         }
 
@@ -648,7 +706,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     private final class LookupRemoteConnectionEndpointsState extends State {
         boolean outgoingElementsQueueWasShutdown;
 
-        private LookupRemoteConnectionEndpointsState(StateDescriptor stateDescriptor, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        private LookupRemoteConnectionEndpointsState(StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
         }
 
@@ -757,7 +816,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class ConnectedButUnauthenticatedState extends State {
-        private ConnectedButUnauthenticatedState(StateDescriptor stateDescriptor, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        private ConnectedButUnauthenticatedState(StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
         }
 
@@ -788,7 +848,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class SaslAuthenticationState extends State {
-        private SaslAuthenticationState(StateDescriptor stateDescriptor, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        private SaslAuthenticationState(StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
         }
 
@@ -837,14 +898,16 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class ResourceBindingState extends State {
-        private ResourceBindingState(StateDescriptor stateDescriptor, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        private ResourceBindingState(StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
         }
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
                         throws IOException, SmackException, InterruptedException, XMPPException {
-            // Calling bindResourceAndEstablishSession() below requires the lastFeaturesReceived sync point to be signaled.
+            // Calling bindResourceAndEstablishSession() below requires the lastFeaturesReceived sync point to be
+            // signaled.
             // Since we entered this state, the FSM has decided that the last features have been received, hence signal
             // the sync point.
             lastFeaturesReceived = true;
@@ -901,13 +964,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             if (walkFromDisconnectToAuthenticated != null) {
                 // If there was already a previous walk to ConnectedButUnauthenticated, then the context of the current
                 // walk must not start from the 'Disconnected' state.
-                assert walkStateGraphContext.getWalk().get(0).getStateDescriptor().getClass()
-                    != DisconnectedStateDescriptor.class;
+                assert walkStateGraphContext.getWalk().get(
+                                0).getStateDescriptor().getClass() != DisconnectedStateDescriptor.class;
                 // Append the current walk to the previous one.
                 walkStateGraphContext.appendWalkTo(walkFromDisconnectToAuthenticated);
             } else {
-                walkFromDisconnectToAuthenticated = new ArrayList<>(
-                                walkStateGraphContext.getWalkLength() + 1);
+                walkFromDisconnectToAuthenticated = new ArrayList<>(walkStateGraphContext.getWalkLength() + 1);
                 walkStateGraphContext.appendWalkTo(walkFromDisconnectToAuthenticated);
             }
             walkFromDisconnectToAuthenticated.add(this);
@@ -937,7 +999,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         }
 
         @Override
-        public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
+        public StateTransitionResult.TransitionImpossible isTransitionToPossible(
+                        WalkStateGraphContext walkStateGraphContext) {
             ensureNotOnOurWayToAuthenticatedAndResourceBound(walkStateGraphContext);
             return null;
         }
@@ -968,7 +1031,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                         XmppInputOutputFilter filter = it.next();
                         try {
                             filter.waitUntilInputOutputClosed();
-                        } catch (IOException | CertificateException | InterruptedException | SmackException | XMPPException e) {
+                        } catch (IOException | CertificateException | InterruptedException | SmackException
+                                        | XMPPException e) {
                             LOGGER.log(Level.WARNING, "waitUntilInputOutputClosed() threw", e);
                         }
                     }
@@ -991,12 +1055,14 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private static final class InstantShutdownState extends NoOpState {
-        private InstantShutdownState(ModularXmppClientToServerConnection connection, StateDescriptor stateDescriptor, ModularXmppClientToServerConnectionInternal connectionInternal) {
+        private InstantShutdownState(ModularXmppClientToServerConnection connection, StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(connection, stateDescriptor, connectionInternal);
         }
 
         @Override
-        public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
+        public StateTransitionResult.TransitionImpossible isTransitionToPossible(
+                        WalkStateGraphContext walkStateGraphContext) {
             ensureNotOnOurWayToAuthenticatedAndResourceBound(walkStateGraphContext);
             return null;
         }
@@ -1057,8 +1123,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
     @Override
     protected void connectInternal() throws SmackException, IOException, XMPPException, InterruptedException {
-        WalkStateGraphContext walkStateGraphContext = buildNewWalkTo(ConnectedButUnauthenticatedStateDescriptor.class)
-                        .build();
+        WalkStateGraphContext walkStateGraphContext = buildNewWalkTo(
+                        ConnectedButUnauthenticatedStateDescriptor.class).build();
         walkStateGraph(walkStateGraphContext);
     }
 
