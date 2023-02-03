@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Paul Schaub
+ * Copyright 2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smackx;
 
 /**
- * XEP-0394: Message Markup.
- *
- * @see <a href="http://xmpp.org/extensions/xep-0394.html">XEP-0394: Message
- *      Markup</a>
- *
+ * This is just a dummy class, please head over to {@link org.jivesoftware.smackx} for more information on Smack
+ * extensions. The dummy class causes javadoc generate the HTML for smackx.pacakge-info.java, which would otherwise be
+ * not generated, as org.jivesoftware.smackx is an empty package (see
+ * <a href="https://bugs.openjdk.org/browse/JDK-4492654">JDK-4492654</a>).
  */
-package org.jivesoftware.smackx.message_markup;
+public class SmackExtensions {
+}

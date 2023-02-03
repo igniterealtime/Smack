@@ -1,1 +1,1 @@
-../../../../../../../smack-extensions/src/main/java/org/jivesoftware/smackx/package-info.java
+../../../../../../../smack-java8-full/src/main/java/org/jivesoftware/smackx/package-info.java

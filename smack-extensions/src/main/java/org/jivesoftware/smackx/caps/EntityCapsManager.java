@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2021 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,41 @@ import org.jxmpp.jid.Jid;
 import org.jxmpp.util.cache.LruCache;
 
 /**
- * Keeps track of entity capabilities.
+ * Manages own and others Entity Capabilities (XEP-0115).
+ * <p>
+ * Entity Capabilities is an XMPP extension which, in order to minimize network impact, caches the capabilities of
+ * remote XMPP entities. Those capabilities are determine with the help of the Service Discovery Protocol
+ * (<a href="https://xmpp.org/extensions/xep-0030.html">XEP-0030</a>, {@link ServiceDiscoveryManager}).
+ * </p>
+ *
+ * <h2>Usage</h2>
+ * <p>
+ * Entity Capabilities work silently in the background when enabled. If the remote XMPP entity does not support XEP-0115
+ * but XEP-0030 then XEP-0030 mechanisms are transparently used.
+ * </p>
+ * <p>
+ * The caches used by Smack for Entity Capabilities is non-persisent per default. However, it is is also possible to set
+ * a persistent Entity Capabilities cache, which is recommended.
+ * </p>
+ * <h2>Examples</h2>
+ *
+ * <h3>Enable Entity Capabilities</h3>
+ * <pre>{@code
+ * // Get an instance of entity caps manager for the specified connection
+ * EntityCapsManager mgr = EntityCapsManager.getInstanceFor(connection);
+ * // Enable entity capabilities
+ * mgr.enableEntityCaps();
+ * }</pre>
+ *
+ * <h3>Configure a persistent cache for Entity Capabilities</h3>
+ * <pre>{@code
+ * // Get an instance of entity caps manager for the specified connection
+ * EntityCapsManager mgr = EntityCapsManager.getInstanceFor(connection);
+ * // Create an cache, see smackx.entitycaps.cache for pre-defined cache implementations
+ * EntityCapsPersistentCache cache = new SimpleDirectoryPersistentCache(new File("/foo/cachedir"));
+ * // Set the cache
+ * mgr.setPersistentCache(cache);
+ * }</pre>
  *
  * @author Florian Schmaus
  * @see <a href="http://www.xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>

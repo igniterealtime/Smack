@@ -16,5 +16,23 @@
  */
 /**
  * Smack's API for XEP-0372: References.
-  */
+ * <p>
+ * References are a way to refer to other entities like users, other messages or external data from within a message.
+ * </p>
+ * <p>
+ * Typical use-cases are mentioning other users by name, but referencing to their BareJid, or linking to a sent file.
+ * </p>
+ * <h2 id="usage">Usage</h2>
+ * <p>
+ * Mention a user and link to their bare jid.
+ * </p>
+ *
+ * <pre>
+ * <code>
+ * Message message = new Message(&quot;Alice is a realy nice person.&quot;);
+ * BareJid alice = JidCreate.bareFrom(&quot;alice@capulet.lit&quot;);
+ * ReferenceManager.addMention(message, 0, 5, alice);
+ * </code>
+ * </pre>
+ */
 package org.jivesoftware.smackx.reference;
