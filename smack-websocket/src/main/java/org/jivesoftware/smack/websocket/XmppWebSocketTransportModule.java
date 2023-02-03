@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar, 2020-2021 Florian Schmaus
+ * Copyright 2020 Aditya Borikar, 2020-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,9 @@ public final class XmppWebSocketTransportModule
                 extends ModularXmppClientToServerConnectionModule<XmppWebSocketTransportModuleDescriptor> {
 
     private static final int WEBSOCKET_NORMAL_CLOSURE = 1000;
+
+    private static final int[] KNOWN_SECURE_PORTS = new int[] {5443, 5281, 7443};
+    private static final int[] KNOWN_INSECURE_PORTS = new int[] {5443, 5280, 7070};
 
     private final XmppWebSocketTransport websocketTransport;
 
@@ -223,12 +226,12 @@ public final class XmppWebSocketTransportModule
                 }
 
                 if (moduleDescriptor.isImplicitWebSocketEndpointEnabled()) {
-                    for (final int securePort : new int[] {5443, 5281, 7443}) {
+                    for (final int securePort : KNOWN_SECURE_PORTS) {
                         SecureWebSocketRemoteConnectionEndpoint implicitSecureEndpoint = SecureWebSocketRemoteConnectionEndpoint.from(
                             WebSocketRemoteConnectionEndpoint.SECURE_WEB_SOCKET_SCHEME + "://" + host + ":" + securePort + "/ws");
                         result.discoveredSecureEndpoints.add(implicitSecureEndpoint);
                     }
-                    for (final int insecurePort : new int[] {5443, 5280, 7070}) {
+                    for (final int insecurePort : KNOWN_INSECURE_PORTS) {
                         InsecureWebSocketRemoteConnectionEndpoint implicitInsecureEndpoint = InsecureWebSocketRemoteConnectionEndpoint.from(
                             WebSocketRemoteConnectionEndpoint.INSECURE_WEB_SOCKET_SCHEME + "://" + host + ":" + insecurePort + "/ws");
                         result.discoveredInsecureEndpoints.add(implicitInsecureEndpoint);
