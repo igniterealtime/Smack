@@ -223,15 +223,16 @@ public final class XmppWebSocketTransportModule
                 }
 
                 if (moduleDescriptor.isImplicitWebSocketEndpointEnabled()) {
-                    String urlWithoutScheme = "://" + host + ":5443/ws";
-
-                    SecureWebSocketRemoteConnectionEndpoint implicitSecureEndpoint = SecureWebSocketRemoteConnectionEndpoint.from(
-                                    WebSocketRemoteConnectionEndpoint.SECURE_WEB_SOCKET_SCHEME + urlWithoutScheme);
-                    result.discoveredSecureEndpoints.add(implicitSecureEndpoint);
-
-                    InsecureWebSocketRemoteConnectionEndpoint implicitInsecureEndpoint = InsecureWebSocketRemoteConnectionEndpoint.from(
-                                    WebSocketRemoteConnectionEndpoint.INSECURE_WEB_SOCKET_SCHEME + urlWithoutScheme);
-                    result.discoveredInsecureEndpoints.add(implicitInsecureEndpoint);
+                    for (final int securePort : new int[] {5443, 5281, 7443}) {
+                        SecureWebSocketRemoteConnectionEndpoint implicitSecureEndpoint = SecureWebSocketRemoteConnectionEndpoint.from(
+                            WebSocketRemoteConnectionEndpoint.SECURE_WEB_SOCKET_SCHEME + "://" + host + ":" + securePort + "/ws");
+                        result.discoveredSecureEndpoints.add(implicitSecureEndpoint);
+                    }
+                    for (final int insecurePort : new int[] {5443, 5280, 7070}) {
+                        InsecureWebSocketRemoteConnectionEndpoint implicitInsecureEndpoint = InsecureWebSocketRemoteConnectionEndpoint.from(
+                            WebSocketRemoteConnectionEndpoint.INSECURE_WEB_SOCKET_SCHEME + "://" + host + ":" + insecurePort + "/ws");
+                        result.discoveredInsecureEndpoints.add(implicitInsecureEndpoint);
+                    }
                 }
 
                 final LookupConnectionEndpointsResult endpointsResult;
