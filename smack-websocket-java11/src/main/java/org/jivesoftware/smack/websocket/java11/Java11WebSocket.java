@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus
+ * Copyright 2021-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,11 +139,13 @@ public final class Java11WebSocket extends AbstractWebSocket {
 
     @Override
     public void disconnect(int code, String message) {
-        CompletableFuture<WebSocket> completableFuture = webSocket.sendClose(code, message);
         try {
-            completableFuture.get();
+            if (!webSocket.isOutputClosed()) {
+                CompletableFuture<WebSocket> completableFuture = webSocket.sendClose(code, message);
+                completableFuture.get();
+            }
         } catch (ExecutionException e) {
-            onWebSocketFailure(e);
+            LOGGER.log(Level.WARNING, "Failed to send final close when disconnecting " + this, e);
         } catch (InterruptedException e) {
             // This thread should never be interrupted, as it is a Smack internal thread.
             throw new AssertionError(e);
