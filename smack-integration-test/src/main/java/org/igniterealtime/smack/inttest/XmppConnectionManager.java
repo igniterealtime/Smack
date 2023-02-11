@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2021 Florian Schmaus
+ * Copyright 2018-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -419,6 +419,11 @@ public class XmppConnectionManager {
     AbstractXMPPConnection constructConnection()
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return constructConnection(defaultConnectionDescriptor);
+    }
+
+    AbstractXMPPConnection constructConnectedConnection()
+                    throws InterruptedException, SmackException, IOException, XMPPException {
+        return constructConnectedConnection(defaultConnectionDescriptor);
     }
 
     <C extends AbstractXMPPConnection> C constructConnection(
