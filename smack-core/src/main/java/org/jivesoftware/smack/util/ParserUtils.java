@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -386,5 +386,13 @@ public class ParserUtils {
     // TODO: Remove in Smack 4.5
     public static QName getQName(XmlPullParser parser) {
         return parser.getQName();
+    }
+
+    public static InternetAddress getInternetAddressIngoringZoneIdAttribute(XmlPullParser parser, String attribute) {
+        String inetAddressString = parser.getAttributeValue(attribute);
+        if (inetAddressString == null) {
+            return null;
+        }
+        return InternetAddress.fromIgnoringZoneId(inetAddressString);
     }
 }
