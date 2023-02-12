@@ -28,6 +28,7 @@ import static org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.Jing
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -69,7 +70,7 @@ public class JingleS5BTransportProvider extends JingleContentTransportProvider<J
                         case JingleContentTransportCandidate.ELEMENT:
                             cb = JingleS5BTransportCandidate.getBuilder();
                             cb.setCandidateId(parser.getAttributeValue(null, ATTR_CID));
-                            cb.setHost(parser.getAttributeValue(null, ATTR_HOST));
+                            cb.setHost(ParserUtils.getInternetAddressIngoringZoneIdAttribute(parser, ATTR_HOST));
                             cb.setJid(parser.getAttributeValue(null, ATTR_JID));
                             cb.setPriority(Integer.parseInt(parser.getAttributeValue(null, ATTR_PRIORITY)));
 
