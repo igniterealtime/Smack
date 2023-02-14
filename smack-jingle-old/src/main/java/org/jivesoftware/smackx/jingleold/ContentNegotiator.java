@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
@@ -265,7 +267,7 @@ public class ContentNegotiator extends JingleNegotiator {
         return result;
     }
 
-    public void triggerContentEstablished() throws NotConnectedException, InterruptedException {
+    public void triggerContentEstablished() throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         PayloadType bestCommonAudioPt = getMediaNegotiator().getBestCommonAudioPt();
         TransportCandidate bestRemoteCandidate = getTransportNegotiator().getBestRemoteCandidate();
@@ -279,8 +281,10 @@ public class ContentNegotiator extends JingleNegotiator {
      * Trigger a session established event.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    private void triggerContentEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc) throws NotConnectedException, InterruptedException {
+    private void triggerContentEstablished(PayloadType pt, TransportCandidate rc, TransportCandidate lc) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         // Let the session know that we've established a content/media segment.
         JingleSession session = getSession();

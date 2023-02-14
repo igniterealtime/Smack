@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2005 Jive Software, 2017 Florian Schmaus.
+ * Copyright 2003-2005 Jive Software, 2017-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ package org.jivesoftware.smackx.jingle.element;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public final class JingleError implements ExtensionElement {
+public final class JingleError implements XmlElement {
 
     public static String NAMESPACE = "urn:xmpp:jingle:errors:1";
 

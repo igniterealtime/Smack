@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2023 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * Smack API for XEP-0373: OpenPGP for XMPP.
+ * Smack API for XEP-0373: OpenPGP for XMPP. See {@link OpenPgpManager} for more information.
  */
 package org.jivesoftware.smackx.ox;

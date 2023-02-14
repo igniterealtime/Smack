@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.AbstractProvider;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -145,7 +146,7 @@ public class DataValidationTest extends SmackTestSuite {
     @ParameterizedTest
     @EnumSource(SmackTestUtil.XmlPullParserKind.class)
     public void testRangeFailure(SmackTestUtil.XmlPullParserKind parserKind) throws IOException, XmlPullParserException {
-        assertThrows(NumberFormatException.class,
+        assertThrows(AbstractProvider.NumberFormatParseException.class,
                         () -> SmackTestUtil.parse(TEST_OUTPUT_FAIL, DataValidationProvider.class, parserKind));
     }
 

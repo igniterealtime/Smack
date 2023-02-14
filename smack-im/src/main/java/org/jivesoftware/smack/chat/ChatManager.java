@@ -39,7 +39,6 @@ import org.jivesoftware.smack.filter.OrFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.ThreadFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -110,7 +109,7 @@ public final class ChatManager extends Manager{
 
         @Override
         protected boolean acceptSpecific(Message message) {
-            return normalIncluded ? message.getType() == Type.normal : false;
+            return normalIncluded ? message.getType() == Message.Type.normal : false;
         }
 
     });

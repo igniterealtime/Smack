@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,29 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+/**
+ * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
+ * @deprecated use a proper parser.
+ */
+// TODO: Remove in Smack 4.6.
+@Deprecated
 public class IntrospectionProvider{
 
     // Unfortunately, we have to create two introspection providers, with the exactly the same code here
 
-    public abstract static class IQIntrospectionProvider<I extends IQ> extends IQProvider<I> {
+    /**
+     * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
+     * @deprecated use a proper parser.
+     */
+    // TODO: Remove in Smack 4.6.
+    @Deprecated
+    public abstract static class IQIntrospectionProvider<I extends IQ> extends IqProvider<I> {
         private final Class<I> elementClass;
 
         protected IQIntrospectionProvider(Class<I> elementClass) {
@@ -39,7 +52,7 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public I parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             try {
                 return (I) parseWithIntrospection(elementClass, parser, initialDepth);
             }
@@ -51,6 +64,12 @@ public class IntrospectionProvider{
         }
     }
 
+    /**
+     * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
+     * @deprecated use a proper parser.
+     */
+    // TODO: Remove in Smack 4.6.
+    @Deprecated
     public abstract static class PacketExtensionIntrospectionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
         private final Class<PE> elementClass;
 
@@ -117,7 +136,7 @@ public class IntrospectionProvider{
      * @param type the type of the property.
      * @param value the encode String value to decode.
      * @return the String value decoded into the specified type.
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException if the provided class was not found.
      */
     private static Object decode(Class<?> type, String value) throws ClassNotFoundException {
         String name = type.getName();

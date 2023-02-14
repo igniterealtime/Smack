@@ -24,8 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -123,10 +124,10 @@ public class ChatSettings extends IQ {
     /**
      * Stanza extension provider for AgentStatusRequest packets.
      */
-    public static class InternalProvider extends IQProvider<ChatSettings> {
+    public static class InternalProvider extends IqProvider<ChatSettings> {
 
         @Override
-        public ChatSettings parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public ChatSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             if (parser.getEventType() != XmlPullParser.Event.START_ELEMENT) {
                 throw new IllegalStateException("Parser not in proper position, or bad XML.");
             }

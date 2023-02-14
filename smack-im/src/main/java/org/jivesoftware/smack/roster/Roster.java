@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +53,6 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.filter.ToMatchesFilter;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
@@ -80,15 +78,122 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.cache.LruCache;
 
 /**
- * Represents a user's roster, which is the collection of users a person receives
- * presence updates for. Roster items are categorized into groups for easier management.
+ * <p>
+ * The roster lets you keep track of the availability ("presence") of other
+ * users. A roster also allows you to organize users into groups such as
+ * "Friends" and "Co-workers". Other IM systems refer to the roster as the buddy
+ * list, contact list, etc.
+ * </p>
+ * <p>
+ * You can obtain a Roster instance for your connection via
+ * {@link #getInstanceFor(XMPPConnection)}. A detailed description of the
+ * protocol behind the Roster and Presence semantics can be found in
+ * <a href="https://tools.ietf.org/html/rfc6121">RFC 6120</a>.
+ * </p>
  *
- * Other users may attempt to subscribe to this user using a subscription request. Three
- * modes are supported for handling these requests: <ul>
- * <li>{@link SubscriptionMode#accept_all accept_all} -- accept all subscription requests.</li>
- * <li>{@link SubscriptionMode#reject_all reject_all} -- reject all subscription requests.</li>
- * <li>{@link SubscriptionMode#manual manual} -- manually process all subscription requests.</li>
+ * <h2>Roster Entries</h2>
+ * Every user in a roster is represented by a RosterEntry, which consists
+ * of:
+ * <ul>
+ * <li>An XMPP address, aka. JID (e.g. jsmith@example.com).</li>
+ * <li>A name you've assigned to the user (e.g. "Joe").</li>
+ * <li>The list of groups in the roster that the entry belongs to. If the roster
+ * entry belongs to no groups, it's called an "unfiled entry".</li>
  * </ul>
+ * The following code snippet prints all entries in the roster:
+ *
+ * <pre>{@code
+ * Roster roster = Roster.getInstanceFor(connection);
+ * Collection<RosterEntry> entries = roster.getEntries();
+ * for (RosterEntry entry : entries) {
+ *     System.out.println(entry);
+ * }
+ * }</pre>
+ *
+ * Methods also exist to get individual entries, the list of unfiled entries, or
+ * to get one or all roster groups.
+ *
+ * <h2>Presence</h2>
+ * <p>
+ * Every entry in the roster has presence associated with it. The
+ * {@link #getPresence(BareJid)} method will return a Presence object with the
+ * user's presence or `null` if the user is not online or you are not subscribed
+ * to the user's presence. _Note:_ Presence subscription is nnot tied to the
+ * user being on the roster, and vice versa: You could be subscriped to a remote
+ * users presence without the user in your roster, and a remote user can be in
+ * your roster without any presence subscription relation.
+ * </p>
+ * <p>
+ * A user either has a presence of online or offline. When a user is online,
+ * their presence may contain extended information such as what they are
+ * currently doing, whether they wish to be disturbed, etc. See the Presence
+ * class for further details.
+ * </p>
+ *
+ * <h2>Listening for Roster and Presence Changes</h2>
+ * <p>
+ * The typical use of the roster class is to display a tree view of groups and
+ * entries along with the current presence value of each entry. As an example,
+ * see the image showing a Roster in the Exodus XMPP client to the right.
+ * </p>
+ * <p>
+ * The presence information will likely change often, and it's also possible for
+ * the roster entries to change or be deleted. To listen for changing roster and
+ * presence data, a RosterListener should be used. To be informed about all
+ * changes to the roster the RosterListener should be registered before logging
+ * into the XMPP server. The following code snippet registers a RosterListener
+ * with the Roster that prints any presence changes in the roster to standard
+ * out. A normal client would use similar code to update the roster UI with the
+ * changing information.
+ * </p>
+ *
+ * <pre>{@code
+ * Roster roster = Roster.getInstanceFor(con);
+ * roster.addRosterListener(new RosterListener() {
+ *     // Ignored events public void entriesAdded(Collection<String> addresses) {}
+ *     public void entriesDeleted(Collection<String> addresses) {
+ *     }
+ *
+ *     public void entriesUpdated(Collection<String> addresses) {
+ *     }
+ *
+ *     public void presenceChanged(Presence presence) {
+ *         System.out.println("Presence changed: " + presence.getFrom() + " " + presence);
+ *      }
+ * });
+ * }</pre>
+ *
+ * Note that in order to receive presence changed events you need to be
+ * subscribed to the users presence. See the following section.
+ *
+ * <h2>Adding Entries to the Roster</h2>
+ *
+ * <p>
+ * Rosters and presence use a permissions-based model where users must give
+ * permission before someone else can see their presence. This protects a user's
+ * privacy by making sure that only approved users are able to view their
+ * presence information. Therefore, when you add a new roster entry, you will
+ * not see the presence information until the other user accepts your request.
+ * </p>
+ * <p>
+ * If another user requests a presence subscription, you must accept or reject
+ * that request. Smack handles presence subscription requests in one of three
+* ways:
+ * </p>
+ * <ul>
+ * <li>Automatically accept all presence subscription requests
+ * ({@link SubscriptionMode#accept_all accept_all})</li>
+ * <li>Automatically reject all presence subscription requests
+ * ({@link SubscriptionMode#reject_all reject_all})</li>
+ * <li>Process presence subscription requests manually.
+ * ({@link SubscriptionMode#manual manual})</li>
+ * </ul>
+ * <p>
+ * The mode can be set using {@link #setSubscriptionMode(SubscriptionMode)}.
+ * Simple clients normally use one of the automated subscription modes, while
+ * full-featured clients should manually process subscription requests and let
+ * the end-user accept or reject each request.
+ * </p>
  *
  * @author Matt Tucker
  * @see #getInstanceFor(XMPPConnection)
@@ -151,7 +256,17 @@ public final class Roster extends Manager {
     private static int defaultNonRosterPresenceMapMaxSize = INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE;
 
     private RosterStore rosterStore;
-    private final Map<String, RosterGroup> groups = new ConcurrentHashMap<>();
+
+    /**
+     * The groups of this roster.
+     * <p>
+     * Note that we use {@link ConcurrentHashMap} also as static type of this field, since we use the fact that the same
+     * thread can modify this collection, e.g. remove items, while iterating over it. This is done, for example in
+     * {@link #deleteEntry(Collection, RosterEntry)}. If we do not denote the static type to ConcurrentHashMap, but
+     * {@link Map} instead, then error prone would report a ModifyCollectionInEnhancedForLoop but.
+     * </p>
+     */
+    private final ConcurrentHashMap<String, RosterGroup> groups = new ConcurrentHashMap<>();
 
     /**
      * Concurrent hash map from JID to its roster entry.
@@ -461,11 +576,14 @@ public final class Roster extends Manager {
             @Override
             public void processException(Exception exception) {
                 rosterState = RosterState.uninitialized;
-                Level logLevel;
+                Level logLevel = Level.SEVERE;
                 if (exception instanceof NotConnectedException) {
                     logLevel = Level.FINE;
-                } else {
-                    logLevel = Level.SEVERE;
+                } else if (exception instanceof XMPPErrorException) {
+                    Condition condition = ((XMPPErrorException) exception).getStanzaError().getCondition();
+                    if (condition == Condition.feature_not_implemented || condition == Condition.service_unavailable) {
+                        logLevel = Level.FINE;
+                    }
                 }
                 LOGGER.log(logLevel, "Exception reloading roster", exception);
                 for (RosterLoadedListener listener : rosterLoadedListeners) {
@@ -508,7 +626,7 @@ public final class Roster extends Manager {
         return true;
     }
 
-    protected boolean waitUntilLoaded() throws InterruptedException {
+    boolean waitUntilLoaded() throws InterruptedException {
         long waitTime = connection().getReplyTimeout();
         long start = System.currentTimeMillis();
         while (!isLoaded()) {
@@ -667,7 +785,7 @@ public final class Roster extends Manager {
      *
      * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
      * @param name the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <code>null</code> if the the roster entry won't
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if the roster entry won't
      *        belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -691,7 +809,7 @@ public final class Roster extends Manager {
             }
         }
         rosterPacket.addRosterItem(item);
-        connection.createStanzaCollectorAndSend(rosterPacket).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(rosterPacket);
     }
 
     /**
@@ -844,7 +962,7 @@ public final class Roster extends Manager {
         // Set the item type as REMOVE so that the server will delete the entry
         item.setItemType(RosterPacket.ItemType.remove);
         packet.addRosterItem(item);
-        connection.createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(packet);
     }
 
     /**
@@ -1416,7 +1534,7 @@ public final class Roster extends Manager {
         move(user, presenceMap, nonRosterPresenceMap);
         deletedEntries.add(user);
 
-        for (Entry<String, RosterGroup> e : groups.entrySet()) {
+        for (Map.Entry<String, RosterGroup> e : groups.entrySet()) {
             RosterGroup group = e.getValue();
             group.removeEntryLocal(entry);
             if (group.getEntryCount() == 0) {
@@ -1787,7 +1905,7 @@ public final class Roster extends Manager {
     private final class RosterPushListener extends AbstractIqRequestHandler {
 
         private RosterPushListener() {
-            super(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, Type.set, Mode.sync);
+            super(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, IQ.Type.set, Mode.sync);
         }
 
         @Override

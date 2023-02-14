@@ -5,9 +5,9 @@ run Smack on Java 7 (or higher) JVMs. Usually you want to add additional
 dependencies to smack-tcp, smack-extensions and smack-experimental."""
 
 dependencies {
-	compile project(":smack-core")
-	compile project(":smack-resolver-javax")
-	compile project(":smack-sasl-javax")
+	api project(":smack-core")
+	api project(":smack-resolver-javax")
+	api project(":smack-sasl-javax")
 	implementation project(":smack-xmlparser-stax")
 }
 

@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
@@ -92,7 +91,7 @@ public class ChatConnectionTest {
     @Test
     public void validateMessageTypeWithDefaults1() {
         MessageBuilder incomingChat = createChatPacket("134", true);
-        incomingChat.ofType(Type.chat);
+        incomingChat.ofType(Message.Type.chat);
         processServerMessage(incomingChat.build());
         assertNotNull(listener.getNewChat());
     }
@@ -100,14 +99,14 @@ public class ChatConnectionTest {
     @Test
     public void validateMessageTypeWithDefaults2() {
         MessageBuilder incomingChat = createChatPacket("134", true);
-        incomingChat.ofType(Type.normal);
+        incomingChat.ofType(Message.Type.normal);
         processServerMessage(incomingChat.build());
         assertNotNull(listener.getNewChat());
     }
     @Test
     public void validateMessageTypeWithDefaults3() {
         MessageBuilder incomingChat = createChatPacket("134", true);
-        incomingChat.ofType(Type.groupchat);
+        incomingChat.ofType(Message.Type.groupchat);
         processServerMessage(incomingChat.build());
         assertNull(listener.getNewChat());
     }
@@ -115,7 +114,7 @@ public class ChatConnectionTest {
     @Test
     public void validateMessageTypeWithDefaults4() {
         MessageBuilder incomingChat = createChatPacket("134", true);
-        incomingChat.ofType(Type.headline);
+        incomingChat.ofType(Message.Type.headline);
         assertNull(listener.getNewChat());
     }
 
@@ -123,7 +122,7 @@ public class ChatConnectionTest {
     public void validateMessageTypeWithNoNormal1() {
         cm.setNormalIncluded(false);
         MessageBuilder incomingChat = createChatPacket("134", true);
-        incomingChat.ofType(Type.chat);
+        incomingChat.ofType(Message.Type.chat);
         processServerMessage(incomingChat.build());
         assertNotNull(listener.getNewChat());
     }
@@ -132,7 +131,7 @@ public class ChatConnectionTest {
     public void validateMessageTypeWithNoNormal2() {
         cm.setNormalIncluded(false);
         MessageBuilder incomingChat = createChatPacket("134", true);
-        incomingChat.ofType(Type.normal);
+        incomingChat.ofType(Message.Type.normal);
         processServerMessage(incomingChat.build());
         assertNull(listener.getNewChat());
     }
@@ -318,7 +317,7 @@ public class ChatConnectionTest {
         cm.setNormalIncluded(false);
 
         MessageBuilder incomingChat = createChatPacket(null, false);
-        incomingChat.ofType(Type.normal);
+        incomingChat.ofType(Message.Type.normal);
         processServerMessage(incomingChat.build());
 
         assertNull(listener.getNewChat());

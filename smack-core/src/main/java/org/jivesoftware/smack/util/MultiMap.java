@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015-2020 Florian Schmaus
+ * Copyright © 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -251,7 +250,7 @@ public class MultiMap<K, V> {
 
     public MultiMap<K, V> asUnmodifiableMultiMap() {
         LinkedHashMap<K, List<V>> mapCopy = new LinkedHashMap<>(map.size());
-        for (Entry<K, List<V>> entry : map.entrySet()) {
+        for (Map.Entry<K, List<V>> entry : map.entrySet()) {
             K key = entry.getKey();
             List<V> values = entry.getValue();
 
@@ -266,7 +265,7 @@ public class MultiMap<K, V> {
         Map<K, List<V>> clonedMap = new LinkedHashMap<>(map.size());
 
         // TODO: Use Map.forEach() once Smack's minimum Android API is 24 or higher.
-        for (Entry<K, List<V>> entry : map.entrySet()) {
+        for (Map.Entry<K, List<V>> entry : map.entrySet()) {
             List<V> clonedList = CollectionUtil.newListWith(entry.getValue());
             clonedMap.put(entry.getKey(), clonedList);
         }

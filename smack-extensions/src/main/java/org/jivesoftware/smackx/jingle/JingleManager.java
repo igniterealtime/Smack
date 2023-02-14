@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Florian Schmaus
+ * Copyright 2017-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.jingle.element.Jingle;
@@ -74,7 +73,7 @@ public final class JingleManager extends Manager {
         jutil = new JingleUtil(connection);
 
         connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(Jingle.ELEMENT, Jingle.NAMESPACE, Type.set, Mode.async) {
+                new AbstractIqRequestHandler(Jingle.ELEMENT, Jingle.NAMESPACE, IQ.Type.set, Mode.async) {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         final Jingle jingle = (Jingle) iqRequest;

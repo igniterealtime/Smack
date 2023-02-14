@@ -105,7 +105,7 @@ public class StreamError extends AbstractError implements Nonza {
     private final Condition condition;
     private final String conditionText;
 
-    public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<ExtensionElement> extensions) {
+    public StreamError(Condition condition, String conditionText, Map<String, String> descriptiveTexts, List<XmlElement> extensions) {
         super(descriptiveTexts, extensions);
         // Some implementations may send the condition as non-empty element containing the empty string, that is
         // <condition xmlns='foo'></condition>, in this case the parser may calls this constructor with the empty string

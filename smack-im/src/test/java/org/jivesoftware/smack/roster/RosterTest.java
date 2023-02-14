@@ -35,7 +35,6 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.im.InitSmackIm;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
@@ -385,7 +384,7 @@ public class RosterTest extends InitSmackIm {
     public void testIgnoreInvalidFrom() throws XmppStringprepException {
         final BareJid spammerJid = JidCreate.entityBareFrom("spam@example.com");
         RosterPacket packet = new RosterPacket();
-        packet.setType(Type.set);
+        packet.setType(IQ.Type.set);
         packet.setTo(connection.getUser());
         packet.setFrom(JidCreate.entityBareFrom("mallory@example.com"));
         packet.addRosterItem(new Item(spammerJid, "Cool products!"));
@@ -530,7 +529,7 @@ public class RosterTest extends InitSmackIm {
         for (RosterEntry entry : roster.getEntries()) {
             // prepare the roster push packet
             final RosterPacket rosterPush = new RosterPacket();
-            rosterPush.setType(Type.set);
+            rosterPush.setType(IQ.Type.set);
             rosterPush.setTo(connection.getUser());
 
             // prepare the buddy's item entry which should be removed
@@ -555,7 +554,7 @@ public class RosterTest extends InitSmackIm {
         roster.reload();
         while (true) {
             final Stanza sentPacket = connection.getSentPacket();
-            if (sentPacket instanceof RosterPacket && ((IQ) sentPacket).getType() == Type.get) {
+            if (sentPacket instanceof RosterPacket && ((IQ) sentPacket).getType() == IQ.Type.get) {
                 // setup the roster get request
                 final RosterPacket rosterRequest = (RosterPacket) sentPacket;
                 assertSame("The <query/> element MUST NOT contain any <item/> child elements!",
@@ -565,7 +564,7 @@ public class RosterTest extends InitSmackIm {
                 // prepare the roster result
                 final RosterPacket rosterResult = new RosterPacket();
                 rosterResult.setTo(connection.getUser());
-                rosterResult.setType(Type.result);
+                rosterResult.setType(IQ.Type.result);
                 rosterResult.setStanzaId(rosterRequest.getStanzaId());
 
                 // prepare romeo's roster entry
@@ -674,7 +673,7 @@ public class RosterTest extends InitSmackIm {
             try {
                 while (true) {
                     final Stanza packet = connection.getSentPacket();
-                    if (packet instanceof RosterPacket && ((IQ) packet).getType() == Type.set) {
+                    if (packet instanceof RosterPacket && ((IQ) packet).getType() == IQ.Type.set) {
                         final RosterPacket rosterRequest = (RosterPacket) packet;
 
                         // Prepare and process the roster push
@@ -683,7 +682,7 @@ public class RosterTest extends InitSmackIm {
                         if (item.getItemType() != ItemType.remove) {
                             item.setItemType(ItemType.none);
                         }
-                        rosterPush.setType(Type.set);
+                        rosterPush.setType(IQ.Type.set);
                         rosterPush.setTo(connection.getUser());
                         rosterPush.addRosterItem(item);
                         connection.processStanza(rosterPush);

@@ -29,7 +29,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.EventManger;
-import org.jivesoftware.smack.util.EventManger.Callback;
 
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
 import org.jivesoftware.smackx.xdata.FormField;
@@ -101,7 +100,7 @@ public abstract class StreamNegotiator extends Manager {
         final String eventKey = initiation.getFrom().toString() + '\t' + initiation.getSessionID();
         IQ streamMethodInitiation;
         try {
-            streamMethodInitiation = initationSetEvents.performActionAndWaitForEvent(eventKey, connection.getReplyTimeout(), new Callback<NotConnectedException>() {
+            streamMethodInitiation = initationSetEvents.performActionAndWaitForEvent(eventKey, connection.getReplyTimeout(), new EventManger.Callback<NotConnectedException>() {
                 @Override
                 public void action() throws NotConnectedException {
                     try {

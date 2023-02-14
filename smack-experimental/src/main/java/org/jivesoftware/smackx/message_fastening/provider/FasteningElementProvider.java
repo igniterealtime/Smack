@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.message_fastening.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -26,6 +26,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.message_fastening.MessageFasteningManager;
 import org.jivesoftware.smackx.message_fastening.element.ExternalElement;
 import org.jivesoftware.smackx.message_fastening.element.FasteningElement;
@@ -62,7 +63,7 @@ public class FasteningElementProvider extends ExtensionElementProvider<Fastening
                     }
 
                     // Parse wrapped payload
-                    ExtensionElement wrappedPayload = PacketParserUtils.parseExtensionElement(name, namespace, parser, xmlEnvironment);
+                    XmlElement wrappedPayload = PacketParserUtils.parseExtensionElement(name, namespace, parser, xmlEnvironment);
                     builder.addWrappedPayload(wrappedPayload);
                     break;
 

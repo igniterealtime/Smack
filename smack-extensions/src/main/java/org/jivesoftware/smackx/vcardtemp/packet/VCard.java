@@ -28,7 +28,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -612,10 +611,10 @@ public final class VCard extends IQ {
             xml.optElement("ORGUNIT", organizationUnit);
             xml.closeElement("ORG");
         }
-        for (Entry<String, String> entry : otherSimpleFields.entrySet()) {
+        for (Map.Entry<String, String> entry : otherSimpleFields.entrySet()) {
             xml.optElement(entry.getKey(), entry.getValue());
         }
-        for (Entry<String, String> entry : otherUnescapableFields.entrySet()) {
+        for (Map.Entry<String, String> entry : otherUnescapableFields.entrySet()) {
             final String value = entry.getValue();
             if (value == null) {
                 continue;
@@ -646,7 +645,7 @@ public final class VCard extends IQ {
             xml.element("USERID", emailHome);
             xml.closeElement("EMAIL");
         }
-        for (Entry<String, String> phone : workPhones.entrySet()) {
+        for (Map.Entry<String, String> phone : workPhones.entrySet()) {
             final String number = phone.getValue();
             if (number == null) {
                 continue;
@@ -657,7 +656,7 @@ public final class VCard extends IQ {
             xml.element("NUMBER", number);
             xml.closeElement("TEL");
         }
-        for (Entry<String, String> phone : homePhones.entrySet()) {
+        for (Map.Entry<String, String> phone : homePhones.entrySet()) {
             final String number = phone.getValue();
             if (number == null) {
                 continue;
@@ -671,7 +670,7 @@ public final class VCard extends IQ {
         if (!workAddr.isEmpty()) {
             xml.openElement("ADR");
             xml.emptyElement("WORK");
-            for (Entry<String, String> entry : workAddr.entrySet()) {
+            for (Map.Entry<String, String> entry : workAddr.entrySet()) {
                 final String value = entry.getValue();
                 if (value == null) {
                     continue;
@@ -683,7 +682,7 @@ public final class VCard extends IQ {
         if (!homeAddr.isEmpty()) {
             xml.openElement("ADR");
             xml.emptyElement("HOME");
-            for (Entry<String, String> entry : homeAddr.entrySet()) {
+            for (Map.Entry<String, String> entry : homeAddr.entrySet()) {
                 final String value = entry.getValue();
                 if (value == null) {
                     continue;

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2021 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.PacketUtil;
@@ -49,7 +50,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
 
     private final Set<? extends Jid> to;
     private final Date timestamp;
-    private final MultiMap<QName, ExtensionElement> payload;
+    private final MultiMap<QName, XmlElement> payload;
 
     private String timestampString;
 
@@ -86,7 +87,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
      *
      * @return payload.
      */
-    public final List<ExtensionElement> getExtensions() {
+    public final List<XmlElement> getExtensions() {
         synchronized (payload) {
             return payload.values();
         }
@@ -102,7 +103,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
      * @param namespace the namespace of the element(s), must not be null.
      * @return a set of all matching extensions.
      */
-    public List<ExtensionElement> getExtensions(String elementName, String namespace) {
+    public List<XmlElement> getExtensions(String elementName, String namespace) {
         QName key = new QName(namespace, elementName);
         return payload.getAll(key);
     }
@@ -137,7 +138,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
             return null;
         }
         QName key = new QName(namespace, elementName);
-        ExtensionElement packetExtension;
+        XmlElement packetExtension;
         synchronized (payload) {
             packetExtension = payload.getFirst(key);
         }
@@ -168,7 +169,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
         xml.halfOpenElement(ELEM_TIME).attribute(ATTR_STAMP, timestampString).closeEmptyElement();
 
         xml.openElement(ELEM_PAYLOAD);
-        for (ExtensionElement element : payload.values()) {
+        for (XmlElement element : payload.values()) {
             xml.append(element.toXML(getNamespace()));
         }
         xml.closeElement(ELEM_PAYLOAD);

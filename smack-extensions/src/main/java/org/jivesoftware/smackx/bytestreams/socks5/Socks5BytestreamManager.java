@@ -622,8 +622,8 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
         for (Jid proxy : proxies) {
             Bytestream streamHostRequest = createStreamHostRequest(proxy);
             try {
-                Bytestream response = connection.createStanzaCollectorAndSend(
-                                streamHostRequest).nextResultOrThrow();
+                Bytestream response = connection.sendIqRequestAndWaitForResponse(
+                                streamHostRequest);
                 streamHosts.addAll(response.getStreamHosts());
             }
             catch (Exception e) {
@@ -717,7 +717,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    protected void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
+    void replyRejectPacket(IQ packet) throws NotConnectedException, InterruptedException {
         StanzaError xmppError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable).build();
         IQ errorIQ = IQ.createErrorResponse(packet, xmppError);
         connection().sendStanza(errorIQ);
@@ -760,7 +760,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      *
      * @return the XMPP connection
      */
-    protected XMPPConnection getConnection() {
+    XMPPConnection getConnection() {
         return connection();
     }
 
@@ -771,7 +771,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * @param initiator the initiator's JID
      * @return the listener
      */
-    protected BytestreamListener getUserListener(Jid initiator) {
+    BytestreamListener getUserListener(Jid initiator) {
         return this.userListeners.get(initiator);
     }
 
@@ -781,7 +781,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      *
      * @return list of listeners
      */
-    protected List<BytestreamListener> getAllRequestListeners() {
+    List<BytestreamListener> getAllRequestListeners() {
         return this.allRequestListeners;
     }
 
@@ -790,7 +790,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      *
      * @return list of session IDs
      */
-    protected List<String> getIgnoredBytestreamRequests() {
+    List<String> getIgnoredBytestreamRequests() {
         return ignoredBytestreamRequests;
     }
 

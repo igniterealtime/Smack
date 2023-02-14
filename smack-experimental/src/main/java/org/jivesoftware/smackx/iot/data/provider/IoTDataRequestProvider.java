@@ -18,17 +18,18 @@ package org.jivesoftware.smackx.iot.data.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.data.element.IoTDataRequest;
 
-public class IoTDataRequestProvider extends IQProvider<IoTDataRequest> {
+public class IoTDataRequestProvider extends IqProvider<IoTDataRequest> {
 
     @Override
-    public IoTDataRequest parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
+    public IoTDataRequest parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws IOException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request without sequence number");
         boolean momentary = ParserUtils.getBooleanAttribute(parser, "momentary", false);
         return new IoTDataRequest(seqNr, momentary);

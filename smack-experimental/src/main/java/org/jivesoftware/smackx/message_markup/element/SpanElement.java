@@ -19,11 +19,14 @@ package org.jivesoftware.smackx.message_markup.element;
 import java.util.Collections;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 public class SpanElement extends MarkupElement.NonEmptyChildElement {
 
     public static final String ELEMENT = "span";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final Set<SpanStyle> styles;
 
@@ -60,7 +63,7 @@ public class SpanElement extends MarkupElement.NonEmptyChildElement {
 
     @Override
     public String getElementName() {
-        return ELEMENT;
+        return QNAME.getLocalPart();
     }
 
     @Override

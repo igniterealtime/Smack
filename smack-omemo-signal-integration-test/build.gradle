@@ -7,8 +7,8 @@ mainClassName = 'org.igniterealtime.smack.inttest.smack_omemo_signal.SmackOmemoS
 applicationDefaultJvmArgs = ["-enableassertions"]
 
 dependencies {
-	compile project(':smack-integration-test')
-	compile project(':smack-omemo-signal')
+	api project(':smack-integration-test')
+	api project(':smack-omemo-signal')
 }
 
 run {

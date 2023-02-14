@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.ox;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.jivesoftware.smackx.ox.util.SecretKeyBackupHelper;
 

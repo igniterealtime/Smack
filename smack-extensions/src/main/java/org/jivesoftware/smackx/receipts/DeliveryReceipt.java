@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -102,7 +103,7 @@ public class DeliveryReceipt implements ExtensionElement {
 
         @Override
         protected DeliveryReceipt createReturnExtension(String currentElement, String currentNamespace,
-                Map<String, String> attributeMap, List<? extends ExtensionElement> content) {
+                Map<String, String> attributeMap, List<? extends XmlElement> content) {
             return new DeliveryReceipt(attributeMap.get("id"));
         }
 

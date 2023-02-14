@@ -28,7 +28,6 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -63,7 +62,7 @@ public class ConfigureFormTest extends SmackTestSuite {
         Node node = mgr.getNode("princely_musings");
 
         PubSub errorIq = new PubSub();
-        errorIq.setType(Type.error);
+        errorIq.setType(IQ.Type.error);
         errorIq.setFrom(PubSubManagerTest.DUMMY_PUBSUB_SERVICE);
         StanzaError error = StanzaError.getBuilder(Condition.forbidden).build();
         errorIq.setError(error);

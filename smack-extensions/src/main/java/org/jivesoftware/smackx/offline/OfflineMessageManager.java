@@ -178,7 +178,7 @@ public final class OfflineMessageManager extends Manager {
         });
         int pendingNodes = nodes.size();
         try (StanzaCollector messageCollector = connection().createStanzaCollector(messageFilter)) {
-            connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+            connection().sendIqRequestAndWaitForResponse(request);
             // Collect the received offline messages
             Message message;
             do {
@@ -249,7 +249,7 @@ public final class OfflineMessageManager extends Manager {
             item.setAction("remove");
             request.addItem(item);
         }
-        connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -265,6 +265,6 @@ public final class OfflineMessageManager extends Manager {
         OfflineMessageRequest request = new OfflineMessageRequest();
         request.setType(IQ.Type.set);
         request.setPurge(true);
-        connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(request);
     }
 }

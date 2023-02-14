@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar
+ * Copyright 2021 Florian Schmaus, 2020 Aditya Borikar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,31 @@
  */
 package org.jivesoftware.smack.c2s;
 
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.filter.MessageWithBodiesFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
+import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 import org.jxmpp.jid.EntityFullJid;
 
-public class SimpleXmppConnectionIntegrationTest extends AbstractSmackIntegrationTest {
+public class SimpleXmppConnectionIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
     public SimpleXmppConnectionIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 
-    @SmackIntegrationTest
-    public void createConnectionTest() throws TimeoutException, Exception {
+    @SmackIntegrationTest(connectionCount = 2)
+    public void createConnectionTest(List<AbstractXMPPConnection> connections) throws TimeoutException, Exception {
+        final AbstractXMPPConnection conOne = connections.get(0), conTwo = connections.get(1);
         EntityFullJid userTwo = conTwo.getUser();
 
         final String messageBody = testRunId + ": Hello from the other side!";

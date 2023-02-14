@@ -26,10 +26,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -52,6 +52,7 @@ public final class QueueDetails implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
     private static final String DATE_FORMAT = "yyyyMMdd'T'HH:mm:ss";
 
@@ -147,7 +148,7 @@ public final class QueueDetails implements ExtensionElement {
         @Override
         public QueueDetails parse(XmlPullParser parser,
                         int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
-                        IOException, SmackTextParseException {
+                        IOException, TextParseException, ParseException {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
             QueueDetails queueDetails = new QueueDetails();
@@ -178,19 +179,10 @@ public final class QueueDetails implements ExtensionElement {
                             time = Integer.parseInt(parser.nextText());
                         }
                         else if ("join-time".equals(parser.getName())) {
-                                try {
-                                    joinTime = dateFormat.parse(parser.nextText());
-                                } catch (ParseException e) {
-                                    throw new SmackParsingException.SmackTextParseException(e);
-                                }
+                                joinTime = dateFormat.parse(parser.nextText());
                         }
                         else if (parser.getName().equals("waitTime")) {
-                            Date wait;
-                            try {
-                                wait = dateFormat.parse(parser.nextText());
-                            } catch (ParseException e) {
-                                throw new SmackParsingException.SmackTextParseException(e);
-                            }
+                            Date wait = dateFormat.parse(parser.nextText());
                             LOGGER.fine(wait.toString());
                         }
 

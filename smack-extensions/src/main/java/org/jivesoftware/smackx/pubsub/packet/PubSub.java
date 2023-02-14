@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub.packet;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.pubsub.NodeExtension;
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
@@ -50,7 +50,7 @@ public class PubSub extends IQ {
     }
 
     @SuppressWarnings("unchecked")
-    public <PE extends ExtensionElement> PE getExtension(PubSubElementType elem) {
+    public <PE extends XmlElement> PE getExtension(PubSubElementType elem) {
         return (PE) getExtensionElement(elem.getElementName(), elem.getNamespace().getXmlns());
     }
 

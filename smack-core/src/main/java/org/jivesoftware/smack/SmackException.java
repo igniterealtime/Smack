@@ -206,6 +206,12 @@ public abstract class SmackException extends Exception {
         }
     }
 
+    public static class OutgoingQueueFullException extends SmackException {
+
+        private static final long serialVersionUID = 1L;
+
+    }
+
     public static class IllegalStateChangeException extends SmackException {
 
         /**

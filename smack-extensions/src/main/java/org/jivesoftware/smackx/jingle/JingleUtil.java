@@ -17,8 +17,10 @@
 package org.jivesoftware.smackx.jingle;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 
@@ -90,7 +92,7 @@ public class JingleUtil {
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
 
         Jingle jingle = createSessionInitiateFileOffer(recipient, sessionId, contentCreator, contentName, description, transport);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public IQ sendSessionInitiate(FullJid recipient,
@@ -100,12 +102,12 @@ public class JingleUtil {
                                   JingleContent.Senders contentSenders,
                                   JingleContentDescription description,
                                   JingleContentTransport transport)
-            throws SmackException.NotConnectedException, InterruptedException {
+            throws SmackException.NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         Jingle jingle = createSessionInitiate(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
 
-        return connection.createStanzaCollectorAndSend(jingle).nextResult();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionAccept(FullJid recipient,
@@ -142,12 +144,12 @@ public class JingleUtil {
                                 JingleContent.Senders contentSenders,
                                 JingleContentDescription description,
                                 JingleContentTransport transport)
-            throws SmackException.NotConnectedException, InterruptedException {
+            throws SmackException.NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         Jingle jingle = createSessionAccept(recipient, sessionId, contentCreator, contentName, contentSenders,
                 description, transport);
 
-        return connection.createStanzaCollectorAndSend(jingle).nextResult();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminate(FullJid recipient, String sessionId, JingleReason reason) {
@@ -176,7 +178,7 @@ public class JingleUtil {
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
 
         Jingle jingle = createSessionTerminateDecline(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateSuccess(FullJid recipient, String sessionId) {
@@ -188,7 +190,7 @@ public class JingleUtil {
             SmackException.NotConnectedException, SmackException.NoResponseException {
 
         Jingle jingle = createSessionTerminateSuccess(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateBusy(FullJid recipient, String sessionId) {
@@ -200,7 +202,7 @@ public class JingleUtil {
             SmackException.NotConnectedException, SmackException.NoResponseException {
 
         Jingle jingle = createSessionTerminateBusy(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateAlternativeSession(FullJid recipient, String sessionId, String altSessionId) {
@@ -212,7 +214,7 @@ public class JingleUtil {
             SmackException.NotConnectedException, SmackException.NoResponseException {
 
         Jingle jingle = createSessionTerminateAlternativeSession(recipient, sessionId, altSessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateCancel(FullJid recipient, String sessionId) {
@@ -225,7 +227,7 @@ public class JingleUtil {
             SmackException.NotConnectedException, SmackException.NoResponseException {
 
         Jingle jingle = createSessionTerminateCancel(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateContentCancel(FullJid recipient, String sessionId,
@@ -249,7 +251,7 @@ public class JingleUtil {
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateContentCancel(recipient, sessionId, contentCreator, contentName);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateUnsupportedTransports(FullJid recipient, String sessionId) {
@@ -260,7 +262,7 @@ public class JingleUtil {
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateUnsupportedTransports(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateFailedTransport(FullJid recipient, String sessionId) {
@@ -271,7 +273,7 @@ public class JingleUtil {
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateFailedTransport(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateUnsupportedApplications(FullJid recipient, String sessionId) {
@@ -282,7 +284,7 @@ public class JingleUtil {
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateUnsupportedApplications(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateFailedApplication(FullJid recipient, String sessionId) {
@@ -293,7 +295,7 @@ public class JingleUtil {
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateFailedApplication(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createSessionTerminateIncompatibleParameters(FullJid recipient, String sessionId) {
@@ -304,7 +306,7 @@ public class JingleUtil {
             throws InterruptedException, XMPPException.XMPPErrorException,
             SmackException.NotConnectedException, SmackException.NoResponseException {
         Jingle jingle = createSessionTerminateIncompatibleParameters(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public IQ sendContentRejectFileNotAvailable(FullJid recipient, String sessionId, JingleContentDescription description) {
@@ -327,7 +329,7 @@ public class JingleUtil {
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createSessionPing(recipient, sessionId);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public IQ createAck(Jingle jingle) {
@@ -362,7 +364,7 @@ public class JingleUtil {
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createTransportReplace(recipient, initiator, sessionId, contentCreator, contentName, transport);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createTransportAccept(FullJid recipient, FullJid initiator, String sessionId,
@@ -389,7 +391,7 @@ public class JingleUtil {
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createTransportAccept(recipient, initiator, sessionId, contentCreator, contentName, transport);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     public Jingle createTransportReject(FullJid recipient, FullJid initiator, String sessionId,
@@ -416,7 +418,7 @@ public class JingleUtil {
             throws SmackException.NotConnectedException, InterruptedException,
             XMPPException.XMPPErrorException, SmackException.NoResponseException {
         Jingle jingle = createTransportReject(recipient, initiator, sessionId, contentCreator, contentName, transport);
-        return connection.createStanzaCollectorAndSend(jingle).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(jingle);
     }
 
     /*

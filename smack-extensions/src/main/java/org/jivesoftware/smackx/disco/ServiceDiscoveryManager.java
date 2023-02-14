@@ -603,7 +603,7 @@ public final class ServiceDiscoveryManager extends Manager {
                 .setNode(node)
                 .build();
 
-        Stanza result = connection.createStanzaCollectorAndSend(discoInfoRequest).nextResultOrThrow();
+        Stanza result = connection.sendIqRequestAndWaitForResponse(discoInfoRequest);
 
         return (DiscoverInfo) result;
     }
@@ -642,7 +642,7 @@ public final class ServiceDiscoveryManager extends Manager {
         disco.setTo(entityID);
         disco.setNode(node);
 
-        Stanza result = connection().createStanzaCollectorAndSend(disco).nextResultOrThrow();
+        Stanza result = connection().sendIqRequestAndWaitForResponse(disco);
         return (DiscoverItems) result;
     }
 
@@ -919,6 +919,10 @@ public final class ServiceDiscoveryManager extends Manager {
 
     public boolean addEntityCapabilitiesChangedListener(EntityCapabilitiesChangedListener entityCapabilitiesChangedListener) {
         return entityCapabilitiesChangedListeners.add(entityCapabilitiesChangedListener);
+    }
+
+    public boolean removeEntityCapabilitiesChangedListener(EntityCapabilitiesChangedListener entityCapabilitiesChangedListener) {
+        return entityCapabilitiesChangedListeners.remove(entityCapabilitiesChangedListener);
     }
 
     private static final int RENEW_ENTITY_CAPS_DELAY_MILLIS = 25;

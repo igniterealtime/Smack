@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
@@ -57,7 +56,7 @@ public class MamQueryIQProviderTest {
         IQ iq1 = PacketParserUtils.parseStanza(exampleMamQueryIQ1);
         MamQueryIQ mamQueryIQ1 = (MamQueryIQ) iq1;
 
-        assertEquals(mamQueryIQ1.getType(), Type.set);
+        assertEquals(mamQueryIQ1.getType(), IQ.Type.set);
         assertEquals(mamQueryIQ1.getQueryId(), "test");
 
         DataForm dataForm1 = (DataForm) mamQueryIQ1.getExtension(DataForm.NAMESPACE);
@@ -73,7 +72,7 @@ public class MamQueryIQProviderTest {
         IQ iq2 = PacketParserUtils.parseStanza(exampleMamQueryIQ2);
         MamQueryIQ mamQueryIQ2 = (MamQueryIQ) iq2;
 
-        assertEquals(mamQueryIQ2.getType(), Type.result);
+        assertEquals(mamQueryIQ2.getType(), IQ.Type.result);
         assertNull(mamQueryIQ2.getQueryId());
 
         DataForm dataForm2 = (DataForm) mamQueryIQ2.getExtension(DataForm.NAMESPACE);

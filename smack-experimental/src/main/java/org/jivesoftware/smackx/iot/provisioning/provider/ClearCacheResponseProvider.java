@@ -16,16 +16,17 @@
  */
 package org.jivesoftware.smackx.iot.provisioning.provider;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCacheResponse;
 
-public class ClearCacheResponseProvider extends IQProvider<ClearCacheResponse> {
+public class ClearCacheResponseProvider extends IqProvider<ClearCacheResponse> {
 
     @Override
-    public ClearCacheResponse parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public ClearCacheResponse parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
         return new ClearCacheResponse();
     }
 

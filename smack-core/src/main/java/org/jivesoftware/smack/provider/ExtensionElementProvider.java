@@ -17,7 +17,7 @@
 
 package org.jivesoftware.smack.provider;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
 /**
  * An abstract class for parsing custom extensions elements. Each ExtensionElementProvider must
@@ -26,6 +26,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  *
  * @author Matt Tucker
  */
-public abstract class ExtensionElementProvider<EE extends ExtensionElement> extends Provider<EE> {
+public abstract class ExtensionElementProvider<E extends XmlElement> extends Provider<E> {
 
 }

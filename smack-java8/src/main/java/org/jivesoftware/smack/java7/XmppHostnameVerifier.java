@@ -245,7 +245,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
      *
      * @param expectedIP TODO javadoc me please
      * @param cert TODO javadoc me please
-     * @throws CertificateException
+     * @throws CertificateException in case of a certificate issue.
      */
     private static void matchIp(String expectedIP, X509Certificate cert)
                     throws CertificateException {

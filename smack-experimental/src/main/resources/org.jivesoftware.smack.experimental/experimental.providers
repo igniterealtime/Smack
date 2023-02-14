@@ -35,6 +35,26 @@
         <namespace>urn:xmpp:mam:2</namespace>
         <className>org.jivesoftware.smackx.mam.provider.MamResultProvider</className>
     </extensionProvider>
+    <iqProvider>
+        <elementName>prefs</elementName>
+        <namespace>urn:xmpp:mam:1</namespace>
+        <className>org.jivesoftware.smackx.mam.provider.MamPrefsIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>query</elementName>
+        <namespace>urn:xmpp:mam:1</namespace>
+        <className>org.jivesoftware.smackx.mam.provider.MamQueryIQProvider</className>
+    </iqProvider>
+    <iqProvider>
+        <elementName>fin</elementName>
+        <namespace>urn:xmpp:mam:1</namespace>
+        <className>org.jivesoftware.smackx.mam.provider.MamFinIQProvider</className>
+    </iqProvider>
+    <extensionProvider>
+        <elementName>result</elementName>
+        <namespace>urn:xmpp:mam:1</namespace>
+        <className>org.jivesoftware.smackx.mam.provider.MamResultProvider</className>
+    </extensionProvider>
 
     <!-- XEP-0323: Internet of Things - Data -->
     <iqProvider>

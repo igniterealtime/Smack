@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2020 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,12 @@
  */
 package org.jivesoftware.smackx.carbons.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.forward.packet.Forwarded;
@@ -34,7 +37,7 @@ import org.jivesoftware.smackx.forward.packet.Forwarded;
  *
  * @author Georg Lukas
  */
-public class CarbonExtension implements ExtensionElement {
+public class CarbonExtension implements XmlElement {
     public static final String NAMESPACE = Carbon.NAMESPACE;
 
     private final Direction dir;
@@ -136,6 +139,7 @@ public class CarbonExtension implements ExtensionElement {
     public static final class Private implements ExtensionElement {
         public static final Private INSTANCE = new Private();
         public static final String ELEMENT = "private";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private Private() {
         }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public interface StanzaView extends XmlLangElement {
      */
     StanzaError getError();
 
-    ExtensionElement getExtension(QName qname);
+    XmlElement getExtension(QName qname);
 
     default boolean hasExtension(QName qname) {
         return getExtension(qname) != null;
@@ -78,7 +78,7 @@ public interface StanzaView extends XmlLangElement {
      * @return true if a stanza extension exists, false otherwise.
      */
     default boolean hasExtension(String namespace) {
-        for (ExtensionElement packetExtension : getExtensions()) {
+        for (XmlElement packetExtension : getExtensions()) {
             if (packetExtension.getNamespace().equals(namespace)) {
                 return true;
             }
@@ -89,7 +89,7 @@ public interface StanzaView extends XmlLangElement {
 
     default <E extends ExtensionElement> E getExtension(Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);
-        ExtensionElement extensionElement = getExtension(qname);
+        XmlElement extensionElement = getExtension(qname);
 
         if (extensionElement == null) {
             return null;
@@ -103,9 +103,9 @@ public interface StanzaView extends XmlLangElement {
      *
      * @return a list of all extension elements of this stanza.
      */
-    List<ExtensionElement> getExtensions();
+    List<XmlElement> getExtensions();
 
-    List<ExtensionElement> getExtensions(QName qname);
+    List<XmlElement> getExtensions(QName qname);
 
     /**
      * Return all extension elements of the given type. Returns the empty list if there a none.

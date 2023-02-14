@@ -19,9 +19,10 @@ package org.jivesoftware.smackx.pubsub.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -35,9 +36,9 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  *
  * @author Robin Collier
  */
-public class PubSubProvider extends IQProvider<PubSub> {
+public class PubSubProvider extends IqProvider<PubSub> {
     @Override
-    public PubSub parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public PubSub parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String namespace = parser.getNamespace();
         PubSubNamespace pubSubNamespace = PubSubNamespace.valueOfFromXmlns(namespace);
         PubSub pubsub = new PubSub(pubSubNamespace);

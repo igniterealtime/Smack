@@ -128,7 +128,7 @@ public final class IoTControlManager extends IoTManager {
     public IoTSetResponse setUsingIq(FullJid jid, Collection<? extends SetData> data) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         IoTSetRequest request = new IoTSetRequest(data);
         request.setTo(jid);
-        IoTSetResponse response = connection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        IoTSetResponse response = connection().sendIqRequestAndWaitForResponse(request);
         return response;
     }
 

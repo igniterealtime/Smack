@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * Smack API for XEP-0374: OpenPGP for XMPP: Instant Messaging.
+ * Smack API for XEP-0374: OpenPGP for XMPP: Instant Messaging. See {@link OXInstantMessagingManager} for more details.
  */
 package org.jivesoftware.smackx.ox_im;

@@ -191,7 +191,7 @@ public final class IoTDataManager extends IoTManager {
         StanzaCollector dataCollector = connection.createStanzaCollector(dataCollectorConfiguration);
 
         try {
-            connection.createStanzaCollectorAndSend(iotDataRequest).nextResultOrThrow();
+            connection.sendIqRequestAndWaitForResponse(iotDataRequest);
             // Wait until a message with an IoTFieldsExtension and the done flag comes in.
             doneCollector.nextResult();
         }

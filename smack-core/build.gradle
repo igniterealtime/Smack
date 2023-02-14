@@ -11,10 +11,10 @@ ext {
 }
 
 dependencies {
-	compile project(':smack-xmlparser')
-	compile "org.jxmpp:jxmpp-core:$jxmppVersion"
-	compile "org.jxmpp:jxmpp-jid:$jxmppVersion"
-	compile "org.minidns:minidns-core:$miniDnsVersion"
+	api project(':smack-xmlparser')
+	api "org.jxmpp:jxmpp-core:$jxmppVersion"
+	api "org.jxmpp:jxmpp-jid:$jxmppVersion"
+	api "org.minidns:minidns-core:$miniDnsVersion"
 
 	testFixturesImplementation project(':smack-xmlparser-stax')
 	testFixturesImplementation project(':smack-xmlparser-xpp3')
@@ -23,7 +23,7 @@ dependencies {
 	// 'implementation' here since there is no need to shadow it
 	// outside of the fixtures compilation classpath. That is, no test
 	// should ever setup Bouncy Castle as security provider explicitly.
-	testFixturesImplementation "org.bouncycastle:bcprov-jdk15on:${bouncyCastleVersion}"
+	testFixturesImplementation "org.bouncycastle:bcprov-jdk18on:${bouncyCastleVersion}"
 	testFixturesImplementation 'org.apache.commons:commons-lang3:3.10'
 
 	testFixturesApi "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
@@ -38,7 +38,7 @@ dependencies {
 	testFixturesApi "org.assertj:assertj-core:3.11.1"
 	testFixturesApi "org.xmlunit:xmlunit-assertj:$xmlUnitVersion"
 	testFixturesApi 'org.hamcrest:hamcrest-library:2.2'
-	testFixturesApi 'com.google.guava:guava:28.2-jre'
+	testFixturesApi "com.google.guava:guava:${guavaVersion}"
 }
 
 class CreateFileTask extends DefaultTask {

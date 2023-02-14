@@ -23,7 +23,7 @@ package org.jivesoftware.smack.packet;
  * <p>
  * Please note that usage of this interface is <b>discouraged</b>. The reason is that every XML element is fully
  * qualified, i.e., it is qualified by a namespace. The namespace may not be explicitly given, but instead, is inherited
- * from an outer element. Use {@link FullyQualifiedElement} instead when possible.
+ * from an outer element. Use {@link XmlElement} instead when possible.
  * </p>
  */
 public interface NamedElement extends Element {

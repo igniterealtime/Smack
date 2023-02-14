@@ -30,7 +30,6 @@ import org.jivesoftware.smackx.mediaelement.element.MediaElement;
 import org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-import org.jivesoftware.smackx.xdata.packet.DataForm.Type;
 
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
@@ -70,7 +69,7 @@ public class SoftwareInfoManagerTest {
     }
 
     public static SoftwareInfoForm buildSoftwareInfoFromDataForm() throws URISyntaxException {
-        DataForm.Builder dataFormBuilder = DataForm.builder(Type.result);
+        DataForm.Builder dataFormBuilder = DataForm.builder(DataForm.Type.result);
         dataFormBuilder.addField(FormField.buildHiddenFormType(SoftwareInfoForm.FORM_TYPE));
         dataFormBuilder.addField(FormField.builder("icon")
                                    .addFormFieldChildElement(createMediaElement())

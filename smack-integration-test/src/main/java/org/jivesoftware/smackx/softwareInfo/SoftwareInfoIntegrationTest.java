@@ -73,10 +73,10 @@ public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
                                        .build();
 
         SoftwareInfoForm softwareInfoForm = builder.setIcon(mediaElement)
-                                                   .setOS("Windows")
-                                                   .setOSVersion("XP")
-                                                   .setSoftware("Exodus")
-                                                   .setSoftwareVersion("0.9.1")
+                                                   .setOS("Linux")
+                                                   .setOSVersion("Debian")
+                                                   .setSoftware("Gajim")
+                                                   .setSoftwareVersion("1.4.0")
                                                    .build();
         return softwareInfoForm;
     }

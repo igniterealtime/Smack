@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.jivesoftware.smackx.csi.packet;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Nonza;
@@ -77,12 +79,19 @@ public class ClientStateIndication {
         public static final Feature INSTANCE = new Feature();
         public static final String ELEMENT = "csi";
 
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         private Feature() {
         }
 
         @Override
         public String getElementName() {
-            return ELEMENT;
+            return QNAME.getLocalPart();
+        }
+
+        @Override
+        public String getNamespace() {
+            return QNAME.getNamespaceURI();
         }
 
         @Override
@@ -90,9 +99,5 @@ public class ClientStateIndication {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 
-        @Override
-        public String getNamespace() {
-            return NAMESPACE;
-        }
     }
 }

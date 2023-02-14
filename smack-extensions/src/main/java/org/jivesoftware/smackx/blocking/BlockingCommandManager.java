@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2017 Fernando Ramirez, 2016-2020 Florian Schmaus
+ * Copyright 2016-2017 Fernando Ramirez, 2016-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
@@ -45,7 +44,15 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.jid.Jid;
 
 /**
- * Blocking command manager class.
+ * Block communications with contancts and other entities using XEP-0191.
+ * Allows to
+ * <ul>
+ * <li>Check push notifications support</li>
+ * <li>Get blocking list</li>
+ * <li>Block contact</li>
+ * <li>Unblock conact</li>
+ * <li>Unblock all</li>
+ * </ul>
  *
  * @author Fernando Ramirez
  * @author Florian Schmaus
@@ -97,7 +104,7 @@ public final class BlockingCommandManager extends Manager {
 
         // block IQ handler
         connection.registerIQRequestHandler(
-                new AbstractIqRequestHandler(BlockContactsIQ.ELEMENT, BlockContactsIQ.NAMESPACE, Type.set, Mode.sync) {
+                new AbstractIqRequestHandler(BlockContactsIQ.ELEMENT, BlockContactsIQ.NAMESPACE, IQ.Type.set, Mode.sync) {
                     @Override
                     public IQ handleIQRequest(IQ iqRequest) {
                         BlockContactsIQ blockContactIQ = (BlockContactsIQ) iqRequest;
@@ -119,7 +126,7 @@ public final class BlockingCommandManager extends Manager {
 
         // unblock IQ handler
         connection.registerIQRequestHandler(new AbstractIqRequestHandler(UnblockContactsIQ.ELEMENT,
-                UnblockContactsIQ.NAMESPACE, Type.set, Mode.sync) {
+                UnblockContactsIQ.NAMESPACE, IQ.Type.set, Mode.sync) {
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
                 UnblockContactsIQ unblockContactIQ = (UnblockContactsIQ) iqRequest;
@@ -185,7 +192,7 @@ public final class BlockingCommandManager extends Manager {
 
         if (blockListCached == null) {
             BlockListIQ blockListIQ = new BlockListIQ();
-            BlockListIQ blockListIQResult = connection().createStanzaCollectorAndSend(blockListIQ).nextResultOrThrow();
+            BlockListIQ blockListIQResult = connection().sendIqRequestAndWaitForResponse(blockListIQ);
             blockListCached = blockListIQResult.getBlockedJidsCopy();
         }
 
@@ -204,7 +211,7 @@ public final class BlockingCommandManager extends Manager {
     public void blockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         BlockContactsIQ blockContactIQ = new BlockContactsIQ(jids);
-        connection().createStanzaCollectorAndSend(blockContactIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(blockContactIQ);
     }
 
     /**
@@ -219,7 +226,7 @@ public final class BlockingCommandManager extends Manager {
     public void unblockContacts(List<Jid> jids)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ(jids);
-        connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(unblockContactIQ);
     }
 
     /**
@@ -233,7 +240,7 @@ public final class BlockingCommandManager extends Manager {
     public void unblockAll()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         UnblockContactsIQ unblockContactIQ = new UnblockContactsIQ();
-        connection().createStanzaCollectorAndSend(unblockContactIQ).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(unblockContactIQ);
     }
 
     public void addJidsBlockedListener(JidsBlockedListener jidsBlockedListener) {

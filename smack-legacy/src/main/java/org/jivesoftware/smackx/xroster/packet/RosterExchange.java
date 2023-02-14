@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
@@ -50,6 +52,8 @@ import org.jivesoftware.smackx.xroster.RosterExchangeManager;
  * @author Gaston Dombiak
  */
 public class RosterExchange implements ExtensionElement {
+
+    public static final QName QNAME = new QName(RosterExchangeManager.NAMESPACE, RosterExchangeManager.ELEMENT);
 
     private final List<RemoteRosterEntry> remoteRosterEntries = new ArrayList<>();
 
@@ -113,7 +117,7 @@ public class RosterExchange implements ExtensionElement {
     */
     @Override
     public String getElementName() {
-        return RosterExchangeManager.ELEMENT;
+        return QNAME.getLocalPart();
     }
 
     /**
@@ -125,7 +129,7 @@ public class RosterExchange implements ExtensionElement {
      */
     @Override
     public String getNamespace() {
-        return RosterExchangeManager.NAMESPACE;
+        return QNAME.getNamespaceURI();
     }
 
     /**

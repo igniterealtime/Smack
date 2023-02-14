@@ -23,10 +23,11 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -73,7 +74,7 @@ public class UserSearch extends SimpleIQ {
         search.setType(IQ.Type.get);
         search.setTo(searchService);
 
-        IQ response = con.createStanzaCollectorAndSend(search).nextResultOrThrow();
+        IQ response = con.sendIqRequestAndWaitForResponse(search);
         return DataForm.from(response, NAMESPACE);
     }
 
@@ -95,7 +96,7 @@ public class UserSearch extends SimpleIQ {
         search.setTo(searchService);
         search.addExtension(searchForm);
 
-        IQ response = con.createStanzaCollectorAndSend(search).nextResultOrThrow();
+        IQ response = con.sendIqRequestAndWaitForResponse(search);
         return ReportedData.getReportedDataFrom(response);
     }
 
@@ -117,18 +118,18 @@ public class UserSearch extends SimpleIQ {
         search.setType(IQ.Type.set);
         search.setTo(searchService);
 
-        SimpleUserSearch response = con.createStanzaCollectorAndSend(search).nextResultOrThrow();
+        SimpleUserSearch response = con.sendIqRequestAndWaitForResponse(search);
         return response.getReportedData();
     }
 
     /**
      * Internal Search service Provider.
      */
-    public static class Provider extends IQProvider<IQ> {
+    public static class Provider extends IqProvider<IQ> {
 
         // FIXME this provider does return two different types of IQs
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
             UserSearch search = null;
             SimpleUserSearch simpleUserSearch = new SimpleUserSearch();
 

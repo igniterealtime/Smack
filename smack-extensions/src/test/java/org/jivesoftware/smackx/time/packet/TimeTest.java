@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,10 @@ public class TimeTest extends SmackTestSuite {
     @Test
     public void parseCurrentTimeTest() {
         Calendar calendar = Calendar.getInstance();
-        Time time = new Time(calendar);
+        Time time = Time.builder("dummy")
+                        .ofType(IQ.Type.result)
+                        .setTime(calendar)
+                        .build();
 
         Date date = time.getTime();
         Date calendarDate = calendar.getTime();
@@ -43,7 +47,10 @@ public class TimeTest extends SmackTestSuite {
     public void negativeTimezoneTest() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT-830"));
-        Time time = new Time(calendar);
+        Time time = Time.builder("dummy")
+                        .ofType(IQ.Type.result)
+                        .setTime(calendar)
+                        .build();
 
         assertEquals("-8:30", time.getTzo());
     }
@@ -52,7 +59,10 @@ public class TimeTest extends SmackTestSuite {
     public void positiveTimezoneTest() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+830"));
-        Time time = new Time(calendar);
+        Time time = Time.builder("dummy")
+                        .ofType(IQ.Type.result)
+                        .setTime(calendar)
+                        .build();
 
         assertEquals("+8:30", time.getTzo());
     }

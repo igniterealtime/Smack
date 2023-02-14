@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.jivesoftware.smack.util.Objects;
  * A filter for Presence types. Returns true only if the stanza is an Presence stanza and it matches the type provided in the
  * constructor.
  */
+@SuppressWarnings("BadImport")
 public final class PresenceTypeFilter extends FlexibleStanzaTypeFilter<Presence> {
 
     public static final PresenceTypeFilter AVAILABLE = new PresenceTypeFilter(Type.available);

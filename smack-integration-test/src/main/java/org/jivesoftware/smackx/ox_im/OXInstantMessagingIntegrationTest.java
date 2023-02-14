@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -103,8 +102,6 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
     @SmackIntegrationTest
     public void basicInstantMessagingTest()
             throws Exception {
-
-        LOGGER.log(Level.INFO, aliceStorePath.getAbsolutePath() + " " + bobStorePath.getAbsolutePath());
 
         final SimpleResultSyncPoint bobReceivedMessage = new SimpleResultSyncPoint();
         final String body = "Writing integration tests is an annoying task, but it has to be done, so lets do it!!!";

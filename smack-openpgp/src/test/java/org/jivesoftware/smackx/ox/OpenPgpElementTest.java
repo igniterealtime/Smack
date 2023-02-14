@@ -16,12 +16,11 @@
  */
 package org.jivesoftware.smackx.ox;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -35,7 +34,6 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-
 import org.jivesoftware.smackx.ox.element.CryptElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 import org.jivesoftware.smackx.ox.element.SignElement;
@@ -88,6 +86,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         assertNotNull(element.getTimestamp());
     }
 
+    @SuppressWarnings("UndefinedEquals")
     @Test
     public void signElementProviderTest() throws Exception {
         String expected =
@@ -114,6 +113,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         assertEquals(element.getExtensions(), parsed.getExtensions());
     }
 
+    @SuppressWarnings("UndefinedEquals")
     @Test
     public void cryptElementProviderTest() throws Exception {
         String expected =
@@ -144,6 +144,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
         assertEquals(element.getExtensions(), parsed.getExtensions());
     }
 
+    @SuppressWarnings("UndefinedEquals")
     @Test
     public void signcryptElementProviderTest() throws Exception {
         String expected =
@@ -177,7 +178,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
     }
 
     @Test
-    public void openPgpContentElementProvider_invalidElementTest() throws IOException, XmlPullParserException {
+    public void openPgpContentElementProvider_invalidElementTest() {
         String invalidElementXML = "<payload>" +
                 "<body xmlns='jabber:client' xml:lang='en'>This is a secret message.</body>" +
                 "</payload>";

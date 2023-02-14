@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
@@ -26,7 +26,7 @@ import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 /**
  * Small class to collect key (byte[]), its id and whether its a preKey or not.
  */
-public class OmemoKeyElement implements FullyQualifiedElement {
+public class OmemoKeyElement implements XmlElement {
 
     public static final String ELEMENT = "key";
     public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;

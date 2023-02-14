@@ -344,7 +344,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     @Deprecated
     // TODO: Remove when stanza builder is ready.
     public boolean removeBody(Body body) {
-        ExtensionElement removedElement = removeExtension(body);
+        XmlElement removedElement = removeExtension(body);
         return removedElement != null;
     }
 

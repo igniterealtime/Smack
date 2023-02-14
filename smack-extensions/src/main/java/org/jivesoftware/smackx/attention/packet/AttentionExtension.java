@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.attention.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -44,6 +46,8 @@ public class AttentionExtension implements ExtensionElement {
      */
     public static final String NAMESPACE = "urn:xmpp:attention:0";
 
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
+
     /*
      * (non-Javadoc)
      *
@@ -51,7 +55,7 @@ public class AttentionExtension implements ExtensionElement {
      */
     @Override
     public String getElementName() {
-        return ELEMENT_NAME;
+        return QNAME.getLocalPart();
     }
 
     /*
@@ -61,7 +65,7 @@ public class AttentionExtension implements ExtensionElement {
      */
     @Override
     public String getNamespace() {
-        return NAMESPACE;
+        return QNAME.getNamespaceURI();
     }
 
     /*

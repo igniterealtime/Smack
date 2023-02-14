@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 
 import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
 
@@ -70,7 +69,7 @@ public abstract class IoTManager extends Manager {
 
     protected abstract class IoTIqRequestHandler extends AbstractIqRequestHandler {
 
-        protected IoTIqRequestHandler(String element, String namespace, Type type, Mode mode) {
+        protected IoTIqRequestHandler(String element, String namespace, IQ.Type type, Mode mode) {
             super(element, namespace, type, mode);
         }
 

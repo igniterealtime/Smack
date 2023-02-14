@@ -237,7 +237,7 @@ public class PingTest extends SmackTestSuite {
     /**
      * The returned connection won't send replies to IQs
      *
-     * @return
+     * @return a dummy connection.
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws IOException if an I/O error occurred.
      * @throws SmackException if Smack detected an exceptional situation.

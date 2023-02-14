@@ -3,5 +3,5 @@ Smack GUI debugger.
 Inspect the exchanged XMPP stanzas."""
 
 dependencies {
-	compile project(':smack-core')
+	api project(':smack-core')
 }

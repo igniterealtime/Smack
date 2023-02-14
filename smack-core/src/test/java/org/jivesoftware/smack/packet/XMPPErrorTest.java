@@ -20,17 +20,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.StanzaError.Condition;
-import org.jivesoftware.smack.packet.StanzaError.Type;
-
 import org.junit.Test;
 
 public class XMPPErrorTest {
     @Test
     public void testConditionHasDefaultTypeMapping() throws NoSuchFieldException, IllegalAccessException {
-        Map<Condition, Type> conditionToTypeMap = StanzaError.CONDITION_TO_TYPE;
+        Map<StanzaError.Condition, StanzaError.Type> conditionToTypeMap = StanzaError.CONDITION_TO_TYPE;
         assertEquals("CONDITION_TO_TYPE map is likely out of sync with Condition enum",
-                Condition.values().length,
+                StanzaError.Condition.values().length,
                 conditionToTypeMap.size());
     }
 }

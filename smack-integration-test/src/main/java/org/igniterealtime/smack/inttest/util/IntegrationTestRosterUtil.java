@@ -24,6 +24,7 @@ import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.roster.AbstractPresenceEventListener;
 import org.jivesoftware.smack.roster.PresenceEventListener;
 import org.jivesoftware.smack.roster.Roster;
@@ -99,7 +100,16 @@ public class IntegrationTestRosterUtil {
         if (c2Entry == null) {
             return;
         }
-        roster.removeEntry(c2Entry);
+        try {
+            roster.removeEntry(c2Entry);
+        } catch (XMPPErrorException e) {
+            // Account for race conditions: server-sided, the item might already have been removed.
+            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
+                // Trying to remove non-existing item. As it needs to be gone, this is fine.
+                return;
+            }
+            throw e;
+        }
     }
 
 }

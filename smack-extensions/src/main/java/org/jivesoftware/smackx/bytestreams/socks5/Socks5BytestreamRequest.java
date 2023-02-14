@@ -311,7 +311,7 @@ public class Socks5BytestreamRequest implements BytestreamRequest {
      * Cancels the SOCKS5 Bytestream request by sending an error to the initiator and building a
      * XMPP exception.
      *
-     * @param streamHosts the stream hosts.
+     * @param streamHostsExceptions the stream hosts and their exceptions.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws CouldNotConnectToAnyProvidedSocks5Host as expected result.

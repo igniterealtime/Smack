@@ -57,6 +57,10 @@ public class JidSingleFormField extends SingleValueFormField {
         }
 
         public Builder setValue(Jid value) {
+            return setValue(value, null);
+        }
+
+        public Builder setValue(Jid value, String rawValue) {
             this.value = value;
             this.rawValue = new Value(value);
             return getThis();

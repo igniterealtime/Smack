@@ -43,7 +43,7 @@ public class Agent {
     public static Collection<String> getWorkgroups(Jid serviceJID, Jid agentJID, XMPPConnection connection) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AgentWorkgroups request = new AgentWorkgroups(agentJID);
         request.setTo(serviceJID);
-        AgentWorkgroups response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        AgentWorkgroups response = connection.sendIqRequestAndWaitForResponse(request);
         return response.getWorkgroups();
     }
 
@@ -78,7 +78,7 @@ public class Agent {
         agentInfo.setType(IQ.Type.get);
         agentInfo.setTo(workgroupJID);
         agentInfo.setFrom(getUser());
-        AgentInfo response = connection.createStanzaCollectorAndSend(agentInfo).nextResultOrThrow();
+        AgentInfo response = connection.sendIqRequestAndWaitForResponse(agentInfo);
         return response.getName();
     }
 
@@ -100,6 +100,6 @@ public class Agent {
         agentInfo.setTo(workgroupJID);
         agentInfo.setFrom(getUser());
         agentInfo.setName(newName);
-        connection.createStanzaCollectorAndSend(agentInfo).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(agentInfo);
     }
 }

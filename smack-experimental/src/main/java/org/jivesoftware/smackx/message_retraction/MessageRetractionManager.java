@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.packet.MessageBuilder;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.message_fastening.element.FasteningElement;
 import org.jivesoftware.smackx.message_retraction.element.RetractElement;

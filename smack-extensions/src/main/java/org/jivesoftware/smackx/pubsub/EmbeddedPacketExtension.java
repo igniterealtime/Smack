@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
 /**
@@ -37,11 +38,11 @@ import org.jivesoftware.smack.util.PacketParserUtils;
  *
  * @author Robin Collier
  */
-public interface EmbeddedPacketExtension extends ExtensionElement {
+public interface EmbeddedPacketExtension extends XmlElement {
     /**
      * Get the list of embedded {@link ExtensionElement} objects.
      *
      * @return List of embedded {@link ExtensionElement}
      */
-    List<ExtensionElement> getExtensions();
+    List<XmlElement> getExtensions();
 }

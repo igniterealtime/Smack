@@ -67,7 +67,7 @@ public final class MucEnterConfiguration {
         else {
             joinPresenceBuilder = builder.joinPresence.asBuilder();
         }
-        // Indicate the the client supports MUC
+        // Indicate the client supports MUC
         joinPresenceBuilder.addExtension(new MUCInitialPresence(password, maxChars, maxStanzas, seconds,
                         since));
         joinPresence = joinPresenceBuilder.build();

@@ -25,8 +25,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -38,7 +39,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gaston Dombiak
  */
-public class TranscriptsProvider extends IQProvider<Transcripts> {
+public class TranscriptsProvider extends IqProvider<Transcripts> {
 
     @SuppressWarnings("DateFormatConstant")
     private static final SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
@@ -47,7 +48,8 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     }
 
     @Override
-    public Transcripts parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Transcripts parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, TextParseException, ParseException {
         Jid userID = ParserUtils.getJidAttribute(parser, "userID");
         List<Transcripts.TranscriptSummary> summaries = new ArrayList<>();
 
@@ -56,7 +58,8 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("transcript")) {
-                    summaries.add(parseSummary(parser));
+                    Transcripts.TranscriptSummary summary = parseSummary(parser);
+                    summaries.add(summary);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
@@ -70,7 +73,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     }
 
     private static Transcripts.TranscriptSummary parseSummary(XmlPullParser parser)
-                    throws IOException, XmlPullParserException {
+                    throws IOException, XmlPullParserException, ParseException {
         String sessionID =  parser.getAttributeValue("", "sessionID");
         Date joinTime = null;
         Date leftTime = null;
@@ -81,18 +84,14 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("joinTime")) {
-                    try {
-                        synchronized (UTC_FORMAT) {
-                            joinTime = UTC_FORMAT.parse(parser.nextText());
-                        }
-                    } catch (ParseException e) { }
+                    synchronized (UTC_FORMAT) {
+                        joinTime = UTC_FORMAT.parse(parser.nextText());
+                     }
                 }
                 else if (parser.getName().equals("leftTime")) {
-                    try {
-                        synchronized (UTC_FORMAT) {
-                            leftTime = UTC_FORMAT.parse(parser.nextText());
-                        }
-                    } catch (ParseException e) { }
+                    synchronized (UTC_FORMAT) {
+                        leftTime = UTC_FORMAT.parse(parser.nextText());
+                    }
                 }
                 else if (parser.getName().equals("agents")) {
                     agents = parseAgents(parser);
@@ -109,7 +108,7 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
     }
 
     private static List<Transcripts.AgentDetail> parseAgents(XmlPullParser parser)
-                    throws IOException, XmlPullParserException {
+                    throws IOException, XmlPullParserException, ParseException {
         List<Transcripts.AgentDetail> agents = new ArrayList<>();
         String agentJID =  null;
         Date joinTime = null;
@@ -123,18 +122,14 @@ public class TranscriptsProvider extends IQProvider<Transcripts> {
                     agentJID = parser.nextText();
                 }
                 else if (parser.getName().equals("joinTime")) {
-                    try {
-                        synchronized (UTC_FORMAT) {
-                            joinTime = UTC_FORMAT.parse(parser.nextText());
-                        }
-                    } catch (ParseException e) { }
+                    synchronized (UTC_FORMAT) {
+                        joinTime = UTC_FORMAT.parse(parser.nextText());
+                    }
                 }
                 else if (parser.getName().equals("leftTime")) {
-                    try {
-                        synchronized (UTC_FORMAT) {
-                            leftTime = UTC_FORMAT.parse(parser.nextText());
-                        }
-                    } catch (ParseException e) { }
+                    synchronized (UTC_FORMAT) {
+                        leftTime = UTC_FORMAT.parse(parser.nextText());
+                    }
                 }
                 else if (parser.getName().equals("agent")) {
                     agentJID =  null;

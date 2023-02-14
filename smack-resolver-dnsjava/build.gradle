@@ -3,6 +3,6 @@ DNS SRV with dnsjava
 Use dnsjava for DNS SRV lookups."""
 
 dependencies {
-	compile project(':smack-core')
-	compile 'dnsjava:dnsjava:[3.0.0,3.0.9999]'
+	api project(':smack-core')
+	implementation 'dnsjava:dnsjava:[3.0.0,3.0.9999]'
 }

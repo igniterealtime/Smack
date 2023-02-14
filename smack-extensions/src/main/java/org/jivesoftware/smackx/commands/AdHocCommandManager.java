@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -520,8 +519,8 @@ public final class AdHocCommandManager extends Manager {
     private void sessionSweeper() {
         final long currentTime = System.currentTimeMillis();
         synchronized (this) {
-            for (Iterator<Entry<String, LocalCommand>> it = executingCommands.entrySet().iterator(); it.hasNext();) {
-                Entry<String, LocalCommand> entry = it.next();
+            for (Iterator<Map.Entry<String, LocalCommand>> it = executingCommands.entrySet().iterator(); it.hasNext();) {
+                Map.Entry<String, LocalCommand> entry = it.next();
                 LocalCommand command = entry.getValue();
 
                 long creationStamp = command.getCreationDate();
@@ -561,7 +560,6 @@ public final class AdHocCommandManager extends Manager {
      *
      * @param response the response to send.
      * @param condition the condition of the error.
-     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     private static IQ respondError(AdHocCommandData response,
             StanzaError.Condition condition) {
@@ -574,7 +572,6 @@ public final class AdHocCommandManager extends Manager {
      * @param response the response to send.
      * @param condition the condition of the error.
      * @param specificCondition the adhoc command error condition.
-     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     private static IQ respondError(AdHocCommandData response, StanzaError.Condition condition,
             AdHocCommand.SpecificErrorCondition specificCondition) {
@@ -589,7 +586,6 @@ public final class AdHocCommandManager extends Manager {
      *
      * @param response the response to send.
      * @param error the error to send.
-     * @throws NotConnectedException if the XMPP connection is not connected.
      */
     private static IQ respondError(AdHocCommandData response, StanzaError error) {
         response.setType(IQ.Type.error);
@@ -608,8 +604,8 @@ public final class AdHocCommandManager extends Manager {
      * @throws NoSuchMethodException if no such method is declared
      * @throws InvocationTargetException if a reflection-based method or constructor invocation threw.
      * @throws IllegalArgumentException if an illegal argument was given.
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     * @throws IllegalAccessException in case of an illegal access.
+     * @throws InstantiationException in case of an instantiation error.
      */
     private LocalCommand newInstanceOfCmd(String commandNode, String sessionID)
                     throws XMPPErrorException, InstantiationException, IllegalAccessException, IllegalArgumentException,

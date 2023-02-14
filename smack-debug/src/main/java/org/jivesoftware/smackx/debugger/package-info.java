@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2022 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
  */
 
 /**
- * Smack optional Debuggers.
+ * Smack optional Debuggers, which include {@link EnhancedDebugger} and {@link LiteDebugger}.
  */
 package org.jivesoftware.smackx.debugger;

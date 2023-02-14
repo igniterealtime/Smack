@@ -243,7 +243,6 @@ public class InBandBytestreamSession implements BytestreamSession {
                     throw ioException;
                 }
             }
-
             this.inputStream.cleanup();
 
             // remove session from manager
@@ -251,7 +250,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             // now to remove(byteStreamRequest.getSessionID).
             InBandBytestreamManager.getByteStreamManager(this.connection).getSessions().remove(byteStreamRequest.getSessionID());
         }
-
     }
 
     /**
@@ -829,7 +827,7 @@ public class InBandBytestreamSession implements BytestreamSession {
             iq.setTo(remoteJID);
 
             try {
-                connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+                connection.sendIqRequestAndWaitForResponse(iq);
             }
             catch (Exception e) {
                 // close session unless it is already closed

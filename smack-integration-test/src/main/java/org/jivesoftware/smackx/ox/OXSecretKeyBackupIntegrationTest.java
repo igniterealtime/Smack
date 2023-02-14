@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -98,7 +97,6 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
     @AfterClass
     @BeforeClass
     public static void cleanStore() throws IOException {
-        LOGGER.log(Level.INFO, "Delete store directories...");
         org.apache.commons.io.FileUtils.deleteDirectory(afterPath);
         org.apache.commons.io.FileUtils.deleteDirectory(beforePath);
     }

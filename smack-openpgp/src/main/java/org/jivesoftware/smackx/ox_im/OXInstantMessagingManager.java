@@ -49,6 +49,7 @@ import org.bouncycastle.openpgp.PGPException;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
+import org.pgpainless.encryption_signing.EncryptionResult;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 
 /**
@@ -217,7 +218,7 @@ public final class OXInstantMessagingManager extends Manager {
      * @param contact contact capable of OpenPGP for XMPP: Instant Messaging.
      * @param body message body.
      *
-     * @return {@link OpenPgpMetadata} about the messages encryption + signatures.
+     * @return {@link EncryptionResult} containing metadata about the messages encryption + signatures.
      *
      * @throws InterruptedException if the thread is interrupted
      * @throws IOException IO is dangerous
@@ -225,7 +226,7 @@ public final class OXInstantMessagingManager extends Manager {
      * @throws SmackException.NotLoggedInException if we are not logged in
      * @throws PGPException PGP is brittle
      */
-    public OpenPgpMetadata sendOxMessage(OpenPgpContact contact, CharSequence body)
+    public EncryptionResult sendOxMessage(OpenPgpContact contact, CharSequence body)
             throws InterruptedException, IOException,
             SmackException.NotConnectedException, SmackException.NotLoggedInException, PGPException {
         MessageBuilder messageBuilder = connection()
@@ -234,7 +235,7 @@ public final class OXInstantMessagingManager extends Manager {
                 .to(contact.getJid());
 
         Message.Body mBody = new Message.Body(null, body.toString());
-        OpenPgpMetadata metadata = addOxMessage(messageBuilder, contact, Collections.<ExtensionElement>singletonList(mBody));
+        EncryptionResult metadata = addOxMessage(messageBuilder, contact, Collections.<ExtensionElement>singletonList(mBody));
 
         Message message = messageBuilder.build();
         ChatManager.getInstanceFor(connection()).chatWith(contact.getJid().asEntityBareJidIfPossible()).send(message);
@@ -249,13 +250,13 @@ public final class OXInstantMessagingManager extends Manager {
      * @param contact recipient of the message
      * @param payload payload which will be encrypted and signed
      *
-     * @return {@link OpenPgpMetadata} about the messages encryption + metadata.
+     * @return {@link EncryptionResult} containing metadata about the messages encryption + metadata.
      *
      * @throws SmackException.NotLoggedInException in case we are not logged in
      * @throws PGPException in case something goes wrong during encryption
      * @throws IOException IO is dangerous (we need to read keys)
      */
-    public OpenPgpMetadata addOxMessage(MessageBuilder messageBuilder, OpenPgpContact contact, List<ExtensionElement> payload)
+    public EncryptionResult addOxMessage(MessageBuilder messageBuilder, OpenPgpContact contact, List<ExtensionElement> payload)
             throws SmackException.NotLoggedInException, PGPException, IOException {
         return addOxMessage(messageBuilder, Collections.singleton(contact), payload);
     }
@@ -267,13 +268,13 @@ public final class OXInstantMessagingManager extends Manager {
      * @param recipients recipients of the message
      * @param payload payload which will be encrypted and signed
      *
-     * @return metadata about the messages encryption + signatures.
+     * @return {@link EncryptionResult} containing metadata about the messages encryption + signatures.
      *
      * @throws SmackException.NotLoggedInException in case we are not logged in
      * @throws PGPException in case something goes wrong during encryption
      * @throws IOException IO is dangerous (we need to read keys)
      */
-    public OpenPgpMetadata addOxMessage(MessageBuilder messageBuilder, Set<OpenPgpContact> recipients, List<ExtensionElement> payload)
+    public EncryptionResult addOxMessage(MessageBuilder messageBuilder, Set<OpenPgpContact> recipients, List<ExtensionElement> payload)
             throws SmackException.NotLoggedInException, IOException, PGPException {
 
         OpenPgpElementAndMetadata openPgpElementAndMetadata = signAndEncrypt(recipients, payload);

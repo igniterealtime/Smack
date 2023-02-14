@@ -6,16 +6,39 @@ buildscript {
     }
     dependencies {
 		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
-		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.3.1"
 		classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.0.0"
     }
 }
 
 plugins {
     id 'ru.vyarus.animalsniffer' version '1.5.0'
-	id 'net.ltgt.errorprone' version '1.1.1'
+	id 'net.ltgt.errorprone' version '1.3.0'
 	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
 	id 'com.dorongold.task-tree' version '1.5'
+	id 'com.github.kt3k.coveralls' version '2.10.2'
+}
+
+ext {
+	java11Projects = [
+		':smack-integration-test',
+		':smack-omemo-signal-integration-test',
+		':smack-repl',
+		':smack-websocket-java11',
+	].collect { project(it) }
+	java11Projects += getRootProject()
+	java8Projects = allprojects - java11Projects
+}
+
+configure (java8Projects) {
+	ext {
+		javaCompatilibity = JavaVersion.VERSION_1_8
+	}
+}
+
+configure (java11Projects) {
+	ext {
+		javaCompatilibity = JavaVersion.VERSION_11
+	}
 }
 
 allprojects {
@@ -125,7 +148,10 @@ allprojects {
 		smackMinAndroidSdk = 19
 		junitVersion = '5.7.1'
 		commonsIoVersion = '2.6'
-		bouncyCastleVersion = '1.65'
+		bouncyCastleVersion = '1.71'
+		guavaVersion = '30.1-jre'
+		mockitoVersion = '3.7.7'
+		orgReflectionsVersion = '0.9.11'
 
 		if (project.hasProperty("useSonatype")) {
 			useSonatype = project.getProperty("useSonatype").toBoolean()
@@ -133,7 +159,6 @@ allprojects {
 			// Default to true
 			useSonatype = true
 		}
-		javaCompatilibity = JavaVersion.VERSION_1_8
 		javaMajor = javaCompatilibity.getMajorVersion()
 	}
 	group = 'org.igniterealtime.smack'
@@ -212,6 +237,8 @@ allprojects {
 				// Disabled but should be re-enabled at some point
 				//'-Xep:InconsistentCapitalization:OFF',
 				'-Xep:MixedMutabilityReturnType:OFF',
+				// TODO: Re-enable once Smack's minimum Android SDK level is 26 or higher.
+				'-Xep:JavaUtilDate:OFF',
 			]
 		}
 	}
@@ -224,7 +251,7 @@ allprojects {
 	}
 
 	jacoco {
-		toolVersion = "0.8.3"
+		toolVersion = "0.8.6"
 	}
 
 	jacocoTestReport {
@@ -242,7 +269,10 @@ allprojects {
 			// since the one paramater addStringOption doesn't seem to
 			// work, we extra add '-quiet', which is added anyway by
 			// gradle.
-			options.addStringOption('Xdoclint:all', '-quiet')
+			// TODO: This enables all doclint check but
+			// 'missing'. Re-enable 'missing' once every public API in
+			// Smack has a javadoc comment.
+			options.addStringOption('Xdoclint:accessibility,html,reference,syntax', '-quiet')
 
 			// Treat warnings as errors.
 			// See also https://bugs.openjdk.java.net/browse/JDK-8200363
@@ -254,12 +284,16 @@ allprojects {
 		tasks.withType(Javadoc) {
 			options.addStringOption('-release', javaMajor)
 
-			// Fix for javadoc search. If not set, the search result would direct to
-			// javadoc/undefined/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
-			// instead of
-			// javadoc/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
-			// https://stackoverflow.com/a/53732633/194894
-			options.addBooleanOption("-no-module-directories", true)
+			// The -no-modules-directories javadoc option was removed in Java 13
+			// See https://bugs.openjdk.java.net/browse/JDK-8215582
+			if (JavaVersion.current() < JavaVersion.VERSION_13) {
+				// Fix for javadoc search. If not set, the search result would direct to
+				// javadoc/undefined/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
+				// instead of
+				// javadoc/org/jivesoftware/smack/altconnections/HttpLookupMethod.html
+				// https://stackoverflow.com/a/53732633/194894
+				options.addBooleanOption("-no-module-directories", true)
+			}
 		}
 		tasks.withType(JavaCompile) {
 			options.compilerArgs.addAll([
@@ -281,10 +315,13 @@ tasks.withType(Javadoc) {
 		// The smack-extensions subproject uses mockito in its fest
 		// fixtures, and we want to have mockito also available in
 		// test, so we use API here.
-		testFixturesApi "org.mockito:mockito-core:3.3.3"
+		testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
+		
+		// To mock final classes
+		testImplementation "org.mockito:mockito-inline:${mockitoVersion}"
 		testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
 
-		errorprone 'com.google.errorprone:error_prone_core:2.3.4'
+		errorprone 'com.google.errorprone:error_prone_core:2.5.1'
 		errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
 	}
 
@@ -326,7 +363,7 @@ task javadocAll(type: Javadoc) {
 		linkSource = true
 		use = true
 		links = [
-		"https://docs.oracle.com/javase/${javaMajor}/docs/api/",
+		"https://docs.oracle.com/en/java/javase/${javaMajor}/docs/api/",
 		"https://jxmpp.org/releases/${staticJxmppVersion}/javadoc/",
 		"https://minidns.org/releases/${staticMiniDnsVersion}/javadoc/",
 		] as String[]
@@ -681,19 +718,19 @@ task sinttestAll {
 }
 
 def getGitCommit() {
-	def dotGit = new File("$projectDir/.git")
+	def projectDirFile = new File("$projectDir")
+	def dotGit = new File(projectDirFile, ".git")
 	if (!dotGit.isDirectory()) return 'non-git build'
 
-	def projectDir = dotGit.getParentFile()
 	def cmd = 'git describe --always --tags --dirty=+'
-	def proc = cmd.execute(null, projectDir)
+	def proc = cmd.execute(null, projectDirFile)
 	proc.waitForOrKill(10 * 1000)
 
 	def gitCommit = proc.text.trim()
 	assert !gitCommit.isEmpty()
 
     def srCmd = 'git symbolic-ref --short HEAD'
-    def srProc = srCmd.execute(null, projectDir)
+    def srProc = srCmd.execute(null, projectDirFile)
     srProc.waitForOrKill(10 * 1000)
     if (srProc.exitValue() == 0) {
         // Only add the information if the git command was

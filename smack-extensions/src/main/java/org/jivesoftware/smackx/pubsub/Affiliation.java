@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.pubsub;
 
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -36,7 +36,7 @@ import org.jxmpp.jid.BareJid;
  *
  * @author Robin Collier
  */
-public class Affiliation implements ExtensionElement {
+public class Affiliation implements XmlElement {
     public static final String ELEMENT = "affiliation";
 
     public enum AffiliationNamespace {

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
@@ -58,6 +57,7 @@ import org.jivesoftware.smack.XmppInputOutputFilter;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.ConnectedButUnauthenticatedStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.LookupRemoteConnectionEndpointsStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModule;
+import org.jivesoftware.smack.c2s.StreamOpenAndCloseFactory;
 import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
@@ -68,6 +68,7 @@ import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StartTls;
+import org.jivesoftware.smack.packet.StreamClose;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TlsFailure;
 import org.jivesoftware.smack.packet.TlsProceed;
@@ -78,14 +79,12 @@ import org.jivesoftware.smack.tcp.rce.RemoteXmppTcpConnectionEndpoints;
 import org.jivesoftware.smack.tcp.rce.RemoteXmppTcpConnectionEndpoints.Result;
 import org.jivesoftware.smack.tcp.rce.Rfc6120TcpRemoteConnectionEndpoint;
 import org.jivesoftware.smack.util.CollectionUtil;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.UTF8;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.rce.RemoteConnectionEndpointLookupFailure;
-import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.util.JidUtil;
 import org.jxmpp.xml.splitter.Utf8ByteXmppXmlSplitter;
@@ -115,7 +114,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
     private Iterator<CharSequence> outgoingCharSequenceIterator;
 
     private final List<TopLevelStreamElement> currentlyOutgoingElements = new ArrayList<>();
-    private final Map<ByteBuffer, List<TopLevelStreamElement>> bufferToElementMap = new IdentityHashMap<>();
+    private final IdentityHashMap<ByteBuffer, List<TopLevelStreamElement>> bufferToElementMap = new IdentityHashMap<>();
 
     private ByteBuffer outgoingBuffer;
     private ByteBuffer filteredOutgoingBuffer;
@@ -211,6 +210,8 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             }
 
             final String prefixXmlns = "xmlns:" + prefix;
+            // TODO: Use the return value of onStreamOpen(), which now returns the
+            // corresponding stream close tag, instead of creating it here.
             final StringBuilder streamClose = new StringBuilder(32);
             final StringBuilder streamOpen = new StringBuilder(256);
 
@@ -222,7 +223,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             }
             streamOpen.append("stream");
             streamClose.append("stream>");
-            for (Entry<String, String> entry : attributes.entrySet()) {
+            for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 String attributeName = entry.getKey();
                 String attributeValue = entry.getValue();
                 switch (attributeName) {
@@ -251,14 +252,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             this.streamOpen = streamOpen.toString();
             this.streamClose = streamClose.toString();
 
-            XmlPullParser streamOpenParser;
-            try {
-                streamOpenParser = PacketParserUtils.getParserFor(this.streamOpen);
-            } catch (XmlPullParserException | IOException e) {
-                // Should never happen.
-                throw new AssertionError(e);
-            }
-            connectionInternal.onStreamOpen(streamOpenParser);
+            connectionInternal.onStreamOpen(this.streamOpen);
         }
 
         @Override
@@ -576,13 +570,34 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
     final class XmppTcpNioTransport extends XmppClientToServerTransport {
 
-        protected XmppTcpNioTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
+        XmppTcpNioTransport(ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(connectionInternal);
+        }
+
+        @Override
+        public StreamOpenAndCloseFactory getStreamOpenAndCloseFactory() {
+            return new StreamOpenAndCloseFactory() {
+                @Override
+                public StreamOpen createStreamOpen(DomainBareJid to, CharSequence from, String id, String lang) {
+                    String xmlLang = connectionInternal.connection.getConfiguration().getXmlLang();
+                    StreamOpen streamOpen = new StreamOpen(to, from, id, xmlLang, StreamOpen.StreamContentNamespace.client);
+                    return streamOpen;
+                }
+                @Override
+                public StreamClose createStreamClose() {
+                    return StreamClose.INSTANCE;
+                }
+            };
         }
 
         @Override
         protected void resetDiscoveredConnectionEndpoints() {
             discoveredTcpEndpoints = null;
+        }
+
+        @Override
+        public boolean hasUseableConnectionEndpoints() {
+            return discoveredTcpEndpoints != null;
         }
 
         @Override
@@ -649,7 +664,6 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             return tlsState.engine.getSession();
         }
 
-        @Override
         public boolean isConnected() {
             SocketChannel socketChannel = XmppTcpTransportModule.this.socketChannel;
             if (socketChannel == null) {
@@ -732,10 +746,10 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         return new EstablishingTcpConnectionState(stateDescriptor, connectionInternal);
     }
 
-    final class EstablishingTcpConnectionState extends State {
+    final class EstablishingTcpConnectionState extends State.AbstractTransport {
         private EstablishingTcpConnectionState(EstablishingTcpConnectionStateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
-            super(stateDescriptor, connectionInternal);
+            super(tcpNioTransport, stateDescriptor, connectionInternal);
         }
 
         @Override
@@ -759,6 +773,10 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
             connectionInternal.setTransport(tcpNioTransport);
 
+            // TODO: It appears this should be done in a generic way. I'd assume we always
+            // have to wait for stream features after the connection was established. If this is true then consider
+            // moving this into State.AbstractTransport. But I am not yet 100% positive that this is the case for every
+            // transport. Hence keep it here for now.
             connectionInternal.newStreamOpenWaitForFeaturesSequence("stream features after initial connection");
 
             return new TcpSocketConnectedResult(remoteAddress);
@@ -1299,7 +1317,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             try {
                 socketChannel.close();
             } catch (IOException e) {
-
+                LOGGER.log(Level.FINE, "Closing the socket channel failed", e);
             }
         }
 

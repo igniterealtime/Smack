@@ -23,8 +23,8 @@ import java.util.List;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.pubsub.form.ConfigureForm;
@@ -57,7 +57,7 @@ public class LeafNode extends Node {
         DiscoverItems items = new DiscoverItems();
         items.setTo(pubSubManager.getServiceJid());
         items.setNode(getId());
-        return pubSubManager.getConnection().createStanzaCollectorAndSend(items).nextResultOrThrow();
+        return pubSubManager.getConnection().sendIqRequestAndWaitForResponse(items);
     }
 
     /**
@@ -71,7 +71,7 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return getItems((List<ExtensionElement>) null, null);
+        return getItems((List<XmlElement>) null, null);
     }
 
     /**
@@ -90,7 +90,7 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId));
+        PubSub request = createPubsubPacket(IQ.Type.get, new GetItemsRequest(getId(), subscriptionId));
         return getItems(request);
     }
 
@@ -116,7 +116,7 @@ public class LeafNode extends Node {
         for (String id : ids) {
             itemList.add(new Item(id));
         }
-        PubSub request = createPubsubPacket(Type.get, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
+        PubSub request = createPubsubPacket(IQ.Type.get, new ItemsExtension(ItemsExtension.ItemsElementType.items, getId(), itemList));
         return getItems(request);
     }
 
@@ -133,7 +133,7 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(int maxItems) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), maxItems));
+        PubSub request = createPubsubPacket(IQ.Type.get, new GetItemsRequest(getId(), maxItems));
         return getItems(request);
     }
 
@@ -154,7 +154,7 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(int maxItems, String subscriptionId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId(), subscriptionId, maxItems));
+        PubSub request = createPubsubPacket(IQ.Type.get, new GetItemsRequest(getId(), subscriptionId, maxItems));
         return getItems(request);
     }
 
@@ -177,10 +177,10 @@ public class LeafNode extends Node {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public <T extends Item> List<T> getItems(List<ExtensionElement> additionalExtensions,
-                    List<ExtensionElement> returnedExtensions) throws NoResponseException,
+    public <T extends Item> List<T> getItems(List<XmlElement> additionalExtensions,
+                    List<XmlElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = createPubsubPacket(Type.get, new GetItemsRequest(getId()));
+        PubSub request = createPubsubPacket(IQ.Type.get, new GetItemsRequest(getId()));
         request.addExtensions(additionalExtensions);
         return getItems(request, returnedExtensions);
     }
@@ -192,9 +192,9 @@ public class LeafNode extends Node {
 
     @SuppressWarnings("unchecked")
     private <T extends Item> List<T> getItems(PubSub request,
-                    List<ExtensionElement> returnedExtensions) throws NoResponseException,
+                    List<XmlElement> returnedExtensions) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub result = pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        PubSub result = pubSubManager.getConnection().sendIqRequestAndWaitForResponse(request);
         ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
         if (returnedExtensions != null) {
             returnedExtensions.addAll(result.getExtensions());
@@ -276,9 +276,9 @@ public class LeafNode extends Node {
      *
      */
     public void publish() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub packet = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
+        PubSub packet = createPubsubPacket(IQ.Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
 
-        pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        pubSubManager.getConnection().sendIqRequestAndWaitForResponse(packet);
     }
 
     /**
@@ -325,9 +325,9 @@ public class LeafNode extends Node {
      *
      */
     public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub packet = createPubsubPacket(Type.set, new PublishItem<>(getId(), items));
+        PubSub packet = createPubsubPacket(IQ.Type.set, new PublishItem<>(getId(), items));
 
-        pubSubManager.getConnection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        pubSubManager.getConnection().sendIqRequestAndWaitForResponse(packet);
     }
 
     /**
@@ -341,9 +341,9 @@ public class LeafNode extends Node {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void deleteAllItems() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = createPubsubPacket(Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()));
+        PubSub request = createPubsubPacket(IQ.Type.set, new NodeExtension(PubSubElementType.PURGE_OWNER, getId()));
 
-        pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        pubSubManager.getConnection().sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -376,7 +376,7 @@ public class LeafNode extends Node {
         for (String id : itemIds) {
              items.add(new Item(id));
         }
-        PubSub request = createPubsubPacket(Type.set, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
-        pubSubManager.getConnection().createStanzaCollectorAndSend(request).nextResultOrThrow();
+        PubSub request = createPubsubPacket(IQ.Type.set, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
+        pubSubManager.getConnection().sendIqRequestAndWaitForResponse(request);
     }
 }

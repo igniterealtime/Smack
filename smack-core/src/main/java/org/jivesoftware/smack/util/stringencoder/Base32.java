@@ -104,6 +104,8 @@ public class Base32 {
                 for (int j = 0; j < blocklen; j++)
                     ds.writeByte((byte) (t[j] & 0xFF));
             } catch (IOException e) {
+                // This should not happen.
+                throw new AssertionError(e);
             }
         }
 

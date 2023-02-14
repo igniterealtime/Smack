@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,18 +22,21 @@ import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
 import android.util.Base64;
 
+/**
+ * An URL-safe Base64 encoder.
+ * @author Florian Schmaus
+ */
 public final class AndroidBase64UrlSafeEncoder implements StringEncoder<String> {
 
-    private static AndroidBase64UrlSafeEncoder instance = new AndroidBase64UrlSafeEncoder();
+    /**
+     * An instance of this encoder.
+     */
+    public static AndroidBase64UrlSafeEncoder INSTANCE = new AndroidBase64UrlSafeEncoder();
 
     private static final int BASE64_ENCODER_FLAGS = Base64.URL_SAFE | Base64.NO_WRAP;
 
     private AndroidBase64UrlSafeEncoder() {
         // Use getInstance()
-    }
-
-    public static AndroidBase64UrlSafeEncoder getInstance() {
-        return instance;
     }
 
     @Override

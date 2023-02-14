@@ -271,7 +271,7 @@ public class MediaNegotiator extends JingleNegotiator {
      * @param jingle TODO javadoc me please
      *            The input packet
      * @return a Jingle packet
-     * @throws JingleException
+     * @throws JingleException in case of an jingle exception.
      */
     private IQ receiveSessionInfoAction(Jingle jingle, JingleDescription description) throws JingleException {
         IQ response = null;
@@ -308,10 +308,10 @@ public class MediaNegotiator extends JingleNegotiator {
      * A jmf description has been accepted. In this case, we must save the
      * accepted payload type and notify any listener...
      *
-     * @param jin TODO javadoc me please
-     *            The input packet
+     * @param jingle TODO javadoc me please
+     * @param description the description.
      * @return a Jingle packet
-     * @throws JingleException
+     * @throws JingleException in case of an jingle exception.
      */
     private IQ receiveSessionAcceptAction(Jingle jingle, JingleDescription description) throws JingleException {
         IQ response = null;

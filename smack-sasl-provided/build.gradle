@@ -3,7 +3,7 @@ SASL with Smack provided code
 Use Smack provided code for SASL."""
 
 dependencies {
-	compile project(':smack-core')
+	api project(':smack-core')
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 }

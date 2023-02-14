@@ -29,7 +29,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.packet.Presence.Type;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.EqualsUtil;
 
@@ -111,7 +110,7 @@ public final class RosterEntry extends Manager {
         // Create a new roster item with the current RosterEntry and the *new* name. Note that we can't set the name of
         // RosterEntry right away, as otherwise the updated event wont get fired, because equalsDeep would return true.
         packet.addRosterItem(toRosterItem(this, name));
-        connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        connection().sendIqRequestAndWaitForResponse(packet);
 
         // We have received a result response to the IQ set, the name was successfully changed
         item.setName(name);
@@ -221,7 +220,7 @@ public final class RosterEntry extends Manager {
         XMPPConnection connection = connection();
         Presence unsubscribed = connection.getStanzaFactory().buildPresenceStanza()
                 .to(item.getJid())
-                .ofType(Type.unsubscribed)
+                .ofType(Presence.Type.unsubscribed)
                 .build();
         connection.sendStanza(unsubscribed);
     }

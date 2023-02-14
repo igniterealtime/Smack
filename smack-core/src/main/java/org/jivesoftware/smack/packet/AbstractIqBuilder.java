@@ -40,10 +40,12 @@ public abstract class AbstractIqBuilder<IB extends AbstractIqBuilder<IB>> extend
         super(stanzaId);
     }
 
+    // TODO: Deprecate and use corresponding method in IqData instead.
     public static IqData createResponse(IqView request) {
         return createResponse(request, IQ.ResponseType.result);
     }
 
+    // TODO: Deprecate and use corresponding method in IqData instead.
     public static IqData createErrorResponse(IqView request) {
         return createResponse(request, IQ.ResponseType.error);
     }

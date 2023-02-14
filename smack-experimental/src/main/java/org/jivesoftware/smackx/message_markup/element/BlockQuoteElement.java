@@ -21,7 +21,7 @@ import javax.xml.namespace.QName;
 public class BlockQuoteElement extends MarkupElement.BlockLevelMarkupElement {
 
     public static final String ELEMENT = "bquote";
-    public static final QName QNAME = new QName(MarkupElement.NAMESPACE, ELEMENT);
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
      * Create a new Block Quote element.

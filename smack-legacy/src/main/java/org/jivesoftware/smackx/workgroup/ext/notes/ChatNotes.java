@@ -20,8 +20,9 @@ package org.jivesoftware.smackx.workgroup.ext.notes;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -81,10 +82,10 @@ public class ChatNotes extends IQ {
      *
      * @author Derek DeMoro
      */
-    public static class Provider extends IQProvider<ChatNotes> {
+    public static class Provider extends IqProvider<ChatNotes> {
 
         @Override
-        public ChatNotes parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public ChatNotes parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             ChatNotes chatNotes = new ChatNotes();
 
             boolean done = false;

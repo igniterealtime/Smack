@@ -4,8 +4,8 @@ Extra Smack extensions for Android."""
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
-	compile project(':smack-android')
-	compile project(':smack-extensions')
+	api project(':smack-android')
+	api project(':smack-extensions')
 
 	// Add the Android jar to the Eclipse .classpath.
 	compileClasspath files(androidBootClasspath)

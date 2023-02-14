@@ -150,6 +150,7 @@ public class ImageTransmitter implements Runnable {
 
                                         }
                                         catch (Exception e) {
+                                            LOGGER.log(Level.WARNING, "exception", e);
                                         }
 
                                     }

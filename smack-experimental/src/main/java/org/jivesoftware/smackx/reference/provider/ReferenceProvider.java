@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -51,7 +51,7 @@ public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement
             // TODO: Should be SmackParseException and probably be factored into ParserUtils.
             throw new IOException(e);
         }
-        ExtensionElement child = null;
+        XmlElement child = null;
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {

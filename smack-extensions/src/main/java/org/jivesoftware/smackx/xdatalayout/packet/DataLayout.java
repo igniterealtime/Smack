@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Anno van Vliet, 2019 Florian Schmaus
+ * Copyright 2014 Anno van Vliet, 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package org.jivesoftware.smackx.xdatalayout.packet;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
@@ -105,6 +107,8 @@ public class DataLayout implements ExtensionElement {
     public static class Fieldref extends DataFormLayoutElement{
 
         public static final String ELEMENT = "fieldref";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
         private final String var;
 
         /**
@@ -142,6 +146,7 @@ public class DataLayout implements ExtensionElement {
     public static class Section extends DataFormLayoutElement{
 
         public static final String ELEMENT = "section";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
         private final List<DataFormLayoutElement> sectionLayout = new ArrayList<>();
         private final String label;
 
@@ -206,6 +211,7 @@ public class DataLayout implements ExtensionElement {
     public static class Reportedref extends DataFormLayoutElement{
 
         public static final String ELEMENT = "reportedref";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         @Override
         public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
@@ -223,6 +229,7 @@ public class DataLayout implements ExtensionElement {
 
     public static class Text extends DataFormLayoutElement{
         public static final String ELEMENT = "text";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
         private final String text;
 
         /**

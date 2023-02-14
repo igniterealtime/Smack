@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.workgroup.packet;
 
 import java.io.IOException;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -43,6 +45,8 @@ public class WorkgroupInformation implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
     private final EntityBareJid workgroupJID;
 

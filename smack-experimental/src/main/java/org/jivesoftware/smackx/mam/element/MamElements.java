@@ -18,15 +18,13 @@ package org.jivesoftware.smackx.mam.element;
 
 import java.util.List;
 
-import javax.xml.namespace.QName;
-
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageView;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 import org.jxmpp.jid.Jid;
@@ -41,8 +39,6 @@ import org.jxmpp.jid.Jid;
  */
 public class MamElements {
 
-    public static final String NAMESPACE = "urn:xmpp:mam:2";
-
     /**
      * MAM result extension class.
      *
@@ -50,17 +46,12 @@ public class MamElements {
      *      Archive Management</a>
      *
      */
-    public static class MamResultExtension implements ExtensionElement {
+    public abstract static class MamResultExtension implements ExtensionElement {
 
         /**
          * result element.
          */
         public static final String ELEMENT = "result";
-
-        /**
-         * The qualified name of the MAM result extension element.
-         */
-        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         /**
          * id of the result.
@@ -77,20 +68,27 @@ public class MamElements {
          */
         private String queryId;
 
+        protected final MamVersion version;
+
         /**
          * MAM result extension constructor.
          *
+         * @param version TODO javadoc me please
          * @param queryId TODO javadoc me please
          * @param id TODO javadoc me please
          * @param forwarded TODO javadoc me please
          */
-        public MamResultExtension(String queryId, String id, Forwarded<Message> forwarded) {
+        public MamResultExtension(MamVersion version, String queryId, String id, Forwarded<Message> forwarded) {
             if (StringUtils.isEmpty(id)) {
                 throw new IllegalArgumentException("id must not be null or empty");
             }
             if (forwarded == null) {
                 throw new IllegalArgumentException("forwarded must no be null");
             }
+            if (version == null) {
+                throw new IllegalArgumentException("version must not be null");
+            }
+            this.version = version;
             this.id = id;
             this.forwarded = forwarded;
             this.queryId = queryId;
@@ -130,7 +128,7 @@ public class MamElements {
 
         @Override
         public final String getNamespace() {
-            return NAMESPACE;
+            return version.getNamespace();
         }
 
         @Override
@@ -148,7 +146,13 @@ public class MamElements {
         }
 
         public static MamResultExtension from(MessageView message) {
-            return message.getExtension(MamResultExtension.class);
+            for (XmlElement extension : message.getExtensions()) {
+                if (extension instanceof MamResultExtension) {
+                    return (MamResultExtension) extension;
+                }
+            }
+
+            return null;
         }
 
     }

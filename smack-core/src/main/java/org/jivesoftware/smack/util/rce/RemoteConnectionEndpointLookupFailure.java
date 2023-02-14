@@ -18,6 +18,7 @@ package org.jivesoftware.smack.util.rce;
 
 import org.jivesoftware.smack.util.ToStringUtil;
 
+import org.jxmpp.jid.DomainBareJid;
 import org.minidns.dnsname.DnsName;
 
 public abstract class RemoteConnectionEndpointLookupFailure {
@@ -65,6 +66,19 @@ public abstract class RemoteConnectionEndpointLookupFailure {
 
         public DnsName getDnsName() {
             return dnsName;
+        }
+    }
+
+    public static class HttpLookupFailure extends RemoteConnectionEndpointLookupFailure {
+        private final DomainBareJid host;
+
+        public HttpLookupFailure(DomainBareJid host, Exception exception) {
+            super("Http lookup exception for " + host, exception);
+            this.host = host;
+        }
+
+        public DomainBareJid getHost() {
+            return host;
         }
     }
 }

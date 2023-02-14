@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Timothy Pitt, Florian Schmaus
+ * Copyright 2018 Timothy Pitt, 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.packet.IQ.Type;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -89,7 +89,7 @@ public class PubSubNodeTest extends SmackTestSuite {
             new Affiliation(JidTestUtil.BARE_JID_2, Affiliation.Type.publisher)
         );
         AffiliationsExtension affiliationsExtension = new AffiliationsExtension(AffiliationNamespace.owner, affiliations);
-        PubSub response = new PubSub(JidTestUtil.PUBSUB_EXAMPLE_ORG, Type.result, PubSubNamespace.owner);
+        PubSub response = new PubSub(JidTestUtil.PUBSUB_EXAMPLE_ORG, IQ.Type.result, PubSubNamespace.owner);
         response.addExtension(affiliationsExtension);
         protocol.addResponse(response);
 

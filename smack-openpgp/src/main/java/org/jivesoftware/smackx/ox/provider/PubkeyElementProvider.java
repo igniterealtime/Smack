@@ -17,10 +17,10 @@
 package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -36,7 +36,8 @@ public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElemen
     public static final PubkeyElementProvider INSTANCE = new PubkeyElementProvider();
 
     @Override
-    public PubkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackTextParseException {
+    public PubkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, ParseException {
         String dateString = parser.getAttributeValue(null, PubkeyElement.ATTR_DATE);
         Date date = ParserUtils.getDateFromOptionalXep82String(dateString);
         while (true) {

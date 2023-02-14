@@ -67,7 +67,6 @@ public class AMPExtensionTest {
         AMPExtensionProvider ampProvider = new AMPExtensionProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(INCORRECT_RECEIVING_STANZA_STREAM);
 
-        assertEquals(XmlPullParser.Event.START_ELEMENT, parser.next());
         assertEquals(AMPExtension.ELEMENT, parser.getName());
 
         ExtensionElement extension = ampProvider.parse(parser);
@@ -85,7 +84,6 @@ public class AMPExtensionTest {
         AMPExtensionProvider ampProvider = new AMPExtensionProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(CORRECT_SENDING_STANZA_STREAM);
 
-        assertEquals(XmlPullParser.Event.START_ELEMENT, parser.next());
         assertEquals(AMPExtension.ELEMENT, parser.getName());
         ExtensionElement extension = ampProvider.parse(parser);
         assertTrue(extension instanceof AMPExtension);

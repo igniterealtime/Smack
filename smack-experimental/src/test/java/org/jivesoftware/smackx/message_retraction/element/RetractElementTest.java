@@ -24,6 +24,7 @@ import java.io.IOException;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.message_retraction.provider.RetractElementProvider;
 
 import org.junit.jupiter.api.Test;

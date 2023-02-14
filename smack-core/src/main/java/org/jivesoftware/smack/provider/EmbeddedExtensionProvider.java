@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -41,9 +41,9 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * <b>smack.properties</b> file.  Then they will be automatically picked up and used to parse
  * any child elements.
  *
- * <pre>
  * For example, given the following message
  *
+ * <pre>
  * &lt;message from='pubsub.shakespeare.lit' to='francisco@denmark.lit' id='foo&gt;
  *    &lt;event xmlns='http://jabber.org/protocol/pubsub#event&gt;
  *       &lt;items node='princely_musings'&gt;
@@ -57,6 +57,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *       &lt;/items&gt;
  *    &lt;/event&gt;
  * &lt;/message&gt;
+ * </pre>
  *
  * I would have a classes
  * <code>ItemsProvider</code> extends {@link EmbeddedExtensionProvider}
@@ -67,6 +68,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  * These classes are then registered in the meta-inf/smack.providers file
  * as follows.
  *
+ * <pre>
  *   &lt;extensionProvider&gt;
  *      &lt;elementName&gt;items&lt;/elementName&gt;
  *      &lt;namespace&gt;http://jabber.org/protocol/pubsub#event&lt;/namespace&gt;
@@ -77,12 +79,11 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *       &lt;namespace&gt;http://jabber.org/protocol/pubsub#event&lt;/namespace&gt;
  *       &lt;className&gt;org.jivesoftware.smackx.provider.ItemProvider&lt;/className&gt;
  *   &lt;/extensionProvider&gt;
- *
  * </pre>
  *
  * @author Robin Collier
  */
-public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> extends ExtensionElementProvider<PE> {
+public abstract class EmbeddedExtensionProvider<PE extends XmlElement> extends ExtensionElementProvider<PE> {
 
     @Override
     public final PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
@@ -95,7 +96,7 @@ public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> ext
             attMap.put(parser.getAttributeName(i), parser.getAttributeValue(i));
         }
 
-        List<ExtensionElement> extensions = new ArrayList<>();
+        List<XmlElement> extensions = new ArrayList<>();
         XmlPullParser.Event event;
         do {
             event = parser.next();
@@ -109,5 +110,5 @@ public abstract class EmbeddedExtensionProvider<PE extends ExtensionElement> ext
     }
 
     protected abstract PE createReturnExtension(String currentElement, String currentNamespace,
-                    Map<String, String> attributeMap, List<? extends ExtensionElement> content);
+                    Map<String, String> attributeMap, List<? extends XmlElement> content);
 }

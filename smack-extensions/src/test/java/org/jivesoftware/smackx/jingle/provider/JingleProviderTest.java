@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -121,7 +121,7 @@ public class JingleProviderTest {
 
         assertEquals(JingleReason.Reason.success, jingleReason.asEnum());
 
-        ExtensionElement element = jingleReason.getElement();
+        XmlElement element = jingleReason.getElement();
         // TODO: Use JUnit 5.8's assertInstanceOf when possible
         // assertInstanceOf(StandardExtesionElement.class, extraElement);
         assertTrue(element instanceof StandardExtensionElement);

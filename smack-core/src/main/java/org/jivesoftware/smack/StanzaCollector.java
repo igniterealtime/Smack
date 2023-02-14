@@ -343,7 +343,7 @@ public final class StanzaCollector implements AutoCloseable {
      *
      * @param packet the stanza to process.
      */
-    protected void processStanza(Stanza packet) {
+    void processStanza(Stanza packet) {
         if (packetFilter == null || packetFilter.accept(packet)) {
             synchronized (this) {
                 if (resultQueue.size() == maxQueueSize) {
