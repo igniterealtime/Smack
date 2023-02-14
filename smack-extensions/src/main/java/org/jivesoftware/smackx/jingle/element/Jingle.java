@@ -220,7 +220,7 @@ public final class Jingle extends IQ {
 
     /**
      * Add <code>contentPacket</code> to this Jingle IQ's content list. Use to build up the full Jingle stanza that has
-     * both the <description/> and <transport/> elements before the actual processing of the Jingle
+     * both the <code>description</code> and <code>transport</code> elements before the actual processing of the Jingle
      * <code>session_initiate</code> or <code>session-accept</code>.
      *
      * @param content the content packet extension we'd like to add to this element's content list.

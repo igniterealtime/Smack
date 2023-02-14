@@ -16,12 +16,12 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Implements the <code>services</code> element described in the following XEP.

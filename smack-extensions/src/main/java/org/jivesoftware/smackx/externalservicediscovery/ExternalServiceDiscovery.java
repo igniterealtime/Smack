@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
-import org.jivesoftware.smack.packet.IQ;
-
 import java.util.List;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /**
  * The ExternalServiceDiscovery IQ is used retrieve server stun/turn service support from the registered xmpp server.

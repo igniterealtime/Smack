@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  *
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
- * The <description/> element MAY contain a <rtcp-mux/> element that specifies the ability to multiplex
+ * The <code>description</code> element MAY contain a <code>rtcp-mux</code> element that specifies the ability to multiplex
  * RTP Data and Control Packets on a single port as described in RFC 5761 [13].
  *
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc5761#section-5">RFC5761 § 5.  Multiplexing RTP and RTCP on a Single Port</a>

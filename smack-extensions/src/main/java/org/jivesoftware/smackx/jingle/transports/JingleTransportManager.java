@@ -59,7 +59,15 @@ public abstract class JingleTransportManager<D extends JingleContentTransport> i
 
     @Override
     public void connectionClosedOnError(Exception e) {
-
     }
 
+    /**
+     * Return a (usually) positive integer, which is used to define a strict order over the set of available transport managers.
+     * @return priority.
+     */
+    public abstract int getPriority();
+
+    public int compareTo(JingleTransportManager<?> other) {
+        return getPriority() > other.getPriority() ? 1 : -1;
+    }
 }

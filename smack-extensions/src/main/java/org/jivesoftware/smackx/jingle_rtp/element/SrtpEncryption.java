@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 /**
  * The element transporting encryption information during jingle session establishment.
  * Crypto supported: ZRTP and SDES;
- * Note: SDES_SRTP fingerPrints element is embedded in <transport/> element
+ * Note: SDES_SRTP fingerPrints element is embedded in <code>transport</code> element
  *
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  *
@@ -33,16 +33,6 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  *
  * @see <a href="https://xmpp.org/extensions/xep-0262.html">XEP-0262: Use of ZRTP in Jingle RTP Sessions 1.0 (2011-06-15)</a>
  * @see <a href="https://datatracker.ietf.org/doc/html/rfc6189">ZRTP: Media Path Key Agreement for Unicast Secure RTP (April 2011)</a>
- *
- * <encryption required='true'>
- *   <crypto tag='1' crypto-suite='AES_256_CM_HMAC_SHA1_80' key-params='inline:NRIZjvSEUdN/5uvAkVBnY3Z5n6I3UMqWZeL7trmX4ETgIPbnCe+JGM1yJMH3fw=='/>
- *   <crypto tag='2' crypto-suite='AES_256_CM_HMAC_SHA1_32' key-params='inline:M/N4rlTJRrmXJ76skQD+tmpqqfUHnr5FUJc8fLBYaV5EbvrCh7mvqaAzuCt3sw=='/>
- *   <crypto tag='3' crypto-suite='AES_192_CM_HMAC_SHA1_80' key-params='inline:FqwDv9gnSpK9MXnUi2WZpcw9HwdR1VuZeibxz9ww4bLXhZaLZoU='/>
- *   <crypto tag='4' crypto-suite='AES_192_CM_HMAC_SHA1_32' key-params='inline:+MdKB/bmgyw/w0LpF7p6ZmC196shLQlxBNi1QNM0yTyHBBiii/A='/>
- *   <zrtp-hash xmlns='urn:xmpp:jingle:apps:rtp:zrtp:1' version='1.10'>
- *     90ce0017fa8e9818a38c626cf705ae0b72fec817923f64bc71cd8838288a9389
- *   </zrtp-hash>
- * </encryption>
  */
 public class SrtpEncryption extends AbstractXmlElement {
     /**

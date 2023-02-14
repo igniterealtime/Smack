@@ -70,7 +70,9 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
      *
      * @param parser an XML parser positioned at the stanza's starting element.
      * @return a new stanza extension instance.
-     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
+     * @throws IOException if an error occurs in IO.
+     * @throws XmlPullParserException if an error occurs pull parsing the XML.
+     * @throws SmackParsingException if an error occurs parsing the XML.
      */
     @Override
     public EE parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)

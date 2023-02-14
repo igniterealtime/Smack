@@ -45,7 +45,8 @@ public class JingleRTPDescriptionProvider extends JingleContentDescriptionProvid
      *
      * @param parser an XML parser positioned at the stanza's starting element.
      * @return a new stanza extension instance.
-     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
+     * @throws IOException if an error occurs in IO.
+     * @throws XmlPullParserException if an error occurs pull parsing the XML.
      */
     @Override
     public RtpDescription parse(XmlPullParser parser, int depth, XmlEnvironment xmlEnvironment)

@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
-import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
-
 import javax.xml.namespace.QName;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Represents the <code>service</code> elements described in the following XEPs.

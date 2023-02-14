@@ -43,7 +43,7 @@ public class SctpMap extends AbstractXmlElement {
     public static final String ATTR_PROTOCOL = "protocol";
 
     /**
-     * Protocol enumeration of <tt>SctpMap</tt>. Currently it only contains WEBRTC_CHANNEL.
+     * Protocol enumeration of <code>SctpMap</code>. Currently it only contains WEBRTC_CHANNEL.
      */
     public enum Protocol {
         webrtc_datachannel;

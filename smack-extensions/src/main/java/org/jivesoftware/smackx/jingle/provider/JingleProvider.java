@@ -62,7 +62,9 @@ public class JingleProvider extends IqProvider<Jingle> {
      *
      * @param parser an XML parser.
      * @return a new {@link Jingle} instance.
-     * @throws IOException, XmlPullParserException, ParseException if an error occurs parsing the XML.
+     * @throws IOException if an error occurs in IO.
+     * @throws XmlPullParserException if an error occurs pull parsing the XML.
+     * @throws SmackParsingException if an error occurs parsing the XML.
      */
     @Override
     public Jingle parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)

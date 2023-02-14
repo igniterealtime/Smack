@@ -112,7 +112,7 @@ public class ParameterElement extends AbstractXmlElement {
         /**
          * Sets that value of the format parameter we are representing here.
          *
-         * Note: A RTP Header Extension that requires extra parameters in the a=b form can embed <parameter/> elements
+         * Note: A RTP Header Extension that requires extra parameters in the a=b form can embed <code>parameter</code> elements
          * to describe it. Any other form of parameter can be stored as the 'key' attribute in a parameter element
          * with an empty value. https://xmpp.org/extensions/xep-0294.html#element
          *

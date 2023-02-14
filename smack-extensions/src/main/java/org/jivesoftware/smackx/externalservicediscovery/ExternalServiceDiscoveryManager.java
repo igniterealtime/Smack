@@ -16,6 +16,14 @@
  */
 package org.jivesoftware.smackx.externalservicediscovery;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
@@ -29,17 +37,10 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.threeten.bp.Instant;
 import org.threeten.bp.temporal.ChronoUnit;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A manager for XEP-0215: External Service Discovery.

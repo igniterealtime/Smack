@@ -28,7 +28,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * Jingle's Discovery Info URN for "XEP-0294: Jingle RTP Header Extensions Negotiation" support.
  * @see <a href="https://xmpp.org/extensions/xep-0294.html">XEP-0294: Jingle RTP Header Extensions Negotiation  1.1.1 (2021-10-23)</a>
  *
- * Note: Any type of RTP Header Extension that requires extra parameters in the a=b form can embed <parameter/>
+ * Note: Any type of RTP Header Extension that requires extra parameters in the a=b form can embed <code>parameter</code>
  * elements to describe it. Any other form of parameter can be stored as the 'key' attribute in a parameter
  * element with an empty value.
  * @see <a href="https://xmpp.org/extensions/xep-0294.html#element">XEP-0294 § 3. New elements</a>

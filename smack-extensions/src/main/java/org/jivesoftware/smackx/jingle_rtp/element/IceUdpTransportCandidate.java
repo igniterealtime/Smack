@@ -254,7 +254,7 @@ public class IceUdpTransportCandidate extends AbstractXmlElement implements Comp
 
     /**
      * Compares this instance with another IceUdpTransportCandidate by preference of type:
-     * host < local < prflx < srflx < stun < relay.
+     * host &lt; local &lt; prflx &lt; srflx &lt; stun &lt; relay.
      *
      * @return 0 if the type are equal. -1 if this instance type is preferred. Otherwise 1.
      */

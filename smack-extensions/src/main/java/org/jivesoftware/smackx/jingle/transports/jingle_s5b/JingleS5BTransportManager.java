@@ -83,6 +83,11 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         return new JingleS5BTransportSession(jingleSession);
     }
 
+    @Override
+    public int getPriority() {
+        return 10000; // SOCKS5 has a high priority
+    }
+
     private List<Bytestream.StreamHost> queryAvailableStreamHosts() throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
         Socks5BytestreamManager s5m = Socks5BytestreamManager.getBytestreamManager(getConnection());
         List<Jid> proxies = s5m.determineProxies();

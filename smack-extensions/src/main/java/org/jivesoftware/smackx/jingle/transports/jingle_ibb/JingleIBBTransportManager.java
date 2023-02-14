@@ -62,4 +62,8 @@ public final class JingleIBBTransportManager extends JingleTransportManager<Jing
     public void authenticated(XMPPConnection connection, boolean resumed) {
         // Nothing to do.
     }
+    @Override
+    public int getPriority() {
+        return -1;
+    }
 }

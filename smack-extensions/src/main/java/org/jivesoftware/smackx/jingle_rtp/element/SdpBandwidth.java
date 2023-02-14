@@ -23,7 +23,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * XEP-0167: Jingle RTP Sessions 1.2.1 (2020-09-29)
  * @see <a href="https://xmpp.org/extensions/xep-0167.html#format">XEP-0167 § 4. Application Format</a>
  *
- * For RTP sessions, often the <bandwidth/> element will specify the "session bandwidth" as described in Section 6.2
+ * For RTP sessions, often the <code>bandwidth</code> element will specify the "session bandwidth" as described in Section 6.2
  * of RFC 3550, measured in kilobits per second as described in Section 5.2 of RFC 4566.
  *
  * @author Emil Ivov

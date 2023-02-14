@@ -25,7 +25,7 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  * @see <a href="https://xmpp.org/extensions/xep-0167.html">XEP-0167: Jingle RTP Sessions 1.2.0 (2020-04-22)</a>
  *
  * Multiplexing RTP Data and Control Packets on a Single Port (April 2010),
- * https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE) seem to propose <rtpc-mux/> to be included in transport
+ * https://tools.ietf.org/html/rfc5761 (5.1.3. Interactions with ICE) seem to propose <code>rtpc-mux</code> to be included in transport
  *
  * @author Emil Ivov
  * @author Eng Chong Meng

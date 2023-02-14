@@ -94,11 +94,11 @@ public enum JingleAction {
      * action indicates a willingness to proceed with the session (which might necessitate further
      * negotiation before media can be exchanged). The <code>session-accept</code> action indicates
      * acceptance only of the content definition(s) whose disposition type is "session" (the default
-     * value of the <content/> element's 'disposition' attribute), not any content definition(s)
+     * value of the <code>content</code> element's 'disposition' attribute), not any content definition(s)
      * whose disposition type is something other than "session" (e.g., "early-session" for early media).
      *
-     * In the <code>session-accept</code> stanza, the <jingle/> element MUST contain one or more
-     * <content/> elements, each of which MUST contain one <description/> element and one <transport/> element.
+     * In the <code>session-accept</code> stanza, the <code>jingle</code> element MUST contain one or more
+     * <code>content</code> elements, each of which MUST contain one <code>description</code> element and one <code>transport</code> element.
      */
     session_accept,
 
@@ -110,10 +110,10 @@ public enum JingleAction {
 
     /**
      * The <code>session-initiate</code> action is used to request negotiation of a new Jingle session.
-     * When sending a <code>session-initiate</code> with one <content/> element, the value of the
-     * <content/> element's 'disposition' attribute MUST be "session" (if there are multiple
-     * <content/> elements then at least one MUST have a disposition of "session"); if this rule is
-     * violated, the responder MUST return a <bad-request/> error to the initiator.
+     * When sending a <code>session-initiate</code> with one <code>content</code> element, the value of the
+     * <code>content</code> element's 'disposition' attribute MUST be "session" (if there are multiple
+     * <code>content</code> elements then at least one MUST have a disposition of "session"); if this rule is
+     * violated, the responder MUST return a <code>bad-request</code> error to the initiator.
      */
     session_initiate,
 
