@@ -165,13 +165,14 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
 
             client = BOSHClient.create(cfgBuilder.build());
 
-            client.addBOSHClientConnListener(new BOSHConnectionListener());
-            client.addBOSHClientResponseListener(new BOSHPacketReader());
-
-            // Initialize the debugger
+            // Initialize the debugger before addBOSHClientResponseListener(new BOSHPacketReader());
+            // BOSHPacketReader may hold and send response prior to display of the request i.e. <response/> before <challenge/>
             if (debugger != null) {
                 initDebugger();
             }
+
+            client.addBOSHClientConnListener(new BOSHConnectionListener());
+            client.addBOSHClientResponseListener(new BOSHPacketReader());
 
             // Send the session creation request
             client.send(ComposableBody.builder()
@@ -295,10 +296,11 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         CloseableUtil.maybeClose(reader, LOGGER);
         CloseableUtil.maybeClose(writer, LOGGER);
 
+        // set readerConsumer = null before reader to avoid NPE reference
+        readerConsumer = null;
         readerPipe = null;
         reader = null;
         writer = null;
-        readerConsumer = null;
     }
 
     /**
@@ -376,6 +378,8 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                 if (event.getBody() != null) {
                     try {
                         writer.write(event.getBody().toXML());
+                        // Fix all BOSH sent debug messages not shown
+                        writer.flush();
                     } catch (Exception e) {
                         // Ignore
                     }
