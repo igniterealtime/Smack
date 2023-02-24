@@ -43,6 +43,7 @@ import org.jxmpp.jid.FullJid;
  * Util to quickly create and send jingle stanzas.
  */
 public class JingleUtil {
+
     private final XMPPConnection mConnection;
 
     public JingleUtil(XMPPConnection connection) {

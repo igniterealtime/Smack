@@ -139,6 +139,7 @@ public final class JingleContent extends AbstractXmlElement {
         return mSecurity;
     }
 
+
     public void setSenders(Senders senders) {
         setAttribute(ATTR_SENDERS, senders.toString());
     }

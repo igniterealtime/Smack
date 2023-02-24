@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
  * @author Eng Chong Meng
  */
 public abstract class JingleContentTransportCandidate implements ExtensionElement {
+
     public static final String ELEMENT = "candidate";
 
     @Override

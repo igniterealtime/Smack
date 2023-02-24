@@ -36,10 +36,12 @@ import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleAction;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.JingleContentSecurity;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 import org.jivesoftware.smackx.jingle.element.JingleReason;
 import org.jivesoftware.smackx.jingle.element.JingleReason.Reason;
 import org.jivesoftware.smackx.jingle.element.UnknownJingleContentDescription;
+import org.jivesoftware.smackx.jingle.element.UnknownJingleContentSecurity;
 import org.jivesoftware.smackx.jingle.element.UnknownJingleContentTransport;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
@@ -105,7 +107,7 @@ public class JingleProvider extends IqProvider<Jingle> {
                             break;
 
                         default:
-                            // session-info element handlers for <mute/> <active/> and etc
+                            // session-info element handlers for <mute/> <active/> and etc for rtp session
                             if (namespace.equals(SessionInfo.NAMESPACE)) {
                                 LOGGER.info("Handle Jingle Session-Info: <" + tagName + " xml: " + namespace + ">");
                                 SessionInfoType type = SessionInfoType.valueOf(tagName);
@@ -210,6 +212,21 @@ public class JingleProvider extends IqProvider<Jingle> {
                             builder.setTransport(transport);
                             break;
                         }
+
+                        case JingleContentSecurity.ELEMENT: {
+                            JingleContentSecurity jetSecurity;
+                            JingleContentSecurityProvider<?> provider = JingleContentProviderManager.getJingleContentSecurityProvider(namespace);
+                            if (provider == null) {
+                                StandardExtensionElement standardExtensionElement = StandardExtensionElementProvider.INSTANCE.parse(parser);
+                                jetSecurity = new UnknownJingleContentSecurity(standardExtensionElement);
+                            }
+                            else {
+                                jetSecurity = provider.parse(parser);
+                            }
+                            builder.setSecurity(jetSecurity);
+                            break;
+                        }
+
                         default:
                             // Handle all the aTalk AbstractExtensionElement extensions embedded in JingleContent
                             ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(tagName, namespace);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub, 2020 Florian Schmaus
+ * Copyright 2017 Paul Schaub, 2020 Florian Schmaus, 2022 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +38,19 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.util.Async;
 
+import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.carbons.CarbonManager;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hints.element.StoreHint;
+import org.jivesoftware.smackx.jet.JingleEnvelopeManager;
 import org.jivesoftware.smackx.mam.MamManager;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -79,15 +83,17 @@ import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
+import org.jxmpp.jid.FullJid;
 
 /**
  * Manager that allows sending messages encrypted with OMEMO.
  * This class also provides some methods useful for a client that implements OMEMO.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 
-public final class OmemoManager extends Manager {
+public final class OmemoManager extends Manager implements JingleEnvelopeManager {
     private static final Logger LOGGER = Logger.getLogger(OmemoManager.class.getName());
 
     private static final Integer UNKNOWN_DEVICE_ID = -1;
@@ -938,6 +944,11 @@ public final class OmemoManager extends Manager {
         return connection();
     }
 
+    @Override
+    public String getJingleEnvelopeNamespace() {
+        return OMEMO_NAMESPACE_V_AXOLOTL;
+    }
+
     /**
      * Return the OMEMO service object.
      *
@@ -1097,5 +1108,44 @@ public final class OmemoManager extends Manager {
                 manager.setDeviceId(randomDeviceId());
             }
         }
+    }
+
+    @Override
+    public ExtensionElement encryptJingleTransfer(FullJid recipient, byte[] keyData) throws JingleEncryptionException, InterruptedException, NoSuchAlgorithmException, SmackException.NotConnectedException, SmackException.NoResponseException {
+        BareJid bareJid = recipient.asBareJid();
+        Message sendMessage;
+        try {
+            OmemoMessage.Sent encryptedMessage = encrypt(bareJid, Base64.encodeToString(keyData));
+            MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+            sendMessage = encryptedMessage.buildMessage(messageBuilder, bareJid);
+
+        } catch (CryptoFailedException | UndecidedOmemoIdentityException | SmackException.NotLoggedInException | IOException e) {
+            throw new JingleEncryptionException(e);
+        }
+
+        ExtensionElement encryptionElement = sendMessage.getExtensionElement(OmemoElement.NAME_ENCRYPTED, OMEMO_NAMESPACE_V_AXOLOTL);
+        if (encryptionElement == null) {
+            throw new AssertionError("OmemoElement MUST NOT be null.");
+        }
+        return encryptionElement;
+    }
+
+    @Override
+    public byte[] decryptJingleTransfer(FullJid sender, ExtensionElement envelope) throws JingleEncryptionException, InterruptedException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
+        if (!envelope.getNamespace().equals(OMEMO_NAMESPACE_V_AXOLOTL)
+                || !envelope.getElementName().equals(OmemoElement.NAME_ENCRYPTED)) {
+            throw new IllegalArgumentException("Passed ExtensionElement MUST be an OmemoElement!");
+        }
+
+        OmemoElement omemoElement = (OmemoElement) envelope;
+
+        OmemoMessage.Received decryptedPseudoMessage;
+        try {
+            decryptedPseudoMessage = decrypt(sender.asBareJid(), omemoElement);
+        } catch (CryptoFailedException | CorruptedOmemoKeyException | NoRawSessionException | SmackException.NotLoggedInException | IOException e) {
+            throw new JingleEncryptionException(e);
+        }
+
+        return Base64.decode(decryptedPseudoMessage.getBody());
     }
 }
