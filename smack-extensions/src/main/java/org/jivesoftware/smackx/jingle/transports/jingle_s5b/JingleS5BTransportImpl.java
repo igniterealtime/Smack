@@ -344,13 +344,13 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             }
 
             if (isProxy) {
-                LOGGER.log(Level.INFO, "Send candidate-activate.");
+                LOGGER.log(Level.INFO, "Send candidate activated.");
                 Jingle candidateActivate = mTransportManager.createCandidateActivated((JingleS5BTransportImpl) nominated.getParent(), nominated);
 
                 try {
                     mConnection.createStanzaCollectorAndSend(candidateActivate).nextResultOrThrow();
                 } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
-                    LOGGER.log(Level.WARNING, "Could not send candidate-activated", e);
+                    LOGGER.log(Level.WARNING, "Could not send candidate activated", e);
                     callback.onTransportFailed(new S5BTransportException.ProxyError(e));
                     return;
                 }
@@ -369,7 +369,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
                 this.mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
                 callback.onTransportReady(this.mBytestreamSession);
             } else {
-                LOGGER.log(Level.INFO, "Our choice was their external proxy. wait for candidate-activate.");
+                LOGGER.log(Level.INFO, "Our choice was their external proxy. wait for candidate activated.");
             }
         }
     }

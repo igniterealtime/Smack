@@ -16,12 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
-import org.jivesoftware.smackx.bytestreams.BytestreamSession;
-import org.jivesoftware.smackx.jingle.element.Jingle;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
-import org.jivesoftware.smackx.jingle.element.JingleReason;
-import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -30,6 +24,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jivesoftware.smackx.bytestreams.BytestreamSession;
+import org.jivesoftware.smackx.jingle.element.Jingle;
+import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
+import org.jivesoftware.smackx.jingle.element.JingleReason;
+import org.jivesoftware.smackx.jingle_filetransfer.controller.OutgoingFileOfferController;
 
 /**
  * Behind the scenes logic of an outgoing Jingle file offer.

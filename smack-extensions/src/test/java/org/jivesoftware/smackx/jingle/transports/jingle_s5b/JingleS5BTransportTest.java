@@ -164,7 +164,7 @@ public class JingleS5BTransportTest extends SmackTestSuite {
 
         String candidateActivated =
                 "<transport xmlns='urn:xmpp:jingle:transports:s5b:1' sid='vj3hs98y'>" +
-                        "<candidate-activated cid='hr65dqyd'/>" +
+                        "<activated cid='hr65dqyd'/>" +
                         "</transport>";
         JingleS5BTransport candidateActivatedTransport = new JingleS5BTransportProvider()
                 .parse(TestUtils.getParser(candidateActivated));

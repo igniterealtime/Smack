@@ -31,8 +31,8 @@ public class JingleTest {
         jingleBuilder.setAction(JingleAction.content_accept);
 
         JingleContent.Builder jingleContentBuilder = JingleContent.getBuilder();
-        jingleContentBuilder.setName("Hello world");
         jingleContentBuilder.setCreator(JingleContent.Creator.initiator);
+        jingleContentBuilder.setName("Hello world");
 
         jingleBuilder.addJingleContent(jingleContentBuilder.build());
         Jingle iq = jingleBuilder.build();

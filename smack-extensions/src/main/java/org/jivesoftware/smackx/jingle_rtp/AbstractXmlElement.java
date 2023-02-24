@@ -408,6 +408,10 @@ public class AbstractXmlElement implements ExtensionElement {
         }
 
         public B addChildElements(List<? extends ExtensionElement> xElements) {
+            if (xElements == null) {
+                return getThis();
+            }
+
             if (elements == null) {
                 elements = new MultiMap<>();
             }

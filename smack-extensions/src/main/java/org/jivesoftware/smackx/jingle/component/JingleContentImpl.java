@@ -443,7 +443,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         /*
          * Must execute byteStream sending in Async; large file sending may take > 5 seconds,
          * and sending IQ.createResultIQ() will be timeout: SmackException$NoResponseException
-         * JingleS5BTransportImpl.connectIfReady() Could not send candidate-activated
+         * JingleS5BTransportImpl.connectIfReady() Could not send candidate activated
          */
         Async.go(() -> {
             if (security != null) {
