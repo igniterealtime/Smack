@@ -17,9 +17,10 @@
 package org.jivesoftware.smackx.stanza_content_encryption.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Date;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -27,6 +28,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.stanza_content_encryption.element.AffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElement;
@@ -42,7 +44,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
 
     @Override
     public ContentElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
-            throws XmlPullParserException, IOException, SmackParsingException {
+            throws XmlPullParserException, IOException, ParseException, SmackParsingException {
         ContentElement.Builder builder = ContentElement.builder();
 
         while (true) {
@@ -101,7 +103,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
             if (tag == XmlPullParser.Event.START_ELEMENT) {
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
-                ExtensionElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment);
+                XmlElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment);
                 builder.addPayloadItem(element);
             }
 
@@ -117,7 +119,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
     }
 
     private static void parseTimestampAffix(XmlPullParser parser, ContentElement.Builder builder)
-            throws SmackParsingException.SmackTextParseException {
+            throws ParseException {
         Date timestamp = ParserUtils.getDateFromXep82String(
                 parser.getAttributeValue("", TimestampAffixElement.ATTR_STAMP));
         builder.setTimestamp(timestamp);

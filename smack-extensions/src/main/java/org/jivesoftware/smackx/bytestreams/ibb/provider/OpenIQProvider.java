@@ -19,8 +19,9 @@ package org.jivesoftware.smackx.bytestreams.ibb.provider;
 import java.io.IOException;
 import java.util.Locale;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -32,10 +33,10 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
  *
  * @author Henning Staib
  */
-public class OpenIQProvider extends IQProvider<Open> {
+public class OpenIQProvider extends IqProvider<Open> {
 
     @Override
-    public Open parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Open parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         String sessionID = parser.getAttributeValue("", "sid");
         int blockSize = Integer.parseInt(parser.getAttributeValue("", "block-size"));
 

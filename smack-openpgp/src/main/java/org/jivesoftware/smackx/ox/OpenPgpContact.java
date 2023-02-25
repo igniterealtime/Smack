@@ -31,11 +31,9 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.stringencoder.Base64;
-
 import org.jivesoftware.smackx.ox.element.PubkeyElement;
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
-import org.jivesoftware.smackx.ox.selection_strategy.BareJidUserId;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpTrustStore;
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
@@ -48,7 +46,7 @@ import org.bouncycastle.openpgp.PGPPublicKeyRingCollection;
 import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
 import org.jxmpp.jid.BareJid;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.pgpainless.util.BCUtil;
+import org.pgpainless.key.info.KeyRingInfo;
 
 /**
  * The OpenPgpContact is sort of a specialized view on the OpenPgpStore, which gives you access to the information
@@ -108,17 +106,13 @@ public class OpenPgpContact {
         PGPPublicKeyRingCollection anyKeys = getAnyPublicKeys();
         Map<OpenPgpV4Fingerprint, Date> announced = store.getAnnouncedFingerprintsOf(jid);
 
-        BareJidUserId.PubRingSelectionStrategy userIdFilter = new BareJidUserId.PubRingSelectionStrategy();
-
         PGPPublicKeyRingCollection announcedKeysCollection = null;
         for (OpenPgpV4Fingerprint announcedFingerprint : announced.keySet()) {
             PGPPublicKeyRing ring = anyKeys.getPublicKeyRing(announcedFingerprint.getKeyId());
 
             if (ring == null) continue;
 
-            ring = BCUtil.removeUnassociatedKeysFromKeyRing(ring, ring.getPublicKey(announcedFingerprint.getKeyId()));
-
-            if (!userIdFilter.accept(getJid(), ring)) {
+            if (!new KeyRingInfo(ring).isUserIdValid("xmpp:" + getJid().toString())) {
                 LOGGER.log(Level.WARNING, "Ignore key " + Long.toHexString(ring.getPublicKey().getKeyID()) +
                         " as it lacks the user-id \"xmpp" + getJid().toString() + "\"");
                 continue;

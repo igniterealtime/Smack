@@ -145,6 +145,11 @@ public class SmackTestUtil {
         return parser;
     }
 
+    public static XmlPullParser createDummyParser() throws XmlPullParserException, IOException {
+        String dummyElement = "<empty-element/>";
+        return PacketParserUtils.getParserFor(dummyElement);
+    }
+
     @SuppressWarnings("unchecked")
     private static <E extends Element, P extends AbstractProvider<E>> P providerClassToProvider(Class<P> providerClass) {
         P provider;

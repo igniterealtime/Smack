@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.minidns.record.SRV;
 public final class SrvXmppRemoteConnectionEndpoint extends SrvRemoteConnectionEndpoint
                 implements Rfc6120TcpRemoteConnectionEndpoint {
 
-    protected SrvXmppRemoteConnectionEndpoint(SRV srv, List<? extends InetAddress> inetAddresses) {
+    SrvXmppRemoteConnectionEndpoint(SRV srv, List<? extends InetAddress> inetAddresses) {
         super(srv, inetAddresses);
     }
 

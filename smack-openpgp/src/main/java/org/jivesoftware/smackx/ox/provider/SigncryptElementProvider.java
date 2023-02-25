@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2021 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -33,7 +34,8 @@ public class SigncryptElementProvider extends OpenPgpContentElementProvider<Sign
     public static final SigncryptElementProvider INSTANCE = new SigncryptElementProvider();
 
     @Override
-    public SigncryptElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public SigncryptElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                    throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
         return new SigncryptElement(data.to, data.rpad, data.timestamp, data.payload);
     }

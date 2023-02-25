@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2017 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,11 @@ import android.util.Log;
  */
 public class AndroidDebugger extends AbstractDebugger {
 
+    /**
+     * Constructs a new Smack debugger for Android.
+     *
+     * @param connection the connection to debug.
+     */
     public AndroidDebugger(XMPPConnection connection) {
         super(connection);
     }

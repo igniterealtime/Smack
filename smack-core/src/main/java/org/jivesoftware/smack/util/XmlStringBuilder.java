@@ -24,9 +24,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.Element;
-import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 
 import org.jxmpp.util.XmppDateTime;
@@ -43,7 +42,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         effectiveXmlEnvironment = null;
     }
 
-    public XmlStringBuilder(ExtensionElement pe) {
+    public XmlStringBuilder(XmlElement pe) {
         this(pe, null);
     }
 
@@ -52,7 +51,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         halfOpenElement(e.getElementName());
     }
 
-    public XmlStringBuilder(FullyQualifiedElement element, XmlEnvironment enclosingXmlEnvironment) {
+    public XmlStringBuilder(XmlElement element, XmlEnvironment enclosingXmlEnvironment) {
         this(element.getElementName(), element.getNamespace(), element.getLanguage(), enclosingXmlEnvironment);
     }
 
@@ -518,7 +517,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return escape(text.toString());
     }
 
-    protected XmlStringBuilder prelude(FullyQualifiedElement pe) {
+    protected XmlStringBuilder prelude(XmlElement pe) {
         return prelude(pe.getElementName(), pe.getNamespace());
     }
 

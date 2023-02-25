@@ -169,8 +169,10 @@ public class RemoteXmppTcpConnectionEndpoints {
      *
      * @param domain the domain.
      * @param domainType the XMPP domain type, server or client.
-     * @param failedAddresses a list that will be populated with host addresses that failed to resolve.
-     * @return a list of resolver host addresses for this domain.
+     * @param lookupFailures a list that will be populated with all failures that oocured during lookup.
+     * @param dnssecMode the DNSSEC mode.
+     * @param dnsResolver the DNS resolver to use.
+     * @return a list of resolved host addresses for this domain.
      */
     private static List<Rfc6120TcpRemoteConnectionEndpoint> resolveDomain(DnsName domain, DomainType domainType,
                     List<RemoteConnectionEndpointLookupFailure> lookupFailures, DnssecMode dnssecMode, DNSResolver dnsResolver) {

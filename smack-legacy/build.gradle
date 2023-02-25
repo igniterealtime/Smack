@@ -4,8 +4,8 @@ Usually XEPs in the state 'retracted', 'rejected', 'deprecated',
 'obsolete' or in a long standing 'deferred' state."""
 
 dependencies {
-	compile project(':smack-core')
-	compile project(':smack-extensions')
+	api project(':smack-core')
+	api project(':smack-extensions')
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 }

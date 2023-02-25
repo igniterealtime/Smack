@@ -24,9 +24,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
 
 /**
  * A threaded dummy connection.
@@ -41,10 +41,11 @@ public class ThreadedDummyConnection extends DummyConnection {
     private volatile boolean timeout = false;
 
     @Override
-    protected void sendStanzaInternal(Stanza packet) {
-        super.sendStanzaInternal(packet);
+    protected void sendInternal(TopLevelStreamElement element) {
+        super.sendInternal(element);
 
-        if (packet instanceof IQ && !timeout) {
+        if (element instanceof IQ && !timeout) {
+            IQ iq = (IQ) element;
             timeout = false;
             // Set reply packet to match one being sent. We haven't started the
             // other thread yet so this is still safe.
@@ -52,13 +53,13 @@ public class ThreadedDummyConnection extends DummyConnection {
 
             // If no reply has been set via addIQReply, then we create a simple reply
             if (replyPacket == null) {
-                replyPacket = IQ.createResultIQ((IQ) packet);
+                replyPacket = IQ.createResultIQ(iq);
                 replyQ.add(replyPacket);
             }
-            replyPacket.setStanzaId(packet.getStanzaId());
-            replyPacket.setTo(packet.getFrom());
+            replyPacket.setStanzaId(iq.getStanzaId());
+            replyPacket.setTo(iq.getFrom());
             if (replyPacket.getType() == null) {
-                replyPacket.setType(Type.result);
+                replyPacket.setType(IQ.Type.result);
             }
 
             new ProcessQueue(replyQ).start();

@@ -21,8 +21,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -38,10 +39,10 @@ import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
  * @author Grigory Fedorov
  * @see <a href="http://xmpp.org/extensions/xep-0363.html">XEP-0363: HTTP File Upload</a>
  */
-public class SlotProvider extends IQProvider<Slot> {
+public class SlotProvider extends IqProvider<Slot> {
 
     @Override
-    public Slot parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Slot parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         final String namespace = parser.getNamespace();
 
         final UploadService.Version version = HttpFileUploadManager.namespaceToVersion(namespace);

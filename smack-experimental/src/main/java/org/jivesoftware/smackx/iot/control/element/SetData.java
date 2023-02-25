@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016-2019 Florian Schmaus
+ * Copyright © 2016-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package org.jivesoftware.smackx.iot.control.element;
 
 import java.util.Locale;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public abstract class SetData implements ExtensionElement {
+public abstract class SetData implements XmlElement {
 
     public enum Type {
         BOOL,

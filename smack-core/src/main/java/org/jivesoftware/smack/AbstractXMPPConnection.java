@@ -51,6 +51,7 @@ import org.jivesoftware.smack.SmackException.AlreadyLoggedInException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
 import org.jivesoftware.smack.SmackException.ResourceBindingNotOfferedException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredException;
@@ -70,10 +71,10 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaIdFilter;
 import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler;
+import org.jivesoftware.smack.packet.AbstractStreamOpen;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.ExtensionElement;
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Message;
@@ -91,6 +92,7 @@ import org.jivesoftware.smack.packet.StartTls;
 import org.jivesoftware.smack.packet.StreamError;
 import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
@@ -238,7 +240,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected final Lock connectionLock = new ReentrantLock();
 
-    protected final Map<QName, FullyQualifiedElement> streamFeatures = new HashMap<>();
+    protected final Map<QName, XmlElement> streamFeatures = new HashMap<>();
 
     /**
      * The full JID of the authenticated user, as returned by the resource binding response of the server.
@@ -376,6 +378,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private final Map<QName, IQRequestHandler> setIqRequestHandler = new HashMap<>();
     private final Map<QName, IQRequestHandler> getIqRequestHandler = new HashMap<>();
+    private final Set<String> iqRequestHandlerNamespaces = new CopyOnWriteArraySet<>();
+    private final Map<String, Integer> iqRequestHandlerNamespacesReferenceCounters = new HashMap<>();
 
     private final StanzaFactory stanzaFactory;
 
@@ -457,8 +461,17 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public abstract boolean isSecureConnection();
 
-    protected abstract void sendStanzaInternal(Stanza packet) throws NotConnectedException, InterruptedException;
+    // Usually batching is a good idea. So the two
+    // send(Internal|NonBlockingInternal) methods below could be using
+    // Collection<? extends TopLevelStreamElement> as parameter type instead.
+    // TODO: Add "batched send" support. Note that for the non-blocking variant, this probably requires a change in
+    // return type, so that it is possible to signal which messages could be "send" and which not.
 
+    protected abstract void sendInternal(TopLevelStreamElement element) throws NotConnectedException, InterruptedException;
+
+    protected abstract void sendNonBlockingInternal(TopLevelStreamElement element) throws NotConnectedException, OutgoingQueueFullException;
+
+    @SuppressWarnings("deprecation")
     @Override
     public boolean trySendStanza(Stanza stanza) throws NotConnectedException {
         // Default implementation which falls back to sendStanza() as mentioned in the methods javadoc. May be
@@ -473,6 +486,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean trySendStanza(Stanza stanza, long timeout, TimeUnit unit)
                     throws NotConnectedException, InterruptedException {
@@ -483,7 +497,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public abstract void sendNonza(Nonza element) throws NotConnectedException, InterruptedException;
+    public final void sendNonza(Nonza nonza) throws NotConnectedException, InterruptedException {
+        sendInternal(nonza);
+    }
+
+    @Override
+    public final void sendNonzaNonBlocking(Nonza nonza) throws NotConnectedException, OutgoingQueueFullException {
+        sendNonBlockingInternal(nonza);
+    }
 
     @Override
     public abstract boolean isUsingCompression();
@@ -778,7 +799,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Indicate that we're now authenticated.
         this.authenticated = true;
 
-        // If debugging is enabled, change the the debug window title to include the
+        // If debugging is enabled, change the debug window title to include the
         // name we are now logged-in as.
         // If DEBUG was set to true AFTER the connection was created the debugger
         // will be null
@@ -850,8 +871,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return stanzaFactory;
     }
 
-    @Override
-    public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+    private Stanza preSendStanza(Stanza stanza) throws NotConnectedException {
         Objects.requireNonNull(stanza, "Stanza must not be null");
         assert stanza instanceof Message || stanza instanceof Presence || stanza instanceof IQ;
 
@@ -870,7 +890,19 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Invoke interceptors for the new stanza that is about to be sent. Interceptors may modify
         // the content of the stanza.
         Stanza stanzaAfterInterceptors = firePacketInterceptors(stanza);
-        sendStanzaInternal(stanzaAfterInterceptors);
+        return stanzaAfterInterceptors;
+    }
+
+    @Override
+    public final void sendStanza(Stanza stanza) throws NotConnectedException, InterruptedException {
+        stanza = preSendStanza(stanza);
+        sendInternal(stanza);
+    }
+
+    @Override
+    public final void sendStanzaNonBlocking(Stanza stanza) throws NotConnectedException, OutgoingQueueFullException {
+        stanza = preSendStanza(stanza);
+        sendNonBlockingInternal(stanza);
     }
 
     /**
@@ -1516,15 +1548,18 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     throw new IllegalStateException("Should only encounter IQ type 'get' or 'set'");
                 }
                 if (iqRequestHandler == null) {
+                    final String iqNamespace = key.getNamespaceURI();
                     StanzaError.Condition replyCondition;
                     switch (unknownIqRequestReplyMode) {
                     case doNotReply:
                         return;
-                    case replyFeatureNotImplemented:
-                        replyCondition = StanzaError.Condition.feature_not_implemented;
-                        break;
-                    case replyServiceUnavailable:
-                        replyCondition = StanzaError.Condition.service_unavailable;
+                    case reply:
+                        boolean isKnownNamespace = iqRequestHandlerNamespaces.contains(iqNamespace);
+                        if (isKnownNamespace) {
+                            replyCondition = StanzaError.Condition.feature_not_implemented;
+                        } else {
+                            replyCondition = StanzaError.Condition.service_unavailable;
+                        }
                         break;
                     default:
                         throw new AssertionError();
@@ -1846,7 +1881,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             XmlPullParser.Event eventType = parser.next();
 
             if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getDepth() == initialDepth + 1) {
-                FullyQualifiedElement streamFeature = null;
+                XmlElement streamFeature = null;
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
                 switch (name) {
@@ -1915,7 +1950,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <F extends FullyQualifiedElement> F getFeature(QName qname) {
+    public <F extends XmlElement> F getFeature(QName qname) {
         return (F) streamFeatures.get(qname);
     }
 
@@ -1924,7 +1959,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return streamFeatures.containsKey(qname);
     }
 
-    protected void addStreamFeature(FullyQualifiedElement feature) {
+    protected void addStreamFeature(XmlElement feature) {
         QName key = feature.getQName();
         streamFeatures.put(key, feature);
     }
@@ -2000,18 +2035,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }, timeout, TimeUnit.MILLISECONDS);
 
         addAsyncStanzaListener(stanzaListener, replyFilter);
-        Runnable sendOperation = () -> {
-            try {
-                sendStanza(stanza);
-            }
-            catch (NotConnectedException | InterruptedException exception) {
-                future.setException(exception);
-            }
-        };
-        if (SmackConfiguration.TRUELY_ASYNC_SENDS) {
-            Async.go(sendOperation);
-        } else {
-            sendOperation.run();
+        try {
+            sendStanzaNonBlocking(stanza);
+        }
+        catch (NotConnectedException | OutgoingQueueFullException exception) {
+            future.setException(exception);
         }
 
         return future;
@@ -2042,18 +2070,35 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     @Override
     public IQRequestHandler registerIQRequestHandler(final IQRequestHandler iqRequestHandler) {
         final QName key = iqRequestHandler.getQName();
+        IQRequestHandler previous;
         switch (iqRequestHandler.getType()) {
         case set:
             synchronized (setIqRequestHandler) {
-                return setIqRequestHandler.put(key, iqRequestHandler);
+                previous = setIqRequestHandler.put(key, iqRequestHandler);
             }
+            break;
         case get:
             synchronized (getIqRequestHandler) {
-                return getIqRequestHandler.put(key, iqRequestHandler);
+                previous = getIqRequestHandler.put(key, iqRequestHandler);
             }
+            break;
         default:
             throw new IllegalArgumentException("Only IQ type of 'get' and 'set' allowed");
         }
+
+        final String iqNamespace = key.getNamespaceURI();
+        synchronized (iqRequestHandlerNamespacesReferenceCounters) {
+            Integer newValue;
+            Integer counter = iqRequestHandlerNamespacesReferenceCounters.get(iqNamespace);
+            if (counter == null) {
+                iqRequestHandlerNamespaces.add(iqNamespace);
+                newValue = 0;
+            } else {
+                newValue = counter.intValue() + 1;
+            }
+            iqRequestHandlerNamespacesReferenceCounters.put(iqNamespace, newValue);
+        }
+        return previous;
     }
 
     @Override
@@ -2064,19 +2109,38 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     @Override
     public IQRequestHandler unregisterIQRequestHandler(String element, String namespace, IQ.Type type) {
+        IQRequestHandler unregisteredHandler;
         final QName key = new QName(namespace, element);
         switch (type) {
         case set:
             synchronized (setIqRequestHandler) {
-                return setIqRequestHandler.remove(key);
+                unregisteredHandler = setIqRequestHandler.remove(key);
             }
+            break;
         case get:
             synchronized (getIqRequestHandler) {
-                return getIqRequestHandler.remove(key);
+                unregisteredHandler = getIqRequestHandler.remove(key);
             }
+            break;
         default:
             throw new IllegalArgumentException("Only IQ type of 'get' and 'set' allowed");
         }
+
+        if (unregisteredHandler == null) {
+            return null;
+        }
+
+        synchronized (iqRequestHandlerNamespacesReferenceCounters) {
+            int newValue = iqRequestHandlerNamespacesReferenceCounters.get(namespace).intValue() - 1;
+            if (newValue == 0) {
+                iqRequestHandlerNamespacesReferenceCounters.remove(namespace);
+                iqRequestHandlerNamespaces.remove(namespace);
+            } else {
+                iqRequestHandlerNamespacesReferenceCounters.put(namespace, newValue);
+            }
+        }
+
+        return unregisteredHandler;
     }
 
     private long lastStanzaReceived;
@@ -2206,18 +2270,30 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return SMACK_REACTOR.schedule(runnable, delay, unit, ScheduledAction.Kind.NonBlocking);
     }
 
-    protected void onStreamOpen(XmlPullParser parser) {
-        // We found an opening stream.
-        if ("jabber:client".equals(parser.getNamespace(null))) {
-            streamId = parser.getAttributeValue("", "id");
-            incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
+    /**
+     * Must be called when a XMPP stream open tag is encountered. Sets values like the stream ID and the incoming stream
+     * XML environment.
+     * <p>
+     * This method also returns a matching stream close tag. For example if the stream open is {@code <stream …>}, then
+     * {@code </stream>} is returned. But if it is {@code <stream:stream>}, then {@code </stream:stream>} is returned.
+     * Or if it is {@code <foo:stream>}, then {@code </foo:stream>} is returned.
+     * </p>
+     *
+     * @param parser an XML parser that is positioned at the start of the stream open.
+     * @return a String representing the corresponding stream end tag.
+     */
+    protected String onStreamOpen(XmlPullParser parser) {
+        assert StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE.equals(parser.getNamespace()) : parser.getNamespace()
+                        + " is not " + StreamOpen.ETHERX_JABBER_STREAMS_NAMESPACE;
+        assert StreamOpen.UNPREFIXED_ELEMENT.equals(parser.getName());
 
-            String reportedServerDomainString = parser.getAttributeValue("", "from");
-            if (reportedServerDomainString == null) {
-                // RFC 6120 § 4.7.1. makes no explicit statement whether or not 'from' in the stream open from the server
-                // in c2s connections is required or not.
-                return;
-            }
+        streamId = parser.getAttributeValue("id");
+        incomingStreamXmlEnvironment = XmlEnvironment.from(parser);
+
+        String reportedServerDomainString = parser.getAttributeValue("from");
+        // RFC 6120 § 4.7.1. makes no explicit statement whether or not 'from' in the stream open from the server
+        // in c2s connections is required or not.
+        if (reportedServerDomainString != null) {
             DomainBareJid reportedServerDomain;
             try {
                 reportedServerDomain = JidCreate.domainBareFrom(reportedServerDomainString);
@@ -2231,24 +2307,38 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                         + "' as reported by server could not be transformed to a valid JID", e);
             }
         }
+
+        String prefix = parser.getPrefix();
+        if (StringUtils.isNotEmpty(prefix)) {
+            return "</" + prefix + ":stream>";
+        }
+        return "</stream>";
     }
 
-    protected void sendStreamOpen() throws NotConnectedException, InterruptedException {
+    protected final void sendStreamOpen() throws NotConnectedException, InterruptedException {
         // If possible, provide the receiving entity of the stream open tag, i.e. the server, as much information as
         // possible. The 'to' attribute is *always* available. The 'from' attribute if set by the user and no external
         // mechanism is used to determine the local entity (user). And the 'id' attribute is available after the first
         // response from the server (see e.g. RFC 6120 § 9.1.1 Step 2.)
-        CharSequence to = getXMPPServiceDomain();
+        DomainBareJid to = getXMPPServiceDomain();
         CharSequence from = null;
         CharSequence localpart = config.getUsername();
         if (localpart != null) {
             from = XmppStringUtils.completeJidFrom(localpart, to);
         }
         String id = getStreamId();
+        String lang = config.getXmlLang();
 
-        StreamOpen streamOpen = new StreamOpen(to, from, id, config.getXmlLang(), StreamOpen.StreamContentNamespace.client);
+        AbstractStreamOpen streamOpen = getStreamOpen(to, from, id, lang);
         sendNonza(streamOpen);
+        updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
+    }
 
+    protected AbstractStreamOpen getStreamOpen(DomainBareJid to, CharSequence from, String id, String lang) {
+        return new StreamOpen(to, from, id, lang);
+    }
+
+    protected void updateOutgoingStreamXmlEnvironmentOnStreamOpen(AbstractStreamOpen streamOpen) {
         XmlEnvironment.Builder xmlEnvironmentBuilder = XmlEnvironment.builder();
         xmlEnvironmentBuilder.with(streamOpen);
         outgoingStreamXmlEnvironment = xmlEnvironmentBuilder.build();

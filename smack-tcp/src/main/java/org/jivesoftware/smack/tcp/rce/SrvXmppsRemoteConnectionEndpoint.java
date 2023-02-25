@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2021 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import java.util.List;
 
 import org.minidns.record.SRV;
 
-public class SrvXmppsRemoteConnectionEndpoint extends SrvRemoteConnectionEndpoint {
+public final class SrvXmppsRemoteConnectionEndpoint extends SrvRemoteConnectionEndpoint {
 
-    protected SrvXmppsRemoteConnectionEndpoint(SRV srv, List<? extends InetAddress> inetAddresses) {
+    SrvXmppsRemoteConnectionEndpoint(SRV srv, List<? extends InetAddress> inetAddresses) {
         super(srv, inetAddresses);
     }
 

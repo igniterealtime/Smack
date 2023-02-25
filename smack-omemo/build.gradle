@@ -3,9 +3,9 @@ Smack API for XEP-0384: OMEMO Encryption
 """
 
 dependencies {
-	compile project(":smack-im")
-	compile project(":smack-extensions")
-	compile project(":smack-experimental")
+	api project(":smack-im")
+	api project(":smack-extensions")
+	api project(":smack-experimental")
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 }

@@ -22,10 +22,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -43,6 +43,7 @@ public class QueueOverview implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static String NAMESPACE = "http://jabber.org/protocol/workgroup";
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
     private static final String DATE_FORMAT = "yyyyMMdd'T'HH:mm:ss";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
@@ -128,7 +129,7 @@ public class QueueOverview implements ExtensionElement {
         @Override
         public QueueOverview parse(XmlPullParser parser,
                         int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
-                        IOException, SmackTextParseException {
+                        IOException, TextParseException, ParseException {
             QueueOverview queueOverview = new QueueOverview();
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
@@ -142,11 +143,7 @@ public class QueueOverview implements ExtensionElement {
                     queueOverview.setAverageWaitTime(Integer.parseInt(parser.nextText()));
                 }
                 else if ("oldest".equals(parser.getName())) {
-                    try {
-                        queueOverview.setOldestEntry(dateFormat.parse(parser.nextText()));
-                    } catch (ParseException e) {
-                        throw new SmackParsingException.SmackTextParseException(e);
-                    }
+                    queueOverview.setOldestEntry(dateFormat.parse(parser.nextText()));
                 }
                 else if ("status".equals(parser.getName())) {
                     queueOverview.setStatus(WorkgroupQueue.Status.fromString(parser.nextText()));

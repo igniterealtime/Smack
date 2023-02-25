@@ -16,7 +16,12 @@
  */
 package org.jivesoftware.smack.xml;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -66,4 +71,10 @@ public class SmackXmlParser {
         return xmlPullParserFactory.newXmlPullParser(reader);
     }
 
+    public static XmlPullParser newXmlParser(InputStream inputStream) throws XmlPullParserException {
+        CharsetDecoder utf8Decoder = StandardCharsets.UTF_8.newDecoder();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, utf8Decoder);
+        Reader reader = new BufferedReader(inputStreamReader);
+        return newXmlParser(reader);
+    }
 }

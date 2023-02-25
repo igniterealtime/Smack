@@ -25,8 +25,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 
 import org.jivesoftware.smackx.jingleold.ContentNegotiator;
@@ -37,7 +39,6 @@ import org.jivesoftware.smackx.jingleold.JingleNegotiatorState;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.listeners.JingleListener;
 import org.jivesoftware.smackx.jingleold.listeners.JingleTransportListener;
-import org.jivesoftware.smackx.jingleold.nat.ICECandidate.Type;
 import org.jivesoftware.smackx.jingleold.packet.Jingle;
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
@@ -347,7 +348,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                                 try {
                                     triggerTransportEstablished(getAcceptedLocalCandidate(), bestRemote);
                                 }
-                                catch (InterruptedException | NotConnectedException e) {
+                                catch (InterruptedException | NotConnectedException | NoResponseException | XMPPErrorException e) {
                                     throw new IllegalStateException(e);
                                 }
                                 break;
@@ -364,7 +365,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                         for (TransportCandidate candidate : remoteCandidates) {
                             if (candidate instanceof ICECandidate) {
                                 ICECandidate iceCandidate = (ICECandidate) candidate;
-                                if (iceCandidate.getType().equals(Type.relay)) {
+                                if (iceCandidate.getType().equals(ICECandidate.Type.relay)) {
                                     // TODO Check if the relay is reachable.
                                     addValidRemoteCandidate(iceCandidate);
                                     foundRemoteRelay = true;
@@ -379,7 +380,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                             for (TransportCandidate candidate : offeredCandidates) {
                                 if (candidate instanceof ICECandidate) {
                                     ICECandidate iceCandidate = (ICECandidate) candidate;
-                                    if (iceCandidate.getType().equals(Type.relay)) {
+                                    if (iceCandidate.getType().equals(ICECandidate.Type.relay)) {
                                         foundLocalRelay = true;
                                     }
                                 }
@@ -512,7 +513,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     /**
      * Parse the list of transport candidates from a Jingle packet.
      *
-     * @param jin The input jingle packet
+     * @param jingle The input jingle packet
      */
     private List<TransportCandidate> obtainCandidatesList(Jingle jingle) {
         List<TransportCandidate> result = new ArrayList<>();
@@ -802,8 +803,10 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      * @param remote TransportCandidate that has been agreed.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    private void triggerTransportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException {
+    private void triggerTransportEstablished(TransportCandidate local, TransportCandidate remote) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
         List<JingleListener> listeners = getListenersList();
         for (JingleListener li : listeners) {
             if (li instanceof JingleTransportListener) {
@@ -943,7 +946,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                 result = chose;
             }
 
-            if (result != null && result.getType().equals(Type.relay))
+            if (result != null && result.getType().equals(ICECandidate.Type.relay))
                 LOGGER.fine("Relay Type");
 
             return result;

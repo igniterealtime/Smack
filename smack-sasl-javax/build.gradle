@@ -3,7 +3,7 @@ SASL with javax.security.sasl
 Use javax.security.sasl for SASL."""
 
 dependencies {
-	compile project(':smack-core')
+	api project(':smack-core')
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 }

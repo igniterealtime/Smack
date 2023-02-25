@@ -18,14 +18,18 @@ package org.jivesoftware.smackx.message_retraction.element;
 
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 
 public class RetractedElement implements ExtensionElement {
 
     public static final String ELEMENT = "retracted";
+    public static final QName QNAME = new QName(RetractElement.NAMESPACE, ELEMENT);
     public static final String ATTR_STAMP = "stamp";
 
     private final Date stamp;
@@ -46,12 +50,12 @@ public class RetractedElement implements ExtensionElement {
 
     @Override
     public String getNamespace() {
-        return RetractElement.NAMESPACE;
+        return QNAME.getNamespaceURI();
     }
 
     @Override
     public String getElementName() {
-        return ELEMENT;
+        return QNAME.getLocalPart();
     }
 
     @Override

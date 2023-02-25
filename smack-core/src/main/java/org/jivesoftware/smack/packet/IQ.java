@@ -211,7 +211,7 @@ public abstract class IQ extends Stanza implements IqView {
 
         xml.append(iqChildElement);
 
-        List<ExtensionElement> extensionsXml = getExtensions();
+        List<XmlElement> extensionsXml = getExtensions();
         if (iqChildElement.isEmptyElement) {
             if (extensionsXml.isEmpty()) {
                 xml.closeEmptyElement();

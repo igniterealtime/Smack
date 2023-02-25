@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
@@ -28,6 +29,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.RandomPaddingAffixElement;
@@ -40,7 +42,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class ContentElementProviderTest {
 
     @Test
-    public void testParsing() throws XmlPullParserException, IOException, SmackParsingException {
+    public void testParsing() throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String xml = "" +
                 "<content xmlns='urn:xmpp:sce:0'>\n" +
                 "  <payload>\n" +

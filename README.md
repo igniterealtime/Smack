@@ -1,17 +1,17 @@
 Smack
 =====
 
-[![Build Status](https://github.com/igniterealtime/Smack/workflows/CI/badge.svg)](https://github.com/igniterealtime/Smack/actions?query=workflow%3A%22CI%22)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smack/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smack)  [![Link to XMPP chat smack@conference.igniterealtime.org](https://inverse.chat/badge.svg?room=smack@conference.igniterealtime.org)](https://inverse.chat/#converse/room?jid=smack@conference.igniterealtime.org)
+[![Build Status](https://github.com/igniterealtime/Smack/workflows/CI/badge.svg)](https://github.com/igniterealtime/Smack/actions?query=workflow%3A%22CI%22)  [![Coverage Status](https://coveralls.io/repos/igniterealtime/Smack/badge.svg)](https://coveralls.io/r/igniterealtime/Smack)  [![Project Stats](https://www.openhub.net/p/smack/widgets/project_thin_badge.gif)](https://www.openhub.net/p/smack)  [![Link to XMPP chat smack@conference.igniterealtime.org](https://search.jabber.network/api/1.0/badge?address=smack@conference.igniterealtime.org)](https://inverse.chat/#converse/room?jid=smack@conference.igniterealtime.org)
 
 About
 -----
 
-[Smack] is an open source, highly modular, easy to use, XMPP client library written in Java for Java SE compatible JVMs and Android.
+[Smack] is an open-source, highly modular, easy to use, XMPP client library written in Java for Java SE compatible JVMs and Android.
 
-A pure Java library, it can be embedded into your applications to create anything from a full XMPP instant messaging client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
-Smack and XMPP allows you to easily exchange data, in various ways e.g. fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
+Being a pure Java library, it can be embedded into your applications to create anything from a full XMPP instant messaging client to simple XMPP integrations such as sending notification messages and presence-enabling devices.
+Smack and XMPP allow you to easily exchange data in various ways e.g., fire-and-forget, publish-subscribe, between human and non-human endpoints (M2M, IoT, …).
 
-More information are provided by the [Overview](documentation/overview.md).
+More information is provided by the [Overview](documentation/overview.md).
 
 Getting started
 ---------------
@@ -32,10 +32,12 @@ Some subprojects of Smack are governed by other licenses. Please refer to the in
 Professional Services
 ---------------------
 
-Smack is a collaborative effort of many open source, professionally and spare-time, paid and unpaid, contributors.
-While we try to provide the best possible XMPP library for Android and Java SE compatible execution environments by following state of the art software engineering practices, the API may not always perfectly fit your requirements.
-We welcome contributions and encourage discussion about how Smack can be further improved.
-We also provide **paid services** ranging from **XMPP/Smack related consulting** to **designing and developing features** in order to accommodate your needs.
+Smack is a collaborative effort of many people.
+Some are paid, e.g., by their employer or a third party, for their contributions.
+But many contribute in their spare time for free.
+While we try to provide the best possible XMPP library for Android and Java SE-compatible execution environments by following state-of-the-art software engineering practices, the API may not always perfectly fit your requirements.
+Hence welcome contributions and encourage discussion about how Smack can be further improved.
+We also provide **paid services** ranging from **XMPP/Smack related consulting** to **designing and developing features** to accommodate your needs.
 Please contact [Florian Schmaus](mailto:flo@geekplace.eu) for further information.
 
 Bug Reporting
@@ -51,17 +53,10 @@ users should:
 
 Please search for your issues in the bug tracker before reporting.
 
-Donate
-------
-
-If you find Smack useful and feel like donating, then you can use one of the following systems:
-
-- Donate via Bitcoin: 1LiU78z3498wu3jwRPKbvovKAHjTcpVbuK
-
 Contact
 -------
 
-The developers hang around in `#smack` (freenode, IRC) and `open_chat@conference.igniterealtime.org` (XMPP MUC room).
+The developers hang around in [smack@conference.igniterealtime.org](xmpp:smack@conference.igniterealtime.org?join). You may use [this link](https://inverse.chat/badge.svg?room=smack@conference.igniterealtime.org) to join the room via [inverse.chat](https://inverse.chat).
 Remember that it may take some time (~hours) to get a response.
  
 You can also reach us via the [Smack Support Forum] if you have questions or need support, or the [Smack Developers Forum] if you want to discuss Smack development.
@@ -84,7 +79,7 @@ Resources
 - Dev Forum: https://discourse.igniterealtime.org/c/smack/smack-dev
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
 - Maven Snapshots: https://oss.sonatype.org/content/repositories/snapshots/org/igniterealtime/smack/
-- Nightly Unique Maven Snapshots: https://igniterealtime.org/repo/
+- Nightly Unique Maven Snapshots: https://www.igniterealtime.org/archiva/repository/maven/
 
 Ignite Realtime
 ===============

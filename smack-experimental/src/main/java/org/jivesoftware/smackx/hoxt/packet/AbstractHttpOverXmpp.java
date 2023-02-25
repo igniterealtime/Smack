@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.hoxt.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.NamedElement;
@@ -161,6 +163,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     public static class Data extends HoxExtensionElement {
 
         public static final String ELEMENT = "data";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final NamedElement child;
 
@@ -210,6 +213,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     public static class Text extends HoxExtensionElement {
 
         public static final String ELEMENT = "text";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String text;
 
@@ -252,6 +256,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     public static class Base64 extends HoxExtensionElement {
 
         public static final String ELEMENT = "base64";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String text;
 
@@ -294,6 +299,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     public static class Xml extends HoxExtensionElement {
 
         public static final String ELEMENT = "xml";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String text;
 
@@ -336,6 +342,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     public static class ChunkedBase64 extends HoxExtensionElement {
 
         public static final String ELEMENT = "chunkedBase64";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String streamId;
 
@@ -379,6 +386,7 @@ public abstract class AbstractHttpOverXmpp extends IQ {
     public static class Ibb extends HoxExtensionElement {
 
         public static final String ELEMENT = "ibb";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final String sid;
 

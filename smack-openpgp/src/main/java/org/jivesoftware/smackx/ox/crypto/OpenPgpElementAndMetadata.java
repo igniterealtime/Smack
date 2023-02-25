@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.ox.crypto;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
+import org.pgpainless.encryption_signing.EncryptionResult;
 
 /**
  * Bundle together an {@link OpenPgpElement} and {@link OpenPgpMetadata}.
@@ -26,7 +27,7 @@ import org.pgpainless.decryption_verification.OpenPgpMetadata;
 public class OpenPgpElementAndMetadata {
 
     private final OpenPgpElement element;
-    private final OpenPgpMetadata metadata;
+    private final EncryptionResult metadata;
 
     /**
      * Constructor.
@@ -34,7 +35,7 @@ public class OpenPgpElementAndMetadata {
      * @param element element
      * @param metadata metadata about the elements encryption
      */
-    public OpenPgpElementAndMetadata(OpenPgpElement element, OpenPgpMetadata metadata) {
+    public OpenPgpElementAndMetadata(OpenPgpElement element, EncryptionResult metadata) {
         this.element = element;
         this.metadata = metadata;
     }
@@ -49,11 +50,11 @@ public class OpenPgpElementAndMetadata {
     }
 
     /**
-     * Return {@link OpenPgpMetadata} about the {@link OpenPgpElement}s encryption/signatures.
+     * Return an {@link EncryptionResult} containing metadata about the {@link OpenPgpElement}s encryption/signatures.
      *
      * @return metadata TODO javadoc me please
      */
-    public OpenPgpMetadata getMetadata() {
+    public EncryptionResult getMetadata() {
         return metadata;
     }
 }

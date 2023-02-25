@@ -33,11 +33,11 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -355,7 +355,7 @@ public class Workgroup {
 
         JoinQueuePacket joinPacket = new JoinQueuePacket(workgroupJID, answerForm, userID);
 
-        connection.createStanzaCollectorAndSend(joinPacket).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(joinPacket);
         // Notify listeners that we've joined the queue.
         fireQueueJoinedEvent();
     }
@@ -436,7 +436,7 @@ public class Workgroup {
         }
 
         DepartQueuePacket departPacket = new DepartQueuePacket(this.workgroupJID);
-        connection.createStanzaCollectorAndSend(departPacket).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(departPacket);
 
         // Notify listeners that we're no longer in the queue.
         fireQueueDepartedEvent();
@@ -463,7 +463,7 @@ public class Workgroup {
 
     /**
      * Adds an invitation listener that will be notified of groupchat invitations
-     * from the workgroup for the the user that created this Workgroup instance.
+     * from the workgroup for the user that created this Workgroup instance.
      *
      * @param invitationListener the invitation listener.
      */
@@ -516,8 +516,8 @@ public class Workgroup {
         if (packet instanceof Message) {
             Message msg = (Message) packet;
             // Check to see if the user left the queue.
-            ExtensionElement pe = msg.getExtensionElement("depart-queue", "http://jabber.org/protocol/workgroup");
-            ExtensionElement queueStatus = msg.getExtensionElement("queue-status", "http://jabber.org/protocol/workgroup");
+            XmlElement pe = msg.getExtensionElement("depart-queue", "http://jabber.org/protocol/workgroup");
+            XmlElement queueStatus = msg.getExtensionElement("queue-status", "http://jabber.org/protocol/workgroup");
 
             if (pe != null) {
                 fireQueueDepartedEvent();
@@ -657,7 +657,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        ChatSettings response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        ChatSettings response = connection.sendIqRequestAndWaitForResponse(request);
 
         return response;
     }
@@ -697,7 +697,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -714,7 +714,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -731,7 +731,7 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -750,8 +750,8 @@ public class Workgroup {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        return connection.createStanzaCollectorAndSend(
-                        request).nextResultOrThrow();
+        return connection.sendIqRequestAndWaitForResponse(
+                        request);
     }
 
 
@@ -771,8 +771,8 @@ public class Workgroup {
         workgroupForm.setType(IQ.Type.get);
         workgroupForm.setTo(workgroupJID);
 
-        WorkgroupForm response = connection.createStanzaCollectorAndSend(
-                        workgroupForm).nextResultOrThrow();
+        WorkgroupForm response = connection.sendIqRequestAndWaitForResponse(
+                        workgroupForm);
         return Form.from(response);
     }
 }

@@ -32,7 +32,6 @@ import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.bouncycastle.openpgp.PGPSecretKeyRingCollection;
 import org.jxmpp.jid.BareJid;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.pgpainless.key.collection.PGPKeyRing;
 
 public interface OpenPgpKeyStore {
 
@@ -113,7 +112,7 @@ public interface OpenPgpKeyStore {
     void deleteSecretKeyRing(BareJid owner, OpenPgpV4Fingerprint fingerprint) throws IOException, PGPException;
 
     /**
-     * Generate a new {@link PGPKeyRing} for {@code owner}.
+     * Generate a new {@link PGPSecretKeyRing} for {@code owner}.
      * The key will have a user-id containing the users {@link BareJid} (eg. "xmpp:juliet@capulet.lit").
      * This method MUST NOT return null.
      *
@@ -126,7 +125,7 @@ public interface OpenPgpKeyStore {
      * @throws NoSuchProviderException in case there is no suitable {@link java.security.Provider} registered.
      * @throws InvalidAlgorithmParameterException in case an invalid algorithms configuration is used.
      */
-    PGPKeyRing generateKeyRing(BareJid owner) throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException;
+    PGPSecretKeyRing generateKeyRing(BareJid owner) throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException;
 
     /**
      * Import a {@link PGPSecretKeyRing} of {@code owner}.

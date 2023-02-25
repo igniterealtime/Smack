@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,6 +85,7 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
      * @param action the action to perform.
      * @throws Exception in case of an exception.
      */
+    @SuppressWarnings("ThreadPriorityCheck")
     protected void performActionAndWaitForPresence(XMPPConnection conA, XMPPConnection conB, ThrowingRunnable action)
                     throws Exception {
         final SimpleResultSyncPoint presenceReceivedSyncPoint = new SimpleResultSyncPoint();
@@ -109,5 +110,8 @@ public abstract class AbstractSmackIntegrationTest extends AbstractSmackIntTest 
         } finally {
             conA.removeAsyncStanzaListener(presenceListener);
         }
+
+        // TODO: Ugly hack to make tests using this method more reliable. Ideally no test would use this method.
+        Thread.yield();
     }
 }

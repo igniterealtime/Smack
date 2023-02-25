@@ -2,7 +2,7 @@ description = """\
 Smack for standard XMPP connections over TCP."""
 
 dependencies {
-	compile project(':smack-core')
+	api project(':smack-core')
 	api project(':smack-streammanagement')
 
 	testFixturesApi(testFixtures(project(":smack-core")))

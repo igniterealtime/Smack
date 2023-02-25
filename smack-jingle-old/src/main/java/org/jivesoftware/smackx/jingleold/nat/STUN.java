@@ -22,13 +22,15 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -117,10 +119,10 @@ public class STUN extends SimpleIQ {
      *
      * @author Thiago Rocha
      */
-    public static class Provider extends IQProvider<STUN> {
+    public static class Provider extends IqProvider<STUN> {
 
         @Override
-        public STUN parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public STUN parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException,
                         IOException {
 
@@ -180,8 +182,10 @@ public class STUN extends SimpleIQ {
      * @return the STUN server address
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException, InterruptedException {
+    public static STUN getSTUNServer(XMPPConnection connection) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException {
 
         if (!connection.isConnected()) {
             return null;
@@ -196,12 +200,7 @@ public class STUN extends SimpleIQ {
         }
         stunPacket.setTo(jid);
 
-        StanzaCollector collector = connection.createStanzaCollectorAndSend(stunPacket);
-
-        STUN response = collector.nextResult();
-
-        // Cancel the collector.
-        collector.cancel();
+        STUN response = connection.sendIqRequestAndWaitForResponse(stunPacket);
 
         return response;
     }

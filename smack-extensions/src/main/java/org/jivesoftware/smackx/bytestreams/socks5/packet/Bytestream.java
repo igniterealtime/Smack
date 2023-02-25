@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.InternetAddress;
@@ -275,7 +277,8 @@ public class Bytestream extends IQ {
      */
     public static class StreamHost extends BytestreamExtensionElement {
 
-        public static String ELEMENTNAME = "streamhost";
+        public static final String ELEMENT = "streamhost";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final Jid jid;
 
@@ -344,7 +347,7 @@ public class Bytestream extends IQ {
 
         @Override
         public String getElementName() {
-            return ELEMENTNAME;
+            return QNAME.getLocalPart();
         }
 
         @Override
@@ -375,7 +378,8 @@ public class Bytestream extends IQ {
      */
     public static class StreamHostUsed extends BytestreamExtensionElement {
 
-        public static String ELEMENTNAME = "streamhost-used";
+        public static final String ELEMENT = "streamhost-used";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final Jid jid;
 
@@ -399,7 +403,7 @@ public class Bytestream extends IQ {
 
         @Override
         public String getElementName() {
-            return ELEMENTNAME;
+            return QNAME.getLocalPart();
         }
 
         @Override
@@ -418,7 +422,8 @@ public class Bytestream extends IQ {
      */
     public static class Activate extends BytestreamExtensionElement {
 
-        public static String ELEMENTNAME = "activate";
+        public static final String ELEMENT = "activate";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final Jid target;
 
@@ -442,7 +447,7 @@ public class Bytestream extends IQ {
 
         @Override
         public String getElementName() {
-            return ELEMENTNAME;
+            return QNAME.getLocalPart();
         }
 
         @Override

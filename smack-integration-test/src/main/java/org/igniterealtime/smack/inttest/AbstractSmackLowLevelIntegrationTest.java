@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,18 @@
 package org.igniterealtime.smack.inttest;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jxmpp.jid.DomainBareJid;
 
 public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmackIntTest {
+
+    public interface UnconnectedConnectionSource {
+        AbstractXMPPConnection getUnconnectedConnection();
+    }
 
     private final SmackIntegrationTestEnvironment environment;
 
@@ -47,25 +46,23 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
         this.service = configuration.service;
     }
 
-    protected AbstractXMPPConnection getConnectedConnection() throws InterruptedException, XMPPException, SmackException, IOException {
-        AbstractXMPPConnection connection = getUnconnectedConnection();
-        connection.connect().login();
-        return connection;
-    }
-
-    protected AbstractXMPPConnection getUnconnectedConnection()
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return environment.connectionManager.constructConnection();
-    }
-
-    protected List<AbstractXMPPConnection> getUnconnectedConnections(int count)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        List<AbstractXMPPConnection> connections = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            AbstractXMPPConnection connection = getUnconnectedConnection();
-            connections.add(connection);
-        }
-        return connections;
+    /**
+     * Get a connected connection. Note that this method will return a connection constructed via the default connection
+     * descriptor. It is primarily meant for integration tests to discover if the XMPP service supports a certain
+     * feature, that the integration test requires to run. This feature discovery is typically done in the constructor of the
+     * integration tests. And if the discovery fails a {@link TestNotPossibleException} should be thrown by he constructor.
+     *
+     * <p> Please ensure that you invoke {@link #recycle(AbstractXMPPConnection connection)} once you are done with this connection.
+     *
+     * @return a connected connection.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws IOException if an I/O error occurred.
+     * @throws XMPPException if an XMPP protocol error was received.
+     */
+    protected AbstractXMPPConnection getConnectedConnection()
+                    throws InterruptedException, SmackException, IOException, XMPPException {
+        return environment.connectionManager.constructConnectedConnection();
     }
 
     protected void recycle(AbstractXMPPConnection connection) {

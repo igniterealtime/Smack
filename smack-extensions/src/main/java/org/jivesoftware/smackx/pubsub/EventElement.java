@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
@@ -35,7 +36,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  *
  * @author Robin Collier
  */
-public class EventElement implements EmbeddedPacketExtension {
+public class EventElement implements EmbeddedPacketExtension, ExtensionElement {
     /**
      * The constant String "event".
      */
@@ -61,8 +62,8 @@ public class EventElement implements EmbeddedPacketExtension {
     }
 
     @Override
-    public List<ExtensionElement> getExtensions() {
-        return Arrays.asList(new ExtensionElement[] {getEvent()});
+    public List<XmlElement> getExtensions() {
+        return Arrays.asList(new XmlElement[] {getEvent()});
     }
 
     public NodeExtension getEvent() {
@@ -71,12 +72,12 @@ public class EventElement implements EmbeddedPacketExtension {
 
     @Override
     public String getElementName() {
-        return "event";
+        return QNAME.getLocalPart();
     }
 
     @Override
     public String getNamespace() {
-        return PubSubNamespace.event.getXmlns();
+        return QNAME.getNamespaceURI();
     }
 
     @Override

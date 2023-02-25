@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.full;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,6 +26,8 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
+import org.jivesoftware.smack.compression.CompressionModuleDescriptor;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 
@@ -34,6 +37,7 @@ import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.io.DOTImporter;
 import org.jgrapht.io.ImportException;
 import org.junit.jupiter.api.Test;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 public class ModularXmppClientToServerConnectionStateGraphTest {
 
@@ -80,4 +84,24 @@ public class ModularXmppClientToServerConnectionStateGraphTest {
         assertEquals(expectedStateGraph, currentStateGraph);
     }
 
+    @Test
+    public void testNoUnknownStates() throws XmppStringprepException {
+        ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("user", "password")
+            .setXmppDomain("example.org")
+            .failOnUnknownStates() // This is the actual option that enableds this test.
+            .build();
+    }
+
+    @Test
+    public void throwsOnUnknownStates() throws XmppStringprepException {
+        assertThrows(IllegalStateException.class, () ->
+            ModularXmppClientToServerConnectionConfiguration.builder()
+                .setUsernameAndPassword("user", "password")
+                .setXmppDomain("example.org")
+                .removeModule(CompressionModuleDescriptor.class)
+                .failOnUnknownStates() // This is the actual option that enableds this test.
+                .build()
+        );
+    }
 }

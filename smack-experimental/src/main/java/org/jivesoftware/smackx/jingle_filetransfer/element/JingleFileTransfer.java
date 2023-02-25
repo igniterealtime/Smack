@@ -18,14 +18,19 @@ package org.jivesoftware.smackx.jingle_filetransfer.element;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.packet.ExtensionElement;
+
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
 
 /**
  * File element.
  */
-public class JingleFileTransfer extends JingleContentDescription {
+public class JingleFileTransfer extends JingleContentDescription implements ExtensionElement {
     public static final String NAMESPACE_V5 = "urn:xmpp:jingle:apps:file-transfer:5";
+    public static final QName QNAME = new QName(NAMESPACE_V5, ELEMENT);
 
     public JingleFileTransfer(List<JingleContentDescriptionChildElement> payloads) {
         super(payloads);

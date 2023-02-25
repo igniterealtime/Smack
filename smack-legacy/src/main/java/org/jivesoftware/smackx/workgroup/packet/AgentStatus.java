@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -58,6 +60,8 @@ public class AgentStatus implements ExtensionElement {
      * Namespace of the stanza extension.
      */
     public static final String NAMESPACE = "http://jabber.org/protocol/workgroup";
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
     private EntityBareJid workgroupJID;
     private final List<ChatInfo> currentChats = new ArrayList<>();
@@ -238,7 +242,8 @@ public class AgentStatus implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<AgentStatus> {
 
         @Override
-        public AgentStatus parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public AgentStatus parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+                        throws XmlPullParserException, IOException, ParseException {
             AgentStatus agentStatus = new AgentStatus();
 
             agentStatus.workgroupJID = ParserUtils.getBareJidAttribute(parser);
@@ -249,7 +254,8 @@ public class AgentStatus implements ExtensionElement {
 
                 if (eventType == XmlPullParser.Event.START_ELEMENT) {
                     if ("chat".equals(parser.getName())) {
-                        agentStatus.currentChats.add(parseChatInfo(parser));
+                        ChatInfo chatInfo = parseChatInfo(parser);
+                        agentStatus.currentChats.add(chatInfo);
                     }
                     else if ("max-chats".equals(parser.getName())) {
                         agentStatus.maxChats = Integer.parseInt(parser.nextText());
@@ -263,17 +269,13 @@ public class AgentStatus implements ExtensionElement {
             return agentStatus;
         }
 
-        private static ChatInfo parseChatInfo(XmlPullParser parser) {
+        private static ChatInfo parseChatInfo(XmlPullParser parser) throws ParseException {
 
             String sessionID = parser.getAttributeValue("", "sessionID");
             String userID = parser.getAttributeValue("", "userID");
             Date date = null;
-            try {
-                synchronized (UTC_FORMAT) {
-                    date = UTC_FORMAT.parse(parser.getAttributeValue("", "startTime"));
-                }
-            }
-            catch (ParseException e) {
+            synchronized (UTC_FORMAT) {
+                date = UTC_FORMAT.parse(parser.getAttributeValue("", "startTime"));
             }
 
             String email = parser.getAttributeValue("", "email");

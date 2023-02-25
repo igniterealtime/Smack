@@ -19,8 +19,9 @@ package org.jivesoftware.smack.roster.provider;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -29,12 +30,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
 
-public class RosterPacketProvider extends IQProvider<RosterPacket> {
+public class RosterPacketProvider extends IqProvider<RosterPacket> {
 
     public static final RosterPacketProvider INSTANCE = new RosterPacketProvider();
 
     @Override
-    public RosterPacket parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public RosterPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
         RosterPacket roster = new RosterPacket();
         String version = parser.getAttributeValue("", "ver");
         roster.setVersion(version);

@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -63,7 +64,7 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
     }
 
     @AfterClass
-    public void cleanUp() throws IOException {
+    public void cleanUp() throws IOException, NotConnectedException, InterruptedException {
         alice.stopStanzaAndPEPListeners();
         bob.stopStanzaAndPEPListeners();
         OmemoManagerSetupHelper.cleanUpPubSub(alice);

@@ -24,8 +24,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -111,10 +112,10 @@ public class AgentStatusRequest extends IQ {
     /**
      * Stanza extension provider for AgentStatusRequest packets.
      */
-    public static class Provider extends IQProvider<AgentStatusRequest> {
+    public static class Provider extends IqProvider<AgentStatusRequest> {
 
         @Override
-        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
             AgentStatusRequest statusRequest = new AgentStatusRequest();
 
             boolean done = false;

@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -32,7 +32,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *
  * @author Robin Collier
  */
-public class SimplePayload implements ExtensionElement {
+public class SimplePayload implements XmlElement {
     private final String elemName;
     private final String ns;
     private final String payload;

@@ -5,10 +5,10 @@ otherwise carefully considered for deployment. The API may change even
 between patch versions."""
 
 dependencies {
-	compile project(':smack-core')
-	compile project(':smack-extensions')
+	api project(':smack-core')
+	api project(':smack-extensions')
 
-	compile "org.hsluv:hsluv:0.2"
+	implementation "org.hsluv:hsluv:0.2"
 
 	testFixturesApi(testFixtures(project(":smack-extensions")))
 }

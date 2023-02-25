@@ -16,9 +16,10 @@
  */
 package org.jivesoftware.smackx.jingleold.listeners;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
-
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 
 /**
@@ -37,9 +38,11 @@ public interface JingleTransportListener extends JingleListener {
      *               transmitting to the remote machine
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
     void transportEstablished(TransportCandidate local,
-                                     TransportCandidate remote) throws NotConnectedException, InterruptedException;
+                                     TransportCandidate remote) throws NotConnectedException, InterruptedException, NoResponseException, XMPPErrorException;
 
     /**
      * Notification that a transport must be cancelled.

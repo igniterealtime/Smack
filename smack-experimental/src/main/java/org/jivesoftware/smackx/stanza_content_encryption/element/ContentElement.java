@@ -23,12 +23,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.address.packet.MultipleAddresses;
 import org.jivesoftware.smackx.hints.element.MessageProcessingHint;
 import org.jivesoftware.smackx.sid.element.StanzaIdElement;
@@ -120,7 +123,7 @@ public class ContentElement implements ExtensionElement {
         private RandomPaddingAffixElement rpad = null;
 
         private final List<AffixElement> otherAffixElements = new ArrayList<>();
-        private final List<ExtensionElement> payloadItems = new ArrayList<>();
+        private final List<XmlElement> payloadItems = new ArrayList<>();
 
         private Builder() {
 
@@ -246,7 +249,7 @@ public class ContentElement implements ExtensionElement {
          * @return builder
          * @throws IllegalArgumentException in case an extension element from the blacklist is added.
          */
-        public Builder addPayloadItem(ExtensionElement payloadItem) {
+        public Builder addPayloadItem(XmlElement payloadItem) {
             Objects.requireNonNull(payloadItem, "Payload item MUST NOT be null.");
             this.payloadItems.add(checkForIllegalPayloadsAndPossiblyThrow(payloadItem));
             return this;
@@ -263,7 +266,7 @@ public class ContentElement implements ExtensionElement {
             return new ContentElement(payloadElement, allAffixElements);
         }
 
-        private static ExtensionElement checkForIllegalPayloadsAndPossiblyThrow(ExtensionElement payloadItem) {
+        private static XmlElement checkForIllegalPayloadsAndPossiblyThrow(XmlElement payloadItem) {
             QName qName = payloadItem.getQName();
             if (BLACKLISTED_QNAMES.contains(qName)) {
                 throw new IllegalArgumentException("Element identified by " + qName +

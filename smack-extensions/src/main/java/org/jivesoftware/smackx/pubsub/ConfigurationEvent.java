@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
 import org.jivesoftware.smackx.pubsub.form.FilledConfigureForm;
 
@@ -48,10 +48,10 @@ public class ConfigurationEvent extends NodeExtension implements EmbeddedPacketE
     }
 
     @Override
-    public List<ExtensionElement> getExtensions() {
+    public List<XmlElement> getExtensions() {
         if (getConfiguration() == null)
             return Collections.emptyList();
         else
-            return Arrays.asList((ExtensionElement) getConfiguration().getDataForm());
+            return Arrays.asList((XmlElement) getConfiguration().getDataForm());
     }
 }

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.io.IOException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
 
@@ -75,4 +76,24 @@ public abstract class State {
         }
     }
 
+    public abstract static class AbstractTransport extends State {
+
+        private final XmppClientToServerTransport transport;
+
+        protected AbstractTransport(XmppClientToServerTransport transport, StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
+            super(stateDescriptor, connectionInternal);
+            this.transport = transport;
+        }
+
+        @Override
+        public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext)
+                        throws SmackException {
+            if (!transport.hasUseableConnectionEndpoints()) {
+                return new StateTransitionResult.TransitionImpossibleBecauseNoEndpointsDiscovered(transport);
+            }
+
+            return super.isTransitionToPossible(walkStateGraphContext);
+        }
+    }
 }

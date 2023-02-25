@@ -21,8 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -67,10 +68,10 @@ public class SharedGroupsInfo extends IQ {
     /**
      * Internal Search service Provider.
      */
-    public static class Provider extends IQProvider<SharedGroupsInfo> {
+    public static class Provider extends IqProvider<SharedGroupsInfo> {
 
         @Override
-        public SharedGroupsInfo parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public SharedGroupsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             SharedGroupsInfo groupsInfo = new SharedGroupsInfo();
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ public abstract class ModularXmppClientToServerConnectionModuleDescriptor {
 
     protected abstract ModularXmppClientToServerConnectionModule<? extends ModularXmppClientToServerConnectionModuleDescriptor> constructXmppConnectionModule(
                     ModularXmppClientToServerConnectionInternal connectionInternal);
+
+    protected void validateConfiguration(ModularXmppClientToServerConnectionConfiguration configuration) {
+    }
 
     public abstract static class Builder {
         private final ModularXmppClientToServerConnectionConfiguration.Builder connectionConfigurationBuilder;

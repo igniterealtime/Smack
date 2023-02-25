@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2020 Florian Schmaus
+ * Copyright © 2014-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.jivesoftware.smack.util;
 
 import java.util.Collection;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 
 public class PacketUtil {
 
@@ -33,9 +33,9 @@ public class PacketUtil {
      * @return the extension element
      */
     @SuppressWarnings("unchecked")
-    public static <PE extends ExtensionElement> PE extensionElementFrom(Collection<ExtensionElement> collection,
+    public static <PE extends XmlElement> PE extensionElementFrom(Collection<XmlElement> collection,
                     String element, String namespace) {
-        for (ExtensionElement packetExtension : collection) {
+        for (XmlElement packetExtension : collection) {
             if ((element == null || packetExtension.getElementName().equals(
                             element))
                             && packetExtension.getNamespace().equals(namespace)) {

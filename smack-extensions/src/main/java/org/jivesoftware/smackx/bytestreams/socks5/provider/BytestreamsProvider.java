@@ -18,8 +18,9 @@ package org.jivesoftware.smackx.bytestreams.socks5.provider;
 
 import java.io.IOException;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -34,10 +35,10 @@ import org.jxmpp.jid.Jid;
  *
  * @author Alexander Wenckus
  */
-public class BytestreamsProvider extends IQProvider<Bytestream> {
+public class BytestreamsProvider extends IqProvider<Bytestream> {
 
     @Override
-    public Bytestream parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Bytestream parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException {
         boolean done = false;
 
@@ -55,21 +56,22 @@ public class BytestreamsProvider extends IQProvider<Bytestream> {
         String elementName;
         while (!done) {
             eventType = parser.next();
-            elementName = parser.getName();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
-                if (elementName.equals(Bytestream.StreamHost.ELEMENTNAME)) {
+                elementName = parser.getName();
+                if (elementName.equals(Bytestream.StreamHost.ELEMENT)) {
                     JID = ParserUtils.getJidAttribute(parser);
                     host = parser.getAttributeValue("", "host");
                     port = parser.getAttributeValue("", "port");
                 }
-                else if (elementName.equals(Bytestream.StreamHostUsed.ELEMENTNAME)) {
+                else if (elementName.equals(Bytestream.StreamHostUsed.ELEMENT)) {
                     toReturn.setUsedHost(ParserUtils.getJidAttribute(parser));
                 }
-                else if (elementName.equals(Bytestream.Activate.ELEMENTNAME)) {
+                else if (elementName.equals(Bytestream.Activate.ELEMENT)) {
                     toReturn.setToActivate(ParserUtils.getJidAttribute(parser));
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {
+                elementName = parser.getName();
                 if (elementName.equals("streamhost")) {
                     if (port == null) {
                         toReturn.addStreamHost(JID, host);

@@ -33,12 +33,11 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -217,7 +216,7 @@ public final class PubSubManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public LeafNode createNode() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub reply = sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.CREATE), null);
+        PubSub reply = sendPubsubPacket(IQ.Type.set, new NodeExtension(PubSubElementType.CREATE), null);
         QName qname = new QName(PubSubNamespace.basic.getXmlns(), "create");
         NodeExtension elem = (NodeExtension) reply.getExtension(qname);
 
@@ -257,7 +256,7 @@ public final class PubSubManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public Node createNode(String nodeId, FillableConfigureForm config) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub request = PubSub.createPubsubPacket(pubSubService, Type.set, new NodeExtension(PubSubElementType.CREATE, nodeId));
+        PubSub request = PubSub.createPubsubPacket(pubSubService, IQ.Type.set, new NodeExtension(PubSubElementType.CREATE, nodeId));
         boolean isLeafNode = true;
 
         if (config != null) {
@@ -303,7 +302,7 @@ public final class PubSubManager extends Manager {
                     .setNode(id)
                     .build();
 
-            DiscoverInfo infoReply = connection.createStanzaCollectorAndSend(info).nextResultOrThrow();
+            DiscoverInfo infoReply = connection.sendIqRequestAndWaitForResponse(info);
 
             if (infoReply.hasIdentity(PubSub.ELEMENT, "leaf")) {
                 node = new LeafNode(this, id);
@@ -493,7 +492,7 @@ public final class PubSubManager extends Manager {
         if (nodeId != null)
             items.setNode(nodeId);
         items.setTo(pubSubService);
-        DiscoverItems nodeItems = connection().createStanzaCollectorAndSend(items).nextResultOrThrow();
+        DiscoverItems nodeItems = connection().sendIqRequestAndWaitForResponse(items);
         return nodeItems;
     }
 
@@ -507,7 +506,7 @@ public final class PubSubManager extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<Subscription> getSubscriptions() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        Stanza reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS), null);
+        Stanza reply = sendPubsubPacket(IQ.Type.get, new NodeExtension(PubSubElementType.SUBSCRIPTIONS), null);
         SubscriptionsExtension subElem = (SubscriptionsExtension) reply.getExtensionElement(PubSubElementType.SUBSCRIPTIONS.getElementName(), PubSubElementType.SUBSCRIPTIONS.getNamespace().getXmlns());
         return subElem.getSubscriptions();
     }
@@ -523,7 +522,7 @@ public final class PubSubManager extends Manager {
      *
      */
     public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        PubSub reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS), null);
+        PubSub reply = sendPubsubPacket(IQ.Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS), null);
         AffiliationsExtension listElem = reply.getExtension(PubSubElementType.AFFILIATIONS);
         return listElem.getAffiliations();
     }
@@ -541,7 +540,7 @@ public final class PubSubManager extends Manager {
     public boolean deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         boolean res = true;
         try {
-            sendPubsubPacket(Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
+            sendPubsubPacket(IQ.Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
         } catch (XMPPErrorException e) {
             if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
                 res = false;
@@ -565,7 +564,7 @@ public final class PubSubManager extends Manager {
     public ConfigureForm getDefaultConfiguration() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // Errors will cause exceptions in getReply, so it only returns
         // on success.
-        PubSub reply = sendPubsubPacket(Type.get, new NodeExtension(PubSubElementType.DEFAULT), PubSubElementType.DEFAULT.getNamespace());
+        PubSub reply = sendPubsubPacket(IQ.Type.get, new NodeExtension(PubSubElementType.DEFAULT), PubSubElementType.DEFAULT.getNamespace());
         return NodeUtils.getFormFromPacket(reply, PubSubElementType.DEFAULT);
     }
 
@@ -644,7 +643,7 @@ public final class PubSubManager extends Manager {
         return true;
     }
 
-    private PubSub sendPubsubPacket(Type type, ExtensionElement ext, PubSubNamespace ns)
+    private PubSub sendPubsubPacket(IQ.Type type, XmlElement ext, PubSubNamespace ns)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sendPubsubPacket(pubSubService, type, Collections.singletonList(ext), ns);
     }
@@ -653,12 +652,12 @@ public final class PubSubManager extends Manager {
         return connection();
     }
 
-    PubSub sendPubsubPacket(Jid to, Type type, List<ExtensionElement> extList, PubSubNamespace ns)
+    PubSub sendPubsubPacket(Jid to, IQ.Type type, List<XmlElement> extList, PubSubNamespace ns)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
 // CHECKSTYLE:OFF
         PubSub pubSub = new PubSub(to, type, ns);
-        for (ExtensionElement pe : extList) {
+        for (XmlElement pe : extList) {
             pubSub.addExtension(pe);
         }
 // CHECKSTYLE:ON
@@ -667,7 +666,7 @@ public final class PubSubManager extends Manager {
 
     PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException {
-        IQ resultIQ = connection().createStanzaCollectorAndSend(packet).nextResultOrThrow();
+        IQ resultIQ = connection().sendIqRequestAndWaitForResponse(packet);
         if (resultIQ instanceof EmptyResultIQ) {
             return null;
         }

@@ -19,9 +19,9 @@ package org.jivesoftware.smackx.jingle.provider;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
@@ -179,7 +179,7 @@ public class JingleProvider extends IqProvider<Jingle> {
         final String jingleNamespace = parser.getNamespace();
 
         JingleReason.Reason reason = null;
-        ExtensionElement element = null;
+        XmlElement element = null;
         String text = null;
 
         // 'sid' is only set if the reason is 'alternative-session'.

@@ -22,9 +22,10 @@ import java.io.IOException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.SimpleIQ;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -61,10 +62,10 @@ public class OfferConfirmation extends SimpleIQ {
         con.sendStanza(packet);
     }
 
-    public static class Provider extends IQProvider<OfferConfirmation> {
+    public static class Provider extends IqProvider<OfferConfirmation> {
 
         @Override
-        public OfferConfirmation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public OfferConfirmation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
                         throws XmlPullParserException, IOException {
             final OfferConfirmation confirmation = new OfferConfirmation();
 

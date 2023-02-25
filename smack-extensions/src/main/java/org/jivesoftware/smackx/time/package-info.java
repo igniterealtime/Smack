@@ -17,5 +17,9 @@
 
 /**
  * Smacks implementation of XEP-0202: Entity Time.
+ * <p>
+ * Supports a protocol that XMPP clients use to exchange their respective local times and time zones.
+ * </p>
+ * @see <a href="https://xmpp.org/extensions/xep-0090.html">XEP-0090: Legacy Entity Time</a>
  */
 package org.jivesoftware.smackx.time;

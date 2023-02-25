@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
@@ -26,6 +28,8 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  * @author Robin Collier
  */
 public class RetractItem implements ExtensionElement {
+    public static final QName QNAME = new QName(PubSubNamespace.event.getXmlns(), "retract");
+
     private final String id;
 
     /**
@@ -45,12 +49,12 @@ public class RetractItem implements ExtensionElement {
 
     @Override
     public String getElementName() {
-        return "retract";
+        return QNAME.getLocalPart();
     }
 
     @Override
     public String getNamespace() {
-        return PubSubNamespace.event.getXmlns();
+        return QNAME.getNamespaceURI();
     }
 
     @Override

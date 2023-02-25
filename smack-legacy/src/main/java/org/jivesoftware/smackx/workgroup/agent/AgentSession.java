@@ -596,7 +596,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        OccupantsInfo response = (OccupantsInfo) connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        OccupantsInfo response = (OccupantsInfo) connection.sendIqRequestAndWaitForResponse(request);
         return response;
     }
 
@@ -868,7 +868,7 @@ public class AgentSession {
         notes.setTo(workgroupJID);
         notes.setSessionID(sessionID);
         notes.setNotes(note);
-        connection.createStanzaCollectorAndSend(notes).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(notes);
     }
 
     /**
@@ -887,7 +887,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        ChatNotes response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        ChatNotes response = connection.sendIqRequestAndWaitForResponse(request);
         return response;
     }
 
@@ -901,8 +901,9 @@ public class AgentSession {
      * @throws XMPPException if an error occurs while retrieving the AgentChatHistory.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    public AgentChatHistory getAgentHistory(EntityBareJid jid, int maxSessions, Date startDate) throws XMPPException, NotConnectedException, InterruptedException {
+    public AgentChatHistory getAgentHistory(EntityBareJid jid, int maxSessions, Date startDate) throws XMPPException, NotConnectedException, InterruptedException, NoResponseException {
         AgentChatHistory request;
         if (startDate != null) {
             request = new AgentChatHistory(jid, maxSessions, startDate);
@@ -914,8 +915,8 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        AgentChatHistory response = connection.createStanzaCollectorAndSend(
-                        request).nextResult();
+        AgentChatHistory response = connection.sendIqRequestAndWaitForResponse(
+                        request);
 
         return response;
     }
@@ -934,7 +935,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        SearchSettings response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        SearchSettings response = connection.sendIqRequestAndWaitForResponse(request);
         return response;
     }
 
@@ -954,7 +955,7 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setPersonal(!global);
 
-        Macros response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        Macros response = connection.sendIqRequestAndWaitForResponse(request);
         return response.getRootGroup();
     }
 
@@ -974,7 +975,7 @@ public class AgentSession {
         request.setPersonal(true);
         request.setPersonalMacroGroup(group);
 
-        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(request);
     }
 
     /**
@@ -985,14 +986,15 @@ public class AgentSession {
      * @throws XMPPException if an error occurs while getting information from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @throws NoResponseException if there was no response from the remote entity.
      */
-    public Map<String, List<String>> getChatMetadata(String sessionID) throws XMPPException, NotConnectedException, InterruptedException {
+    public Map<String, List<String>> getChatMetadata(String sessionID) throws XMPPException, NotConnectedException, InterruptedException, NoResponseException {
         ChatMetadata request = new ChatMetadata();
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        ChatMetadata response = connection.createStanzaCollectorAndSend(request).nextResult();
+        ChatMetadata response = connection.sendIqRequestAndWaitForResponse(request);
 
         return response.getMetadata();
     }
@@ -1033,7 +1035,7 @@ public class AgentSession {
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     /**
@@ -1070,7 +1072,7 @@ public class AgentSession {
         iq.setTo(workgroupJID);
         iq.setFrom(connection.getUser());
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     /**
@@ -1089,8 +1091,8 @@ public class AgentSession {
         setting.setType(IQ.Type.get);
         setting.setTo(workgroupJID);
 
-        GenericSettings response = connection.createStanzaCollectorAndSend(
-                        setting).nextResultOrThrow();
+        GenericSettings response = connection.sendIqRequestAndWaitForResponse(
+                        setting);
         return response;
     }
 
@@ -1099,7 +1101,7 @@ public class AgentSession {
         request.setType(IQ.Type.get);
         request.setTo(workgroupJID);
 
-        MonitorPacket response = connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        MonitorPacket response = connection.sendIqRequestAndWaitForResponse(request);
         return response.isMonitor();
     }
 
@@ -1109,6 +1111,6 @@ public class AgentSession {
         request.setTo(workgroupJID);
         request.setSessionID(sessionID);
 
-        connection.createStanzaCollectorAndSend(request).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(request);
     }
 }

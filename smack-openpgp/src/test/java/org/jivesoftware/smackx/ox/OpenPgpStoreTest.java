@@ -16,12 +16,13 @@
  */
 package org.jivesoftware.smackx.ox;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-
 import org.jivesoftware.smackx.ox.callback.SecretKeyPassphraseCallback;
 import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
@@ -56,8 +56,8 @@ import org.junit.runners.Parameterized;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
-import org.pgpainless.key.collection.PGPKeyRing;
 import org.pgpainless.key.protection.UnprotectedKeysProtector;
+import org.pgpainless.key.util.KeyRingUtils;
 import org.pgpainless.util.Passphrase;
 
 @RunWith(Parameterized.class)
@@ -128,15 +128,16 @@ public class OpenPgpStoreTest extends SmackTestSuite {
         assertNull(openPgpStoreInstance1.getSecretKeysOf(alice));
         assertNull(openPgpStoreInstance1.getPublicKeysOf(alice));
 
-        PGPKeyRing keys = openPgpStoreInstance1.generateKeyRing(alice);
-        openPgpStoreInstance1.importSecretKey(alice, keys.getSecretKeys());
-        openPgpStoreInstance1.importPublicKey(alice, keys.getPublicKeys());
+        PGPSecretKeyRing keys = openPgpStoreInstance1.generateKeyRing(alice);
+        OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(keys);
+        openPgpStoreInstance1.importSecretKey(alice, keys);
+        openPgpStoreInstance1.importPublicKey(alice, KeyRingUtils.publicKeyRingFrom(keys));
 
         assertNotNull(openPgpStoreInstance1.getSecretKeysOf(alice));
         assertNotNull(openPgpStoreInstance1.getPublicKeysOf(alice));
 
-        openPgpStoreInstance1.deleteSecretKeyRing(alice, new OpenPgpV4Fingerprint(keys.getSecretKeys()));
-        openPgpStoreInstance1.deletePublicKeyRing(alice, new OpenPgpV4Fingerprint(keys.getSecretKeys()));
+        openPgpStoreInstance1.deleteSecretKeyRing(alice, fingerprint);
+        openPgpStoreInstance1.deletePublicKeyRing(alice, fingerprint);
 
         assertNull(openPgpStoreInstance1.getPublicKeysOf(alice));
         assertNull(openPgpStoreInstance1.getSecretKeysOf(alice));
@@ -154,24 +155,23 @@ public class OpenPgpStoreTest extends SmackTestSuite {
     public void t02_key_importKeysTest() throws IOException, PGPException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException, MissingUserIdOnKeyException {
         // Test for nullity of all possible values.
 
-        PGPKeyRing keys = openPgpStoreInstance1.generateKeyRing(alice);
-
-        PGPSecretKeyRing secretKeys = keys.getSecretKeys();
-        PGPPublicKeyRing publicKeys = keys.getPublicKeys();
+        PGPSecretKeyRing secretKeys = openPgpStoreInstance1.generateKeyRing(alice);
+        PGPPublicKeyRing publicKeys = KeyRingUtils.publicKeyRingFrom(secretKeys);
         assertNotNull(secretKeys);
         assertNotNull(publicKeys);
+
+        OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(secretKeys);
 
         OpenPgpContact cAlice = openPgpStoreInstance1.getOpenPgpContact(alice);
         assertNull(cAlice.getAnyPublicKeys());
 
-        OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(publicKeys);
         assertEquals(fingerprint, new OpenPgpV4Fingerprint(secretKeys));
 
         assertNull(openPgpStoreInstance1.getPublicKeysOf(alice));
         assertNull(openPgpStoreInstance1.getSecretKeysOf(alice));
 
         openPgpStoreInstance1.importPublicKey(alice, publicKeys);
-        assertTrue(Arrays.equals(publicKeys.getEncoded(), openPgpStoreInstance1.getPublicKeysOf(alice).getEncoded()));
+        assertArrayEquals(publicKeys.getEncoded(), openPgpStoreInstance1.getPublicKeysOf(alice).getEncoded());
         assertNotNull(openPgpStoreInstance1.getPublicKeyRing(alice, fingerprint));
         assertNull(openPgpStoreInstance1.getSecretKeysOf(alice));
 
@@ -180,17 +180,17 @@ public class OpenPgpStoreTest extends SmackTestSuite {
 
         // Import keys a second time -> No change expected.
         openPgpStoreInstance1.importPublicKey(alice, publicKeys);
-        assertTrue(Arrays.equals(publicKeys.getEncoded(), openPgpStoreInstance1.getPublicKeysOf(alice).getEncoded()));
+        assertArrayEquals(publicKeys.getEncoded(), openPgpStoreInstance1.getPublicKeysOf(alice).getEncoded());
         openPgpStoreInstance1.importSecretKey(alice, secretKeys);
-        assertTrue(Arrays.equals(secretKeys.getEncoded(), openPgpStoreInstance1.getSecretKeysOf(alice).getEncoded()));
+        assertArrayEquals(secretKeys.getEncoded(), openPgpStoreInstance1.getSecretKeysOf(alice).getEncoded());
 
         openPgpStoreInstance1.importSecretKey(alice, secretKeys);
         assertNotNull(openPgpStoreInstance1.getSecretKeysOf(alice));
-        assertTrue(Arrays.equals(secretKeys.getEncoded(), openPgpStoreInstance1.getSecretKeysOf(alice).getEncoded()));
+        assertArrayEquals(secretKeys.getEncoded(), openPgpStoreInstance1.getSecretKeysOf(alice).getEncoded());
         assertNotNull(openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint));
 
-        assertTrue(Arrays.equals(secretKeys.getEncoded(), openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint).getEncoded()));
-        assertTrue(Arrays.equals(publicKeys.getEncoded(), openPgpStoreInstance1.getPublicKeyRing(alice, fingerprint).getEncoded()));
+        assertArrayEquals(secretKeys.getEncoded(), openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint).getEncoded());
+        assertArrayEquals(publicKeys.getEncoded(), openPgpStoreInstance1.getPublicKeyRing(alice, fingerprint).getEncoded());
 
         // Clean up
         openPgpStoreInstance1.deletePublicKeyRing(alice, fingerprint);
@@ -198,27 +198,27 @@ public class OpenPgpStoreTest extends SmackTestSuite {
     }
 
     @Test
-    public void t04_key_wrongBareJidOnSecretKeyImportTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException {
-        PGPSecretKeyRing secretKeys = openPgpStoreInstance1.generateKeyRing(alice).getSecretKeys();
+    public void t04_key_wrongBareJidOnSecretKeyImportTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        PGPSecretKeyRing secretKeys = openPgpStoreInstance1.generateKeyRing(alice);
 
         assertThrows(MissingUserIdOnKeyException.class, () ->
-        openPgpStoreInstance1.importSecretKey(bob, secretKeys));
+                openPgpStoreInstance1.importSecretKey(bob, secretKeys));
     }
 
     @Test
-    public void t05_key_wrongBareJidOnPublicKeyImportTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException {
-        PGPPublicKeyRing publicKeys = openPgpStoreInstance1.generateKeyRing(alice).getPublicKeys();
+    public void t05_key_wrongBareJidOnPublicKeyImportTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
+        PGPSecretKeyRing secretKeys = openPgpStoreInstance1.generateKeyRing(alice);
+        PGPPublicKeyRing publicKeys = KeyRingUtils.publicKeyRingFrom(secretKeys);
 
         assertThrows(MissingUserIdOnKeyException.class, () ->
-        openPgpStoreInstance1.importPublicKey(bob, publicKeys));
+                openPgpStoreInstance1.importPublicKey(bob, publicKeys));
     }
 
     @Test
     public void t06_key_keyReloadTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException {
-        PGPKeyRing keys = openPgpStoreInstance1.generateKeyRing(alice);
-        PGPSecretKeyRing secretKeys = keys.getSecretKeys();
+        PGPSecretKeyRing secretKeys = openPgpStoreInstance1.generateKeyRing(alice);
         OpenPgpV4Fingerprint fingerprint = new OpenPgpV4Fingerprint(secretKeys);
-        PGPPublicKeyRing publicKeys = keys.getPublicKeys();
+        PGPPublicKeyRing publicKeys = KeyRingUtils.publicKeyRingFrom(secretKeys);
 
         openPgpStoreInstance1.importSecretKey(alice, secretKeys);
         openPgpStoreInstance1.importPublicKey(alice, publicKeys);
@@ -235,24 +235,23 @@ public class OpenPgpStoreTest extends SmackTestSuite {
 
     @Test
     public void t07_multipleKeysTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException {
-        PGPKeyRing one = openPgpStoreInstance1.generateKeyRing(alice);
-        PGPKeyRing two = openPgpStoreInstance1.generateKeyRing(alice);
+        PGPSecretKeyRing one = openPgpStoreInstance1.generateKeyRing(alice);
+        PGPSecretKeyRing two = openPgpStoreInstance1.generateKeyRing(alice);
 
-        OpenPgpV4Fingerprint fingerprint1 = new OpenPgpV4Fingerprint(one.getSecretKeys());
-        OpenPgpV4Fingerprint fingerprint2 = new OpenPgpV4Fingerprint(two.getSecretKeys());
+        OpenPgpV4Fingerprint fingerprint1 = new OpenPgpV4Fingerprint(one);
+        OpenPgpV4Fingerprint fingerprint2 = new OpenPgpV4Fingerprint(two);
 
-        openPgpStoreInstance1.importSecretKey(alice, one.getSecretKeys());
-        openPgpStoreInstance1.importSecretKey(alice, two.getSecretKeys());
-        openPgpStoreInstance1.importPublicKey(alice, one.getPublicKeys());
-        openPgpStoreInstance1.importPublicKey(alice, two.getPublicKeys());
+        openPgpStoreInstance1.importSecretKey(alice, one);
+        openPgpStoreInstance1.importSecretKey(alice, two);
+        openPgpStoreInstance1.importPublicKey(alice, KeyRingUtils.publicKeyRingFrom(one));
+        openPgpStoreInstance1.importPublicKey(alice, KeyRingUtils.publicKeyRingFrom(two));
 
-        assertTrue(Arrays.equals(one.getSecretKeys().getEncoded(), openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint1).getEncoded()));
-        assertTrue(Arrays.equals(two.getSecretKeys().getEncoded(), openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint2).getEncoded()));
+        assertArrayEquals(one.getEncoded(), openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint1).getEncoded());
+        assertArrayEquals(two.getEncoded(), openPgpStoreInstance1.getSecretKeyRing(alice, fingerprint2).getEncoded());
 
-        assertTrue(Arrays.equals(one.getSecretKeys().getEncoded(), openPgpStoreInstance1.getSecretKeysOf(alice).getSecretKeyRing(fingerprint1.getKeyId()).getEncoded()));
+        assertArrayEquals(one.getEncoded(), openPgpStoreInstance1.getSecretKeysOf(alice).getSecretKeyRing(fingerprint1.getKeyId()).getEncoded());
 
-        assertTrue(Arrays.equals(one.getPublicKeys().getEncoded(),
-                openPgpStoreInstance1.getPublicKeyRing(alice, fingerprint1).getEncoded()));
+        assertArrayEquals(KeyRingUtils.publicKeyRingFrom(one).getEncoded(), openPgpStoreInstance1.getPublicKeyRing(alice, fingerprint1).getEncoded());
 
         // Cleanup
         openPgpStoreInstance1.deletePublicKeyRing(alice, fingerprint1);
@@ -320,8 +319,8 @@ public class OpenPgpStoreTest extends SmackTestSuite {
         assertFalse(openPgpStoreInstance2.getAnnouncedFingerprintsOf(alice).isEmpty());
         assertEquals(map, openPgpStoreInstance2.getAnnouncedFingerprintsOf(alice));
 
-        openPgpStoreInstance1.setAnnouncedFingerprintsOf(alice, Collections.<OpenPgpV4Fingerprint, Date>emptyMap());
-        openPgpStoreInstance2.setAnnouncedFingerprintsOf(alice, Collections.<OpenPgpV4Fingerprint, Date>emptyMap());
+        openPgpStoreInstance1.setAnnouncedFingerprintsOf(alice, Collections.emptyMap());
+        openPgpStoreInstance2.setAnnouncedFingerprintsOf(alice, Collections.emptyMap());
     }
 
     @Test

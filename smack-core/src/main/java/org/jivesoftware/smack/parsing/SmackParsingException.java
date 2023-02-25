@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,24 @@ public class SmackParsingException extends Exception {
         super(message);
     }
 
+    /**
+     * Deprecated, do not import.
+     * @deprecated do not import.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.6.
     public static class SmackTextParseException extends SmackParsingException {
         /**
          *
          */
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Deprecated, do not use.
+         * @param parsingException the exception.
+         * @deprecated do not use, simply throw ParseException.
+         */
+        @Deprecated
         public SmackTextParseException(ParseException parsingException) {
             super(parsingException);
         }

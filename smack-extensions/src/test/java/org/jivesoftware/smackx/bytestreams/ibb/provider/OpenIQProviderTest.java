@@ -53,7 +53,7 @@ public class OpenIQProviderTest extends SmackTestSuite {
 
         OpenIQProvider oip = new OpenIQProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(control);
-        Open open = oip.parse(parser);
+        Open open = oip.parse(parser, null);
 
         assertEquals(StanzaType.IQ, open.getStanza());
     }
@@ -69,7 +69,7 @@ public class OpenIQProviderTest extends SmackTestSuite {
 
         OpenIQProvider oip = new OpenIQProvider();
         XmlPullParser parser = PacketParserUtils.getParserFor(control);
-        Open open = oip.parse(parser);
+        Open open = oip.parse(parser, null);
 
         assertEquals(StanzaType.MESSAGE, open.getStanza());
     }

@@ -52,7 +52,7 @@ final class InitiationListener extends AbstractIqRequestHandler {
      *
      * @param manager the SOCKS5 Bytestream manager
      */
-    protected InitiationListener(Socks5BytestreamManager manager) {
+    InitiationListener(Socks5BytestreamManager manager) {
         super(Bytestream.ELEMENT, Bytestream.NAMESPACE, IQ.Type.set, Mode.async);
         this.manager = manager;
         initiationListenerExecutor = Executors.newCachedThreadPool();
@@ -117,7 +117,7 @@ final class InitiationListener extends AbstractIqRequestHandler {
     /**
      * Shuts down the listeners executor service.
      */
-    protected void shutdown() {
+    void shutdown() {
         this.initiationListenerExecutor.shutdownNow();
     }
 

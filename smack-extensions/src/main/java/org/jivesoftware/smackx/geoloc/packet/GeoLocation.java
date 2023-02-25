@@ -357,7 +357,7 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
      *  <br><br>
      *  To set GeoLocation parameters, use their respective setters.
      */
-    public static class Builder {
+    public static final class Builder {
 
         private Double accuracy;
         private Double alt;
@@ -387,6 +387,15 @@ public final class GeoLocation implements Serializable, ExtensionElement, FormFi
         private Date timestamp;
         private String tzo;
         private URI uri;
+
+        /**
+         * Deprecated, do not use.
+         * @deprecated use {@link GeoLocation#builder()} instead.
+         */
+        @Deprecated
+        // TODO Make constructor private in Smack 4.6.
+        public Builder() {
+        }
 
         /**
          * Sets accuracy of horizontal GPS error in meters.

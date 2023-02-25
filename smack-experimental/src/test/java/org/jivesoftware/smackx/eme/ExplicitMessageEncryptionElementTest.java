@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
@@ -44,7 +44,7 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
         assertFalse(ExplicitMessageEncryptionElement.hasProtocol(message,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl));
 
-        List<ExtensionElement> extensions = message.getExtensions();
+        List<XmlElement> extensions = message.getExtensions();
         assertEquals(0, extensions.size());
 
         MessageBuilder messageBuilder = StanzaBuilder.buildMessage();

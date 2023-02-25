@@ -24,6 +24,8 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
@@ -38,7 +40,8 @@ import org.jxmpp.jid.DomainBareJid;
  * con.login("john", "doe");
  * UserSearchManager search = new UserSearchManager(con, "users.jabber.org");
  * Form searchForm = search.getSearchForm();
- * Form answerForm = searchForm.createAnswerForm();
+ * FillableForm answerForm = searchForm.getFillableForm()
+ * // Fill out the form.
  * answerForm.setAnswer("last", "DeMoro");
  * ReportedData data = search.getSearchResults(answerForm);
  * // Use Returned Data
@@ -71,8 +74,9 @@ public class UserSearchManager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public DataForm getSearchForm(DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
-        return userSearch.getSearchForm(con, searchService);
+    public Form getSearchForm(DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+        DataForm dataForm = userSearch.getSearchForm(con, searchService);
+        return new Form(dataForm);
     }
 
     /**
@@ -87,10 +91,11 @@ public class UserSearchManager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public ReportedData getSearchResults(DataForm searchForm, DomainBareJid searchService) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
-        return userSearch.sendSearchForm(con, searchForm, searchService);
+    public ReportedData getSearchResults(FillableForm searchForm, DomainBareJid searchService)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        DataForm dataForm = searchForm.getDataFormToSubmit();
+        return userSearch.sendSearchForm(con, dataForm, searchService);
     }
-
 
     /**
      * Returns a collection of search services found on the server.

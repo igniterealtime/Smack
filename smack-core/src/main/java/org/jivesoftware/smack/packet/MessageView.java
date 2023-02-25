@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019-2020 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2019-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,9 +150,9 @@ public interface MessageView extends StanzaView {
      * @since 3.0.2
      */
     default Set<Message.Body> getBodies() {
-        List<ExtensionElement> bodiesList = getExtensions(Message.Body.QNAME);
+        List<XmlElement> bodiesList = getExtensions(Message.Body.QNAME);
         Set<Message.Body> resultSet = new HashSet<>(bodiesList.size());
-        for (ExtensionElement extensionElement : bodiesList) {
+        for (XmlElement extensionElement : bodiesList) {
             Message.Body body = (Message.Body) extensionElement;
             resultSet.add(body);
         }

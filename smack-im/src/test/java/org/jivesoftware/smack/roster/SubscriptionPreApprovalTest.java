@@ -26,7 +26,6 @@ import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.im.InitSmackIm;
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.packet.IQ.Type;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.roster.RosterTest.TestRosterListener;
@@ -161,7 +160,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
             try {
                 while (true) {
                     final Stanza packet = connection.getSentPacket();
-                    if (packet instanceof RosterPacket && ((IQ) packet).getType() == Type.set) {
+                    if (packet instanceof RosterPacket && ((IQ) packet).getType() == IQ.Type.set) {
                         final RosterPacket rosterRequest = (RosterPacket) packet;
 
                         // Prepare and process the roster push
@@ -170,7 +169,7 @@ public class SubscriptionPreApprovalTest extends InitSmackIm {
                         if (item.getItemType() != ItemType.remove) {
                             item.setItemType(ItemType.none);
                         }
-                        rosterPush.setType(Type.set);
+                        rosterPush.setType(IQ.Type.set);
                         rosterPush.setTo(connection.getUser());
                         rosterPush.addRosterItem(item);
                         connection.processStanza(rosterPush);

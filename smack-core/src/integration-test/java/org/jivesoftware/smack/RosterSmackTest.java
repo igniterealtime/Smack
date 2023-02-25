@@ -256,7 +256,7 @@ public class RosterSmackTest extends SmackTestCase {
 
     /**
      * 1. Create an unfiled entry with no name
-     * 2. Check that the the entry does not belong to any group
+     * 2. Check that the entry does not belong to any group
      * 3. Change its name and add it to a group
      * 4. Check that the name has been modified and that the entry belongs to a group
      */

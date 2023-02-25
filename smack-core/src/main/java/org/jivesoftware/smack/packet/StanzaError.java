@@ -125,7 +125,7 @@ public class StanzaError extends AbstractError implements ExtensionElement {
      * @param extensions list of stanza extensions
      */
     public StanzaError(Condition condition, String conditionText, String errorGenerator, Type type, Map<String, String> descriptiveTexts,
-            List<ExtensionElement> extensions) {
+            List<XmlElement> extensions) {
         super(descriptiveTexts, ERROR_CONDITION_AND_TEXT_NAMESPACE, extensions);
         this.condition = Objects.requireNonNull(condition, "condition must not be null");
         // Some implementations may send the condition as non-empty element containing the empty string, that is

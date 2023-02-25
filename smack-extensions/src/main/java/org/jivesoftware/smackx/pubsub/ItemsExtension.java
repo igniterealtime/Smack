@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -127,8 +128,8 @@ public class ItemsExtension extends NodeExtension implements EmbeddedPacketExten
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<ExtensionElement> getExtensions() {
-        return (List<ExtensionElement>) getItems();
+    public List<XmlElement> getExtensions() {
+        return (List<XmlElement>) getItems();
     }
 
     /**

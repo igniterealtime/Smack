@@ -27,10 +27,9 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.parsing.SmackParsingException.SmackTextParseException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -134,10 +133,11 @@ public class OccupantsInfo extends IQ {
     /**
      * Stanza extension provider for AgentStatusRequest packets.
      */
-    public static class Provider extends IQProvider<OccupantsInfo> {
+    public static class Provider extends IqProvider<OccupantsInfo> {
 
         @Override
-        public OccupantsInfo parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackTextParseException {
+        public OccupantsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+                        throws XmlPullParserException, IOException, ParseException {
             OccupantsInfo occupantsInfo = new OccupantsInfo(parser.getAttributeValue("", "roomID"));
 
             boolean done = false;
@@ -155,7 +155,7 @@ public class OccupantsInfo extends IQ {
         }
 
         private static OccupantInfo parseOccupantInfo(XmlPullParser parser)
-                        throws XmlPullParserException, IOException, SmackTextParseException {
+                        throws XmlPullParserException, IOException, ParseException {
             boolean done = false;
             String jid = null;
             String nickname = null;
@@ -170,11 +170,7 @@ public class OccupantsInfo extends IQ {
                 } else if (eventType == XmlPullParser.Event.START_ELEMENT &&
                         "joined".equals(parser.getName())) {
                         synchronized (UTC_FORMAT) {
-                        try {
                             joined = UTC_FORMAT.parse(parser.nextText());
-                        } catch (ParseException e) {
-                            throw new SmackParsingException.SmackTextParseException(e);
-                        }
                         }
                 } else if (eventType == XmlPullParser.Event.END_ELEMENT &&
                         "occupant".equals(parser.getName())) {

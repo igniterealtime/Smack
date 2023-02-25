@@ -27,7 +27,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.EqualsUtil;
@@ -52,7 +52,7 @@ import org.jxmpp.util.XmppDateTime;
  *
  * @author Gaston Dombiak
  */
-public abstract class FormField implements FullyQualifiedElement {
+public abstract class FormField implements XmlElement {
 
     public static final String ELEMENT = "field";
 
@@ -400,7 +400,7 @@ public abstract class FormField implements FullyQualifiedElement {
         return QNAME;
     }
 
-    protected transient List<FullyQualifiedElement> extraXmlChildElements;
+    protected transient List<XmlElement> extraXmlChildElements;
 
     /**
      * Populate @{link {@link #extraXmlChildElements}}. Note that this method may be overridden by subclasses.
@@ -732,7 +732,7 @@ public abstract class FormField implements FullyQualifiedElement {
      *
      * @author Gaston Dombiak
      */
-    public static final class Option implements FullyQualifiedElement {
+    public static final class Option implements XmlElement {
 
         public static final String ELEMENT = "option";
 
@@ -915,7 +915,7 @@ public abstract class FormField implements FullyQualifiedElement {
         }
     }
 
-    public static class Value implements FullyQualifiedElement {
+    public static class Value implements XmlElement {
 
         public static final String ELEMENT = "value";
 

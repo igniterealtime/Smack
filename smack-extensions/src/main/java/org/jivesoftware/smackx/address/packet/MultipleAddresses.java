@@ -134,6 +134,7 @@ public class MultipleAddresses implements ExtensionElement {
     public static final class Address implements ExtensionElement {
 
         public static final String ELEMENT = "address";
+        public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         private final Type type;
         private Jid jid;
@@ -192,12 +193,12 @@ public class MultipleAddresses implements ExtensionElement {
 
         @Override
         public String getElementName() {
-            return ELEMENT;
+            return QNAME.getLocalPart();
         }
 
         @Override
         public String getNamespace() {
-            return NAMESPACE;
+            return QNAME.getNamespaceURI();
         }
 
         @Override

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ public interface RemoteConnectionEndpoint {
     Collection<? extends InetAddress> getInetAddresses();
 
     String getDescription();
+
+    default String getRawString() {
+        return toString();
+    }
 
     class InetSocketAddressCoupling<RCE extends RemoteConnectionEndpoint> {
         private final RCE connectionEndpoint;

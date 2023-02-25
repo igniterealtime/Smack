@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2021 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,15 +30,12 @@ public abstract class AbstractSmackSpecificLowLevelIntegrationTest<C extends Abs
 
     private final SmackIntegrationTestEnvironment environment;
 
-    protected final Class<C> connectionClass;
-
     private final XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> connectionDescriptor;
 
     public AbstractSmackSpecificLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment,
             Class<C> connectionClass) {
         super(environment);
         this.environment = environment;
-        this.connectionClass = connectionClass;
 
         connectionDescriptor = environment.connectionManager.getConnectionDescriptorFor(connectionClass);
         if (connectionDescriptor == null) {
@@ -46,8 +43,8 @@ public abstract class AbstractSmackSpecificLowLevelIntegrationTest<C extends Abs
         }
     }
 
-    public Class<C> getConnectionClass() {
-        return connectionClass;
+    public XmppConnectionDescriptor<C, ? extends ConnectionConfiguration, ? extends ConnectionConfiguration.Builder<?, ?>> getConnectionDescriptor() {
+        return connectionDescriptor;
     }
 
     protected C getSpecificUnconnectedConnection() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {

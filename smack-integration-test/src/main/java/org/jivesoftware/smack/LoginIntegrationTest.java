@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
      * Check that the server is returning the correct error when trying to login using an invalid
      * (i.e. non-existent) user.
      *
+     * @param unconnectedConnectionSource the unconnected connections source that is used.
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws XMPPException if an XMPP protocol error was received.
      * @throws IOException if an I/O error occurred.
@@ -50,12 +51,12 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
      * @throws KeyManagementException if there was a key mangement error.
      */
     @SmackIntegrationTest
-    public void testInvalidLogin() throws SmackException, IOException, XMPPException,
+    public void testInvalidLogin(UnconnectedConnectionSource unconnectedConnectionSource) throws SmackException, IOException, XMPPException,
                     InterruptedException, KeyManagementException, NoSuchAlgorithmException {
         final String nonExistentUserString = StringUtils.insecureRandomString(24);
         final String invalidPassword = "invalidPassword";
 
-        AbstractXMPPConnection connection = getUnconnectedConnection();
+        AbstractXMPPConnection connection = unconnectedConnectionSource.getUnconnectedConnection();
         connection.connect();
 
         try {

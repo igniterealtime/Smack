@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 /**
- * Loads the {@link IQProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation
+ * Loads the {@link IqProvider} and {@link ExtensionElementProvider} information from a standard provider file in preparation
  * for loading into the {@link ProviderManager}.
  *
  * @author Robin Collier
@@ -76,7 +76,7 @@ public class ProviderFileLoader implements ProviderLoader {
                                 switch (typeName) {
                                 case "iqProvider":
                                     // Attempt to load the provider class and then create
-                                    // a new instance if it's an IQProvider. Otherwise, if it's
+                                    // a new instance if it's an IqProvider. Otherwise, if it's
                                     // an IQ class, add the class object itself, then we'll use
                                     // reflection later to create instances of the class.
                                     // Add the provider to the map.
@@ -85,7 +85,7 @@ public class ProviderFileLoader implements ProviderLoader {
                                         iqProviders.add(new IQProviderInfo(elementName, namespace, iqProvider));
                                     }
                                     else {
-                                        exceptions.add(new IllegalArgumentException(className + " is not a IQProvider"));
+                                        exceptions.add(new IllegalArgumentException(className + " is not a IqProvider"));
                                     }
                                     break;
                                 case "extensionProvider":

@@ -217,7 +217,7 @@ public class MultiUserChat {
                 if (from == null) {
                     return;
                 }
-                final EntityFullJid myRoomJID = myRoomJid;
+                final EntityFullJid myRoomJID = getMyRoomJid();
                 final boolean isUserStatusModification = presence.getFrom().equals(myRoomJID);
                 final MUCUser mucUser = MUCUser.from(packet);
 
@@ -633,6 +633,7 @@ public class MultiUserChat {
      * joining the room, the room will decide the amount of history to send.
      *
      * @param nickname the nickname to use.
+     * @return the leave self-presence as reflected by the MUC.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if an error occurs joining the room. In particular, a
      *      401 error can occur if no password was provided and one is required; or a
@@ -645,10 +646,11 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotAMucServiceException if the entity is not a MUC serivce.
      */
-    public void join(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
+    public Presence join(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException, NotAMucServiceException {
         MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname);
-        join(builder.build());
+        Presence reflectedJoinPresence = join(builder.build());
+        return reflectedJoinPresence;
     }
 
     /**
@@ -695,6 +697,7 @@ public class MultiUserChat {
      * decide to create a new room or not.
      *
      * @param mucEnterConfiguration the configuration used to enter the MUC.
+     * @return the join self-presence as reflected by the MUC.
      * @throws XMPPErrorException if an error occurs joining the room. In particular, a
      *      401 error can occur if no password was provided and one is required; or a
      *      403 error can occur if the user is banned; or a
@@ -706,7 +709,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotAMucServiceException if the entity is not a MUC serivce.
      */
-    public synchronized void join(MucEnterConfiguration mucEnterConfiguration)
+    public synchronized Presence join(MucEnterConfiguration mucEnterConfiguration)
         throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
         // If we've already joined the room, leave it before joining under a new
         // nickname.
@@ -718,7 +721,8 @@ public class MultiUserChat {
                 LOGGER.log(Level.WARNING, "Could not leave MUC prior joining, assuming we are not joined", e);
             }
         }
-        enter(mucEnterConfiguration);
+        Presence reflectedJoinPresence = enter(mucEnterConfiguration);
+        return reflectedJoinPresence;
     }
 
     /**
@@ -728,7 +732,7 @@ public class MultiUserChat {
      * @return true if currently in the multi user chat room.
      */
     public boolean isJoined() {
-        return myRoomJid != null;
+        return getMyRoomJid() != null;
     }
 
     /**
@@ -764,7 +768,7 @@ public class MultiUserChat {
         // "if  (!joined) return" because it should be always be possible to leave the room in case the instance's
         // state does not reflect the actual state.
 
-        final EntityFullJid myRoomJid = this.myRoomJid;
+        final EntityFullJid myRoomJid = getMyRoomJid();
         if (myRoomJid == null) {
             throw new MucNotJoinedException(this);
         }
@@ -825,8 +829,8 @@ public class MultiUserChat {
     }
 
     /**
-     * Returns the room's configuration form that the room's owner can use or <code>null</code> if
-     * no configuration is possible. The configuration form allows to set the room's language,
+     * Returns the room's configuration form that the room's owner can use.
+     * The configuration form allows to set the room's language,
      * enable logging, specify room's type, etc..
      *
      * @return the Form that contains the fields to complete together with the instrucions or
@@ -841,7 +845,7 @@ public class MultiUserChat {
         iq.setTo(room);
         iq.setType(IQ.Type.get);
 
-        IQ answer = connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        IQ answer = connection.sendIqRequestAndWaitForResponse(iq);
         DataForm dataForm = DataForm.from(answer, MucConfigFormManager.FORM_TYPE);
         return new Form(dataForm);
     }
@@ -870,7 +874,7 @@ public class MultiUserChat {
         iq.setType(IQ.Type.set);
         iq.addExtension(dataForm);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     /**
@@ -895,7 +899,7 @@ public class MultiUserChat {
         reg.setType(IQ.Type.get);
         reg.setTo(room);
 
-        IQ result = connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
+        IQ result = connection.sendIqRequestAndWaitForResponse(reg);
         DataForm dataForm = DataForm.from(result);
         return new Form(dataForm);
     }
@@ -923,7 +927,24 @@ public class MultiUserChat {
         reg.setTo(room);
         reg.addExtension(form.getDataFormToSubmit());
 
-        connection.createStanzaCollectorAndSend(reg).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(reg);
+    }
+
+    /**
+     * Sends a request to destroy the room.
+     *
+     * @throws XMPPErrorException if an error occurs while trying to destroy the room.
+     *      An error can occur which will be wrapped by an XMPPException --
+     *      XMPP error code 403. The error code can be used to present more
+     *      appropriate error messages to end-users.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @see #destroy(String, EntityBareJid)
+     * @since 4.5
+     */
+    public void destroy() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        destroy(null, null);
     }
 
     /**
@@ -931,12 +952,12 @@ public class MultiUserChat {
      * should be the room's owner. If the sender of the destroy request is not the room's owner
      * then the server will answer a "Forbidden" error (403).
      *
-     * @param reason the reason for the room destruction.
-     * @param alternateJID the JID of an alternate location.
+     * @param reason an optional reason for the room destruction.
+     * @param alternateJID an optional JID of an alternate location.
      * @throws XMPPErrorException if an error occurs while trying to destroy the room.
      *      An error can occur which will be wrapped by an XMPPException --
      *      XMPP error code 403. The error code can be used to present more
-     *      appropiate error messages to end-users.
+     *      appropriate error messages to end-users.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -951,7 +972,7 @@ public class MultiUserChat {
         iq.setDestroy(destroy);
 
         try {
-            connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+            connection.sendIqRequestAndWaitForResponse(iq);
         }
         catch (XMPPErrorException e) {
             // Note that we do not call userHasLeft() here because an XMPPErrorException would usually indicate that the
@@ -973,7 +994,7 @@ public class MultiUserChat {
      * will be sent to the room which in turn will forward the invitation to the invitee.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
      * @param reason the reason why the user is being invited.
@@ -989,7 +1010,7 @@ public class MultiUserChat {
      * will be sent to the room which in turn will forward the invitation to the invitee.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param message the message to use for sending the invitation.
      * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
@@ -1019,7 +1040,7 @@ public class MultiUserChat {
      * will be sent to the room which in turn will forward the invitation to the invitee.<p>
      *
      * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the the invitee may be added to the member list.
+     * the room. If the room is members-only, the invitee may be added to the member list.
      *
      * @param messageBuilder the message to use for sending the invitation.
      * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
@@ -1067,8 +1088,8 @@ public class MultiUserChat {
     /**
      * Fires invitation rejection listeners.
      *
-     * @param invitee the user being invited.
-     * @param reason the reason for the rejection
+     * @param message the message.
+     * @param rejection the information about the rejection.
      */
     private void fireInvitationRejectionListeners(Message message, MUCUser.Decline rejection) {
         EntityBareJid invitee = rejection.getFrom();
@@ -1133,7 +1154,7 @@ public class MultiUserChat {
         if (!removed) return;
         int currentCount = presenceInterceptorCount.decrementAndGet();
         if (currentCount == 0) {
-            connection.removePresenceInterceptor(presenceInterceptor);
+            connection.removePresenceInterceptor(this.presenceInterceptor);
         }
     }
 
@@ -1189,11 +1210,21 @@ public class MultiUserChat {
      * @return the nickname currently being used.
      */
     public Resourcepart getNickname() {
-        final EntityFullJid myRoomJid = this.myRoomJid;
+        final EntityFullJid myRoomJid = getMyRoomJid();
         if (myRoomJid == null) {
             return null;
         }
         return myRoomJid.getResourcepart();
+    }
+
+    /**
+     * Return the full JID of the user in the room, or <code>null</code> if the room is not joined.
+     *
+     * @return the full JID of the user in the room, or <code>null</code>.
+     * @since 4.5.0
+     */
+    public EntityFullJid getMyRoomJid() {
+        return myRoomJid;
     }
 
     /**
@@ -1252,7 +1283,7 @@ public class MultiUserChat {
      * @throws MucNotJoinedException if not joined to the Multi-User Chat.
      */
     public void changeAvailabilityStatus(String status, Presence.Mode mode) throws NotConnectedException, InterruptedException, MucNotJoinedException {
-        final EntityFullJid myRoomJid = this.myRoomJid;
+        final EntityFullJid myRoomJid = getMyRoomJid();
         if (myRoomJid == null) {
             throw new MucNotJoinedException(this);
         }
@@ -1714,7 +1745,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(affiliation, jid, reason);
         iq.addItem(item);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     private void changeAffiliationByAdmin(Collection<? extends Jid> jids, MUCAffiliation affiliation)
@@ -1728,7 +1759,7 @@ public class MultiUserChat {
             iq.addItem(item);
         }
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     private void changeRole(Resourcepart nickname, MUCRole role, String reason) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -1739,7 +1770,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(role, nickname, reason);
         iq.addItem(item);
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     private void changeRole(Collection<Resourcepart> nicknames, MUCRole role) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
@@ -1752,7 +1783,7 @@ public class MultiUserChat {
             iq.addItem(item);
         }
 
-        connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        connection.sendIqRequestAndWaitForResponse(iq);
     }
 
     /**
@@ -1910,7 +1941,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(affiliation);
         iq.addItem(item);
 
-        MUCAdmin answer = (MUCAdmin) connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        MUCAdmin answer = (MUCAdmin) connection.sendIqRequestAndWaitForResponse(iq);
 
         // Get the list of affiliates from the server's answer
         List<Affiliate> affiliates = new ArrayList<Affiliate>();
@@ -1965,7 +1996,7 @@ public class MultiUserChat {
         MUCItem item = new MUCItem(role);
         iq.addItem(item);
 
-        MUCAdmin answer = (MUCAdmin) connection.createStanzaCollectorAndSend(iq).nextResultOrThrow();
+        MUCAdmin answer = (MUCAdmin) connection.sendIqRequestAndWaitForResponse(iq);
         // Get the list of participants from the server's answer
         List<Occupant> participants = new ArrayList<Occupant>();
         for (MUCItem mucadminItem : answer.getItems()) {
@@ -2097,7 +2128,7 @@ public class MultiUserChat {
         if (messageCollector == null) {
             throw new MucNotJoinedException(this);
         }
-        return  messageCollector.nextResult();
+        return  messageCollector.nextResultBlockForever();
     }
 
     /**
@@ -2201,9 +2232,6 @@ public class MultiUserChat {
      * Remove all callbacks and resources necessary when the user has left the room for some reason.
      */
     private synchronized void userHasLeft() {
-        // We do not reset nickname here, in case this method has been called erroneously, it should still be possible
-        // to call leave() in order to resync the state. And leave() requires the nickname to send the unsubscribe
-        // presence.
         occupantsMap.clear();
         myRoomJid = null;
         // Update the list of joined rooms

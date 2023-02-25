@@ -131,11 +131,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
             }
 
             if (generation != null) {
-                try {
-                    mt.setGeneration(Integer.parseInt(generation));
-                }
-                catch (Exception e) {
-                }
+                mt.setGeneration(Integer.parseInt(generation));
             }
 
             if (ip != null) {
@@ -150,11 +146,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
             }
 
             if (network != null) {
-                try {
-                    mt.setNetwork(Integer.parseInt(network));
-                }
-                catch (Exception e) {
-                }
+                mt.setNetwork(Integer.parseInt(network));
             }
 
             if (username != null) {
@@ -166,19 +158,11 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
             }
 
             if (port != null) {
-                try {
-                    mt.setPort(Integer.parseInt(port));
-                }
-                catch (Exception e) {
-                }
+                mt.setPort(Integer.parseInt(port));
             }
 
             if (preference != null) {
-                try {
-                    mt.setPreference(Integer.parseInt(preference));
-                }
-                catch (Exception e) {
-                }
+                mt.setPreference(Integer.parseInt(preference));
             }
 
             if (proto != null) {
@@ -233,11 +217,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
             // LOGGER.debug();
 
             if (generation != null) {
-                try {
-                    mt.setGeneration(Integer.parseInt(generation));
-                }
-                catch (Exception e) {
-                }
+                mt.setGeneration(Integer.parseInt(generation));
             }
 
             if (ip != null) {
@@ -249,11 +229,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
             }
 
             if (port != null) {
-                try {
-                    mt.setPort(Integer.parseInt(port));
-                }
-                catch (Exception e) {
-                }
+                mt.setPort(Integer.parseInt(port));
             }
             return new JingleTransport.RawUdp.Candidate(mt);
         }

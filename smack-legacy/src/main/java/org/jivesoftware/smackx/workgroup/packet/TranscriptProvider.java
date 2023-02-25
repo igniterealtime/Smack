@@ -21,10 +21,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.IQProvider;
+import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -34,10 +35,10 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
  *
  * @author Gaston Dombiak
  */
-public class TranscriptProvider extends IQProvider<Transcript> {
+public class TranscriptProvider extends IqProvider<Transcript> {
 
     @Override
-    public Transcript parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public Transcript parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String sessionID = parser.getAttributeValue("", "sessionID");
         List<Stanza> packets = new ArrayList<>();
 

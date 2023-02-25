@@ -22,6 +22,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
 
 import org.jivesoftware.smackx.mam.element.MamQueryIQ;
+import org.jivesoftware.smackx.mam.element.MamVersion;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
@@ -40,7 +41,7 @@ public class PagingTest extends MamTest {
         int max = 10;
         RSMSet rsmSet = new RSMSet(max);
 
-        MamQueryIQ mamQueryIQ = new MamQueryIQ(queryId, dataForm);
+        MamQueryIQ mamQueryIQ = new MamQueryIQ(MamVersion.MAM2, queryId, dataForm);
         mamQueryIQ.setStanzaId("sarasa");
         mamQueryIQ.setType(IQ.Type.set);
         mamQueryIQ.addExtension(rsmSet);

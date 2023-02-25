@@ -6,6 +6,6 @@ Roster, Chat and other functionality."""
 // Note that the test dependencies (junit, …) are inferred from the
 // sourceSet.test of the core subproject
 dependencies {
-	compile project(':smack-core')
+	api project(':smack-core')
 	testImplementation(testFixtures(project(":smack-core")))
 }

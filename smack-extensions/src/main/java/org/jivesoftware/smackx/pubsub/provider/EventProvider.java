@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.pubsub.provider;
 import java.util.List;
 import java.util.Map;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.provider.EmbeddedExtensionProvider;
 
 import org.jivesoftware.smackx.pubsub.EventElement;
@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.pubsub.NodeExtension;
  */
 public class EventProvider extends EmbeddedExtensionProvider<EventElement> {
     @Override
-    protected EventElement createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends ExtensionElement> content) {
+    protected EventElement createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attMap, List<? extends XmlElement> content) {
         // TODO: Shouldn't be an embedded extension provider.
         return new EventElement(EventElementType.valueOf(content.get(0).getElementName()), (NodeExtension) content.get(0));
     }

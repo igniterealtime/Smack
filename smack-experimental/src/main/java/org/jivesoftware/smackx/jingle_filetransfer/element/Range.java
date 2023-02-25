@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.element;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 /**
  * RangeElement which specifies, which range of a file shall be transferred.
  */
-public class Range implements FullyQualifiedElement {
+public class Range implements XmlElement {
 
     public static final String ELEMENT = "range";
     public static final String NAMESPACE = JingleFileTransferChild.NAMESPACE;

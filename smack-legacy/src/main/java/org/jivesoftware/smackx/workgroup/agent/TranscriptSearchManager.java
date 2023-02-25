@@ -61,8 +61,8 @@ public class TranscriptSearchManager {
         search.setType(IQ.Type.get);
         search.setTo(serviceJID);
 
-        TranscriptSearch response = connection.createStanzaCollectorAndSend(
-                        search).nextResultOrThrow();
+        TranscriptSearch response = connection.sendIqRequestAndWaitForResponse(
+                        search);
         return Form.from(response);
     }
 
@@ -85,8 +85,8 @@ public class TranscriptSearchManager {
         search.setTo(serviceJID);
         search.addExtension(completedForm.getDataFormToSubmit());
 
-        TranscriptSearch response = connection.createStanzaCollectorAndSend(
-                        search).nextResultOrThrow();
+        TranscriptSearch response = connection.sendIqRequestAndWaitForResponse(
+                        search);
         return ReportedData.getReportedDataFrom(response);
     }
 }
