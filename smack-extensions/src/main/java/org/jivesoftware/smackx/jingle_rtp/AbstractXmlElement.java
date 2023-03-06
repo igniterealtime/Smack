@@ -383,6 +383,13 @@ public class AbstractXmlElement implements ExtensionElement {
             return getThis();
         }
 
+        public String getAttribute(String name) {
+            if (this.attributes != null) {
+                return attributes.get(name);
+            }
+            return null;
+        }
+
         // Remove the existing attribute with the given attribute name
         public B removeAttribute(String name) {
             if (this.attributes != null) {

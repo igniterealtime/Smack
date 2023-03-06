@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
@@ -154,12 +153,6 @@ public final class JingleContent extends AbstractXmlElement {
      * to obtain a new instance and {@link #build} to build the JingleContent.
      */
     public static final class Builder extends AbstractXmlElement.Builder<Builder, JingleContent> {
-        /**
-         * Which party originally generated the content type. Defined values are 'initiator' and 'responder'.
-         */
-        private Creator creator;
-        private String name;
-
         private JingleContentDescription description;
         private JingleContentTransport transport;
         private JingleContentSecurity security;
@@ -170,7 +163,6 @@ public final class JingleContent extends AbstractXmlElement {
 
         public Builder setCreator(Creator creator) {
             if (creator != null) {
-                this.creator = creator;
                 addAttribute(ATTR_CREATOR, creator.toString());
             }
             return this;
@@ -182,7 +174,6 @@ public final class JingleContent extends AbstractXmlElement {
         }
 
         public Builder setName(String name) {
-            this.name = name;
             addAttribute(ATTR_NAME, name);
             return this;
         }
@@ -217,8 +208,8 @@ public final class JingleContent extends AbstractXmlElement {
 
         @Override
         public JingleContent build() {
-            Objects.requireNonNull(creator, "Jingle content creator must not be null");
-            StringUtils.requireNotNullNorEmpty(name, "Jingle content name must not be null nor empty");
+            StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_CREATOR), "Jingle content creator must not be null");
+            StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_NAME), "Jingle content name must not be null nor empty");
             return new JingleContent(this);
         }
 
