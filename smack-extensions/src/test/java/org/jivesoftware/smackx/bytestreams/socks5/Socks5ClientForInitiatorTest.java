@@ -30,11 +30,10 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
-import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CloseableUtil;
-
+import org.jivesoftware.smackx.bytestreams.ibb.IBBPacketUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
@@ -184,9 +183,7 @@ public class Socks5ClientForInitiatorTest {
         XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
 
         // build error response as reply to the stream activation
-        IQ error = new ErrorIQ(StanzaError.getBuilder(StanzaError.Condition.internal_server_error).build());
-        error.setFrom(proxyJID);
-        error.setTo(initiatorJID);
+        IQ error = IBBPacketUtils.createErrorIQ(proxyJID, initiatorJID, StanzaError.Condition.internal_server_error);
 
         protocol.addResponse(error, Verification.correspondingSenderReceiver,
                         Verification.requestTypeSET);

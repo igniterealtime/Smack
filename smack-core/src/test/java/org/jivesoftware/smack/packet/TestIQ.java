@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ import org.jivesoftware.smack.SmackConfiguration;
 public class TestIQ extends SimpleIQ {
 
     public TestIQ() {
-        this(SmackConfiguration.SMACK_URL_STRING, "test-iq");
+        this("test-iq", SmackConfiguration.SMACK_URL_STRING);
     }
 
     public TestIQ(String element, String namespace) {
-        super(element, namespace);
+        super(StanzaBuilder.buildIqData("42"), element, namespace);
     }
 
     @Override

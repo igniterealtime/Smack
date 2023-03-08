@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2023 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -579,8 +579,9 @@ public class PacketParserUtils {
             switch (iqData.getType()) {
             case error:
                 // If an IQ packet wasn't created above, create an empty error IQ packet.
-                iqPacket = new ErrorIQ(error);
-                break;
+                iqPacket = ErrorIQ.builder(error, iqData).build();
+                // The following return is simply to avoid setting iqData again below.
+                return iqPacket;
             case result:
                 iqPacket = new EmptyResultIQ();
                 break;

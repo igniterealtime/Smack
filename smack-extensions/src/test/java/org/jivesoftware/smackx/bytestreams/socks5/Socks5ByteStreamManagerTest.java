@@ -38,12 +38,11 @@ import org.jivesoftware.smack.SmackException.FeatureNotSupportedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.test.util.NetworkUtil;
 import org.jivesoftware.smack.util.ExceptionUtil;
-
+import org.jivesoftware.smackx.bytestreams.ibb.IBBPacketUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -415,10 +414,7 @@ public class Socks5ByteStreamManagerTest {
                         Verification.requestTypeGET);
 
         // build error packet to reject SOCKS5 Bytestream
-        StanzaError stanzaError = StanzaError.getBuilder(StanzaError.Condition.not_acceptable).build();
-        IQ rejectPacket = new ErrorIQ(stanzaError);
-        rejectPacket.setFrom(targetJID);
-        rejectPacket.setTo(initiatorJID);
+        IQ rejectPacket = IBBPacketUtils.createErrorIQ(targetJID, initiatorJID, StanzaError.Condition.not_acceptable);
 
         // return error packet as response to the bytestream initiation
         protocol.addResponse(rejectPacket, Verification.correspondingSenderReceiver,
