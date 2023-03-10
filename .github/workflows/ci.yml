@@ -9,7 +9,7 @@ jobs:
   build:
     name: Build Smack
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         java: [ 1.8, 11 ]
