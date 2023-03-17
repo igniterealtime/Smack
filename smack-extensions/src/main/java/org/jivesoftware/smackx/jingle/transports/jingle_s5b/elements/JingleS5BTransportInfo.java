@@ -23,6 +23,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 
 /**
  * Class representing possible SOCKS5 TransportInfo elements.
+ * @see <a href="https://xmpp.org/extensions/xep-0260.html">XEP-0260: Jingle SOCKS5 Bytestreams Transport Method 1.0.3 (2018-05-15)</a>
  */
 public abstract class JingleS5BTransportInfo implements JingleContentTransportInfo {
 
@@ -71,7 +72,7 @@ public abstract class JingleS5BTransportInfo implements JingleContentTransportIn
     }
 
     public static final class CandidateActivated extends JingleS5BCandidateTransportInfo {
-        public static final String ELEMENT = "candidate-activated";
+        public static final String ELEMENT = "activated";
 
         public CandidateActivated(String candidateId) {
             super(candidateId);
