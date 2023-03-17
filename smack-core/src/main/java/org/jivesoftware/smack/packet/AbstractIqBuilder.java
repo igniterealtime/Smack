@@ -49,7 +49,7 @@ public abstract class AbstractIqBuilder<IB extends AbstractIqBuilder<IB>> extend
     }
 
     protected static IqData createResponse(IqView request, IQ.ResponseType responseType) {
-        if (!(request.getType() == IQ.Type.get || request.getType() == IQ.Type.set)) {
+        if (!request.isRequestIQ()) {
             throw new IllegalArgumentException("IQ request must be of type 'set' or 'get'. Original IQ: " + request);
         }
 

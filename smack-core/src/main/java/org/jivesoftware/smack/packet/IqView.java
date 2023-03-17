@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.packet.IQ.Type;
+
 public interface IqView extends StanzaView {
 
     /**
@@ -25,4 +27,24 @@ public interface IqView extends StanzaView {
      */
     IQ.Type getType();
 
+    /**
+     * Return true if this IQ is a request IQ, i.e. an IQ of type {@link Type#get} or {@link Type#set}.
+     *
+     * @return true if IQ type is 'get' or 'set', false otherwise.
+     * @since 4.1
+     */
+    default boolean isRequestIQ() {
+        IQ.Type type = getType();
+        return type == IQ.Type.get || type == IQ.Type.set;
+    }
+
+    /**
+     * Return true if this IQ is a request, i.e. an IQ of type {@link Type#result} or {@link Type#error}.
+     *
+     * @return true if IQ type is 'result' or 'error', false otherwise.
+     * @since 4.4
+     */
+    default boolean isResponseIQ() {
+        return !isRequestIQ();
+    }
 }
