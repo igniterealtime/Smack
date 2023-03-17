@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,6 @@
 package org.jivesoftware.smack.c2s;
 
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -37,8 +35,7 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
     }
 
     @SmackIntegrationTest
-    public void testDisconnectAfterConnect() throws KeyManagementException, NoSuchAlgorithmException, SmackException,
-            IOException, XMPPException, InterruptedException {
+    public void testDisconnectAfterConnect() throws SmackException, IOException, XMPPException, InterruptedException {
         ModularXmppClientToServerConnection connection = getSpecificUnconnectedConnection();
 
         connection.connect();
