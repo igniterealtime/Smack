@@ -889,6 +889,9 @@ public class SmackIntegrationTestFramework {
                 };
                 testMethod.invoke(test, source);
                 break;
+            case noParamSpecificLowLevel:
+                testMethod.invoke(test);
+                break;
             }
         }
 
@@ -919,6 +922,11 @@ public class SmackIntegrationTestFramework {
          * testMethod(UnconnectedConnectionSource unconnectedConnectionSource)
          */
         unconnectedConnectionSource,
+
+        /**
+         * A no-parameter method of a {@link AbstractSmackSpecificLowLevelIntegrationTest}.
+         */
+        noParamSpecificLowLevel,
     };
 
     static TestMethodParameterType determineTestMethodParameterType(Method testMethod) {
@@ -928,6 +936,9 @@ public class SmackIntegrationTestFramework {
     static TestMethodParameterType determineTestMethodParameterType(Method testMethod, Class<? extends AbstractXMPPConnection> connectionClass) {
         Class<?>[] parameterTypes = testMethod.getParameterTypes();
         if (parameterTypes.length == 0) {
+            if (AbstractSmackSpecificLowLevelIntegrationTest.class.isAssignableFrom(testMethod.getDeclaringClass())) {
+                return TestMethodParameterType.noParamSpecificLowLevel;
+            }
             return null;
         }
 
