@@ -276,7 +276,7 @@ public class MultiUserChat {
                         }
                     }
 
-                    Destroy destroy = mucUser.getDestroy();
+                    Destroy destroy = mucUser == null ? null : mucUser.getDestroy();
                     // The room has been destroyed.
                     if (destroy != null) {
                         EntityBareJid alternateMucJid = destroy.getJid();
