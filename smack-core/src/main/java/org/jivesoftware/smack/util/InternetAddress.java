@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,12 +65,32 @@ public abstract class InternetAddress implements CharSequence {
         return originalString.subSequence(start, end);
     }
 
+    public String getRaw() {
+        return originalString;
+    }
+
+    public static InternetAddress fromIgnoringZoneId(String address) {
+        return from(address, true);
+    }
+
     public static InternetAddress from(String address) {
+        return from(address, false);
+    }
+
+    private static InternetAddress from(String address, boolean ignoreZoneId) {
+        String raw = address;
+        if (ignoreZoneId) {
+            int percentPosition = address.indexOf('%');
+            if (percentPosition > 1) {
+                address = address.substring(0, percentPosition);
+            }
+        }
+
         final InternetAddress internetAddress;
         if (InetAddressUtil.isIpV4Address(address)) {
-            internetAddress = new InternetAddress.Ipv4(address);
+            internetAddress = new InternetAddress.Ipv4(address, raw);
         } else if (InetAddressUtil.isIpV6Address(address)) {
-            internetAddress = new InternetAddress.Ipv6(address);
+            internetAddress = new InternetAddress.Ipv6(address, raw);
         } else if (address.contains(".")) {
             InternetAddress domainNameInternetAddress;
             try {
@@ -99,9 +119,11 @@ public abstract class InternetAddress implements CharSequence {
 
     private static class InetAddressInternetAddress extends InternetAddress {
         private final InetAddress inetAddress;
+        private final String raw;
 
-        protected InetAddressInternetAddress(String originalString, InetAddress inetAddress) {
+        protected InetAddressInternetAddress(String originalString, String raw, InetAddress inetAddress) {
             super(originalString);
+            this.raw = raw;
             this.inetAddress = inetAddress;
         }
 
@@ -109,18 +131,27 @@ public abstract class InternetAddress implements CharSequence {
         public InetAddress asInetAddress() {
             return inetAddress;
         }
+
+        @Override
+        public final String getRaw() {
+            return raw;
+        }
     }
 
     public static final class Ipv4 extends InetAddressInternetAddress {
 
         private final Inet4Address inet4Address;
 
-        private Ipv4(String originalString) {
-            this(originalString, InetAddressUtil.ipv4From(originalString));
+        private Ipv4(String originalString, String raw) {
+            this(originalString, raw, InetAddressUtil.ipv4From(originalString));
         }
 
         private Ipv4(String originalString, Inet4Address inet4Address) {
-            super(originalString, inet4Address);
+            this(originalString, originalString, inet4Address);
+        }
+
+        private Ipv4(String originalString, String raw, Inet4Address inet4Address) {
+            super(originalString, raw, inet4Address);
             this.inet4Address = inet4Address;
         }
 
@@ -133,12 +164,16 @@ public abstract class InternetAddress implements CharSequence {
 
         private Inet6Address inet6Address;
 
-        private Ipv6(String originalString) {
-            this(originalString, InetAddressUtil.ipv6From(originalString));
+        private Ipv6(String originalString, String raw) {
+            this(originalString, raw, InetAddressUtil.ipv6From(originalString));
         }
 
         private Ipv6(String originalString, Inet6Address inet6Address) {
-            super(originalString, inet6Address);
+            this(originalString, originalString, inet6Address);
+        }
+
+        private Ipv6(String originalString, String raw, Inet6Address inet6Address) {
+            super(originalString, raw, inet6Address);
             this.inet6Address = inet6Address;
         }
 
