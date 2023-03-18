@@ -11,7 +11,6 @@ jobs:
       matrix:
         java:
           - 11
-          - 15
     env:
       PRIMARY_JAVA_VERSION: 11
 
