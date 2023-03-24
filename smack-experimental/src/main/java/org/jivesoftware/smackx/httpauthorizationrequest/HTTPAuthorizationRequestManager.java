@@ -207,7 +207,7 @@ public final class HTTPAuthorizationRequestManager extends Manager {
                 connection().sendStanza(messageDeny.build());
             }
             else if (mIqRequest != null) {
-                IQ iqDeny =  ConfirmIQ.createAuthRequestDeny(mIqRequest, stanzaError);
+                IQ iqDeny =  ConfirmIQ.createErrorResponse(mIqRequest, stanzaError);
                 connection().sendStanza(iqDeny);
             }
         } catch (SmackException.NotConnectedException | InterruptedException e) {

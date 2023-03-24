@@ -194,6 +194,7 @@ public abstract class IQ extends Stanza implements IqView {
         if (type == Type.error) {
             // Add the error sub-packet, if there is one.
             appendErrorIfExists(xml);
+            return;
         }
         if (childElementName == null) {
             return;

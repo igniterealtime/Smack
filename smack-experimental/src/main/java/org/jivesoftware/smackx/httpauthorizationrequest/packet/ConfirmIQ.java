@@ -54,12 +54,6 @@ public class ConfirmIQ extends IQ {
         return new ConfirmIQ(iqData, iqAuthRequest.getConfirmExtension());
     }
 
-    public static IQ createAuthRequestDeny(final ConfirmIQ iqAuthRequest, final StanzaError error) {
-        IqData iqData = AbstractIqBuilder.createErrorResponse(iqAuthRequest);
-        iqData.setError(error);
-        return new ConfirmIQ(iqData, iqAuthRequest.getConfirmExtension());
-    }
-
     public ConfirmExtension getConfirmExtension() {
         return mConfirmExtension;
     }
