@@ -25,5 +25,5 @@ import org.jxmpp.jid.DomainBareJid;
  * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
  */
 public interface HttpAuthorizationRequestListener {
-    void onHttpAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExtension);
+    void onHttpAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExtension, String instruction);
 }

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.httpauthorizationrequest;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -69,12 +70,12 @@ public final class HttpAuthorizationRequestManager extends Manager {
 
     private static final Map<XMPPConnection, HttpAuthorizationRequestManager> INSTANCES = new WeakHashMap<>();
 
-    private final Set<HttpAuthorizationRequestListener> incomingListeners = new CopyOnWriteArraySet<>();
+    /**
+     * Map of all the current active HttpAuthorizationRequests.
+     */
+    private static final Map<String, Object> mAuthRequests = new HashMap<>();
 
-    private ConfirmExtension mConfirmExtension;
-    private Message msgRequest = null;
-    private ConfirmIQ mIqRequest = null;
-    private String instruction = null;
+    private final Set<HttpAuthorizationRequestListener> incomingListeners = new CopyOnWriteArraySet<>();
 
     public static synchronized HttpAuthorizationRequestManager getInstanceFor(XMPPConnection connection) {
         HttpAuthorizationRequestManager httpResponseManager = INSTANCES.get(connection);
@@ -91,19 +92,22 @@ public final class HttpAuthorizationRequestManager extends Manager {
         // Listen for message HTTP request
         connection.addSyncStanzaListener(stanza -> {
             final Message message = (Message) stanza;
-            mConfirmExtension = ConfirmExtension.from(message);
+            ConfirmExtension confirmExtension = ConfirmExtension.from(message);
 
-            msgRequest = message;
-            mIqRequest = null;
+            String id = confirmExtension.getId();
+            mAuthRequests.put(id, message);
+
             final Jid from = message.getFrom();
             DomainBareJid bareFrom = from.asDomainBareJid();
 
             Body bodyExt = message.getExtension(Body.class);
-            if (bodyExt != null)
+            String instruction = null;
+            if (bodyExt != null) {
                 instruction = bodyExt.getMessage();
+            }
 
             for (HttpAuthorizationRequestListener listener : incomingListeners) {
-                listener.onHttpAuthorizationRequest(bareFrom, mConfirmExtension);
+                listener.onHttpAuthorizationRequest(bareFrom, confirmExtension, instruction);
             }
         }, INCOMING_MESSAGE_FILTER);
 
@@ -113,19 +117,16 @@ public final class HttpAuthorizationRequestManager extends Manager {
             @Override
             public IQ handleIQRequest(IQ iqRequest) {
                 ConfirmIQ iqHttpRequest = (ConfirmIQ) iqRequest;
-                mConfirmExtension = iqHttpRequest.getConfirmExtension();
+                ConfirmExtension confirmExtension = iqHttpRequest.getConfirmExtension();
 
-                if (mConfirmExtension == null) {
-                    return IQ.createErrorResponse(iqRequest, StanzaError.Condition.bad_request);
-                }
-                msgRequest = null;
-                mIqRequest = iqHttpRequest;
-                instruction = null;
+                String id = confirmExtension.getId();
+                mAuthRequests.put(id, iqRequest);
+
                 final Jid from = iqHttpRequest.getFrom();
                 DomainBareJid bareFrom = from.asDomainBareJid();
 
                 for (HttpAuthorizationRequestListener listener : incomingListeners) {
-                    listener.onHttpAuthorizationRequest(bareFrom, mConfirmExtension);
+                    listener.onHttpAuthorizationRequest(bareFrom, confirmExtension, null);
                 }
                 // let us handle the reply
                 return null;
@@ -155,63 +156,75 @@ public final class HttpAuthorizationRequestManager extends Manager {
         return incomingListeners.remove(listener);
     }
 
-    public String getInstruction() {
-        return instruction;
-    }
-
-    public void acceptId(String url, String method, String id) {
-
-    }
-
     /**
-     * Accept the HTTP Authorization Request.
+     * Accept the HTTP Authorization Request for the given id.
      *
      * The actual reply can be in IQ or Message pending on the Request Stanza
+     * @param id accept authRequest for the given id.
      */
-    public void accept() {
+    public void acceptId(String id) {
+        Object authRequest = mAuthRequests.get(id);
+        if (authRequest == null) {
+            LOGGER.log(Level.WARNING, "Unknown http authorization id: ", id);
+            return;
+        }
+
         try {
-            if (msgRequest != null) {
+            if (authRequest instanceof Message) {
+                Message msgRequest = (Message) authRequest;
+
                 MessageBuilder messageAccept = StanzaBuilder.buildMessage()
                         .to(msgRequest.getFrom())
                         .ofType(msgRequest.getType())
                         .setThread(msgRequest.getThread())
-                        .addExtension(mConfirmExtension);
+                        .addExtension(ConfirmExtension.from(msgRequest));
                 connection().sendStanza(messageAccept.build());
             }
-            else if (mIqRequest != null) {
-                connection().sendStanza(ConfirmIQ.createAuthRequestAccept(mIqRequest));
+            else if (authRequest instanceof ConfirmIQ) {
+                connection().sendStanza(ConfirmIQ.createAuthRequestAccept((ConfirmIQ) authRequest));
             }
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.WARNING, "Failed to send http authorization accept: ", e.getMessage());
         }
+        mAuthRequests.remove(id);
     }
 
     /**
-     * Reject the HTTP Authorization Request.
+     * Reject the HTTP Authorization Request for the given id.
      *
      * The actual reply can be in IQ or Message pending on the Request Stanza
+     * @param id reject authRequest for the given id.
      */
-    public void reject() {
+    public void rejectId(String id) {
+        Object authRequest = mAuthRequests.get(id);
+        if (authRequest == null) {
+            LOGGER.log(Level.WARNING, "Unknown http authorization id: ", id);
+            return;
+        }
+
         StanzaError stanzaError = StanzaError.getBuilder()
                 .setType(StanzaError.Type.AUTH)
                 .setCondition(StanzaError.Condition.not_authorized).build();
 
         try {
-            if (msgRequest != null) {
+            if (authRequest instanceof Message) {
+                Message msgRequest = (Message) authRequest;
+
                 MessageBuilder messageDeny = StanzaBuilder.buildMessage()
                         .to(msgRequest.getFrom())
                         .ofType(Message.Type.error)
                         .setThread(msgRequest.getThread())
-                        .addExtension(mConfirmExtension)
+                        .addExtension(ConfirmExtension.from(msgRequest))
                         .addExtension(stanzaError);
                 connection().sendStanza(messageDeny.build());
             }
-            else if (mIqRequest != null) {
-                IQ iqDeny =  ConfirmIQ.createErrorResponse(mIqRequest, stanzaError);
+            else if (authRequest instanceof ConfirmIQ) {
+                IQ iqDeny = ConfirmIQ.createErrorResponse((ConfirmIQ) authRequest, stanzaError);
                 connection().sendStanza(iqDeny);
             }
         } catch (SmackException.NotConnectedException | InterruptedException e) {
             LOGGER.log(Level.WARNING, "Failed to send http authorization reject: ", e.getMessage());
         }
+        mAuthRequests.remove(id);
     }
 }
