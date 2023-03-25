@@ -80,17 +80,11 @@ public class ConfirmExtension implements ExtensionElement {
         return url;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getElementName() {
         return ELEMENT;
@@ -105,9 +99,6 @@ public class ConfirmExtension implements ExtensionElement {
         return message.getExtension(ConfirmExtension.class);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return new XmlStringBuilder(this)

@@ -52,9 +52,9 @@ import org.jxmpp.jid.Jid;
  *
  * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
  *
- * @see HTTPAuthorizationRequestListener on callback
+ * @see HttpAuthorizationRequestListener on callback
  */
-public final class HTTPAuthorizationRequestManager extends Manager {
+public final class HttpAuthorizationRequestManager extends Manager {
     private static final StanzaFilter MESSAGE_FILTER = new AndFilter(
             MessageTypeFilter.NORMAL_OR_CHAT,
             new StanzaExtensionFilter(ConfirmExtension.ELEMENT, ConfirmExtension.NAMESPACE)
@@ -65,37 +65,33 @@ public final class HTTPAuthorizationRequestManager extends Manager {
             FromTypeFilter.DOMAIN_BARE_JID
     );
 
-    private static final Logger LOGGER = Logger.getLogger(HTTPAuthorizationRequestManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HttpAuthorizationRequestManager.class.getName());
 
-    private static final Map<XMPPConnection, HTTPAuthorizationRequestManager> INSTANCES = new WeakHashMap<>();
+    private static final Map<XMPPConnection, HttpAuthorizationRequestManager> INSTANCES = new WeakHashMap<>();
 
-    private final Set<HTTPAuthorizationRequestListener> incomingListeners = new CopyOnWriteArraySet<>();
+    private final Set<HttpAuthorizationRequestListener> incomingListeners = new CopyOnWriteArraySet<>();
 
     private ConfirmExtension mConfirmExtension;
     private Message msgRequest = null;
     private ConfirmIQ mIqRequest = null;
     private String instruction = null;
 
-    public static synchronized HTTPAuthorizationRequestManager getInstanceFor(XMPPConnection connection) {
-        HTTPAuthorizationRequestManager httpResponseManager = INSTANCES.get(connection);
+    public static synchronized HttpAuthorizationRequestManager getInstanceFor(XMPPConnection connection) {
+        HttpAuthorizationRequestManager httpResponseManager = INSTANCES.get(connection);
         if (httpResponseManager == null) {
-            httpResponseManager = new HTTPAuthorizationRequestManager(connection);
+            httpResponseManager = new HttpAuthorizationRequestManager(connection);
             INSTANCES.put(connection, httpResponseManager);
         }
         return httpResponseManager;
     }
 
-    private HTTPAuthorizationRequestManager(final XMPPConnection connection) {
+    private HttpAuthorizationRequestManager(final XMPPConnection connection) {
         super(connection);
 
         // Listen for message HTTP request
         connection.addSyncStanzaListener(stanza -> {
             final Message message = (Message) stanza;
             mConfirmExtension = ConfirmExtension.from(message);
-
-            if (mConfirmExtension == null) {
-                return;
-            }
 
             msgRequest = message;
             mIqRequest = null;
@@ -106,8 +102,8 @@ public final class HTTPAuthorizationRequestManager extends Manager {
             if (bodyExt != null)
                 instruction = bodyExt.getMessage();
 
-            for (HTTPAuthorizationRequestListener listener : incomingListeners) {
-                listener.onHTTPAuthorizationRequest(bareFrom, mConfirmExtension);
+            for (HttpAuthorizationRequestListener listener : incomingListeners) {
+                listener.onHttpAuthorizationRequest(bareFrom, mConfirmExtension);
             }
         }, INCOMING_MESSAGE_FILTER);
 
@@ -128,8 +124,8 @@ public final class HTTPAuthorizationRequestManager extends Manager {
                 final Jid from = iqHttpRequest.getFrom();
                 DomainBareJid bareFrom = from.asDomainBareJid();
 
-                for (HTTPAuthorizationRequestListener listener : incomingListeners) {
-                    listener.onHTTPAuthorizationRequest(bareFrom, mConfirmExtension);
+                for (HttpAuthorizationRequestListener listener : incomingListeners) {
+                    listener.onHttpAuthorizationRequest(bareFrom, mConfirmExtension);
                 }
                 // let us handle the reply
                 return null;
@@ -144,7 +140,7 @@ public final class HTTPAuthorizationRequestManager extends Manager {
      *
      * @return <code>true</code> if the listener was not already added.
      */
-    public boolean addIncomingListener(HTTPAuthorizationRequestListener listener) {
+    public boolean addIncomingListener(HttpAuthorizationRequestListener listener) {
         return incomingListeners.add(listener);
     }
 
@@ -155,12 +151,16 @@ public final class HTTPAuthorizationRequestManager extends Manager {
      *
      * @return <code>true</code> if the listener was active and got removed.
      */
-    public boolean removeIncomingListener(HTTPAuthorizationRequestListener listener) {
+    public boolean removeIncomingListener(HttpAuthorizationRequestListener listener) {
         return incomingListeners.remove(listener);
     }
 
     public String getInstruction() {
         return instruction;
+    }
+
+    public void acceptId(String url, String method, String id) {
+
     }
 
     /**

@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.httpauthorizationrequest.packet;
 import org.jivesoftware.smack.packet.AbstractIqBuilder;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
-import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.httpauthorizationrequest.element.ConfirmExtension;
 
 /**
@@ -32,15 +31,10 @@ public class ConfirmIQ extends IQ {
     public static final String ELEMENT = ConfirmExtension.ELEMENT;
     public static final String NAMESPACE = ConfirmExtension.NAMESPACE;
 
-    private ConfirmExtension mConfirmExtension = null;
-
-    public ConfirmIQ() {
-        super(ELEMENT, NAMESPACE);
-        setType(IQ.Type.get);
-    }
+    private final ConfirmExtension mConfirmExtension;
 
     public ConfirmIQ(ConfirmExtension confirmExtension) {
-        this();
+        super(ELEMENT, NAMESPACE);
         mConfirmExtension = confirmExtension;
     }
 

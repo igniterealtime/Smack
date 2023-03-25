@@ -24,6 +24,6 @@ import org.jxmpp.jid.DomainBareJid;
  * Interface for listen on receive of HTTP Request IQ or Message.
  * XEP-0070: Verifying HTTP Requests via XMPP (1.0.1 (2016-12-09))
  */
-public interface HTTPAuthorizationRequestListener {
-    void onHTTPAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExtension);
+public interface HttpAuthorizationRequestListener {
+    void onHttpAuthorizationRequest(DomainBareJid from, ConfirmExtension confirmExtension);
 }

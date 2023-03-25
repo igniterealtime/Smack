@@ -16,7 +16,6 @@
  */
 
 /**
- * Smack's API for XEP-0391: Jingle Encrypted Transfers.
- * Internal classes.
+ * Smack's API for XEP-0070: Verifying HTTP Requests via XMPP.
  */
 package org.jivesoftware.smackx.httpauthorizationrequest.element;
