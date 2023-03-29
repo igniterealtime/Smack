@@ -42,7 +42,7 @@ import org.jxmpp.jid.Jid;
  * @author Gabriel Guardincerri
  *
  */
-public class RemoteCommand extends AdHocCommand {
+public class RemoteCommand extends AdHocCommand<FillableForm> {
 
     /**
      * The connection that is used to execute this command

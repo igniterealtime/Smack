@@ -24,7 +24,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
-import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.FormReader;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
@@ -73,7 +73,7 @@ import org.jxmpp.jid.Jid;
  * @author Gabriel Guardincerri
  *
  */
-public abstract class AdHocCommand {
+public abstract class AdHocCommand<F extends FormReader> {
     // TODO: Analyze the redesign of command by having an ExecutionResponse as a
     // TODO: result to the execution of every action. That result should have all the
     // TODO: information related to the execution, e.g. the form to fill. Maybe this
@@ -230,7 +230,7 @@ public abstract class AdHocCommand {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public abstract void next(FillableForm response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
+    public abstract void next(F response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Completes the command execution with the information provided in the
@@ -246,7 +246,7 @@ public abstract class AdHocCommand {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public abstract void complete(FillableForm response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
+    public abstract void complete(F response) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
     /**
      * Goes to the previous stage. The requester is asking to re-send the

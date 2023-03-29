@@ -52,7 +52,7 @@ import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jivesoftware.smackx.xdata.form.FillableForm;
+import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
@@ -464,7 +464,8 @@ public final class AdHocCommandManager extends Manager {
                     if (Action.next.equals(action)) {
                         command.incrementStage();
                         DataForm dataForm = requestData.getForm();
-                        command.next(new FillableForm(dataForm));
+                        Form filledForm = new Form(dataForm);
+                        command.next(filledForm);
                         if (command.isLastStage()) {
                             // If it is the last stage then the command is
                             // completed
@@ -478,7 +479,8 @@ public final class AdHocCommandManager extends Manager {
                     else if (Action.complete.equals(action)) {
                         command.incrementStage();
                         DataForm dataForm = requestData.getForm();
-                        command.complete(new FillableForm(dataForm));
+                        Form filledForm = new Form(dataForm);
+                        command.complete(filledForm);
                         response.setStatus(Status.completed);
                         // Remove the completed session
                         executingCommands.remove(sessionId);

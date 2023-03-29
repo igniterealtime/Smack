@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
+import org.jivesoftware.smackx.xdata.form.FilledForm;
 
 import org.jxmpp.jid.Jid;
 
@@ -39,7 +40,7 @@ import org.jxmpp.jid.Jid;
  *
  * @author Gabriel Guardincerri
  */
-public abstract class LocalCommand extends AdHocCommand {
+public abstract class LocalCommand extends AdHocCommand<FilledForm> {
 
     /**
      * The time stamp of first invocation of the command. Used to implement the session timeout.
