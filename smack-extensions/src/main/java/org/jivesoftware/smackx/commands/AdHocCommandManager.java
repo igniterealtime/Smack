@@ -52,7 +52,7 @@ import org.jivesoftware.smackx.disco.AbstractNodeInformationProvider;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
-import org.jivesoftware.smackx.xdata.form.Form;
+import org.jivesoftware.smackx.xdata.form.FilledForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
@@ -126,7 +126,7 @@ public final class AdHocCommandManager extends Manager {
      * the command execution. Note: Key=session ID, Value=LocalCommand. Session
      * ID matches the sessionid attribute sent by command responders.
      */
-    private final Map<String, LocalCommand> executingCommands = new ConcurrentHashMap<>();
+    private final Map<String, LocalCommand<FilledForm>> executingCommands = new ConcurrentHashMap<>();
 
     private final ServiceDiscoveryManager serviceDiscoveryManager;
 
@@ -195,10 +195,10 @@ public final class AdHocCommandManager extends Manager {
      * @param name the human readable name of the command.
      * @param clazz the class of the command, which must extend {@link LocalCommand}.
      */
-    public void registerCommand(String node, String name, final Class<? extends LocalCommand> clazz) {
+    public void registerCommand(String node, String name, final Class<? extends LocalCommand<?>> clazz) {
         registerCommand(node, name, new LocalCommandFactory() {
             @Override
-            public LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException  {
+            public LocalCommand<?> getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException  {
                 return clazz.getConstructor().newInstance();
             }
         });
@@ -324,7 +324,7 @@ public final class AdHocCommandManager extends Manager {
             try {
                 // Create a new instance of the command with the
                 // corresponding sessionid
-                LocalCommand command;
+                LocalCommand<FilledForm> command;
                 try {
                     command = newInstanceOfCmd(commandNode, sessionId);
                 }
@@ -401,7 +401,7 @@ public final class AdHocCommandManager extends Manager {
             }
         }
         else {
-            LocalCommand command = executingCommands.get(sessionId);
+            LocalCommand<FilledForm> command = executingCommands.get(sessionId);
 
             // Check that a command exists for the specified sessionID
             // This also handles if the command was removed in the meanwhile
@@ -462,10 +462,8 @@ public final class AdHocCommandManager extends Manager {
                     command.setData(response);
 
                     if (Action.next.equals(action)) {
-                        command.incrementStage();
-                        DataForm dataForm = requestData.getForm();
-                        Form filledForm = new Form(dataForm);
-                        command.next(filledForm);
+                        handleLocalCommand(command, requestData);
+
                         if (command.isLastStage()) {
                             // If it is the last stage then the command is
                             // completed
@@ -477,10 +475,8 @@ public final class AdHocCommandManager extends Manager {
                         }
                     }
                     else if (Action.complete.equals(action)) {
-                        command.incrementStage();
-                        DataForm dataForm = requestData.getForm();
-                        Form filledForm = new Form(dataForm);
-                        command.complete(filledForm);
+                        handleLocalCommand(command, requestData);
+
                         response.setStatus(Status.completed);
                         // Remove the completed session
                         executingCommands.remove(sessionId);
@@ -517,14 +513,22 @@ public final class AdHocCommandManager extends Manager {
         }
     }
 
+    private static void handleLocalCommand(LocalCommand<FilledForm> command, AdHocCommandData requestData)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        command.incrementStage();
+        DataForm dataForm = requestData.getForm();
+        FilledForm filledForm = command.filledFormFromSubmitDataForm(dataForm);
+        command.next(filledForm);
+    }
+
     private boolean sessionSweeperScheduled;
 
     private void sessionSweeper() {
         final long currentTime = System.currentTimeMillis();
         synchronized (this) {
-            for (Iterator<Entry<String, LocalCommand>> it = executingCommands.entrySet().iterator(); it.hasNext();) {
-                Entry<String, LocalCommand> entry = it.next();
-                LocalCommand command = entry.getValue();
+            for (Iterator<Entry<String, LocalCommand<FilledForm>>> it = executingCommands.entrySet().iterator(); it.hasNext();) {
+                Entry<String, LocalCommand<FilledForm>> entry = it.next();
+                LocalCommand<?> command = entry.getValue();
 
                 long creationStamp = command.getCreationDate();
                 // Check if the Session data has expired (default is 10 minutes)
@@ -613,16 +617,17 @@ public final class AdHocCommandManager extends Manager {
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private LocalCommand newInstanceOfCmd(String commandNode, String sessionID)
+    @SuppressWarnings("unchecked")
+    private LocalCommand<FilledForm> newInstanceOfCmd(String commandNode, String sessionID)
                     throws XMPPErrorException, InstantiationException, IllegalAccessException, IllegalArgumentException,
                     InvocationTargetException, NoSuchMethodException, SecurityException {
         AdHocCommandInfo commandInfo = commands.get(commandNode);
-        LocalCommand command = commandInfo.getCommandInstance();
+        LocalCommand<?> command = commandInfo.getCommandInstance();
         command.setSessionID(sessionID);
         command.setName(commandInfo.getName());
         command.setNode(commandInfo.getNode());
 
-        return command;
+        return (LocalCommand<FilledForm>) command;
     }
 
     /**
@@ -653,7 +658,7 @@ public final class AdHocCommandManager extends Manager {
             this.factory = factory;
         }
 
-        public LocalCommand getCommandInstance() throws InstantiationException,
+        public LocalCommand<?> getCommandInstance() throws InstantiationException,
                 IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
             return factory.getInstance();
         }

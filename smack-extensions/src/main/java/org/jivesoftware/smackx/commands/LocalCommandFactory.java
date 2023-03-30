@@ -41,6 +41,6 @@ public interface LocalCommandFactory {
      * @throws InvocationTargetException if a reflection-based method or constructor invocation threw.
      * @throws IllegalArgumentException if an illegal argument was given.
      */
-    LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+    LocalCommand<?> getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
 
 }
