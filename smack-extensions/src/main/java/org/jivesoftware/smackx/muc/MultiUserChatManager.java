@@ -40,6 +40,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.ExtensionElementFilter;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.NotFilter;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
@@ -57,6 +58,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
+import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
@@ -139,6 +141,11 @@ public final class MultiUserChatManager extends Manager {
     private static final StanzaFilter INVITATION_FILTER = new AndFilter(StanzaTypeFilter.MESSAGE, new StanzaExtensionFilter(new MUCUser()),
                     new NotFilter(MessageTypeFilter.ERROR));
 
+    private static final StanzaFilter DIRECT_INVITATION_FILTER =
+        new AndFilter(StanzaTypeFilter.MESSAGE,
+                      new ExtensionElementFilter<GroupChatInvitation>(GroupChatInvitation.class),
+                      new NotFilter(MessageTypeFilter.ERROR));
+
     private static final ExpirationCache<DomainBareJid, DiscoverInfo> KNOWN_MUC_SERVICES = new ExpirationCache<>(
         100, 1000 * 60 * 60 * 24);
 
@@ -198,6 +205,33 @@ public final class MultiUserChatManager extends Manager {
             }
         };
         connection.addAsyncStanzaListener(invitationPacketListener, INVITATION_FILTER);
+
+        // Listens for all messages that include an XEP-0249 GroupChatInvitation extension and fire the invitation
+        // listeners
+        StanzaListener directInvitationStanzaListener = new StanzaListener() {
+            @Override
+            public void processStanza(Stanza stanza) {
+                final Message message = (Message) stanza;
+                GroupChatInvitation invite =
+                    stanza.getExtension(GroupChatInvitation.class);
+
+                // Fire event for invitation listeners
+                final MultiUserChat muc = getMultiUserChat(invite.getRoomAddress());
+                final XMPPConnection connection = connection();
+                final EntityJid from = message.getFrom().asEntityJidIfPossible();
+                if (from == null) {
+                    LOGGER.warning("Group Chat Invitation from non entity JID in '" + message + "'");
+                    return;
+                }
+                final String reason = invite.getReason();
+                final String password = invite.getPassword();
+                final MUCUser.Invite mucInvite = new MUCUser.Invite(reason, from, connection.getUser().asEntityBareJid());
+                for (final InvitationListener listener : invitationsListeners) {
+                    listener.invitationReceived(connection, muc, from, reason, password, message, mucInvite);
+                }
+            }
+        };
+        connection.addAsyncStanzaListener(directInvitationStanzaListener, DIRECT_INVITATION_FILTER);
 
         connection.addConnectionListener(new ConnectionListener() {
             @Override
