@@ -24,12 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -1000,6 +1004,72 @@ public class Socks5ByteStreamManagerTest {
         }
 
         protocol.verifyAll();
+    }
+
+     /**
+     * Invoking {@link Socks5BytestreamManager#getLocalStreamHost()} should return only a local address
+     * from XMPP connection when it is connected and has a socket with a bound non-localhost IP address.
+     *
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPErrorException if an XMPP protocol error was received.
+     */
+    @Test
+    public void shouldUseXMPPConnectionLocalAddressWhenConnected() throws InterruptedException, XMPPErrorException, SmackException {
+        final Protocol protocol = new Protocol();
+        final XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
+
+        // prepare XMPP local address
+        Inet4Address xmppLocalAddress = mock(Inet4Address.class);
+        when(xmppLocalAddress.getHostAddress()).thenReturn("81.72.63.54");
+        when(connection.getLocalAddress()).thenReturn(xmppLocalAddress);
+
+        // get Socks5ByteStreamManager for connection
+        Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
+
+        List<StreamHost> localStreamHost = byteStreamManager.getLocalStreamHost();
+
+        // must be only 1 stream host with XMPP local address IP
+        assertEquals(1, localStreamHost.size());
+        assertEquals("81.72.63.54", localStreamHost.get(0).getAddress().toString());
+        assertEquals(initiatorJID, localStreamHost.get(0).getJID());
+    }
+
+    /**
+     * Invoking {@link Socks5BytestreamManager#getLocalStreamHost()} should return all non-localhost
+     * local addresses when its XMPP connection's socket is null.
+     *
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws SmackException if Smack detected an exceptional situation.
+     * @throws XMPPErrorException if an XMPP protocol error was received.
+     * @throws UnknownHostException if address cannot be resolved.
+     */
+    @Test
+    public void shouldUseSocks5LocalAddressesWhenNotConnected() throws InterruptedException, XMPPErrorException, SmackException, UnknownHostException {
+        final Protocol protocol = new Protocol();
+        final XMPPConnection connection = ConnectionUtils.createMockedConnection(protocol, initiatorJID);
+
+        // No XMPP local address
+        when(connection.getLocalAddress()).thenReturn(null);
+
+        // get Socks5ByteStreamManager for connection
+        Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
+
+        List<InetAddress> localAddresses = new ArrayList<>();
+        for (InetAddress inetAddress : Socks5Proxy.getSocks5Proxy().getLocalAddresses()) {
+            if (!inetAddress.isLoopbackAddress()) {
+                localAddresses.add(inetAddress);
+            }
+        }
+
+        List<StreamHost> localStreamHost = byteStreamManager.getLocalStreamHost();
+
+        // Must be the same addresses as in SOCKS5 proxy local address list (excluding loopback)
+        assertEquals(localAddresses.size(), localStreamHost.size());
+        for (StreamHost streamHost : localStreamHost) {
+            assertTrue(localAddresses.contains(streamHost.getAddress().asInetAddress()));
+            assertEquals(initiatorJID, streamHost.getJID());
+        }
     }
 
     private static void createResponses(Protocol protocol, String sessionID,

@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack;
 
+import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
@@ -159,6 +160,14 @@ public interface XMPPConnection {
      * @return the full XMPP address of the user logged in.
      */
     EntityFullJid getUser();
+
+    /**
+     * Returns the local address currently in use for this connection, or <code>null</code> if
+     * this is invalid for the type of underlying connection.
+     *
+     * @return the local address currently in use for this connection
+     */
+    InetAddress getLocalAddress();
 
     /**
      * Returns the stream ID for this connection, which is the value set by the server

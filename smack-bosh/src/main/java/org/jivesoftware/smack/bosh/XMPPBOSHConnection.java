@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.io.Writer;
+import java.net.InetAddress;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -312,6 +313,11 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             throwNotConnectedExceptionIfAppropriate();
             throw new OutgoingQueueFullException();
         }
+    }
+
+    @Override
+    public InetAddress getLocalAddress() {
+        return null;
     }
 
     @Override

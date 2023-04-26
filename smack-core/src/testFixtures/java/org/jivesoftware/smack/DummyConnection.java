@@ -17,6 +17,7 @@
 package org.jivesoftware.smack;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -137,6 +138,11 @@ public class DummyConnection extends AbstractXMPPConnection {
         if (!enqueued) {
             throw new OutgoingQueueFullException();
         }
+    }
+
+    @Override
+    public InetAddress getLocalAddress() {
+        return null;
     }
 
     /**
