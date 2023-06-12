@@ -70,7 +70,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
         mState = State.active;
         notifyProgressListenersStarted();
 
-        HashElement hashElement = metadata.getHashElement();
+        HashElement hashElement = metadata.getHash();
         MessageDigest digest = null;
         if (hashElement != null) {
             digest = HashManager.getMessageDigest(hashElement.getAlgorithm());

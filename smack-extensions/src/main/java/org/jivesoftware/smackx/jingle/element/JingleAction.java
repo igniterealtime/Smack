@@ -147,18 +147,7 @@ public enum JingleAction {
      * recipient wishes to use the new transport definition, it MUST send a transport-accept action to
      * the other party; if not, it MUST send a transport-reject action to the other party.
      */
-    transport_replace,
-
-    /**
-     * The "source-add" action used in Jitsi-Meet.
-     */
-    source_add,
-
-    /**
-     * The "source-remove" action used in Jitsi-Meet.
-     */
-    source_remove,
-    ;
+    transport_replace;
 
     private static final Map<String, JingleAction> map = new HashMap<>(
                     JingleAction.values().length);
