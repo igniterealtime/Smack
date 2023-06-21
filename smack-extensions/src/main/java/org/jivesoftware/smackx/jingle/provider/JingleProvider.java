@@ -106,6 +106,15 @@ public class JingleProvider extends IqProvider<Jingle> {
                             builder.setReason(reason);
                             break;
 
+                        // Use DefaultXmlElementProvider instead.
+//                        case Grouping.ELEMENT:
+//                            ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(tagName, namespace);
+//                            if (provider != null) {
+//                                ExtensionElement childExtension = provider.parse(parser);
+//                                builder.addExtension(childExtension);
+//                            }
+//                            break;
+
                         default:
                             // session-info element handlers for <mute/> <active/> and etc for rtp session
                             if (namespace.equals(SessionInfo.NAMESPACE)) {

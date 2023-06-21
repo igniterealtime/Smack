@@ -208,7 +208,8 @@ public final class JingleContent extends AbstractXmlElement {
 
         @Override
         public JingleContent build() {
-            StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_CREATOR), "Jingle content creator must not be null");
+            // Jingle.Group.Content does not have ATTR_CREATOR
+            // StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_CREATOR), "Jingle content creator must not be null");
             StringUtils.requireNotNullNorEmpty(getAttribute(ATTR_NAME), "Jingle content name must not be null nor empty");
             return new JingleContent(this);
         }

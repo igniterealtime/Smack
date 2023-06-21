@@ -100,7 +100,7 @@ public class DefaultXmlElementProvider<EE extends AbstractXmlElement> extends Ex
                     String name = parser.getName();
                     String namespace = parser.getNamespace();
 
-                    // Timber.d("<%s %s/> class: %s", elementName, namespace, stanzaExtension.getClass().getSimpleName());
+                    // Timber.d("<%s %s/> class: %s", name, namespace, stanzaExtension.getClass().getSimpleName());
                     ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(name, namespace);
                     // Extension element provider may not have been added properly if null
                     if (provider == null) { //  && !JingleFileTransfer.NAMESPACE_V5.equals(namespace)) {

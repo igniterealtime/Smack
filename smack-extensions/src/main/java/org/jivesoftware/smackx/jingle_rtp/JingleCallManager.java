@@ -172,10 +172,11 @@ public final class JingleCallManager extends Manager implements JingleHandler {
                 SdpCrypto.ELEMENT, RtpDescription.NAMESPACE,
                 new DefaultXmlElementProvider<>(SdpCrypto.class));
 
-        // <group/> provider
+        // Jingle Grouping provider: use default instead of new JingleGroupingProvider());
         ProviderManager.addExtensionProvider(
                 Grouping.ELEMENT, Grouping.NAMESPACE,
                 new DefaultXmlElementProvider<>(Grouping.class));
+                // new JingleGroupingProvider());
 
         // <group/> sub-element <content/>
         ProviderManager.addExtensionProvider(
