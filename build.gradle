@@ -148,7 +148,7 @@ allprojects {
 		smackMinAndroidSdk = 19
 		junitVersion = '5.7.1'
 		commonsIoVersion = '2.6'
-		bouncyCastleVersion = '1.71'
+		bouncyCastleVersion = '1.73'
 		guavaVersion = '30.1-jre'
 		mockitoVersion = '3.7.7'
 		orgReflectionsVersion = '0.9.11'
