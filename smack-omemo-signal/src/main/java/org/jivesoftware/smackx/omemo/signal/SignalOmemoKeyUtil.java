@@ -20,26 +20,28 @@
  */
 package org.jivesoftware.smackx.omemo.signal;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.TreeMap;
-
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKeyPair;
+import org.signal.libsignal.protocol.InvalidKeyException;
+import org.signal.libsignal.protocol.InvalidMessageException;
+import org.signal.libsignal.protocol.ecc.Curve;
+import org.signal.libsignal.protocol.ecc.ECKeyPair;
+import org.signal.libsignal.protocol.ecc.ECPublicKey;
+import org.signal.libsignal.protocol.state.PreKeyBundle;
+import org.signal.libsignal.protocol.state.PreKeyRecord;
+import org.signal.libsignal.protocol.state.SessionRecord;
+import org.signal.libsignal.protocol.state.SignedPreKeyRecord;
+import org.signal.libsignal.protocol.util.Medium;
 
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.IdentityKeyPair;
-import org.whispersystems.libsignal.InvalidKeyException;
-import org.whispersystems.libsignal.ecc.Curve;
-import org.whispersystems.libsignal.ecc.ECPublicKey;
-import org.whispersystems.libsignal.state.PreKeyBundle;
-import org.whispersystems.libsignal.state.PreKeyRecord;
-import org.whispersystems.libsignal.state.SessionRecord;
-import org.whispersystems.libsignal.state.SignedPreKeyRecord;
-import org.whispersystems.libsignal.util.KeyHelper;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Concrete implementation of the KeyUtil for an implementation using the Signal library.
@@ -51,12 +53,12 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
 
     @Override
     public IdentityKeyPair generateOmemoIdentityKeyPair() {
-        return KeyHelper.generateIdentityKeyPair();
+        return IdentityKeyPair.generate();
     }
 
     @Override
     public TreeMap<Integer, PreKeyRecord> generateOmemoPreKeys(int currentPreKeyId, int count) {
-        List<PreKeyRecord> preKeyRecords = KeyHelper.generatePreKeys(currentPreKeyId, count);
+        List<PreKeyRecord> preKeyRecords = generatePreKeys(currentPreKeyId, count);
         TreeMap<Integer, PreKeyRecord> map = new TreeMap<>();
         for (PreKeyRecord p : preKeyRecords) {
             map.put(p.getId(), p);
@@ -64,20 +66,43 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
         return map;
     }
 
+    private static List<PreKeyRecord> generatePreKeys(int start, int count) {
+        List<PreKeyRecord> results = new LinkedList<>();
+
+        start--;
+
+        for (int i=0;i<count;i++) {
+            results.add(new PreKeyRecord(((start + i) % (Medium.MAX_VALUE-1)) + 1, Curve.generateKeyPair()));
+        }
+
+        return results;
+    }
+
     @Override
     public SignedPreKeyRecord generateOmemoSignedPreKey(IdentityKeyPair identityKeyPair, int currentPreKeyId)
             throws CorruptedOmemoKeyException {
         try {
-            return KeyHelper.generateSignedPreKey(identityKeyPair, currentPreKeyId);
+            return generateSignedPreKey(identityKeyPair, currentPreKeyId);
         } catch (InvalidKeyException e) {
             throw new CorruptedOmemoKeyException(e);
         }
     }
 
+    private static SignedPreKeyRecord generateSignedPreKey(IdentityKeyPair identityKeyPair, int signedPreKeyId) throws InvalidKeyException {
+        ECKeyPair keyPair   = Curve.generateKeyPair();
+        byte[]    signature = Curve.calculateSignature(identityKeyPair.getPrivateKey(), keyPair.getPublicKey().serialize());
+
+        return new SignedPreKeyRecord(signedPreKeyId, System.currentTimeMillis(), keyPair, signature);
+    }
+
     @Override
     public SignedPreKeyRecord signedPreKeyFromBytes(byte[] data) throws IOException {
         if (data == null) return null;
-        return new SignedPreKeyRecord(data);
+        try {
+            return new SignedPreKeyRecord(data);
+        } catch (InvalidMessageException e) {
+            throw new IOException(e);
+        }
     }
 
     @Override
@@ -88,7 +113,11 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
     @Override
     public SessionRecord rawSessionFromBytes(byte[] data) throws IOException {
         if (data == null) return null;
-        return new SessionRecord(data);
+        try {
+            return new SessionRecord(data);
+        } catch (InvalidMessageException e) {
+            throw new IOException(e);
+        }
     }
 
     @Override
@@ -99,11 +128,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
     @Override
     public IdentityKeyPair identityKeyPairFromBytes(byte[] data) throws CorruptedOmemoKeyException {
         if (data == null) return null;
-        try {
-            return new IdentityKeyPair(data);
-        } catch (InvalidKeyException e) {
-            throw new CorruptedOmemoKeyException(e);
-        }
+        return new IdentityKeyPair(data);
     }
 
     @Override
@@ -134,7 +159,11 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
     @Override
     public PreKeyRecord preKeyFromBytes(byte[] bytes) throws IOException {
         if (bytes == null) return null;
-        return new PreKeyRecord(bytes);
+        try {
+            return new PreKeyRecord(bytes);
+        } catch (InvalidMessageException e) {
+            throw new IOException(e);
+        }
     }
 
     @Override
@@ -187,7 +216,11 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
 
     @Override
     public byte[] preKeyForBundle(PreKeyRecord preKeyRecord) {
-        return preKeyRecord.getKeyPair().getPublicKey().serialize();
+        try {
+            return preKeyRecord.getKeyPair().getPublicKey().serialize();
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

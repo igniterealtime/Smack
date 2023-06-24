@@ -23,15 +23,15 @@ package org.jivesoftware.smackx.omemo.signal;
 import org.jivesoftware.smackx.omemo.OmemoStore;
 import org.jivesoftware.smackx.omemo.util.OmemoKeyUtil;
 
-import org.whispersystems.libsignal.IdentityKey;
-import org.whispersystems.libsignal.IdentityKeyPair;
-import org.whispersystems.libsignal.SessionCipher;
-import org.whispersystems.libsignal.SignalProtocolAddress;
-import org.whispersystems.libsignal.ecc.ECPublicKey;
-import org.whispersystems.libsignal.state.PreKeyBundle;
-import org.whispersystems.libsignal.state.PreKeyRecord;
-import org.whispersystems.libsignal.state.SessionRecord;
-import org.whispersystems.libsignal.state.SignedPreKeyRecord;
+import org.signal.libsignal.protocol.IdentityKey;
+import org.signal.libsignal.protocol.IdentityKeyPair;
+import org.signal.libsignal.protocol.SessionCipher;
+import org.signal.libsignal.protocol.SignalProtocolAddress;
+import org.signal.libsignal.protocol.ecc.ECPublicKey;
+import org.signal.libsignal.protocol.state.PreKeyBundle;
+import org.signal.libsignal.protocol.state.PreKeyRecord;
+import org.signal.libsignal.protocol.state.SessionRecord;
+import org.signal.libsignal.protocol.state.SignedPreKeyRecord;
 
 /**
  * Implementation of the OmemoStore using the Signal library.
