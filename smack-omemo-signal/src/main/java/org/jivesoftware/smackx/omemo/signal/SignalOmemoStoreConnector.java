@@ -123,6 +123,22 @@ public class SignalOmemoStoreConnector
     }
 
     @Override
+    public IdentityKey getIdentity(SignalProtocolAddress address) {
+        OmemoDevice device;
+        try {
+            device = asOmemoDevice(address);
+        } catch (XmppStringprepException e) {
+            throw new AssertionError(e);
+        }
+
+        try {
+            return omemoStore.loadOmemoIdentityKey(getOurDevice(), device);
+        } catch (IOException | CorruptedOmemoKeyException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
     public PreKeyRecord loadPreKey(int i) throws InvalidKeyIdException {
         PreKeyRecord preKey;
         try {

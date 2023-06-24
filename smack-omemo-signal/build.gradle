@@ -6,7 +6,7 @@ dependencies {
 	api project(":smack-im")
 	api project(":smack-extensions")
 	api project(":smack-omemo")
-	implementation 'org.whispersystems:signal-protocol-java:2.6.2'
+	implementation 'org.whispersystems:signal-protocol-java:2.8.1'
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testImplementation project(path: ":smack-omemo", configuration: "testRuntime")
