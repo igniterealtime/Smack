@@ -285,7 +285,7 @@ public class XmppConnectionManager {
             if (unsuccessfullyDeletedAccountsCount == 0) {
                 LOGGER.info("Successfully deleted all created accounts ✔");
             } else {
-                LOGGER.warning("Could not delete all created accounts, " + unsuccessfullyDeletedAccountsCount + " remainaing");
+                LOGGER.warning("Could not delete all created accounts, " + unsuccessfullyDeletedAccountsCount + " remaining");
             }
         }
 
@@ -364,11 +364,11 @@ public class XmppConnectionManager {
             break;
         case inBandRegistration:
             if (!accountManager.supportsAccountCreation()) {
-                throw new UnsupportedOperationException("Account creation/registation is not supported");
+                throw new UnsupportedOperationException("Account creation/registration is not supported");
             }
             Set<String> requiredAttributes = accountManager.getAccountAttributes();
             if (requiredAttributes.size() > 4) {
-                throw new IllegalStateException("Unkown required attributes");
+                throw new IllegalStateException("Unknown required attributes");
             }
             Map<String, String> additionalAttributes = new HashMap<>();
             additionalAttributes.put("name", "Smack Integration Test");
