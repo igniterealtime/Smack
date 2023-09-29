@@ -488,7 +488,7 @@ public final class Configuration {
             }
             key = key.substring(SINTTEST.length());
             String value = (String) entry.getValue();
-            properties.put(key, value);
+            properties.put(key.trim(), value.trim());
         }
 
         Builder builder = builder();
