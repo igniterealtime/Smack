@@ -184,20 +184,18 @@ public class XmppConnectionManager {
 
         switch (sinttestConfiguration.accountRegistration) {
         case serviceAdministration:
-        case inBandRegistration:
             accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration);
             accountRegistrationConnection.connect();
             accountRegistrationConnection.login(sinttestConfiguration.adminAccountUsername,
                             sinttestConfiguration.adminAccountPassword);
-
-            if (sinttestConfiguration.accountRegistration == AccountRegistration.inBandRegistration) {
-
-                adminManager = null;
-                accountManager = AccountManager.getInstance(accountRegistrationConnection);
-            } else {
-                adminManager = ServiceAdministrationManager.getInstanceFor(accountRegistrationConnection);
-                accountManager = null;
-            }
+            adminManager = ServiceAdministrationManager.getInstanceFor(accountRegistrationConnection);
+            accountManager = null;
+            break;
+        case inBandRegistration:
+            accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration);
+            accountRegistrationConnection.connect();
+            adminManager = null;
+            accountManager = AccountManager.getInstance(accountRegistrationConnection);
             break;
         case disabled:
             accountRegistrationConnection = null;
