@@ -597,7 +597,13 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     @Override
     public XmlStringBuilder append(CharSequence csq) {
         assert csq != null;
-        sb.append(csq);
+        if (csq instanceof XmlStringBuilder) {
+            sb.append(((XmlStringBuilder) csq).sb);
+        } else if (csq instanceof LazyStringBuilder) {
+            sb.append((LazyStringBuilder) csq);
+        } else {
+            sb.append(csq);
+        }
         return this;
     }
 
