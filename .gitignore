@@ -3,6 +3,7 @@
 *.iml
 *.ipr
 *.iws
+!.idea/icon.svg
 
 # Mac OS X
 .DS_Store
