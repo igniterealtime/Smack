@@ -83,23 +83,24 @@ import org.jxmpp.jid.EntityFullJid;
  * <h2>Incoming Stanza Listeners</h2>
  * Most callbacks (listeners, handlers, …) than you can add to a connection come in three different variants:
  * <ul>
- * <li>standard</li>
- * <li>async (asynchronous)</li>
- * <li>sync (synchronous)</li>
+ * <li>asynchronous - e.g., {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}</li>
+ * <li>synchronous  - e.g., {@link #addSyncStanzaListener(StanzaListener, StanzaFilter)}</li>
+ * <li>other        - e.g., {@link #addStanzaListener(StanzaListener, StanzaFilter)}</li>
  * </ul>
- * <p>
- * Standard callbacks are invoked concurrently, but it is ensured that the same callback is never run concurrently.
- * The callback's identity is used as key for that. The events delivered to the callback preserve the order of the
- * causing events of the connection.
- * </p>
  * <p>
  * Asynchronous callbacks are run decoupled from the connections main event loop. Hence a callback triggered by
  * stanza B may (appear to) invoked before a callback triggered by stanza A, even though stanza A arrived before B.
  * </p>
  * <p>
- * Synchronous callbacks are run synchronous to the main event loop of a connection. Hence they are invoked in the
- * exact order of how events happen there, most importantly the arrival order of incoming stanzas. You should only
- * use synchronous callbacks in rare situations.
+ * Synchronous callbacks are invoked concurrently, but it is ensured that the same callback is never run concurrently
+ * and that they are executed in order. That is, if both stanza A and B trigger the same callback, and A arrives before
+ * B, then the callback will be invoked with A first, and then B. Furthermore, those callbacks are not executed within
+ * the main loop. However it is still advisable that those callbacks do not block or only block briefly.
+ * </p>
+ * <p>
+ * Other callbacks are run synchronous to the main event loop of a connection and are executed within the main loop.
+ * <b>This means that if such a callback blocks, the main event loop also blocks, which can easily cause deadlocks.
+ * Therefore, you should avoid using those callbacks unless you know what you are doing.</b>
  * </p>
  *
  * @author Matt Tucker
