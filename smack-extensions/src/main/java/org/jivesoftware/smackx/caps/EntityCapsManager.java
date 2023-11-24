@@ -354,7 +354,10 @@ public final class EntityCapsManager extends Manager {
         if (autoEnableEntityCaps)
             enableEntityCaps();
 
-        connection.addAsyncStanzaListener(new StanzaListener() {
+        // Note that this is a *synchronous* stanza listener to avoid unnecessary feature lookups. If this were to be an
+        // asynchronous listener, then it would be possible that the entity caps information was not processed when the
+        // features of entity are looked up. See SMACK-937.
+        connection.addStanzaListener(new StanzaListener() {
             // Listen for remote presence stanzas with the caps extension
             // If we receive such a stanza, record the JID and nodeVer
             @Override
