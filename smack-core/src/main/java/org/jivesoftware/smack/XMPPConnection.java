@@ -370,7 +370,7 @@ public interface XMPPConnection {
     boolean removeStanzaListener(StanzaListener stanzaListener);
 
     /**
-     *  Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
+     * Registers a <b>synchronous</b> stanza listener with this connection. A stanza listener will be invoked only when
      * an incoming stanza is received. A stanza filter determines which stanzas will be delivered to the listener. If
      * the same stanza listener is added again with a different filter, only the new filter will be used.
      * <p>
