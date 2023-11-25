@@ -174,7 +174,10 @@ public final class ChatMarkersManager extends Manager {
      * @throws XMPPErrorException in case an error response was received.
      * @throws NoResponseException if no response was received.
      * @throws InterruptedException if the connection is interrupted.
+     * @deprecated This method serves no purpose, as servers do not announce this feature.
      */
+    // TODO: Remove in Smack 4.6.
+    @Deprecated
     public boolean isSupportedByServer()
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection())
