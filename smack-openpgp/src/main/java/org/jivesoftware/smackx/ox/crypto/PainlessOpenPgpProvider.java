@@ -220,7 +220,7 @@ public class PainlessOpenPgpProvider implements OpenPgpProvider {
         cipherStream.close();
         plainText.close();
 
-        OpenPgpMetadata info = cipherStream.getResult();
+        OpenPgpMetadata info = cipherStream.getMetadata().toLegacyMetadata();
 
         OpenPgpMessage.State state;
         if (info.isSigned()) {
