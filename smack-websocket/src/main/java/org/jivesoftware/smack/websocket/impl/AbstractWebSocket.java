@@ -17,9 +17,11 @@
 package org.jivesoftware.smack.websocket.impl;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLSession;
+import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
@@ -28,6 +30,8 @@ import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.websocket.WebSocketException;
+import org.jivesoftware.smack.websocket.elements.WebSocketCloseElement;
+import org.jivesoftware.smack.websocket.elements.WebSocketOpenElement;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -107,9 +111,10 @@ public abstract class AbstractWebSocket {
         XmlPullParser parser;
         try {
             parser = PacketParserUtils.getParserFor(text);
-            parser.nextTag();
-            return "open".equals(parser.getName()) && "urn:ietf:params:xml:ns:xmpp-framing".equals(parser.getNamespace());
+            QName qname = parser.getQName();
+            return qname.equals(WebSocketOpenElement.QNAME);
         } catch (XmlPullParserException | IOException e) {
+            LOGGER.log(Level.WARNING, "Could not inspect \"" + text + "\" for open element", e);
             return false;
         }
     }
@@ -118,9 +123,10 @@ public abstract class AbstractWebSocket {
         XmlPullParser parser;
         try {
             parser = PacketParserUtils.getParserFor(text);
-            parser.nextTag();
-            return "close".equals(parser.getName()) && "urn:ietf:params:xml:ns:xmpp-framing".equals(parser.getNamespace());
+            QName qname = parser.getQName();
+            return qname.equals(WebSocketCloseElement.QNAME);
         } catch (XmlPullParserException | IOException e) {
+            LOGGER.log(Level.WARNING, "Could not inspect \"" + text + "\" for close element", e);
             return false;
         }
     }
