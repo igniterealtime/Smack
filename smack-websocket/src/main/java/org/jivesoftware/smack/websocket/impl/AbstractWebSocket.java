@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.websocket.impl;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLSession;
@@ -25,8 +26,11 @@ import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionIn
 import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.websocket.WebSocketException;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public abstract class AbstractWebSocket {
 
@@ -99,24 +103,26 @@ public abstract class AbstractWebSocket {
         return streamElement;
     }
 
-    // TODO: Make this method less fragile, e.g. by parsing a little bit into the element to ensure that this is an
-    // <open/> element qualified by the correct namespace.
     static boolean isOpenElement(String text) {
-        if (text.startsWith("<open ")) {
-            return true;
+        XmlPullParser parser;
+        try {
+            parser = PacketParserUtils.getParserFor(text);
+            parser.nextTag();
+            return "open".equals(parser.getName()) && "urn:ietf:params:xml:ns:xmpp-framing".equals(parser.getNamespace());
+        } catch (XmlPullParserException | IOException e) {
+            return false;
         }
-        return false;
     }
 
-    // TODO: Make this method less fragile, e.g. by parsing a little bit into the element to ensure that this is an
-    // <close/> element qualified by the correct namespace. The fragility comes due the fact that the element could,
-    // inter alia, be specified as
-    // <close:close xmlns:close="urn:ietf:params:xml:ns:xmpp-framing"/>
     static boolean isCloseElement(String text) {
-        if (text.startsWith("<close xmlns='urn:ietf:params:xml:ns:xmpp-framing'/>")) {
-            return true;
+        XmlPullParser parser;
+        try {
+            parser = PacketParserUtils.getParserFor(text);
+            parser.nextTag();
+            return "close".equals(parser.getName()) && "urn:ietf:params:xml:ns:xmpp-framing".equals(parser.getNamespace());
+        } catch (XmlPullParserException | IOException e) {
+            return false;
         }
-        return false;
     }
 
     protected void onWebSocketFailure(Throwable throwable) {
