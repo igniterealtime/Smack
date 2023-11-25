@@ -24,18 +24,20 @@ import org.junit.jupiter.api.Test;
 
 public final class AbstractWebSocketTest {
     private static final String OPEN_ELEMENT = "<open from='localhost.org' id='aov9ihhmmn' xmlns='urn:ietf:params:xml:ns:xmpp-framing' xml:lang='en' version='1.0'/>";
+    private static final String OPEN_ELEMENT_EXPANDED = "<open from='localhost.org' id='aov9ihhmmn' xmlns='urn:ietf:params:xml:ns:xmpp-framing' xml:lang='en' version='1.0'></open>";
     private static final String OPEN_STREAM = "<stream:stream from='localhost.org' id='aov9ihhmmn' xmlns='jabber:client' xml:lang='en' version='1.0' xmlns:stream='http://etherx.jabber.org/streams'>";
     private static final String CLOSE_ELEMENT = "<close xmlns='urn:ietf:params:xml:ns:xmpp-framing'/>";
 
     @Test
     public void getStreamFromOpenElementTest() {
-        String generatedOpenStream = AbstractWebSocket.getStreamFromOpenElement(OPEN_ELEMENT);
-        assertEquals(generatedOpenStream, OPEN_STREAM);
+        assertEquals(OPEN_STREAM, AbstractWebSocket.getStreamFromOpenElement(OPEN_ELEMENT));
+        assertEquals(OPEN_STREAM, AbstractWebSocket.getStreamFromOpenElement(OPEN_ELEMENT_EXPANDED));
     }
 
     @Test
     public void isOpenElementTest() {
         assertTrue(AbstractWebSocket.isOpenElement(OPEN_ELEMENT));
+        assertTrue(AbstractWebSocket.isOpenElement(OPEN_ELEMENT_EXPANDED));
         assertFalse(AbstractWebSocket.isOpenElement(OPEN_STREAM));
     }
 
