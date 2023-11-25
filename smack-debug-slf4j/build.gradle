@@ -5,5 +5,5 @@ Connect your favourite slf4j backend of choice to get output inside of it"""
 
 dependencies {
     api project(':smack-core')
-    implementation 'org.slf4j:slf4j-api:[1.7,1.8)'
+    implementation 'org.slf4j:slf4j-api:[1.7,2.0)'
 }
