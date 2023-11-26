@@ -189,7 +189,6 @@ public class XmppConnectionManager {
             accountRegistrationConnection.connect();
 
             if (sinttestConfiguration.accountRegistration == AccountRegistration.inBandRegistration) {
-
                 adminManager = null;
                 accountManager = AccountManager.getInstance(accountRegistrationConnection);
             } else {
