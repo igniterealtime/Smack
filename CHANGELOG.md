@@ -4,15 +4,15 @@
 
 ### Improvement
 
-[SMACK-929](https://igniterealtime.atlassian.net/browse/SMACK-929) Ignore IPv6 Zone IDs in incoming Jingle candidates
-[SMACK-934](https://igniterealtime.atlassian.net/browse/SMACK-934) Deprecate and remove ChatMarkersManager.isSupportedByServer\(\)
-[SMACK-937](https://igniterealtime.atlassian.net/browse/SMACK-937) Avoid unnecessary feature lookups by making the EntityCaps listener synchronous
+- [SMACK-929](https://igniterealtime.atlassian.net/browse/SMACK-929) Ignore IPv6 Zone IDs in incoming Jingle candidates
+- [SMACK-934](https://igniterealtime.atlassian.net/browse/SMACK-934) Deprecate and remove ChatMarkersManager.isSupportedByServer\(\)
+- [SMACK-937](https://igniterealtime.atlassian.net/browse/SMACK-937) Avoid unnecessary feature lookups by making the EntityCaps listener synchronous
 
 ### Bug
 
-[SMACK-927](https://igniterealtime.atlassian.net/browse/SMACK-927) Deadlock due to recveive listeners may be invoked after AbstractXMPPConnection.invokeStanzaCollectorsAndNotifyRecvListeners\(\) returned
-[SMACK-930](https://igniterealtime.atlassian.net/browse/SMACK-930) Rename ELEMENT 'candidate-activated' to 'activated' per XEP-0260
-[SMACK-931](https://igniterealtime.atlassian.net/browse/SMACK-931) IQ error stanza generation does not allow adding of an extension element
+- [SMACK-927](https://igniterealtime.atlassian.net/browse/SMACK-927) Deadlock due to recveive listeners may be invoked after AbstractXMPPConnection.invokeStanzaCollectorsAndNotifyRecvListeners\(\) returned
+- [SMACK-930](https://igniterealtime.atlassian.net/browse/SMACK-930) Rename ELEMENT 'candidate-activated' to 'activated' per XEP-0260
+- [SMACK-931](https://igniterealtime.atlassian.net/browse/SMACK-931) IQ error stanza generation does not allow adding of an extension element
 
 # 4.4.6 -- 2022-06-29
 
