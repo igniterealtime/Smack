@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,11 @@ public class LazyStringBuilder implements Appendable, CharSequence {
     private final List<CharSequence> list;
 
     private String cache;
+    private int cachedLength = -1;
 
     private void invalidateCache() {
         cache = null;
+        cachedLength = -1;
     }
 
     public LazyStringBuilder() {
@@ -65,9 +67,10 @@ public class LazyStringBuilder implements Appendable, CharSequence {
 
     @Override
     public int length() {
-        if (cache != null) {
-            return cache.length();
+        if (cachedLength >= 0) {
+            return cachedLength;
         }
+
         int length = 0;
         try {
             for (CharSequence csq : list) {
@@ -78,6 +81,8 @@ public class LazyStringBuilder implements Appendable, CharSequence {
             StringBuilder sb = safeToStringBuilder();
             throw new RuntimeException("The following LazyStringBuilder threw a NullPointerException:  " + sb, npe);
         }
+
+        cachedLength = length;
         return length;
     }
 
