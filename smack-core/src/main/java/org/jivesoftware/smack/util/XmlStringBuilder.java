@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2021 Florian Schmaus
+ * Copyright 2014-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ import org.jxmpp.util.XmppDateTime;
 
 public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
+
+    public static final boolean FLAT_APPEND = false;
 
     private final LazyStringBuilder sb;
 
@@ -596,7 +598,17 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     @Override
     public XmlStringBuilder append(CharSequence csq) {
         assert csq != null;
-        sb.append(csq);
+        if (FLAT_APPEND) {
+            if (csq instanceof XmlStringBuilder) {
+                sb.append(((XmlStringBuilder) csq).sb);
+            } else if (csq instanceof LazyStringBuilder) {
+                sb.append((LazyStringBuilder) csq);
+            } else {
+                sb.append(csq);
+            }
+        } else {
+            sb.append(csq);
+        }
         return this;
     }
 
