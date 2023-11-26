@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021-2023 Guus der Kinderen
+ * Copyright 2023 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.subscription;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
@@ -24,7 +25,7 @@ import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
+import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
@@ -35,25 +36,34 @@ import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
  *
  * @author Guus der Kinderen, guus.der.kinderen@gmail.com
  */
-public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
-
-    public SubscriptionIntegrationTest(SmackIntegrationTestEnvironment environment) {
+public class LowLevelSubscriptionIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
+    public LowLevelSubscriptionIntegrationTest(SmackIntegrationTestEnvironment environment) {
         super(environment);
     }
 
     /**
-     * This test verifies that a subscription request is received.
+     * This test verifies that a subscription request is received, in a scenario where the intended recipient was
+     * offline when the request was made.
      *
+     * @param conOne Connection used to receive subscription request.
+     * @param conTwo Conenction used to send subscription request.
      * @throws Exception on anything unexpected or undesired.
      */
     @SmackIntegrationTest
-    public void testSubscriptionRequest() throws Exception {
+    public void testSubscriptionRequestOffline(final AbstractXMPPConnection conOne,
+                                               final AbstractXMPPConnection conTwo) throws Exception {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
         final Presence subscriptionRequest = conTwo.getStanzaFactory().buildPresenceStanza()
-                .ofType(Presence.Type.subscribe)
-                .to(conOne.getUser())
-                .build();
+            .ofType(Presence.Type.subscribe)
+            .to(conOne.getUser().asBareJid())
+            .build();
+
+        conOne.disconnect();
+
+        conTwo.sendStanza(subscriptionRequest);
+
+        conOne.connect();
 
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
 
@@ -64,25 +74,36 @@ public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
 
         conOne.addAsyncStanzaListener(p -> received.signal(), resultFilter);
 
-        conTwo.sendStanza(subscriptionRequest);
+        conOne.login();
         received.waitForResult(timeout);
     }
 
     /**
      * When a subscription request is made, the stanza can have additional extension elements. This test verifies that
-     * such extension elements are received.
+     * such extension elements are received, in a scenario where the intended recipient was offline when the request
+     * was made.
      *
+     * @param conOne Connection used to receive subscription request.
+     * @param conTwo Conenction used to send subscription request.
+     * @see <a href="https://igniterealtime.atlassian.net/browse/OF-2244">Openfire issue OF-2244</a>
      * @throws Exception on anything unexpected or undesired.
      */
     @SmackIntegrationTest
-    public void testSubscriptionRequestWithExtension() throws Exception {
+    public void testSubscriptionRequestOfflineWithExtension(final AbstractXMPPConnection conOne,
+                                                            final AbstractXMPPConnection conTwo) throws Exception {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
         final Presence subscriptionRequest = conTwo.getStanzaFactory().buildPresenceStanza()
-                .ofType(Presence.Type.subscribe)
-                .to(conOne.getUser())
-                .addExtension(new StandardExtensionElement("test", "org.example.test"))
-                .build();
+            .ofType(Presence.Type.subscribe)
+            .to(conOne.getUser().asBareJid())
+            .addExtension(new StandardExtensionElement("test", "org.example.test"))
+            .build();
+
+        conOne.disconnect();
+
+        conTwo.sendStanza(subscriptionRequest);
+
+        conOne.connect();
 
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
 
@@ -94,7 +115,7 @@ public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
 
         conOne.addAsyncStanzaListener(p -> received.signal(), resultFilter);
 
-        conTwo.sendStanza(subscriptionRequest);
+        conOne.login();
         received.waitForResult(timeout);
     }
 }
