@@ -187,14 +187,14 @@ public class XmppConnectionManager {
         case inBandRegistration:
             accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration);
             accountRegistrationConnection.connect();
-            accountRegistrationConnection.login(sinttestConfiguration.adminAccountUsername,
-                            sinttestConfiguration.adminAccountPassword);
 
             if (sinttestConfiguration.accountRegistration == AccountRegistration.inBandRegistration) {
 
                 adminManager = null;
                 accountManager = AccountManager.getInstance(accountRegistrationConnection);
             } else {
+                accountRegistrationConnection.login(sinttestConfiguration.adminAccountUsername,
+                                sinttestConfiguration.adminAccountPassword);
                 adminManager = ServiceAdministrationManager.getInstanceFor(accountRegistrationConnection);
                 accountManager = null;
             }
