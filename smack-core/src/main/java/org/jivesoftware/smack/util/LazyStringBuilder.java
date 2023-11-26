@@ -24,7 +24,7 @@ public class LazyStringBuilder implements Appendable, CharSequence {
 
     private final List<CharSequence> list;
 
-    private String cache;
+    private transient String cache;
     private int cachedLength = -1;
 
     private void invalidateCache() {
