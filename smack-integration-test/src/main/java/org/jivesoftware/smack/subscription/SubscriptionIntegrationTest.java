@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Guus der Kinderen
+ * Copyright 2021-2023 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,11 @@
 package org.jivesoftware.smack.subscription;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
+import org.jivesoftware.smack.filter.PresenceTypeFilter;
+import org.jivesoftware.smack.filter.StanzaExtensionFilter;
+import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StandardExtensionElement;
 
@@ -53,18 +58,12 @@ public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
 
-        conOne.addAsyncStanzaListener(p -> received.signal(),
-                stanza -> {
-                    if (!(stanza instanceof Presence)) {
-                        return false;
-                    }
-                    if (!stanza.getFrom().asBareJid().equals(conTwo.getUser().asBareJid())) {
-                        return false;
-                    }
-                    final Presence presence = (Presence) stanza;
-                    return Presence.Type.subscribe.equals(presence.getType());
-                }
+        final StanzaFilter resultFilter = new AndFilter(
+            PresenceTypeFilter.SUBSCRIBE,
+            FromMatchesFilter.createBare(conTwo.getUser())
         );
+
+        conOne.addAsyncStanzaListener(p -> received.signal(), resultFilter);
 
         conTwo.sendStanza(subscriptionRequest);
         received.waitForResult(timeout);
@@ -93,18 +92,12 @@ public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
 
-        conOne.addAsyncStanzaListener(p -> received.signal(),
-                stanza -> {
-                    if (!(stanza instanceof Presence)) {
-                        return false;
-                    }
-                    if (!stanza.getFrom().asBareJid().equals(conTwo.getUser().asBareJid())) {
-                        return false;
-                    }
-                    final Presence presence = (Presence) stanza;
-                    return Presence.Type.subscribe.equals(presence.getType());
-                }
+        final StanzaFilter resultFilter = new AndFilter(
+            PresenceTypeFilter.SUBSCRIBE,
+            FromMatchesFilter.createBare(conTwo.getUser())
         );
+
+        conOne.addAsyncStanzaListener(p -> received.signal(), resultFilter);
 
         ((AbstractXMPPConnection) conOne).login();
         received.waitForResult(timeout);
@@ -128,21 +121,13 @@ public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
 
-        conOne.addAsyncStanzaListener(p -> received.signal(),
-                stanza -> {
-                    if (!(stanza instanceof Presence)) {
-                        return false;
-                    }
-                    if (!stanza.getFrom().asBareJid().equals(conTwo.getUser().asBareJid())) {
-                        return false;
-                    }
-                    final Presence presence = (Presence) stanza;
-                    if (!Presence.Type.subscribe.equals(presence.getType())) {
-                        return false;
-                    }
-                    return stanza.hasExtension("test", "org.example.test");
-                }
+        final StanzaFilter resultFilter = new AndFilter(
+            PresenceTypeFilter.SUBSCRIBE,
+            FromMatchesFilter.createBare(conTwo.getUser()),
+            new StanzaExtensionFilter("test", "org.example.test")
         );
+
+        conOne.addAsyncStanzaListener(p -> received.signal(), resultFilter);
 
         conTwo.sendStanza(subscriptionRequest);
         received.waitForResult(timeout);
@@ -174,21 +159,13 @@ public class SubscriptionIntegrationTest extends AbstractSmackIntegrationTest {
 
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
 
-        conOne.addAsyncStanzaListener(p -> received.signal(),
-                stanza -> {
-                    if (!(stanza instanceof Presence)) {
-                        return false;
-                    }
-                    if (!stanza.getFrom().asBareJid().equals(conTwo.getUser().asBareJid())) {
-                        return false;
-                    }
-                    final Presence presence = (Presence) stanza;
-                    if (!Presence.Type.subscribe.equals(presence.getType())) {
-                        return false;
-                    }
-                    return stanza.hasExtension("test", "org.example.test");
-                }
+        final StanzaFilter resultFilter = new AndFilter(
+            PresenceTypeFilter.SUBSCRIBE,
+            FromMatchesFilter.createBare(conTwo.getUser()),
+            new StanzaExtensionFilter("test", "org.example.test")
         );
+
+        conOne.addAsyncStanzaListener(p -> received.signal(), resultFilter);
 
         ((AbstractXMPPConnection) conOne).login();
         received.waitForResult(timeout);
