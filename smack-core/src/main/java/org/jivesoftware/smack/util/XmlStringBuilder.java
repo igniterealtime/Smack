@@ -33,7 +33,7 @@ import org.jxmpp.util.XmppDateTime;
 public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
 
-    public static final boolean FLAT_APPEND = false;
+    public static boolean FLAT_APPEND = false;
 
     private final LazyStringBuilder sb;
 
