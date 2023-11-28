@@ -33,8 +33,6 @@ import org.jxmpp.util.XmppDateTime;
 public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
 
-    public static final boolean FLAT_APPEND = false;
-
     private final LazyStringBuilder sb;
 
     private final XmlEnvironment effectiveXmlEnvironment;
@@ -595,10 +593,40 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return this;
     }
 
+    enum AppendApproach {
+        /**
+         * Simply add the given CharSequence to this builder.
+         */
+        SINGLE,
+
+        /**
+         * If the given CharSequence is a {@link XmlStringBuilder} or {@link LazyStringBuilder}, then copy the
+         * references of the lazy strings parts into this builder. This approach flattens the string builders into one,
+         * yielding a different performance characteristic.
+         */
+        FLAT,
+    }
+
+    private static AppendApproach APPEND_APPROACH = AppendApproach.SINGLE;
+
+    /**
+     * Set the builders approach on how to append new char sequences.
+     *
+     * @param appendApproach the append approach.
+     */
+    public static void setAppendMethod(AppendApproach appendApproach) {
+        Objects.requireNonNull(appendApproach);
+        APPEND_APPROACH = appendApproach;
+    }
+
     @Override
     public XmlStringBuilder append(CharSequence csq) {
         assert csq != null;
-        if (FLAT_APPEND) {
+        switch (APPEND_APPROACH) {
+        case SINGLE:
+            sb.append(csq);
+            break;
+        case FLAT:
             if (csq instanceof XmlStringBuilder) {
                 sb.append(((XmlStringBuilder) csq).sb);
             } else if (csq instanceof LazyStringBuilder) {
@@ -606,8 +634,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
             } else {
                 sb.append(csq);
             }
-        } else {
-            sb.append(csq);
+            break;
         }
         return this;
     }
