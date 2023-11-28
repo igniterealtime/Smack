@@ -2,9 +2,9 @@
  *
  * Copyright 2019 Paul Schaub
  *
- * This file is part of smack-repl.
+ * This file is part of smack-examples.
  *
- * smack-repl is free software; you can redistribute it and/or modify
+ * smack-examples is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
  */
-package org.igniterealtime.smack.smackrepl;
+package org.igniterealtime.smack.examples;
 
 import java.io.IOException;
 import java.nio.file.Files;

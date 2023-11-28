@@ -1,0 +1,10 @@
+description = """\
+Examples and test applications for Smack"""
+
+dependencies {
+	// Smack's integration test framework (sintest) depends on
+	// smack-java*-full and since we may want to use parts of sinttest
+	// in smack-examples, we simply depend sinttest.
+    api project(':smack-integration-test')
+    api project(':smack-omemo-signal')
+}

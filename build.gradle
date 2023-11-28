@@ -20,6 +20,7 @@ plugins {
 
 ext {
 	java11Projects = [
+		':smack-examples',
 		':smack-integration-test',
 		':smack-omemo-signal-integration-test',
 		':smack-repl',
@@ -119,6 +120,7 @@ allprojects {
 			':smack-omemo-signal',
 		].collect{ project(it) }
 		gplLicensedProjects = [
+			':smack-examples',
 			':smack-omemo-signal',
 			':smack-omemo-signal-integration-test',
 			':smack-repl'

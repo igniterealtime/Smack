@@ -6,6 +6,7 @@ rootProject.name = 'Smack'
 include 'smack-core',
 		'smack-im',
 		'smack-tcp',
+		'smack-examples',
 		'smack-extensions',
 		'smack-experimental',
 		'smack-debug',
