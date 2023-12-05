@@ -23,7 +23,6 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.PacketParserUtils;
 
-import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ public class CommandsProviderTest {
         final AdHocCommandData adHocIq = (AdHocCommandData) requestStanza;
 
         assertEquals(IQ.Type.error, adHocIq.getType());
-        assertEquals(AdHocCommand.Action.execute, adHocIq.getAction());
+        assertEquals(AdHocCommandData.Action.execute, adHocIq.getAction());
 
         StanzaError error = adHocIq.getError();
         assertEquals(StanzaError.Type.CANCEL, error.getType());

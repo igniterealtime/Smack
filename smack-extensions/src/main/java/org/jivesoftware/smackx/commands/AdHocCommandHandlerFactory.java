@@ -19,28 +19,31 @@ package org.jivesoftware.smackx.commands;
 import java.lang.reflect.InvocationTargetException;
 
 /**
- * A factory for creating local commands. It's useful in cases where instantiation
+ * A factory for creating ad-hoc command handlers. It's useful in cases where instantiation
  * of a command is more complicated than just using the default constructor. For example,
  * when arguments must be passed into the constructor or when using a dependency injection
- * framework. When a LocalCommandFactory isn't used, you can provide the AdHocCommandManager
+ * framework. When a factory isn't used, you can provide the AdHocCommandManager
  * a Class object instead. For more details, see
- * {@link AdHocCommandManager#registerCommand(String, String, LocalCommandFactory)}.
+ * {@link AdHocCommandManager#registerCommand(String, String, AdHocCommandHandlerFactory)}.
  *
  * @author Matt Tucker
  */
-public interface LocalCommandFactory {
+public interface AdHocCommandHandlerFactory {
 
     /**
-     * Returns an instance of a LocalCommand.
+     * Returns a new instance of an ad-hoc command handler.
      *
+     * @param node the node of the ad-hoc command.
+     * @param name the name of the ad-hoc command.
+     * @param sessionId the session ID of the ad-hoc command.
      * @return a LocalCommand instance.
      * @throws InstantiationException if creating an instance failed.
      * @throws IllegalAccessException if creating an instance is not allowed.
-     * @throws SecurityException if there was a security violation.
-     * @throws NoSuchMethodException if no such method is declared
      * @throws InvocationTargetException if a reflection-based method or constructor invocation threw.
      * @throws IllegalArgumentException if an illegal argument was given.
      */
-    LocalCommand getInstance() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+    AdHocCommandHandler create(String node, String name, String sessionId)
+                    throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+                    InvocationTargetException;
 
 }

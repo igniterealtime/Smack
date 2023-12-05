@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017-2020 Florian Schmaus, 2016-2017 Fernando Ramirez
+ * Copyright © 2017-2023 Florian Schmaus, 2016-2017 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 
+import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommandManager;
-import org.jivesoftware.smackx.commands.RemoteCommand;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
@@ -233,7 +233,7 @@ public final class MamManager extends Manager {
         super(connection);
         this.archiveAddress = archiveAddress;
         serviceDiscoveryManager = ServiceDiscoveryManager.getInstanceFor(connection);
-        adHocCommandManager = AdHocCommandManager.getAddHocCommandsManager(connection);
+        adHocCommandManager = AdHocCommandManager.getInstance(connection);
     }
 
     /**
@@ -759,7 +759,7 @@ public final class MamManager extends Manager {
         return false;
     }
 
-    public RemoteCommand getAdvancedConfigurationCommand() throws InterruptedException, XMPPException, SmackException {
+    public AdHocCommand getAdvancedConfigurationCommand() throws InterruptedException, XMPPException, SmackException {
         DiscoverItems discoverItems = adHocCommandManager.discoverCommands(archiveAddress);
         for (DiscoverItems.Item item : discoverItems.getItems()) {
             if (item.getNode().equals(ADVANCED_CONFIG_NODE))

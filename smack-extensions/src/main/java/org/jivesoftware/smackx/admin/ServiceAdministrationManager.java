@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2020 Florian Schmaus
+ * Copyright 2016-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,9 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
+import org.jivesoftware.smackx.commands.AdHocCommand;
 import org.jivesoftware.smackx.commands.AdHocCommandManager;
-import org.jivesoftware.smackx.commands.RemoteCommand;
+import org.jivesoftware.smackx.commands.AdHocCommandResult;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -56,37 +57,38 @@ public class ServiceAdministrationManager extends Manager {
     public ServiceAdministrationManager(XMPPConnection connection) {
         super(connection);
 
-        adHocCommandManager = AdHocCommandManager.getAddHocCommandsManager(connection);
+        adHocCommandManager = AdHocCommandManager.getInstance(connection);
     }
 
-    public RemoteCommand addUser() {
+    public AdHocCommand addUser() {
         return addUser(connection().getXMPPServiceDomain());
     }
 
-    public RemoteCommand addUser(Jid service) {
+    public AdHocCommand addUser(Jid service) {
         return adHocCommandManager.getRemoteCommand(service, COMMAND_NODE_HASHSIGN + "add-user");
     }
 
     public void addUser(final EntityBareJid userJid, final String password)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        RemoteCommand command = addUser();
-        command.execute();
+        AdHocCommand command = addUser();
 
-        FillableForm answerForm = new FillableForm(command.getForm());
+        AdHocCommandResult.StatusExecuting commandExecutingResult = command.execute().asExecutingOrThrow();
+
+        FillableForm answerForm = commandExecutingResult.getFillableForm();
 
         answerForm.setAnswer("accountjid", userJid);
         answerForm.setAnswer("password", password);
         answerForm.setAnswer("password-verify", password);
 
-        command.execute(answerForm);
-        assert command.isCompleted();
+        AdHocCommandResult result = command.execute(answerForm);
+        assert result.isCompleted();
     }
 
-    public RemoteCommand deleteUser() {
+    public AdHocCommand deleteUser() {
         return deleteUser(connection().getXMPPServiceDomain());
     }
 
-    public RemoteCommand deleteUser(Jid service) {
+    public AdHocCommand deleteUser(Jid service) {
         return adHocCommandManager.getRemoteCommand(service, COMMAND_NODE_HASHSIGN + "delete-user");
     }
 
@@ -98,14 +100,14 @@ public class ServiceAdministrationManager extends Manager {
 
     public void deleteUser(Set<EntityBareJid> jidsToDelete)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        RemoteCommand command = deleteUser();
-        command.execute();
+        AdHocCommand command = deleteUser();
+        AdHocCommandResult.StatusExecuting commandExecutingResult = command.execute().asExecutingOrThrow();
 
-        FillableForm answerForm = new FillableForm(command.getForm());
+        FillableForm answerForm = commandExecutingResult.getFillableForm();
 
         answerForm.setAnswer("accountjids", jidsToDelete);
 
-        command.execute(answerForm);
-        assert command.isCompleted();
+        AdHocCommandResult result = command.execute(answerForm);
+        assert result.isCompleted();
     }
 }

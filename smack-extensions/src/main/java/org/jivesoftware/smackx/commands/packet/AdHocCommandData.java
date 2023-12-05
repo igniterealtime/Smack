@@ -18,63 +18,114 @@
 package org.jivesoftware.smackx.commands.packet;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlElement;
 
-import org.jivesoftware.smackx.commands.AdHocCommand;
-import org.jivesoftware.smackx.commands.AdHocCommand.Action;
-import org.jivesoftware.smackx.commands.AdHocCommand.SpecificErrorCondition;
 import org.jivesoftware.smackx.commands.AdHocCommandNote;
+import org.jivesoftware.smackx.commands.SpecificErrorCondition;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import org.jxmpp.jid.Jid;
 
 /**
  * Represents the state and the request of the execution of an adhoc command.
  *
  * @author Gabriel Guardincerri
+ * @author Florian Schmaus
  */
-public class AdHocCommandData extends IQ {
+public class AdHocCommandData extends IQ implements AdHocCommandDataView {
 
     public static final String ELEMENT = "command";
     public static final String NAMESPACE = "http://jabber.org/protocol/commands";
 
-    /* JID of the command host */
-    private Jid id;
+    private final String node;
 
-    /* Command name */
-    private String name;
+    private final String name;
 
-    /* Command identifier */
-    private String node;
-
-    /* Unique ID of the execution */
-    private String sessionID;
+    private final String sessionId;
 
     private final List<AdHocCommandNote> notes = new ArrayList<>();
 
-    private DataForm form;
+    private final DataForm form;
 
-    /* Action request to be executed */
-    private AdHocCommand.Action action;
+    private final Action action;
 
-    /* Current execution status */
-    private AdHocCommand.Status status;
+    private final Status status;
 
-    private final ArrayList<AdHocCommand.Action> actions = new ArrayList<>();
+    private final Set<AllowedAction> actions = EnumSet.noneOf(AllowedAction.class);
 
-    private AdHocCommand.Action executeAction;
+    private final AllowedAction executeAction;
 
-    public AdHocCommandData() {
-        super(ELEMENT, NAMESPACE);
+    public AdHocCommandData(AdHocCommandDataBuilder builder) {
+        super(builder, ELEMENT, NAMESPACE);
+        node = builder.getNode();
+        name = builder.getName();
+        sessionId = builder.getSessionId();
+        notes.addAll(builder.getNotes());
+        form = builder.getForm();
+        action = builder.getAction();
+        status = builder.getStatus();
+        actions.addAll(builder.getActions());
+        executeAction = builder.getExecuteAction();
+
+        if (executeAction != null && !actions.contains(executeAction)) {
+            throw new IllegalArgumentException("Execute action " + executeAction + " is not part of allowed actions: " + actions);
+        }
+    }
+
+    @Override
+    public String getNode() {
+        return node;
+    }
+
+   @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    @Override
+    public List<AdHocCommandNote> getNotes() {
+        return notes;
+    }
+
+    @Override
+    public DataForm getForm() {
+        return form;
+    }
+
+    @Override
+    public Action getAction() {
+        return action;
+    }
+
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    @Override
+    public Set<AllowedAction> getActions() {
+        return actions;
+    }
+
+    @Override
+    public AllowedAction getExecuteAction() {
+        return executeAction;
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.attribute("node", node);
-        xml.optAttribute("sessionid", sessionID);
+        xml.optAttribute("sessionid", sessionId);
         xml.optAttribute("status", status);
         xml.optAttribute("action", action);
         xml.rightAngleBracket();
@@ -87,19 +138,19 @@ public class AdHocCommandData extends IQ {
             } else {
                 xml.rightAngleBracket();
 
-                for (AdHocCommand.Action action : actions) {
+                for (AdHocCommandData.AllowedAction action : actions) {
                     xml.emptyElement(action);
                 }
                 xml.closeElement("actions");
             }
         }
 
-        if (form != null) {
-            xml.append(form.toXML());
-        }
+        xml.optAppend(form);
 
         for (AdHocCommandNote note : notes) {
-            xml.halfOpenElement("note").attribute("type", note.getType().toString()).rightAngleBracket();
+            xml.halfOpenElement("note")
+              .attribute("type", note.getType().toString())
+              .rightAngleBracket();
             xml.append(note.getValue());
             xml.closeElement("note");
         }
@@ -112,132 +163,16 @@ public class AdHocCommandData extends IQ {
         return xml;
     }
 
-    /**
-     * Returns the JID of the command host.
-     *
-     * @return the JID of the command host.
-     */
-    public Jid getId() {
-        return id;
+    public static AdHocCommandDataBuilder builder(String node, IqData iqCommon) {
+        return new AdHocCommandDataBuilder(node, iqCommon);
     }
 
-    public void setId(Jid id) {
-        this.id = id;
+    public static AdHocCommandDataBuilder builder(String node, String stanzaId) {
+        return new AdHocCommandDataBuilder(node, stanzaId);
     }
 
-    /**
-     * Returns the human name of the command.
-     *
-     * @return the name of the command.
-     */
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Returns the identifier of the command.
-     *
-     * @return the node.
-     */
-    public String getNode() {
-        return node;
-    }
-
-    public void setNode(String node) {
-        this.node = node;
-    }
-
-    /**
-     * Returns the list of notes that the command has.
-     *
-     * @return the notes.
-     */
-    public List<AdHocCommandNote> getNotes() {
-        return notes;
-    }
-
-    public void addNote(AdHocCommandNote note) {
-        this.notes.add(note);
-    }
-
-    public void removeNote(AdHocCommandNote note) {
-        this.notes.remove(note);
-    }
-
-    /**
-     * Returns the form of the command.
-     *
-     * @return the data form associated with the command.
-     */
-    public DataForm getForm() {
-        return form;
-    }
-
-    public void setForm(DataForm form) {
-        this.form = form;
-    }
-
-    /**
-     * Returns the action to execute. The action is set only on a request.
-     *
-     * @return the action to execute.
-     */
-    public AdHocCommand.Action getAction() {
-        return action;
-    }
-
-    public void setAction(AdHocCommand.Action action) {
-        this.action = action;
-    }
-
-    /**
-     * Returns the status of the execution.
-     *
-     * @return the status.
-     */
-    public AdHocCommand.Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(AdHocCommand.Status status) {
-        this.status = status;
-    }
-
-    public List<Action> getActions() {
-        return actions;
-    }
-
-    public void addAction(Action action) {
-        actions.add(action);
-    }
-
-    public void setExecuteAction(Action executeAction) {
-        this.executeAction = executeAction;
-    }
-
-    public Action getExecuteAction() {
-        return executeAction;
-    }
-
-    /**
-     * Set the 'sessionid' attribute of the command.
-     * <p>
-     * This value can be null or empty for the first command, but MUST be set for subsequent commands. See also <a
-     * href="http://xmpp.org/extensions/xep-0050.html#impl-session">XEP-0050 § 3.3 Session Lifetime</a>.
-     * </p>
-     *
-     * @param sessionID TODO javadoc me please
-     */
-    public void setSessionID(String sessionID) {
-        this.sessionID = sessionID;
-    }
-
-    public String getSessionID() {
-        return sessionID;
+    public static AdHocCommandDataBuilder builder(String node, XMPPConnection connection) {
+        return new AdHocCommandDataBuilder(node, connection);
     }
 
     public static class SpecificError implements XmlElement {
@@ -270,5 +205,87 @@ public class AdHocCommandData extends IQ {
             buf.append(" xmlns=\"").append(getNamespace()).append("\"/>");
             return buf.toString();
         }
+    }
+
+    /**
+     * The status of the stage in the adhoc command.
+     */
+    public enum Status {
+
+        /**
+         * The command is being executed.
+         */
+        executing,
+
+        /**
+         * The command has completed. The command session has ended.
+         */
+        completed,
+
+        /**
+         * The command has been canceled. The command session has ended.
+         */
+        canceled
+    }
+
+    public enum AllowedAction {
+
+        /**
+         * The command should be digress to the previous stage of execution.
+         */
+        prev(Action.prev),
+
+        /**
+         * The command should progress to the next stage of execution.
+         */
+        next(Action.next),
+
+        /**
+         * The command should be completed (if possible).
+         */
+        complete(Action.complete),
+        ;
+
+        public final Action action;
+
+        AllowedAction(Action action) {
+            this.action = action;
+        }
+    }
+
+    public enum Action {
+        /**
+         * The command should be executed or continue to be executed. This is
+         * the default value.
+         */
+        execute(null),
+
+        /**
+         * The command should be canceled.
+         */
+        cancel(null),
+
+        /**
+         * The command should be digress to the previous stage of execution.
+         */
+        prev(AllowedAction.prev),
+
+        /**
+         * The command should progress to the next stage of execution.
+         */
+        next(AllowedAction.next),
+
+        /**
+         * The command should be completed (if possible).
+         */
+        complete(AllowedAction.complete),
+        ;
+
+        public final AllowedAction allowedAction;
+
+        Action(AllowedAction allowedAction) {
+            this.allowedAction = allowedAction;
+        }
+
     }
 }

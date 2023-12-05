@@ -270,4 +270,8 @@ public class FillableForm extends FilledForm {
         return builder.build();
     }
 
+    public SubmitForm getSubmitForm() {
+        DataForm form = getDataFormToSubmit();
+        return new SubmitForm(form);
+    }
 }
