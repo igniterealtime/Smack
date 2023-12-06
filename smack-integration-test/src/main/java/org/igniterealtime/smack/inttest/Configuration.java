@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2021 Florian Schmaus
+ * Copyright 2015-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,7 +146,7 @@ public final class Configuration {
         if (builder.replyTimeout > 0) {
             replyTimeout = builder.replyTimeout;
         } else {
-            replyTimeout = 60000;
+            replyTimeout = 47000;
         }
         debugger = builder.debugger;
         if (StringUtils.isNotEmpty(builder.adminAccountUsername, builder.adminAccountPassword)) {
@@ -495,7 +495,7 @@ public final class Configuration {
         builder.setService(properties.getProperty("service"));
         builder.setServiceTlsPin(properties.getProperty("serviceTlsPin"));
         builder.setSecurityMode(properties.getProperty("securityMode"));
-        builder.setReplyTimeout(properties.getProperty("replyTimeout", "60000"));
+        builder.setReplyTimeout(properties.getProperty("replyTimeout", "47000"));
 
         String adminAccountUsername = properties.getProperty("adminAccountUsername");
         String adminAccountPassword = properties.getProperty("adminAccountPassword");
