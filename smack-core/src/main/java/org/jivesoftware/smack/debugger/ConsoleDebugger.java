@@ -35,7 +35,7 @@ import org.jivesoftware.smack.util.ExceptionUtil;
  * @author Gaston Dombiak
  */
 public class ConsoleDebugger extends AbstractDebugger {
-    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss.S");
 
     public ConsoleDebugger(XMPPConnection connection) {
         super(connection);
