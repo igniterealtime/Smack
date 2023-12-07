@@ -38,11 +38,11 @@ public class GroupChatInvitationElementTest {
     @Test
     public void serializeFullElement() throws XmlPullParserException, IOException, SmackParsingException {
         final String expectedXml = "" +
-                "<x xmlns='jabber:x:conference'\n" +
-                "     continue='true'\n" +
-                "     jid='darkcave@macbeth.shakespeare.lit'\n" +
-                "     password='cauldronburn'\n" +
-                "     reason='Hey Hecate, this is the place for all good witches!'\n" +
+                "<x xmlns='jabber:x:conference'" +
+                "     continue='true'" +
+                "     jid='darkcave@macbeth.shakespeare.lit'" +
+                "     password='cauldronburn'" +
+                "     reason='Hey Hecate, this is the place for all good witches!'" +
                 "     thread='e0ffe42b28561960c6b12b944a092794b9683a38'/>";
 
         GroupChatInvitation invitation = new GroupChatInvitation(mucJid,
