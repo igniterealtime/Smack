@@ -27,6 +27,7 @@ import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Security;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -38,9 +39,14 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework;
 
 public class SmackOmemoSignalIntegrationTestFramework {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     public static void main(String[] args) throws InvalidKeyException, NoSuchPaddingException,
                     InvalidAlgorithmParameterException, IllegalBlockSizeException,
