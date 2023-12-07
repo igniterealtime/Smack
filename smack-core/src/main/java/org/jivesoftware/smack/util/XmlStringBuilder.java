@@ -28,6 +28,7 @@ import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 
+import org.jxmpp.jid.Jid;
 import org.jxmpp.util.XmppDateTime;
 
 public class XmlStringBuilder implements Appendable, CharSequence, Element {
@@ -309,6 +310,18 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public XmlStringBuilder attribute(String name, long value) {
         assert name != null;
         return attribute(name, String.valueOf(value));
+    }
+
+    public XmlStringBuilder jidAttribute(Jid jid) {
+        assert jid != null;
+        return attribute("jid", jid);
+    }
+
+    public XmlStringBuilder optJidAttribute(Jid jid) {
+        if (jid != null) {
+            attribute("jid", jid);
+        }
+        return this;
     }
 
     public XmlStringBuilder optAttribute(String name, String value) {
