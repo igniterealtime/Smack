@@ -224,7 +224,8 @@ public class SmackIntegrationTestFramework {
         }
 
         LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId
-                        + "]: Finished scanning for tests, preparing environment");
+                        + "]: Finished scanning for tests, preparing environment\n"
+                        + "\tJava SE Platform version: " + Runtime.version());
         environment = prepareEnvironment();
 
         try {
