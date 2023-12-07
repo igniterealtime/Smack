@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus
+ * Copyright 2021-2023 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 
-public class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
+public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
     final String randomString = StringUtils.insecureRandomString(6);
 
