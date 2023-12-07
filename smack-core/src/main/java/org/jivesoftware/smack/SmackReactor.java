@@ -326,6 +326,12 @@ public class SmackReactor {
 
             int currentReactorThreadCount = reactorThreads.size();
             int myKeyCount = pendingSelectionKeysSize / currentReactorThreadCount;
+            // The division could result in myKeyCount being zero, even though there are pending selection keys.
+            // Therefore, ensure that this thread tries to get at least one pending selection key by invoking poll().
+            // Otherwise, it could happen that we end up in a busy loop, where myKeyCount is zero and this thread invokes
+            // selector.wakeup() below because pendingSelectionsKeys is not empty, but the woken up reactor thread wil
+            // end up with myKeyCount being zero again, restarting the busy-loop cycle.
+            if (myKeyCount == 0) myKeyCount = 1;
             Collection<SelectionKey> selectedKeys = new ArrayList<>(myKeyCount);
             for (int i = 0; i < myKeyCount; i++) {
                 SelectionKey selectionKey = pendingSelectionKeys.poll();
