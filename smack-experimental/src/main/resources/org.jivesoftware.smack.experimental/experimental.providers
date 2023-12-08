@@ -2,6 +2,13 @@
 <!-- Providers for workgroup extensions -->
 <smackProviders>
 
+    <!-- XEP-0264: Jingle Content Thumbnails -->
+    <extensionProvider>
+        <elementName>thumbnail</elementName>
+        <namespace>urn:xmpp:thumbs:1</namespace>
+        <className>org.jivesoftware.smackx.thumbnails.provider.ThumbnailElementProvider</className>
+    </extensionProvider>
+
     <!-- XEP-0280: Message Carbons -->
     <extensionProvider>
         <elementName>sent</elementName>
@@ -343,6 +350,13 @@
       <elementName>fallback</elementName>
       <namespace>urn:xmpp:fallback:0</namespace>
       <className>org.jivesoftware.smackx.fallback_indication.provider.FallbackIndicationElementProvider</className>
+    </extensionProvider>
+
+    <!-- XEP-0446: File Metadata Element -->
+    <extensionProvider>
+      <elementName>file</elementName>
+      <namespace>urn:xmpp:file:metadata:0</namespace>
+      <className>org.jivesoftware.smackx.file_metadata.provider.FileMetadataElementProvider</className>
     </extensionProvider>
 
     <!-- XEP-xxxx: Multi-User Chat Light -->
