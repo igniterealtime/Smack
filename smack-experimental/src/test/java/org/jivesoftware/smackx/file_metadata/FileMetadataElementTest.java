@@ -31,7 +31,6 @@ import org.jivesoftware.smackx.file_metadata.provider.FileMetadataElementProvide
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -39,8 +38,28 @@ import org.jxmpp.util.XmppDateTime;
 
 public class FileMetadataElementTest extends SmackTestSuite {
 
-    private static Date date;
-    private static FileMetadataElement metadataElement;
+    private static final Date date;
+    static {
+        try {
+            date = XmppDateTime.parseDate("2015-07-26T21:46:00+01:00");
+        } catch (ParseException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static final FileMetadataElement metadataElement = FileMetadataElement.builder()
+                    .setModificationDate(date)
+                    .setWidth(1920)
+                    .setHeight(1080)
+                    .addDescription("Picture of 24th XSF Summit")
+                    .addDescription("Foto vom 24. XSF Summit", "de")
+                    .addHash(new HashElement(HashManager.ALGORITHM.SHA_256, "2XarmwTlNxDAMkvymloX3S5+VbylNrJt/l5QyPa+YoU="))
+                    .setLength(63000)
+                    .setMediaType("text/plain")
+                    .setName("text.txt")
+                    .setSize(6144)
+                    .build();
+
     private static final String expectedXml = "<file xmlns='urn:xmpp:file:metadata:0'>" +
             "<date>2015-07-26T20:46:00.000+00:00</date>" +
             "<width>1920</width>" +
@@ -66,24 +85,6 @@ public class FileMetadataElementTest extends SmackTestSuite {
             "<size>6144</size>" +
             "</file>";
 
-    @BeforeAll
-    public static void setup() throws ParseException {
-        date = XmppDateTime.parseDate("2015-07-26T21:46:00+01:00");
-        metadataElement = FileMetadataElement.builder()
-                .setModificationDate(date)
-                .setWidth(1920)
-                .setHeight(1080)
-                .addDescription("Picture of 24th XSF Summit")
-                .addDescription("Foto vom 24. XSF Summit", "de")
-                .addHash(new HashElement(HashManager.ALGORITHM.SHA_256, "2XarmwTlNxDAMkvymloX3S5+VbylNrJt/l5QyPa+YoU="))
-                .setLength(63000)
-                .setMediaType("text/plain")
-                .setName("text.txt")
-                .setSize(6144)
-                .build();
-    }
-
-
     @Test
     public void testSerialization() {
         assertXmlSimilar(expectedXml, metadataElement.toXML().toString());
@@ -101,6 +102,28 @@ public class FileMetadataElementTest extends SmackTestSuite {
     @EnumSource(SmackTestUtil.XmlPullParserKind.class)
     public void testLegacyParsing(SmackTestUtil.XmlPullParserKind parserKind) throws Exception {
         FileMetadataElement parsed = SmackTestUtil.parse(expectedLegacyXml, FileMetadataElementProvider.class, parserKind);
+
+        assertEquals(metadataElement, parsed);
+    }
+
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testParseUnknownExtension(SmackTestUtil.XmlPullParserKind parserKind) throws Exception {
+        final String xml = "<file xmlns='urn:xmpp:file:metadata:0'>" +
+                        "<date>2015-07-26T20:46:00.000+00:00</date>" +
+                        "<width>1920</width>" +
+                        "<height>1080</height>" +
+                        "<unknown-extension>foo</unknown-extension>" +
+                        "<desc>Picture of 24th XSF Summit</desc>" +
+                        "<desc xml:lang='de'>Foto vom 24. XSF Summit</desc>" +
+                        "<hash xmlns='urn:xmpp:hashes:2' algo='sha-256'>2XarmwTlNxDAMkvymloX3S5+VbylNrJt/l5QyPa+YoU=</hash>" +
+                        "<length>63000</length>" +
+                        "<media-type>text/plain</media-type>" +
+                        "<name>text.txt</name>" +
+                        "<size>6144</size>" +
+                        "</file>";
+
+        FileMetadataElement parsed = SmackTestUtil.parse(xml, FileMetadataElementProvider.class, parserKind);
 
         assertEquals(metadataElement, parsed);
     }

@@ -33,64 +33,70 @@ import org.jivesoftware.smackx.thumbnails.provider.ThumbnailElementProvider;
 
 public class FileMetadataElementProvider extends ExtensionElementProvider<FileMetadataElement> {
 
-    public static FileMetadataElementProvider TEST_INSTANCE = new FileMetadataElementProvider();
-
     @Override
     public FileMetadataElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         FileMetadataElement.Builder builder = FileMetadataElement.builder();
-        do {
-            XmlPullParser.TagEvent tagEvent = parser.nextTag();
-            String name = parser.getName();
-            if (tagEvent != XmlPullParser.TagEvent.START_ELEMENT) {
-                continue;
+
+        outerloop: while (true) {
+            XmlPullParser.Event event = parser.next();
+            switch (event) {
+            case START_ELEMENT:
+                String name = parser.getName();
+                switch (name) {
+                    case FileMetadataElement.ELEMENT:
+                        parser.next();
+                        break;
+                    case FileMetadataElement.ELEM_DATE:
+                        builder.setModificationDate(ParserUtils.getDateFromNextText(parser));
+                        break;
+                    case FileMetadataElement.ELEM_DESC:
+                        String lang = ParserUtils.getXmlLang(parser);
+                        builder.addDescription(ParserUtils.getRequiredNextText(parser), lang);
+                        break;
+                    case "dimensions": // was replaced with width and height
+                        String dimensions = ParserUtils.getRequiredNextText(parser);
+                        String[] split = dimensions.split("x");
+                        if (split.length != 2) {
+                            throw new IllegalArgumentException("Invalid dimensions.");
+                        }
+                        builder.setWidth(Integer.parseInt(split[0]));
+                        builder.setHeight(Integer.parseInt(split[1]));
+                        break;
+                    case FileMetadataElement.ELEM_WIDTH:
+                        builder.setWidth(Integer.parseInt(ParserUtils.getRequiredNextText(parser)));
+                        break;
+                    case FileMetadataElement.ELEM_HEIGHT:
+                        builder.setHeight(Integer.parseInt(ParserUtils.getRequiredNextText(parser)));
+                        break;
+                    case FileMetadataElement.ELEM_LENGTH:
+                        builder.setLength(Long.parseLong(ParserUtils.getRequiredNextText(parser)));
+                        break;
+                    case FileMetadataElement.ELEM_MEDIA_TYPE:
+                        builder.setMediaType(ParserUtils.getRequiredNextText(parser));
+                        break;
+                    case FileMetadataElement.ELEM_NAME:
+                        builder.setName(ParserUtils.getRequiredNextText(parser));
+                        break;
+                    case FileMetadataElement.ELEM_SIZE:
+                        builder.setSize(Long.parseLong(ParserUtils.getRequiredNextText(parser)));
+                        break;
+                    case HashElement.ELEMENT:
+                        builder.addHash(HashElementProvider.INSTANCE.parse(parser, parser.getDepth(), xmlEnvironment));
+                        break;
+                    case ThumbnailElement.ELEMENT:
+                        ThumbnailElementProvider provider = new ThumbnailElementProvider();
+                        builder.addThumbnail(provider.parse(parser, parser.getDepth(), xmlEnvironment));
+                }
+                break;
+            case END_ELEMENT:
+                if (parser.getDepth() == initialDepth) break outerloop;
+                break;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
             }
-            switch (name) {
-                case FileMetadataElement.ELEMENT:
-                    parser.next();
-                    break;
-                case FileMetadataElement.ELEM_DATE:
-                    builder.setModificationDate(ParserUtils.getDateFromNextText(parser));
-                    break;
-                case FileMetadataElement.ELEM_DESC:
-                    String lang = ParserUtils.getXmlLang(parser);
-                    builder.addDescription(ParserUtils.getRequiredNextText(parser), lang);
-                    break;
-                case "dimensions": // was replaced with width and height
-                    String dimensions = ParserUtils.getRequiredNextText(parser);
-                    String[] split = dimensions.split("x");
-                    if (split.length != 2) {
-                        throw new IllegalArgumentException("Invalid dimensions.");
-                    }
-                    builder.setWidth(Integer.parseInt(split[0]));
-                    builder.setHeight(Integer.parseInt(split[1]));
-                    break;
-                case FileMetadataElement.ELEM_WIDTH:
-                    builder.setWidth(Integer.parseInt(ParserUtils.getRequiredNextText(parser)));
-                    break;
-                case FileMetadataElement.ELEM_HEIGHT:
-                    builder.setHeight(Integer.parseInt(ParserUtils.getRequiredNextText(parser)));
-                    break;
-                case FileMetadataElement.ELEM_LENGTH:
-                    builder.setLength(Long.parseLong(ParserUtils.getRequiredNextText(parser)));
-                    break;
-                case FileMetadataElement.ELEM_MEDIA_TYPE:
-                    builder.setMediaType(ParserUtils.getRequiredNextText(parser));
-                    break;
-                case FileMetadataElement.ELEM_NAME:
-                    builder.setName(ParserUtils.getRequiredNextText(parser));
-                    break;
-                case FileMetadataElement.ELEM_SIZE:
-                    builder.setSize(Long.parseLong(ParserUtils.getRequiredNextText(parser)));
-                    break;
-                case HashElement.ELEMENT:
-                    builder.addHash(HashElementProvider.INSTANCE.parse(parser, parser.getDepth(), xmlEnvironment));
-                    break;
-                case ThumbnailElement.ELEMENT:
-                    ThumbnailElementProvider provider = new ThumbnailElementProvider();
-                    builder.addThumbnail(provider.parse(parser, parser.getDepth(), xmlEnvironment));
-            }
-        } while (parser.getDepth() != initialDepth);
+        }
         return builder.build();
     }
 }

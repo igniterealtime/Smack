@@ -370,6 +370,12 @@
  * <td>Allows sending a MUC invitation directly from the user to the contact with mediation by the room.</td>
  * </tr>
  * <tr>
+ * <td>Jingle Content Thumbnails</td>
+ * <td><a href="https://xmpp.org/extensions/xep-0264.html">XEP-0264</a></td>
+ * <td>{@link org.jivesoftware.smackx.thumbnails.element}</td>
+ * <td>Defines a way for a client to supply a preview image for Jingle content.</td>
+ * </tr>
+ * <tr>
  * <td>Message Carbons</td>
  * <td><a href="https://xmpp.org/extensions/xep-0280.html">XEP-0280</a></td>
  * <td>{@link org.jivesoftware.smackx.carbons}</td>
@@ -581,6 +587,12 @@
  * <td><a href="https://xmpp.org/extensions/xep-0428.html">XEP-0428</a></td>
  * <td></td>
  * <td>Declare body elements of a message as ignorable fallback for naive legacy clients.</td>
+ * </tr>
+ * <tr>
+ * <td>File metadata element</td>
+ * <td><a href="https://xmpp.org/extensions/xep-0446.html">XEP-0446</a></td>
+ * <td>{@link org.jivesoftware.smackx.file_metadata.element}</td>
+ * <td>Defines a generic file metadata element to be used in other specifications.</td>
  * </tr>
  * <tr>
  * <td>Google GCM JSON payload</td>

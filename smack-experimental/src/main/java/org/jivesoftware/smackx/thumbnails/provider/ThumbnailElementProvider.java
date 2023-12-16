@@ -22,6 +22,7 @@ import java.text.ParseException;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
@@ -32,14 +33,14 @@ public class ThumbnailElementProvider extends ExtensionElementProvider<Thumbnail
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String uri = parser.getAttributeValue(ThumbnailElement.ELEM_URI);
         String mediaType = parser.getAttributeValue(ThumbnailElement.ELEM_MEDIA_TYPE);
-        String width = parser.getAttributeValue(ThumbnailElement.ELEM_WIDTH);
-        String height = parser.getAttributeValue(ThumbnailElement.ELEM_HEIGHT);
+        Integer width = ParserUtils.getIntegerAttribute(parser, ThumbnailElement.ELEM_WIDTH);
+        Integer height = ParserUtils.getIntegerAttribute(parser, ThumbnailElement.ELEM_HEIGHT);
 
         return new ThumbnailElement(
                 uri,
                 mediaType,
-                width == null ? null : Integer.parseInt(width),
-                height == null ? null : Integer.parseInt(height)
+                width,
+                height
         );
     }
 }
