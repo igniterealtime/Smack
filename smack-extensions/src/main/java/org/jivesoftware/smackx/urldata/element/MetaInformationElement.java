@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jivesoftware.smackx.urldata.element;
 
-/**
- * Element classes for XEP-0104.
- */
-package org.jivesoftware.smackx.url_address_information.http.element;
+import org.jivesoftware.smack.packet.NamedElement;
+
+public interface MetaInformationElement extends NamedElement {
+}

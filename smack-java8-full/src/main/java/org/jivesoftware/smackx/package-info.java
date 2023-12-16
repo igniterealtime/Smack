@@ -206,6 +206,18 @@
  * <td>Transfer files between two users over XMPP.</td>
  * </tr>
  * <tr>
+ * <td>URL Address Information</td>
+ * <td><a href="https://xmpp.org/extensions/xep-0103.html">XEP-0103</a></td>
+ * <td>{@link org.jivesoftware.smackx.urldata.element}</td>
+ * <td>Provide information about an Uniform Resource Locator (URL), and a protocol signaling retrieval states.</td>
+ * </tr>
+ * <tr>
+ * <td>HTTP Scheme for URL Data</td>
+ * <td><a href="https://xmpp.orf/extensions/xep-0104.html">XEP-0104</a></td>
+ * <td></td>
+ * <td>A schema description for detailed information about HTTP URLs.</td>
+ * </tr>
+ * <tr>
  * <td>User Mood</td>
  * <td><a href="https://xmpp.org/extensions/xep-0107.html">XEP-0107</a></td>
  * <td></td>

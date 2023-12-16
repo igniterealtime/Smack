@@ -20,4 +20,4 @@
  *
  * @see <a href="https://xmpp.org/extensions/xep-0103.html"> XEP-0103 - URL Address Information</a>.
  */
-package org.jivesoftware.smackx.url_address_information.provider;
+package org.jivesoftware.smackx.urldata.provider;

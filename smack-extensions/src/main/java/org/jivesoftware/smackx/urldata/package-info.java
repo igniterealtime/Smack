@@ -16,8 +16,6 @@
  */
 
 /**
- * Element classes for XEP-0103: URL Address Information.
- *
- * @see <a href="https://xmpp.org/extensions/xep-0103.html"> XEP-0103 - URL Address Information</a>.
+ * Smack's API for <a href="https://xmpp.org/extensions/xep-0103.html"> XEP-0103 - URL Address Information</a>.
  */
-package org.jivesoftware.smackx.url_address_information.element;
+package org.jivesoftware.smackx.urldata;

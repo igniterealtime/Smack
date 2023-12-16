@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.url_address_information;
+package org.jivesoftware.smackx.urldata;
 
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,15 +27,18 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.url_address_information.element.UrlDataElement;
-import org.jivesoftware.smackx.url_address_information.http.element.CookieElement;
-import org.jivesoftware.smackx.url_address_information.http.element.HeaderElement;
-import org.jivesoftware.smackx.url_address_information.http.element.HttpAuthElement;
-import org.jivesoftware.smackx.url_address_information.provider.UrlDataElementProvider;
+
+import org.jivesoftware.smackx.urldata.element.UrlDataElement;
+import org.jivesoftware.smackx.urldata.http.element.CookieElement;
+import org.jivesoftware.smackx.urldata.http.element.HeaderElement;
+import org.jivesoftware.smackx.urldata.http.element.HttpAuthElement;
+import org.jivesoftware.smackx.urldata.provider.UrlDataElementProvider;
 
 import org.junit.jupiter.api.Test;
 
 public class UrlDataElementTest extends SmackTestSuite {
+
+    public static final UrlDataElementProvider URL_DATA_ELEMENT_PROVIDER = new UrlDataElementProvider();
 
     @Test
     public void simpleSerializationTest() throws XmlPullParserException, IOException, SmackParsingException {
@@ -52,7 +55,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "</url-data>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -80,7 +83,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "  </url-data>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -93,7 +96,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "      target='http://pass.jabber.org:8519/test.txt'/>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -106,7 +109,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "      target='http://festhall.outer-planes.net/d20M/announce/latest/'/>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -126,7 +129,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "</url-data>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -161,7 +164,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "</url-data>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -181,7 +184,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                 "  </url-data>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 
@@ -210,7 +213,7 @@ public class UrlDataElementTest extends SmackTestSuite {
                         "  </url-data>";
         assertXmlSimilar(expectedXml, urlDataElement.toXML().toString());
 
-        UrlDataElement parsed = UrlDataElementProvider.INSTANCE.parse(TestUtils.getParser(expectedXml));
+        UrlDataElement parsed = URL_DATA_ELEMENT_PROVIDER.parse(TestUtils.getParser(expectedXml));
         assertEquals(urlDataElement, parsed);
     }
 }

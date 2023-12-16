@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.url_address_information.element;
+package org.jivesoftware.smackx.urldata.element;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +25,14 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.url_address_information.http.element.CookieElement;
-import org.jivesoftware.smackx.url_address_information.http.element.HeaderElement;
-import org.jivesoftware.smackx.url_address_information.http.element.HttpAuthElement;
 
+import org.jivesoftware.smackx.urldata.http.element.CookieElement;
+import org.jivesoftware.smackx.urldata.http.element.HeaderElement;
+import org.jivesoftware.smackx.urldata.http.element.HttpAuthElement;
+
+/**
+ * The url-data element.
+ */
 public class UrlDataElement implements ExtensionElement {
 
     public static final String ELEMENT = "url-data";

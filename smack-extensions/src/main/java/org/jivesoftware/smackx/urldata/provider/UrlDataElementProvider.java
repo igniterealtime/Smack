@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.url_address_information.provider;
+package org.jivesoftware.smackx.urldata.provider;
 
-import static org.jivesoftware.smackx.url_address_information.element.UrlDataElement.ATTR_SID;
-import static org.jivesoftware.smackx.url_address_information.element.UrlDataElement.ATTR_TARGET;
+import static org.jivesoftware.smackx.urldata.element.UrlDataElement.ATTR_SID;
+import static org.jivesoftware.smackx.urldata.element.UrlDataElement.ATTR_TARGET;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,15 +29,15 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.url_address_information.element.UrlDataElement;
-import org.jivesoftware.smackx.url_address_information.http.element.AuthParamElement;
-import org.jivesoftware.smackx.url_address_information.http.element.CookieElement;
-import org.jivesoftware.smackx.url_address_information.http.element.HeaderElement;
-import org.jivesoftware.smackx.url_address_information.http.element.HttpAuthElement;
+
+import org.jivesoftware.smackx.urldata.element.UrlDataElement;
+import org.jivesoftware.smackx.urldata.http.element.AuthParamElement;
+import org.jivesoftware.smackx.urldata.http.element.CookieElement;
+import org.jivesoftware.smackx.urldata.http.element.HeaderElement;
+import org.jivesoftware.smackx.urldata.http.element.HttpAuthElement;
 
 public class UrlDataElementProvider extends ExtensionElementProvider<UrlDataElement> {
 
-    public static UrlDataElementProvider INSTANCE = new UrlDataElementProvider();
     @Override
     public UrlDataElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         String target = parser.getAttributeValue(ATTR_TARGET);

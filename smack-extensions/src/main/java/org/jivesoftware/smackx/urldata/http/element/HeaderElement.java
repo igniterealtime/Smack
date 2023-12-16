@@ -14,46 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.url_address_information.element;
+package org.jivesoftware.smackx.urldata.http.element;
 
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
-public class DescElement implements NamedElement {
+public class HeaderElement extends NameValuePairElement {
 
-    public static final String ELEMENT = "desc";
+    public static final String ELEMENT = "header";
+    public static final String PREFIX = "http";
 
-    private final String desc;
-
-    public DescElement(String desc) {
-        this.desc = desc;
-    }
-
-    public String getDesc() {
-        return desc;
+    public HeaderElement(String name, String value) {
+        super(name, value);
     }
 
     @Override
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
-        return new XmlStringBuilder(this)
-                .rightAngleBracket()
-                .append(getDesc())
-                .closeElement(this);
+        return addCommonXml(new XmlStringBuilder(this))
+                .closeEmptyElement();
     }
 
     @Override
     public String getElementName() {
-        return ELEMENT;
+        return PREFIX + ':' + ELEMENT;
     }
 
     @Override
     public int hashCode() {
         return HashCode.builder()
                 .append(getElementName())
-                .append(getDesc())
+                .append(getName())
+                .append(getValue())
                 .build();
     }
 
@@ -62,6 +55,7 @@ public class DescElement implements NamedElement {
         return EqualsUtil.equals(this, obj, (equalsBuilder, other) ->
                 equalsBuilder
                         .append(getElementName(), other.getElementName())
-                        .append(getDesc(), other.getDesc()));
+                        .append(getName(), other.getName())
+                        .append(getValue(), other.getValue()));
     }
 }

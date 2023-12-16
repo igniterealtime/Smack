@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.url_address_information.http.element;
+package org.jivesoftware.smackx.urldata.http.element;
 
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.url_address_information.element.MetaInformationElement;
+
+import org.jivesoftware.smackx.urldata.element.MetaInformationElement;
 
 public abstract class NameValuePairElement implements MetaInformationElement {
 
