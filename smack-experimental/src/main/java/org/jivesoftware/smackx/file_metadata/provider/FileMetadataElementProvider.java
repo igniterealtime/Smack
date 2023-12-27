@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.file_metadata.provider;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -27,9 +30,6 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 import org.jivesoftware.smackx.thumbnails.provider.ThumbnailElementProvider;
-
-import java.io.IOException;
-import java.text.ParseException;
 
 public class FileMetadataElementProvider extends ExtensionElementProvider<FileMetadataElement> {
 

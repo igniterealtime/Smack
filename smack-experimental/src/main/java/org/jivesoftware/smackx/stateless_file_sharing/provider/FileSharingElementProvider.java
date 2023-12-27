@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
@@ -32,8 +32,9 @@ import org.jivesoftware.smackx.file_metadata.element.FileMetadataElement;
 import org.jivesoftware.smackx.file_metadata.provider.FileMetadataElementProvider;
 import org.jivesoftware.smackx.stateless_file_sharing.element.FileSharingElement;
 import org.jivesoftware.smackx.stateless_file_sharing.element.SourcesElement;
-import org.jivesoftware.smackx.url_address_information.element.UrlDataElement;
-import org.jivesoftware.smackx.url_address_information.provider.UrlDataElementProvider;
+import org.jivesoftware.smackx.urldata.element.UrlDataElement;
+import org.jivesoftware.smackx.urldata.provider.UrlDataElementProvider;
+
 
 public class FileSharingElementProvider extends ExtensionElementProvider<FileSharingElement> {
 
@@ -45,14 +46,14 @@ public class FileSharingElementProvider extends ExtensionElementProvider<FileSha
         FileMetadataElement fileMetadataElement = null;
         SourcesElement sourcesElement = null;
         List<UrlDataElement> urlDataElements = new ArrayList<>();
-        List<ExtensionElement> otherSourceElements = new ArrayList<>();
+        List<NamedElement> otherSourceElements = new ArrayList<>();
         do {
             XmlPullParser.TagEvent event = parser.nextTag();
             String name = parser.getName();
 
             if (event == XmlPullParser.TagEvent.START_ELEMENT) {
                 if (name.equals(FileMetadataElement.ELEMENT)) {
-                    fileMetadataElement = FileMetadataElementProvider.TEST_INSTANCE.parse(parser, xmlEnvironment);
+                    fileMetadataElement = new FileMetadataElementProvider().parse(parser, xmlEnvironment);
                 } else if (name.equals(SourcesElement.ELEMENT)) {
                     int innerDepth = parser.getDepth();
                     do {
@@ -60,9 +61,9 @@ public class FileSharingElementProvider extends ExtensionElementProvider<FileSha
                         String innerName = parser.getName();
                         if (innerEvent.equals(XmlPullParser.TagEvent.START_ELEMENT)) {
                             if (innerName.equals(UrlDataElement.ELEMENT)) {
-                                urlDataElements.add(UrlDataElementProvider.INSTANCE.parse(parser));
+                                urlDataElements.add(new UrlDataElementProvider().parse(parser));
                             } else {
-                                ExtensionElementProvider<?> provider = ProviderManager.getExtensionProvider(innerName, parser.getNamespace());
+                                ExtensionElementProvider<? extends NamedElement> provider = ProviderManager.getExtensionProvider(innerName, parser.getNamespace());
                                 if (provider == null) {
                                     provider = new StandardExtensionElementProvider();
                                 }

@@ -1,7 +1,22 @@
+/**
+ *
+ * Copyright 2020 Paul Schaub
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jivesoftware.smackx.stateless_file_sharing;
 
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -17,7 +32,8 @@ import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.stateless_file_sharing.element.FileSharingElement;
 import org.jivesoftware.smackx.stateless_file_sharing.element.SourcesElement;
 import org.jivesoftware.smackx.stateless_file_sharing.provider.FileSharingElementProvider;
-import org.jivesoftware.smackx.url_address_information.element.UrlDataElement;
+import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
+import org.jivesoftware.smackx.urldata.element.UrlDataElement;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,13 +50,7 @@ public class FileSharingElementTest extends SmackTestSuite {
                         .addHash(new HashElement(HashManager.ALGORITHM.SHA3_256, "2XarmwTlNxDAMkvymloX3S5+VbylNrJt/l5QyPa+YoU="))
                         .addHash(new HashElement(HashManager.ALGORITHM.BLAKE2B256, "2AfMGH8O7UNPTvUVAM9aK13mpCY="))
                         .addDescription("Photo from the summit.")
-                        .addOtherChildElement(
-                                StandardExtensionElement.builder("thumbnail", "urn:xmpp:thumbs:1")
-                                        .addAttribute("uri", "cid:sha1+ffd7c8d28e9c5e82afea41f97108c6b4@bob.xmpp.org")
-                                        .addAttribute("media-type", "image/png")
-                                        .addAttribute("width", "128")
-                                        .addAttribute("height", "96")
-                                        .build())
+                        .addThumbnail(new ThumbnailElement("cid:sha1+ffd7c8d28e9c5e82afea41f97108c6b4@bob.xmpp.org", "image/png", 128, 96))
                         .build(),
                 new SourcesElement(Collections.singletonList(
                         new UrlDataElement(
@@ -61,7 +71,8 @@ public class FileSharingElementTest extends SmackTestSuite {
                 "      <media-type>image/jpeg</media-type>\n" +
                 "      <name>summit.jpg</name>\n" +
                 "      <size>3032449</size>\n" +
-                "      <dimensions>4096x2160</dimensions>\n" +
+                "      <width>4096</width>\n" +
+                "      <height>2160</height>\n" +
                 "      <hash xmlns='urn:xmpp:hashes:2' algo='sha3-256'>2XarmwTlNxDAMkvymloX3S5+VbylNrJt/l5QyPa+YoU=</hash>\n" +
                 "      <hash xmlns='urn:xmpp:hashes:2' algo='id-blake2b256'>2AfMGH8O7UNPTvUVAM9aK13mpCY=</hash>\n" +
                 "      <desc>Photo from the summit.</desc>\n" +

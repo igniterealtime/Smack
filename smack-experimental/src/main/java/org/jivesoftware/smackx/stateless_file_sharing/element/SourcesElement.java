@@ -20,20 +20,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smackx.url_address_information.element.UrlDataElement;
+import org.jivesoftware.smackx.urldata.element.UrlDataElement;
 
 public class SourcesElement implements NamedElement {
 
     public static final String ELEMENT = "sources";
 
     private final List<UrlDataElement> urlDataElements = new ArrayList<>();
-    private final List<ExtensionElement> otherSourceElements = new ArrayList<>();
+    private final List<NamedElement> otherSourceElements = new ArrayList<>();
 
-    public SourcesElement(List<UrlDataElement> urlDataElements, List<ExtensionElement> otherSourceElements) {
+    public SourcesElement(List<UrlDataElement> urlDataElements, List<NamedElement> otherSourceElements) {
         this.urlDataElements.addAll(urlDataElements);
         this.otherSourceElements.addAll(otherSourceElements);
     }
@@ -51,7 +50,7 @@ public class SourcesElement implements NamedElement {
         return Collections.unmodifiableList(urlDataElements);
     }
 
-    public List<ExtensionElement> getOtherSourceElements() {
+    public List<NamedElement> getOtherSourceElements() {
         return Collections.unmodifiableList(otherSourceElements);
     }
 
