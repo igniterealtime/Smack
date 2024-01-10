@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2023 Florian Schmaus
+ * Copyright 2023-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
 
         private static DataForm createDataFormOp() {
             FormField field = FormField.listSingleBuilder("op")
-                            .setLabel("Arthimetic Operation")
+                            .setLabel("Arithmetic Operation")
                             .setRequired()
                             .addOption("+")
                             .addOption("-")
@@ -118,7 +118,6 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
                             NextStage.nonFinal).build();
         }
 
-        // TODO: Add API for every case where we return null or throw below.
         private static Integer extractIntegerField(SubmitForm form, String fieldName) throws XMPPErrorException {
             FormField field = form.getField(fieldName);
             if (field == null)
