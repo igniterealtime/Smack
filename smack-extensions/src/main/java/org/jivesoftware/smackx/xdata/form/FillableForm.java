@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,7 @@ public class FillableForm extends FilledForm {
         }
 
         Set<String> requiredFields = new HashSet<>();
+        List<FormField> requiredFieldsWithDefaultValue = new ArrayList<>();
         for (FormField formField : dataForm.getFields()) {
             if (formField.isRequired()) {
                 String fieldName = formField.getFieldName();
@@ -62,13 +63,17 @@ public class FillableForm extends FilledForm {
 
                 if (formField.hasValueSet()) {
                     // This is a form field with a default value.
-                    write(formField);
+                    requiredFieldsWithDefaultValue.add(formField);
                 } else {
                     missingRequiredFields.add(fieldName);
                 }
             }
         }
         this.requiredFields = Collections.unmodifiableSet(requiredFields);
+
+        for (FormField field : requiredFieldsWithDefaultValue) {
+            write(field);
+        }
     }
 
     protected void writeListMulti(String fieldName, List<? extends CharSequence> values) {
