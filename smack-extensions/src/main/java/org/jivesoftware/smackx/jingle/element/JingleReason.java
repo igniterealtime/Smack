@@ -107,13 +107,32 @@ public class JingleReason implements FullyQualifiedElement {
     }
 
     protected final Reason reason;
+
+    /**
+     * The content of the text element (if any) providing human-readable information about the reason for the action.
+     */
     private final String text;
+
+    /**
+     * XEP-0166 mentions that the "reason" element MAY contain an element qualified by some other
+     * namespace that provides more detailed machine- readable information about the reason for the action.
+     */
     private final ExtensionElement element;
 
     public JingleReason(Reason reason) {
         this(reason, null, null);
     }
 
+    /**
+     * Creates a new JingleReason instance with the specified reason String.
+     *
+     * @param reason the reason string that we'd like to transport in this packet extension, which may or
+     * may not be one of the static strings defined here.
+     * @param text an element providing human-readable information about the reason for the action or
+     * <code>null</code> if no such information is currently available.
+     * @param element any other element that MAY be providing further information or <code>null</code> if no
+     * such element has been specified.
+     */
     public JingleReason(Reason reason, String text, ExtensionElement element) {
         this.reason = reason;
         this.text = text;
@@ -167,9 +186,7 @@ public class JingleReason implements FullyQualifiedElement {
         return reason;
     }
 
-
     public static class AlternativeSession extends JingleReason {
-
         public static final String SID = "sid";
         private final String sessionId;
 
@@ -186,7 +203,7 @@ public class JingleReason implements FullyQualifiedElement {
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder(this);
             xml.rightAngleBracket();
 

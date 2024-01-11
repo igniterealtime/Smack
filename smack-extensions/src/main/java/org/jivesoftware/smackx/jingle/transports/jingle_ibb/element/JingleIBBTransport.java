@@ -47,7 +47,6 @@ public class JingleIBBTransport extends JingleContentTransport {
     }
 
     public JingleIBBTransport(short blockSize, String sid) {
-        super(null);
         if (blockSize > 0) {
             this.blockSize = blockSize;
         } else {
@@ -77,7 +76,7 @@ public class JingleIBBTransport extends JingleContentTransport {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof JingleIBBTransport)) {
+        if (!(other instanceof JingleIBBTransport)) {
             return false;
         }
 

@@ -176,6 +176,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
         }
 
         public Builder setHost(String host)  {
+            host = host.split("%")[0];
             InternetAddress inetAddress = InternetAddress.from(host);
             return setHost(inetAddress);
         }

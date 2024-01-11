@@ -16,12 +16,14 @@
  */
 package org.jivesoftware.smackx.jingle.element;
 
-import org.jivesoftware.smack.packet.FullyQualifiedElement;
+import org.jivesoftware.smack.packet.ExtensionElement;
 
 /**
  * An element found usually in 'description' elements.
  *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
-public interface JingleContentDescriptionChildElement extends FullyQualifiedElement {
+public interface JingleContentDescriptionChildElement extends ExtensionElement {
 
 }
