@@ -271,6 +271,7 @@ public final class XmppWebSocketTransportModule
             asyncButOrderedOutgoingElementsQueue.performAsyncButOrdered(outgoingElementsQueue, () -> {
                 for (TopLevelStreamElement topLevelStreamElement; (topLevelStreamElement = outgoingElementsQueue.poll()) != null;) {
                     websocket.send(topLevelStreamElement);
+                    connectionInternal.fireFirstLevelElementSendListeners(topLevelStreamElement);
                 }
             });
         }
