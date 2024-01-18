@@ -94,7 +94,13 @@ public class FormFieldRegistry {
             } else {
                 previousType = fieldNameToType.get(fieldName);
                 if (previousType != null && previousType != fieldType) {
-                    throw new IllegalArgumentException();
+                    String message = "The field '" + fieldName + "' from form type '" + formType
+                                    + "' was already registered with field type '" + previousType
+                                    + "' while it is now seen with type '" + fieldType
+                                    + "'. Form field types have to be unambigiously."
+                                    + " XMPP uses a registry for form field tpes, scoped by the form type."
+                                    + " You may find the correct value at https://xmpp.org/registrar/formtypes.html";
+                    throw new IllegalArgumentException(message);
                 }
             }
             previousType = fieldNameToType.put(fieldName, fieldType);
