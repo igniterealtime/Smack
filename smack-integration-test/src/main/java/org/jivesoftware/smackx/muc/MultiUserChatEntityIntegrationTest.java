@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
@@ -30,10 +31,13 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -44,6 +48,30 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
                     throws SmackException.NoResponseException, XMPPException.XMPPErrorException,
                     SmackException.NotConnectedException, InterruptedException, TestNotPossibleException {
         super(environment);
+    }
+
+    /**
+     * Asserts that a MUC service can be discovered
+     *
+     * <p>From XEP-0045 § 6:</p>
+     * <blockquote>
+     * A MUC implementation MUST support Service Discovery (XEP-0030) [9] ("disco").
+     * </blockquote>
+     *
+     * <p>From XEP-0045 § 6.1:</p>
+     * <blockquote>
+     * An entity often discovers a MUC service by sending a Service Discovery items ("disco#items") request to its own
+     * server. The server then returns the services that are associated with it.
+     * </blockquote>
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest
+    public void mucTestForDiscoveringMuc() throws Exception {
+        // This repeats some logic from the `AbstractMultiUserChatIntegrationTest` constructor, but is preserved here
+        // as an explicit test, because that might not always be true.
+        List<DomainBareJid> services = ServiceDiscoveryManager.getInstanceFor(conOne).findServices(MUCInitialPresence.NAMESPACE, true, false);
+        assertTrue(!services.isEmpty());
     }
 
     /**
@@ -60,7 +88,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
      */
     @SmackIntegrationTest
     public void mucTestForDiscoveringFeatures() throws Exception {
-        DiscoverInfo info = mucManagerOne.getMucServiceDiscoInfo(mucManagerOne.getMucServiceDomains().get(0));
+        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(conOne).discoverInfo(mucService);
         assertTrue(info.getIdentities().size() > 0);
         assertTrue(info.getFeatures().size() > 0);
     }
@@ -128,6 +156,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
 
         assertTrue(discoInfo.getIdentities().size() > 0);
         assertTrue(discoInfo.getFeatures().size() > 0);
+        assertTrue(discoInfo.getFeatures().stream().anyMatch(feature -> MultiUserChatConstants.NAMESPACE.equals(feature.getVar())));
     }
 
     /**
