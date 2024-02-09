@@ -1534,11 +1534,20 @@ public final class Roster extends Manager {
 
                 }
             }
+
+            final Jid from = packet.getFrom();
+
             if (!isLoaded() && rosterLoadedAtLogin) {
-                LOGGER.warning("Roster not loaded while processing " + packet);
+                XMPPConnection connection = connection();
+
+                // Only log the warning, if this is not the reflected self-presence. Otherwise,
+                // the reflected self-presence may cause a spurious warning in case the
+                // connection got quickly shut down. See SMACK-941.
+                if (connection != null && from != null && !from.equals(connection.getUser())) {
+                    LOGGER.warning("Roster not loaded while processing " + packet);
+                }
             }
             final Presence presence = (Presence) packet;
-            final Jid from = presence.getFrom();
 
             final BareJid key;
             if (from != null) {
