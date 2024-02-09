@@ -51,7 +51,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
     private final Type type;
 
     public JingleS5BTransportCandidate(String candidateId, String hostString, Jid jid, int port, int priority, Type type) {
-        this(candidateId, InternetAddress.from(hostString), jid, port, priority, type);
+        this(candidateId, InternetAddress.fromIgnoringZoneId(hostString), jid, port, priority, type);
     }
 
     public JingleS5BTransportCandidate(String candidateId, InternetAddress host, Jid jid, int port, int priority, Type type) {
@@ -176,7 +176,7 @@ public final class JingleS5BTransportCandidate extends JingleContentTransportCan
         }
 
         public Builder setHost(String host)  {
-            InternetAddress inetAddress = InternetAddress.from(host);
+            InternetAddress inetAddress = InternetAddress.fromIgnoringZoneId(host);
             return setHost(inetAddress);
         }
 
