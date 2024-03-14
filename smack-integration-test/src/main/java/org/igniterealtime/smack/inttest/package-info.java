@@ -136,6 +136,14 @@
  * <td>List of disabled tests</td>
  * </tr>
  * <tr>
+ * <td>enabledSpecifications</td>
+ * <td>List of specifications for which to enable tests</td>
+ * </tr>
+ * <tr>
+ * <td>disabledSpecifications</td>
+ * <td>List of specificatinos for which to disable tests</td>
+ * </tr>
+ * <tr>
  * <td>defaultConnection</td>
  * <td>Nickname of the default connection</td>
  * </tr>
@@ -186,6 +194,20 @@
  * </pre>
  * <p>
  * would run all tests defined in the <code>SoftwareInfoIntegrationTest</code> class.
+ * </p>
+ * <p>
+ * Use <code>enabledSpecifications</code> to run all tests that assert implementation of functionality that is described
+ * in standards identified by the provided specification-reference.
+ * </p>
+ * <p>
+ * For example:
+ * </p>
+ *
+ * <pre>
+ * $ gradle integrationTest -Dsinttest.enabledSpecifications=XEP-0045
+ * </pre>
+ * <p>
+ * would run all tests that are annotated to verify functionality specified in XEP-0045: "Multi-User Chat".
  * </p>
  * <h2>Overview of the components</h2>
  * <p>
