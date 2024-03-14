@@ -517,7 +517,7 @@ public final class Configuration {
 
         String debugString = properties.getProperty("debug");
         if (debugString != null) {
-            LOGGER.warning("Usage of depreacted 'debug' option detected, please use 'debugger' instead");
+            LOGGER.warning("Usage of deprecated 'debug' option detected, please use 'debugger' instead");
             builder.setDebugger(debugString);
         }
         builder.setDebugger(properties.getProperty("debugger"));
