@@ -249,7 +249,7 @@
  * the required XMPP feature. If it does not, simply throw a <code>TestNotPossibleException</code>.
  * </p>
  * <p>
- * Test methods must be <code>public</code>, take zero arguments i.e. declare no parameters and be annoated with
+ * Test methods must be <code>public</code>, take zero arguments i.e. declare no parameters and be annotated with
  * <code>@SmackIntegrationTest</code>. If the test method is not able to perform a test then it should throw a
  * <code>TestNotPossibleException</code>.
  * </p>
@@ -266,7 +266,7 @@
  * </p>
  * <h3>Low-Level Integration Tests</h3>
  * <p>
- * Classes that implement low-level integration tests need to sublcass
+ * Classes that implement low-level integration tests need to subclass
  * {@link org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest}. The test methods can declare as many
  * parameters as they need to, but every parameter must be of type <code>XMPPTCPConnection</code>. The framework will
  * automatically create, register and login the connections. After the test is finished, the connections will be
