@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2024 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,27 +22,20 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Reference to a specific part of a specification.
+ *
+ * @author Guus der Kinderen, guus@goodbytes.nl
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface SmackIntegrationTest {
-
-    boolean onlyDefaultConnectionType() default false;
-
-    int connectionCount() default -1;
+@Target(ElementType.TYPE)
+public @interface SpecificationReference {
 
     /**
-     * Unique identifier for a section (or paragraph) of the document referenced by {@link SpecificationReference},
-     * such as '6.2.1'.
+     * Unique identifier for a specification document, such as 'RFC 6120' or 'XEP-0485'.
      *
-     * @return a document section identifier
+     * @return a document identifier
      */
-    String section() default "";
-
-    /**
-     * A quotation of relevant text from the section referenced by {@link #section()}.
-     *
-     * @return human-readable text from the references document and section.
-     */
-    String quote() default "";
+    String document();
 }
