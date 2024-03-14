@@ -292,7 +292,7 @@ public class SmackIntegrationTestFramework {
             }
 
             if (config.isClassDisabled(testClass)) {
-                DisabledTestClass disabledTestClass = new DisabledTestClass(testClass, "Skipping test class " + testClassName + " because it is disalbed");
+                DisabledTestClass disabledTestClass = new DisabledTestClass(testClass, "Skipping test class " + testClassName + " because it is disabled");
                 testRunResult.disabledTestClasses.add(disabledTestClass);
                 continue;
             }
