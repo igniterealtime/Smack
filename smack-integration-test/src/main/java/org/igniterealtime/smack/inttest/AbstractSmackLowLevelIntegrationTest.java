@@ -50,7 +50,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
      * Get a connected connection. Note that this method will return a connection constructed via the default connection
      * descriptor. It is primarily meant for integration tests to discover if the XMPP service supports a certain
      * feature, that the integration test requires to run. This feature discovery is typically done in the constructor of the
-     * integration tests. And if the discovery fails a {@link TestNotPossibleException} should be thrown by he constructor.
+     * integration tests. And if the discovery fails a {@link TestNotPossibleException} should be thrown by the constructor.
      *
      * <p> Please ensure that you invoke {@link #recycle(AbstractXMPPConnection connection)} once you are done with this connection.
      *
