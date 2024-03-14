@@ -35,11 +35,13 @@ import org.jivesoftware.smackx.omemo.util.MessageOrOmemoMessage;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 /**
  * This test sends a message from Alice to Bob, while Bob has automatic decryption disabled.
  * Then Bob fetches his Mam archive and decrypts the result.
  */
+@SpecificationReference(document = "XEP-0384")
 public class OmemoMamDecryptionTest extends AbstractTwoUsersOmemoIntegrationTest {
     public OmemoMamDecryptionTest(SmackIntegrationTestEnvironment environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,

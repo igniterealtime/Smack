@@ -24,7 +24,9 @@ import org.jivesoftware.smack.packet.MessageBuilder;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
+@SpecificationReference(document = "XEP-0384")
 public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
     public SessionRenegotiationIntegrationTest(SmackIntegrationTestEnvironment environment)

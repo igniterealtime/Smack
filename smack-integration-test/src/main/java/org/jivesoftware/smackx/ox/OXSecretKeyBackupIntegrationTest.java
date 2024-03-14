@@ -48,9 +48,11 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.pgpainless.key.protection.UnprotectedKeysProtector;
 
+@SpecificationReference(document = "XEP-0374")
 public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegrationTest {
 
     private static final String sessionId = StringUtils.randomString(10);
@@ -101,7 +103,7 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
         org.apache.commons.io.FileUtils.deleteDirectory(beforePath);
     }
 
-    @SmackIntegrationTest
+    @SmackIntegrationTest(section = "5")
     public void test() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException,
             NoSuchProviderException, IOException, InterruptedException, PubSubException.NotALeafNodeException,
             SmackException.NoResponseException, SmackException.NotConnectedException, XMPPException.XMPPErrorException,

@@ -33,8 +33,10 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 
+@SpecificationReference(document = "XEP-0232")
 public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
 
     public final SoftwareInfoManager sim1;
