@@ -32,6 +32,7 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -49,23 +50,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who undergoes a role change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.1.3:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the occupant's role to reflect the change and communicate the change
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 9.6:</p>
-     * <blockquote>
-     * The service MUST then send updated presence from this individual to all occupants, indicating the addition of
-     * moderator status...
-     * </blockquote>
+     * Asserts that a user who undergoes a role change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.3", quote =
+        "(§ 5.1.3)... a MUC service implementation MUST change the occupant's role to reflect the change and " +
+        "communicate the change to all occupants [...] (§ 9.6) The service MUST then send updated presence from this " +
+        "individual to all occupants, indicating the addition of moderator status...")
     public void mucRoleTestForReceivingModerator() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -97,23 +90,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.1.3:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the occupant's role to reflect the change and communicate the change
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 9.6:</p>
-     * <blockquote>
-     * The service MUST then send updated presence from this individual to all occupants, indicating the addition of
-     * moderator status...
-     * </blockquote>
+     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "9.6", quote =
+        "(§ 5.1.3)... a MUC service implementation MUST change the occupant's role to reflect the change and " +
+        "communicate the change to all occupants [...] (§ 9.6) The service MUST then send updated presence from this " +
+        "individual to all occupants, indicating the addition of moderator status...")
     public void mucRoleTestForWitnessingModerator() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -146,23 +131,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who undergoes a role change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.1.3:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the occupant's role to reflect the change and communicate the change
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 9.7:</p>
-     * <blockquote>
-     * The service MUST then send updated presence from this individual to all occupants, indicating the removal of
-     * moderator status...
-     * </blockquote>
+     * Asserts that a user who undergoes a role change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.3", quote =
+        "(§ 5.1.3)... a MUC service implementation MUST change the occupant's role to reflect the change and " +
+        "communicate the change to all occupants [...] (§ 9.7) The service MUST then send updated presence from this " +
+        "individual to all occupants, indicating the removal of moderator status...")
     public void mucRoleTestForRemovingModerator() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -192,23 +169,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.1.3:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the occupant's role to reflect the change and communicate the change
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 9.7:</p>
-     * <blockquote>
-     * The service MUST then send updated presence from this individual to all occupants, indicating the removal of
-     * moderator status...
-     * </blockquote>
+     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "9.7", quote =
+        "(§ 5.1.3)... a MUC service implementation MUST change the occupant's role to reflect the change and " +
+        "communicate the change to all occupants [...] (§ 9.7) The service MUST then send updated presence from this " +
+        "individual to all occupants, indicating the removal of moderator status...")
     public void mucRoleTestForWitnessingModeratorRemoval() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -241,23 +210,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user in an unmoderated room who undergoes an afilliation change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.1.3:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the occupant's role to reflect the change and communicate the change
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 8.4:</p>
-     * <blockquote>
-     * The service MUST then send updated presence from this individual to all occupants, indicating the removal of
-     * voice privileges...
-     * </blockquote>
+     * Asserts that a user in an unmoderated room who undergoes an afilliation change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.3", quote =
+        "(§ 5.1.3)... a MUC service implementation MUST change the occupant's role to reflect the change and " +
+        "communicate the change to all occupants [...] (§ 8.4) The service MUST then send updated presence from " +
+        "this individual to all occupants, indicating the removal of voice privileges...")
     public void mucRoleTestForRevokingVoice() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -285,23 +246,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.1.3:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the occupant's role to reflect the change and communicate the change
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 8.4:</p>
-     * <blockquote>
-     * The service MUST then send updated presence from this individual to all occupants, indicating the removal of
-     * voice privileges...
-     * </blockquote>
+     * Asserts that a user who is present when another user undergoes a role change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "8.4", quote =
+        "(§ 5.1.3)... a MUC service implementation MUST change the occupant's role to reflect the change and " +
+        "communicate the change to all occupants [...] (§ 8.4) The service MUST then send updated presence from " +
+        "this individual to all occupants, indicating the removal of voice privileges...")
     public void mucRoleTestForWitnessingRevokingVoice() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -333,23 +286,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who undergoes an affiliation change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.2.2:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the user's affiliation to reflect the change and communicate that
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 10.6:</p>
-     * <blockquote>
-     * If the user is in the room, the service MUST then send updated presence from this individual to all occupants,
-     * indicating the granting of admin status...
-     * </blockquote>
+     * Asserts that a user who undergoes an affiliation change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.2.2", quote =
+        "(§ 5.2.2) ... a MUC service implementation MUST change the user's affiliation to reflect the change and " +
+        "communicate that to all occupants [...] (§ 10.6) If the user is in the room, the service MUST then send " +
+        "updated presence from this individual to all occupants, indicating the granting of admin status...")
     public void mucAffiliationTestForReceivingAdmin() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -381,23 +326,15 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
     /**
      * Asserts that a user who is present when another user undergoes an affiliation change receives that change as a
-     * presence update
-     *
-     * <p>From XEP-0045 § 5.2.2:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the user's affiliation to reflect the change and communicate that
-     * to all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 10.6:</p>
-     * <blockquote>
-     * If the user is in the room, the service MUST then send updated presence from this individual to all occupants,
-     * indicating the granting of admin status...
-     * </blockquote>
+     * presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "10.6", quote =
+        "(§ 5.2.2) ... a MUC service implementation MUST change the user's affiliation to reflect the change and " +
+        "communicate that to all occupants [...] (§ 10.6) If the user is in the room, the service MUST then send " +
+        "updated presence from this individual to all occupants, indicating the granting of admin status...")
     public void mucAffiliationTestForWitnessingAdmin() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -429,23 +366,16 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who undergoes an affiliation change receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 5.2.2:</p>
-     * <blockquote>
-     * ...a MUC service implementation MUST change the user's affiliation to reflect the change and communicate that to
-     * all occupants...
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 10.7:</p>
-     * <blockquote>
-     * If the user is in the room, the service MUST then send updated presence from this individual to all occupants,
-     * indicating the loss of admin status by sending a presence element...
-     * </blockquote>
+     * Asserts that a user who undergoes an affiliation change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "10.7", quote =
+        "(§ 5.2.2) ... a MUC service implementation MUST change the user's affiliation to reflect the change and " +
+        "communicate that to all occupants [...] (§ 10.6) If the user is in the room, the service MUST then send " +
+        "updated presence from this individual to all occupants, indicating the loss of admin status by sending a " +
+        "presence element...")
     public void mucAffiliationTestForRemovingAdmin() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -492,6 +422,11 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "10.7", quote =
+        "(§ 5.2.2) ... a MUC service implementation MUST change the user's affiliation to reflect the change and " +
+        "communicate that to all occupants [...] (§ 10.6) If the user is in the room, the service MUST then send " +
+        "updated presence from this individual to all occupants, indicating the loss of admin status by sending a " +
+        "presence element...")
     public void mucAffiliationTestForWitnessingAdminRemoval() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -524,21 +459,17 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who gets kicked receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 8.2:</p>
-     * <blockquote>
-     * The kick is performed based on the occupant's room nickname and is completed by setting the role of a
-     * participant or visitor to a value of "none".
-     *
-     * The service MUST remove the kicked occupant by sending a presence stanza of type "unavailable" to each kicked
-     * occupant, including status code 307 in the extended presence information, optionally along with the reason (if
-     * provided) and the roomnick or bare JID of the user who initiated the kick.
-     * </blockquote>
+     * Asserts that a user who gets kicked receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "8.2", quote =
+        "The kick is performed based on the occupant's room nickname and is completed by setting the role of a " +
+        "participant or visitor to a value of \"none\". The service MUST remove the kicked occupant by sending a " +
+        "presence stanza of type \"unavailable\" to each kicked occupant, including status code 307 in the extended " +
+        "presence information, optionally along with the reason (if provided) and the roomnick or bare JID of the " +
+        "user who initiated the kick.")
     public void mucPresenceTestForGettingKicked() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -572,19 +503,16 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who is present when another user gets kicked receives that change as a presence update
-     *
-     * <p>From XEP-0045 § 8.2:</p>
-     * <blockquote>
-     * ...the service MUST then inform all of the remaining occupants that the kicked occupant is no longer in the room
-     * by sending presence stanzas of type "unavailable" from the individual's roomnick (&lt;room@service/nick&gt;) to all
-     * the remaining occupants (just as it does when occupants exit the room of their own volition), including the
-     * status code and optionally the reason and actor.
-     * </blockquote>
+     * Asserts that a user who is present when another user gets kicked receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "8.2", quote =
+        "...the service MUST then inform all of the remaining occupants that the kicked occupant is no longer in the " +
+        "room by sending presence stanzas of type \"unavailable\" from the individual's roomnick " +
+        "(<room@service/nick>) to all the remaining occupants (just as it does when occupants exit the room of their " +
+        "own volition), including the status code and optionally the reason and actor.")
     public void mucPresenceTestForWitnessingKick() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -624,16 +552,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     /**
      * Asserts that an affiliation is persistent between visits to the room.
      *
-     * <p>From XEP-0045 § 5.2:</p>
-     * <blockquote>
-     * These affiliations are long-lived in that they persist across a user's visits to the room and are not affected
-     * by happenings in the room...Affiliations are granted, revoked, and maintained based on the user's bare JID, not
-     * the nick as with roles.
-     * </blockquote>
-     *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.2", quote =
+        "These affiliations are long-lived in that they persist across a user's visits to the room and are not " +
+        "affected by happenings in the room...Affiliations are granted, revoked, and maintained based on the user's " +
+        "bare JID, not the nick as with roles.")
     public void mucTestPersistentAffiliation() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -665,24 +590,17 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a moderator cannot revoke voice from an owner
-     *
-     * <p>From XEP-0045 § 5.1.1:</p>
-     * <blockquote>
-     * A moderator MUST NOT be able to revoke voice privileges from an admin or owner
-     * </blockquote>
-     *
-     * <p>From XEP-0045 § 8.4:</p>
-     * <blockquote>
-     * A moderator MUST NOT be able to revoke voice from a user whose affiliation is at or above the moderator's level.
-     * In addition, a service MUST NOT allow the voice privileges of an admin or owner to be removed by anyone. If a
-     * moderator attempts to revoke voice privileges from such a user, the service MUST deny the request and return a
-     * &lt;not-allowed/&gt; error to the sender along with the offending item(s)
-     * </blockquote>
+     * Asserts that a moderator cannot revoke voice from an owner.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.1", quote =
+        "A moderator MUST NOT be able to revoke voice privileges from an admin or owner [...] (§ 8.4) A moderator " +
+        "MUST NOT be able to revoke voice from a user whose affiliation is at or above the moderator's level. In " +
+        "addition, a service MUST NOT allow the voice privileges of an admin or owner to be removed by anyone. If a " +
+        "moderator attempts to revoke voice privileges from such a user, the service MUST deny the request and return " +
+        "a <not-allowed/> error to the sender along with the offending item(s)")
     public void mucTestModeratorCannotRevokeVoiceFromOwner() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -708,16 +626,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
      * Asserts that a moderator cannot revoke moderator privileges from a moderator with a higher affiliation
      * than themselves.
      *
-     * <p>From XEP-0045 § 5.1.3 and §5.2.1:</p>
-     * <blockquote>
-     * A moderator SHOULD NOT be allowed to revoke moderation privileges from someone with a higher affiliation than
-     * themselves (i.e., an unaffiliated moderator SHOULD NOT be allowed to revoke moderation privileges from an admin
-     * or an owner, and an admin SHOULD NOT be allowed to revoke moderation privileges from an owner)
-     * </blockquote>
-     *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.3", quote =
+        "A moderator SHOULD NOT be allowed to revoke moderation privileges from someone with a higher affiliation " +
+        "than themselves (i.e., an unaffiliated moderator SHOULD NOT be allowed to revoke moderation privileges from " +
+        "an admin or an owner, and an admin SHOULD NOT be allowed to revoke moderation privileges from an owner)")
     public void mucTestModeratorCannotBeRevokedFromHigherAffiliation() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest");
 
@@ -755,16 +670,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that an unmoderated room assigns the correct default roles for a given affiliation
-     *
-     * <p>From XEP-0045 § 5.1.2:</p>
-     * <blockquote>
-     * ...the initial default roles that a service SHOULD set based on the user's affiliation...
-     * </blockquote>
+     * Asserts that an unmoderated room assigns the correct default roles for a given affiliation.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.2", quote =
+        "...the initial default roles that a service SHOULD set based on the user's affiliation...")
     public void mucTestDefaultRoleForAffiliationInUnmoderatedRoom() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-unmoderatedroles");
 
@@ -804,16 +716,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a moderated room assigns the correct default roles for a given affiliation
-     *
-     * <p>From XEP-0045 § 5.1.2:</p>
-     * <blockquote>
-     * ...the initial default roles that a service SHOULD set based on the user's affiliation...
-     * </blockquote>
+     * Asserts that a moderated room assigns the correct default roles for a given affiliation.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.2", quote =
+        "...the initial default roles that a service SHOULD set based on the user's affiliation...")
     public void mucTestDefaultRoleForAffiliationInModeratedRoom() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-moderatedroles");
 
@@ -864,16 +773,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a members-only room assigns the correct default roles for a given affiliation
-     *
-     * <p>From XEP-0045 § 5.1.2:</p>
-     * <blockquote>
-     * ...the initial default roles that a service SHOULD set based on the user's affiliation...
-     * </blockquote>
+     * Asserts that a members-only room assigns the correct default roles for a given affiliation.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "5.1.2", quote =
+        "...the initial default roles that a service SHOULD set based on the user's affiliation...")
     public void mucTestDefaultRoleForAffiliationInMembersOnlyRoom() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-membersonlyroles");
 

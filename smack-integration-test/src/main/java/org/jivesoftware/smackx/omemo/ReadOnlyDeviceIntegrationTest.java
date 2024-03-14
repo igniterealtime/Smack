@@ -32,6 +32,7 @@ import org.jivesoftware.smackx.omemo.exceptions.UndecidedOmemoIdentityException;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 public class ReadOnlyDeviceIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
@@ -40,6 +41,7 @@ public class ReadOnlyDeviceIntegrationTest extends AbstractTwoUsersOmemoIntegrat
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0384")
     public void test() throws InterruptedException, SmackException.NoResponseException,
                     SmackException.NotLoggedInException, SmackException.NotConnectedException, CryptoFailedException,
                     UndecidedOmemoIdentityException, IOException {

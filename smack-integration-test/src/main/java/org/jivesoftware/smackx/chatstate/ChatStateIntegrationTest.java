@@ -27,6 +27,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
@@ -53,6 +54,7 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0085")
     public void testChatStateListeners() throws Exception {
         ChatStateManager manOne = ChatStateManager.getInstance(conOne);
         ChatStateManager manTwo = ChatStateManager.getInstance(conTwo);

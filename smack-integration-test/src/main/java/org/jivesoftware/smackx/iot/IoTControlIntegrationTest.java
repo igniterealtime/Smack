@@ -33,6 +33,7 @@ import org.jivesoftware.smackx.iot.control.element.SetData;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.Jid;
@@ -57,6 +58,7 @@ public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
      */
     @SmackIntegrationTest
     // @SmackSerialIntegrationTest
+    @SpecificationReference(document = "XEP-0347")
     public void controlTest() throws Exception {
         final String key = StringUtils.randomString(12);
         final String sn = StringUtils.randomString(12);

@@ -36,6 +36,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -63,6 +64,7 @@ public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest 
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0363")
     public void httpFileUploadTest() throws IOException, XMPPErrorException, InterruptedException, SmackException {
         final int fileSize = FILE_SIZE;
         File file = createNewTempFile();

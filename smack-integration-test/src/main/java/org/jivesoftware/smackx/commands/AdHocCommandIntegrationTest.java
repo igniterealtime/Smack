@@ -36,6 +36,7 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -44,6 +45,7 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0050")
     public void singleStageAdHocCommandTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AdHocCommandManager manOne = AdHocCommandManager.getInstance(conOne);
         AdHocCommandManager manTwo = AdHocCommandManager.getInstance(conTwo);
@@ -217,6 +219,7 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0050")
     public void multiStageAdHocCommandTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AdHocCommandManager manOne = AdHocCommandManager.getInstance(conOne);
         AdHocCommandManager manTwo = AdHocCommandManager.getInstance(conTwo);
@@ -264,6 +267,7 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0050")
     public void multiStageWithPrevAdHocCommandTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AdHocCommandManager manOne = AdHocCommandManager.getInstance(conOne);
         AdHocCommandManager manTwo = AdHocCommandManager.getInstance(conTwo);
@@ -322,6 +326,7 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0050")
     public void multiStageInvalidArgAdHocCommandTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         AdHocCommandManager manOne = AdHocCommandManager.getInstance(conOne);
         AdHocCommandManager manTwo = AdHocCommandManager.getInstance(conTwo);

@@ -32,6 +32,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.jupiter.api.Assertions;
@@ -61,6 +62,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
      * @throws Exception if the test fails
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0118")
     public void testNotification() throws Exception {
         URI uri = new URI("http://www.yesworld.com/lyrics/Fragile.html#9");
         UserTuneElement.Builder builder = UserTuneElement.getBuilder();
@@ -107,6 +109,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
      * @throws Exception if the test fails
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0118")
     public void testNotificationAfterFilterChange() throws Exception {
         URI uri = new URI("http://www.yesworld.com/lyrics/Fragile.html#8");
         UserTuneElement.Builder builder = UserTuneElement.getBuilder();

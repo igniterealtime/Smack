@@ -34,6 +34,7 @@ import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
@@ -50,15 +51,12 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
     /**
      * Asserts that when a user joins a room, they are themselves included on the list of users notified (self-presence).
      *
-     * <p>From XEP-0045 § 7.2.2:</p>
-     * <blockquote>
-     * ...the service MUST also send presence from the new participant's occupant JID to the full JIDs of all the
-     * occupants (including the new occupant)
-     * </blockquote>
-     *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "7.2.2", quote =
+        "... the service MUST also send presence from the new participant's occupant JID to the full JIDs of all the " +
+        "occupants (including the new occupant)")
     public void mucJoinTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-join");
 
@@ -80,16 +78,13 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
     /**
      * Asserts that when a user leaves a room, they are themselves included on the list of users notified (self-presence).
      *
-     * <p>From XEP-0045 § 7.14:</p>
-     * <blockquote>
-     * The service MUST then send a presence stanzas of type "unavailable" from the departing user's occupant JID to
-     * the departing occupant's full JIDs, including a status code of "110" to indicate that this notification is
-     * "self-presence"
-     * </blockquote>
-     *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "7.14", quote =
+        "The service MUST then send a presence stanzas of type \"unavailable\" from the departing user's occupant " +
+        "JID to the departing occupant's full JIDs, including a status code of \"110\" to indicate that this " +
+        "notification is \"self-presence\"")
     public void mucLeaveTest() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-leave");
 
@@ -144,18 +139,16 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
     }
 
 
-     /**
-     * Asserts that a user is notified when a room is destroyed
-     *
-     * <p>From XEP-0045 § 10.9:</p>
-     * <blockquote>
-     * A room owner MUST be able to destroy a room, especially if the room is persistent... The room removes all users from the room... and destroys the room
-     * </blockquote>
+    /**
+     * Asserts that a user is notified when a room is destroyed.
      *
      * @throws TimeoutException when roomDestroyed event doesn't get fired
      * @throws Exception when other errors occur
      */
-     @SmackIntegrationTest
+    @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0045", section = "10.9", quote =
+        "A room owner MUST be able to destroy a room, especially if the room is persistent... The room removes all " +
+        "users from the room... and destroys the room")
     public void mucDestroyTest() throws TimeoutException, Exception {
 
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy");
@@ -190,7 +183,4 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         assertEquals(0, muc.getOccupantsCount());
         assertNull(muc.getNickname());
     }
-
-
-
 }

@@ -24,6 +24,7 @@ import org.jivesoftware.smack.packet.MessageBuilder;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
@@ -35,6 +36,7 @@ public class SessionRenegotiationIntegrationTest extends AbstractTwoUsersOmemoIn
 
     @SuppressWarnings("SynchronizeOnNonFinalField")
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0384")
     public void sessionRenegotiationTest() throws Exception {
 
         boolean prevRepairProperty = OmemoConfiguration.getRepairBrokenSessionsWithPreKeyMessages();

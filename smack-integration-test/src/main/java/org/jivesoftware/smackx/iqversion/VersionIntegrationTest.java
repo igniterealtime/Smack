@@ -28,6 +28,7 @@ import org.jivesoftware.smackx.iqversion.packet.Version;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
 
@@ -36,6 +37,7 @@ public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0092")
     public void testVersion() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         // TODO put into @BeforeClass method
         VersionManager.setAutoAppendSmackVersion(false);

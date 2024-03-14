@@ -39,6 +39,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.pgpainless.decryption_verification.OpenPgpMetadata;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
@@ -100,6 +101,7 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0374")
     public void basicInstantMessagingTest()
             throws Exception {
 

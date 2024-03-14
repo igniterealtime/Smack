@@ -33,6 +33,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 
 public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
@@ -53,6 +54,7 @@ public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0232")
     public void test() throws Exception {
         SoftwareInfoForm softwareInfoSent = createSoftwareInfoForm();
         performActionAndWaitForPresence(conTwo, conOne, new ThrowingRunnable() {
