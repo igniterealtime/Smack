@@ -51,6 +51,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
@@ -91,6 +92,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0115")
     public void testLocalEntityCaps() throws InterruptedException, NoResponseException, XMPPErrorException, NotConnectedException {
         final String dummyFeature = getNewDummyFeature();
         DiscoverInfo info = EntityCapsManager.getDiscoveryInfoByNodeVer(ecmTwo.getLocalNodeVer());
@@ -128,6 +130,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
      * @throws Exception if exception.
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0115")
     public void testPreventDiscoInfo() throws Exception {
         final String dummyFeature = getNewDummyFeature();
         final AtomicBoolean discoInfoSend = new AtomicBoolean();
@@ -159,6 +162,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0115")
     public void testCapsChanged() throws Exception {
         final String dummyFeature = getNewDummyFeature();
         String nodeVerBefore = EntityCapsManager.getNodeVersionByJid(conTwo.getUser());
@@ -169,6 +173,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0115")
     public void testEntityCaps() throws XMPPException, InterruptedException, NoResponseException, NotConnectedException, TimeoutException {
         final String dummyFeature = getNewDummyFeature();
 

@@ -29,6 +29,7 @@ import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 /**
  * Simple OMEMO message encryption integration test.
@@ -60,6 +61,7 @@ public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoInteg
      */
     @SuppressWarnings("SynchronizeOnNonFinalField")
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0384")
     public void messageTest() throws Exception {
         OmemoBundleElement a1 = alice.getOmemoService().getOmemoStoreBackend().packOmemoBundle(alice.getOwnDevice());
         OmemoBundleElement b1 = bob.getOmemoService().getOmemoStoreBackend().packOmemoBundle(bob.getOwnDevice());

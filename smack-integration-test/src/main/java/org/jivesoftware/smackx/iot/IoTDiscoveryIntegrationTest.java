@@ -34,6 +34,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.Jid;
 
 public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
@@ -50,6 +51,7 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0347")
     public void registerClaimAndUnregisterThing()
                     throws XMPPErrorException, InterruptedException, SmackException {
         final String key = StringUtils.randomString(12);

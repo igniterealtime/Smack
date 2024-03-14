@@ -30,6 +30,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.jupiter.api.Assertions;
@@ -59,6 +60,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
      * @throws Exception if the test fails
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0107")
     public void testNotification() throws Exception {
         Mood data = Mood.satisfied;
 
@@ -97,6 +99,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
      * @throws Exception if the test fails
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0107")
     public void testNotificationAfterFilterChange() throws Exception {
         Mood data = Mood.cautious;
 

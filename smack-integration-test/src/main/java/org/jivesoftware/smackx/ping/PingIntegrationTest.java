@@ -35,6 +35,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.Jid;
 
 public class PingIntegrationTest extends AbstractSmackIntegrationTest {
@@ -44,6 +45,7 @@ public class PingIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0199")
     public void pingServer() throws NotConnectedException, InterruptedException {
         PingManager pingManager = PingManager.getInstanceFor(connection);
         assertTrue(pingManager.pingMyServer());
@@ -78,6 +80,7 @@ public class PingIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0199")
     public void pingAsync() throws InterruptedException, ExecutionException {
         List<Future<Boolean>> pongFutures = Collections.synchronizedList(new ArrayList<Future<Boolean>>());
         Runnable[] pinger = new Runnable[3];

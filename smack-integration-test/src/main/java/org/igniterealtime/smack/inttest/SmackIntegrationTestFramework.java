@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,6 +73,7 @@ import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.MethodParameterScanner;
@@ -128,10 +131,21 @@ public class SmackIntegrationTestFramework {
         final int exitStatus;
         if (failedTests > 0) {
             LOGGER.warning("💀 The following " + failedTests + " tests failed! 💀");
+            final SortedSet<String> bySpecification = new TreeSet<>();
             for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
                 final Throwable cause = failedTest.failureReason;
                 LOGGER.log(Level.SEVERE, failedTest.concreteTest + " failed: " + cause, cause);
+                if (failedTest.concreteTest.method.isAnnotationPresent(SpecificationReference.class)) {
+                    final String specificationReference = getSpecificationReference(failedTest);
+                    if (!specificationReference.isBlank()) {
+                        bySpecification.add("- " + specificationReference + " (as tested by '" + failedTest.concreteTest + "')");
+                    }
+                }
             }
+            if (!bySpecification.isEmpty()) {
+                LOGGER.log(Level.SEVERE, "The failed tests correspond to the following specifications:" + System.lineSeparator() + String.join(System.lineSeparator(), bySpecification));
+            }
+
             exitStatus = 2;
         } else {
             LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
@@ -147,6 +161,21 @@ public class SmackIntegrationTestFramework {
         }
 
         System.exit(exitStatus);
+    }
+
+    private static String getSpecificationReference(FailedTest failedTest) {
+        final SpecificationReference spec = failedTest.concreteTest.method.getAnnotation(SpecificationReference.class);
+        String line = "";
+        if (spec.document() != null && !spec.document().isBlank()) {
+            line += spec.document().trim();
+            if (spec.section() != null && !spec.section().isBlank()) {
+                line += " section " + spec.section().trim();
+            }
+        }
+        if (spec.quote() != null && !spec.quote().isBlank()) {
+            line += ":\t\"" + spec.quote().trim() + "\"";
+        }
+        return line;
     }
 
     public SmackIntegrationTestFramework(Configuration configuration) {
@@ -388,6 +417,28 @@ public class SmackIntegrationTestFramework {
                 }
                 if (config.isMethodDisabled(method)) {
                     DisabledTest disabledTest = new DisabledTest(method, "Skipping test method " + methodName + " because it is disabled");
+                    testRunResult.disabledTests.add(disabledTest);
+                    it.remove();
+                    continue;
+                }
+
+                final String specification;
+                if (method.isAnnotationPresent(SpecificationReference.class)) {
+                    final SpecificationReference specificationReferenceAnnotation = method.getAnnotation(SpecificationReference.class);
+                    specification = Configuration.normalizeSpecification(specificationReferenceAnnotation.document());
+                } else {
+                    specification = null;
+                }
+
+                if (!config.isSpecificationEnabled(specification)) {
+                    DisabledTest disabledTest = new DisabledTest(method, "Skipping test method " + methodName + " because it tests a specification ('" + specification + "') that is not enabled");
+                    testRunResult.disabledTests.add(disabledTest);
+                    it.remove();
+                    continue;
+                }
+
+                if (config.isSpecificationDisabled(specification)) {
+                    DisabledTest disabledTest = new DisabledTest(method, "Skipping test method " + methodName + " because it tests a specification ('" + specification + "') that is disabled");
                     testRunResult.disabledTests.add(disabledTest);
                     it.remove();
                     continue;

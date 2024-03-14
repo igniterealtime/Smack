@@ -42,6 +42,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -74,6 +75,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0313")
     public void mamTest() throws TimeoutException, Exception {
         EntityBareJid userOne = conOne.getUser().asEntityBareJid();
         EntityBareJid userTwo = conTwo.getUser().asEntityBareJid();
@@ -124,6 +126,7 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0313")
     public void mamPageTest() throws TimeoutException, Exception {
         final int messagesPerPage = 10;
         final int numPages = 3;

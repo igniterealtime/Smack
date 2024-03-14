@@ -33,6 +33,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackLowLevelIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;
@@ -53,6 +54,7 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
     }
 
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0048")
     public void testMucBookmarksAutojoin(AbstractXMPPConnection connection) throws InterruptedException,
                     TestNotPossibleException, XMPPException, SmackException, IOException {
         final BookmarkManager bookmarkManager = BookmarkManager.getBookmarkManager(connection);

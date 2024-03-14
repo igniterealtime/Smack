@@ -37,6 +37,7 @@ import org.jivesoftware.smackx.iot.data.element.TimestampElement;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 
 public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
@@ -58,6 +59,7 @@ public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
      * @throws TimeoutException if there was a timeout.
      */
     @SmackIntegrationTest
+    @SpecificationReference(document = "XEP-0347")
     public void dataTest() throws Exception {
         final String key = StringUtils.randomString(12);
         final String sn = StringUtils.randomString(12);
