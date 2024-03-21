@@ -57,6 +57,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+import org.jivesoftware.smack.debugger.SmackDebugger;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
@@ -676,15 +677,19 @@ public class SmackIntegrationTestFramework {
 
         public void run() throws InterruptedException, XMPPException, IOException, SmackException {
             try {
+                SmackDebugger.putInContext("sint.test", test.getClass().getSimpleName());
+
                 // Run the @BeforeClass methods (if any)
                 executeSinttestSpecialMethod(beforeClassMethod);
 
                 for (ConcreteTest concreteTest : concreteTests) {
+                    SmackDebugger.putInContext("sint.concreteTest", concreteTest.toString());
                     runConcreteTest(concreteTest);
                 }
             }
             finally {
                 executeSinttestSpecialMethod(afterClassMethod);
+                SmackDebugger.clearContext();
             }
         }
 

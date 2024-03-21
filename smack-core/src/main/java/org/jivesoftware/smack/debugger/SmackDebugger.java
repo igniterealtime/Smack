@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2017 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2017 Florian Schmaus, 2024 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ package org.jivesoftware.smack.debugger;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
@@ -40,6 +42,8 @@ import org.jxmpp.xml.splitter.XmppXmlSplitter;
  * @author Gaston Dombiak
  */
 public abstract class SmackDebugger {
+
+    private static final Map<String, String> CONTEXT = new HashMap<>();
 
     protected final XMPPConnection connection;
 
@@ -149,4 +153,46 @@ public abstract class SmackDebugger {
      */
     public abstract void onOutgoingStreamElement(TopLevelStreamElement streamElement);
 
+    /**
+     * Associates the specified value with the specified key in the debugging context, following the contract as
+     * specified by {@link Map#put(Object, Object)}.
+     *
+     * @param key key with which the specified value is to be associated
+     * @param value value to be associated with the specified key
+     * @return the previous value associated with key, or null if there was no mapping for key. A null return can
+     *         also indicate that the map previously associated null with key.
+     */
+    public static String putInContext(final String key, final String value) {
+        return CONTEXT.put(key, value);
+    }
+
+    /**
+     * Returns the value to which the specified key is mapped, or null if the debugging context contains no mapping for
+     * the key, following the contract as specified by {@link Map#get(Object)}.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or null if this map contains no mapping for the key
+     */
+    public static String getFromContext(final String key) {
+        return CONTEXT.get(key);
+    }
+
+    /**
+     * Removes the mapping for a key from the debugging context if it is present, following the contract as
+     * specified by {@link Map#remove(Object)}.
+     *
+     * @param key the key whose associated value is to be returned
+     * @return the value to which the specified key is mapped, or null if this map contains no mapping for the key
+     */
+    public static String removeFromContext(final String key) {
+        return CONTEXT.remove(key);
+    }
+
+    /**
+     * Removes all of the mappings from the debugging context. The debugging context will be empty after this call
+     * returns.
+     */
+    public static void clearContext() {
+        CONTEXT.clear();
+    }
 }
