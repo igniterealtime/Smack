@@ -125,7 +125,7 @@
  * </tr>
  * <tr>
  * <td>debugger</td>
- * <td>‘console’ for console debugger, ‘enhanced’ for the enhanced debugger</td>
+ * <td>‘console’ for console debugger, ‘enhanced’ for the enhanced debugger, or the name of a class that implements SmackDebuggerFactory for a custom debugger</td>
  * </tr>
  * <tr>
  * <td>enabledTests</td>
@@ -284,6 +284,18 @@
  * Debug Window launching when your tests launch, and you'll get a stanza-by-stanza account of what happened on each
  * connection, hopefully enough to diagnose what went wrong.
  * </p>
+ * <p>
+ * Lastly, you can provide a custom debugger, by providing the fully qualified name of a class that implements
+ * {@link org.jivesoftware.smack.debugger.SmackDebuggerFactory}. The provided factory must declare a public constructor
+ * that takes no arguments.
+ * </p>
+ * <p>
+ * Example:
+ * </p>
+ *
+ * <pre>{@code
+ * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.debugger="org.example.MyDebugger$Factory"
+ * }</pre>
  * <h3>Debugging in the IDE</h3>
  * <p>
  * If the output isn't enough, you may need to debug and inspect running code within the IDE. Depending on the IDE, in
@@ -302,7 +314,7 @@
  * </p>
  *
  * <pre>{@code
- * $ gradle integrationTest -Dsinttest.service=my.xmppserivce.org -Dsinttest.testPackages=org.mypackage,org.otherpackage
+ * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.testPackages=org.mypackage,org.otherpackage
  * }</pre>
  */
 package org.igniterealtime.smack.inttest;

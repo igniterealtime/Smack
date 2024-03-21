@@ -64,6 +64,7 @@ import org.jivesoftware.smack.util.dns.dnsjava.DNSJavaResolver;
 import org.jivesoftware.smack.util.dns.javax.JavaxResolver;
 import org.jivesoftware.smack.util.dns.minidns.MiniDnsResolver;
 
+import org.jivesoftware.smackx.debugger.EnhancedDebugger;
 import org.jivesoftware.smackx.debugger.EnhancedDebuggerWindow;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
@@ -138,12 +139,8 @@ public class SmackIntegrationTestFramework {
             exitStatus = 0;
         }
 
-        switch (config.debugger) {
-        case enhanced:
+        if (config.debuggerFactory instanceof EnhancedDebugger) {
             EnhancedDebuggerWindow.getInstance().waitUntilClosed();
-            break;
-        default:
-            break;
         }
 
         System.exit(exitStatus);
@@ -175,7 +172,7 @@ public class SmackIntegrationTestFramework {
         this.connectionManager = new XmppConnectionManager(this);
 
         LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting\nSmack version: " + Smack.getVersion());
-        if (config.debugger != Configuration.Debugger.none) {
+        if (config.debuggerFactory != null) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
             // TODO configure JUL for log?

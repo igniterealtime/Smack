@@ -36,6 +36,7 @@ import javax.net.ssl.SSLContext;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
+import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.Objects;
@@ -59,12 +60,6 @@ public final class Configuration {
         disabled,
         inBandRegistration,
         serviceAdministration,
-    }
-
-    public enum Debugger {
-        none,
-        console,
-        enhanced,
     }
 
     public enum DnsResolver {
@@ -101,7 +96,7 @@ public final class Configuration {
 
     public final String accountThreePassword;
 
-    public final Debugger debugger;
+    public final SmackDebuggerFactory debuggerFactory;
 
     public final Set<String> enabledTests;
 
@@ -148,7 +143,7 @@ public final class Configuration {
         } else {
             replyTimeout = 47000;
         }
-        debugger = builder.debugger;
+        debuggerFactory = builder.debuggerFactory;
         if (StringUtils.isNotEmpty(builder.adminAccountUsername, builder.adminAccountPassword)) {
             accountRegistration = AccountRegistration.serviceAdministration;
         }
@@ -193,16 +188,8 @@ public final class Configuration {
             b.setSecurityMode(securityMode);
             b.setXmppDomain(service);
 
-            switch (debugger) {
-            case enhanced:
-                b.setDebuggerFactory(EnhancedDebugger.Factory.INSTANCE);
-                break;
-            case console:
-                b.setDebuggerFactory(ConsoleDebugger.Factory.INSTANCE);
-                break;
-            case none:
-                // Nothing to do :).
-                break;
+            if (debuggerFactory != null) {
+                b.setDebuggerFactory(debuggerFactory);
             }
         };
 
@@ -246,7 +233,7 @@ public final class Configuration {
 
         public String accountThreePassword;
 
-        private Debugger debugger = Debugger.none;
+        private SmackDebuggerFactory debuggerFactory;
 
         private Set<String> enabledTests;
 
@@ -352,18 +339,23 @@ public final class Configuration {
             case "false": // For backwards compatibility settings with previous boolean setting.
                 LOGGER.warning("Debug string \"" + debuggerString + "\" is deprecated, please use \"none\" instead");
             case "none":
-                debugger = Debugger.none;
+                debuggerFactory = null;
                 break;
             case "true": // For backwards compatibility settings with previous boolean setting.
                 LOGGER.warning("Debug string \"" + debuggerString + "\" is deprecated, please use \"console\" instead");
             case "console":
-                debugger = Debugger.console;
+                debuggerFactory = ConsoleDebugger.Factory.INSTANCE;
                 break;
             case "enhanced":
-                debugger = Debugger.enhanced;
+                debuggerFactory = EnhancedDebugger.Factory.INSTANCE;
                 break;
             default:
-                throw new IllegalArgumentException("Unrecognized debugger string: " + debuggerString);
+                try {
+                    final Class<? extends SmackDebuggerFactory> aClass = Class.forName(debuggerString).asSubclass(SmackDebuggerFactory.class);
+                    debuggerFactory = aClass.getConstructor().newInstance();
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Unable to construct debugger from value: " + debuggerString, e);
+                }
             }
             return this;
         }
