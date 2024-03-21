@@ -87,6 +87,8 @@ public class SmackIntegrationTestFramework {
 
     public static boolean SINTTEST_UNIT_TEST = false;
 
+    private static ConcreteTest TEST_UNDER_EXECUTION;
+
     protected final Configuration config;
 
     protected TestRunResult testRunResult;
@@ -242,6 +244,10 @@ public class SmackIntegrationTestFramework {
         }
 
         return testRunResult;
+    }
+
+    public static ConcreteTest getTestUnderExecution() {
+        return TEST_UNDER_EXECUTION;
     }
 
     @SuppressWarnings({"Finally"})
@@ -680,7 +686,12 @@ public class SmackIntegrationTestFramework {
                 executeSinttestSpecialMethod(beforeClassMethod);
 
                 for (ConcreteTest concreteTest : concreteTests) {
-                    runConcreteTest(concreteTest);
+                    TEST_UNDER_EXECUTION = concreteTest;
+                    try {
+                        runConcreteTest(concreteTest);
+                    } finally {
+                        TEST_UNDER_EXECUTION = null;
+                    }
                 }
             }
             finally {
@@ -729,20 +740,32 @@ public class SmackIntegrationTestFramework {
         return null;
     }
 
-    static final class ConcreteTest {
+    public static final class ConcreteTest {
         private final TestType testType;
         private final Method method;
         private final Executor executor;
-        private final String[] subdescriptons;
+        private final List<String> subdescriptons;
 
         private ConcreteTest(TestType testType, Method method, Executor executor, String... subdescriptions) {
             this.testType = testType;
             this.method = method;
             this.executor = executor;
-            this.subdescriptons = subdescriptions;
+            this.subdescriptons = List.of(subdescriptions);
         }
 
         private transient String stringCache;
+
+        public TestType getTestType() {
+            return testType;
+        }
+
+        public Method getMethod() {
+            return method;
+        }
+
+        public List<String> getSubdescriptons() {
+            return subdescriptons;
+        }
 
         @Override
         public String toString() {
@@ -756,9 +779,9 @@ public class SmackIntegrationTestFramework {
                 .append(method.getName())
                 .append(" (")
                 .append(testType.name());
-            if (subdescriptons != null && subdescriptons.length > 0) {
+            if (!subdescriptons.isEmpty()) {
                 sb.append(", ");
-                StringUtils.appendTo(Arrays.asList(subdescriptons), sb);
+                StringUtils.appendTo(subdescriptons, sb);
             }
             sb.append(')');
 
