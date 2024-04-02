@@ -1,5 +1,17 @@
 # Smack Changelog
 
+# 4.4.8 -- 2024-04-02
+
+### Improvement
+
+[SMACK-941](https://igniterealtime.atlassian.net/browse/SMACK-941) Suppress "roster not loaded while processing presence" warning if its caused by the reflected self-presence
+
+### Bug
+
+[SMACK-938](https://igniterealtime.atlassian.net/browse/SMACK-938) Busy loop in SmackReactor
+
+[SMACK-940](https://igniterealtime.atlassian.net/browse/SMACK-940) Ignore IPv6 Zone IDs in incoming streamhost candidates
+
 # 4.4.7 -- 2023-11-25
 
 ### Improvement
