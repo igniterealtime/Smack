@@ -302,7 +302,7 @@ public final class Configuration {
             this.accountOneUsername = StringUtils.requireNotNullNorEmpty(accountOneUsername, "accountOneUsername must not be null nor empty");
             this.accountOnePassword = StringUtils.requireNotNullNorEmpty(accountOnePassword, "accountOnePassword must not be null nor empty");
             this.accountTwoUsername = StringUtils.requireNotNullNorEmpty(accountTwoUsername, "accountTwoUsername must not be null nor empty");
-            this.accountTwoPassword = StringUtils.requireNotNullNorEmpty(accountTwoPassword, "accountTwoPasswordmust not be null nor empty");
+            this.accountTwoPassword = StringUtils.requireNotNullNorEmpty(accountTwoPassword, "accountTwoPassword must not be null nor empty");
             this.accountThreeUsername = StringUtils.requireNotNullNorEmpty(accountThreeUsername, "accountThreeUsername must not be null nor empty");
             this.accountThreePassword = StringUtils.requireNotNullNorEmpty(accountThreePassword, "accountThreePassword must not be null nor empty");
             return this;
@@ -509,7 +509,7 @@ public final class Configuration {
 
         String debugString = properties.getProperty("debug");
         if (debugString != null) {
-            LOGGER.warning("Usage of depreacted 'debug' option detected, please use 'debugger' instead");
+            LOGGER.warning("Usage of deprecated 'debug' option detected, please use 'debugger' instead");
             builder.setDebugger(debugString);
         }
         builder.setDebugger(properties.getProperty("debugger"));

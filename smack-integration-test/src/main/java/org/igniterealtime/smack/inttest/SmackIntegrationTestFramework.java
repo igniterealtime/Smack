@@ -289,7 +289,7 @@ public class SmackIntegrationTestFramework {
             }
 
             if (config.isClassDisabled(testClass)) {
-                DisabledTestClass disabledTestClass = new DisabledTestClass(testClass, "Skipping test class " + testClassName + " because it is disalbed");
+                DisabledTestClass disabledTestClass = new DisabledTestClass(testClass, "Skipping test class " + testClassName + " because it is disabled");
                 testRunResult.disabledTestClasses.add(disabledTestClass);
                 continue;
             }
@@ -491,7 +491,7 @@ public class SmackIntegrationTestFramework {
                 return;
             }
             Throwable nonFatalFailureReason;
-            // junit assert's throw an AssertionError if they fail, those should not be
+            // junit asserts throw an AssertionError if they fail, those should not be
             // thrown up, as it would be done by throwFatalException()
             if (cause instanceof AssertionError) {
                 nonFatalFailureReason = cause;
@@ -591,8 +591,8 @@ public class SmackIntegrationTestFramework {
             throw (InterruptedException) e;
         }
 
-        // We handle NullPointerException as a non fatal exception, as they are mostly caused by an invalid reply where
-        // a extension element is missing. Consider for example
+        // We handle NullPointerException as a non-fatal exception, as they are mostly caused by an invalid reply where
+        // an extension element is missing. Consider for example
         // assertEquals(StanzaError.Condition.foo, response.getError().getCondition())
         // Otherwise NPEs could be caused by an internal bug in Smack, e.g. missing null handling.
         if (e instanceof NullPointerException) {
@@ -610,9 +610,9 @@ public class SmackIntegrationTestFramework {
     public static final class TestRunResult {
 
         /**
-         * A short String of lowercase characters and numbers used to identify a integration test
+         * A short String of lowercase characters and numbers used to identify an integration test
          * run. We use lowercase characters because this string will eventually be part of the
-         * localpart of the used JIDs (and the localpart is case insensitive).
+         * localpart of the used JIDs (and the localpart is case-insensitive).
          */
         public final String testRunId = StringUtils.insecureRandomString(5).toLowerCase(Locale.US);
 
