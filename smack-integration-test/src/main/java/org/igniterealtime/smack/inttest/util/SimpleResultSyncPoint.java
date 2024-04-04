@@ -16,6 +16,8 @@
  */
 package org.igniterealtime.smack.inttest.util;
 
+import org.junit.jupiter.api.Assertions;
+
 public class SimpleResultSyncPoint extends ResultSyncPoint<Boolean, Exception> {
 
     public void signal() {
@@ -28,5 +30,15 @@ public class SimpleResultSyncPoint extends ResultSyncPoint<Boolean, Exception> {
 
     public void signalFailure(String failureMessage) {
         signal(new Exception(failureMessage));
+    }
+
+    public static void assertSuccess(SimpleResultSyncPoint ResultSyncPoint, long timeout, String message) throws InterruptedException {
+        try {
+            ResultSyncPoint.waitForResult(timeout);
+        } catch (InterruptedException e) {
+            throw e;
+        } catch (Exception e) {
+            Assertions.fail(message, e);
+        }
     }
 }
