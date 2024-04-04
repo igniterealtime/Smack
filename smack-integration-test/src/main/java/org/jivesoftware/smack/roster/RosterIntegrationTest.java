@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smack.roster;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
@@ -101,7 +99,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         try {
             rosterOne.createItemAndRequestSubscription(conTwo.getUser().asBareJid(), conTwosRosterName, null);
 
-            assertTrue(addedAndSubscribed.waitForResult(2 * connection.getReplyTimeout()));
+            SimpleResultSyncPoint.assertSuccess(addedAndSubscribed, 2 * connection.getReplyTimeout(), "Did not receive expected roster item.");
         }
         finally {
             rosterTwo.removeSubscribeListener(subscribeListener);

@@ -18,10 +18,10 @@ package org.igniterealtime.smack.inttest.util;
 
 import org.junit.jupiter.api.Assertions;
 
-public class SimpleResultSyncPoint extends ResultSyncPoint<Boolean, Exception> {
+public class SimpleResultSyncPoint extends ResultSyncPoint<Void, Exception> {
 
     public void signal() {
-        signal(Boolean.TRUE);
+        signal((Void) null);
     }
 
     public void signalFailure() {

@@ -63,10 +63,7 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
         // conOne.
         conTwo.disconnect();
 
-        Boolean result = offlineTriggered.waitForResult(timeout);
-        if (!result) {
-            throw new Exception("presenceUnavailable() was not called");
-        }
+        SimpleResultSyncPoint.assertSuccess(offlineTriggered, timeout, "presenceUnavailable() was not called");
     }
 
 }
