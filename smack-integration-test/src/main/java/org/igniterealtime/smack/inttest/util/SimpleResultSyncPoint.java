@@ -32,9 +32,9 @@ public class SimpleResultSyncPoint extends ResultSyncPoint<Boolean, Exception> {
         signal(new Exception(failureMessage));
     }
 
-    public static void assertSuccess(SimpleResultSyncPoint ResultSyncPoint, long timeout, String message) throws InterruptedException {
+    public static void assertSuccess(SimpleResultSyncPoint resultSyncPoint, long timeout, String message) throws InterruptedException {
         try {
-            ResultSyncPoint.waitForResult(timeout);
+            resultSyncPoint.waitForResult(timeout);
         } catch (InterruptedException e) {
             throw e;
         } catch (Exception e) {
