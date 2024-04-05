@@ -35,6 +35,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -58,9 +59,10 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         "sends a service discovery information (\"disco#info\") query to the MUC service's JID. The service MUST " +
         "return its identity and the features it supports.")
     public void mucTestForDiscoveringFeatures() throws Exception {
-        DiscoverInfo info = mucManagerOne.getMucServiceDiscoInfo(mucManagerOne.getMucServiceDomains().get(0));
-        assertTrue(info.getIdentities().size() > 0);
-        assertTrue(info.getFeatures().size() > 0);
+        final DomainBareJid mucServiceAddress = mucManagerOne.getMucServiceDomains().get(0);
+        DiscoverInfo info = mucManagerOne.getMucServiceDiscoInfo(mucServiceAddress);
+        assertFalse(info.getIdentities().isEmpty(), "Expected the service discovery information for service " + mucServiceAddress + " to include identities (but it did not).");
+        assertFalse(info.getFeatures().isEmpty(), "Expected the service discovery information for service " + mucServiceAddress + " to include features (but it did not).");
     }
 
     /**
@@ -91,8 +93,8 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
             tryDestroy(mucAsSeenByTwo);
         }
 
-        assertTrue(rooms.containsKey(mucAddressPublic));
-        assertFalse(rooms.containsKey(mucAddressHidden));
+        assertTrue(rooms.containsKey(mucAddressPublic), "Expected the disco response from " + mucService + " to include the public room " + mucAddressPublic + " (but it did not).");
+        assertFalse(rooms.containsKey(mucAddressHidden), "Expected the disco response from " + mucService + " to not include the hidden room " + mucAddressHidden + " (but it did).");
     }
 
     /**
@@ -116,8 +118,8 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
             tryDestroy(mucAsSeenByOne);
         }
 
-        assertTrue(discoInfo.getIdentities().size() > 0);
-        assertTrue(discoInfo.getFeatures().size() > 0);
+        assertFalse(discoInfo.getIdentities().isEmpty(), "Expected the service discovery information for room " + mucAddress + " to include identities (but it did not).");
+        assertFalse(discoInfo.getFeatures().isEmpty(), "Expected the service discovery information for room " + mucAddress + " to include features (but it did not).");
     }
 
     /**
@@ -141,7 +143,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
             tryDestroy(mucAsSeenByOne);
         }
 
-        assertEquals(1, roomItems.getItems().size());
+        assertEquals(1, roomItems.getItems().size(), "Unexpected amount of disco items for " + mucAddress);
     }
 
     /**
@@ -168,7 +170,8 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         XMPPException.XMPPErrorException xe;
         try {
             xe = assertThrows(XMPPException.XMPPErrorException.class,
-                            () -> ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(mucAsSeenByOneUserJid));
+                            () -> ServiceDiscoveryManager.getInstanceFor(conTwo).discoverItems(mucAsSeenByOneUserJid),
+                    "Expected an XMPP error when " + conTwo.getUser() + " was trying to discover items of " + mucAsSeenByOneUserJid);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -182,6 +185,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
             expectedCondition = StanzaError.Condition.not_acceptable;
             break;
         }
-        assertEquals(xe.getStanzaError().getCondition(), expectedCondition);
+        assertEquals(xe.getStanzaError().getCondition(), expectedCondition,
+            "Unexpected error condition in error returned when " + conTwo.getUser() + " was trying to discover items of " + mucAsSeenByOneUserJid);
     }
 }

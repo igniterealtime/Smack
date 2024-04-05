@@ -62,7 +62,7 @@ public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
         registerThing(discoveryManagerOne, thing);
 
         IoTClaimed iotClaimed = discoveryManagerTwo.claimThing(thing.getMetaTags());
-        assertEquals(conOne.getUser().asBareJid(), iotClaimed.getJid());
+        assertEquals(conOne.getUser().asBareJid(), iotClaimed.getJid(), "Thing claimed by an unexpected JID");
 
         discoveryManagerTwo.disownThing(iotClaimed.getJid());
 

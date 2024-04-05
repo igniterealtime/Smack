@@ -85,7 +85,7 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         // So we trigger it manually here.
         MucBookmarkAutojoinManager.getInstanceFor(connection).autojoinBookmarkedConferences();
 
-       assertTrue(muc.isJoined());
+       assertTrue(muc.isJoined(), "Expected " + connection.getUser() + " to automatically join room " + muc.getRoom() + " after a reconnect, but it did not.");
 
        // If the test went well, leave the MUC
        muc.leave();

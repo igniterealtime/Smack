@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smack.roster;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
@@ -78,16 +76,16 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
                     BareJid bareJid = conTwo.getUser().asBareJid();
                     RosterEntry rosterEntry = rosterOne.getEntry(bareJid);
                     if (rosterEntry == null) {
-                        addedAndSubscribed.signalFailure("No roster entry for " + bareJid);
+                        addedAndSubscribed.signalFailure("Added/Updated entry was not for " + bareJid);
                         return;
                     }
                     String name = rosterEntry.getName();
                     if (StringUtils.isNullOrEmpty(name)) {
-                        addedAndSubscribed.signalFailure("Roster entry without name");
+                        addedAndSubscribed.signalFailure("Added/Updated entry without name");
                         return;
                     }
                     if (!rosterEntry.getName().equals(conTwosRosterName)) {
-                        addedAndSubscribed.signalFailure("Roster name does not match");
+                        addedAndSubscribed.signalFailure("Added/Updated entry name does not match. Expected: " + conTwosRosterName + " but was: " + rosterEntry.getName());
                         return;
                     }
                     if (!rosterEntry.getType().equals(ItemType.to)) {
@@ -100,8 +98,9 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
 
         try {
             rosterOne.createItemAndRequestSubscription(conTwo.getUser().asBareJid(), conTwosRosterName, null);
-
-            assertTrue(addedAndSubscribed.waitForResult(2 * connection.getReplyTimeout()));
+            assertResult(addedAndSubscribed, 2 * connection.getReplyTimeout(),
+                "A roster entry for " + conTwo.getUser().asBareJid() + " using the name '" + conTwosRosterName +
+                "' of type 'to' was expected to be added to the roster of " + conOne.getUser() + " (but it was not).");
         }
         finally {
             rosterTwo.removeSubscribeListener(subscribeListener);

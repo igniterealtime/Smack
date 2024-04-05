@@ -75,7 +75,7 @@ public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
         Chat chat = ChatManager.getInstanceFor(conOne)
                 .chatWith(conTwo.getUser().asEntityBareJid());
         chat.send("Hi!");
-        activeSyncPoint.waitForResult(timeout);
+        assertResult(activeSyncPoint, "Expected " + conTwo.getUser() + " to receive an 'active' chat state from " + conOne + " (but they did not).");
     }
 
     @AfterClass

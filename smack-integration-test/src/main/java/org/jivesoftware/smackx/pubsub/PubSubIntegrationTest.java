@@ -125,9 +125,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
                 Item item = new PayloadItem<>(itemId, dummyPayload);
                 leafNode.publish(item);
-            });
-            assertEquals(StanzaError.Type.MODIFY, e.getStanzaError().getType());
-            assertNotNull(e.getStanzaError().getExtension("item-forbidden", "http://jabber.org/protocol/pubsub#errors"));
+            }, "Expected an error after publishing item " + itemId + " (but none occurred).");
+            assertEquals(StanzaError.Type.MODIFY, e.getStanzaError().getType(), "Unexpected error type");
+            assertNotNull(e.getStanzaError().getExtension("item-forbidden", "http://jabber.org/protocol/pubsub#errors"), "Expected error to contain 'item-forbidden', but it did not.");
         }
         finally {
             pubSubManagerOne.deleteNode(nodename);

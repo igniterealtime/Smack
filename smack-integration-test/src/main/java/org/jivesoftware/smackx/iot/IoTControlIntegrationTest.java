@@ -89,7 +89,7 @@ public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
 
             SetData data = new SetBoolData(testRunId, true);
             IoTSetResponse response = IoTControlManagerTwo.setUsingIq(conOne.getUser(), data);
-            assertNotNull(response);
+            assertNotNull(response, "Expected " + conOne.getUser() + " to receive an IQ response with an 'setResponse' child element, but no such response was received.");
         }
         finally {
             IoTControlManagerOne.uninstallThing(controlThing);

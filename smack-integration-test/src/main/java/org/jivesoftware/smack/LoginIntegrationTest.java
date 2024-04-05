@@ -64,7 +64,8 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
                             () -> connection.login(nonExistentUserString, invalidPassword));
 
             SaslNonza.SASLFailure saslFailure = saslErrorException.getSASLFailure();
-            assertEquals(SASLError.not_authorized, saslFailure.getSASLError());
+            assertEquals(SASLError.not_authorized, saslFailure.getSASLError(),
+        "Expected the server to return the appropriate SASL failure condition (but it did not)");
         } finally {
             connection.disconnect();
         }

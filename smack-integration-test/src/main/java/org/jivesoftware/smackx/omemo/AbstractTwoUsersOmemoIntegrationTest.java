@@ -17,7 +17,7 @@
 package org.jivesoftware.smackx.omemo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.IOException;
 
@@ -51,7 +51,9 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
         alice = OmemoManagerSetupHelper.prepareOmemoManager(conOne);
         bob = OmemoManagerSetupHelper.prepareOmemoManager(conTwo);
 
-        assertFalse(alice.getDeviceId().equals(bob.getDeviceId()));
+        // TODO is this a test assertion, or a bug in the test implementation (in which case an Exception should be thrown instead).
+        assertNotEquals(alice.getDeviceId(), bob.getDeviceId(),
+            "Expected device ID for " + conOne.getUser() + " to differ from that of " + conTwo.getUser() + " (but they did not)");
 
         // Subscribe presences
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(alice.getConnection(), bob.getConnection(), timeout);
@@ -59,8 +61,10 @@ public abstract class AbstractTwoUsersOmemoIntegrationTest extends AbstractOmemo
         OmemoManagerSetupHelper.trustAllIdentitiesWithTests(alice, bob);    // Alice trusts Bob's devices
         OmemoManagerSetupHelper.trustAllIdentitiesWithTests(bob, alice);    // Bob trusts Alice' and Mallory's devices
 
-        assertEquals(bob.getOwnFingerprint(), alice.getActiveFingerprints(bob.getOwnJid()).get(bob.getOwnDevice()));
-        assertEquals(alice.getOwnFingerprint(), bob.getActiveFingerprints(alice.getOwnJid()).get(alice.getOwnDevice()));
+        assertEquals(bob.getOwnFingerprint(), alice.getActiveFingerprints(bob.getOwnJid()).get(bob.getOwnDevice()),
+            "Expected fingerprint of " + conTwo.getUser() + "'s device as known to " + conOne.getUser() + " to be equal to " + conTwo.getUser() + "'s own fingerprint (but it was not).");
+        assertEquals(alice.getOwnFingerprint(), bob.getActiveFingerprints(alice.getOwnJid()).get(alice.getOwnDevice()),
+            "Expected fingerprint of " + conOne.getUser() + "'s device as known to " + conTwo.getUser() + " to be equal to " + conOne.getUser() + "'s own fingerprint (but it was not).");
     }
 
     @AfterClass

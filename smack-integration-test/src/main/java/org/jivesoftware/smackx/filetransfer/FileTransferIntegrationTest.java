@@ -32,7 +32,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
-import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 @SpecificationReference(document = "XEP-0096")
 public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
@@ -67,7 +67,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     private void genericfileTransferTest() throws Exception {
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
         final FileTransferListener receiveListener = new FileTransferListener() {
             @Override
             public void fileTransferRequest(FileTransferRequest request) {
@@ -84,7 +84,7 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
                     os.flush();
                     dataReceived = os.toByteArray();
                     if (Arrays.equals(dataToSend, dataReceived)) {
-                        resultSyncPoint.signal("Received data matches send data. \\o/");
+                        resultSyncPoint.signal();
                     }
                     else {
                         resultSyncPoint.signal(new Exception("Received data does not match"));
@@ -117,7 +117,9 @@ public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
             }
         }
 
-        resultSyncPoint.waitForResult(MAX_FT_DURATION * 1000);
+        assertResult(resultSyncPoint, MAX_FT_DURATION * 1000,
+    "Expected data to be transferred successfully from " + conOne.getUser() + " to " + conTwo.getUser() +
+            " (but it did not).");
 
         ftManagerTwo.removeFileTransferListener(receiveListener);
     }

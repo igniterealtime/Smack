@@ -104,6 +104,6 @@ public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest 
 
         byte[] downBytes = baos.toByteArray();
 
-        assertArrayEquals(upBytes, downBytes);
+        assertArrayEquals(upBytes, downBytes, "Expected the downloaded bytes to be equal to the uploaded bytes (but they were not).");
     }
 }

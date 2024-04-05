@@ -86,23 +86,23 @@ public class IoTDataIntegrationTest extends AbstractSmackIntegrationTest {
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
 
-        assertEquals(1, values.size());
+        assertEquals(1, values.size(), "An unexpected amount of momentary values was received by " + conOne.getUser());
         IoTFieldsExtension iotFieldsExtension = values.get(0);
         List<NodeElement> nodes = iotFieldsExtension.getNodes();
 
-        assertEquals(1, nodes.size());
+        assertEquals(1, nodes.size(), "The momentary value received by " + conOne.getUser() + " contains an unexpected amount of nodes.");
         NodeElement node = nodes.get(0);
         List<TimestampElement> timestamps = node.getTimestampElements();
 
-        assertEquals(1, timestamps.size());
+        assertEquals(1, timestamps.size(), "The node received by " + conOne.getUser() + " contains an unexpected amount of timestamps.");
         TimestampElement timestamp = timestamps.get(0);
         List<? extends IoTDataField> fields = timestamp.getDataFields();
 
-        assertEquals(1, fields.size());
+        assertEquals(1, fields.size(), "The timestamp received by " + conOne.getUser() + " contains an unexpected amount of data fields.");
         IoTDataField dataField = fields.get(0);
-        assertTrue(dataField instanceof IoTDataField.IntField);
+        assertTrue(dataField instanceof IoTDataField.IntField, "The data field received by " + conOne.getUser() + " was expected to be an instance of " + IoTDataField.IntField.class.getSimpleName() + ", but instead, it was " + dataField.getClass().getSimpleName());
         IoTDataField.IntField intDataField = (IoTDataField.IntField) dataField;
-        assertEquals(testRunId, intDataField.getName());
-        assertEquals(value, intDataField.getValue());
+        assertEquals(testRunId, intDataField.getName(), "Unexpected name in the data field received by " + conOne.getUser());
+        assertEquals(value, intDataField.getValue(), "Unexpected value in the data field received by " + conOne.getUser());
     }
 }

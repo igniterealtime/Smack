@@ -32,6 +32,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackSpecificLowLevelIntegration
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.jxmpp.jid.EntityFullJid;
 
 public class StreamManagementTest extends AbstractSmackSpecificLowLevelIntegrationTest<XMPPTCPConnection> {
 
@@ -57,7 +58,7 @@ public class StreamManagementTest extends AbstractSmackSpecificLowLevelIntegrati
 
         try {
             send(body1, conOne, conTwo);
-            assertMessageWithBodyReceived(body1, collector);
+            assertMessageWithBodyReceived(body1, collector, conTwo.getUser());
 
             conOne.instantShutdown();
 
@@ -65,10 +66,10 @@ public class StreamManagementTest extends AbstractSmackSpecificLowLevelIntegrati
 
             // Reconnect with xep198
             conOne.connect().login();
-            assertMessageWithBodyReceived(body2, collector);
+            assertMessageWithBodyReceived(body2, collector, conTwo.getUser());
 
             send(body3, conOne, conTwo);
-            assertMessageWithBodyReceived(body3, collector);
+            assertMessageWithBodyReceived(body3, collector, conTwo.getUser());
         }
         finally {
             collector.cancel();
@@ -84,9 +85,9 @@ public class StreamManagementTest extends AbstractSmackSpecificLowLevelIntegrati
         from.sendStanza(message);
     }
 
-    private static void assertMessageWithBodyReceived(String body, StanzaCollector collector) throws InterruptedException {
+    private static void assertMessageWithBodyReceived(String body, StanzaCollector collector, EntityFullJid recipient) throws InterruptedException {
         Message message = collector.nextResult();
-        assertNotNull(message);
-        assertEquals(body, message.getBody());
+        assertNotNull(message, "Expected '" + recipient + "' to receive a message stanza with body '" + body + "', but it didn't receive the message stanza at all.");
+        assertEquals(body, message.getBody(), "Expected '" + recipient + "'to receive a message stanza with a specific body, but it received a message stanza with a different body.");
     }
 }

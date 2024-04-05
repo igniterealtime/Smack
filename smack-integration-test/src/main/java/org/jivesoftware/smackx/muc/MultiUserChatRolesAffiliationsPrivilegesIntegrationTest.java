@@ -23,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -34,6 +37,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
@@ -65,12 +69,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByTwo.addUserStatusListener(new UserStatusListener() {
             @Override
             public void moderatorGranted() {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -83,7 +87,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             // success" in §9.6, since it'll throw on either an error IQ or on no response.
             mucAsSeenByOne.grantModerator(nicknameTwo);
 
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conTwo.getUser() + " to get a presence update after it was granted the role 'moderator' role in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -105,12 +109,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByThree.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void moderatorGranted(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -122,7 +126,8 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByThree.join(nicknameThree);
 
             mucAsSeenByOne.grantModerator(nicknameTwo);
-            resultSyncPoint.waitForResult(timeout);
+
+            assertResult(resultSyncPoint, "Expected " + conThree.getUser() + " to get a presence update after another user in the room was granted the 'moderator' role in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -144,12 +149,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByTwo.addUserStatusListener(new UserStatusListener() {
             @Override
             public void moderatorRevoked() {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -160,7 +165,8 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
             mucAsSeenByOne.grantModerator(nicknameTwo);
             mucAsSeenByOne.revokeModerator(nicknameTwo);
-            resultSyncPoint.waitForResult(timeout);
+
+            assertResult(resultSyncPoint, "Expected " + conTwo.getUser() + " to get a presence update after its 'moderator' role in " + mucAddress + " was revoked (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -182,12 +188,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByThree.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void moderatorRevoked(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -200,7 +206,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
             mucAsSeenByOne.grantModerator(nicknameTwo);
             mucAsSeenByOne.revokeModerator(nicknameTwo);
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conThree.getUser() + " to get a presence update after the 'moderator' role of another user in the room was revoked in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -221,12 +227,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByTwo.addUserStatusListener(new UserStatusListener() {
             @Override
             public void voiceRevoked() {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -235,7 +241,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByOne.revokeVoice(nicknameTwo);
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conTwo.getUser() + " to get a presence update after its 'voice' privilege was revoked in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -257,12 +263,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByThree.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void voiceRevoked(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -274,7 +280,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByThree.join(nicknameThree);
 
             mucAsSeenByOne.revokeVoice(nicknameTwo);
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conThree.getUser() + " to get a presence update after another user's 'voice' privilege was revoked in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -295,13 +301,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
 
         mucAsSeenByTwo.addUserStatusListener(new UserStatusListener() {
             @Override
             public void adminGranted() {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -312,7 +318,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
             // This implicitly tests "The service MUST add the user to the admin list and then inform the owner of success" in §10.6, since it'll throw on either an error IQ or on no response.
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conTwo.getUser() + " to get a presence update after its was granted 'admin' affiliation in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -335,12 +341,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByThree.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void adminGranted(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -352,7 +358,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByThree.join(nicknameThree);
 
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conThree.getUser() + " to get a presence update after another user was granted 'admin' affiliation in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -374,12 +380,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByTwo.addUserStatusListener(new UserStatusListener() {
             @Override
             public void adminRevoked() {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -390,7 +396,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             mucAsSeenByOne.revokeAdmin(conTwo.getUser().asEntityBareJid());
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conTwo.getUser() + " to get a presence update after its 'admin' affiliation was revoked in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -425,12 +431,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByThree.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void adminRevoked(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -443,7 +449,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
 
             mucAsSeenByOne.revokeAdmin(conTwo.getUser().asEntityBareJid());
-            resultSyncPoint.waitForResult(timeout);
+            assertResult(resultSyncPoint, "Expected " + conThree.getUser() + " to get a presence update after another user's 'admin' affiliation was revoked in " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -477,16 +483,18 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
             Presence kickPresence = resultSyncPoint.waitForResult(timeout);
             MUCUser mucUser = MUCUser.from(kickPresence);
-            assertNotNull(mucUser);
+            assertNotNull(mucUser, "Expected, but unable, to create a MUCUser instance from 'kick' presence: " + kickPresence);
             assertAll(
-                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Missing self-presence status code in kick presence"),
-                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.KICKED_307), "Missing kick status code in kick presence"),
-                    () -> assertEquals(MUCRole.none, mucUser.getItem().getRole(), "Role other than 'none' in kick presence")
+                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Missing self-presence status code in kick presence received by " + conTwo.getUser() + " after being kicked from room " + mucAddress),
+                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.KICKED_307), "Missing kick status code in kick presence received by " + conTwo.getUser() + " after being kicked from room " + mucAddress),
+                    () -> assertEquals(MUCRole.none, mucUser.getItem().getRole(), "Role other than 'none' in kick presence received by " + conTwo.getUser() + " after being kicked from room " + mucAddress)
             );
             Jid itemJid = mucUser.getItem().getJid();
             if (itemJid != null) {
-                assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), itemJid, "Incorrect kicked user in kick presence");
+                assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), itemJid, "Incorrect kicked user in kick presence received by " + conTwo.getUser() + " after being kicked from room " + mucAddress);
             }
+        } catch (TimeoutException e) {
+            fail("Expected " + conTwo.getUser() + " to receive a presence update after it was kicked from room " + mucAddress + " (but it did not).", e);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -522,16 +530,18 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByOne.kickParticipant(nicknameTwo, "Nothing personal. Just a test.");
             Presence kickPresence = resultSyncPoint.waitForResult(timeout);
             MUCUser mucUser = MUCUser.from(kickPresence);
-            assertNotNull(mucUser);
+            assertNotNull(mucUser, "Expected, but unable, to create a MUCUser instance from 'kick' presence: " + kickPresence);
             assertAll(
-                    () -> assertFalse(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Incorrect self-presence status code in kick presence"),
-                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.KICKED_307), "Missing kick status code in kick presence"),
-                    () -> assertEquals(MUCRole.none, mucUser.getItem().getRole(), "Role other than 'none' in kick presence")
+                    () -> assertFalse(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Incorrect self-presence status code in kick presence received by " + conThree.getUser() + " after another user was kicked from room " + mucAddress),
+                    () -> assertTrue(mucUser.getStatus().contains(MUCUser.Status.KICKED_307), "Missing kick status code in kick presence received by " + conThree.getUser() + " after another user was kicked from room " + mucAddress),
+                    () -> assertEquals(MUCRole.none, mucUser.getItem().getRole(), "Role other than 'none' in kick presence received by " + conThree.getUser() + " after another user was kicked from room " + mucAddress)
             );
             Jid itemJid = mucUser.getItem().getJid();
             if (itemJid != null) {
-                assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), itemJid, "Incorrect kicked user in kick presence");
+                assertEquals(conTwo.getUser().asEntityFullJidIfPossible(), itemJid, "Incorrect kicked user in kick presence received by " + conThree.getUser() + " after another user was kicked from room " + mucAddress);
             }
+        } catch (TimeoutException e) {
+            fail("Expected " + conThree.getUser() + " to receive a presence update after another user was kicked from room " + mucAddress + " (but it did not).", e);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -570,8 +580,8 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByThree.leave();
             Presence p2 = mucAsSeenByTwo.join(nicknameTwo);
             Presence p3 = mucAsSeenByThree.join(nicknameThree);
-            assertEquals(MUCAffiliation.owner, MUCUser.from(p2).getItem().getAffiliation());
-            assertEquals(MUCAffiliation.admin, MUCUser.from(p3).getItem().getAffiliation());
+            assertEquals(MUCAffiliation.owner, MUCUser.from(p2).getItem().getAffiliation(), "Unexpected affiliation of " + conTwo.getUser() + " after it re-joined room " + mucAddress);
+            assertEquals(MUCAffiliation.admin, MUCUser.from(p3).getItem().getAffiliation(), "Unexpected affiliation of " + conThree.getUser() + " after it re-joined room " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -602,8 +612,9 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByOne.grantModerator(nicknameTwo);
             XMPPException.XMPPErrorException xe = assertThrows(XMPPException.XMPPErrorException.class,
-                            () -> mucAsSeenByTwo.revokeVoice(nicknameOne));
-            assertEquals(xe.getStanzaError().getCondition().toString(), "not-allowed");
+                            () -> mucAsSeenByTwo.revokeVoice(nicknameOne),
+                    "Expected an XMPP error when " + conTwo.getUser() + " was trying to revoke the 'voice' privilege of " + conOne.getUser() + " in room " + mucAddress);
+            assertEquals(xe.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected stanza error condition in error returned when " + conTwo.getUser() + " was trying to revoke the 'voice' privilege of " + conOne.getUser() + " in room " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -640,16 +651,19 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
             // Admin cannot revoke from Owner
             XMPPException.XMPPErrorException xe1 = assertThrows(XMPPException.XMPPErrorException.class,
-                            () -> mucAsSeenByTwo.revokeModerator(nicknameOne));
-            // Moderator cannot revoke from Admin
-            XMPPException.XMPPErrorException xe2 = assertThrows(XMPPException.XMPPErrorException.class,
-                            () -> mucAsSeenByThree.revokeModerator(nicknameOne));
+                            () -> mucAsSeenByTwo.revokeModerator(nicknameOne),
+                    "Expected an XMPP error when " + conTwo.getUser() + " (an admin) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
             // Moderator cannot revoke from Owner
+            XMPPException.XMPPErrorException xe2 = assertThrows(XMPPException.XMPPErrorException.class,
+                            () -> mucAsSeenByThree.revokeModerator(nicknameOne),
+                    "Expected an XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
+            // Moderator cannot revoke from Admin
             XMPPException.XMPPErrorException xe3 = assertThrows(XMPPException.XMPPErrorException.class,
-                            () -> mucAsSeenByThree.revokeModerator(nicknameTwo));
-            assertEquals(xe1.getStanzaError().getCondition().toString(), "not-allowed");
-            assertEquals(xe2.getStanzaError().getCondition().toString(), "not-allowed");
-            assertEquals(xe3.getStanzaError().getCondition().toString(), "not-allowed");
+                            () -> mucAsSeenByThree.revokeModerator(nicknameTwo),
+                "Expected an XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conTwo.getUser() + " (an admin) in room " + mucAddress);
+            assertEquals(xe1.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected condition in XMPP error when " + conTwo.getUser() + " (an admin) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
+            assertEquals(xe2.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected condition in XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
+            assertEquals(xe3.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected condition in XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conTwo.getUser() + " (an admin) in room " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -678,23 +692,23 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByThree.join(nicknameThree);
 
-            final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+            final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
             mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
                 @Override
                 public void adminGranted(EntityFullJid participant) {
-                    resultSyncPoint.signal("done");
+                    resultSyncPoint.signal();
                 }
             });
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             resultSyncPoint.waitForResult(timeout);
 
-            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
-            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
-            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
-            assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
+            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3, "Unexpected occupant count in room " + mucAddress);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole(),
+                "Unexpected role for occupant " + nicknameOne + " of " + mucAddress);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole(),
+                        "Unexpected role for occupant " + nicknameTwo + " of " + mucAddress);
+            assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole(),
+                "Unexpected role for occupant " + nicknameThree + " of " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -718,11 +732,11 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
         mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void adminGranted(EntityFullJid participant) {
-                resultSyncPoint.signal("done");
+                resultSyncPoint.signal();
             }
         });
 
@@ -744,13 +758,13 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             resultSyncPoint.waitForResult(timeout);
 
-            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
-            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole());
-            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole());
-            assertEquals(threeRole, mucAsSeenByOne.getOccupant(
-                            JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole());
+            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3, "Unexpected occupant count in room " + mucAddress);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole(),
+                "Unexpected role for occupant " + nicknameOne + " of " + mucAddress);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole(),
+                "Unexpected role for occupant " + nicknameTwo + " of " + mucAddress);
+            assertEquals(threeRole, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameThree)).getRole(),
+                "Unexpected role for occupant " + nicknameThree + " of " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -780,11 +794,11 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
         createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
 
-        final ResultSyncPoint<String, Exception> adminResultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint adminResultSyncPoint = new SimpleResultSyncPoint();
         mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
             public void adminGranted(EntityFullJid participant) {
-                adminResultSyncPoint.signal("done");
+                adminResultSyncPoint.signal();
             }
         });
 
@@ -796,10 +810,10 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByThree.join(nicknameThree);
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             adminResultSyncPoint.waitForResult(timeout);
-            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3);
-            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidOne).getRole());
-            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidTwo).getRole());
-            assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(jidThree).getRole());
+            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3, "Unexpected occupant count in room " + mucAddress);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidOne).getRole(), "Unexpected role for occupant " + jidOne + " in room " + mucAddress);
+            assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidTwo).getRole(), "Unexpected role for occupant " + jidTwo + " in room " + mucAddress);
+            assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(jidThree).getRole(), "Unexpected role for occupant " + jidThree + " in room " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
