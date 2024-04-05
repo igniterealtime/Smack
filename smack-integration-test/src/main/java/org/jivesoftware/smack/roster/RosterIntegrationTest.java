@@ -99,7 +99,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         try {
             rosterOne.createItemAndRequestSubscription(conTwo.getUser().asBareJid(), conTwosRosterName, null);
 
-            SimpleResultSyncPoint.assertSuccess(addedAndSubscribed, 2 * connection.getReplyTimeout(), "Did not receive expected roster item.");
+            assertResult(addedAndSubscribed, 2 * connection.getReplyTimeout(), "Did not receive expected roster item.");
         }
         finally {
             rosterTwo.removeSubscribeListener(subscribeListener);

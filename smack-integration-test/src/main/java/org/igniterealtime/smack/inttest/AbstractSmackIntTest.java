@@ -33,6 +33,11 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
 
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+
+import org.junit.jupiter.api.Assertions;
+import org.opentest4j.AssertionFailedError;
+
 public abstract class AbstractSmackIntTest {
 
     protected static final Logger LOGGER = Logger.getLogger(AbstractSmackIntTest.class.getName());
@@ -89,5 +94,19 @@ public abstract class AbstractSmackIntTest {
             httpsUrlConnection.setSSLSocketFactory(sinttestConfiguration.sslContextFactory.createSslContext().getSocketFactory());
         }
         return urlConnection;
+    }
+
+    public <R> R assertResult(ResultSyncPoint<R, ?> syncPoint, String message) throws InterruptedException, AssertionFailedError {
+        return assertResult(syncPoint, timeout, message);
+    }
+
+    public static <R> R assertResult(ResultSyncPoint<R, ?> syncPoint, long timeout, String message) throws InterruptedException, AssertionFailedError {
+        try {
+            return syncPoint.waitForResult(timeout);
+        } catch (InterruptedException e) {
+            throw e;
+        } catch (Exception e) {
+            return Assertions.fail(message, e);
+        }
     }
 }
