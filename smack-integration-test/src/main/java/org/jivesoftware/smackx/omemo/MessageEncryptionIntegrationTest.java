@@ -29,12 +29,14 @@ import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
 /**
  * Simple OMEMO message encryption integration test.
  * During this test Alice sends an encrypted message to Bob. Bob decrypts it and sends a response to Alice.
  * It is checked whether the messages can be decrypted, and if used up pre-keys result in renewed bundles.
  */
+@SpecificationReference(document = "XEP-0384")
 public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
     public MessageEncryptionIntegrationTest(SmackIntegrationTestEnvironment environment)

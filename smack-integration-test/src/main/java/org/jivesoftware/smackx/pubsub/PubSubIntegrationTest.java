@@ -34,8 +34,10 @@ import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.DomainBareJid;
 
+@SpecificationReference(document = "XEP-0060")
 public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final PubSubManager pubSubManagerOne;
@@ -83,19 +85,8 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
     }
 
     /**
-
-     */
-
-    /**
      * Asserts that an error is returned when a publish request to a node that is both
      * 'notification-only' as well as 'transient' contains an item element.
-     *
-     * <p>From XEP-0060 § 7.1.3.6:</p>
-     * <blockquote>
-     * If the event type is notification + transient and the publisher provides an item,
-     * the service MUST bounce the publication request with a &lt;bad-request/&gt; error
-     * and a pubsub-specific error condition of &lt;item-forbidden/&gt;.
-     * </blockquote>
      *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
@@ -104,7 +95,9 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
      * @see <a href="https://xmpp.org/extensions/xep-0060.html#publisher-publish-error-badrequest">
      *     7.1.3.6 Request Does Not Match Configuration</a>
      */
-    @SmackIntegrationTest
+    @SmackIntegrationTest(section = "7.1.3.6", quote =
+        "If the event type is notification + transient and the publisher provides an item, the service MUST bounce " +
+        "the publication request with a <bad-request/> error and a pubsub-specific error condition of <item-forbidden/>.")
     public void transientNotificationOnlyNodeWithItemTest() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         final String nodename = "sinttest-transient-notificationonly-withitem-nodename-" + testRunId;
         final String itemId = "sinttest-transient-notificationonly-withitem-itemid-" + testRunId;

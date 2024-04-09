@@ -106,6 +106,10 @@ public final class Configuration {
 
     private final Map<String, Set<String>> disabledTestsMap;
 
+    public final Set<String> enabledSpecifications;
+
+    public final Set<String> disabledSpecifications;
+
     public final String defaultConnectionNickname;
 
     public final Set<String> enabledConnections;
@@ -176,6 +180,8 @@ public final class Configuration {
         this.enabledTestsMap = convertTestsToMap(enabledTests);
         this.disabledTests =  CollectionUtil.nullSafeUnmodifiableSet(builder.disabledTests);
         this.disabledTestsMap = convertTestsToMap(disabledTests);
+        this.enabledSpecifications = CollectionUtil.nullSafeUnmodifiableSet(builder.enabledSpecifications);
+        this.disabledSpecifications = CollectionUtil.nullSafeUnmodifiableSet(builder.disabledSpecifications);
         this.defaultConnectionNickname = builder.defaultConnectionNickname;
         this.enabledConnections = builder.enabledConnections;
         this.disabledConnections = builder.disabledConnections;
@@ -238,6 +244,10 @@ public final class Configuration {
         private Set<String> enabledTests;
 
         private Set<String> disabledTests;
+
+        private Set<String> enabledSpecifications;
+
+        private Set<String> disabledSpecifications;
 
         private String defaultConnectionNickname;
 
@@ -367,6 +377,16 @@ public final class Configuration {
 
         public Builder setDisabledTests(String disabledTestsString) {
             disabledTests = getTestSetFrom(disabledTestsString);
+            return this;
+        }
+
+        public Builder setEnabledSpecifications(String enabledSpecificationsString) {
+            enabledSpecifications = getSpecificationSetFrom(enabledSpecificationsString);
+            return this;
+        }
+
+        public Builder setDisabledSpecifications(String disabledSpecificationsString) {
+            disabledSpecifications = getSpecificationSetFrom(disabledSpecificationsString);
             return this;
         }
 
@@ -515,6 +535,8 @@ public final class Configuration {
         builder.setDebugger(properties.getProperty("debugger"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
         builder.setDisabledTests(properties.getProperty("disabledTests"));
+        builder.setEnabledSpecifications(properties.getProperty("enabledSpecifications"));
+        builder.setDisabledSpecifications(properties.getProperty("disabledSpecifications"));
         builder.setDefaultConnection(properties.getProperty("defaultConnection"));
         builder.setEnabledConnections(properties.getProperty("enabledConnections"));
         builder.setDisabledConnections(properties.getProperty("disabledConnections"));
@@ -577,6 +599,10 @@ public final class Configuration {
             }
             return s;
         });
+    }
+
+    private static Set<String> getSpecificationSetFrom(String input) {
+        return split(input, Configuration::normalizeSpecification);
     }
 
     private static Map<String, Set<String>> convertTestsToMap(Set<String> tests) {
@@ -687,4 +713,34 @@ public final class Configuration {
         return contains(method, disabledTestsMap);
     }
 
+    public boolean isSpecificationEnabled(String specification) {
+        if (enabledSpecifications.isEmpty()) {
+            return true;
+        }
+
+        if (specification == null) {
+            return false;
+        }
+
+        return enabledSpecifications.contains(normalizeSpecification(specification));
+    }
+
+    public boolean isSpecificationDisabled(String specification) {
+        if (disabledSpecifications.isEmpty()) {
+            return false;
+        }
+
+        if (specification == null) {
+            return false;
+        }
+
+        return disabledSpecifications.contains(normalizeSpecification(specification));
+    }
+
+    static String normalizeSpecification(String specification) {
+        if (specification == null || specification.isBlank()) {
+            return null;
+        }
+        return specification.replaceAll("\\s", "").toUpperCase();
+    }
 }

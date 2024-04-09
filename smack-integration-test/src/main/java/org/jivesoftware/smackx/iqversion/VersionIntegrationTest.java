@@ -28,7 +28,9 @@ import org.jivesoftware.smackx.iqversion.packet.Version;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
+@SpecificationReference(document = "XEP-0092")
 public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
 
     public VersionIntegrationTest(SmackIntegrationTestEnvironment environment) {

@@ -31,8 +31,10 @@ import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 
+@SpecificationReference(document = "XEP-0096")
 public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
 
     private static final int MAX_FT_DURATION = 360;

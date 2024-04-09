@@ -35,8 +35,10 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.Jid;
 
+@SpecificationReference(document = "XEP-0199")
 public class PingIntegrationTest extends AbstractSmackIntegrationTest {
 
     public PingIntegrationTest(SmackIntegrationTestEnvironment environment) {
