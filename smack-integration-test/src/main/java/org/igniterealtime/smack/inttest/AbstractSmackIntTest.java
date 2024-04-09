@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ import org.jivesoftware.smack.StanzaCollector;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.filter.StanzaFilter;
+
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
+
+import org.opentest4j.AssertionFailedError;
 
 public abstract class AbstractSmackIntTest {
 
@@ -89,5 +93,19 @@ public abstract class AbstractSmackIntTest {
             httpsUrlConnection.setSSLSocketFactory(sinttestConfiguration.sslContextFactory.createSslContext().getSocketFactory());
         }
         return urlConnection;
+    }
+
+    public <R> R assertResult(ResultSyncPoint<R, ?> syncPoint, String message) throws InterruptedException, TimeoutException, AssertionFailedError {
+        return assertResult(syncPoint, timeout, message);
+    }
+
+    public static <R> R assertResult(ResultSyncPoint<R, ?> syncPoint, long timeout, String message) throws InterruptedException, TimeoutException, AssertionFailedError {
+        try {
+            return syncPoint.waitForResult(timeout);
+        } catch (InterruptedException | TimeoutException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AssertionFailedError(message, e);
+        }
     }
 }
