@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.caps;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -96,7 +97,9 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     public void testLocalEntityCaps() throws InterruptedException, NoResponseException, XMPPErrorException, NotConnectedException {
         final String dummyFeature = getNewDummyFeature();
         DiscoverInfo info = EntityCapsManager.getDiscoveryInfoByNodeVer(ecmTwo.getLocalNodeVer());
-        assertFalse(info.containsFeature(dummyFeature));
+        assertFalse(info.containsFeature(dummyFeature),
+            "Expected the service discovery info for node '" + ecmTwo.getLocalNodeVer() +
+            "' to contain the feature '" + dummyFeature + "' (but it did not)."); // TODO Shouldn't this assertion be in a unit test instead of an integration test?
 
         dropWholeEntityCapsCache();
 
@@ -120,8 +123,12 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         // The other connection has to receive this stanza and record the
         // information in order for this test to succeed.
         info = EntityCapsManager.getDiscoveryInfoByNodeVer(ecmTwo.getLocalNodeVer());
-        assertNotNull(info);
-        assertTrue(info.containsFeature(dummyFeature));
+        assertNotNull(info,
+    "Expected '" + conOne.getUser() + "' to have received an 'available' presence from '" + conTwo.getUser() +
+            "' with a new CAPS 'ver' attribute (but it did not).");
+        assertTrue(info.containsFeature(dummyFeature),
+    "Expected the service discovery info for node '" + ecmTwo.getLocalNodeVer() +
+            "' to contain the feature '" + dummyFeature + "' (but it did not)."); // TODO As above: shouldn't this assertion be in a unit test instead of an integration test?
     }
 
     /**
@@ -148,7 +155,7 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         // discover that
         DiscoverInfo info = sdmOne.discoverInfo(conTwo.getUser());
         // that discovery should cause a disco#info
-        assertTrue(discoInfoSend.get());
+        assertTrue(discoInfoSend.get(), "Expected '" + conOne.getUser() + "' to have made a disco/info request to '" + conTwo.getUser() + "', but it did not.");
         assertTrue(info.containsFeature(dummyFeature),
                         "The info response '" + info + "' does not contain the expected feature '" + dummyFeature + '\'');
         discoInfoSend.set(false);
@@ -156,8 +163,9 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         // discover that
         info = sdmOne.discoverInfo(conTwo.getUser());
         // that discovery shouldn't cause a disco#info
-        assertFalse(discoInfoSend.get());
-        assertTrue(info.containsFeature(dummyFeature));
+        assertFalse(discoInfoSend.get(), "Expected '" + conOne.getUser() + "' to not have made a disco/info request to '" + conTwo.getUser() + "' (as CAPS should have been cached), but it did not.");
+        assertTrue(info.containsFeature(dummyFeature),
+            "The info response '" + info + "' does not contain the expected feature '" + dummyFeature + '\'');
     }
 
     @SmackIntegrationTest
@@ -167,7 +175,8 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         addFeatureAndWaitForPresence(conOne, conTwo, dummyFeature);
         String nodeVerAfter = EntityCapsManager.getNodeVersionByJid(conTwo.getUser());
 
-        assertFalse(nodeVerBefore.equals(nodeVerAfter));
+        assertNotEquals(nodeVerBefore, nodeVerAfter,
+            "Expected the reported node 'ver' value to differ after a feature was added (but it did not).");
     }
 
     @SmackIntegrationTest
@@ -193,12 +202,12 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
         DiscoverInfo info = sdmOne.discoverInfo(conTwo.getUser());
 
         String u1ver = EntityCapsManager.getNodeVersionByJid(conTwo.getUser());
-        assertNotNull(u1ver);
+        assertNotNull(u1ver, "Expected " + conOne.getUser() + " to have received a CAPS 'ver' value for " + conTwo.getUser() + " (but did not).");
 
         DiscoverInfo entityInfo = EntityCapsManager.CAPS_CACHE.lookup(u1ver);
-        assertNotNull(entityInfo);
+        assertNotNull(entityInfo, "Expected the local static cache to have a value cached for 'ver' value '" + u1ver + "' (but it did not).");
 
-        assertEquals(info.toXML().toString(), entityInfo.toXML().toString());
+        assertEquals(info.toXML().toString(), entityInfo.toXML().toString(), "Expected the cached service/discovery info to be equal to the original (but it was not).");
     }
 
     private static void dropWholeEntityCapsCache() {

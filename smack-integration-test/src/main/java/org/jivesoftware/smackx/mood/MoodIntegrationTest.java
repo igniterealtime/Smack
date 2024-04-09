@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.mood;
 
-import java.util.concurrent.TimeoutException;
-
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
@@ -33,7 +31,6 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.junit.jupiter.api.Assertions;
 
 @SpecificationReference(document = "XEP-0107")
 public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
@@ -82,11 +79,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
             mm1.setMood(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
 
             // Wait for the data to be received.
-            try {
-                moodReceived.waitForResult(timeout);
-            } catch (TimeoutException e) {
-                Assertions.fail("Expected to receive a PEP notification, but did not.");
-            }
+            assertResult(moodReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification, but did not.");
         } finally {
             unregisterListener(mm2, moodListener);
         }
@@ -121,14 +114,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
             registerListenerAndWait(mm2, ServiceDiscoveryManager.getInstanceFor(conTwo), moodListener);
 
             // Wait for the data to be received.
-            try {
-                Object result = moodReceived.waitForResult(timeout);
-
-                // Explicitly assert the success case.
-                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
-            } catch (TimeoutException e) {
-                Assertions.fail("Expected to receive a PEP notification, but did not.");
-            }
+            assertResult(moodReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification, but did not.");
         } finally {
             unregisterListener(mm2, moodListener);
         }

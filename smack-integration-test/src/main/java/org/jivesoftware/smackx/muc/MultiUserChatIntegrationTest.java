@@ -35,7 +35,6 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
-import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
@@ -66,10 +65,10 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
             MUCUser mucUser = MUCUser.from(reflectedJoinPresence);
 
-            assertNotNull(mucUser);
-            assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110));
-            assertEquals(mucAddress + "/nick-one", reflectedJoinPresence.getFrom().toString());
-            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedJoinPresence.getTo().toString());
+            assertNotNull(mucUser, "Expected, but unable, to create a MUCUser instance from reflected join presence: " + reflectedJoinPresence);
+            assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Expected the reflected join presence of " + conOne.getUser() + " of room " + mucAddress + " to include 'presence-to-self' (" + MUCUser.Status.PRESENCE_TO_SELF_110 + ") but it did not.");
+            assertEquals(mucAddress + "/nick-one", reflectedJoinPresence.getFrom().toString(), "Unexpected 'from' attribute value in the reflected join presence of " + conOne.getUser() + " of room " + mucAddress);
+            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedJoinPresence.getTo().toString(), "Unexpected 'to' attribute value in the reflected join presence of " + conOne.getUser() + " of room " + mucAddress);
         } finally {
             tryDestroy(muc);
         }
@@ -94,11 +93,11 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             Presence reflectedLeavePresence = muc.leave();
 
             MUCUser mucUser = MUCUser.from(reflectedLeavePresence);
-            assertNotNull(mucUser);
+            assertNotNull(mucUser, "Expected, but unable, to create a MUCUser instance from reflected leave presence: " + reflectedLeavePresence);
 
-            assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110));
-            assertEquals(mucAddress + "/nick-one", reflectedLeavePresence.getFrom().toString());
-            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedLeavePresence.getTo().toString());
+            assertTrue(mucUser.getStatus().contains(MUCUser.Status.PRESENCE_TO_SELF_110), "Expected the reflected leave presence of " + conOne.getUser() + " of room " + mucAddress + " to include 'presence-to-self' (" + MUCUser.Status.PRESENCE_TO_SELF_110 + ") but it did not.");
+            assertEquals(mucAddress + "/nick-one", reflectedLeavePresence.getFrom().toString(), "Unexpected 'from' attribute value in the reflected leave presence of " + conOne.getUser() + " of room " + mucAddress);
+            assertEquals(conOne.getUser().asEntityFullJidIfPossible().toString(), reflectedLeavePresence.getTo().toString(), "Unexpected 'to' attribute value in the reflected leave presence of " + conOne.getUser() + " of room " + mucAddress);
         } finally {
             muc.join(Resourcepart.from("nick-one")); // We need to be in the room to destroy the room
             tryDestroy(muc);
@@ -113,14 +112,14 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
         final String mucMessage = "Smack Integration Test MUC Test Message " + randomString;
-        final ResultSyncPoint<String, Exception> resultSyncPoint = new ResultSyncPoint<>();
+        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
 
         mucAsSeenByTwo.addMessageListener(new MessageListener() {
             @Override
             public void processMessage(Message message) {
                 String body = message.getBody();
                 if (mucMessage.equals(body)) {
-                    resultSyncPoint.signal(body);
+                    resultSyncPoint.signal();
                 }
             }
         });
@@ -128,10 +127,9 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         createMuc(mucAsSeenByOne, "one-" + randomString);
         mucAsSeenByTwo.join(Resourcepart.from("two-" + randomString));
         mucAsSeenByOne.sendMessage(mucMessage);
+
         try {
-            resultSyncPoint.waitForResult(timeout);
-        } catch (TimeoutException e) {
-            throw new AssertionError("Failed to receive presence", e);
+            assertResult(resultSyncPoint, "Expected " + conTwo.getUser() + " to receive message that was sent by " + conOne.getUser() + " in room " + mucAddress + " (but it did not).");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -166,19 +164,20 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
         muc.addUserStatusListener(userStatusListener);
 
-        assertEquals(1, mucManagerOne.getJoinedRooms().size());
-        assertEquals(1, muc.getOccupantsCount());
-        assertNotNull(muc.getNickname());
+        // These would be a test implementation bug, not assertion failure.
+        if (mucManagerOne.getJoinedRooms().size() != 1) {
+            throw new IllegalStateException("Expected user to have joined a room.");
+        }
 
         try {
             muc.destroy("Dummy reason", null);
-            mucDestroyed.waitForResult(timeout);
+            assertResult(mucDestroyed, "Expected " + conOne.getUser() + " to be notified of destruction of room " + mucAddress + " (but was not).");
         } finally {
             muc.removeUserStatusListener(userStatusListener);
         }
 
-        assertEquals(0, mucManagerOne.getJoinedRooms().size());
-        assertEquals(0, muc.getOccupantsCount());
+        assertEquals(0, mucManagerOne.getJoinedRooms().size(), "Expected " + conOne.getUser() + " to no longer be in any rooms after " + mucAddress + " was destroyed (but was).");
+        assertEquals(0, muc.getOccupantsCount(), "Expected room " + mucAddress + " to no longer have any occupants after it was destroyed (but it has).");
         assertNull(muc.getNickname());
     }
 }

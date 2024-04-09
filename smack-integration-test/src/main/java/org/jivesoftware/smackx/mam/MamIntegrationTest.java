@@ -115,14 +115,14 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
             .build();
         MamQuery mamQuery = mamManagerConTwo.queryArchive(mamQueryArgs);
 
-        assertEquals(1, mamQuery.getMessages().size());
+        assertEquals(1, mamQuery.getMessages().size(), conTwo.getUser() + " received an unexpected amount of messages in response to a MAM query.");
 
         Message mamMessage = mamQuery.getMessages().get(0);
 
-        assertEquals(messageId, mamMessage.getStanzaId());
-        assertEquals(messageBody, mamMessage.getBody());
-        assertEquals(conOne.getUser(), mamMessage.getFrom());
-        assertEquals(userTwo, mamMessage.getTo());
+        assertEquals(messageId, mamMessage.getStanzaId(), "The message received by " + conTwo.getUser() + " via a MAM query has an unexpected stanza ID.");
+        assertEquals(messageBody, mamMessage.getBody(), "The message received by " + conTwo.getUser() + " via a MAM query has an unexpected body.");
+        assertEquals(conOne.getUser(), mamMessage.getFrom(), "The message received by " + conTwo.getUser() + " via a MAM query has an unexpected from-attribute value.");
+        assertEquals(userTwo, mamMessage.getTo(), "The message received by " + conTwo.getUser() + " via a MAM query has an unexpected to-attribute value.");
     }
 
     @SmackIntegrationTest
@@ -176,8 +176,8 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
         MamQuery mamQuery = mamManagerConTwo.queryArchive(mamQueryArgs);
 
-        assertFalse(mamQuery.isComplete());
-        assertEquals(messagesPerPage, mamQuery.getMessageCount());
+        assertFalse(mamQuery.isComplete(), "Expected the first MAM response received by " + conTwo.getUser() + " to NOT be complete (but it was).");
+        assertEquals(messagesPerPage, mamQuery.getMessageCount(), "Unexpected message count in MAM response received by " + conTwo.getUser());
 
         List<List<Message>> pages = new ArrayList<>(numPages);
         pages.add(mamQuery.getMessages());
@@ -187,12 +187,12 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
             boolean isLastQuery = additionalPageRequestNum == numPages - 2;
             if (isLastQuery) {
-                assertTrue(mamQuery.isComplete());
+                assertTrue(mamQuery.isComplete(), "Expected the last MAM response received by " + conTwo.getUser() + " to be complete (but it was not).");
             } else {
-                assertFalse(mamQuery.isComplete());
+                assertFalse(mamQuery.isComplete(), "Expected an intermediate MAM response received by " + conTwo.getUser() + " to NOT be complete (but it was).");
             }
 
-            assertEquals(messagesPerPage, page.size());
+            assertEquals(messagesPerPage, page.size(), "Unexpected amount of messages in the MAM response page received by " + conTwo.getUser());
 
             pages.add(page);
         }
@@ -202,13 +202,13 @@ public class MamIntegrationTest extends AbstractSmackIntegrationTest {
             queriedMessages.addAll(messages);
         }
 
-        assertEquals(outgoingMessages.size(), queriedMessages.size());
+        assertEquals(outgoingMessages.size(), queriedMessages.size(), "An unexpected total number of messages was received through MAM by " + conTwo.getUser());
 
         for (int i = 0; i < outgoingMessages.size(); i++) {
             Message outgoingMessage = outgoingMessages.get(i);
             Message queriedMessage = queriedMessages.get(i);
 
-            assertEquals(outgoingMessage.getBody(), queriedMessage.getBody());
+            assertEquals(outgoingMessage.getBody(), queriedMessage.getBody(), "Unexpected message body for message number " + (i + 1) + " as received by " + conTwo.getUser() + " (are messages received out of order?)");
         }
     }
 }

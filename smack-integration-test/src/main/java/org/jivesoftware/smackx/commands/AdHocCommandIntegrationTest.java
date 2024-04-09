@@ -73,7 +73,9 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
             AdHocCommandData response = result.getResponse();
             DataForm form = response.getForm();
             FormField field = form.getField("my-field");
-            assertNotNull(field);
+            assertNotNull(field, "Expected a field named 'my-field' to exist in the form that " +
+                conTwo.getUser() + " obtained from " + conOne.getUser() + "'s command node '" + commandNode +
+                "' (but it did not).");
         } finally {
             manOne.unregisterCommand(commandNode);
         }
@@ -259,7 +261,10 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
             AdHocCommandResult.StatusCompleted completed = command.complete(submitForm).asCompletedOrThrow();
 
             String operationResult = completed.getResponse().getForm().getField("result").getFirstValue();
-            assertEquals("65", operationResult);
+            assertEquals("65", operationResult,
+                "Unexpected value in the field 'result' from the command result that " + conTwo.getUser() +
+                " received from " + conOne.getUser() + " after completing a multi-staged ad-hoc command on node '" +
+                commandNode + "'.");
         } finally {
             manTwo.unregisterCommand(commandNode);
         }
@@ -317,7 +322,10 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
             AdHocCommandResult.StatusCompleted completed = command.complete(submitForm).asCompletedOrThrow();
 
             String operationResult = completed.getResponse().getForm().getField("result").getFirstValue();
-            assertEquals("100", operationResult);
+            assertEquals("100", operationResult,
+                "Unexpected value in the field 'result' from the command result that " + conTwo.getUser() +
+                " received from " + conOne.getUser() + " after completing a multi-staged ad-hoc command on node '" +
+                commandNode + "'.");
         } finally {
             manTwo.unregisterCommand(commandNode);
         }
@@ -346,7 +354,9 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
             SubmitForm submitForm = form.getSubmitForm();
 
             XMPPErrorException exception = assertThrows(XMPPErrorException.class, () -> command.next(submitForm));
-            assertEquals(exception.getStanzaError().getCondition(), StanzaError.Condition.bad_request);
+            assertEquals(exception.getStanzaError().getCondition(), StanzaError.Condition.bad_request,
+        "Unexpected error condition received after " + conTwo.getUser() + " supplied an invalid argument " +
+                "to the command node '" + commandNode + "' of " + conOne.getUser());
         } finally {
             manTwo.unregisterCommand(commandNode);
         }

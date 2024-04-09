@@ -73,11 +73,12 @@ public class OmemoMamDecryptionTest extends AbstractTwoUsersOmemoIntegrationTest
         alicesConnection.sendStanza(encrypted.buildMessage(messageBuilder, bob.getOwnJid()));
 
         MamManager.MamQuery query = bobsMamManager.queryArchive(MamManager.MamQueryArgs.builder().limitResultsToJid(alice.getOwnJid()).build());
-        assertEquals(1, query.getMessageCount());
+        assertEquals(1, query.getMessageCount(), "Unexpected message count in MAM query result of " + bob.getConnection().getUser());
 
         List<MessageOrOmemoMessage> decryptedMamQuery = bob.decryptMamQueryResult(query);
 
-        assertEquals(1, decryptedMamQuery.size());
-        assertEquals(body, decryptedMamQuery.get(decryptedMamQuery.size() - 1).getOmemoMessage().getBody());
+        assertEquals(1, decryptedMamQuery.size(), "Unexpected decrypted message count in MAM query result of " + bob.getConnection().getUser());
+        assertEquals(body, decryptedMamQuery.get(decryptedMamQuery.size() - 1).getOmemoMessage().getBody(),
+            "Expected decrypted body of message retrieved via a MAM query to be equal to the original body that was sent (but it was not).");
     }
 }

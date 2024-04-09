@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.usertune;
 
 import java.net.URI;
-import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -140,14 +139,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
             registerListenerAndWait(utm2, ServiceDiscoveryManager.getInstanceFor(conTwo), userTuneListener);
 
             // Wait for the data to be received.
-            try {
-                Object result = userTuneReceived.waitForResult(timeout);
-
-                // Explicitly assert the success case.
-                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
-            } catch (TimeoutException e) {
-                Assertions.fail("Expected to receive a PEP notification, but did not.");
-            }
+            assertResult(userTuneReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() + ", but did not.");
         } finally {
             unregisterListener(utm2, userTuneListener);
         }

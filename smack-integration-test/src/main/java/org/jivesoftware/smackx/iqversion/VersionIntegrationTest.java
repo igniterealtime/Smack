@@ -47,8 +47,8 @@ public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
         final String versionName = "Smack Integration Test " + testRunId;
         versionManagerTwo.setVersion(versionName, "1.0");
 
-        assertTrue (versionManagerOne.isSupported(conTwo.getUser()));
+        assertTrue(versionManagerOne.isSupported(conTwo.getUser()), "Expected " + conTwo.getUser() + " to support " + Version.NAMESPACE + " (but it does not).");
         Version version = versionManagerOne.getVersion(conTwo.getUser());
-        assertEquals(versionName, version.getName());
+        assertEquals(versionName, version.getName(), "Unexpected version name reported by " + conTwo.getUser());
     }
 }

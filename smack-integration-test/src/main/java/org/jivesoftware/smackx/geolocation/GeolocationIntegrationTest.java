@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
-import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -37,7 +36,6 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
-import org.junit.jupiter.api.Assertions;
 import org.jxmpp.util.XmppDateTime;
 
 @SpecificationReference(document = "XEP-0080")
@@ -108,14 +106,9 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             glm1.publishGeoLocation(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
 
             // Wait for the data to be received.
-            try {
-                Object result = geoLocationReceived.waitForResult(timeout);
-
-                // Explicitly assert the success case.
-                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
-            } catch (TimeoutException e) {
-                Assertions.fail("Expected to receive a PEP notification, but did not.");
-            }
+            assertResult(geoLocationReceived,
+        "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() +
+                " that contained '" + data.toXML() + "', but did not.");
         } finally {
             unregisterListener(glm2, geoLocationListener);
         }
@@ -173,14 +166,9 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
             registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
 
             // Wait for the data to be received.
-            try {
-                Object result = geoLocationReceived.waitForResult(timeout);
-
-                // Explicitly assert the success case.
-                Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
-            } catch (TimeoutException e) {
-                Assertions.fail("Expected to receive a PEP notification, but did not.");
-            }
+            assertResult(geoLocationReceived,
+        "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() +
+                " that contained '" + data.toXML() + "', but did not.");
         } finally {
             unregisterListener(glm2, geoLocationListener);
         }

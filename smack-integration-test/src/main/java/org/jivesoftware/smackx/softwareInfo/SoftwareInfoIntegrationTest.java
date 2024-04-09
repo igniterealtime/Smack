@@ -64,7 +64,8 @@ public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
             }
         });
         SoftwareInfoForm softwareInfoFormReceived = sim2.fromJid(conOne.getUser());
-        assertEquals(softwareInfoSent, softwareInfoFormReceived);
+        assertEquals(softwareInfoSent, softwareInfoFormReceived,
+            "Expected " + conOne.getUser() + "'s software version info as received by " + conTwo.getUser() + " to be equal to what " + conOne.getUser() + " publishes (but it is not).");
     }
 
     private static SoftwareInfoForm createSoftwareInfoForm() throws URISyntaxException {

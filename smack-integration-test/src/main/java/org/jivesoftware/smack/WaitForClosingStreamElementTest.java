@@ -39,6 +39,6 @@ public class WaitForClosingStreamElementTest extends AbstractSmackLowLevelIntegr
         Field closingStreamReceivedField = AbstractXMPPConnection.class.getDeclaredField("closingStreamReceived");
         closingStreamReceivedField.setAccessible(true);
         boolean closingStreamReceived = (boolean) closingStreamReceivedField.get(connection);
-        assertTrue(closingStreamReceived);
+        assertTrue(closingStreamReceived, "Expected to, but did not, receive a closing stream element on connection " + connection);
     }
 }
