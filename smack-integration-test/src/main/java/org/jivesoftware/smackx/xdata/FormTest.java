@@ -148,8 +148,9 @@ public class FormTest extends AbstractSmackIntegrationTest {
             assertNotNull(completedForm2.getField("name"));
             assertNotNull(completedForm2.getField("description"));
             assertEquals(
-                 completedForm2.getField("name").getValues().get(0).toString(),
-                "Credit card number invalid");
+                 "Credit card number invalid",
+                 completedForm2.getField("name").getValues().get(0).toString()
+                );
             assertNotNull(completedForm2.getField("time"));
             assertNotNull(completedForm2.getField("age"));
             assertEquals("20", completedForm2.getField("age").getValues().get(0).toString(), "The age is bad");

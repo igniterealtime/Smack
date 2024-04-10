@@ -65,7 +65,7 @@ public class TransportCandidateTest extends SmackTestCase {
         candList.add(cand4);
 
         Collections.sort(candList);
-        assertEquals(candList.get(candList.size() - 1), candH);
+        assertEquals(candH, candList.get(candList.size() - 1));
     }
 
     protected int getMaxConnections() {
