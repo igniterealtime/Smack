@@ -354,7 +354,7 @@ public class AdHocCommandIntegrationTest extends AbstractSmackIntegrationTest {
             SubmitForm submitForm = form.getSubmitForm();
 
             XMPPErrorException exception = assertThrows(XMPPErrorException.class, () -> command.next(submitForm));
-            assertEquals(exception.getStanzaError().getCondition(), StanzaError.Condition.bad_request,
+            assertEquals(StanzaError.Condition.bad_request, exception.getStanzaError().getCondition(),
         "Unexpected error condition received after " + conTwo.getUser() + " supplied an invalid argument " +
                 "to the command node '" + commandNode + "' of " + conOne.getUser());
         } finally {

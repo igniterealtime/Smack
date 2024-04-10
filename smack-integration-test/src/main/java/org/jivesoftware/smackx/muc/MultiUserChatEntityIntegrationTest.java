@@ -185,7 +185,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
             expectedCondition = StanzaError.Condition.not_acceptable;
             break;
         }
-        assertEquals(xe.getStanzaError().getCondition(), expectedCondition,
+        assertEquals(expectedCondition, xe.getStanzaError().getCondition(),
             "Unexpected error condition in error returned when " + conTwo.getUser() + " was trying to discover items of " + mucAsSeenByOneUserJid);
     }
 }

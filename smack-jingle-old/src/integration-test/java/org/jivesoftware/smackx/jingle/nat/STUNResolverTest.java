@@ -99,7 +99,7 @@ public class STUNResolverTest extends SmackTestCase {
         stunResolver.addCandidate(cand3);
         stunResolver.addCandidate(cand4);
 
-        assertEquals(stunResolver.getPreferredCandidate(), candH);
+        assertEquals(candH, stunResolver.getPreferredCandidate());
     }
 
     /**
@@ -127,7 +127,7 @@ public class STUNResolverTest extends SmackTestCase {
         iceResolver.addCandidate(cand3);
         iceResolver.addCandidate(cand4);
 
-        assertEquals(iceResolver.getPreferredCandidate(), candH);
+        assertEquals(candH, iceResolver.getPreferredCandidate());
     }
 
     /**

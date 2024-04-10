@@ -614,7 +614,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             XMPPException.XMPPErrorException xe = assertThrows(XMPPException.XMPPErrorException.class,
                             () -> mucAsSeenByTwo.revokeVoice(nicknameOne),
                     "Expected an XMPP error when " + conTwo.getUser() + " was trying to revoke the 'voice' privilege of " + conOne.getUser() + " in room " + mucAddress);
-            assertEquals(xe.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected stanza error condition in error returned when " + conTwo.getUser() + " was trying to revoke the 'voice' privilege of " + conOne.getUser() + " in room " + mucAddress);
+            assertEquals("not-allowed", xe.getStanzaError().getCondition().toString(), "Unexpected stanza error condition in error returned when " + conTwo.getUser() + " was trying to revoke the 'voice' privilege of " + conOne.getUser() + " in room " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -661,9 +661,9 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             XMPPException.XMPPErrorException xe3 = assertThrows(XMPPException.XMPPErrorException.class,
                             () -> mucAsSeenByThree.revokeModerator(nicknameTwo),
                 "Expected an XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conTwo.getUser() + " (an admin) in room " + mucAddress);
-            assertEquals(xe1.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected condition in XMPP error when " + conTwo.getUser() + " (an admin) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
-            assertEquals(xe2.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected condition in XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
-            assertEquals(xe3.getStanzaError().getCondition().toString(), "not-allowed", "Unexpected condition in XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conTwo.getUser() + " (an admin) in room " + mucAddress);
+            assertEquals("not-allowed", xe1.getStanzaError().getCondition().toString(), "Unexpected condition in XMPP error when " + conTwo.getUser() + " (an admin) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
+            assertEquals("not-allowed", xe2.getStanzaError().getCondition().toString(), "Unexpected condition in XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conOne.getUser() + " (an owner) in room " + mucAddress);
+            assertEquals("not-allowed", xe3.getStanzaError().getCondition().toString(), "Unexpected condition in XMPP error when " + conThree.getUser() + " (a moderator) was trying to revoke the 'moderator' role of " + conTwo.getUser() + " (an admin) in room " + mucAddress);
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
@@ -702,7 +702,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             resultSyncPoint.waitForResult(timeout);
 
-            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3, "Unexpected occupant count in room " + mucAddress);
+            assertEquals(3, mucAsSeenByOne.getOccupantsCount(), "Unexpected occupant count in room " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole(),
                 "Unexpected role for occupant " + nicknameOne + " of " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole(),
@@ -758,7 +758,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             resultSyncPoint.waitForResult(timeout);
 
-            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3, "Unexpected occupant count in room " + mucAddress);
+            assertEquals(3, mucAsSeenByOne.getOccupantsCount(), "Unexpected occupant count in room " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole(),
                 "Unexpected role for occupant " + nicknameOne + " of " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole(),
@@ -810,7 +810,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
             mucAsSeenByThree.join(nicknameThree);
             mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
             adminResultSyncPoint.waitForResult(timeout);
-            assertEquals(mucAsSeenByOne.getOccupantsCount(), 3, "Unexpected occupant count in room " + mucAddress);
+            assertEquals(3, mucAsSeenByOne.getOccupantsCount(), "Unexpected occupant count in room " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidOne).getRole(), "Unexpected role for occupant " + jidOne + " in room " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidTwo).getRole(), "Unexpected role for occupant " + jidTwo + " in room " + mucAddress);
             assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(jidThree).getRole(), "Unexpected role for occupant " + jidThree + " in room " + mucAddress);
