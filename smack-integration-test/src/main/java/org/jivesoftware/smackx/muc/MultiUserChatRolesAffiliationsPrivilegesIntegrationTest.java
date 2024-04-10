@@ -25,7 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -687,22 +689,30 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
+        final EntityFullJid jidOne = JidCreate.entityFullFrom(mucAddress, nicknameOne);
+        final EntityFullJid jidTwo = JidCreate.entityFullFrom(mucAddress, nicknameTwo);
+        final EntityFullJid jidThree = JidCreate.entityFullFrom(mucAddress, nicknameThree);
+
         createMuc(mucAsSeenByOne, nicknameOne);
+
+        final SimpleResultSyncPoint allOccupantsDetectedSyncPoint = new SimpleResultSyncPoint();
+        final Set<EntityFullJid> expectedOccupants = Set.of(jidOne, jidTwo, jidThree);
+        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
+            @Override
+            public void joined(EntityFullJid participant) {
+                if (mucAsSeenByOne.getOccupants().containsAll(expectedOccupants)) {
+                    allOccupantsDetectedSyncPoint.signal();
+                }
+            }
+        });
+
         try {
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByThree.join(nicknameThree);
 
-            final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
-            mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
-                @Override
-                public void adminGranted(EntityFullJid participant) {
-                    resultSyncPoint.signal();
-                }
-            });
-            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-            resultSyncPoint.waitForResult(timeout);
-
-            assertEquals(3, mucAsSeenByOne.getOccupantsCount(), "Unexpected occupant count in room " + mucAddress);
+            assertResult(allOccupantsDetectedSyncPoint, "Expected " + conOne.getUser() + " to observe all of these occupants in room " + mucAddress + ", but not all of them appear to be in: " + expectedOccupants.stream().map(Object::toString).collect(Collectors.joining(", ")));
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole(),
                 "Unexpected role for occupant " + nicknameOne + " of " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole(),
@@ -732,15 +742,22 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        final SimpleResultSyncPoint resultSyncPoint = new SimpleResultSyncPoint();
-        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
-            @Override
-            public void adminGranted(EntityFullJid participant) {
-                resultSyncPoint.signal();
-            }
-        });
+        final EntityFullJid jidOne = JidCreate.entityFullFrom(mucAddress, nicknameOne);
+        final EntityFullJid jidTwo = JidCreate.entityFullFrom(mucAddress, nicknameTwo);
+        final EntityFullJid jidThree = JidCreate.entityFullFrom(mucAddress, nicknameThree);
 
         createModeratedMuc(mucAsSeenByOne, nicknameOne);
+
+        final SimpleResultSyncPoint allOccupantsDetectedSyncPoint = new SimpleResultSyncPoint();
+        final Set<EntityFullJid> expectedOccupants = Set.of(jidOne, jidTwo, jidThree);
+        mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
+            @Override
+            public void joined(EntityFullJid participant) {
+                if (mucAsSeenByOne.getOccupants().containsAll(expectedOccupants)) {
+                    allOccupantsDetectedSyncPoint.signal();
+                }
+            }
+        });
 
         final MUCRole threeRole;
         switch (sinttestConfiguration.compatibilityMode) {
@@ -753,12 +770,12 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         }
 
         try {
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
+
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByThree.join(nicknameThree);
-            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-            resultSyncPoint.waitForResult(timeout);
 
-            assertEquals(3, mucAsSeenByOne.getOccupantsCount(), "Unexpected occupant count in room " + mucAddress);
+            assertResult(allOccupantsDetectedSyncPoint, "Expected " + conOne.getUser() + " to observe all of these occupants in room " + mucAddress + ", but not all of them appear to be in: " + expectedOccupants.stream().map(Object::toString).collect(Collectors.joining(", ")));
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameOne)).getRole(),
                 "Unexpected role for occupant " + nicknameOne + " of " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(JidCreate.entityFullFrom(mucAddress, nicknameTwo)).getRole(),
@@ -794,23 +811,26 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
         createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
 
-        final SimpleResultSyncPoint adminResultSyncPoint = new SimpleResultSyncPoint();
+        final SimpleResultSyncPoint allOccupantsDetectedSyncPoint = new SimpleResultSyncPoint();
+        final Set<EntityFullJid> expectedOccupants = Set.of(jidOne, jidTwo, jidThree);
         mucAsSeenByOne.addParticipantStatusListener(new ParticipantStatusListener() {
             @Override
-            public void adminGranted(EntityFullJid participant) {
-                adminResultSyncPoint.signal();
+            public void joined(EntityFullJid participant) {
+                if (mucAsSeenByOne.getOccupants().containsAll(expectedOccupants)) {
+                    allOccupantsDetectedSyncPoint.signal();
+                }
             }
         });
 
         try {
             mucAsSeenByOne.grantMembership(conTwo.getUser().asBareJid());
             mucAsSeenByOne.grantMembership(conThree.getUser().asBareJid());
+            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
 
             mucAsSeenByTwo.join(nicknameTwo);
             mucAsSeenByThree.join(nicknameThree);
-            mucAsSeenByOne.grantAdmin(conTwo.getUser().asBareJid());
-            adminResultSyncPoint.waitForResult(timeout);
-            assertEquals(3, mucAsSeenByOne.getOccupantsCount(), "Unexpected occupant count in room " + mucAddress);
+
+            assertResult(allOccupantsDetectedSyncPoint, "Expected " + conOne.getUser() + " to observe all of these occupants in room " + mucAddress + ", but not all of them appear to be in: " + expectedOccupants.stream().map(Object::toString).collect(Collectors.joining(", ")));
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidOne).getRole(), "Unexpected role for occupant " + jidOne + " in room " + mucAddress);
             assertEquals(MUCRole.moderator, mucAsSeenByOne.getOccupant(jidTwo).getRole(), "Unexpected role for occupant " + jidTwo + " in room " + mucAddress);
             assertEquals(MUCRole.participant, mucAsSeenByOne.getOccupant(jidThree).getRole(), "Unexpected role for occupant " + jidThree + " in room " + mucAddress);
