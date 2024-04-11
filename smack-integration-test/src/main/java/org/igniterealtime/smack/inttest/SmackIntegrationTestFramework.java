@@ -138,7 +138,7 @@ public class SmackIntegrationTestFramework {
             for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
                 final Throwable cause = failedTest.failureReason;
                 LOGGER.log(Level.SEVERE, failedTest.concreteTest + " failed: " + cause, cause);
-                if (failedTest.concreteTest.method.isAnnotationPresent(SpecificationReference.class)) {
+                if (failedTest.concreteTest.method.getDeclaringClass().isAnnotationPresent(SpecificationReference.class)) {
                     final String specificationReference = getSpecificationReference(failedTest.concreteTest.method);
                     if (specificationReference != null) {
                         bySpecification.add("- " + specificationReference + " (as tested by '" + failedTest.concreteTest + "')");
