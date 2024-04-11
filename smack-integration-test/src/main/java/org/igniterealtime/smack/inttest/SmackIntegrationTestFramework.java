@@ -114,52 +114,63 @@ public class SmackIntegrationTestFramework {
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
 
-        for (Map.Entry<Class<? extends AbstractSmackIntTest>, Throwable> entry : testRunResult.impossibleTestClasses.entrySet()) {
-            LOGGER.info("Could not run " + entry.getKey().getName() + " because: "
-                            + entry.getValue().getLocalizedMessage());
-        }
-        for (TestNotPossible testNotPossible : testRunResult.impossibleIntegrationTests) {
-            LOGGER.info("Could not run " + testNotPossible.concreteTest + " because: "
-                            + testNotPossible.testNotPossibleException.getMessage());
-        }
-        for (SuccessfulTest successfulTest : testRunResult.successfulIntegrationTests) {
-            LOGGER.info(successfulTest.concreteTest + " ✔");
-        }
-        final int successfulTests = testRunResult.successfulIntegrationTests.size();
-        final int failedTests = testRunResult.failedIntegrationTests.size();
-        final int availableTests = testRunResult.getNumberOfAvailableTests();
-        LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + " finished: "
-                        + successfulTests + '/' + availableTests + " [" + failedTests + " failed]");
-
-        final int exitStatus;
-        if (failedTests > 0) {
-            LOGGER.warning("💀 The following " + failedTests + " tests failed! 💀");
-            final SortedSet<String> bySpecification = new TreeSet<>();
-            for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
-                final Throwable cause = failedTest.failureReason;
-                LOGGER.log(Level.SEVERE, failedTest.concreteTest + " failed: " + cause, cause);
-                if (failedTest.concreteTest.method.getDeclaringClass().isAnnotationPresent(SpecificationReference.class)) {
-                    final String specificationReference = getSpecificationReference(failedTest.concreteTest.method);
-                    if (specificationReference != null) {
-                        bySpecification.add("- " + specificationReference + " (as tested by '" + failedTest.concreteTest + "')");
-                    }
-                }
+        for (final TestRunResultProcessor testRunResultProcessor : config.testRunResultProcessors) {
+            try {
+                testRunResultProcessor.process(testRunResult);
+            } catch (Throwable t) {
+                LOGGER.log(Level.WARNING, "Invocation of TestRunResultProcessor " + testRunResultProcessor + " failed.", t);
             }
-            if (!bySpecification.isEmpty()) {
-                LOGGER.log(Level.SEVERE, "The failed tests correspond to the following specifications:" + System.lineSeparator() + String.join(System.lineSeparator(), bySpecification));
-            }
-
-            exitStatus = 2;
-        } else {
-            LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
-            exitStatus = 0;
         }
 
         if (config.debuggerFactory instanceof EnhancedDebugger) {
             EnhancedDebuggerWindow.getInstance().waitUntilClosed();
         }
 
+        final int exitStatus = testRunResult.failedIntegrationTests.isEmpty() ? 0 : 2;
         System.exit(exitStatus);
+    }
+
+    public static class JulTestRunResultProcessor implements TestRunResultProcessor {
+
+        @Override
+        public void process(final TestRunResult testRunResult) {
+            for (Map.Entry<Class<? extends AbstractSmackIntTest>, Throwable> entry : testRunResult.impossibleTestClasses.entrySet()) {
+                LOGGER.info("Could not run " + entry.getKey().getName() + " because: "
+                    + entry.getValue().getLocalizedMessage());
+            }
+            for (TestNotPossible testNotPossible : testRunResult.impossibleIntegrationTests) {
+                LOGGER.info("Could not run " + testNotPossible.concreteTest + " because: "
+                    + testNotPossible.testNotPossibleException.getMessage());
+            }
+            for (SuccessfulTest successfulTest : testRunResult.successfulIntegrationTests) {
+                LOGGER.info(successfulTest.concreteTest + " ✔");
+            }
+            final int successfulTests = testRunResult.successfulIntegrationTests.size();
+            final int failedTests = testRunResult.failedIntegrationTests.size();
+            final int availableTests = testRunResult.getNumberOfAvailableTests();
+            LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + " finished: "
+                + successfulTests + '/' + availableTests + " [" + failedTests + " failed]");
+
+            if (failedTests > 0) {
+                LOGGER.warning("💀 The following " + failedTests + " tests failed! 💀");
+                final SortedSet<String> bySpecification = new TreeSet<>();
+                for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
+                    final Throwable cause = failedTest.failureReason;
+                    LOGGER.log(Level.SEVERE, failedTest.concreteTest + " failed: " + cause, cause);
+                if (failedTest.concreteTest.method.getDeclaringClass().isAnnotationPresent(SpecificationReference.class)) {
+                        final String specificationReference = getSpecificationReference(failedTest.concreteTest.method);
+                        if (specificationReference != null) {
+                            bySpecification.add("- " + specificationReference + " (as tested by '" + failedTest.concreteTest + "')");
+                        }
+                    }
+                }
+                if (!bySpecification.isEmpty()) {
+                    LOGGER.log(Level.SEVERE, "The failed tests correspond to the following specifications:" + System.lineSeparator() + String.join(System.lineSeparator(), bySpecification));
+                }
+            } else {
+                LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
+            }
+        }
     }
 
     private static String getSpecificationReference(Method method) {
@@ -663,6 +674,11 @@ public class SmackIntegrationTestFramework {
             throw (Error) e;
         }
         return (Exception) e;
+    }
+
+    @FunctionalInterface
+    public interface TestRunResultProcessor {
+        void process(SmackIntegrationTestFramework.TestRunResult testRunResult);
     }
 
     public static final class TestRunResult {
