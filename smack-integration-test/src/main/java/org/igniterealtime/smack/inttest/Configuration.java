@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
 
@@ -131,6 +133,8 @@ public final class Configuration {
 
     public final CompatibilityMode compatibilityMode;
 
+    public final List<? extends SmackIntegrationTestFramework.TestRunResultProcessor> testRunResultProcessors;
+
     private Configuration(Configuration.Builder builder) throws KeyManagementException, NoSuchAlgorithmException {
         service = Objects.requireNonNull(builder.service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
@@ -203,6 +207,7 @@ public final class Configuration {
 
         this.dnsResolver = builder.dnsResolver;
         this.compatibilityMode = builder.compatibilityMode;
+        this.testRunResultProcessors = builder.testRunResultProcessors;
     }
 
     public boolean isAccountRegistrationPossible() {
@@ -262,6 +267,8 @@ public final class Configuration {
         private DnsResolver dnsResolver = DnsResolver.minidns;
 
         private CompatibilityMode compatibilityMode = CompatibilityMode.standardsCompliant;
+
+        private List<? extends SmackIntegrationTestFramework.TestRunResultProcessor> testRunResultProcessors;
 
         private Builder() {
         }
@@ -473,6 +480,15 @@ public final class Configuration {
             return setCompatibilityMode(compatibilityMode);
         }
 
+        public Builder setTestRunResultProcessors(String testRunResultProcessorsString) {
+            if (testRunResultProcessorsString == null) {
+                return this;
+            }
+
+            testRunResultProcessors = getTestRunProcessorListFrom(testRunResultProcessorsString);
+            return this;
+        }
+
         public Configuration build() throws KeyManagementException, NoSuchAlgorithmException {
             return new Configuration(this);
         }
@@ -550,6 +566,9 @@ public final class Configuration {
 
         builder.setCompatibilityMode(properties.getProperty("compatibilityMode"));
 
+        builder.setTestRunResultProcessors(properties.getProperty("testRunResultProcessors",
+            SmackIntegrationTestFramework.JulTestRunResultProcessor.class.getName()));
+
         return builder.build();
     }
 
@@ -603,6 +622,19 @@ public final class Configuration {
 
     private static Set<String> getSpecificationSetFrom(String input) {
         return split(input, Configuration::normalizeSpecification);
+    }
+
+    private static List<? extends SmackIntegrationTestFramework.TestRunResultProcessor> getTestRunProcessorListFrom(String input) {
+        return Arrays.stream(input.split(","))
+            .map(element -> {
+                try {
+                    final Class<? extends SmackIntegrationTestFramework.TestRunResultProcessor> aClass = Class.forName(element).asSubclass(SmackIntegrationTestFramework.TestRunResultProcessor.class);
+                    return aClass.getConstructor().newInstance();
+                } catch (Exception e) {
+                    throw new IllegalArgumentException("Unable to construct TestRunResultProcessor from value: " + element, e);
+                }
+            })
+            .collect(Collectors.toList());
     }
 
     private static Map<String, Set<String>> convertTestsToMap(Set<String> tests) {

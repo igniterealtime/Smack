@@ -167,6 +167,10 @@
  * <td>dnsResolver</td>
  * <td>One of ‘minidns’, ‘javax’ or ‘dnsjava’. Defaults to ‘minidns’.</td>
  * </tr>
+ * <tr>
+ * <td>testRunResultProcessors</td>
+ * <td>List of class names for generating test run output. Defaults to 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework$ConsoleTestRunResultProcessor'</td>
+ * </tr>
  * </table>
  * <h3>Where to place the properties file</h3>
  * <p>
@@ -337,6 +341,19 @@
  *
  * <pre>{@code
  * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.testPackages=org.mypackage,org.otherpackage
+ * }</pre>
+ * <h2>Generating test run reports</h2>
+ * <p>
+ * By default, the results of the test run is printed to standard-error. You can, however, provide your own processing
+ * for the test run results. To do so, create an implementation of
+ * {@link org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResultProcessor} and provide its class
+ * name to the <code>testRunResultProcessor</code> property. This property takes a comma separated list of class names.
+ * </p>
+ * <p>
+ * Example:
+ * </p>
+ * <pre>{@code
+ * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.testRunResultProcessor=org.igniterealtime.smack.inttest.SmackIntegrationTestFramework$ConsoleTestRunResultProcessor
  * }</pre>
  */
 package org.igniterealtime.smack.inttest;
