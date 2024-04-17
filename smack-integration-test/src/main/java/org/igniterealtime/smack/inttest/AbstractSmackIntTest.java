@@ -101,7 +101,7 @@ public abstract class AbstractSmackIntTest {
 
     public static <R> R assertResult(ResultSyncPoint<R, ?> syncPoint, long timeout, String message) throws InterruptedException, TimeoutException, AssertionFailedError {
         try {
-            return syncPoint.waitForResult(timeout);
+            return syncPoint.waitForResult(timeout, message);
         } catch (InterruptedException | TimeoutException e) {
             throw e;
         } catch (Exception e) {
