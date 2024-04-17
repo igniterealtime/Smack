@@ -26,6 +26,10 @@ public class ResultSyncPoint<R, E extends Exception> {
     private E exception;
 
     public R waitForResult(long timeout) throws E, InterruptedException, TimeoutException {
+        return waitForResult(timeout, null);
+    }
+
+    public R waitForResult(long timeout, String timeoutMessage) throws E, InterruptedException, TimeoutException {
         synchronized (this) {
             if (result != null) {
                 return result;
@@ -46,7 +50,7 @@ public class ResultSyncPoint<R, E extends Exception> {
         if (exception != null) {
             throw exception;
         }
-        throw new TimeoutException("Timeout expired");
+        throw new TimeoutException(timeoutMessage == null ? "Timeout expired" : timeoutMessage);
     }
 
 
