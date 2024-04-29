@@ -234,7 +234,7 @@ public class SmackIntegrationTestFramework {
 
         String[] testPackages;
         if (config.testPackages == null || config.testPackages.isEmpty()) {
-            testPackages = new String[] { "org.jivesoftware.smackx", "org.jivesoftware.smack" };
+            testPackages = new String[] { "org.jivesoftware.smackx", "org.jivesoftware.smack", "org.igniterealtime.smackx", "org.igniterealtime.smack" };
         }
         else {
             testPackages = config.testPackages.toArray(new String[config.testPackages.size()]);
