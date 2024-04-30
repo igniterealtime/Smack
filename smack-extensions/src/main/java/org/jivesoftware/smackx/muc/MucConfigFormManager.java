@@ -224,6 +224,15 @@ public class MucConfigFormManager {
 
 
     /**
+     * Check if the room supports its visibility being controlled vioa configuration.
+     *
+     * @return <code>true</code> if supported, <code>false</code> if not.
+     */
+    public boolean supportsPublicRoom() {
+        return answerForm.hasField(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM);
+    }
+
+    /**
      * Make the room publicly searchable.
      *
      * @return a reference to this object.
@@ -251,7 +260,7 @@ public class MucConfigFormManager {
      * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
      */
     public MucConfigFormManager setPublic(boolean isPublic) throws MucConfigurationNotSupportedException {
-        if (!supportsModeration()) {
+        if (!supportsPublicRoom()) {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM);
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM, isPublic);
@@ -299,7 +308,7 @@ public class MucConfigFormManager {
      */
     public MucConfigFormManager setIsPasswordProtected(boolean isPasswordProtected)
                     throws MucConfigurationNotSupportedException {
-        if (!supportsMembersOnly()) {
+        if (!supportsPasswordProtected()) {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM);
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM, isPasswordProtected);

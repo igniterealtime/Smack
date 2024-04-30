@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
@@ -30,11 +31,13 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -50,19 +53,33 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     }
 
     /**
+     * Asserts that a MUC service can be discovered.
+     *
+     * @throws Exception when errors occur
+     */
+    @SmackIntegrationTest(section = "6.1", quote =
+        "An entity often discovers a MUC service by sending a Service Discovery items (\"disco#items\") request to " +
+        "its own server. The server then returns the services that are associated with it.")
+    public void mucTestForDiscoveringMuc() throws Exception {
+        // This repeats some logic from the `AbstractMultiUserChatIntegrationTest` constructor, but is preserved here
+        // as an explicit test, because that might not always be true.
+        List<DomainBareJid> services = ServiceDiscoveryManager.getInstanceFor(conOne).findServices(MUCInitialPresence.NAMESPACE, true, false);
+        assertFalse(services.isEmpty(), "Expected to be able to find MUC services on the domain that '" + conOne.getUser() + "' is connecting to (but could not).");
+    }
+
+    /**
      * Asserts that a MUC service can have its features discovered.
      *
      * @throws Exception when errors occur
      */
     @SmackIntegrationTest(section = "6.2", quote =
         "An entity may wish to discover if a service implements the Multi-User Chat protocol; in order to do so, it " +
-        "sends a service discovery information (\"disco#info\") query to the MUC service's JID. The service MUST " +
-        "return its identity and the features it supports.")
+            "sends a service discovery information (\"disco#info\") query to the MUC service's JID. The service MUST " +
+            "return its identity and the features it supports.")
     public void mucTestForDiscoveringFeatures() throws Exception {
-        final DomainBareJid mucServiceAddress = mucManagerOne.getMucServiceDomains().get(0);
-        DiscoverInfo info = mucManagerOne.getMucServiceDiscoInfo(mucServiceAddress);
-        assertFalse(info.getIdentities().isEmpty(), "Expected the service discovery information for service " + mucServiceAddress + " to include identities (but it did not).");
-        assertFalse(info.getFeatures().isEmpty(), "Expected the service discovery information for service " + mucServiceAddress + " to include features (but it did not).");
+        DiscoverInfo info = ServiceDiscoveryManager.getInstanceFor(conOne).discoverInfo(mucService);
+        assertFalse(info.getIdentities().isEmpty(), "Expected the service discovery information for service " + mucService + " to include identities (but it did not).");
+        assertFalse(info.getFeatures().isEmpty(), "Expected the service discovery information for service " + mucService + " to include features (but it did not).");
     }
 
     /**
@@ -120,6 +137,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
 
         assertFalse(discoInfo.getIdentities().isEmpty(), "Expected the service discovery information for room " + mucAddress + " to include identities (but it did not).");
         assertFalse(discoInfo.getFeatures().isEmpty(), "Expected the service discovery information for room " + mucAddress + " to include features (but it did not).");
+        assertTrue(discoInfo.getFeatures().stream().anyMatch(feature -> MultiUserChatConstants.NAMESPACE.equals(feature.getVar())), "Expected the service discovery information for room " + mucAddress + " to include the '" + MultiUserChatConstants.NAMESPACE + "' feature (but it did not).");
     }
 
     /**
