@@ -179,6 +179,9 @@ public class SmackIntegrationTestFramework {
             return null;
         }
         String line = spec.document().trim();
+        if (!spec.version().isBlank()) {
+            line += " (version " + spec.version() + ")";
+        }
 
         final SmackIntegrationTest test = method.getAnnotation(SmackIntegrationTest.class);
         if (!test.section().isBlank()) {
