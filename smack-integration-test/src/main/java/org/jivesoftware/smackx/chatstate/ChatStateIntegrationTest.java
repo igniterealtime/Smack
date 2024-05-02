@@ -30,7 +30,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
-@SpecificationReference(document = "XEP-0085")
+@SpecificationReference(document = "XEP-0085", version = "2.1")
 public class ChatStateIntegrationTest extends AbstractSmackIntegrationTest {
 
     // Listener for composing chat state
