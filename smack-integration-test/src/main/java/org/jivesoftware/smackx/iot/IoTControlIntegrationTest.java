@@ -38,7 +38,7 @@ import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.Jid;
 
-@SpecificationReference(document = "XEP-0347")
+@SpecificationReference(document = "XEP-0347", version = "0.5.1")
 public class IoTControlIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final IoTControlManager IoTControlManagerOne;
