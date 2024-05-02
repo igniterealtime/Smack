@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Reference to a specific part of a specification.
+ * Reference to a specification document.
  *
  * @author Guus der Kinderen, guus@goodbytes.nl
  */
@@ -38,4 +38,11 @@ public @interface SpecificationReference {
      * @return a document identifier
      */
     String document();
+
+    /**
+     * An optional version number, such as '1.2.0'.
+     *
+     * @return a version number
+     */
+    String version() default "";
 }
