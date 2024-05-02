@@ -30,7 +30,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
-@SpecificationReference(document = "XEP-0092")
+@SpecificationReference(document = "XEP-0092", version = "1.1")
 public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
 
     public VersionIntegrationTest(SmackIntegrationTestEnvironment environment) {
