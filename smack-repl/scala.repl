@@ -5,4 +5,5 @@ import org.jivesoftware.smack.util.TLSUtils
 import org.jivesoftware.smack.tcp._
 import org.jxmpp.jid.impl.JidCreate
 
-import org.igniterealtime.smack.smackrepl.IoT._
+import org.igniterealtime.smack.examples._
+import org.igniterealtime.smack.examples.IoT._
