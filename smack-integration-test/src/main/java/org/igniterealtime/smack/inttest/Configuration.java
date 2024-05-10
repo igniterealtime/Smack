@@ -773,6 +773,6 @@ public final class Configuration {
         if (specification == null || specification.isBlank()) {
             return null;
         }
-        return specification.replaceAll("\\s", "").toUpperCase();
+        return specification.replaceAll("[\\s-]", "").toUpperCase();
     }
 }
