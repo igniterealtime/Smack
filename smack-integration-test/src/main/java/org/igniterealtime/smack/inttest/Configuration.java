@@ -769,7 +769,7 @@ public final class Configuration {
         return disabledSpecifications.contains(normalizeSpecification(specification));
     }
 
-    static String normalizeSpecification(String specification) {
+    public static String normalizeSpecification(String specification) {
         if (specification == null || specification.isBlank()) {
             return null;
         }
