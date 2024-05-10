@@ -412,7 +412,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
         final StanzaListener stanzaListener = stanza -> {
             final Presence presence = (Presence) stanza;
-            if (presence.getStatus().equals(needle)) {
+            if (needle.equals(presence.getStatus())) {
                 received.signal();
             }
         };
