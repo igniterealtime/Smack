@@ -258,13 +258,14 @@ public class MultiUserChat {
                     break;
                 case unavailable:
                     occupantsMap.remove(from);
-                    if (mucUser != null && mucUser.hasStatus()) {
-                        if (isUserStatusModification) {
+                    Set<Status> status = mucUser.getStatus();
+                    if (mucUser != null && !status.isEmpty()) {
+                        if (isUserStatusModification && !status.contains(MUCUser.Status.NEW_NICKNAME_303)) {
                             userHasLeft();
                         }
                         // Fire events according to the received presence code
                         checkPresenceCode(
-                            mucUser.getStatus(),
+                            status,
                             isUserStatusModification,
                             mucUser,
                             from);
