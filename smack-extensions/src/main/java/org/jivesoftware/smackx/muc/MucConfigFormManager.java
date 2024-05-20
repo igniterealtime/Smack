@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,6 +88,10 @@ public class MucConfigFormManager {
      */
     public static final String MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM = "muc#roomconfig_publicroom";
 
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_ROOMNAME = "muc#roomconfig_roomname";
 
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
@@ -264,6 +268,18 @@ public class MucConfigFormManager {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM);
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM, isPublic);
+        return this;
+    }
+
+    public boolean supportsRoomname() {
+        return answerForm.hasField(MUC_ROOMCONFIG_ROOMNAME);
+    }
+
+    public MucConfigFormManager setRoomName(String roomName) throws MucConfigurationNotSupportedException {
+        if (!supportsRoomname()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMNAME);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_ROOMNAME, roomName);
         return this;
     }
 
