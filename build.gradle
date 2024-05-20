@@ -313,6 +313,8 @@ tasks.withType(Javadoc) {
 		testFixturesApi "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 		testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
 		testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+		// https://stackoverflow.com/a/77274251/194894
+		testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
 		// The smack-extensions subproject uses mockito in its fest
 		// fixtures, and we want to have mockito also available in
