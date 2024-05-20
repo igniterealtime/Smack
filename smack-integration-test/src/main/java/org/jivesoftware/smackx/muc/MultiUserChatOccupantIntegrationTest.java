@@ -40,6 +40,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
+import org.igniterealtime.smack.inttest.Configuration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
@@ -873,6 +874,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "initial configuration and therefore before the room officially exists), the service MUST refuse entry and " +
         "return an <item-not-found/> error to the user.")
     public void mucJoinLockedRoomTest() throws Exception {
+        if (sinttestConfiguration.compatibilityMode == Configuration.CompatibilityMode.ejabberd) {
+            throw new TestNotPossibleException("ejabberd does not implement MUC locked rooms as per XEP-0045 § 7.2.10");
+        }
+
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-lockedroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
