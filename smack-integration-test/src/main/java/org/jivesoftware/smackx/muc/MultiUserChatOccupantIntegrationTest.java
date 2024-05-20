@@ -728,17 +728,22 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             // it can kick user 2. Both strategies would comply with the specification. So the only thing we can
             // reasonably test here is whether the room doesn't have more occupants than its max size.
 
-            try {
-                mucAsSeenByThree.join(nicknameThree);
-            } catch (XMPPException.XMPPErrorException unavailableErrorException) {
-                // This exception is expected if the muc implementation employs the strategy to deny access beyond the
-                // maxusers value
-                if (unavailableErrorException.getStanzaError() == null
-                                || !StanzaError.Condition.service_unavailable.equals(
-                                unavailableErrorException.getStanzaError().getCondition())) {
-                    throw unavailableErrorException;
-                }
+            XMPPException.XMPPErrorException errorException = assertThrows(XMPPException.XMPPErrorException.class, () -> mucAsSeenByThree.join(nicknameThree));
+
+            final StanzaError.Condition expectedCondition;
+            switch (sinttestConfiguration.compatibilityMode) {
+            default:
+                expectedCondition = StanzaError.Condition.service_unavailable;
+                break;
+            case ejabberd:
+                expectedCondition = StanzaError.Condition.resource_constraint;
+                break;
             }
+
+            StanzaError stanzaError = errorException.getStanzaError();
+            assertNotNull(stanzaError);
+
+            assertEquals(expectedCondition, stanzaError.getCondition());
 
             // Now we should wait until participant one is informed about the (probably failed) new participant three
             // room join. But if joining failed, there will be no such update. All we can reasonably do is wait until
