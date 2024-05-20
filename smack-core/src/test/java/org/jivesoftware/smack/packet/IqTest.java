@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2023 Florian Schmaus
+ * Copyright © 2023-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,13 @@ package org.jivesoftware.smack.packet;
 
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
+import org.jivesoftware.smack.test.util.SmackTestUtil;
+import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class IqTest {
 
@@ -35,4 +41,21 @@ public class IqTest {
         assertXmlSimilar(expected, errorIq.toXML());
     }
 
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testIqWithXmlns(SmackTestUtil.XmlPullParserKind parserKind) throws Exception {
+        final String iqXml = "<iq xmlns='jabber:client' type='result' to='username@tigase.mydomain.org/1423222896-tigase-59' id='3QLCH-1'>" +
+                        "<bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'>" +
+                        "<jid>foo@tigase.mydomain.org/myresource</jid>" +
+                        "</bind>" +
+                        "</iq>";
+        final String xml =
+                        "<stream:stream xmlns='jabber:client' to='tigase.mydomain.org' xmlns:stream='http://etherx.jabber.org/streams' version='1.0' from='username@tigase.mydomain.org' xml:lang='en-US'>" +
+                        iqXml +
+                        "</stream:stream>";
+
+        XmlPullParser parser = SmackTestUtil.getParserFor(xml, "iq", parserKind);
+        IQ iq = PacketParserUtils.parseIQ(parser);
+        assertXmlSimilar(iqXml, iq.toXML());
+    }
 }
