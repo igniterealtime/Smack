@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus, 2021 Dan Caseley
+ * Copyright 2015-2024 Florian Schmaus, 2021 Dan Caseley
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
@@ -968,36 +969,32 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         createMuc(mucAsSeenByOne, nicknameOne);
 
-        SimpleResultSyncPoint participantOneSeesTwoEnter = new SimpleResultSyncPoint();
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSeesTwoEnter.signal();
-            }
-        });
-
-        // Have participant two enter the room
-        mucAsSeenByTwo.join(nicknameTwoOriginal);
-        participantOneSeesTwoEnter.waitForResult(timeout);
-
-        // Although logic dictates that the 'unavailable' presence stanzas for the old nick should precede the presence
-        // stanza for the new nick - the specification does not dictate that. So we should allow for the order to be
-        // reversed. Here we will expect an unavailable and an available presence stanza sent to both participant one
-        // and participant two. So that adds up to a total of four.
-        MultiResultSyncPoint<Presence, ?> participantTwoPresencesSyncPoint = new MultiResultSyncPoint<>(4);
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty()) || nicknameTwoNew.equals(
-                            presence.getFrom().getResourceOrEmpty())) {
-                participantTwoPresencesSyncPoint.signal(presence);
-            }
-        });
-        mucAsSeenByTwo.addParticipantListener(presence -> {
-            if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty()) || nicknameTwoNew.equals(
-                            presence.getFrom().getResourceOrEmpty())) {
-                participantTwoPresencesSyncPoint.signal(presence);
-            }
-        });
-
         try {
+            SimpleResultSyncPoint participantOneSeesTwoEnter = new SimpleResultSyncPoint();
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameTwoOriginal.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSeesTwoEnter.signal();
+                }
+            });
+
+            // Have participant two enter the room
+            mucAsSeenByTwo.join(nicknameTwoOriginal);
+            participantOneSeesTwoEnter.waitForResult(timeout);
+
+            // Although logic dictates that the 'unavailable' presence stanzas for the old nick should precede the presence
+            // stanza for the new nick - the specification does not dictate that. So we should allow for the order to be
+            // reversed. Here we will expect an unavailable and an available presence stanza sent to both participant one
+            // and participant two. So that adds up to a total of four.
+            MultiResultSyncPoint<Presence, ?> participantTwoPresencesSyncPoint = new MultiResultSyncPoint<>(4);
+            PresenceListener mucPresenceListener = presence -> {
+                Resourcepart fromResource = presence.getFrom().getResourceOrEmpty();
+                if (nicknameTwoOriginal.equals(fromResource) || nicknameTwoNew.equals(fromResource)) {
+                    participantTwoPresencesSyncPoint.signal(presence);
+                }
+            };
+            mucAsSeenByOne.addParticipantListener(mucPresenceListener);
+            mucAsSeenByTwo.addParticipantListener(mucPresenceListener);
+
             // Participant two changes nickname
             mucAsSeenByTwo.changeNickname(nicknameTwoNew);
             final List<Presence> partTwoPresencesReceived = participantTwoPresencesSyncPoint.waitForResults(
