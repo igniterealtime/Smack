@@ -111,7 +111,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         muc.addUserStatusListener(userStatusListener);
 
         // These would be a test implementation bug, not assertion failure.
-        if (mucManagerOne.getJoinedRooms().stream().noneMatch(room -> room.equals(mucAddress))) {
+        if (!mucManagerOne.getJoinedRooms().contains(mucAddress)) {
             throw new IllegalStateException("Expected user to have joined a room '" + mucAddress + "' (but does not appear to have done so).");
         }
 
