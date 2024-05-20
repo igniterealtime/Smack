@@ -876,7 +876,9 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
-        createLockedMuc(mucAsSeenByOne, nicknameOne);
+        // Note the absence of handle.makeInstant() here. The room is still being created at this point, until a
+        // configuration is set.
+        mucAsSeenByOne.create(nicknameOne);
 
         try {
             XMPPException.XMPPErrorException conflictErrorException = assertThrows(

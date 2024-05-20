@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021-2023 Florian Schmaus
+ * Copyright 2021-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,17 +187,6 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         answerForm.setAnswer("muc#roomconfig_passwordprotectedroom", true);
         answerForm.setAnswer("muc#roomconfig_roomsecret", password);
         muc.sendConfigurationForm(answerForm);
-    }
-
-    static void createLockedMuc(MultiUserChat muc, Resourcepart resourceName) throws
-            SmackException.NoResponseException, XMPPException.XMPPErrorException,
-            InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
-            SmackException.NotConnectedException,
-            MultiUserChatException.MissingMucCreationAcknowledgeException,
-            MultiUserChatException.NotAMucServiceException {
-        muc.create(resourceName);
-        // Note the absence of handle.makeInstant() here. The room is still being created at this point, until a
-        // configuration is set.
     }
 
     static void setMaxUsers(MultiUserChat muc, int maxUsers) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException {
