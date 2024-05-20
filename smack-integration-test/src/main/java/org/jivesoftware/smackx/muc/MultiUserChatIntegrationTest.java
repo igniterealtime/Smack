@@ -99,6 +99,12 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
         createMuc(muc, Resourcepart.from("one-" + randomString));
 
+        // These would be a test implementation bug, not assertion failure.
+        if (!mucManagerOne.getJoinedRooms().contains(mucAddress)) {
+            tryDestroy(muc);
+            throw new IllegalStateException("Expected user to have joined a room '" + mucAddress + "' (but does not appear to have done so).");
+        }
+
         final SimpleResultSyncPoint mucDestroyed = new SimpleResultSyncPoint();
 
         UserStatusListener userStatusListener = new UserStatusListener() {
@@ -109,11 +115,6 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         };
 
         muc.addUserStatusListener(userStatusListener);
-
-        // These would be a test implementation bug, not assertion failure.
-        if (!mucManagerOne.getJoinedRooms().contains(mucAddress)) {
-            throw new IllegalStateException("Expected user to have joined a room '" + mucAddress + "' (but does not appear to have done so).");
-        }
 
         try {
             muc.destroy("Dummy reason", null);
