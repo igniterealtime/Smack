@@ -86,7 +86,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         // Send and wait for the message to have been reflected, so that we can be sure it's part of the MUC history.
         final SimpleResultSyncPoint messageReflectionSyncPoint = new SimpleResultSyncPoint();
         mucAsSeenByOne.addMessageListener(message -> {
-            if (message.getBody().equals(mucMessage)) {
+            String body = message.getBody();
+            if (body == null) return;
+
+            if (body.equals(mucMessage)) {
                 messageReflectionSyncPoint.signal();
             }
         });
