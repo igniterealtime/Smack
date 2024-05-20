@@ -23,8 +23,15 @@ import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.MessageListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -33,6 +40,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 @SpecificationReference(document = "XEP-0045")
 public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrationTest {
@@ -118,5 +126,30 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         assertEquals(0, mucManagerOne.getJoinedRooms().size(), "Expected " + conOne.getUser() + " to no longer be in any rooms after " + mucAddress + " was destroyed (but was).");
         assertEquals(0, muc.getOccupantsCount(), "Expected room " + mucAddress + " to no longer have any occupants after it was destroyed (but it has).");
         assertNull(muc.getNickname());
+    }
+
+    @SmackIntegrationTest
+    public void mucNameChangeTest()
+                    throws XmppStringprepException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException,
+                    NotAMucServiceException, NoResponseException, XMPPErrorException, NotConnectedException,
+                    InterruptedException, MucConfigurationNotSupportedException {
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-muc-name-change");
+
+        MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
+        createMuc(muc, Resourcepart.from("one-" + randomString));
+
+        final String newRoomName = "New Room Name (" + randomString + ")";
+
+        try {
+            muc.getConfigFormManager()
+                .setRoomName(newRoomName)
+                .submitConfigurationForm();
+
+            MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(conTwo);
+            RoomInfo roomInfo = mucManager.getRoomInfo(muc.getRoom());
+            assertEquals(newRoomName, roomInfo.getName());
+        } finally {
+            tryDestroy(muc);
+        }
     }
 }
