@@ -196,10 +196,4 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         muc.sendConfigurationForm(answerForm);
     }
 
-    static void setPublicLogging(MultiUserChat muc, boolean publicLogging) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException {
-        Form configForm = muc.getConfigurationForm();
-        FillableForm answerForm = configForm.getFillableForm();
-        answerForm.setAnswer("muc#roomconfig_enablelogging", publicLogging);
-        muc.sendConfigurationForm(answerForm);
-    }
 }

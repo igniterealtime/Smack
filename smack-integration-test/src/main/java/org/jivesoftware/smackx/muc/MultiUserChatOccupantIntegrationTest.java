@@ -37,6 +37,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
@@ -924,12 +925,17 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        setPublicLogging(mucAsSeenByOne, true);
 
         try {
+            mucAsSeenByOne.getConfigFormManager()
+                .enablePublicLogging()
+                .submitConfigurationForm();
+
             Presence twoPresence = mucAsSeenByTwo.join(nicknameTwo);
             assertTrue(MUCUser.from(twoPresence).getStatus().stream().anyMatch(status -> 170 == status.getCode()),
                 "Expected initial presence reflected to '" + conTwo.getUser() + "' when joining room '" + mucAddress + "' to include the status code '170' (but it did not).");
+        } catch (MucConfigurationNotSupportedException e) {
+            throw new TestNotPossibleException(e);
         } finally {
             mucAsSeenByOne.destroy();
         }
