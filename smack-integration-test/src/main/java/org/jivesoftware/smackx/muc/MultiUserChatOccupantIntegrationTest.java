@@ -932,7 +932,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
                 .submitConfigurationForm();
 
             Presence twoPresence = mucAsSeenByTwo.join(nicknameTwo);
-            assertTrue(MUCUser.from(twoPresence).getStatus().stream().anyMatch(status -> 170 == status.getCode()),
+            assertTrue(MUCUser.from(twoPresence).getStatus().contains(MUCUser.Status.create(170)),
                 "Expected initial presence reflected to '" + conTwo.getUser() + "' when joining room '" + mucAddress + "' to include the status code '170' (but it did not).");
         } catch (MucConfigurationNotSupportedException e) {
             throw new TestNotPossibleException(e);
