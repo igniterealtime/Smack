@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software. 2020-2022 Florian Schmaus
+ * Copyright 2003-2007 Jive Software. 2020-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1273,6 +1273,8 @@ public class MultiUserChat {
         return myRoomJid;
     }
 
+    private static final Object changeNicknameLock = new Object();
+
     /**
      * Changes the occupant's nickname to a new nickname within the room. Each room occupant
      * will receive two presence packets. One of type "unavailable" for the old nickname and one
@@ -1287,7 +1289,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws MucNotJoinedException if not joined to the Multi-User Chat.
      */
-    public synchronized void changeNickname(Resourcepart nickname) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException  {
+    public void changeNickname(Resourcepart nickname) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException  {
         Objects.requireNonNull(nickname, "Nickname must not be null or blank.");
         // Check that we already have joined the room before attempting to change the
         // nickname.
@@ -1303,18 +1305,20 @@ public class MultiUserChat {
                 .ofType(Presence.Type.available)
                 .build();
 
-        // Wait for a presence packet back from the server.
-        StanzaFilter responseFilter =
-            new AndFilter(
-                FromMatchesFilter.createFull(jid),
-                new StanzaTypeFilter(Presence.class));
-        StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
-        // Wait up to a certain number of seconds for a reply. If there is a negative reply, an
-        // exception will be thrown
-        response.nextResultOrThrow();
+        synchronized (changeNicknameLock) {
+            // Wait for a presence packet back from the server.
+            StanzaFilter responseFilter =
+                new AndFilter(
+                   FromMatchesFilter.createFull(jid),
+                   new StanzaTypeFilter(Presence.class));
+            StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
+            // Wait up to a certain number of seconds for a reply. If there is a negative reply, an
+            // exception will be thrown
+            response.nextResultOrThrow();
 
-        // TODO: Shouldn't this handle nickname rewriting by the MUC service?
-        setNickname(nickname);
+            // TODO: Shouldn't this handle nickname rewriting by the MUC service?
+            setNickname(nickname);
+        }
     }
 
     /**
