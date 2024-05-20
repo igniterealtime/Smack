@@ -101,8 +101,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
         final SimpleResultSyncPoint mucDestroyed = new SimpleResultSyncPoint();
 
-        @SuppressWarnings("deprecation")
-        DefaultUserStatusListener userStatusListener = new DefaultUserStatusListener() {
+        UserStatusListener userStatusListener = new UserStatusListener() {
             @Override
             public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
                 mucDestroyed.signal();
