@@ -93,6 +93,11 @@ public class MucConfigFormManager {
      */
     public static final String MUC_ROOMCONFIG_ROOMNAME = "muc#roomconfig_roomname";
 
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_ENABLE_PUBLIC_LOGGING = "muc#roomconfig_enablelogging";
+
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
     private final List<Jid> owners;
@@ -329,6 +334,26 @@ public class MucConfigFormManager {
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM, isPasswordProtected);
         return this;
+    }
+
+    public boolean supportsPublicLogging() {
+        return answerForm.hasField(MUC_ROOMCONFIG_ENABLE_PUBLIC_LOGGING);
+    }
+
+    public MucConfigFormManager setPublicLogging(boolean enabled) throws MucConfigurationNotSupportedException {
+        if (!supportsPublicLogging()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ENABLE_PUBLIC_LOGGING);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_ENABLE_PUBLIC_LOGGING, enabled);
+        return this;
+    }
+
+    public MucConfigFormManager enablePublicLogging() throws MucConfigurationNotSupportedException {
+        return setPublicLogging(true);
+    }
+
+    public MucConfigFormManager disablPublicLogging() throws MucConfigurationNotSupportedException {
+        return setPublicLogging(false);
     }
 
     /**
