@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,10 @@ public class TestNotPossibleException extends Exception {
     private static final long serialVersionUID = 1L;
 
     public TestNotPossibleException(String reason) {
+        super(reason);
+    }
+
+    public TestNotPossibleException(Throwable reason) {
         super(reason);
     }
 }
