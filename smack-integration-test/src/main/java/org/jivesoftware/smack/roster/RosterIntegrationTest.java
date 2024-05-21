@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus, 2022-2024 Guus der Kinderen
+ * Copyright 2015-2024 Florian Schmaus, 2022-2024 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -412,7 +412,11 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         final SimpleResultSyncPoint received = new SimpleResultSyncPoint();
         final StanzaListener stanzaListener = stanza -> {
             final Presence presence = (Presence) stanza;
-            if (presence.getStatus().equals(needle)) {
+
+            String status = presence.getStatus();
+            if (status == null) return;
+
+            if (status.equals(needle)) {
                 received.signal();
             }
         };
