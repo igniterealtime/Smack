@@ -379,7 +379,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "option), but MUST include the new occupant's full JID only in the presence notifications it sends to " +
         "occupants with a role of \"moderator\" and not to non-moderator occupants.")
     public void mucJoinSemiAnonymousRoomReceivedByNonModeratorTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinsemianonymousroom");
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-seminanonymous-by-non-moderator");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -408,7 +408,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             // Check the presence received by participant two for exclusion of full jid of participant three
             assertNull(MUCUser.from(presenceReceivedByTwo).getItem().getJid(), "Did not expect '" + conTwo.getUser() + "' (who is not a moderator at this stage) to receive the full JID of '" + conThree.getUser() + "' when they joined room '" + mucAddress + "' (but they did).");
         } finally {
-            mucAsSeenByThree.leave(); // Reset to have a second go
+            tryDestroy(mucAsSeenByOne);
         }
     }
 
@@ -425,7 +425,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "option), but MUST include the new occupant's full JID only in the presence notifications it sends to " +
         "occupants with a role of \"moderator\" and not to non-moderator occupants.")
     public void mucJoinSemiAnonymousRoomReceivedByModeratorTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinsemianonymousroom");
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-seminanonymous-by-moderator");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
