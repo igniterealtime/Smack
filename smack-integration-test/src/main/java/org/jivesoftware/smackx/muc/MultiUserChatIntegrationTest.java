@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import org.jivesoftware.smack.MessageListener;
@@ -123,7 +124,8 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             muc.removeUserStatusListener(userStatusListener);
         }
 
-        assertEquals(0, mucManagerOne.getJoinedRooms().size(), "Expected " + conOne.getUser() + " to no longer be in any rooms after " + mucAddress + " was destroyed (but was).");
+        Set<EntityBareJid> joinedRooms = mucManagerOne.getJoinedRooms();
+        assertEquals(0, joinedRooms.size(), "Expected " + conOne.getUser() + " to no longer be in any rooms after " + mucAddress + " was destroyed. But it is still in " + joinedRooms);
         assertEquals(0, muc.getOccupantsCount(), "Expected room " + mucAddress + " to no longer have any occupants after it was destroyed (but it has).");
         assertNull(muc.getNickname());
     }
