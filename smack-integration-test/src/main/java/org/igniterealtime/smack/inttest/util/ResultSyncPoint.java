@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,12 @@ public class ResultSyncPoint<R, E extends Exception> {
         if (exception != null) {
             throw exception;
         }
-        throw new TimeoutException(timeoutMessage == null ? "Timeout expired" : timeoutMessage);
+
+        String message = "Timeout after " + timeout + "ms";
+        if (timeoutMessage != null) {
+            message += ": " + timeoutMessage;
+        }
+        throw new TimeoutException(message);
     }
 
 
