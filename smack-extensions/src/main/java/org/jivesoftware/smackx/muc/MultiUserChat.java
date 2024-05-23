@@ -2250,6 +2250,7 @@ public class MultiUserChat {
     public void changeSubject(final String subject) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MessageBuilder message = buildMessage();
         message.setSubject(subject);
+        Message stanza = message.build();
         // Wait for an error or confirmation message back from the server.
         StanzaFilter responseFilter = new AndFilter(fromRoomGroupchatFilter, new StanzaFilter() {
             @Override
@@ -2258,7 +2259,8 @@ public class MultiUserChat {
                 return subject.equals(msg.getSubject());
             }
         });
-        StanzaCollector response = connection.createStanzaCollectorAndSend(responseFilter, message.build());
+        StanzaFilter errorFilter = new AndFilter(fromRoomFilter, new StanzaIdFilter(stanza), MessageTypeFilter.ERROR);
+        StanzaCollector response = connection.createStanzaCollectorAndSend(new OrFilter(responseFilter, errorFilter), stanza);
         // Wait up to a certain number of seconds for a reply.
         response.nextResultOrThrow();
     }
