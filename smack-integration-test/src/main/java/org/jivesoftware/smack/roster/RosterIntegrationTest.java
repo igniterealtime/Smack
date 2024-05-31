@@ -142,7 +142,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         "whose value is \"subscribe\").")
     public void testRosterPushAfterSubscriptionRequest() throws Exception {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
-        Roster.getInstanceFor(conTwo).setSubscriptionMode(Roster.SubscriptionMode.manual); // prevents a race condition when asserting the captured roster entry.
+        rosterTwo.setSubscriptionMode(Roster.SubscriptionMode.manual); // prevents a race condition when asserting the captured roster entry.
         final ResultSyncPoint<RosterEntry, Exception> added = new ResultSyncPoint<>();
 
         final RosterListener rosterListener = new AbstractRosterListener() {
