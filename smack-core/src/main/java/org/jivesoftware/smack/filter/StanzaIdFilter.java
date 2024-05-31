@@ -18,6 +18,7 @@
 package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaView;
 import org.jivesoftware.smack.util.StringUtils;
 
 /**
@@ -34,7 +35,7 @@ public class StanzaIdFilter implements StanzaFilter {
      *
      * @param stanza the stanza which the ID is taken from.
      */
-    public StanzaIdFilter(Stanza stanza) {
+    public StanzaIdFilter(StanzaView stanza) {
         this(stanza.getStanzaId());
     }
 
