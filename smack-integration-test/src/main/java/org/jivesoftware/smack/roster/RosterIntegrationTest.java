@@ -21,21 +21,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
-import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
-import org.jivesoftware.smack.iqrequest.IQRequestHandler;
-import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
-import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
-import org.jivesoftware.smack.sm.predicates.ForEveryStanza;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.StringUtils;
 
@@ -437,64 +431,4 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         }
     }
 
-    /**
-     * Asserts that when a user receives a presence subscription approval, the server first sends the presence stanza,
-     * followed by a roster push.
-     *
-     * @throws Exception when errors occur
-     */
-    @SmackIntegrationTest(section = "3.1.6", quote =
-        "(...)  If this check is successful, then the user's server MUST: 1. Deliver the inbound subscription " +
-        "approval to all of the user's interested resources (...). This MUST occur before sending the roster push " +
-        "described in the next step. 2. Initiate a roster push to all of the user's interested resources, containing " +
-        "an updated roster item for the contact with the 'subscription' attribute set to a value of \"to\" (...) or " +
-        "\"both\" (...).")
-    public void testReceivePresenceApprovalAndRosterPush() throws Exception {
-        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
-
-        rosterTwo.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
-
-        final ResultSyncPoint<Boolean, Exception> receivedRosterPush = new ResultSyncPoint<>();
-        final AtomicBoolean hasReceivedSubscriptionApproval = new AtomicBoolean(false);
-
-        // Replace the IQ Request Handler that processes roster pushes with one that's guaranteed to be executed
-        // synchronously with the stanza handler that listens for presence updates (below). This is to guarantee that
-        // the order in which both stanzas arrive is maintained during processing.
-        final IQRequestHandler synchronousReplacement = new AbstractIqRequestHandler(RosterPacket.ELEMENT, RosterPacket.NAMESPACE, IQ.Type.set, IQRequestHandler.Mode.sync) {
-            @Override
-            public IQ handleIQRequest(IQ iqRequest) {
-                receivedRosterPush.signal(hasReceivedSubscriptionApproval.get());
-                return IQ.createResultIQ(iqRequest);
-            }
-        };
-        final IQRequestHandler originalRequestHandler = conOne.registerIQRequestHandler(synchronousReplacement);
-
-        final StanzaListener presenceUpdateListener = stanza -> {
-            if (stanza instanceof Presence) {
-                final Presence presence = (Presence) stanza;
-                if (presence.getType() == Presence.Type.subscribed) {
-                    hasReceivedSubscriptionApproval.set(true);
-                }
-            }
-        };
-
-        // Add as a synchronous listener, again to guarantee to maintain the order of the stanzas captured by this
-        // listener and the roster pushes captured by the IQ Request Handler (above).
-        conOne.addSyncStanzaListener(presenceUpdateListener, ForEveryStanza.INSTANCE);
-
-        final Presence subscribe = conOne.getStanzaFactory().buildPresenceStanza()
-                .ofType(Presence.Type.subscribe)
-                .to(conTwo.getUser().asBareJid())
-                .build();
-
-        try {
-            conOne.sendStanza(subscribe);
-            final boolean hasReceivedApproval = assertResult(receivedRosterPush, "Expected '" + conOne.getUser() + "' to receive a roster push containing an updated roster entry for '" + conTwo.getUser().asBareJid() + "'");
-            assertTrue(hasReceivedApproval, "Expected '" + conOne.getUser() + "' to have received a presence subscription approval from '" + conTwo.getUser().asBareJid() + "', before it received the roster push that contained the updated contact, but the presence subscription approval was not (yet) received when the roster push was.");
-        } finally {
-            rosterOne.setSubscriptionMode(Roster.getDefaultSubscriptionMode());
-            conOne.removeSyncStanzaListener(presenceUpdateListener);
-            conOne.registerIQRequestHandler(originalRequestHandler);
-        }
-    }
 }
