@@ -193,4 +193,30 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             tryDestroy(mucAsSeenByOne);
         }
     }
+
+    @SmackIntegrationTest
+    public void mucTestChangeRoomName() throws XmppStringprepException, MucAlreadyJoinedException,
+                    MissingMucCreationAcknowledgeException, NotAMucServiceException, NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
+        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-change-room-name");
+        final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+        try {
+            String initialRoomName = "Initial Room Name";
+            mucAsSeenByOne.getConfigFormManager().setRoomName(initialRoomName).submitConfigurationForm();
+            RoomInfo roomInfo = mucManagerOne.getRoomInfo(mucAddress);
+            assertEquals(initialRoomName, roomInfo.getName());
+
+            String newRoomName = "New Room Name";
+            mucAsSeenByOne.getConfigFormManager().setRoomName(newRoomName).submitConfigurationForm();
+            roomInfo = mucManagerOne.getRoomInfo(mucAddress);
+            assertEquals(newRoomName, roomInfo.getName());
+        } catch (MucConfigurationNotSupportedException e) {
+            throw new TestNotPossibleException(e);
+        } finally {
+            tryDestroy(mucAsSeenByOne);
+        }
+    }
 }
