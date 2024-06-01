@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.muc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -29,6 +30,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
@@ -152,6 +154,43 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             assertEquals(newRoomName, roomInfo.getName());
         } finally {
             tryDestroy(muc);
+        }
+    }
+
+    @SmackIntegrationTest(section = "8.1", quote = "modify the subject [...] MUST be denied if the <user@host> of the 'from' address of the request does not match "
+                    + "the bare JID portion of one of the moderators; in this case, the service MUST return a <forbidden/> error.")
+    public void mucTestVisitorNotAllowedToChangeSubject() throws XmppStringprepException, MucAlreadyJoinedException,
+                    MissingMucCreationAcknowledgeException, NotAMucServiceException, NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
+        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-visitor-change-subject");
+        final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
+        final MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
+
+        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+
+        createMuc(mucAsSeenByOne, nicknameOne);
+        try {
+            MucConfigFormManager configFormManager = mucAsSeenByOne.getConfigFormManager();
+            if (configFormManager.occupantsAreAllowedToChangeSubject()) {
+                configFormManager.disallowOccupantsToChangeSubject().submitConfigurationForm();
+            }
+
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            final XMPPException.XMPPErrorException e = assertThrows(XMPPException.XMPPErrorException.class, () -> {
+                mucAsSeenByTwo.changeSubject("Test Subject Change");
+            }, "Expected an error after '" + conTwo.getUser()
+                            + "' (that is not a moderator) tried to change the subject of room '" + mucAddress
+                            + "' (but none occurred).");
+            assertEquals(StanzaError.Condition.forbidden, e.getStanzaError().getCondition(),
+                            "Unexpected error condition in the (expected) error that was returned to '"
+                                            + conTwo.getUser() + "' after it tried to change to subject of room '"
+                                            + mucAddress + "' while not being a moderator.");
+        } catch (MucConfigurationNotSupportedException e) {
+            throw new TestNotPossibleException(e);
+        } finally {
+            tryDestroy(mucAsSeenByOne);
         }
     }
 }
