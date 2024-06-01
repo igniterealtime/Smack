@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
+import org.jivesoftware.smackx.xdata.BooleanFormField;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.FilledForm;
@@ -97,6 +98,11 @@ public class MucConfigFormManager {
      * The constant String {@value}.
      */
     public static final String MUC_ROOMCONFIG_ENABLE_PUBLIC_LOGGING = "muc#roomconfig_enablelogging";
+
+    /**
+     * The constant String {@value}.
+     */
+    public static final String MUC_ROOMCONFIG_CHANGE_SUBJECT = "muc#roomconfig_changesubject";
 
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
@@ -372,6 +378,33 @@ public class MucConfigFormManager {
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_ROOMSECRET, secret);
         return this;
+    }
+
+    public boolean supportsChangeSubjectByOccupant() {
+        return answerForm.hasField(MUC_ROOMCONFIG_CHANGE_SUBJECT);
+    }
+
+    public boolean occupantsAreAllowedToChangeSubject() throws MucConfigurationNotSupportedException {
+        if (!supportsChangeSubjectByOccupant()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_CHANGE_SUBJECT);
+        }
+        return answerForm.getField(MUC_ROOMCONFIG_CHANGE_SUBJECT).ifPossibleAsOrThrow(BooleanFormField.class).getValueAsBoolean();
+    }
+
+    public MucConfigFormManager setChangeSubjectByOccupant(boolean enabled) throws MucConfigurationNotSupportedException {
+        if (!supportsChangeSubjectByOccupant()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_CHANGE_SUBJECT);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_CHANGE_SUBJECT, enabled);
+        return this;
+    }
+
+    public MucConfigFormManager allowOccupantsToChangeSubject() throws MucConfigurationNotSupportedException {
+        return setChangeSubjectByOccupant(true);
+    }
+
+    public MucConfigFormManager disallowOccupantsToChangeSubject() throws MucConfigurationNotSupportedException {
+        return setChangeSubjectByOccupant(false);
     }
 
     /**
