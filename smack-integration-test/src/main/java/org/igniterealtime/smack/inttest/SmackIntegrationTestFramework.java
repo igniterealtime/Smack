@@ -527,6 +527,11 @@ public class SmackIntegrationTestFramework {
             }
             sb.append('\n');
         }
+
+        if (numberOfAvailableTests == 0) {
+            throw new IllegalArgumentException("No integration tests selected.");
+        }
+
         sb.append("Available tests: ").append(numberOfAvailableTests);
         if (!testRunResult.disabledTestClasses.isEmpty() || !testRunResult.disabledTests.isEmpty()) {
             sb.append(" (Disabled ").append(testRunResult.disabledTestClasses.size()).append(" classes")
