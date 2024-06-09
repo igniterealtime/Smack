@@ -80,6 +80,10 @@
  * <td>XMPP service to run the tests on</td>
  * </tr>
  * <tr>
+ * <td>host</td>
+ * <td>IP address or DNS name of the XMPP service to run the tests on</td>
+ * </tr>
+ * <tr>
  * <td>serviceTlsPin</td>
  * <td>TLS Pin (used by <a href="https://github.com/Flowdalic/java-pinning">java-pinning</a>)</td>
  * </tr>
