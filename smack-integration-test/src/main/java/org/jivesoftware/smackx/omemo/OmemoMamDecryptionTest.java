@@ -41,7 +41,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
  * This test sends a message from Alice to Bob, while Bob has automatic decryption disabled.
  * Then Bob fetches his Mam archive and decrypts the result.
  */
-@SpecificationReference(document = "XEP-0384")
+@SpecificationReference(document = "XEP-0384", version = "0.3.0")
 public class OmemoMamDecryptionTest extends AbstractTwoUsersOmemoIntegrationTest {
     public OmemoMamDecryptionTest(SmackIntegrationTestEnvironment environment)
             throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
