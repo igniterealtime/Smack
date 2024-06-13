@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Guus der Kinderen
+ * Copyright 2021-2024 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,13 +34,17 @@ public class MultiResultSyncPoint<R, E extends Exception> {
     }
 
     public synchronized List<R> waitForResults(long timeout) throws E, InterruptedException, TimeoutException {
+        return waitForResults(timeout, null);
+    }
+
+    public synchronized List<R> waitForResults(long timeout, String timeoutMessage) throws E, InterruptedException, TimeoutException {
         long now = System.currentTimeMillis();
         final long deadline = now + timeout;
         while (results.size() < expectedResultCount && exception == null && now < deadline) {
             wait(deadline - now);
             now = System.currentTimeMillis();
         }
-        if (now >= deadline) throw new TimeoutException("MultiResultSyncPoint timeout waiting " + timeout + " millis. Got " + results.size() + " results of " + expectedResultCount + " results");
+        if (now >= deadline) throw new TimeoutException((timeoutMessage != null ? timeoutMessage + " " : "") + "MultiResultSyncPoint timeout waiting " + timeout + " millis. Got " + results.size() + " results of " + expectedResultCount + " results");
         if (exception != null) throw exception;
         return new ArrayList<>(results);
     }
