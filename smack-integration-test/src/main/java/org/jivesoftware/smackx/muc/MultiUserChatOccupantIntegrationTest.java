@@ -214,16 +214,15 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        mucAsSeenByTwo.join(nicknameTwo);
-
         SimpleResultSyncPoint oneSeesTwo = new SimpleResultSyncPoint();
         mucAsSeenByOne.addParticipantListener(presence -> {
             if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
                 oneSeesTwo.signal();
             }
         });
-        mucAsSeenByOne.grantModerator(nicknameTwo);
+        mucAsSeenByTwo.join(nicknameTwo);
         oneSeesTwo.waitForResult(timeout);
+        mucAsSeenByOne.grantModerator(nicknameTwo);
 
         List<Presence> results = new ArrayList<>();
         mucAsSeenByThree.addParticipantListener(results::add);
