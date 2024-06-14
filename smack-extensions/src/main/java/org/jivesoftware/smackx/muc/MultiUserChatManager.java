@@ -148,6 +148,7 @@ public final class MultiUserChatManager extends Manager {
     private static final StanzaFilter DIRECT_INVITATION_FILTER =
         new AndFilter(StanzaTypeFilter.MESSAGE,
                       new ExtensionElementFilter<GroupChatInvitation>(GroupChatInvitation.class),
+                      NotFilter.of(MUCUser.class),
                       new NotFilter(MessageTypeFilter.ERROR));
 
     private static final ExpirationCache<DomainBareJid, DiscoverInfo> KNOWN_MUC_SERVICES = new ExpirationCache<>(
