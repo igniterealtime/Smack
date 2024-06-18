@@ -511,7 +511,7 @@
  * </tr>
  * <tr>
  * <td>References</td>
- * <td><a href="https://xmpp.org/extensions/xep-0363.html">XEP-0372</a></td>
+ * <td><a href="https://xmpp.org/extensions/xep-0372.html">XEP-0372</a></td>
  * <td></td>
  * <td>Add references like mentions or external data to stanzas.</td>
  * </tr>
