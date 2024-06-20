@@ -38,7 +38,7 @@ import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.util.XmppDateTime;
 
-@SpecificationReference(document = "XEP-0080")
+@SpecificationReference(document = "XEP-0080", version = "1.9")
 public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final GeoLocationManager glm1;

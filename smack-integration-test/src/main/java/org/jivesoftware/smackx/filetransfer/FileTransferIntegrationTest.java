@@ -34,7 +34,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
-@SpecificationReference(document = "XEP-0096")
+@SpecificationReference(document = "XEP-0096", version = "1.3.1")
 public class FileTransferIntegrationTest extends AbstractSmackIntegrationTest {
 
     private static final int MAX_FT_DURATION = 360;

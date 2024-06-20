@@ -36,7 +36,7 @@ import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.jupiter.api.Assertions;
 
-@SpecificationReference(document = "XEP-0118")
+@SpecificationReference(document = "XEP-0118", version = "1.3.0")
 public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final UserTuneManager utm1;

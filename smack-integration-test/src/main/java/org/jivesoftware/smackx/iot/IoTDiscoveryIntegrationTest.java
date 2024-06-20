@@ -37,7 +37,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.Jid;
 
-@SpecificationReference(document = "XEP-0347")
+@SpecificationReference(document = "XEP-0347", version = "0.5.1")
 public class IoTDiscoveryIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final IoTDiscoveryManager discoveryManagerOne;

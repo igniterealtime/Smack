@@ -32,7 +32,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
-@SpecificationReference(document = "XEP-0107")
+@SpecificationReference(document = "XEP-0107", version = "1.2.1")
 public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final MoodManager mm1;
