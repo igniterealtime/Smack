@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software.
+ * Copyright 2003-2007 Jive Software, 2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package org.jivesoftware.smack.filter;
 
+import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.Objects;
 
@@ -42,5 +43,10 @@ public class NotFilter implements StanzaFilter {
     @Override
     public boolean accept(Stanza packet) {
         return !filter.accept(packet);
+    }
+
+    public static <E extends ExtensionElement> NotFilter of(Class<E> extensionElementClass) {
+        ExtensionElementFilter<E> extensionElementFilter = new ExtensionElementFilter<>(extensionElementClass);
+        return new NotFilter(extensionElementFilter);
     }
 }
