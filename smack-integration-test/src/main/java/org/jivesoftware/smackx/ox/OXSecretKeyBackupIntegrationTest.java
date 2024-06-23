@@ -52,7 +52,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.pgpainless.key.protection.UnprotectedKeysProtector;
 
-@SpecificationReference(document = "XEP-0374")
+@SpecificationReference(document = "XEP-0374", version = "0.2.0")
 public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegrationTest {
 
     private static final String sessionId = StringUtils.randomString(10);

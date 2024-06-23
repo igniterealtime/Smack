@@ -72,6 +72,8 @@ public final class Configuration {
 
     public final DomainBareJid service;
 
+    public final String host;
+
     public final String serviceTlsPin;
 
     public final SslContextFactory sslContextFactory;
@@ -138,6 +140,7 @@ public final class Configuration {
     private Configuration(Configuration.Builder builder) throws KeyManagementException, NoSuchAlgorithmException {
         service = Objects.requireNonNull(builder.service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
+        host = builder.host;
         serviceTlsPin = builder.serviceTlsPin;
         if (serviceTlsPin != null) {
             SSLContext sslContext = Java7Pinning.forPin(serviceTlsPin);
@@ -197,6 +200,9 @@ public final class Configuration {
             }
             b.setSecurityMode(securityMode);
             b.setXmppDomain(service);
+            if (host != null) {
+                b.setHost(host);
+            }
 
             if (debuggerFactory != null) {
                 b.setDebuggerFactory(debuggerFactory);
@@ -221,6 +227,8 @@ public final class Configuration {
     public static final class Builder {
 
         private DomainBareJid service;
+
+        private String host;
 
         private String serviceTlsPin;
 
@@ -284,6 +292,11 @@ public final class Configuration {
 
         public Builder setService(DomainBareJid service) {
             this.service = service;
+            return this;
+        }
+
+        private Builder setHost(String host) {
+            this.host = host;
             return this;
         }
 
@@ -521,6 +534,7 @@ public final class Configuration {
 
         Builder builder = builder();
         builder.setService(properties.getProperty("service"));
+        builder.setHost(properties.getProperty("host"));
         builder.setServiceTlsPin(properties.getProperty("serviceTlsPin"));
         builder.setSecurityMode(properties.getProperty("securityMode"));
         builder.setReplyTimeout(properties.getProperty("replyTimeout", "47000"));

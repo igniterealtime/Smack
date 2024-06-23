@@ -54,7 +54,7 @@ import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
-@SpecificationReference(document = "XEP-0115")
+@SpecificationReference(document = "XEP-0115", version = "1.6.0")
 public class EntityCapsTest extends AbstractSmackIntegrationTest {
 
     private final EntityCapsManager ecmTwo;

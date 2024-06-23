@@ -45,7 +45,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
-@SpecificationReference(document = "XEP-0045")
+@SpecificationReference(document = "XEP-0045", version = "1.34.6")
 public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
     public MultiUserChatIntegrationTest(SmackIntegrationTestEnvironment environment)

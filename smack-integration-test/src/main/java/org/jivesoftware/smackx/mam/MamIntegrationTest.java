@@ -46,7 +46,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 
-@SpecificationReference(document = "XEP-0313")
+@SpecificationReference(document = "XEP-0313", version = "0.6.3")
 public class MamIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final MamManager mamManagerConTwo;

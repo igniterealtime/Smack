@@ -47,7 +47,7 @@ import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 
 
-@SpecificationReference(document = "XEP-0045")
+@SpecificationReference(document = "XEP-0045", version = "1.34.6")
 public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends AbstractMultiUserChatIntegrationTest{
 
     public MultiUserChatRolesAffiliationsPrivilegesIntegrationTest(SmackIntegrationTestEnvironment environment)

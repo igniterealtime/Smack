@@ -43,7 +43,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
-@SpecificationReference(document = "XEP-0045")
+@SpecificationReference(document = "XEP-0045", version = "1.34.6")
 public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
     public MultiUserChatEntityIntegrationTest(SmackIntegrationTestEnvironment environment)

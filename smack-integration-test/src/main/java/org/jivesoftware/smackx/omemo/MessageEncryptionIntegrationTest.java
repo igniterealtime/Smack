@@ -36,7 +36,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
  * During this test Alice sends an encrypted message to Bob. Bob decrypts it and sends a response to Alice.
  * It is checked whether the messages can be decrypted, and if used up pre-keys result in renewed bundles.
  */
-@SpecificationReference(document = "XEP-0384")
+@SpecificationReference(document = "XEP-0384", version = "0.3.0")
 public class MessageEncryptionIntegrationTest extends AbstractTwoUsersOmemoIntegrationTest {
 
     public MessageEncryptionIntegrationTest(SmackIntegrationTestEnvironment environment)

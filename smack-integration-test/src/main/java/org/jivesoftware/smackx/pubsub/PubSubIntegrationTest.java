@@ -37,7 +37,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.jxmpp.jid.DomainBareJid;
 
-@SpecificationReference(document = "XEP-0060")
+@SpecificationReference(document = "XEP-0060", version = "1.26.0")
 public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
 
     private final PubSubManager pubSubManagerOne;

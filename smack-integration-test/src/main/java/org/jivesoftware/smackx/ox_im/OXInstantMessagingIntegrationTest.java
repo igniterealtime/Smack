@@ -45,7 +45,7 @@ import org.pgpainless.decryption_verification.OpenPgpMetadata;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.pgpainless.key.protection.UnprotectedKeysProtector;
 
-@SpecificationReference(document = "XEP-0374")
+@SpecificationReference(document = "XEP-0374", version = "0.2.0")
 public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegrationTest {
 
     private static final String sessionId = StringUtils.randomString(10);
