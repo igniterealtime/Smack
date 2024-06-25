@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +70,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoView;
 import org.jivesoftware.smackx.xdata.FormField;
+import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
@@ -667,16 +669,30 @@ public final class EntityCapsManager extends Manager {
         }
 
         List<DataForm> extendedInfos = discoverInfo.getExtensions(DataForm.class);
-        for (DataForm extendedInfo : extendedInfos) {
-            if (!extendedInfo.hasHiddenFormTypeField()) {
+        final Iterator<DataForm> iter = extendedInfos.iterator();
+        while (iter.hasNext()) {
+            if (!iter.next().hasHiddenFormTypeField()) {
                 // Only use the data form for calculation is it has a hidden FORM_TYPE field.
                 // See XEP-0115 5.4 step 3.f
-                continue;
+                iter.remove();
             }
+        }
 
-            // 6. If the service discovery information response includes
-            // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
-            // by the XML character data of the <value/> element).
+        // 6. If the service discovery information response includes
+        // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
+        // by the XML character data of the <value/> element).
+        Collections.sort(extendedInfos, new Comparator<DataForm>() {
+            @Override
+            public int compare(DataForm d1, DataForm d2) {
+                final TextSingleFormField hft1 = d1.getHiddenFormTypeField();
+                assert hft1 != null; // ensured by the previous step.
+                final TextSingleFormField hft2 = d2.getHiddenFormTypeField();
+                assert hft2 != null; // ensured by the previous step.
+                return hft1.getFirstValue().compareTo(hft2.getFirstValue());
+            }
+        });
+
+        for (DataForm extendedInfo : extendedInfos) {
             SortedSet<FormField> fs = new TreeSet<>(new Comparator<FormField>() {
                 @Override
                 public int compare(FormField f1, FormField f2) {
