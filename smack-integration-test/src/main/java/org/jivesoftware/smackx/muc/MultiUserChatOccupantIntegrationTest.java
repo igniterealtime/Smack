@@ -33,8 +33,10 @@ import java.util.stream.Collectors;
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 import org.jivesoftware.smack.util.StringUtils;
@@ -51,7 +53,6 @@ import org.igniterealtime.smack.inttest.util.MultiResultSyncPoint;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -73,6 +74,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "§ 7.1 The order of events involved in joining a room needs to be consistent so that clients can know which events to expect when. After a client sends presence to join a room, the MUC service MUST send it events in the following order: 1. In-room presence from other occupants 2. In-room presence from the joining entity itself (so-called \"self-presence\") 3. Room history (if any) 4. The room subject [...]" +
         "§ 7.2.2 This self-presence MUST NOT be sent to the new occupant until the room has sent the presence of all other occupants to the new occupant ... The service MUST first send the complete list of the existing occupants to the new occupant and only then send the new occupant's own presence to the new occupant")
     public void mucJoinEventOrderingTest() throws Exception {
+        // This implementation deliberately does not use Smack's MUC API when trying to collect the order in which
+        // stanzas arrive. Instead, it joins a chatroom and listens for its stanzas using basic stanza handling. As
+        // this uses exactly one stanza listener, that's guaranteed to be invoked in order of stanza arrival, which is
+        // not necessarily the case when using the MUC API.
         EntityBareJid mucAddress = getRandomRoom("smack-inttest-eventordering");
         final String mucSubject = "Subject smack-inttest-eventordering " + randomString;
         final String mucMessage = "Message smack-inttest-eventordering " + randomString;
@@ -101,41 +106,28 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         messageReflectionSyncPoint.waitForResult(timeout);
 
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
-        List<Object> results = new ArrayList<>();
-
-        mucAsSeenByTwo.addMessageListener(message -> {
-            String body = message.getBody();
-            if (mucMessage.equals(body)) {
-                results.add(body);
+        final List<Stanza> results = new ArrayList<>();
+        conTwo.addStanzaListener(stanza -> {
+            results.add(stanza);
+            if (stanza instanceof Message && ((Message) stanza).getSubject() != null) {
+                subjectResultSyncPoint.signal(((Message) stanza).getSubject());
             }
-        });
-
-        mucAsSeenByTwo.addParticipantStatusListener(new ParticipantStatusListener() {
-            @Override public void joined(EntityFullJid participant) {
-                // Ignore self-presence, but record all other participants.
-                final EntityFullJid participantTwo = JidCreate.entityFullFrom(mucAddress, nicknameTwo);
-                if (!participantTwo.equals(participant)) {
-                    results.add(participant);
-                }
-            }
-        });
-
-        mucAsSeenByTwo.addSubjectUpdatedListener((subject, from) -> {
-            results.add(subject);
-            subjectResultSyncPoint.signal(subject);
-        });
+        }, FromMatchesFilter.create(mucAddress));
 
         try {
-            Presence reflectedJoinPresence = mucAsSeenByTwo.join(nicknameTwo);
-            results.add(reflectedJoinPresence.getFrom()); // Self-presence should be second
+            mucAsSeenByTwo.join(nicknameTwo);
 
             subjectResultSyncPoint.waitForResult(timeout); // Wait for subject, as it should be 4th (last)
 
             assertEquals(4, results.size(), "Unexpected amount of stanzas received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
-            assertEquals(JidCreate.fullFrom(mucAddress, nicknameOne), results.get(0), "Unexpected 'from' address of the first stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
-            assertEquals(JidCreate.fullFrom(mucAddress, nicknameTwo), results.get(1), "Unexpected 'from' address of the seconds stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
-            assertEquals(mucMessage, results.get(2), "The third stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' was expected to be a different stanza.");
-            assertEquals(mucSubject, results.get(3), "The fourth stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' was expected to be a different stanza.");
+            assertTrue(results.get(0) instanceof Presence, "Expected the first stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a presence stanza (but it was not).");
+            assertEquals(JidCreate.fullFrom(mucAddress, nicknameOne), results.get(0).getFrom(), "Unexpected 'from' address of the first stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
+            assertTrue(results.get(1) instanceof Presence, "Expected the second stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a presence stanza (but it was not).");
+            assertEquals(JidCreate.fullFrom(mucAddress, nicknameTwo), results.get(1).getFrom(), "Unexpected 'from' address of the seconds stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
+            assertTrue(results.get(2) instanceof Message, "Expected the third stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a message stanza (but it was not).");
+            assertEquals(mucMessage, ((Message) results.get(2)).getBody(), "The third stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' was expected to be a different stanza.");
+            assertTrue(results.get(3) instanceof Message, "Expected the fourth stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a message stanza (but it was not).");
+            assertEquals(mucSubject, ((Message) results.get(3)).getSubject(), "The fourth stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' was expected to be a different stanza.");
         } finally {
             tryDestroy(mucAsSeenByOne);
         }
