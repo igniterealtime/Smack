@@ -44,7 +44,15 @@ public class MultiResultSyncPoint<R, E extends Exception> {
             wait(deadline - now);
             now = System.currentTimeMillis();
         }
-        if (now >= deadline) throw new TimeoutException((timeoutMessage != null ? timeoutMessage + " " : "") + "MultiResultSyncPoint timeout waiting " + timeout + " millis. Got " + results.size() + " results of " + expectedResultCount + " results");
+        if (now >= deadline) {
+            StringBuilder sb = new StringBuilder();
+            if (timeoutMessage != null) {
+                sb.append(timeoutMessage).append(". ");
+            }
+            sb.append("MultiResultSyncPoint timeout waiting " + timeout + " ms. Got " + results.size() + " results of " + expectedResultCount + " results");
+
+            throw new TimeoutException(sb.toString());
+        }
         if (exception != null) throw exception;
         return new ArrayList<>(results);
     }

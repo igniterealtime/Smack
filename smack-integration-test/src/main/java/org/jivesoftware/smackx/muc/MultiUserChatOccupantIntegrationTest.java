@@ -292,7 +292,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         try {
             mucAsSeenByThree.join(nicknameThree);
 
-            List<Presence> results = assertResult(syncPoint, "Expected all occupants of room '" + mucAddress + "' to be notified of '" + conThree.getUser() + "' using nickname '" + nicknameThree + "' joining the room (but one or more did not get notified).");
+            List<Presence> results = assertResult(syncPoint, "Expected all occupants of room '" + mucAddress + "' to be notified of '" + conThree.getUser() + "' using nickname '" + nicknameThree + "' joining the room (but one or more did not get notified)");
             assertTrue(results.stream().allMatch(
                             result -> JidCreate.fullFrom(mucAddress, nicknameThree).equals(result.getFrom())),
                 "Expected all occupants of room '" + mucAddress + "' to be notified of '" + conThree.getUser() + "' using nickname '" + nicknameThree + "' joining the room (but one or more got notified for a different user).");
