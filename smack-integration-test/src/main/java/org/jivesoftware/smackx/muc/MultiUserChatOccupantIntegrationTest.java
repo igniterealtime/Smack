@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.PresenceListener;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.FromMatchesFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -107,12 +108,13 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
         final List<Stanza> results = new ArrayList<>();
-        conTwo.addStanzaListener(stanza -> {
+        final StanzaListener stanzaListener = stanza -> {
             results.add(stanza);
             if (stanza instanceof Message && ((Message) stanza).getSubject() != null) {
                 subjectResultSyncPoint.signal(((Message) stanza).getSubject());
             }
-        }, FromMatchesFilter.create(mucAddress));
+        };
+        conTwo.addStanzaListener(stanzaListener, FromMatchesFilter.create(mucAddress));
 
         try {
             mucAsSeenByTwo.join(nicknameTwo);
@@ -130,6 +132,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             assertEquals(mucSubject, ((Message) results.get(3)).getSubject(), "The fourth stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' was expected to be a different stanza.");
         } finally {
             tryDestroy(mucAsSeenByOne);
+            conTwo.removeStanzaListener(stanzaListener);
         }
     }
 
