@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -701,16 +702,30 @@ public final class EntityCapsManager extends Manager {
         }
 
         List<DataForm> extendedInfos = discoverInfo.getExtensions(DataForm.class);
-        for (DataForm extendedInfo : extendedInfos) {
-            if (!extendedInfo.hasHiddenFormTypeField()) {
+        final Iterator<DataForm> iter = extendedInfos.iterator();
+        while (iter.hasNext()) {
+            if (!iter.next().hasHiddenFormTypeField()) {
                 // Only use the data form for calculation is it has a hidden FORM_TYPE field.
                 // See XEP-0115 5.4 step 3.f
-                continue;
+                iter.remove();
             }
+        }
 
-            // 6. If the service discovery information response includes
-            // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
-            // by the XML character data of the <value/> element).
+        // 6. If the service discovery information response includes
+        // XEP-0128 data forms, sort the forms by the FORM_TYPE (i.e.,
+        // by the XML character data of the <value/> element).
+        Collections.sort(extendedInfos, new Comparator<DataForm>() {
+            @Override
+            public int compare(DataForm dataFormLeft, DataForm dataFormRight) {
+                final String formTypeLeft = dataFormLeft.getFormType();
+                assert formTypeLeft != null; // ensured by the previous step.
+                final String formTypeRight = dataFormRight.getFormType();
+                assert formTypeRight != null; // ensured by the previous step.
+                return formTypeLeft.compareTo(formTypeRight);
+            }
+        });
+
+        for (DataForm extendedInfo : extendedInfos) {
             SortedSet<FormField> fs = new TreeSet<>(new Comparator<FormField>() {
                 @Override
                 public int compare(FormField f1, FormField f2) {
