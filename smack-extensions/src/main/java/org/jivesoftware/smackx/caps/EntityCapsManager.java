@@ -70,7 +70,6 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoView;
 import org.jivesoftware.smackx.xdata.FormField;
-import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.DomainBareJid;
@@ -683,12 +682,12 @@ public final class EntityCapsManager extends Manager {
         // by the XML character data of the <value/> element).
         Collections.sort(extendedInfos, new Comparator<DataForm>() {
             @Override
-            public int compare(DataForm d1, DataForm d2) {
-                final TextSingleFormField hft1 = d1.getHiddenFormTypeField();
-                assert hft1 != null; // ensured by the previous step.
-                final TextSingleFormField hft2 = d2.getHiddenFormTypeField();
-                assert hft2 != null; // ensured by the previous step.
-                return hft1.getFirstValue().compareTo(hft2.getFirstValue());
+            public int compare(DataForm dataFormLeft, DataForm dataFormRight) {
+                final String formTypeLeft = dataFormLeft.getFormType();
+                assert formTypeLeft != null; // ensured by the previous step.
+                final String formTypeRight = dataFormRight.getFormType();
+                assert formTypeRight != null; // ensured by the previous step.
+                return formTypeLeft.compareTo(formTypeRight);
             }
         });
 
