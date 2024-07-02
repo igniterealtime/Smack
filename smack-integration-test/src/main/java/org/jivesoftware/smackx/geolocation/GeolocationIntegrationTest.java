@@ -111,6 +111,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
                 " that contained '" + data.toXML() + "', but did not.");
         } finally {
             unregisterListener(glm2, geoLocationListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -171,6 +172,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
                 " that contained '" + data.toXML() + "', but did not.");
         } finally {
             unregisterListener(glm2, geoLocationListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 

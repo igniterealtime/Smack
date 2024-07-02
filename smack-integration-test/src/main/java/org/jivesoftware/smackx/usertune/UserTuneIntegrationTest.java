@@ -98,6 +98,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
             Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
         } finally {
             unregisterListener(utm2, userTuneListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -142,6 +143,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
             assertResult(userTuneReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() + ", but did not.");
         } finally {
             unregisterListener(utm2, userTuneListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 

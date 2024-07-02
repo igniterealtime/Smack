@@ -82,6 +82,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
             assertResult(moodReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification, but did not.");
         } finally {
             unregisterListener(mm2, moodListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -117,6 +118,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
             assertResult(moodReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification, but did not.");
         } finally {
             unregisterListener(mm2, moodListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
