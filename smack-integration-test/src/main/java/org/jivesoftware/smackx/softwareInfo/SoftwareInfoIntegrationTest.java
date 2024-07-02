@@ -31,6 +31,7 @@ import org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
@@ -52,6 +53,11 @@ public class SoftwareInfoIntegrationTest extends AbstractSmackIntegrationTest {
     @BeforeClass
     public void setUp() throws Exception {
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+    }
+
+    @AfterClass
+    public void cleanUp() throws Exception {
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
     }
 
     @SmackIntegrationTest
