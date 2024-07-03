@@ -38,6 +38,7 @@ import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
 import org.jivesoftware.smackx.ox.exception.NoBackupFoundException;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;
 import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
+import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 
 import org.bouncycastle.openpgp.PGPException;
@@ -122,38 +123,43 @@ public class OXSecretKeyBackupIntegrationTest extends AbstractOpenPgpIntegration
         assertNull(self.getSigningKeyFingerprint());
 
         OpenPgpV4Fingerprint keyFingerprint = openPgpManager.generateAndImportKeyPair(alice);
-        assertEquals(keyFingerprint, self.getSigningKeyFingerprint());
 
-        assertTrue(self.getSecretKeys().contains(keyFingerprint.getKeyId()));
+        try {
+            assertEquals(keyFingerprint, self.getSigningKeyFingerprint());
+            assertTrue(self.getSecretKeys().contains(keyFingerprint.getKeyId()));
 
-        PGPSecretKeyRing beforeSec = beforeStore.getSecretKeyRing(alice, keyFingerprint);
-        assertNotNull(beforeSec);
+            PGPSecretKeyRing beforeSec = beforeStore.getSecretKeyRing(alice, keyFingerprint);
+            assertNotNull(beforeSec);
 
-        PGPPublicKeyRing beforePub = beforeStore.getPublicKeyRing(alice, keyFingerprint);
-        assertNotNull(beforePub);
+            PGPPublicKeyRing beforePub = beforeStore.getPublicKeyRing(alice, keyFingerprint);
+            assertNotNull(beforePub);
 
-        OpenPgpSecretKeyBackupPassphrase backupPassphrase =
+            OpenPgpSecretKeyBackupPassphrase backupPassphrase =
                 openPgpManager.backupSecretKeyToServer(availableSecretKeys -> availableSecretKeys);
 
-        FileBasedOpenPgpStore afterStore = new FileBasedOpenPgpStore(afterPath);
-        afterStore.setKeyRingProtector(new UnprotectedKeysProtector());
-        PainlessOpenPgpProvider afterProvider = new PainlessOpenPgpProvider(afterStore);
-        openPgpManager.setOpenPgpProvider(afterProvider);
+            FileBasedOpenPgpStore afterStore = new FileBasedOpenPgpStore(afterPath);
+            afterStore.setKeyRingProtector(new UnprotectedKeysProtector());
+            PainlessOpenPgpProvider afterProvider = new PainlessOpenPgpProvider(afterStore);
+            openPgpManager.setOpenPgpProvider(afterProvider);
 
-        OpenPgpV4Fingerprint fingerprint = openPgpManager.restoreSecretKeyServerBackup(() -> backupPassphrase);
+            OpenPgpV4Fingerprint fingerprint = openPgpManager.restoreSecretKeyServerBackup(() -> backupPassphrase);
 
-        assertEquals(keyFingerprint, fingerprint);
+            assertEquals(keyFingerprint, fingerprint);
 
-        assertTrue(self.getSecretKeys().contains(keyFingerprint.getKeyId()));
+            assertTrue(self.getSecretKeys().contains(keyFingerprint.getKeyId()));
 
-        assertEquals(keyFingerprint, self.getSigningKeyFingerprint());
+            assertEquals(keyFingerprint, self.getSigningKeyFingerprint());
 
-        PGPSecretKeyRing afterSec = afterStore.getSecretKeyRing(alice, keyFingerprint);
-        assertNotNull(afterSec);
-        assertArrayEquals(beforeSec.getEncoded(), afterSec.getEncoded());
+            PGPSecretKeyRing afterSec = afterStore.getSecretKeyRing(alice, keyFingerprint);
+            assertNotNull(afterSec);
+            assertArrayEquals(beforeSec.getEncoded(), afterSec.getEncoded());
 
-        PGPPublicKeyRing afterPub = afterStore.getPublicKeyRing(alice, keyFingerprint);
-        assertNotNull(afterPub);
-        assertArrayEquals(beforePub.getEncoded(), afterPub.getEncoded());
+            PGPPublicKeyRing afterPub = afterStore.getPublicKeyRing(alice, keyFingerprint);
+            assertNotNull(afterPub);
+            assertArrayEquals(beforePub.getEncoded(), afterPub.getEncoded());
+        } finally {
+            OpenPgpPubSubUtil.deletePublicKeyNode(alicePepManager, keyFingerprint);
+            OpenPgpPubSubUtil.deletePubkeysListNode(alicePepManager);
+        }
     }
 }

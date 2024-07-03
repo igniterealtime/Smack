@@ -33,6 +33,7 @@ import org.jivesoftware.smackx.ox.OpenPgpManager;
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
+import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
@@ -139,26 +140,33 @@ public class OXInstantMessagingIntegrationTest extends AbstractOpenPgpIntegratio
         aliceFingerprint = aliceOpenPgp.generateAndImportKeyPair(alice);
         bobFingerprint = bobOpenPgp.generateAndImportKeyPair(bob);
 
-        aliceOpenPgp.announceSupportAndPublish();
-        bobOpenPgp.announceSupportAndPublish();
+        try {
+            aliceOpenPgp.announceSupportAndPublish();
+            bobOpenPgp.announceSupportAndPublish();
 
-        OpenPgpContact bobForAlice = aliceOpenPgp.getOpenPgpContact(bob.asEntityBareJidIfPossible());
-        OpenPgpContact aliceForBob = bobOpenPgp.getOpenPgpContact(alice.asEntityBareJidIfPossible());
+            OpenPgpContact bobForAlice = aliceOpenPgp.getOpenPgpContact(bob.asEntityBareJidIfPossible());
+            OpenPgpContact aliceForBob = bobOpenPgp.getOpenPgpContact(alice.asEntityBareJidIfPossible());
 
-        bobForAlice.updateKeys(aliceConnection);
+            bobForAlice.updateKeys(aliceConnection);
 
-        assertFalse(bobForAlice.isTrusted(bobFingerprint));
-        assertFalse(aliceForBob.isTrusted(aliceFingerprint));
+            assertFalse(bobForAlice.isTrusted(bobFingerprint));
+            assertFalse(aliceForBob.isTrusted(aliceFingerprint));
 
-        bobForAlice.trust(bobFingerprint);
-        aliceForBob.trust(aliceFingerprint);
+            bobForAlice.trust(bobFingerprint);
+            aliceForBob.trust(aliceFingerprint);
 
-        assertTrue(bobForAlice.isTrusted(bobFingerprint));
-        assertTrue(aliceForBob.isTrusted(aliceFingerprint));
+            assertTrue(bobForAlice.isTrusted(bobFingerprint));
+            assertTrue(aliceForBob.isTrusted(aliceFingerprint));
 
-        aliceInstantMessaging.sendOxMessage(bobForAlice, body);
+            aliceInstantMessaging.sendOxMessage(bobForAlice, body);
 
-        bobReceivedMessage.waitForResult(timeout);
+            bobReceivedMessage.waitForResult(timeout);
+        } finally {
+            OpenPgpPubSubUtil.deletePublicKeyNode(alicePepManager, aliceFingerprint);
+            OpenPgpPubSubUtil.deletePubkeysListNode(alicePepManager);
+            OpenPgpPubSubUtil.deletePublicKeyNode(bobPepManager, bobFingerprint);
+            OpenPgpPubSubUtil.deletePubkeysListNode(bobPepManager);
+        }
     }
 
 }
