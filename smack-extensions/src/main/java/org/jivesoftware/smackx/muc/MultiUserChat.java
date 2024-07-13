@@ -2636,6 +2636,10 @@ public class MultiUserChat {
                 for (UserStatusListener listener : userStatusListeners) {
                     listener.membershipRevoked();
                 }
+            } else {
+                for (ParticipantStatusListener listener : participantStatusListeners) {
+                    listener.membershipRevoked(from);
+                }
             }
         }
         // A occupant has changed his nickname in the room
