@@ -18,6 +18,7 @@
 package org.jivesoftware.smackx.muc;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -55,10 +56,34 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
 
         List<DomainBareJid> services = mucManagerOne.getMucServiceDomains();
         if (services.isEmpty()) {
-            throw new TestNotPossibleException("No MUC (XEP-45) service found");
+            throw new TestNotPossibleException("No MUC (XEP-0045) service found");
         }
 
-        mucService = services.get(0);
+        DomainBareJid needle = null;
+        for (final DomainBareJid service : services) {
+            MultiUserChat multiUserChat = null;
+            try {
+                final String roomNameLocal = String.join("-", "smack-inttest-abstract", testRunId, StringUtils.insecureRandomString(6));
+                final EntityBareJid mucAddress = JidCreate.entityBareFrom(Localpart.from(roomNameLocal), service.getDomain());
+                multiUserChat = mucManagerOne.getMultiUserChat(mucAddress);
+                createMuc(multiUserChat, Resourcepart.from("test"));
+                needle = service;
+                break;
+            } catch (XMPPException.XMPPErrorException | MultiUserChatException.MucAlreadyJoinedException |
+                     MultiUserChatException.MissingMucCreationAcknowledgeException | XmppStringprepException |
+                     MultiUserChatException.NotAMucServiceException e) {
+                LOGGER.log(Level.FINER, "Error creating test MUC", e);
+            } finally {
+                if (needle != null) {
+                    tryDestroy(multiUserChat);
+                }
+            }
+        }
+
+        if (needle == null) {
+            throw new TestNotPossibleException("No MUC (XEP-0045) service found that allows test users to create a new room.");
+        }
+        mucService = needle;
     }
 
     /**

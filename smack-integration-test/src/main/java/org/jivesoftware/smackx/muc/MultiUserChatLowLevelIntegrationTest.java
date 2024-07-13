@@ -68,7 +68,12 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         final MultiUserChat muc = multiUserChatManager.getMultiUserChat(JidCreate.entityBareFrom(
                         Localpart.from(randomMucName), mucComponent));
 
-        MucCreateConfigFormHandle handle = muc.createOrJoin(mucNickname);
+        MucCreateConfigFormHandle handle;
+        try {
+            handle = muc.createOrJoin(mucNickname);
+        } catch (XMPPException.XMPPErrorException e) {
+            throw new TestNotPossibleException("MUC service does not allow test users to create a new room.");
+        }
         if (handle != null) {
             handle.makeInstant();
         }
