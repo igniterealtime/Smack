@@ -30,4 +30,8 @@ public class TestNotPossibleException extends Exception {
     public TestNotPossibleException(Throwable reason) {
         super(reason);
     }
+
+    public TestNotPossibleException(String message, Throwable reason) {
+        super(message, reason);
+    }
 }
