@@ -31,6 +31,9 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -42,13 +45,14 @@ import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 @SpecificationReference(document = "XEP-0045", version = "1.34.6")
 public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
     public MultiUserChatEntityIntegrationTest(SmackIntegrationTestEnvironment environment)
                     throws SmackException.NoResponseException, XMPPException.XMPPErrorException,
-                    SmackException.NotConnectedException, InterruptedException, TestNotPossibleException {
+                    SmackException.NotConnectedException, InterruptedException, TestNotPossibleException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException, NotAMucServiceException, XmppStringprepException {
         super(environment);
     }
 

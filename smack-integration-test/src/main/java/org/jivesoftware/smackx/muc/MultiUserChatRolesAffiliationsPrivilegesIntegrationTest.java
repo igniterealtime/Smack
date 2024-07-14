@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus, Dan Caseley
+ * Copyright 2021-2024 Florian Schmaus, Dan Caseley
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,9 @@ import java.util.stream.Collectors;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -45,6 +48,7 @@ import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 
 @SpecificationReference(document = "XEP-0045", version = "1.34.6")
@@ -52,7 +56,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
 
     public MultiUserChatRolesAffiliationsPrivilegesIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            InterruptedException, TestNotPossibleException {
+            InterruptedException, TestNotPossibleException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException, NotAMucServiceException, XmppStringprepException {
         super(environment);
     }
 

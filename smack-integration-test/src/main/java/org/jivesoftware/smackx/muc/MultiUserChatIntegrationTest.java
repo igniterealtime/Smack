@@ -50,7 +50,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
     public MultiUserChatIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
-            InterruptedException, TestNotPossibleException {
+            InterruptedException, TestNotPossibleException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException, NotAMucServiceException, XmppStringprepException {
         super(environment);
     }
 

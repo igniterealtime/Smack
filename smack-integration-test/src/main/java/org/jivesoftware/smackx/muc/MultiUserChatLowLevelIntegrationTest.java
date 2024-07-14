@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,13 @@ public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelI
         final MultiUserChat muc = multiUserChatManager.getMultiUserChat(JidCreate.entityBareFrom(
                         Localpart.from(randomMucName), mucComponent));
 
-        MucCreateConfigFormHandle handle = muc.createOrJoin(mucNickname);
+        MucCreateConfigFormHandle handle;
+        try {
+            handle = muc.createOrJoin(mucNickname);
+        } catch (XMPPException.XMPPErrorException e) {
+            AbstractMultiUserChatIntegrationTest.mucCreationDisallowedOrThrow(e);
+            throw new TestNotPossibleException("MUC service " + mucComponent + " does not allow MUC creation", e);
+        }
         if (handle != null) {
             handle.makeInstant();
         }

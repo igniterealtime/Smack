@@ -41,7 +41,10 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.sm.predicates.ForEveryMessage;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
@@ -56,13 +59,14 @@ import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 @SpecificationReference(document = "XEP-0045", version = "1.34.6")
 public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
     public MultiUserChatOccupantIntegrationTest(SmackIntegrationTestEnvironment environment)
                     throws SmackException.NoResponseException, XMPPException.XMPPErrorException,
-                    SmackException.NotConnectedException, InterruptedException, TestNotPossibleException {
+                    SmackException.NotConnectedException, InterruptedException, TestNotPossibleException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException, NotAMucServiceException, XmppStringprepException {
         super(environment);
     }
 
