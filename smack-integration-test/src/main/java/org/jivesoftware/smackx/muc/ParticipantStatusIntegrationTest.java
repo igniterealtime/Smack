@@ -28,6 +28,7 @@ import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Tests that verify the correct functionality of Smack's {@link ParticipantStatusListener}.
@@ -35,7 +36,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 @SpecificationReference(document = "XEP-0045", version = "1.34.6")
 public class ParticipantStatusIntegrationTest extends AbstractMultiUserChatIntegrationTest {
 
-    public ParticipantStatusIntegrationTest(SmackIntegrationTestEnvironment environment) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, TestNotPossibleException {
+    public ParticipantStatusIntegrationTest(SmackIntegrationTestEnvironment environment) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException, TestNotPossibleException, MultiUserChatException.MucAlreadyJoinedException, MultiUserChatException.MissingMucCreationAcknowledgeException, XmppStringprepException, MultiUserChatException.NotAMucServiceException {
         super(environment);
     }
 
