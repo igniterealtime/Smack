@@ -334,10 +334,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * them 'daemon'.
      */
     private static final ExecutorService CACHED_EXECUTOR_SERVICE = Executors.newCachedThreadPool(new ThreadFactory() {
+
+        private final AtomicInteger counter = new AtomicInteger(0);
+
         @Override
         public Thread newThread(Runnable runnable) {
             Thread thread = new Thread(runnable);
-            thread.setName("Smack Cached Executor");
+            thread.setName("Smack Cached Executor (" + counter.incrementAndGet() + ")");
             thread.setDaemon(true);
             thread.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                 @Override
