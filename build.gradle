@@ -1,11 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
-		maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url 'https://dl.bintray.com/content/aalmiray/kordamp' }
-    }
-    dependencies {
-		classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.0.0"
+		gradlePluginPortal()
     }
 }
 
@@ -15,6 +10,7 @@ plugins {
 	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
 	id 'com.dorongold.task-tree' version '1.5'
 	id 'com.github.kt3k.coveralls' version '2.10.2'
+	id 'biz.aQute.bnd.builder' version '6.4.0'
 }
 
 ext {
