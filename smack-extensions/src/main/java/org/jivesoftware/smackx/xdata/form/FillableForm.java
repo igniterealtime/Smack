@@ -226,9 +226,6 @@ public class FillableForm extends FilledForm {
         if (filledFormField.getType() == FormField.Type.fixed) {
             throw new IllegalArgumentException();
         }
-        if (!filledFormField.hasValueSet()) {
-            throw new IllegalArgumentException();
-        }
 
         String fieldName = filledFormField.getFieldName();
         if (!getDataForm().hasField(fieldName)) {
