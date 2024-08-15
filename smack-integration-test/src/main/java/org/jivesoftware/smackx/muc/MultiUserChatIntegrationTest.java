@@ -112,7 +112,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
         UserStatusListener userStatusListener = new UserStatusListener() {
             @Override
-            public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+            public void roomDestroyed(MultiUserChat alternateMUC, String password, String reason) {
                 mucDestroyed.signal();
             }
         };

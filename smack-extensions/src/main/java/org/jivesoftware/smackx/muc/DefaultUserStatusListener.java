@@ -82,7 +82,7 @@ public class DefaultUserStatusListener implements UserStatusListener {
     }
 
     @Override
-    public void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+    public void roomDestroyed(MultiUserChat alternateMUC, String password, String reason) {
     }
 
 }

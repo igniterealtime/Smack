@@ -79,6 +79,7 @@ public class MUCParserUtils {
         final int initialDepth = parser.getDepth();
         final EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
         String reason = null;
+        String password = null;
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
             switch (eventType) {
@@ -87,6 +88,9 @@ public class MUCParserUtils {
                 switch (name) {
                 case "reason":
                     reason = parser.nextText();
+                    break;
+                case "password":
+                    password = parser.nextText();
                     break;
                 }
                 break;
@@ -100,6 +104,6 @@ public class MUCParserUtils {
                 break;
             }
         }
-        return new Destroy(jid, reason);
+        return new Destroy(jid, password, reason);
     }
 }

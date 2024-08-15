@@ -40,13 +40,21 @@ public class Destroy implements NamedElement, Serializable {
 
     private final String reason;
     private final EntityBareJid jid;
+    private final String password;
 
     public Destroy(Destroy other) {
-        this(other.jid, other.reason);
+        this(other.jid, other.password, other.reason);
     }
 
     public Destroy(EntityBareJid alternativeJid, String reason) {
         this.jid = alternativeJid;
+        this.reason = reason;
+        this.password = null;
+    }
+
+    public Destroy(EntityBareJid alternativeJid, String password, String reason) {
+        this.jid = alternativeJid;
+        this.password = password;
         this.reason = reason;
     }
 
@@ -57,6 +65,15 @@ public class Destroy implements NamedElement, Serializable {
      */
     public EntityBareJid getJid() {
         return jid;
+    }
+
+    /**
+     * Returns the password of the alternate location.
+     *
+     * @return the password of the alternate location.
+     */
+    public String getPassword() {
+        return password;
     }
 
     /**
@@ -73,6 +90,7 @@ public class Destroy implements NamedElement, Serializable {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.optAttribute("jid", getJid());
         xml.rightAngleBracket();
+        xml.optElement("password", getPassword());
         xml.optElement("reason", getReason());
         xml.closeElement(this);
         return xml;
