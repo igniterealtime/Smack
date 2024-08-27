@@ -64,6 +64,13 @@ public class MucConfigFormManager {
 
     /**
      * The constant String {@value}.
+     *
+     * @see <a href="http://xmpp.org/extensions/xep-0045.html#owner">XEP-0045 § 10. Owner Use Cases</a>
+     */
+    public static final String MUC_ROOMCONFIG_ROOMADMINS = "muc#roomconfig_roomadmins";
+
+    /**
+     * The constant String {@value}.
      */
     public static final String MUC_ROOMCONFIG_MEMBERSONLY = "muc#roomconfig_membersonly";
 
@@ -107,6 +114,7 @@ public class MucConfigFormManager {
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
     private final List<Jid> owners;
+    private final List<Jid> admins;
 
     /**
      * Create a new MUC config form manager.
@@ -140,6 +148,18 @@ public class MucConfigFormManager {
             // roomowners not supported, this should barely be the case
             owners = null;
         }
+
+        FormField roomAdminsFormField = answerForm.getDataForm().getField(MUC_ROOMCONFIG_ROOMADMINS);
+        if (roomAdminsFormField != null) {
+            // Set 'admins' to the currently configured admins
+            List<? extends CharSequence> adminStrings = roomAdminsFormField.getValues();
+            admins = new ArrayList<>(adminStrings.size());
+            JidUtil.jidsFrom(adminStrings, admins, null);
+        }
+        else {
+            // roomadmins not supported, this should barely be the case
+            admins = null;
+        }
     }
 
     /**
@@ -149,6 +169,15 @@ public class MucConfigFormManager {
      */
     public boolean supportsRoomOwners() {
         return owners != null;
+    }
+
+    /**
+     * Check if the room supports room admins.
+     * @return <code>true</code> if supported, <code>false</code> if not.
+     * @see #MUC_ROOMCONFIG_ROOMADMINS
+     */
+    public boolean supportsRoomAdmins() {
+        return admins != null;
     }
 
     /**
@@ -165,6 +194,23 @@ public class MucConfigFormManager {
         }
         owners.clear();
         owners.addAll(newOwners);
+        return this;
+    }
+
+    /**
+     * Set the admins of the room.
+     *
+     * @param newAdmins a collection of JIDs to become the new admins of the room.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the MUC service does not support this option.
+     * @see #MUC_ROOMCONFIG_ROOMADMINS
+     */
+    public MucConfigFormManager setRoomAdmins(Collection<? extends Jid> newAdmins) throws MucConfigurationNotSupportedException {
+        if (!supportsRoomAdmins()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMADMINS);
+        }
+        admins.clear();
+        admins.addAll(newAdmins);
         return this;
     }
 
@@ -419,6 +465,9 @@ public class MucConfigFormManager {
                     InterruptedException {
         if (owners != null) {
             answerForm.setAnswer(MUC_ROOMCONFIG_ROOMOWNERS, JidUtil.toStringList(owners));
+        }
+        if (admins != null) {
+            answerForm.setAnswer(MUC_ROOMCONFIG_ROOMADMINS, JidUtil.toStringList(admins));
         }
         multiUserChat.sendConfigurationForm(answerForm);
     }
