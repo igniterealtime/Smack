@@ -290,7 +290,7 @@ public class MultiUserChat {
                         }
 
                         for (UserStatusListener listener : userStatusListeners) {
-                            listener.roomDestroyed(alternateMuc, destroy.getReason());
+                            listener.roomDestroyed(alternateMuc, destroy.getPassword(), destroy.getReason());
                         }
                     }
 
@@ -965,12 +965,32 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public void destroy(String reason, EntityBareJid alternateJID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        destroy(reason, alternateJID, null);
+    }
+
+    /**
+     * Sends a request to the server to destroy the room. The sender of the request
+     * should be the room's owner. If the sender of the destroy request is not the room's owner
+     * then the server will answer a "Forbidden" error (403).
+     *
+     * @param reason an optional reason for the room destruction.
+     * @param alternateJID an optional JID of an alternate location.
+     * @param password an optional password for the alternate location
+     * @throws XMPPErrorException if an error occurs while trying to destroy the room.
+     *      An error can occur which will be wrapped by an XMPPException --
+     *      XMPP error code 403. The error code can be used to present more
+     *      appropriate error messages to end-users.
+     * @throws NoResponseException if there was no response from the server.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public void destroy(String reason, EntityBareJid alternateJID, String password) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.set);
 
         // Create the reason for the room destruction
-        Destroy destroy = new Destroy(alternateJID, reason);
+        Destroy destroy = new Destroy(alternateJID, password, reason);
         iq.setDestroy(destroy);
 
         try {

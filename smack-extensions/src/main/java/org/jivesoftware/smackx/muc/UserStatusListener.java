@@ -28,7 +28,7 @@ import org.jxmpp.jid.Jid;
  * banned, or granted admin permissions or the room is destroyed.
  * <p>
  * Note that the methods {@link #kicked(Jid, String)}, {@link #banned(Jid, String)} and
- * {@link #roomDestroyed(MultiUserChat, String)} will be called before the generic {@link #removed(MUCUser, Presence)}
+ * {@link #roomDestroyed(MultiUserChat, String, String)} will be called before the generic {@link #removed(MUCUser, Presence)}
  * callback will be invoked. The generic {@link #removed(MUCUser, Presence)} callback will be invoked every time the user
  * was removed from the MUC involuntarily. It is hence the recommended callback to listen for and act upon.
  * </p>
@@ -161,10 +161,11 @@ public interface UserStatusListener {
      * Called when the room is destroyed.
      *
      * @param alternateMUC an alternate MultiUserChat, may be null.
+     * @param password a password for the alternative MultiUserChat, may be null.
      * @param reason the reason why the room was closed, may be null.
      * @see #removed(MUCUser, Presence)
      */
-    default void roomDestroyed(MultiUserChat alternateMUC, String reason) {
+    default void roomDestroyed(MultiUserChat alternateMUC, String password, String reason) {
     }
 
 }
