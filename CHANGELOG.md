@@ -1,5 +1,11 @@
 # Smack Changelog
 
+# 4.4.9 -- 2024-08-28
+
+### Changes
+
+Changed jbosh library version from 0.9.1 to 0.9.2 
+
 # 4.4.8 -- 2024-04-02
 
 ### Improvement
