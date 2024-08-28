@@ -1,5 +1,7 @@
 # Smack Changelog
 
+# 4.4.9 -- 2024-08-28
+
 # 4.4.8 -- 2024-04-02
 
 ### Improvement

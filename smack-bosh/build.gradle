@@ -6,5 +6,5 @@ dependencies {
 	api project(':smack-core')
 	// See https://issues.igniterealtime.org/browse/SMACK-858 and
 	// comment in version.gradle why the specify the version this way.
-	implementation 'org.igniterealtime.jbosh:jbosh:[0.9.1,0.9.999]'
+	implementation 'org.igniterealtime.jbosh:jbosh:[0.9.2,0.9.999]'
 }
