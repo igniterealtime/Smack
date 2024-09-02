@@ -30,6 +30,8 @@ import org.jivesoftware.smackx.xdata.AbstractMultiFormField;
 import org.jivesoftware.smackx.xdata.AbstractSingleStringValueFormField;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.FormFieldChildElement;
+import org.jivesoftware.smackx.xdata.ListMultiFormField;
+import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
@@ -226,11 +228,20 @@ public class FillableForm extends FilledForm {
         if (filledFormField.getType() == FormField.Type.fixed) {
             throw new IllegalArgumentException();
         }
-        if (!filledFormField.hasValueSet()) {
-            throw new IllegalArgumentException();
-        }
 
         String fieldName = filledFormField.getFieldName();
+
+        boolean isListField = filledFormField instanceof ListMultiFormField
+                        || filledFormField instanceof ListSingleFormField;
+        // Only list-* fields require a value to be set. Other fields types can be empty. For example MUC's
+        // muc#roomconfig_roomadmins, which is of type jid-multi, is submitted without values to reset the room's admin
+        // list.
+        if (isListField && !filledFormField.hasValueSet()) {
+            throw new IllegalArgumentException("Tried to write form field " + fieldName + " of type "
+                            + filledFormField.getType()
+                            + " without any values set. However, according to XEP-0045 § 3.3 fields of type list-multi or list-single must have one item set.");
+        }
+
         if (!getDataForm().hasField(fieldName)) {
             throw new IllegalArgumentException();
         }
