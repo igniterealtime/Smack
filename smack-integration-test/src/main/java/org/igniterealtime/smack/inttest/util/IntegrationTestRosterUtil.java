@@ -79,7 +79,7 @@ public class IntegrationTestRosterUtil {
         try {
             presenceRequestingRoster.sendSubscriptionRequest(presenceRequestReceiverAddress.asBareJid());
 
-            syncPoint.waitForResult(timeout);
+            syncPoint.waitForResult(timeout, "Timeout while waiting for subscription request of '" + presenceRequestingAddress + "' to '" + presenceRequestReceiverAddress + "' to be answered.");
         } finally {
             presenceRequestReceiverRoster.removeSubscribeListener(subscribeListener);
             presenceRequestingRoster.removePresenceEventListener(presenceEventListener);
