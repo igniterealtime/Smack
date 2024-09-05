@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smack.packet;
 
+import org.jivesoftware.smack.util.StringUtils;
+
 /**
  * An IQ stanzas that could not be parsed because no provider was found.
  */
@@ -34,7 +36,12 @@ public class UnparsedIQ extends IQ {
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.escape(content);
+        if (StringUtils.isEmpty(content)) {
+            xml.setEmptyElement();
+        } else {
+            xml.rightAngleBracket();
+            xml.escape(content);
+        }
         return xml;
     }
 }
