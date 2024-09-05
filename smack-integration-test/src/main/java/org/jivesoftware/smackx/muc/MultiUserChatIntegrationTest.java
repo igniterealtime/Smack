@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -87,7 +88,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
 
     /**
-     * Asserts that a user is notified when a room is destroyed.
+     * Asserts that an owner is notified of room destruction when they destroy a room.
      *
      * @throws TimeoutException when roomDestroyed event doesn't get fired
      * @throws Exception when other errors occur
@@ -95,9 +96,9 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
     @SmackIntegrationTest(section = "10.9", quote =
         "A room owner MUST be able to destroy a room, especially if the room is persistent... The room removes all " +
         "users from the room... and destroys the room")
-    public void mucDestroyTest() throws TimeoutException, Exception {
+    public void mucDestroyOwnerTest() throws TimeoutException, Exception {
 
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy");
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy-owner");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
         createMuc(muc, Resourcepart.from("one-" + randomString));
@@ -127,9 +128,60 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         }
 
         Set<EntityBareJid> joinedRooms = mucManagerOne.getJoinedRooms();
+        assertFalse(muc.isJoined(), "Expected " + conOne.getUser() + " to no longer be in room " + mucAddress + " after it was destroyed, but it is still in.");
         assertEquals(0, joinedRooms.size(), "Expected " + conOne.getUser() + " to no longer be in any rooms after " + mucAddress + " was destroyed. But it is still in " + joinedRooms);
         assertEquals(0, muc.getOccupantsCount(), "Expected room " + mucAddress + " to no longer have any occupants after it was destroyed (but it has).");
         assertNull(muc.getNickname());
+    }
+
+    /**
+     * Asserts that an occupant of a room is notified when a room is destroyed.
+     *
+     * @throws TimeoutException when roomDestroyed event doesn't get fired
+     * @throws Exception when other errors occur
+     */
+    @SmackIntegrationTest(section = "10.9", quote =
+        "A room owner MUST be able to destroy a room, especially if the room is persistent... The room removes all " +
+            "users from the room... and destroys the room")
+    public void mucDestroyTestOccupant() throws TimeoutException, Exception {
+
+        EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy-occupant");
+
+        MultiUserChat mucAsSeenByOwner = mucManagerOne.getMultiUserChat(mucAddress);
+        MultiUserChat mucAsSeenByParticipant = mucManagerTwo.getMultiUserChat(mucAddress);
+        createMuc(mucAsSeenByOwner, Resourcepart.from("one-" + randomString));
+
+        // These would be a test implementation bug, not assertion failure.
+        mucAsSeenByParticipant.join(Resourcepart.from("two-" + randomString));
+        if (!mucManagerTwo.getJoinedRooms().contains(mucAddress)) {
+            tryDestroy(mucAsSeenByOwner);
+            throw new IllegalStateException("Expected user to have joined a room '" + mucAddress + "' (but does not appear to have done so).");
+        }
+
+
+        final SimpleResultSyncPoint mucDestroyed = new SimpleResultSyncPoint();
+
+        UserStatusListener userStatusListener = new UserStatusListener() {
+            @Override
+            public void roomDestroyed(MultiUserChat alternateMUC, String password, String reason) {
+                mucDestroyed.signal();
+            }
+        };
+
+        mucAsSeenByParticipant.addUserStatusListener(userStatusListener);
+
+        try {
+            mucAsSeenByOwner.destroy("Dummy reason", null);
+            assertResult(mucDestroyed, "Expected " + conTwo.getUser() + " to be notified of destruction of room " + mucAddress + " (but was not).");
+        } finally {
+            mucAsSeenByParticipant.removeUserStatusListener(userStatusListener);
+        }
+
+        Set<EntityBareJid> joinedRooms = mucManagerTwo.getJoinedRooms();
+        assertFalse(mucAsSeenByParticipant.isJoined(), "Expected " + conTwo.getUser() + " to no longer be in room " + mucAddress + " after it was destroyed, but it is still in.");
+        assertEquals(0, joinedRooms.size(), "Expected " + conTwo.getUser() + " to no longer be in any rooms after " + mucAddress + " was destroyed. But it is still in " + joinedRooms);
+        assertEquals(0, mucAsSeenByParticipant.getOccupantsCount(), "Expected room " + mucAddress + " to no longer have any occupants after it was destroyed (but it has).");
+        assertNull(mucAsSeenByParticipant.getNickname());
     }
 
     @SmackIntegrationTest
