@@ -79,7 +79,7 @@ public class Chat {
     /**
      * Returns the name of the user the chat is with.
      *
-     * @return the name of the user the chat is occuring with.
+     * @return the name of the user the chat is occurring with.
      */
     public EntityJid getParticipant() {
         return participant;

@@ -52,7 +52,7 @@ public abstract class StreamNegotiator extends Manager {
     }
 
     /**
-     * A event manager for stream initiation requests send to us.
+     * An event manager for stream initiation requests send to us.
      * <p>
      * Those are typical XEP-45 Open or XEP-65 Bytestream IQ requests. The even key is in the format
      * "initiationFrom + '\t' + streamId"

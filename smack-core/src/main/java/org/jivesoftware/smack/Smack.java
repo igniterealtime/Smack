@@ -30,7 +30,7 @@ public class Smack {
     public static final String SMACK_PACKAGE = SMACK_ORG + ".smack";
 
     /**
-     * Returns the Smack version information, eg "1.3.0".
+     * Returns the Smack version information, e.g."1.3.0".
      *
      * @return the Smack version information.
      */

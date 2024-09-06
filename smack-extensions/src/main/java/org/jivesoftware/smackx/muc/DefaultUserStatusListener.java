@@ -23,7 +23,7 @@ import org.jxmpp.jid.Jid;
  * Default implementation of the UserStatusListener interface.<p>
  *
  * This class does not provide any behavior by default. It just avoids having
- * to implement all the inteface methods if the user is only interested in implementing
+ * to implement all the interface methods if the user is only interested in implementing
  * some of the methods.
  *
  * @author Gaston Dombiak

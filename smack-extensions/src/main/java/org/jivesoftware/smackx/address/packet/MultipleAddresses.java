@@ -93,7 +93,7 @@ public class MultipleAddresses implements ExtensionElement {
 
     /**
      * Returns the list of addresses that matches the specified type. Examples of address
-     * type are: TO, CC, BCC, etc..
+     * type are: TO, CC, BCC, etc.
      *
      * @param type Examples of address type are: TO, CC, BCC, etc.
      * @return the list of addresses that matches the specified type.

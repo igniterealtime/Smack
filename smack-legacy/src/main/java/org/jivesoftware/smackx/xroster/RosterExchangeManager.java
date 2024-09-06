@@ -42,7 +42,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  *
- * Manages Roster exchanges. A RosterExchangeManager provides a high level access to send
+ * Manages Roster exchanges. A RosterExchangeManager provides high level access to send
  * rosters, roster groups and roster entries to XMPP clients. It also provides an easy way
  * to hook up custom logic when entries are received from another XMPP client through
  * RosterExchangeListeners.
@@ -106,7 +106,7 @@ public class RosterExchangeManager {
      * Removes a listener from roster exchanges. The listener will be fired anytime roster
      * entries are received from remote XMPP clients.
      *
-     * @param rosterExchangeListener a roster exchange listener..
+     * @param rosterExchangeListener a roster exchange listener.
      */
     public void removeRosterListener(RosterExchangeListener rosterExchangeListener) {
         rosterExchangeListeners.remove(rosterExchangeListener);

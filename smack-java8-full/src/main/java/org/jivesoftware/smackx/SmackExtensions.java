@@ -18,7 +18,7 @@ package org.jivesoftware.smackx;
 
 /**
  * This is just a dummy class, please head over to {@link org.jivesoftware.smackx} for more information on Smack
- * extensions. The dummy class causes javadoc generate the HTML for smackx.pacakge-info.java, which would otherwise be
+ * extensions. The dummy class causes javadoc generate the HTML for smackx.package-info.java, which would otherwise be
  * not generated, as org.jivesoftware.smackx is an empty package (see
  * <a href="https://bugs.openjdk.org/browse/JDK-4492654">JDK-4492654</a>).
  */

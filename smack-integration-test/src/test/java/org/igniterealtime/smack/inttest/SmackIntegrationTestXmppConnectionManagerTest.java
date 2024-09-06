@@ -43,7 +43,7 @@ public class SmackIntegrationTestXmppConnectionManagerTest {
                         ModularXmppClientToServerConnection.class,
                         ModularXmppClientToServerConnectionConfiguration.class,
                         ModularXmppClientToServerConnectionConfiguration.Builder.class)
-            .applyExtraConfguration(b -> b.removeAllModules().addModule(XmppTcpTransportModuleDescriptor.class))
+            .applyExtraConfiguration(b -> b.removeAllModules().addModule(XmppTcpTransportModuleDescriptor.class))
             .build();
 
         Configuration sinttestConfiguration = Configuration.builder().setService("example.org").build();

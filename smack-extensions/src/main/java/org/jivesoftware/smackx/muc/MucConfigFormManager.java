@@ -285,7 +285,7 @@ public class MucConfigFormManager {
 
 
     /**
-     * Check if the room supports its visibility being controlled vioa configuration.
+     * Check if the room supports its visibility being controlled via configuration.
      *
      * @return <code>true</code> if supported, <code>false</code> if not.
      */

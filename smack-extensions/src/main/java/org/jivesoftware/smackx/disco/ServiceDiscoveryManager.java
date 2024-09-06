@@ -294,7 +294,7 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Returns all identities of this client as unmodifiable Collection.
      *
-     * @return all identies as set
+     * @return all identities as a set
      */
     public Set<DiscoverInfo.Identity> getIdentities() {
         Set<Identity> res = new HashSet<>(identities);

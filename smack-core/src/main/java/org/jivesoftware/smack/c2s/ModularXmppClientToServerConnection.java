@@ -390,7 +390,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             // Ignore successorStateVertex if the only way to the final state is via the initial state. This happens
             // typically if we are in the ConnectedButUnauthenticated state on the way to ResourceboundAndAuthenticated,
-            // where we do not want to walk via InstantShutdown/Shtudown in a cycle over the initial state towards this
+            // where we do not want to walk via InstantShutdown/Shutdown in a cycle over the initial state towards this
             // state.
             if (walkStateGraphContext.wouldCauseCycle(successorStateVertex)) {
                 // Ignore this successor.

@@ -41,7 +41,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
  * Note that this test is based on the assumption that it is possible to trigger a full garbage collection run, which is
  * not the case. See also this
  * <a href="https://stackoverflow.com/questions/1481178/how-to-force-garbage-collection-in-java">stackoverflow
- * question</a>. Hence the {@link #triggerGarbageCollection()} method defined in this class is not portable and depends
+ * question</a>. Hence, the {@link #triggerGarbageCollection()} method defined in this class is not portable and depends
  * on implementation depended Java Virtual Machine behavior.
  * </p>
  *

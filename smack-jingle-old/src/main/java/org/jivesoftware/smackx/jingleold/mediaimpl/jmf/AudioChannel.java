@@ -322,7 +322,7 @@ public class AudioChannel {
         String encoding = codecFormat.getEncoding();
         if (encoding.equalsIgnoreCase(AudioFormat.GSM) ||
                 encoding.equalsIgnoreCase(AudioFormat.GSM_RTP)) {
-            return milliseconds * 4; // 1 byte per millisec
+            return milliseconds * 4; // 1 byte per millisecond
         }
         else if (encoding.equalsIgnoreCase(AudioFormat.ULAW) ||
                 encoding.equalsIgnoreCase(AudioFormat.ULAW_RTP)) {

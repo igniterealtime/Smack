@@ -431,7 +431,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Complete and send a packet. Complete all the null fields in a Jingle
-     * reponse, using the session information we have.
+     * response, using the session information we have.
      *
      * @param jout
      *            the Jingle stanza we want to complete and send
@@ -445,7 +445,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
 
     /**
      * Complete and send a packet. Complete all the null fields in a Jingle
-     * reponse, using the session information we have or some info from the
+     * response, using the session information we have or some info from the
      * incoming packet.
      *
      * @param iq The Jingle stanza we are responding to
@@ -1097,7 +1097,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     }
 
     /**
-     * This is the starting point for intitiating a new session.
+     * This is the starting point for initiating a new session.
      *
      * @throws IllegalStateException if an illegal state was encountered
      * @throws SmackException if Smack detected an exceptional situation.

@@ -21,7 +21,7 @@
  * <h2>Usage</h2>
  * <p>
  * The most important class is the {@link org.jivesoftware.smackx.message_markup.element.MarkupElement} class, which
- * contains a Builder to construct message markup..
+ * contains a Builder to construct message markup.
  * </p>
  * <p>
  * To start creating a Message Markup Extension, call

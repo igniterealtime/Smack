@@ -15,7 +15,7 @@ for p in $SUBPROJECTS; do
 		sort | \
 		# Remove duplicates
 		uniq | \
-		# Split multi Copyright statemtents, e.g. "2001-2013 FooBar, 2014 Baz"
+		# Split multi Copyright statements, e.g. "2001-2013 FooBar, 2014 Baz"
 	    tr ',' '\n' | \
 		# Remove whitespaces resulting from the previous split
 		sed "s/^[ \t]*//" | \

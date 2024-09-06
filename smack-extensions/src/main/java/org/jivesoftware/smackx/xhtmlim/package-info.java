@@ -152,7 +152,7 @@
  * Before you start to send XHTML messages to a user you should discover if the user supports XHTML messages. There are
  * two ways to achieve the discovery, explicitly and implicitly. Explicit is when you first try to discover if the user
  * supports XHTML before sending any XHTML message. Implicit is when you send XHTML messages without first discovering
- * if the conversation partner's client supports XHTML and depenging on the answer (normal message or XHTML message) you
+ * if the conversation partner's client supports XHTML and depending on the answer (normal message or XHTML message) you
  * find out if the user supports XHTML messages or not. This section explains how to explicitly discover for XHTML
  * support.
  * </p>

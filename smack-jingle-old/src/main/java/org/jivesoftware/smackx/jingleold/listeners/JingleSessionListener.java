@@ -33,7 +33,7 @@ public interface JingleSessionListener extends JingleListener {
      * Notification that the session has been established. Arguments specify
      * the payload type and transport to use.
      *
-     * @param pt            the Payload tyep to use
+     * @param pt            the Payload type to use
      * @param remoteCandidate            the remote candidate to use for connecting to the remote
      *                      service.
      * @param localCandidate            the local candidate where we must listen for connections

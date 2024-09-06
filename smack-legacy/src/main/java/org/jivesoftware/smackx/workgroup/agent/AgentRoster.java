@@ -64,7 +64,7 @@ public class AgentRoster {
     private final List<AgentRosterListener> listeners = new ArrayList<>();
     private final Map<Jid, Map<Resourcepart, Presence>> presenceMap = new HashMap<>();
     // The roster is marked as initialized when at least a single roster packet
-    // has been recieved and processed.
+    // has been received and processed.
     boolean rosterInitialized = false;
 
     /**
@@ -181,7 +181,7 @@ public class AgentRoster {
     /**
      * Returns true if the specified XMPP address is an agent in the workgroup.
      *
-     * @param jid the XMPP address of the agent (eg "jsmith@example.com"). The
+     * @param jid the XMPP address of the agent (e.g."jsmith@example.com"). The
      *            address can be in any valid format (e.g. "domain/resource", "user@domain"
      *            or "user@domain/resource").
      * @return true if the XMPP address is an agent in the workgroup.
@@ -208,7 +208,7 @@ public class AgentRoster {
      * @param user a fully qualified xmpp JID. The address could be in any valid format (e.g.
      *             "domain/resource", "user@domain" or "user@domain/resource").
      * @return the agent's current presence, or <code>null</code> if the agent is unavailable
-     *         or if no presence information is available..
+     *         or if no presence information is available.
      */
     public Presence getPresence(Jid user) {
         Jid key = getPresenceMapKey(user);

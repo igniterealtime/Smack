@@ -29,7 +29,7 @@
  *
  * <pre>
  * <code>
- * Message message = new Message(&quot;Alice is a realy nice person.&quot;);
+ * Message message = new Message(&quot;Alice is a really nice person.&quot;);
  * BareJid alice = JidCreate.bareFrom(&quot;alice@capulet.lit&quot;);
  * ReferenceManager.addMention(message, 0, 5, alice);
  * </code>

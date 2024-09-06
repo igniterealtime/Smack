@@ -53,7 +53,7 @@ import org.jxmpp.jid.EntityBareJid;
  *
  * <p>Once TLS has been negotiated (i.e. the connection has been secured) it is possible to
  * register with the server or authenticate using SASL. If the
- * server supports SASL then Smack will try to authenticate using SASL..</p>
+ * server supports SASL then Smack will try to authenticate using SASL.</p>
  *
  * <p>The server may support many SASL mechanisms to use for authenticating. Out of the box
  * Smack provides several SASL mechanisms, but it is possible to register new SASL Mechanisms. Use

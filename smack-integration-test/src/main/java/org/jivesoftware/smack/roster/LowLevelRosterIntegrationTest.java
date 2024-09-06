@@ -61,7 +61,7 @@ public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrat
         rosterOne.addPresenceEventListener(presenceEventListener);
 
         try {
-            // Disconnect conTwo, this should cause an 'unavailable' presence to be send from conTwo to
+            // Disconnect conTwo, this should cause an 'unavailable' presence to be sent from conTwo to
             // conOne.
             conTwo.disconnect();
 

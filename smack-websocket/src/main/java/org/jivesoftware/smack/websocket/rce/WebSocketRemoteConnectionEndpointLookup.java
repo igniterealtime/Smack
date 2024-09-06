@@ -77,7 +77,7 @@ public final class WebSocketRemoteConnectionEndpointLookup {
 
         public Result(List<RemoteConnectionEndpointLookupFailure> lookupFailures) {
             // The list of endpoints needs to be mutable, because maybe a user supplied endpoint will be added to it.
-            // Hence we do not use Collections.emptyList() as argument for the discovered endpoints.
+            // Hence, we do not use Collections.emptyList() as argument for the discovered endpoints.
             this(new ArrayList<>(1), new ArrayList<>(1), lookupFailures);
         }
 
@@ -99,7 +99,7 @@ public final class WebSocketRemoteConnectionEndpointLookup {
 
         // TODO: Remove the following methods since the fields are already public? Or make the fields private and use
         // the methods? I tend to remove the methods, as their method name is pretty long. But OTOH the fields reference
-        // mutable datastructes, which is uncommon to be public.
+        // mutable datastructures, which is uncommon to be public.
         public List<SecureWebSocketRemoteConnectionEndpoint> getDiscoveredSecureRemoteConnectionEndpoints() {
             return discoveredSecureEndpoints;
         }

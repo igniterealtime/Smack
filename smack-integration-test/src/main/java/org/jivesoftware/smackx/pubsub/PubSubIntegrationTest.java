@@ -113,7 +113,7 @@ public class PubSubIntegrationTest extends AbstractSmackIntegrationTest {
         // Add a dummy payload. If there is no payload, but just an item ID, then ejabberd will *not* return an error,
         // which I believe to be non-compliant behavior (although, granted, the XEP is not very clear about this). A user
         // which sends an empty item with ID to an node that is configured to be notification-only and transient probably
-        // does something wrong, as the item's ID will never appear anywhere. Hence it would be nice if the user would be
+        // does something wrong, as the item's ID will never appear anywhere. Hence, it would be nice if the user would be
         // made aware of this issue by returning an error. Sadly ejabberd does not do so.
         // See also https://github.com/processone/ejabberd/issues/2864#issuecomment-500741915
         final StandardExtensionElement dummyPayload = StandardExtensionElement.builder("dummy-payload",

@@ -55,10 +55,10 @@ public class Affiliate {
     }
 
     /**
-     * Returns the affiliation of the afffiliated user. Possible affiliations are: "owner", "admin",
+     * Returns the affiliation of the affiliated user. Possible affiliations are: "owner", "admin",
      * "member", "outcast". This information will always be available.
      *
-     * @return the affiliation of the afffiliated user.
+     * @return the affiliation of the affiliated user.
      */
     public MUCAffiliation getAffiliation() {
         return affiliation;

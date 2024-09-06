@@ -47,7 +47,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 
 /**
- * Manager that can be used to determine support for hash functions. By default the Manager announces support for
+ * Manager that can be used to determine support for hash functions. By default,the Manager announces support for
  * XEP-0300, as well as for the recommended set of hash algorithms. Those contain SHA256, SHA384, SHA512, SHA3-256,
  * SHA3-384, SHA3-512, BLAKE2B256, BLAKE2B384 and BLAKE2B512. Those algorithms got recommended here:
  * <a href="https://xmpp.org/extensions/xep-0300.html#recommendations">https://xmpp.org/extensions/xep-0300.html#recommendations</a>.

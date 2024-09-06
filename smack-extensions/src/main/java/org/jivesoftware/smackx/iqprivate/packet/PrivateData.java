@@ -41,7 +41,7 @@ public interface PrivateData {
     String getNamespace();
 
     /**
-     * Returns the XML reppresentation of the PrivateData.
+     * Returns the XML representation of the PrivateData.
      *
      * @return the private data as XML.
      */

@@ -150,7 +150,7 @@ public class ReportedData {
         /**
          * Creates a new column with the specified definition.
          *
-         * @param label the columns's label.
+         * @param label the column's label.
          * @param variable the variable name of the column.
          * @param type the format for the returned data.
          */

@@ -19,7 +19,7 @@ package org.jivesoftware.smack.packet;
 /**
  * Interface to represent XMPP extension elements. Unlike {@link XmlElement}, every non-abstract class that implements
  * {@link ExtensionElement} must have a static final QNAME member of the type {@link javax.xml.namespace.QName}. This
- * allows type-safe functions like {@link StanzaView#getExtension(Class)}. Hence this is a marker interface.
+ * allows type-safe functions like {@link StanzaView#getExtension(Class)}. Hence, this is a marker interface.
  * <p>
  * Use this class when implementing new extension elements when possible. This means that every instance of your
  * implemented class must represent an XML element of the same qualified name.

@@ -48,7 +48,7 @@ public class LoginIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
      * @throws IOException if an I/O error occurred.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws NoSuchAlgorithmException if no such algorithm is available.
-     * @throws KeyManagementException if there was a key mangement error.
+     * @throws KeyManagementException if there was a key management error.
      */
     @SmackIntegrationTest
     public void testInvalidLogin(UnconnectedConnectionSource unconnectedConnectionSource) throws SmackException, IOException, XMPPException,

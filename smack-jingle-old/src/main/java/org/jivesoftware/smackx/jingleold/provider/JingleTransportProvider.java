@@ -88,7 +88,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
     public static class Ice extends JingleTransportProvider {
 
         /**
-         * Defauls constructor.
+         * Default constructor.
          */
         public Ice() {
             super();
@@ -183,7 +183,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
     public static class RawUdp extends JingleTransportProvider {
 
         /**
-         * Defauls constructor.
+         * Default constructor.
          */
         public RawUdp() {
             super();

@@ -91,7 +91,7 @@ public class Workgroup {
 
     /**
      * Creates a new workgroup instance using the specified workgroup JID
-     * (eg support@workgroup.example.com) and XMPP connection. The connection must have
+     * (e.g.support@workgroup.example.com) and XMPP connection. The connection must have
      * undergone a successful login before being used to construct an instance of
      * this class.
      *
@@ -137,7 +137,7 @@ public class Workgroup {
         });
 
         /**
-         * Internal handling of an invitation.Recieving an invitation removes the user from the queue.
+         * Internal handling of an invitation. Receiving an invitation removes the user from the queue.
          */
         MultiUserChatManager.getInstanceFor(connection).addInvitationListener(
                 new org.jivesoftware.smackx.muc.InvitationListener() {
@@ -162,7 +162,7 @@ public class Workgroup {
     }
 
     /**
-     * Returns the name of this workgroup (eg support@example.com).
+     * Returns the name of this workgroup (e.g.support@example.com).
      *
      * @return the name of the workgroup.
      */
@@ -735,9 +735,9 @@ public class Workgroup {
     }
 
     /**
-     * Asks the workgroup for it's Properties.
+     * Asks the workgroup for its Properties.
      *
-     * @param jid the jid of the user who's information you would like the workgroup to retreive.
+     * @param jid the jid of the user whose information you would like the workgroup to retrieve.
      * @return the WorkgroupProperties for the specified workgroup.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.

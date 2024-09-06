@@ -343,7 +343,7 @@ public class StringUtils {
         try {
             randomString(charBuffer, random, alphabet, numRandomChars);
         } catch (IOException e) {
-            // This should never happen if we calcuate the buffer size correctly.
+            // This should never happen if we calculate the buffer size correctly.
             throw new AssertionError(e);
         }
 

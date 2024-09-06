@@ -221,7 +221,7 @@ public abstract class JingleNegotiator {
      *          &lt;transport&gt;
      *
      * This way, each segment of a Jingle stanza has a corresponding negotiator that know how to deal with that
-     * part of the Jingle packet.  It also allows us to support Jingle packets of arbitraty complexity.
+     * part of the Jingle packet.  It also allows us to support Jingle packets of arbitrary complexity.
      *
      * Each parent calls dispatchIncomingPacket for each of its children.  The children then pass back a List of
      * results that will get sent when we reach the top level negotiator (JingleSession).

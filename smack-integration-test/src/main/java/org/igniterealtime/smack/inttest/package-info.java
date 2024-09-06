@@ -145,7 +145,7 @@
  * </tr>
  * <tr>
  * <td>disabledSpecifications</td>
- * <td>List of specificatinos for which to disable tests</td>
+ * <td>List of specifications for which to disable tests</td>
  * </tr>
  * <tr>
  * <td>defaultConnection</td>

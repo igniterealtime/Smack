@@ -28,7 +28,7 @@ import android.util.Log;
  * implementation, therefore {@link org.jivesoftware.smack.debugger.JulDebugger} is preferred.
  * </p>
  * It is possible to not only print the raw sent and received stanzas but also the interpreted
- * packets by Smack. By default interpreted packets won't be printed. To enable this feature
+ * packets by Smack. By default,interpreted packets won't be printed. To enable this feature
  * just change the <code>printInterpreted</code> static variable to <code>true</code>.
  *
  */

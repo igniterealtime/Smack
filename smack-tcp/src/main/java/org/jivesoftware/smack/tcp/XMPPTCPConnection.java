@@ -187,7 +187,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private static boolean useSmResumptionDefault = true;
 
     /**
-     * The stream ID of the stream that is currently resumable, ie. the stream we hold the state
+     * The stream ID of the stream that is currently resumable, i.e. the stream we hold the state
      * for in {@link #clientHandledStanzasCount}, {@link #serverHandledStanzasCount} and
      * {@link #unacknowledgedStanzas}.
      */
@@ -203,7 +203,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private Failed smResumptionFailed;
 
     /**
-     * Represents the state of stream magement.
+     * Represents the state of stream management.
      * <p>
      * This boolean is marked volatile as it is read by various threads, including the reader thread via {@link #isSmEnabled()}.
      * </p>
@@ -1162,8 +1162,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
             catch (Exception e) {
                 // Set running to false since this thread will exit here and notifyConnectionError() will wait until
-                // the reader and writer thread's 'running' value is false. Hence we need to set it to false before calling
-                // notifyConnetctionError() below, even though run() also sets it to false. Therefore, do not remove this.
+                // the reader and writer thread's 'running' value is false. Hence, we need to set it to false before calling
+                // notifyConnectionError() below, even though run() also sets it to false. Therefore, do not remove this.
                 running = false;
 
                 String ignoreReasonThread = null;
@@ -1645,8 +1645,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     private void sendSmAcknowledgementInternal() throws NotConnectedException, InterruptedException {
         AckAnswer ackAnswer = new AckAnswer(clientHandledStanzasCount);
         // Do net put an ack to the queue if it has already been shutdown. Some servers, like ejabberd, like to request
-        // an ack even after we have send a stream close (and hance the queue was shutdown). If we would not check here,
-        // then the ack would dangle around in the queue, and be send on the next re-connection attempt even before the
+        // an ack even after we have sent a stream close (and hence the queue was shutdown). If we would not check here,
+        // then the ack would dangle around in the queue, and be sent on the next re-connection attempt even before the
         // stream open.
         packetWriter.queue.putIfNotShutdown(ackAnswer);
     }

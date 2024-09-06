@@ -432,7 +432,7 @@ public class SmackIntegrationTestFramework {
                     final Class<?>[] parameterTypes = method.getParameterTypes();
                     if (parameterTypes.length > 0) {
                         throw new IllegalStateException(
-                                "SmackIntegrationTest annotaton on " + method + " that takes arguments ");
+                                "SmackIntegrationTest annotation on " + method + " that takes arguments ");
                     }
                     break;
                 case LowLevel:

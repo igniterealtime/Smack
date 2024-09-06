@@ -155,7 +155,7 @@ public final class XmppConnectionDescriptor<
 
         return XmppConnectionDescriptor.buildWith(ModularXmppClientToServerConnection.class, ModularXmppClientToServerConnectionConfiguration.class, ModularXmppClientToServerConnectionConfiguration.Builder.class)
         .withNickname(nickname)
-        .applyExtraConfguration(cb -> {
+        .applyExtraConfiguration(cb -> {
             cb.removeAllModules();
             ModularXmppClientToServerConnectionModuleDescriptor webSocketModuleDescriptor =
                             XmppWebSocketTransportModuleDescriptor.getBuilder(cb)
@@ -184,7 +184,13 @@ public final class XmppConnectionDescriptor<
             nickname = connectionClass.getSimpleName();
         }
 
+        // TODO Remove in Smack 4.6
+        @Deprecated // Replaced by applyExtraConfiguration(Consumer<CCB> extraBuilder)
         public Builder<C, CC, CCB> applyExtraConfguration(Consumer<CCB> extraBuilder) {
+            return applyExtraConfiguration(extraBuilder);
+        }
+
+        public Builder<C, CC, CCB> applyExtraConfiguration(Consumer<CCB> extraBuilder) {
             this.extraBuilder = extraBuilder;
             return this;
         }

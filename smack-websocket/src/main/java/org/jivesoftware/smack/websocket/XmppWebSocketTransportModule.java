@@ -135,7 +135,7 @@ public final class XmppWebSocketTransportModule
 
             // TODO: It appears this should be done in a generic way. I'd assume we always
             // have to wait for stream features after the connection was established. But I
-            // am not yet 100% positive that this is the case for every transport. Hence keep it here for now(?).
+            // am not yet 100% positive that this is the case for every transport. Hence, keep it here for now(?).
             // See also similar comment in XmppTcpTransportModule.
             // Maybe move this into ConnectedButUnauthenticated state's transitionInto() method? That seems to be the
             // right place.
@@ -157,7 +157,7 @@ public final class XmppWebSocketTransportModule
         final WebSocketRemoteConnectionEndpoint connectedEndpoint;
 
         public WebSocketConnectedResult(WebSocketRemoteConnectionEndpoint connectedEndpoint) {
-            super("WebSocket connection establised with endpoint: " + connectedEndpoint);
+            super("WebSocket connection established with endpoint: " + connectedEndpoint);
             this.connectedEndpoint = connectedEndpoint;
         }
     }

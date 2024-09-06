@@ -534,7 +534,7 @@
  * </p>
  * <h3>Usage</h3>
  * <p>
- * In order to grant membership to a room, administrator privileges or owner priveliges just send
+ * In order to grant membership to a room, administrator privileges or owner privileges just send
  * **grantMembership(String jid)**, **grantAdmin(String jid)** or **grantOwnership(String jid)** to _**MultiUserChat**_
  * respectively. Use **revokeMembership(String jid)**, **revokeAdmin(String jid)** or revokeOwnership(String jid)** to
  * revoke the membership to a room, administrator privileges or owner priveliges respectively.

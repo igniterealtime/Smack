@@ -56,7 +56,7 @@ public abstract class JingleSessionState {
 
     /**
      * Process an incoming Jingle Packet.
-     * When you look at the GoF State pattern this method roughly corresponds to example on p310: ProcessOctect()
+     * When you look at the GoF State pattern this method roughly corresponds to example on p310: ProcessOctet()
      *
      * @param session the jingle session.
      * @param jingle the jingle stanza.

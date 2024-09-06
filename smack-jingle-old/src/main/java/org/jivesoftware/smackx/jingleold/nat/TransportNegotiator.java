@@ -95,7 +95,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     *
     * @param session            The Jingle session
     * @param transResolver The JingleTransportManager to use
-    * @param parentNegotiator the parent ngeotiator.
+    * @param parentNegotiator the parent negotiator.
     */
     public TransportNegotiator(JingleSession session, TransportResolver transResolver, ContentNegotiator parentNegotiator) {
         super(session);

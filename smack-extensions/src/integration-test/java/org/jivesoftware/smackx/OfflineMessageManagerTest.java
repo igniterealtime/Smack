@@ -50,7 +50,7 @@ public class OfflineMessageManagerTest extends SmackTestCase {
     /**
      * While user2 is connected but unavailable, user1 sends 2 messages to user1. User2 then
      * performs some "Flexible Offline Message Retrieval" checking the number of offline messages,
-     * retriving the headers, then the real messages of the headers and finally removing the
+     * retrieving the headers, then the real messages of the headers and finally removing the
      * loaded messages.
      */
     public void testReadAndDelete() {

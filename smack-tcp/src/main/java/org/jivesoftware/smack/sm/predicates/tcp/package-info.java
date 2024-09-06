@@ -16,6 +16,6 @@
  */
 
 /**
- * XMPPTCPConnection Stream Managment Predicates.
+ * XMPPTCPConnection Stream Management Predicates.
  */
 package org.jivesoftware.smack.sm.predicates.tcp;

@@ -146,7 +146,7 @@ public class ParserUtils {
     }
 
     /**
-     * Prase a string to a boolean value as per "xs:boolean". Valid input strings are "true", "1" for true, and "false", "0" for false.
+     * Phrase a string to a boolean value as per "xs:boolean". Valid input strings are "true", "1" for true, and "false", "0" for false.
      *
      * @param booleanString the input string.
      * @return the boolean representation of the input string

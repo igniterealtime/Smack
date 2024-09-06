@@ -90,7 +90,7 @@ public class ServiceDiscoveryManagerTest extends SmackTestCase {
      */
     public void testXHTMLFeature() {
         // Check for local XHTML service support
-        // By default the XHTML service support is enabled in all the connections
+        // By default,the XHTML service support is enabled in all the connections
         assertTrue(XHTMLManager.isServiceEnabled(getConnection(0)));
         assertTrue(XHTMLManager.isServiceEnabled(getConnection(1)));
         // Check for XHTML support in connection1 from connection2

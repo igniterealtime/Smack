@@ -219,7 +219,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user in an unmoderated room who undergoes an afilliation change receives that change as a presence update.
+     * Asserts that a user in an unmoderated room who undergoes an affiliation change receives that change as a presence update.
      *
      * @throws Exception when errors occur
      */

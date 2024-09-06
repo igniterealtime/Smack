@@ -358,7 +358,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * SASLprep the given String. The resulting String is in UTF-8.
      *
      * @param string the String to sasl prep.
-     * @return the given String SASL preped
+     * @return the given String SASL prepped
      * @see <a href="http://tools.ietf.org/html/rfc4013">RFC 4013 - SASLprep: Stringprep Profile for User Names and Passwords</a>
      */
     protected static String saslPrep(String string) {

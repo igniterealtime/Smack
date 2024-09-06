@@ -53,14 +53,14 @@ import java.util.concurrent.Executor;
 public class AsyncButOrdered<K> {
 
     /**
-     * A map with the currently pending runnables for a given key. Note that this is a weak hash map so we do not have
-     * to take care of removing the keys ourselfs from the map.
+     * A map with the currently pending runnables for a given key. Note that this is a weak hash map, so we do not have
+     * to take care of removing the keys ourselves from the map.
      */
     private final Map<K, Queue<Runnable>> pendingRunnables = new WeakHashMap<>();
 
     /**
      * A marker map if there is an active thread for the given key. Holds the responsible handler thread if one is
-     * active, otherwise the key is non-existend in the map.
+     * active, otherwise the key is non-existent in the map.
      */
     private final Map<K, Handler> threadActiveMap = new HashMap<>();
 

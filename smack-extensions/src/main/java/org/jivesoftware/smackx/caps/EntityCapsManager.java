@@ -91,7 +91,7 @@ import org.jxmpp.util.cache.LruCache;
  * but XEP-0030 then XEP-0030 mechanisms are transparently used.
  * </p>
  * <p>
- * The caches used by Smack for Entity Capabilities is non-persisent per default. However, it is is also possible to set
+ * The caches used by Smack for Entity Capabilities is non-persistent per default. However, it is is also possible to set
  * a persistent Entity Capabilities cache, which is recommended.
  * </p>
  * <h2>Examples</h2>
@@ -226,7 +226,7 @@ public final class EntityCapsManager extends Manager {
 
     /**
      * Get the Node version (node#ver) of a JID. Returns a String or null if
-     * EntiyCapsManager does not have any information.
+     * EntityCapsManager does not have any information.
      *
      * @param jid TODO javadoc me please
      *            the user (Full JID)

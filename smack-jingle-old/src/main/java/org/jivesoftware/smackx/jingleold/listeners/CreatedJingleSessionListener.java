@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.jingleold.listeners;
 import org.jivesoftware.smackx.jingleold.JingleSession;
 
 /**
- * Inteface used to dispatch a event when a Jingle session is created.
+ * Interface used to dispatch an event when a Jingle session is created.
  *
  * @author Thiago Camargo
  */

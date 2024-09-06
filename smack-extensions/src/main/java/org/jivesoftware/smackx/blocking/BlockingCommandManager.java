@@ -44,13 +44,13 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jxmpp.jid.Jid;
 
 /**
- * Block communications with contancts and other entities using XEP-0191.
+ * Block communications with contacts and other entities using XEP-0191.
  * Allows to
  * <ul>
  * <li>Check push notifications support</li>
  * <li>Get blocking list</li>
  * <li>Block contact</li>
- * <li>Unblock conact</li>
+ * <li>Unblock contact</li>
  * <li>Unblock all</li>
  * </ul>
  *

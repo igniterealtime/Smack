@@ -96,7 +96,7 @@ import org.jxmpp.jid.EntityFullJid;
  * <li>other        - e.g., {@link #addStanzaListener(StanzaListener, StanzaFilter)}</li>
  * </ul>
  * <p>
- * Asynchronous callbacks are run decoupled from the connections main event loop. Hence a callback triggered by
+ * Asynchronous callbacks are run decoupled from the connections main event loop. Hence, a callback triggered by
  * stanza B may (appear to) invoked before a callback triggered by stanza A, even though stanza A arrived before B.
  * </p>
  * <p>
@@ -242,7 +242,7 @@ public interface XMPPConnection {
      * </p>
      *
      * @param stanza the stanza to send.
-     * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
+     * @return {@code true} if the stanza was successfully scheduled to be sent, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
      * @since 4.4.0
      * @deprecated use {@link #sendStanzaNonBlocking(Stanza)} instead.
@@ -265,7 +265,7 @@ public interface XMPPConnection {
      * @param stanza the stanza to send.
      * @param timeout how long to wait before giving up, in units of {@code unit}.
      * @param unit a {@code TimeUnit} determining how to interpret the {@code timeout} parameter.
-     * @return {@code true} if the stanza was successfully scheduled to be send, {@code false} otherwise.
+     * @return {@code true} if the stanza was successfully scheduled to be sent, {@code false} otherwise.
      * @throws NotConnectedException if the connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.4.0

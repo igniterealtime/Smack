@@ -23,14 +23,14 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smackx.delay.DelayInformationManager;
 
 /**
- * Filters stanza with delay information, ie. stanzas that got delayed for some reason
+ * Filters stanza with delay information, i.e. stanzas that got delayed for some reason
  */
 public final class DelayedStanzaFilter implements StanzaFilter {
 
     public static final StanzaFilter INSTANCE = new DelayedStanzaFilter();
 
     /**
-     * Filters stanzas that got not delayed, ie. have no delayed information
+     * Filters stanzas that got not delayed, i.e. have no delayed information
      */
     public static final StanzaFilter NOT_DELAYED_STANZA = new NotFilter(INSTANCE);
 
