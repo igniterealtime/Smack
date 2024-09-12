@@ -511,7 +511,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Returns the list of session IDs that should be ignored by the InitialtionListener
+     * Returns the list of session IDs that should be ignored by the InitiationListener
      *
      * @return list of session IDs
      */

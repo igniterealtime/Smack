@@ -36,7 +36,7 @@ public class BooleanFormField extends SingleValueFormField {
     }
 
     /**
-     * Get the value of the booelan field. Note that, if no explicit boolean value is provided, in the form of "true",
+     * Get the value of the boolean field. Note that, if no explicit boolean value is provided, in the form of "true",
      * "false", "0", or "1", then the default value of a boolean field is <code>false</code>, according to
      * XEP-0004 § 3.3.
      *

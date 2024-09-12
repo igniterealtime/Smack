@@ -230,7 +230,7 @@ public class PacketParserUtils {
                 // Assume this is the end tag of the start tag at the
                 // beginning of this method. Typical examples where this
                 // happens are body elements containing the empty string,
-                // ie. <body></body>, which appears to be valid XMPP, or a
+                // i.e. <body></body>, which appears to be valid XMPP, or a
                 // least it's not explicitly forbidden by RFC 6121 5.2.3
                 return "";
             } else {
@@ -850,7 +850,7 @@ public class PacketParserUtils {
                     throws XmlPullParserException, IOException {
         ParserUtils.assertAtStartTag(parser);
         assert parser.getNamespace().equals(StartTls.NAMESPACE);
-        int initalDepth = parser.getDepth();
+        int initialDepth = parser.getDepth();
         boolean required = false;
         outerloop: while (true) {
             XmlPullParser.Event event = parser.next();
@@ -864,7 +864,7 @@ public class PacketParserUtils {
                 }
                 break;
             case END_ELEMENT:
-                if (parser.getDepth() == initalDepth) {
+                if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
                 break;

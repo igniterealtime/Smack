@@ -163,7 +163,7 @@ public final class ServerPingWithAlarmManager extends Manager {
     private static AlarmManager sAlarmManager;
 
     /**
-     * Register a pending intent with the AlarmManager to be broadcasted every half hour and
+     * Register a pending intent with the AlarmManager to be broadcast every half hour and
      * register the alarm broadcast receiver to receive this intent. The receiver will check all
      * known questions if a ping is Necessary when invoked by the alarm intent.
      *

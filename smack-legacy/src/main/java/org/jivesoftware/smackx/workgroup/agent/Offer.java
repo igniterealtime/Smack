@@ -125,7 +125,7 @@ public class Offer {
     }
 
     /**
-     * The fully qualified name of the workgroup (eg support@example.com).
+     * The fully qualified name of the workgroup (e.g.support@example.com).
      *
      * @return the name of the workgroup.
      */
@@ -137,7 +137,7 @@ public class Offer {
      * The date when the offer will expire. The agent must {@link #accept()}
      * the offer before the expiration date or the offer will lapse and be
      * routed to another agent. Alternatively, the agent can {@link #reject()}
-     * the offer at any time if they don't wish to accept it..
+     * the offer at any time if they don't wish to accept it.
      *
      * @return the date at which this offer expires.
      */

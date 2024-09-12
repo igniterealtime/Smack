@@ -83,7 +83,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param iv initialization vector used for message encryption
      * @param message message we want to send
      *
-     * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
+     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      * @throws BadPaddingException if the input data is not padded properly.
      * @throws InvalidKeyException if the key is invalid.
      * @throws NoSuchAlgorithmException if no such algorithm is available.
@@ -115,7 +115,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param ratchet our OmemoRatchet
      * @param message message we want to send
      *
-     * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
+     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      * @throws BadPaddingException if the input data is not padded properly.
      * @throws InvalidKeyException if the key is invalid.
      * @throws NoSuchAlgorithmException if no such algorithm is available.
@@ -140,7 +140,7 @@ public class OmemoMessageBuilder<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param message plaintext message
      *
-     * @throws NoSuchPaddingException if the requested padding mechanism is not availble.
+     * @throws NoSuchPaddingException if the requested padding mechanism is not available.
      * @throws InvalidAlgorithmParameterException if the provided arguments are invalid.
      * @throws InvalidKeyException if the key is invalid.
      * @throws BadPaddingException if the input data is not padded properly.

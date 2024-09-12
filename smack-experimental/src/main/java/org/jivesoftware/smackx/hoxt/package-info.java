@@ -103,7 +103,7 @@
  * AbstractHttpOverXmpp.Data data = new AbstractHttpOverXmpp.Data(child);
  *
  * // create request
- * HttpOverXmppReq req = HttpOverXmppReq.buider()
+ * HttpOverXmppReq req = HttpOverXmppReq.builder()
  *                             .setMethod(HttpMethod.POST)
  *                             .setResource(&quot;/mailbox&quot;)
  *                             .setHeaders(headers)

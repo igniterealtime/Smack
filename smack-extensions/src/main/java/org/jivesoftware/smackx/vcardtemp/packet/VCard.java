@@ -122,7 +122,7 @@ public final class VCard extends IQ {
     private String photoBinval;
 
     /**
-     * Such as DESC ROLE GEO etc.. see XEP-0054
+     * Such as DESC ROLE GEO etc. see XEP-0054
      */
     private final Map<String, String> otherSimpleFields = new HashMap<>();
 
@@ -575,7 +575,7 @@ public final class VCard extends IQ {
      * Load VCard information for a given user. XMPPConnection should be authenticated and not anonymous.
      *
      * @param connection connection.
-     * @param user user whos information we want to load.
+     * @param user user whose information we want to load.
      *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.

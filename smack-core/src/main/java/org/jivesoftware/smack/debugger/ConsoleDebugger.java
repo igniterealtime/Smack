@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.ExceptionUtil;
  * even block the thread since only one thread may print at a time.
  * <p>
  * It is possible to not only print the raw sent and received stanzas but also the interpreted
- * packets by Smack. By default interpreted packets won't be printed. To enable this feature
+ * packets by Smack. By default,interpreted packets won't be printed. To enable this feature
  * just change the <code>printInterpreted</code> static variable to <code>true</code>.
  * </p>
  *

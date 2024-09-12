@@ -171,7 +171,7 @@ public class PrivacyItem {
     }
 
     /**
-     * Sets wheather the receiver allows or denies incoming messages or not.
+     * Sets whether the receiver allows or denies incoming messages or not.
      *
      * @param filterMessage indicates if the receiver allows or denies incoming messages or not.
      */

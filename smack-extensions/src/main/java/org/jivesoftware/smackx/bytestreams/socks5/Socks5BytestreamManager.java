@@ -139,7 +139,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     /* timeout for connecting to the SOCKS5 proxy selected by the target */
     private int proxyConnectionTimeout = 10000;
 
-    /* blacklist of errornous SOCKS5 proxies */
+    /* blacklist of erroneous SOCKS5 proxies */
     private final Set<Jid> proxyBlacklist = Collections.synchronizedSet(new HashSet<Jid>());
 
     /* remember the last proxy that worked to prioritize it */
@@ -390,7 +390,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Set whether or not the bytestream manager will annouce the local stream host(s), i.e. the local SOCKS5 proxy.
+     * Set whether the bytestream manager will announce the local stream host(s), i.e. the local SOCKS5 proxy.
      *
      * @param announceLocalStreamHost TODO javadoc me please
      * @see #isAnnouncingLocalStreamHostEnabled()
@@ -580,7 +580,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
                 proxyInfo = serviceDiscoveryManager.discoverInfo(item.getEntityID());
             }
             catch (NoResponseException | XMPPErrorException e) {
-                // blacklist errornous server
+                // blacklist erroneous server
                 proxyBlacklist.add(item.getEntityID());
                 continue;
             }
@@ -627,7 +627,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
                 streamHosts.addAll(response.getStreamHosts());
             }
             catch (Exception e) {
-                // blacklist errornous proxies
+                // blacklist erroneous proxies
                 this.proxyBlacklist.add(proxy);
             }
         }
@@ -796,7 +796,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Returns the list of session IDs that should be ignored by the InitialtionListener
+     * Returns the list of session IDs that should be ignored by the InitiationListener
      *
      * @return list of session IDs
      */

@@ -87,9 +87,9 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
     }
 
     /**
-     * Set the recipent address of the stanza.
+     * Set the recipient address of the stanza.
      *
-     * @param to whoe the stanza is being sent to.
+     * @param to whom the stanza is being sent.
      * @return a reference to this builder.
      * @throws XmppStringprepException if the provided character sequence is not a valid XMPP address.
      * @see #to(Jid)

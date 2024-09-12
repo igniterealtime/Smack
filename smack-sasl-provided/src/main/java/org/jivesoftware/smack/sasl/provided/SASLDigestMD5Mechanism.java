@@ -30,7 +30,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
 
     public static final String NAME = DIGESTMD5;
 
-    private static final String INITAL_NONCE = "00000001";
+    private static final String INITIAL_NONCE = "00000001";
 
     /**
      * The only 'qop' value supported by this implementation
@@ -159,7 +159,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
                                + ",realm=\"" + serviceName + '"'
                                + ",nonce=\"" + nonce + '"'
                                + ",cnonce=\"" + cnonce + '"'
-                               + ",nc=" + INITAL_NONCE
+                               + ",nc=" + INITIAL_NONCE
                                + ",qop=auth"
                                + ",digest-uri=\"" + digestUri + '"'
                                + ",response=" + responseValue
@@ -218,7 +218,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
         kd_argument.append(':');
         kd_argument.append(nonce);
         kd_argument.append(':');
-        kd_argument.append(INITAL_NONCE);
+        kd_argument.append(INITIAL_NONCE);
         kd_argument.append(':');
         kd_argument.append(cnonce);
         kd_argument.append(':');

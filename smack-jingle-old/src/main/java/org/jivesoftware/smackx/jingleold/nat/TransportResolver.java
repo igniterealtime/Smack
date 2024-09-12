@@ -236,7 +236,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Trigger a event notifying the initialization of the resolution process.
+     * Trigger an event notifying the initialization of the resolution process.
      */
     private void triggerResolveInit() {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();
@@ -250,7 +250,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Trigger a event notifying the obtainment of all the candidates.
+     * Trigger an event notifying the obtainment of all the candidates.
      */
     private void triggerResolveEnd() {
         Iterator<TransportResolverListener> iter = getListenersList().iterator();

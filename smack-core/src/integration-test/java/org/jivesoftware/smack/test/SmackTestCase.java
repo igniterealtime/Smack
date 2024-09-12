@@ -487,7 +487,7 @@ public abstract class SmackTestCase extends TestCase {
     }
 
     /**
-     * Returns the name of the configuration file related to <b>this</b> test case. By default all
+     * Returns the name of the configuration file related to <b>this</b> test case. By default,all
      * the test cases will use the same configuration file. However, it's possible to override the
      * default configuration by providing a file of the form <test case class name>.xml
      * (e.g. RosterTest.xml).

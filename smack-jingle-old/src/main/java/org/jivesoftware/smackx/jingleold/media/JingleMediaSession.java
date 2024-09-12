@@ -25,7 +25,7 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 /**
  * Public Abstract Class provides a clear interface between Media Session and Jingle API.
  * <p>
- * When a Jingle Session is fully stablished, we will have a Payload Type and two transport candidates defined for it.
+ * When a Jingle Session is fully established, we will have a Payload Type and two transport candidates defined for it.
  * Smack Jingle API don't implement Media Transmit and Receive methods.
  * But provides an interface to let the user implements it using another API. For instance: JMF.
  * </p>
@@ -153,7 +153,7 @@ public abstract class JingleMediaSession {
     public abstract void startReceive();
 
     /**
-     * Set transmit activity. If the active is true, the instance should trasmit.
+     * Set transmit activity. If the active is true, the instance should transmit.
      * If it is set to false, the instance should pause transmit.
      *
      * @param active TODO javadoc me please
@@ -173,7 +173,7 @@ public abstract class JingleMediaSession {
     /**
      * Called when new Media is received.
      *
-     * @param participant the particpant.
+     * @param participant the participant.
      */
     public void mediaReceived(String participant) {
         for (MediaReceivedListener mediaReceivedListener : mediaReceivedListeners) {

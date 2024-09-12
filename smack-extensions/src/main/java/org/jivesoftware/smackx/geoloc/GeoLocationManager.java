@@ -43,7 +43,7 @@ import org.jxmpp.jid.Jid;
  * <br>
  * To publish a UserLocation, please use {@link #publishGeoLocation(GeoLocation)} method. This will publish the node.
  * <br>
- * To stop publishing a UserLocation, please use {@link #stopPublishingGeolocation()} method. This will send a disble publishing signal.
+ * To stop publishing a UserLocation, please use {@link #stopPublishingGeolocation()} method. This will send a disable publishing signal.
  * <br>
  * To add a {@link PepEventListener} in order to remain updated with other users GeoLocation, use {@link #addGeoLocationListener(PepEventListener)} method.
  * <br>

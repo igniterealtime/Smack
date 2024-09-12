@@ -61,8 +61,8 @@
  * </p>
  * <h2>Best Practices</h2>
  * <p>
- * We recommend that applications using Smack's DNSSEC API do not ask the user if DNSSEC is avaialble. Instead they
- * should check for DNSSEC suport on every connection attempt. Once DNSSEC support has been discovered, the application
+ * We recommend that applications using Smack's DNSSEC API do not ask the user if DNSSEC is available. Instead they
+ * should check for DNSSEC support on every connection attempt. Once DNSSEC support has been discovered, the application
  * should use the `needsDnssec` mode for all future connection attempts. The same scheme can be applied when using DANE.
  * This approach is similar to the scheme established by to <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict
  * Transport Security" (HSTS, RFC 6797</a>.

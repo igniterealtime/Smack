@@ -150,11 +150,11 @@ public final class PingManager extends Manager {
 
         // We may received an error response from an intermediate service returning an error like
         // 'remote-server-not-found' or 'remote-server-timeout' to us (which would fake the 'from' address,
-        // see RFC 6120 § 8.3.1 2.). Or the recipient could became unavailable.
+        // see RFC 6120 § 8.3.1 2.). Or the recipient could become unavailable.
 
         // Sticking with the current rules of RFC 6120/6121, it is undecidable at this point whether we received an
         // error response from the pinged entity or not. This is because a service-unavailable error condition is
-        // *required* (as per the RFCs) to be send back in both relevant cases:
+        // *required* (as per the RFCs) to be sent back in both relevant cases:
         // 1. When the receiving entity is unaware of the IQ request type. RFC 6120 § 8.4.:
         //    "If an intended recipient receives an IQ stanza of type "get" or
         //    "set" containing a child element qualified by a namespace it does
@@ -244,7 +244,7 @@ public final class PingManager extends Manager {
     }
 
     /**
-     * Same as calling {@link #ping(Jid, long)} with the defaultpacket reply
+     * Same as calling {@link #ping(Jid, long)} with the default packet reply
      * timeout.
      *
      * @param jid The id of the entity the ping is being sent to

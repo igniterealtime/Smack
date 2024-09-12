@@ -118,8 +118,8 @@ import org.jxmpp.util.cache.LruCache;
  * Every entry in the roster has presence associated with it. The
  * {@link #getPresence(BareJid)} method will return a Presence object with the
  * user's presence or `null` if the user is not online or you are not subscribed
- * to the user's presence. _Note:_ Presence subscription is nnot tied to the
- * user being on the roster, and vice versa: You could be subscriped to a remote
+ * to the user's presence. _Note:_ Presence subscription is not tied to the
+ * user being on the roster, and vice versa: You could be subscribed to a remote
  * users presence without the user in your roster, and a remote user can be in
  * your roster without any presence subscription relation.
  * </p>
@@ -242,13 +242,13 @@ public final class Roster extends Manager {
     private static boolean rosterLoadedAtLoginDefault = true;
 
     /**
-     * The default subscription processing mode to use when a Roster is created. By default
+     * The default subscription processing mode to use when a Roster is created. By default,
      * all subscription requests are automatically rejected.
      */
     private static SubscriptionMode defaultSubscriptionMode = SubscriptionMode.reject_all;
 
     /**
-     * The initial maximum size of the map holding presence information of entities without an Roster entry. Currently
+     * The initial maximum size of the map holding presence information of entities without a Roster entry. Currently
      * {@value #INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE}.
      */
     public static final int INITIAL_DEFAULT_NON_ROSTER_PRESENCE_MAP_SIZE = 1024;
@@ -285,7 +285,7 @@ public final class Roster extends Manager {
     private final Map<BareJid, Map<Resourcepart, Presence>> presenceMap = new ConcurrentHashMap<>();
 
     /**
-     * Like {@link presenceMap} but for presences of entities not in our Roster.
+     * Like {@link #presenceMap} but for presences of entities not in our Roster.
      */
     // TODO Ideally we want here to use a LRU cache like Map which will evict all superfluous items
     // if their maximum size is lowered below the current item count. LruCache does not provide
@@ -299,7 +299,7 @@ public final class Roster extends Manager {
     private final Set<RosterLoadedListener> rosterLoadedListeners = new LinkedHashSet<>();
 
     /**
-     * Mutually exclude roster listener invocation and changing the {@link entries} map. Also used
+     * Mutually exclude roster listener invocation and changing the {@link #entries} map. Also used
      * to synchronize access to either the roster listeners or the entries map.
      */
     private final Object rosterListenersAndEntriesLock = new Object();
@@ -439,7 +439,7 @@ public final class Roster extends Manager {
                     return;
                 }
 
-                // Ensure that all available presences received so far in a eventually existing previous session are
+                // Ensure that all available presences received so far in an eventually existing previous session are
                 // marked 'offline'.
                 setOfflinePresencesAndResetLoaded();
 
@@ -760,7 +760,7 @@ public final class Roster extends Manager {
      *
      * @param user   the user. (e.g. johndoe@jabber.org)
      * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if
      *               the roster entry won't belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -818,7 +818,7 @@ public final class Roster extends Manager {
      *
      * @param jid the XMPP address of the contact (e.g. johndoe@jabber.org)
      * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if
      *               the roster entry won't belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -839,7 +839,7 @@ public final class Roster extends Manager {
      *
      * @param user   the user. (e.g. johndoe@jabber.org)
      * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <code>null</code> if the
+     * @param groups the list of group names the entry will belong to, or <code>null</code> if
      *               the roster entry won't belong to a group.
      * @throws NoResponseException if there was no response from the server.
      * @throws XMPPErrorException if an XMPP exception occurs.
@@ -1042,7 +1042,7 @@ public final class Roster extends Manager {
      * Returns the roster entry associated with the given XMPP address or
      * <code>null</code> if the user is not an entry in the roster.
      *
-     * @param jid the XMPP address of the user (eg "jsmith@example.com"). The address could be
+     * @param jid the XMPP address of the user (e.g."jsmith@example.com"). The address could be
      *             in any valid format (e.g. "domain/resource", "user@domain" or "user@domain/resource").
      * @return the roster entry or <code>null</code> if it does not exist.
      */
@@ -1056,7 +1056,7 @@ public final class Roster extends Manager {
     /**
      * Returns true if the specified XMPP address is an entry in the roster.
      *
-     * @param jid the XMPP address of the user (eg "jsmith@example.com"). The
+     * @param jid the XMPP address of the user (e.g."jsmith@example.com"). The
      *             address must be a bare JID e.g. "domain/resource" or
      *             "user@domain".
      * @return true if the XMPP address is an entry in the roster.
@@ -1118,11 +1118,11 @@ public final class Roster extends Manager {
      * {@link RosterListener}.
      * </p>
      *
-     * @param jid the XMPP address of the user (eg "jsmith@example.com"). The
+     * @param jid the XMPP address of the user (e.g."jsmith@example.com"). The
      *             address must be a bare JID e.g. "domain/resource" or
      *             "user@domain".
      * @return the user's current presence, or unavailable presence if the user is offline
-     *         or if no presence information is available..
+     *         or if no presence information is available.
      */
     public Presence getPresence(BareJid jid) {
         Map<Resourcepart, Presence> userPresences = getPresencesInternal(jid);

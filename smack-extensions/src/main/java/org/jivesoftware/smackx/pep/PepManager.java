@@ -288,7 +288,7 @@ public final class PepManager extends Manager {
      */
     public LeafNode publish(String nodeId, Item item) throws NotConnectedException, InterruptedException,
                     NoResponseException, XMPPErrorException, NotALeafNodeException {
-        // PEP nodes are auto created if not existent. Hence Use PubSubManager.tryToPublishAndPossibleAutoCreate() here.
+        // PEP nodes are auto created if not existent. Hence, use PubSubManager.tryToPublishAndPossibleAutoCreate() here.
         return pepPubSubManager.tryToPublishAndPossibleAutoCreate(nodeId, item);
     }
 

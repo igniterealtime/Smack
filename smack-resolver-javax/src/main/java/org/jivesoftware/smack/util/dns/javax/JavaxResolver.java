@@ -40,7 +40,7 @@ import org.minidns.record.SRV;
 
 /**
  * A DNS resolver (mostly for SRV records), which makes use of the API provided in the javax.* namespace.
- * Note that using JavaxResovler requires applications using newer Java versions (at least 11) to declare a dependency on the "sun.jdk" module.
+ * Note that using JavaxResolver requires applications using newer Java versions (at least 11) to declare a dependency on the "sun.jdk" module.
  *
  * @author Florian Schmaus
  *

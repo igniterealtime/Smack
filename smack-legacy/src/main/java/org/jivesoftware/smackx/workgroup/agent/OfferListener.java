@@ -37,7 +37,7 @@ public interface OfferListener {
     void offerReceived (Offer request);
 
     /**
-     * The implementing class instance will be notified via this when the AgentSessino has received
+     * The implementing class instance will be notified via this when the AgentSession has received
      *  a revocation of a previously extended offer.
      *
      * @param revokedOffer the RevokedOffer instance embodying the details of the revoked offer

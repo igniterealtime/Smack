@@ -18,7 +18,7 @@
 package org.jivesoftware.smack.packet;
 
 /**
- * A Nonza, i.e everything that is <b>not a stanza</b> as defined
+ * A Nonza, i.e. everything that is <b>not a stanza</b> as defined
  * RFC 6120 8. Stanzas are {@link Message}, {@link Presence} and {@link IQ}.
  * Everything else should sublcass this class instead of {@link Stanza}.
  * <p>

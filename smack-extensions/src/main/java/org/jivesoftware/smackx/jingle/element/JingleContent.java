@@ -71,7 +71,7 @@ public final class JingleContent implements XmlElement {
     private final JingleContentTransport transport;
 
     /**
-     * Creates a content description..
+     * Creates a content description.
      */
     private JingleContent(Creator creator, String disposition, String name, Senders senders,
                     JingleContentDescription description, JingleContentTransport transport) {

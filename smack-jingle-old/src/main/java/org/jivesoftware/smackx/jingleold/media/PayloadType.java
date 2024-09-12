@@ -322,7 +322,7 @@ public class PayloadType {
         }
 
         /**
-         * Set tha sampling clockRate for a playload type.
+         * Set tha sampling clockRate for a payload type.
          *
          * @param rate The sampling clockRate
          */

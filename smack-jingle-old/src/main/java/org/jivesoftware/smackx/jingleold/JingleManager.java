@@ -540,7 +540,7 @@ public class JingleManager implements JingleSessionListener {
     //    }
     /**
      * When the session request is acceptable, this method should be invoked. It
-     * will create an JingleSession which allows the negotiation to procede.
+     * will create an JingleSession which allows the negotiation to proceed.
      *
      * @param request      the remote request that is being accepted.
      * @return the session which manages the rest of the negotiation.
@@ -560,7 +560,7 @@ public class JingleManager implements JingleSessionListener {
 
     /**
      * When the session request is acceptable, this method should be invoked. It
-     * will create an JingleSession which allows the negotiation to procede.
+     * will create an JingleSession which allows the negotiation to proceed.
      * This method use JingleMediaManager to select the supported Payload types.
      *
      * @param request the remote request that is being accepted.

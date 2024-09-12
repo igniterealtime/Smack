@@ -24,7 +24,7 @@ package org.jivesoftware.smack.sasl.javax;
  * to the implementer to determine how to do this.  Here is one method:
  *
  * Create a java keystore with your SSL certificate in it:
- * keytool -genkey -alias username -dname "cn=username,ou=organizationalUnit,o=organizationaName,l=locality,s=state,c=country"
+ * keytool -genkey -alias username -dname "cn=username,ou=organizationalUnit,o=organizationalName,l=locality,s=state,c=country"
  *
  * Next, set the System Properties:
  *  <ul>
@@ -38,7 +38,7 @@ package org.jivesoftware.smack.sasl.javax;
  * simply provide the one in the keyStore.
  *
  * Also worth noting is the EXTERNAL mechanism in Smack is not enabled by default.
- * To enable it, the implementer will need to call SASLAuthentication.supportSASLMechamism("EXTERNAL");
+ * To enable it, the implementer will need to call SASLAuthentication.supportSASLMechanism("EXTERNAL");
  *
  * @author Jay Kline
  */

@@ -108,7 +108,7 @@ public final class RosterEntry extends Manager {
         packet.setType(IQ.Type.set);
 
         // Create a new roster item with the current RosterEntry and the *new* name. Note that we can't set the name of
-        // RosterEntry right away, as otherwise the updated event wont get fired, because equalsDeep would return true.
+        // RosterEntry right away, as otherwise the updated event won't get fired, because equalsDeep would return true.
         packet.addRosterItem(toRosterItem(this, name));
         connection().sendIqRequestAndWaitForResponse(packet);
 
@@ -136,7 +136,7 @@ public final class RosterEntry extends Manager {
     }
 
     /**
-     * Returns an copied list of the roster groups that this entry belongs to.
+     * Returns a copied list of the roster groups that this entry belongs to.
      *
      * @return an iterator for the groups this entry belongs to.
      */
@@ -306,7 +306,7 @@ public final class RosterEntry extends Manager {
      *
      * @param entry the roster entry.
      * @param name the name of the roster item.
-     * @param includeAskAttribute whether or not to include the 'ask' attribute.
+     * @param includeAskAttribute whether to include the 'ask' attribute.
      * @return the roster item.
      */
     private static RosterPacket.Item toRosterItem(RosterEntry entry, String name, boolean includeAskAttribute) {

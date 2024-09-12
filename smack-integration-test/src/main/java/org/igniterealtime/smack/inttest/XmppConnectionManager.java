@@ -85,7 +85,7 @@ public class XmppConnectionManager {
             addConnectionDescriptor(
                             XmppConnectionDescriptor.buildWith(ModularXmppClientToServerConnection.class, ModularXmppClientToServerConnectionConfiguration.class, ModularXmppClientToServerConnectionConfiguration.Builder.class)
                             .withNickname("modular-nocompress")
-                            .applyExtraConfguration(cb -> cb.removeModule(CompressionModuleDescriptor.class))
+                            .applyExtraConfiguration(cb -> cb.removeModule(CompressionModuleDescriptor.class))
                             .build()
             );
             addConnectionDescriptor(

@@ -156,7 +156,7 @@
  * <p>
  * In order to handle privacy changes, clients SHOULD listen manager’s updates. When a list is changed the manager
  * notifies every added listener. Listeners MUST implement the <code>PrivacyListListener</code> interface. Clients may
- * need to react when a privacy list is modified. The <code>PrivacyListManager</code> lets you add listerners that will
+ * need to react when a privacy list is modified. The <code>PrivacyListManager</code> lets you add listeners that will
  * be notified when a list has been changed. Listeners should implement the <code>PrivacyListListener</code> interface.
  * </p>
  * <p>

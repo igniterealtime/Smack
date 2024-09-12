@@ -70,7 +70,7 @@ chat.sendMessage(message);</code>
  * <ul>
  * <li>When you send a Java object as a property, only clients running Java will be able to interpret the data. So,
  * consider using a series of primitive values to transfer data instead.</li>
- * <li>Objects sent as property values must implement Serialiable. Additionally, both the sender and receiver must have
+ * <li>Objects sent as property values must implement Serializable. Additionally, both the sender and receiver must have
  * identical versions of the class, or a serialization exception will occur when de-serializing the object.</li>
  * <li>Serialized objects can potentially be quite large, which will use more bandwidth and server resources.</li>
  * </ul>

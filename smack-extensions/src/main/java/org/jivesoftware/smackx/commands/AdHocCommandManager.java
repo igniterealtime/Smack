@@ -654,7 +654,7 @@ public final class AdHocCommandManager extends Manager {
         public AdHocCommandHandler getCommandInstance() throws InstantiationException,
                 IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             String sessionId;
-            // TODO: The code below contains a race condition. Use CopncurrentHashMap.computeIfAbsent() to remove the
+            // TODO: The code below contains a race condition. Use ConcurrentHashMap.computeIfAbsent() to remove the
             // race condition once Smack's minimum Android API level 24 or higher.
             int attempt = 0;
             do {

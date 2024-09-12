@@ -39,7 +39,7 @@ public interface UserStatusListener {
 
     /**
      * Called when a moderator kicked your user from the room. This means that you are no longer
-     * participanting in the room.
+     * participating in the room.
      *
      * @param actor the moderator that kicked your user from the room (e.g. user@host.org).
      * @param reason the reason provided by the actor to kick you from the room.
@@ -106,7 +106,7 @@ public interface UserStatusListener {
     /**
      * Called when an administrator grants moderator privileges to your user. This means that you
      * will be able to kick users, grant and revoke voice, invite other users, modify room's
-     * subject plus all the partcipants privileges.
+     * subject plus all the participant privileges.
      *
      */
     default void moderatorGranted() {
@@ -115,7 +115,7 @@ public interface UserStatusListener {
     /**
      * Called when an administrator revokes moderator privileges from your user. This means that
      * you will no longer be able to kick users, grant and revoke voice, invite other users,
-     * modify room's subject plus all the partcipants privileges.
+     * modify room's subject plus all the participant privileges.
      *
      */
     default void moderatorRevoked() {

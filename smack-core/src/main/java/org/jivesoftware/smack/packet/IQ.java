@@ -95,7 +95,7 @@ public abstract class IQ extends Stanza implements IqView {
     /**
      * Sets the type of the IQ packet.
      * <p>
-     * Since the type of an IQ must present, an IllegalArgmentException will be thrown when type is
+     * Since the type of an IQ must present, an IllegalArgumentException will be thrown when type is
      * <code>null</code>.
      * </p>
      *
@@ -182,7 +182,7 @@ public abstract class IQ extends Stanza implements IqView {
         // Add the query section if there is one.
         IQChildElementXmlStringBuilder iqChildElement = getIQChildElementBuilder(
                         new IQChildElementXmlStringBuilder(getChildElementName(), getChildElementNamespace(), null, xml.getXmlEnvironment()));
-        // TOOD: Document the cases where iqChildElement is null but childElementName not. And if there are none, change
+        // TODO: Document the cases where iqChildElement is null but childElementName not. And if there are none, change
         // the logic.
         if (iqChildElement == null) {
             return;

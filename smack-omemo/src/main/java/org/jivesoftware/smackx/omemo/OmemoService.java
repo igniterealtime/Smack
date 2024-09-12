@@ -893,7 +893,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
     }
 
     /**
-     * Process a received bundle. Typically that includes saving keys and building a session.
+     * Process a received bundle. Typically, that includes saving keys and building a session.
      *
      * @param omemoManager our OmemoManager
      * @param contactsBundle bundle of the contact

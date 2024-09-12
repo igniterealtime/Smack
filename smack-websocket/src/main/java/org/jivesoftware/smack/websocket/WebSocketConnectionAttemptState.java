@@ -51,7 +51,7 @@ public final class WebSocketConnectionAttemptState {
     /**
      * Establish  a websocket connection with one of the discoveredRemoteConnectionEndpoints.<br>
      *
-     * @return {@link AbstractWebSocket} with which connection is establised
+     * @return {@link AbstractWebSocket} with which connection is established
      * @throws InterruptedException if the calling thread was interrupted
      */
     @SuppressWarnings({"incomplete-switch", "MissingCasesInEnumSwitch"})

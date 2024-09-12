@@ -66,7 +66,7 @@ public class SimplePayload implements XmlElement {
      * @param elementName The root element name (of the payload)
      * @param namespace The namespace of the payload, null if there is none
      * @param xmlPayload The payload data
-     * @deprecated use {@link #SimplePayload(String)} insteas.
+     * @deprecated use {@link #SimplePayload(String)} instead.
      */
     // TODO: Remove in Smack 4.5
     @Deprecated

@@ -51,7 +51,7 @@ import org.jivesoftware.smack.util.CloseableUtil;
  * The second way that a file can be received through this class is by invoking
  * the {@link #receiveFile(File)} method. This method returns immediately and
  * takes as its parameter a file on the local file system where the file
- * recieved from the transfer will be put.
+ * received from the transfer will be put.
  *
  * @author Alexander Wenckus
  */

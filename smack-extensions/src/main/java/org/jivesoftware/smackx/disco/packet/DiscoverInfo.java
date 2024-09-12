@@ -215,7 +215,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
      *
      * @param category category the category to look for.
      * @param type type the type to look for.
-     * @return a list of Identites with the given category and type.
+     * @return a list of Identities with the given category and type.
      */
     public List<Identity> getIdentities(String category, String type) {
         List<Identity> res = new ArrayList<>(identities.size());

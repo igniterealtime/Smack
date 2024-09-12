@@ -31,7 +31,7 @@ public class MD5 {
             MD5_DIGEST = MessageDigest.getInstance(StringUtils.MD5);
         }
         catch (NoSuchAlgorithmException e) {
-            // Smack wont be able to function normally if this exception is thrown, wrap it into
+            // Smack won't be able to function normally if this exception is thrown, wrap it into
             // an ISE and make the user aware of the problem.
             throw new IllegalStateException(e);
         }

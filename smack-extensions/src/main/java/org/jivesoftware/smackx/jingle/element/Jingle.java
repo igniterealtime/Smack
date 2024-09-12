@@ -52,7 +52,7 @@ import org.jxmpp.jid.FullJid;
  * |    transport-info
  * |    transport-reject
  * |    transport-replace
- * │  initator (RECOMMENDED for session initiate, NOT RECOMMENDED otherwise, full JID, XEP-0166 § 7.1)
+ * │  initiator (RECOMMENDED for session initiate, NOT RECOMMENDED otherwise, full JID, XEP-0166 § 7.1)
  * │  responder (RECOMMENDED for session accept, NOT RECOMMENDED otherwise, full JID. XEP-0166 § 7.1)
  * │  sid (REQUIRED, SHOULD match XML Nmtoken production)
  * │

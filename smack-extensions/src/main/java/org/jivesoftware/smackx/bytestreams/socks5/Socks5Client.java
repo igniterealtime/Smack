@@ -138,7 +138,7 @@ public class Socks5Client {
         byte[] connectionRequest;
         byte[] connectionResponse;
         /*
-         * use DataInputStream/DataOutpuStream to assure read and write is completed in a single
+         * use DataInputStream/DataOutputStream to assure read and write is completed in a single
          * statement
          */
         DataInputStream in = new DataInputStream(socket.getInputStream());

@@ -143,7 +143,7 @@
  * </pre>
  * <p>
  * The `setup()` method registers the service as a singleton. You can later access the instance by calling
- * `SignalOmemoService.getInstace()`. The service can only be registered once. Subsequent calls will throw an
+ * `SignalOmemoService.getInstance()`. The service can only be registered once. Subsequent calls will throw an
  * {@link IllegalStateException}.
  * </p>
  * <h3>2. Set an OmemoStore</h3>

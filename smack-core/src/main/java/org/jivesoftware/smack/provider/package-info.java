@@ -16,7 +16,7 @@
  */
 
 /**
- * The Smack provider architecture is a system for plugging in custom XML parsing of staza extensions
+ * The Smack provider architecture is a system for plugging in custom XML parsing of stanza extensions
  * ({@link org.jivesoftware.smack.packet.ExtensionElement}, {@link org.jivesoftware.smack.packet.IQ} stanzas and
  * {@link org.jivesoftware.smack.packet.Nonza}. Hence, there are the the following providers:
  * <ul>

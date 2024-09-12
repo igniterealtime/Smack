@@ -263,7 +263,7 @@ public final class PubSubManager extends Manager {
             DataForm submitForm = config.getDataFormToSubmit();
             request.addExtension(new FormNode(FormNodeType.CONFIGURE, submitForm));
             NodeType nodeType = config.getNodeType();
-            // Note that some implementations do to have the pubsub#node_type field in their defauilt configuration,
+            // Note that some implementations do to have the pubsub#node_type field in their default configuration,
             // which I believe to be a bug. However, since PubSub specifies the default node type to be 'leaf' we assume
             // leaf if the field does not exist.
             isLeafNode = nodeType == null || nodeType == NodeType.leaf;

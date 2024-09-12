@@ -57,8 +57,8 @@ public interface XmppInputOutputFilter {
     }
 
     /**
-     * The returned {@link ByteBuffer} is going to get fliped by the caller. The callee must not flip the buffer.
-     * @param inputData the data this methods needs to process.
+     * The returned {@link ByteBuffer} is going to get flipped by the caller. The callee must not flip the buffer.
+     * @param inputData the data this method needs to process.
      * @return a {@link ByteBuffer} or {@code null} if no data could be produced.
      * @throws IOException in case an I/O exception occurs.
      */

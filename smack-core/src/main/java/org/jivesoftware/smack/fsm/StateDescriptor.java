@@ -118,7 +118,7 @@ public abstract class StateDescriptor {
         if (stateClassConstructor != null) {
             stateClassConstructor.setAccessible(true);
         } else {
-            // TODO: Add validation check that if stateClassConstructor is 'null' the cosntructState() method is overriden.
+            // TODO: Add validation check that if stateClassConstructor is 'null' the constructState() method is overridden.
         }
 
         String className = getClass().getSimpleName();
@@ -155,7 +155,7 @@ public abstract class StateDescriptor {
             clazz = Class.forName(clazzName);
         } catch (ClassNotFoundException e) {
             // The state descriptor class is not in classpath, which probably means that the smack module is not loaded
-            // into the classpath. Hence we can silently ignore that.
+            // into the classpath. Hence, we can silently ignore that.
             LOGGER.log(Level.FINEST, "Ignoring unknown state descriptor '" + clazzName + "'", e);
             return;
         }

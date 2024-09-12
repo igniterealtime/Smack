@@ -144,7 +144,7 @@
  * <li>**isDone()** - Similar to getProgress() except it returns a _boolean_. If the state is rejected, canceled, error,
  * or complete then true will be returned and false otherwise.</li>
  * <li>**getError()** - If there is an error during the file transfer this method will return the type of error that
- * occured.</li>
+ * occurred.</li>
  * </ul>
  * <h3>Examples</h3>
  * <p>

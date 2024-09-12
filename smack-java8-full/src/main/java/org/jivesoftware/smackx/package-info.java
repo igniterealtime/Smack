@@ -71,7 +71,7 @@
  * <td>Extended Stanza Addressing</td>
  * <td><a href="https://xmpp.org/extensions/xep-0033.html">XEP-0033</a></td>
  * <td></td>
- * <td>Allows to include headers in stanzas in order to specifiy multiple recipients or sub-addresses.</td>
+ * <td>Allows to include headers in stanzas in order to specify multiple recipients or sub-addresses.</td>
  * </tr>
  * <tr>
  * <td>Multi User Chat</td>
@@ -477,7 +477,7 @@
  * <td>Data Forms Geolocation Element</td>
  * <td><a href="https://xmpp.org/extensions/xep-0350.html">XEP-0350</a></td>
  * <td></td>
- * <td>Allows to include XEP-0080 gelocation data in XEP-0004 data forms.</td>
+ * <td>Allows to include XEP-0080 geolocation data in XEP-0004 data forms.</td>
  * </tr>
  * <tr>
  * <td>Client State Indication</td>

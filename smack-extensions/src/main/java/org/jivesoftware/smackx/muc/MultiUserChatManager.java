@@ -298,7 +298,7 @@ public final class MultiUserChatManager extends Manager {
      * {@link MultiUserChat#join(org.jxmpp.jid.parts.Resourcepart) join} the chat room. On some server implementations, the room will not be
      * created until the first person joins it.
      * <p>
-     * Most XMPP servers use a sub-domain for the chat service (eg chat.example.com for the XMPP server example.com).
+     * Most XMPP servers use a sub-domain for the chat service (e.g.chat.example.com for the XMPP server example.com).
      * You must ensure that the room address you're trying to connect to includes the proper chat sub-domain.
      * </p>
      *
@@ -481,7 +481,7 @@ public final class MultiUserChatManager extends Manager {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      * @since 4.3.1
      */
     public Map<EntityBareJid, HostedRoom> getRoomsHostedBy(DomainBareJid serviceName) throws NoResponseException, XMPPErrorException,

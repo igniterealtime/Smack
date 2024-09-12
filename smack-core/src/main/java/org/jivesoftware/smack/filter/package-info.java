@@ -23,7 +23,7 @@
  *   <li>{@link StanzaIdFilter}: filters for stanzas with a particular stanza ID</li>
  *   <li>{@link ToMatchesFilter}: filters for stanzas that are sent to a particular address</li>
  *   <li>{@link FromMatchesFilter}: filters for stanzas that are sent from a particular address</li>
- *   <li>{@link ExtensionElementFilter}: filters for stanzas that have a particular stanza exentsion element</li>
+ *   <li>{@link ExtensionElementFilter}: filters for stanzas that have a particular stanza extension element</li>
  *   <li>{@link AndFilter}: implements the logical AND operation over two or more filters</li>
  *   <li>{@link OrFilter}: implements the logical OR operation over two or more filters</li>
  *   <li>{@link NotFilter}: implements the logical NOT operation on a filter</li>

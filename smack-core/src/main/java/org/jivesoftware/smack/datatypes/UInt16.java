@@ -19,7 +19,7 @@ package org.jivesoftware.smack.datatypes;
 import org.jivesoftware.smack.util.NumberUtil;
 
 /**
- * A number representing an unsigned 16-bit integer. Can be used for values with the XML schema type "xs:unsingedShort".
+ * A number representing an unsigned 16-bit integer. Can be used for values with the XML schema type "xs:unsignedShort".
  */
 public final class UInt16 extends Scalar implements Comparable<UInt16> {
 

@@ -88,7 +88,7 @@ import org.minidns.util.InetAddressUtil;
 /**
  * The connection configuration used for XMPP client-to-server connections. A well configured XMPP service will
  * typically only require you to provide two parameters: The XMPP address, also known as the JID, of the user and the
- * password. All other configuration parameters could ideally be determined automatically by Smack. Hence it is often
+ * password. All other configuration parameters could ideally be determined automatically by Smack. Hence, it is often
  * enough to call {@link Builder#setXmppAddressAndPassword(CharSequence, String)}.
  * <p>
  * Technically there are typically at least two parameters required: Some kind of credentials for authentication. And
@@ -248,7 +248,7 @@ public abstract class ConnectionConfiguration {
 
         stanzaIdSourceFactory = builder.stanzaIdSourceFactory;
 
-        // If the enabledSaslmechanisms are set, then they must not be empty
+        // If the enabledSaslMechanisms are set, then they must not be empty
         assert enabledSaslMechanisms == null || !enabledSaslMechanisms.isEmpty();
     }
 
@@ -267,7 +267,7 @@ public abstract class ConnectionConfiguration {
             context = SSLContext.getInstance("TLS");
         }
 
-        // TODO: Remove the block below once we removed setKeystorePath(), setKeystoreType(), setCallbackHanlder() and
+        // TODO: Remove the block below once we removed setKeystorePath(), setKeystoreType(), setCallbackHandler() and
         // setPKCS11Library() in the builder, and all related fields and the parameters of this function.
         if (keyManagers == null) {
             keyManagers = Builder.getKeyManagersFrom(keystoreType, keystorePath, callbackHandler, pkcs11Library);
@@ -583,7 +583,7 @@ public abstract class ConnectionConfiguration {
      * Returns true if the connection is going to use stream compression. Stream compression
      * will be requested after TLS was established (if TLS was enabled) and only if the server
      * offered stream compression. With stream compression network traffic can be reduced
-     * up to 90%. By default compression is disabled.
+     * up to 90%. By default,compression is disabled.
      *
      * @return true if the connection is going to use stream compression.
      */
@@ -592,7 +592,7 @@ public abstract class ConnectionConfiguration {
     }
 
     /**
-     * Check if the given SASL mechansism is enabled in this connection configuration.
+     * Check if the given SASL mechanism is enabled in this connection configuration.
      *
      * @param saslMechanism TODO javadoc me please
      * @return true if the given SASL mechanism is enabled, false otherwise.
@@ -607,7 +607,7 @@ public abstract class ConnectionConfiguration {
 
     /**
      * Return the explicitly enabled SASL mechanisms. May return <code>null</code> if no SASL mechanisms where
-     * explicitly enabled, i.e. all SALS mechanisms supported and announced by the service will be considered.
+     * explicitly enabled, i.e. all SASL mechanisms supported and announced by the service will be considered.
      *
      * @return the enabled SASL mechanisms or <code>null</code>.
      */
@@ -1090,8 +1090,7 @@ public abstract class ConnectionConfiguration {
         }
 
         /**
-         * Sets if an initial available presence will be sent to the server. By default
-         * an available presence will be sent to the server indicating that this presence
+         * Sets if an initial available presence will be sent to the server. By default,         * an available presence will be sent to the server indicating that this presence
          * is not online and available to receive messages. If you want to log in without
          * being 'noticed' then pass a <code>false</code> value.
          *
@@ -1266,7 +1265,7 @@ public abstract class ConnectionConfiguration {
          * Sets if the connection is going to use compression (default false).
          *
          * Compression is only activated if the server offers compression. With compression network
-         * traffic can be reduced up to 90%. By default compression is disabled.
+         * traffic can be reduced up to 90%. By default,compression is disabled.
          *
          * @param compressionEnabled if the connection is going to use compression on the HTTP level.
          * @return a reference to this object.
@@ -1324,7 +1323,7 @@ public abstract class ConnectionConfiguration {
                 } else {
                     InputStream stream = TLSUtils.getDefaultTruststoreStreamIfPossible();
                     try {
-                        // Note that PKCS12 keystores need a password one some Java platforms. Hence we try the famous
+                        // Note that PKCS12 keystores need a password one some Java platforms. Hence, we try the famous
                         // 'changeit' here. See https://bugs.openjdk.java.net/browse/JDK-8194702
                         char[] password = "changeit".toCharArray();
                         try {

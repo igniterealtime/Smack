@@ -215,7 +215,7 @@ public class StateDescriptorGraph {
                 inferredForwardEdges.put(predecessor, backwardsEdge);
             }
         }
-        // Ensure that the intial node has their successors inferred.
+        // Ensure that the initial node has their successors inferred.
         for (Class<? extends StateDescriptor> inferredSuccessorOfInitialStateDescriptor : inferredForwardEdges.getAll(initialStatedescriptorClass)) {
             initialNode.getElement().addSuccessor(inferredSuccessorOfInitialStateDescriptor);
         }

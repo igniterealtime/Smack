@@ -146,7 +146,7 @@
  * <pre>
  * <code>
  * IoTDiscoveryManager iotDiscoveryManager = IoTDiscoveryManager.getInstanceFor(connection);
- * iotDiscovyerManager.registerThing(thing);
+ * iotDiscoveryManager.registerThing(thing);
  * </code>
  * </pre>
  * <p>
@@ -162,7 +162,7 @@
  * Things can usually only be used by other things if they are friends. Since a
  * thing normally can't decide on its own if an incoming friendship request
  * should be granted or not, we can delegate this decision to a provisioning
- * service. Smack provides the `IoTProvisinoManager` to deal with friendship and
+ * service. Smack provides the `IoTProvisionManager` to deal with friendship and
  * provisioning.
  * </p>
  * <p>

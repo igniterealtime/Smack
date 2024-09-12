@@ -351,7 +351,7 @@ public class MultiUserChat {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      * @see <a href="http://xmpp.org/extensions/xep-0045.html#enter">XEP-45 7.2 Entering a Room</a>
      */
     private Presence enter(MucEnterConfiguration conf) throws NotConnectedException, NoResponseException,
@@ -365,7 +365,7 @@ public class MultiUserChat {
         // field is in the form "roomName@service/nickname"
         Presence joinPresence = conf.getJoinPresence(this);
 
-        // Setup the messageListeners and presenceListeners *before* the join presence is send.
+        // Set up the messageListeners and presenceListeners *before* the join presence is sent.
         connection.addStanzaListener(messageListener, fromRoomGroupchatFilter);
         StanzaFilter presenceFromRoomFilter = new AndFilter(fromRoomFilter,
                         StanzaTypeFilter.PRESENCE,
@@ -401,12 +401,12 @@ public class MultiUserChat {
         StanzaCollector presenceStanzaCollector = null;
         final Presence reflectedSelfPresence;
         try {
-            // This stanza collector will collect the final self presence from the MUC, which also signals that we have successful entered the MUC.
+            // This stanza collector will collect the final self presence from the MUC, which also signals that we have successfully entered the MUC.
             StanzaCollector selfPresenceCollector = connection.createStanzaCollectorAndSend(responseFilter, joinPresence);
-            StanzaCollector.Configuration presenceStanzaCollectorConfguration = StanzaCollector.newConfiguration().setCollectorToReset(
+            StanzaCollector.Configuration presenceStanzaCollectorConfiguration = StanzaCollector.newConfiguration().setCollectorToReset(
                             selfPresenceCollector).setStanzaFilter(presenceFromRoomFilter);
             // This stanza collector is used to reset the timeout of the selfPresenceCollector.
-            presenceStanzaCollector = connection.createStanzaCollector(presenceStanzaCollectorConfguration);
+            presenceStanzaCollector = connection.createStanzaCollector(presenceStanzaCollectorConfiguration);
             reflectedSelfPresence = selfPresenceCollector.nextResultOrThrow(conf.getTimeout());
         }
         catch (NotConnectedException | InterruptedException | NoResponseException | XMPPErrorException e) {
@@ -423,15 +423,15 @@ public class MultiUserChat {
         synchronized (presenceListener) {
             // Only continue after we have received *and* processed the reflected self-presence. Since presences are
             // handled in an extra listener, we may return from enter() without having processed all presences of the
-            // participants, resulting in a e.g. to low participant counter after enter(). Hence we wait here until the
+            // participants, resulting in a e.g. to low participant counter after enter(). Hence, we wait here until the
             // processing is done.
             while (!processedReflectedSelfPresence) {
                 presenceListener.wait();
             }
         }
 
-        // This presence must be send from a full JID. We use the resourcepart of this JID as nick, since the room may
-        // performed roomnick rewriting
+        // This presence must be sent from a full JID. We use the resourcepart of this JID as nick, since the room may
+        // have performed roomnick rewriting
         Resourcepart receivedNickname = reflectedSelfPresence.getFrom().getResourceOrThrow();
         setNickname(receivedNickname);
 
@@ -481,7 +481,7 @@ public class MultiUserChat {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws MucAlreadyJoinedException if already joined the Multi-User Chat.7y
      * @throws MissingMucCreationAcknowledgeException if there MUC creation was not acknowledged by the service.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public synchronized MucCreateConfigFormHandle create(Resourcepart nickname) throws NoResponseException,
                     XMPPErrorException, InterruptedException, MucAlreadyJoinedException,
@@ -515,7 +515,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws MucAlreadyJoinedException if already joined the Multi-User Chat.7y
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public synchronized MucCreateConfigFormHandle createOrJoin(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
                     InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
@@ -537,7 +537,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws MucAlreadyJoinedException if the MUC is already joined
      * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public synchronized MucCreateConfigFormHandle createOrJoin(MucEnterConfiguration mucEnterConfiguration)
                     throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException, NotConnectedException, NotAMucServiceException {
@@ -610,7 +610,7 @@ public class MultiUserChat {
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public MucCreateConfigFormHandle createOrJoinIfNecessary(Resourcepart nickname, String password) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException, NotAMucServiceException {
@@ -646,7 +646,7 @@ public class MultiUserChat {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public Presence join(Resourcepart nickname) throws NoResponseException, XMPPErrorException,
                     NotConnectedException, InterruptedException, NotAMucServiceException {
@@ -676,7 +676,7 @@ public class MultiUserChat {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws NoResponseException if there was no response from the server.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public void join(Resourcepart nickname, String password) throws XMPPErrorException, InterruptedException, NoResponseException, NotConnectedException, NotAMucServiceException {
         MucEnterConfiguration.Builder builder = getEnterConfigurationBuilder(nickname).withPassword(
@@ -709,7 +709,7 @@ public class MultiUserChat {
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @throws NotAMucServiceException if the entity is not a MUC serivce.
+     * @throws NotAMucServiceException if the entity is not a MUC service.
      */
     public synchronized Presence join(MucEnterConfiguration mucEnterConfiguration)
         throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotAMucServiceException {
@@ -833,9 +833,9 @@ public class MultiUserChat {
     /**
      * Returns the room's configuration form that the room's owner can use.
      * The configuration form allows to set the room's language,
-     * enable logging, specify room's type, etc..
+     * enable logging, specify room's type, etc.
      *
-     * @return the Form that contains the fields to complete together with the instrucions or
+     * @return the Form that contains the fields to complete together with the instructions or
      * <code>null</code> if no configuration is possible.
      * @throws XMPPErrorException if an error occurs asking the configuration form for the room.
      * @throws NoResponseException if there was no response from the server.
@@ -889,7 +889,7 @@ public class MultiUserChat {
      * error to the user (error code 405).
      *
      * @return the registration Form that contains the fields to complete together with the
-     * instrucions or <code>null</code> if no registration is possible.
+     * instructions or <code>null</code> if no registration is possible.
      * @throws XMPPErrorException if an error occurs asking the registration form for the room or a
      * 405 error if the user is not allowed to register with the room.
      * @throws NoResponseException if there was no response from the server.
@@ -1598,7 +1598,7 @@ public class MultiUserChat {
     /**
      * Grants moderator privileges to participants or visitors. Room administrators may grant
      * moderator privileges. A moderator is allowed to kick users, grant and revoke voice, invite
-     * other users, modify room's subject plus all the partcipants privileges.
+     * other users, modify room's subject plus all the participant privileges.
      *
      * @param nicknames the nicknames of the occupants to grant moderator privileges.
      * @throws XMPPErrorException if an error occurs granting moderator privileges to a user.
@@ -1613,7 +1613,7 @@ public class MultiUserChat {
     /**
      * Grants moderator privileges to a participant or visitor. Room administrators may grant
      * moderator privileges. A moderator is allowed to kick users, grant and revoke voice, invite
-     * other users, modify room's subject plus all the partcipants privileges.
+     * other users, modify room's subject plus all the participant privileges.
      *
      * @param nickname the nickname of the occupant to grant moderator privileges.
      * @throws XMPPErrorException if an error occurs granting moderator privileges to a user.
@@ -2171,7 +2171,7 @@ public class MultiUserChat {
     /**
     * Polls for and returns the next message, or <code>null</code> if there isn't
     * a message immediately available. This method provides significantly different
-    * functionalty than the {@link #nextMessage()} method since it's non-blocking.
+    * functionality than the {@link #nextMessage()} method since it's non-blocking.
     * In other words, the method call will always return immediately, whereas the
     * nextMessage method will return only when a message is available (or after
     * a specific timeout).
@@ -2204,7 +2204,7 @@ public class MultiUserChat {
 
     /**
      * Returns the next available message in the chat. The method call will block
-     * (not return) until a stanza is available or the <code>timeout</code> has elapased.
+     * (not return) until a stanza is available or the <code>timeout</code> has elapsed.
      * If the timeout elapses without a result, <code>null</code> will be returned.
      *
      * @param timeout the maximum amount of time to wait for the next message.

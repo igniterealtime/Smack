@@ -28,7 +28,7 @@ dependencies {
 
 	testFixturesApi "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
 	testFixturesApi "org.xmlunit:xmlunit-core:$xmlUnitVersion"
-	// Explictily add assertj-core which is a dependency of
+	// Explicitly add assertj-core which is a dependency of
 	// xmlunit-assertj, but gradle fails to resolves it with:
 	// Execution failed for task ':smack-core:compileTestJava'.
 	// > Could not resolve all files for configuration ':smack-core:testCompileClasspath'.

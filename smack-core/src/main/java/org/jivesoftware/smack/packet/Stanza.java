@@ -98,7 +98,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     protected Stanza(StanzaBuilder<?> stanzaBuilder) {
         if (stanzaBuilder.stanzaIdSource != null) {
             id = stanzaBuilder.stanzaIdSource.getNewStanzaId();
-            // Note that some stanza ID sources, e.g. StanzaBuilder.PresenceBuilder.EMPTY return null here. Hence we
+            // Note that some stanza ID sources, e.g. StanzaBuilder.PresenceBuilder.EMPTY return null here. Hence, we
             // only check that the returned string is not empty.
             assert StringUtils.isNullOrNotEmpty(id);
             usedStanzaIdSource = stanzaBuilder.stanzaIdSource;

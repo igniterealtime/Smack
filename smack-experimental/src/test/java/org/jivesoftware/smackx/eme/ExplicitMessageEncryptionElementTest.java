@@ -39,7 +39,7 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
     public void addToMessageTest() {
         Message message = StanzaBuilder.buildMessage().build();
 
-        // Check inital state (no elements)
+        // Check initial state (no elements)
         assertNull(ExplicitMessageEncryptionElement.from(message));
         assertFalse(ExplicitMessageEncryptionElement.hasProtocol(message,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl));
@@ -75,7 +75,7 @@ public class ExplicitMessageEncryptionElementTest extends SmackTestSuite {
         assertTrue(ExplicitMessageEncryptionElement.hasProtocol(message,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl));
 
-        // Check, if adding additional OMEMO wont add another element
+        // Check, if adding additional OMEMO won't add another element
         ExplicitMessageEncryptionElement.set(messageBuilder,
                 ExplicitMessageEncryptionElement.ExplicitMessageEncryptionProtocol.omemoVAxolotl);
 

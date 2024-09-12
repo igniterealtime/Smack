@@ -373,7 +373,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                         }
                     }
 
-                    // It is ok if outpuFilterInputData is 'null' here, this is expected behavior.
+                    // It is ok if outputFilterInputData is 'null' here, this is expected behavior.
                     if (outputFilterInputData != null && outputFilterInputData.hasRemaining()) {
                         filteredOutgoingBuffer = outputFilterInputData;
                     } else {
@@ -474,7 +474,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     // read() may return -1 if the input side of a socket is shut down.
                      // Note that we do not call notifyConnectionError() here because the connection may be
                     // cleanly shutdown which would also cause read() to return '-1. I assume that this socket
-                    // will be selected again, on which read() would throw an IOException, which will be catched
+                    // will be selected again, on which read() would throw an IOException, which will be caught
                     // and invoke notifyConnectionError() (see a few lines above).
                     /*
                     IOException exception = new IOException("NIO read() returned " + bytesRead);
@@ -633,7 +633,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         @Override
         protected void loadConnectionEndpoints(LookupConnectionEndpointsSuccess lookupConnectionEndpointsSuccess) {
             // The API contract stats that we will be given the instance we handed out with lookupConnectionEndpoints,
-            // which must be of type DiscoveredTcpEndpoints here. Hence if we can not cast it, then there is an internal
+            // which must be of type DiscoveredTcpEndpoints here. Hence, if we can not cast it, then there is an internal
             // Smack error.
             discoveredTcpEndpoints = (DiscoveredTcpEndpoints) lookupConnectionEndpointsSuccess;
         }
@@ -711,7 +711,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
         // Add OP_WRITE to the interested Ops, since we have now new things to write. Note that this may cause
         // multiple reactor threads to race to the channel selected callback in case we perform this right after
-        // a select() returned with this selection key in the selected-key set. Hence we use tryLock() in the
+        // a select() returned with this selection key in the selected-key set. Hence, we use tryLock() in the
         // channel selected callback to keep the invariant that only exactly one thread is performing the
         // callback.
         // Note that we need to perform setInterestedOps() *without* holding the channelSelectedCallbackLock, as
@@ -776,7 +776,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             // TODO: It appears this should be done in a generic way. I'd assume we always
             // have to wait for stream features after the connection was established. If this is true then consider
             // moving this into State.AbstractTransport. But I am not yet 100% positive that this is the case for every
-            // transport. Hence keep it here for now.
+            // transport. Hence, keep it here for now.
             connectionInternal.newStreamOpenWaitForFeaturesSequence("stream features after initial connection");
 
             return new TcpSocketConnectedResult(remoteAddress);
@@ -1090,7 +1090,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                         // A delegated task is asynchronously running. Take care of the remaining accumulatedData.
                         addAsPendingInputData(accumulatedData);
                         // Return here, as the async task created by handleHandshakeStatus will continue calling the
-                        // cannelSelectedCallback.
+                        // channelSelectedCallback.
                         return null;
                     case NEED_UNWRAP:
                         continue;
@@ -1114,7 +1114,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                 switch (engineResultStatus) {
                 case OK:
                     // SSLEngine's unwrap() may not consume all bytes from the source buffer. If this is the case, then
-                    // simply perform another unwrap until accumlatedData has no remaining bytes.
+                    // simply perform another unwrap until accumulatedData has no remaining bytes.
                     if (accumulatedData.hasRemaining()) {
                         continue;
                     }

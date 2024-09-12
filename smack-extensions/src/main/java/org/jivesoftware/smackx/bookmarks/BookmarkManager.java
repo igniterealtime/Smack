@@ -103,7 +103,7 @@ public final class BookmarkManager {
      *
      * @param name the name of the conference
      * @param jid the jid of the conference
-     * @param isAutoJoin whether or not to join this conference automatically on login
+     * @param isAutoJoin whether to join this conference automatically on login
      * @param nickname the nickname to use for the user when joining the conference
      * @param password the password to use for the user when joining the conference
      * @throws XMPPErrorException thrown when there is an issue retrieving the current bookmarks from
@@ -166,7 +166,7 @@ public final class BookmarkManager {
      * Returns an unmodifiable collection of all bookmarked urls.
      *
      * @return returns an unmodifiable collection of all bookmarked urls.
-     * @throws XMPPErrorException thrown when there is a problem retriving bookmarks from the server.
+     * @throws XMPPErrorException thrown when there is a problem retrieving bookmarks from the server.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -181,8 +181,8 @@ public final class BookmarkManager {
      *
      * @param URL the url of the bookmark
      * @param name the name of the bookmark
-     * @param isRSS whether or not the url is an rss feed
-     * @throws XMPPErrorException thrown when there is an error retriving or saving bookmarks from or to
+     * @param isRSS whether the url is an RSS feed
+     * @throws XMPPErrorException thrown when there is an error retrieving or saving bookmarks from or to
      * the server
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -210,7 +210,7 @@ public final class BookmarkManager {
      *  Removes a url from the bookmarks.
      *
      * @param bookmarkURL the url of the bookmark to remove
-     * @throws XMPPErrorException thrown if there is an error retriving or saving bookmarks from or to
+     * @throws XMPPErrorException thrown if there is an error retrieving or saving bookmarks from or to
      * the server.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.

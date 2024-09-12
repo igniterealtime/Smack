@@ -128,7 +128,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 import org.jxmpp.util.XmppStringUtils;
 
 /**
- * This abstract class is commonly used as super class for XMPP connection mechanisms like TCP and BOSH. Hence it
+ * This abstract class is commonly used as super class for XMPP connection mechanisms like TCP and BOSH. Hence, it
  * provides the methods for connection state management, like {@link #connect()}, {@link #login()} and
  * {@link #disconnect()} (which are deliberately not provided by the {@link XMPPConnection} interface).
  * <p>

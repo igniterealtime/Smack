@@ -102,7 +102,7 @@ public final class SmackConfiguration {
     private static HostnameVerifier defaultHostnameVerififer;
 
     /**
-     * Returns the Smack version information, eg "1.3.0".
+     * Returns the Smack version information, e.g."1.3.0".
      *
      * @return the Smack version information.
      * @deprecated use {@link Smack#getVersion()} instead.
