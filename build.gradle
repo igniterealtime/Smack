@@ -1,12 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
-		maven { url 'https://plugins.gradle.org/m2/' }
-        maven { url 'https://dl.bintray.com/content/aalmiray/kordamp' }
-    }
-    dependencies {
-		classpath 'org.kordamp.gradle:clirr-gradle-plugin:0.2.2'
-		classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.0.0"
+		gradlePluginPortal()
     }
 }
 
@@ -16,6 +10,7 @@ plugins {
 	// Use e.g. "gradle <task> taskTree" to show its dependency tree.
 	id 'com.dorongold.task-tree' version '1.5'
 	id 'com.github.kt3k.coveralls' version '2.10.2'
+	id 'biz.aQute.bnd.builder' version '6.4.0'
 }
 
 ext {
@@ -450,7 +445,6 @@ subprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'signing'
 	apply plugin: 'checkstyle'
-	apply plugin: 'org.kordamp.gradle.clirr'
 	apply plugin: 'biz.aQute.bnd.builder'
 
 	checkstyle {
@@ -559,16 +553,6 @@ subprojects {
 		sign publishing.publications.mavenJava
 	}
 
-	clirr {
-		// 2018-08-14: Disabled Clirr because
-		// - It reports an breaking change in android.jar (seems right, but there is nothing we can do about it)
-		// - Only the first smack-* projects are correctly checked,
-		//   the other ones have the output of a clirr report from a previous project
-		//   (Look at the clirr reports).
-		enabled false
-		semver false
-	}
-
 	// Work around https://github.com/gradle/gradle/issues/4046
 	task copyJavadocDocFiles(type: Copy) {
 		from('src/javadoc')
@@ -600,18 +584,6 @@ configure (androidProjects + androidBootClasspathProjects) {
 		sourceSets = [sourceSets.main]
 	}
 }
-
-// There is no need to ever clirr integration test projects and the
-// smack-repl project.
-configure(integrationTestProjects + project(':smack-repl')) {
-	clirr {
-		enabled false
-	}
-}
-
-// Disable clirr on omemo modules
-project(':smack-omemo').clirr.enabled = false
-project(':smack-omemo-signal').clirr.enabled = false
 
 subprojects*.jar {
 	manifest {
@@ -695,12 +667,6 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
 	// the projectsWithUnitTests is wrong (e.g. a project is missing
 	// in there).
 	setOnlyIf { true }
-}
-
-// Important to specify this task after the subprojects block
-task clirrRootReport(type: org.kordamp.gradle.clirr.ClirrReportTask) {
-	dependsOn = subprojects.tasks.clirr
-	reports = files((subprojects.findAll { it.clirr.enabled == true }).tasks.clirr.xmlReport)
 }
 
 task integrationTest {
