@@ -292,6 +292,7 @@ public class MultiUserChat {
                         for (UserStatusListener listener : userStatusListeners) {
                             listener.roomDestroyed(alternateMuc, destroy.getPassword(), destroy.getReason());
                         }
+                        userHasLeft();
                     }
 
                     if (isUserStatusModification) {
