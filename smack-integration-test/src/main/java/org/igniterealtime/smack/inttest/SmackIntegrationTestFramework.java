@@ -57,6 +57,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
@@ -406,6 +407,9 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
+            ConcreteTest.Executor precondition = null;
+            ConcreteTest.Executor postcondition = null;
+
             XmppConnectionDescriptor<?, ?, ?> specificLowLevelConnectionDescriptor = null;
             final TestType testType;
             if (test instanceof AbstractSmackSpecificLowLevelIntegrationTest) {
@@ -415,7 +419,13 @@ public class SmackIntegrationTestFramework {
             } else if (test instanceof AbstractSmackLowLevelIntegrationTest) {
                 testType = TestType.LowLevel;
             } else if (test instanceof AbstractSmackIntegrationTest) {
+                precondition = () -> { if (!((AbstractSmackIntegrationTest) test).connections.stream().allMatch(XMPPConnection::isConnected)) {
+                    throw new IOException("Cannot execute test of '" + test.getClass() + "', as not all connections are connected. A likely cause is that a previous test caused one or more connections to be disconnected.");
+                }};
                 testType = TestType.Normal;
+                postcondition = () -> { if (!((AbstractSmackIntegrationTest) test).connections.stream().allMatch(XMPPConnection::isConnected)) {
+                    throw new IOException("Test execution of '" + test.getClass() + "' completed, but left one or more connections disconnected. This will prevent issues for tests to be executed next.");
+                }};
             } else {
                 throw new AssertionError();
             }
@@ -474,7 +484,7 @@ public class SmackIntegrationTestFramework {
                 switch (testType) {
                 case Normal: {
                     ConcreteTest.Executor concreteTestExecutor = () -> testMethod.invoke(test);
-                    ConcreteTest concreteTest = new ConcreteTest(testType, testMethod, concreteTestExecutor);
+                    ConcreteTest concreteTest = new ConcreteTest(testType, testMethod, concreteTestExecutor, precondition, postcondition);
                     concreteTests.add(concreteTest);
                 }
                     break;
@@ -489,7 +499,7 @@ public class SmackIntegrationTestFramework {
                     case SpecificLowLevel: {
                         ConcreteTest.Executor concreteTestExecutor = () -> invokeSpecificLowLevel(
                                 lowLevelTestMethod, (AbstractSmackSpecificLowLevelIntegrationTest<?>) test);
-                        ConcreteTest concreteTest = new ConcreteTest(testType, testMethod, concreteTestExecutor);
+                        ConcreteTest concreteTest = new ConcreteTest(testType, testMethod, concreteTestExecutor, precondition, postcondition);
                         concreteTests.add(concreteTest);
                         break;
                     }
@@ -553,7 +563,15 @@ public class SmackIntegrationTestFramework {
         LOGGER.info(concreteTest + " Start");
         long testStart = System.currentTimeMillis();
         try {
+            if (concreteTest.precondition != null) {
+                concreteTest.precondition.execute();
+            }
             concreteTest.executor.execute();
+
+            if (concreteTest.postcondition != null) {
+                concreteTest.postcondition.execute();
+            }
+
             long testEnd = System.currentTimeMillis();
             LOGGER.info(concreteTest + " Success");
             testRunResult.successfulIntegrationTests.add(new SuccessfulTest(concreteTest, testStart, testEnd, null));
@@ -623,7 +641,7 @@ public class SmackIntegrationTestFramework {
             }
 
             ConcreteTest.Executor executor = () -> lowLevelTestMethod.invoke(test, connectionDescriptor);
-            ConcreteTest concreteTest = new ConcreteTest(TestType.LowLevel, lowLevelTestMethod.testMethod, executor, connectionDescriptor.getNickname());
+            ConcreteTest concreteTest = new ConcreteTest(TestType.LowLevel, lowLevelTestMethod.testMethod, executor, null, null, connectionDescriptor.getNickname());
             resultingConcreteTests.add(concreteTest);
         }
 
@@ -818,11 +836,15 @@ public class SmackIntegrationTestFramework {
         private final Method method;
         private final Executor executor;
         private final List<String> subdescriptons;
+        private final Executor precondition;
+        private final Executor postcondition;
 
-        private ConcreteTest(TestType testType, Method method, Executor executor, String... subdescriptions) {
+        private ConcreteTest(TestType testType, Method method, Executor executor, Executor precondition, Executor postcondition, String... subdescriptions) {
             this.testType = testType;
             this.method = method;
             this.executor = executor;
+            this.precondition = precondition;
+            this.postcondition = postcondition;
             this.subdescriptons = List.of(subdescriptions);
         }
 
