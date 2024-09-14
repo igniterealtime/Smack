@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015-2020 Florian Schmaus
+ * Copyright © 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,6 @@
 package org.jivesoftware.smack.util;
 
 public class NumberUtil {
-
-    /**
-     * Checks if the given long is within the range of an unsigned 32-bit integer, the XML type "xs:unsignedInt".
-     *
-     * @param value TODO javadoc me please
-     * @deprecated use {@link #requireUInt32(long)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public static void checkIfInUInt32Range(long value) {
-        requireUInt32(value);
-    }
 
     /**
      * Checks if the given long is within the range of an unsigned 32-bit integer, the XML type "xs:unsignedInt".

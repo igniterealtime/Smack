@@ -718,7 +718,7 @@ public class MultiUserChat {
         // nickname.
         if (isJoined()) {
             try {
-                leaveSync();
+                leave();
             }
             catch (XMPPErrorException | NoResponseException | MucNotJoinedException e) {
                 LOGGER.log(Level.WARNING, "Could not leave MUC prior joining, assuming we are not joined", e);
@@ -736,23 +736,6 @@ public class MultiUserChat {
      */
     public boolean isJoined() {
         return getMyRoomJid() != null;
-    }
-
-    /**
-     * Leave the chat room.
-     *
-     * @return the leave presence as reflected by the MUC.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @throws XMPPErrorException if there was an XMPP error returned.
-     * @throws NoResponseException if there was no response from the remote entity.
-     * @throws MucNotJoinedException if not joined to the Multi-User Chat.
-     * @deprecated use {@link #leave()} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public synchronized Presence leaveSync() throws NotConnectedException, InterruptedException, MucNotJoinedException, NoResponseException, XMPPErrorException {
-        return leave();
     }
 
     /**
@@ -1026,36 +1009,6 @@ public class MultiUserChat {
      */
     public void invite(EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
         invite(connection.getStanzaFactory().buildMessageStanza(), user, reason);
-    }
-
-    /**
-     * Invites another user to the room in which one is an occupant using a given Message. The invitation
-     * will be sent to the room which in turn will forward the invitation to the invitee.<p>
-     *
-     * If the room is password-protected, the invitee will receive a password to use to join
-     * the room. If the room is members-only, the invitee may be added to the member list.
-     *
-     * @param message the message to use for sending the invitation.
-     * @param user the user to invite to the room.(e.g. hecate@shakespeare.lit)
-     * @param reason the reason why the user is being invited.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @deprecated use {@link #invite(MessageBuilder, EntityBareJid, String)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void invite(Message message, EntityBareJid user, String reason) throws NotConnectedException, InterruptedException {
-        // TODO listen for 404 error code when inviter supplies a non-existent JID
-        message.setTo(room);
-
-        // Create the MUCUser packet that will include the invitation
-        MUCUser mucUser = new MUCUser();
-        MUCUser.Invite invite = new MUCUser.Invite(reason, user);
-        mucUser.setInvite(invite);
-        // Add the MUCUser packet that includes the invitation to the message
-        message.addExtension(mucUser);
-
-        connection.sendStanza(message);
     }
 
     /**
@@ -2135,20 +2088,6 @@ public class MultiUserChat {
                 .ofType(Message.Type.groupchat)
                 .to(room)
                 ;
-    }
-
-    /**
-     * Sends a Message to the chat room.
-     *
-     * @param message the message.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @deprecated use {@link #sendMessage(MessageBuilder)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
-        sendMessage(message.asBuilder());
     }
 
     /**

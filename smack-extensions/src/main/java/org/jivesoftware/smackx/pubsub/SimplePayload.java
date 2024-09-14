@@ -59,27 +59,6 @@ public class SimplePayload implements XmlElement {
         ns = StringUtils.requireNotNullNorEmpty(qname.getNamespaceURI(), "Could not determine namespace from XML payload");
     }
 
-    /**
-     * Construct a <code>SimplePayload</code> object with the specified element name,
-     * namespace and content.  The content must be well formed XML.
-     *
-     * @param elementName The root element name (of the payload)
-     * @param namespace The namespace of the payload, null if there is none
-     * @param xmlPayload The payload data
-     * @deprecated use {@link #SimplePayload(String)} instead.
-     */
-    // TODO: Remove in Smack 4.5
-    @Deprecated
-    public SimplePayload(String elementName, String namespace, CharSequence xmlPayload) {
-        this(xmlPayload.toString());
-        if (!elementName.equals(this.elemName)) {
-            throw new IllegalArgumentException();
-        }
-        if (!namespace.equals(this.ns)) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     @Override
     public String getElementName() {
         return elemName;

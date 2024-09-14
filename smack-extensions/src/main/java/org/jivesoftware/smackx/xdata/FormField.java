@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019-2021 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -340,23 +340,6 @@ public abstract class FormField implements XmlElement {
             return null;
         }
         return XmppDateTime.parseXEP0082Date(valueString);
-    }
-
-    /**
-     * Returns the field's name, also known as the variable name in case this is an filled out answer form.
-     * <p>
-     * According to XEP-4 § 3.2 the variable name (the 'var' attribute)
-     * "uniquely identifies the field in the context of the form" (if the field is not of type 'fixed', in which case
-     * the field "MAY possess a 'var' attribute")
-     * </p>
-     *
-     * @return the field's name.
-     * @deprecated use {@link #getFieldName()} instead.
-     */
-    // TODO: Remove in Smack 4.5
-    @Deprecated
-    public String getVariable() {
-        return getFieldName();
     }
 
     /**

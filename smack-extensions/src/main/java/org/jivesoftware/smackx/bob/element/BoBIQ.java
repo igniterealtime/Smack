@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2020 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2020-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,18 +63,6 @@ public class BoBIQ extends IQ {
      */
     public BoBIQ(ContentId cid) {
         this(cid, null);
-    }
-
-    /**
-     * Get the BoB hash.
-     *
-     * @return the BoB hash
-     * @deprecated use {@link #getContentId()} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public ContentId getBoBHash() {
-        return cid;
     }
 
     /**

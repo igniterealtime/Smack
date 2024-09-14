@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2017-2022 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2017-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -857,22 +857,6 @@ public abstract class ConnectionConfiguration {
             return getThis();
         }
 
-        /**
-         * Set the host to connect to by either its fully qualified domain name (FQDN) or its IP.
-         *
-         * @param fqdnOrIp a CharSequence either representing the FQDN or the IP of the host.
-         * @return a reference to this builder.
-         * @see #setHost(DnsName)
-         * @see #setHostAddress(InetAddress)
-         * @since 4.3.2
-         * @deprecated use {@link #setHost(CharSequence)} instead.
-         */
-        @Deprecated
-        // TODO: Remove in Smack 4.5.
-        public B setHostAddressByNameOrIp(CharSequence fqdnOrIp) {
-            return setHost(fqdnOrIp);
-        }
-
         public B setPort(int port) {
             if (port < 0 || port > 65535) {
                 throw new IllegalArgumentException(
@@ -1028,25 +1012,6 @@ public abstract class ConnectionConfiguration {
          * "http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager"
          * >Java Secure Socket Extension (JSEE) Reference Guide: Creating Your Own X509TrustManager</a>
          *
-         * @param context the custom SSLContext for new sockets.
-         * @return a reference to this builder.
-         * @deprecated use {@link #setSslContextFactory(SslContextFactory)} instead}.
-         */
-        // TODO: Remove in Smack 4.5.
-        @Deprecated
-        public B setCustomSSLContext(SSLContext context) {
-            return setSslContextFactory(() -> {
-                return context;
-            });
-        }
-
-        /**
-         * Sets a custom SSLContext for creating SSL sockets.
-         * <p>
-         * For more information on how to create a SSLContext see <a href=
-         * "http://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html#X509TrustManager"
-         * >Java Secure Socket Extension (JSEE) Reference Guide: Creating Your Own X509TrustManager</a>
-         *
          * @param sslContextFactory the custom SSLContext for new sockets.
          * @return a reference to this builder.
          */
@@ -1186,7 +1151,9 @@ public abstract class ConnectionConfiguration {
             if (!SASLAuthentication.isSaslMechanismRegistered(SASLMechanism.EXTERNAL)) {
                 throw new IllegalArgumentException("SASL " + SASLMechanism.EXTERNAL + " is not registered");
             }
-            setCustomSSLContext(sslContext);
+            setSslContextFactory(() -> {
+                return sslContext;
+            });
             throwIfEnabledSaslMechanismsSet();
 
             allowEmptyOrNullUsernames();

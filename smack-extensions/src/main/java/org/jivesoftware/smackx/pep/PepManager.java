@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2020 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -246,32 +246,6 @@ public final class PepManager extends Manager {
 
     public PubSubManager getPepPubSubManager() {
         return pepPubSubManager;
-    }
-
-    /**
-     * Adds a listener to PEPs. The listener will be fired anytime PEP events are received from remote XMPP clients.
-     *
-     * @param pepListener a roster exchange listener.
-     * @return true if pepListener was added.
-     * @deprecated use {@link #addPepEventListener(String, Class, PepEventListener)} instead.
-     */
-    // TODO: Remove in Smack 4.5
-    @Deprecated
-    public boolean addPepListener(PepListener pepListener) {
-        return pepListeners.add(pepListener);
-    }
-
-    /**
-     * Removes a listener from PEP events.
-     *
-     * @param pepListener a roster exchange listener.
-     * @return true, if pepListener was removed.
-     * @deprecated use {@link #removePepEventListener(PepEventListener)} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public boolean removePepListener(PepListener pepListener) {
-        return pepListeners.remove(pepListener);
     }
 
     /**

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017-2019 Florian Schmaus
+ * Copyright © 2017-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,15 +54,4 @@ public abstract class AbstractTextElement implements ExtensionElement {
         return lang;
     }
 
-    /**
-     * Deprecated.
-     *
-     * @return deprecated
-     * @deprecated use {@link #getLanguage()} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public final String getLang() {
-        return lang;
-    }
 }

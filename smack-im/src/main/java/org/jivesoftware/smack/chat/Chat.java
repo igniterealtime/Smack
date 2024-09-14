@@ -133,10 +133,12 @@ public class Chat {
     public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
         // Force the recipient, message type, and thread ID since the user elected
         // to send the message through this chat object.
-        message.setTo(participant);
-        message.setType(Message.Type.chat);
-        message.setThread(threadID);
-        chatManager.sendMessage(this, message);
+        Message chatMessage = message.asBuilder()
+                        .to(participant)
+                        .ofType(Message.Type.chat)
+                        .setThread(threadID)
+                        .build();
+        chatManager.sendMessage(this, chatMessage);
     }
 
     /**
@@ -199,10 +201,10 @@ public class Chat {
         // Because the collector and listeners are expecting a thread ID with
         // a specific value, set the thread ID on the message even though it
         // probably never had one.
-        message.setThread(threadID);
+        Message chatMessage = message.asBuilder().setThread(threadID).build();
 
         for (ChatMessageListener listener : listeners) {
-            listener.processMessage(this, message);
+            listener.processMessage(this, chatMessage);
         }
     }
 

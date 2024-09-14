@@ -157,33 +157,6 @@ public final class PubSubManager extends Manager {
     }
 
     /**
-     * Deprecated.
-     *
-     * @param connection the connection.
-     * @return the PubSub manager for the given connection.
-     * @deprecated use {@link #getInstanceFor(XMPPConnection)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public static PubSubManager getInstance(XMPPConnection connection) {
-        return getInstanceFor(connection);
-    }
-
-    /**
-     * Deprecated.
-     *
-     * @param connection the connection.
-     * @param pubSubService the XMPP address of the PubSub service.
-     * @return the PubSub manager for the given connection.
-     * @deprecated use {@link #getInstanceFor(XMPPConnection, BareJid)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public static PubSubManager getInstance(XMPPConnection connection, BareJid pubSubService) {
-        return getInstanceFor(connection, pubSubService);
-    }
-
-    /**
      * Create a pubsub manager associated to the specified connection where
      * the pubsub requests require a specific to address for packets.
      *

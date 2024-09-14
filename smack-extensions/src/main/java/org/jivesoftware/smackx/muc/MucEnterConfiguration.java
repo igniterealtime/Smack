@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,13 +60,8 @@ public final class MucEnterConfiguration {
         since = builder.since;
         timeout = builder.timeout;
 
-        final PresenceBuilder joinPresenceBuilder;
-        if (builder.joinPresence == null) {
-            joinPresenceBuilder = builder.joinPresenceBuilder.ofType(Presence.Type.available);
-        }
-        else {
-            joinPresenceBuilder = builder.joinPresence.asBuilder();
-        }
+        final PresenceBuilder joinPresenceBuilder = builder.joinPresenceBuilder.ofType(Presence.Type.available);
+
         // Indicate the client supports MUC
         joinPresenceBuilder.addExtension(new MUCInitialPresence(password, maxChars, maxStanzas, seconds,
                         since));
@@ -95,9 +90,6 @@ public final class MucEnterConfiguration {
 
         private final PresenceBuilder joinPresenceBuilder;
 
-        // TODO: Remove in Smack 4.5.
-        private Presence joinPresence;
-
         Builder(Resourcepart nickname, XMPPConnection connection) {
             this.nickname = Objects.requireNonNull(nickname, "Nickname must not be null");
 
@@ -105,28 +97,6 @@ public final class MucEnterConfiguration {
             timeoutAfter(timeout);
 
             joinPresenceBuilder = connection.getStanzaFactory().buildPresenceStanza();
-        }
-
-        /**
-         * Set the presence used to join the MUC room.
-         * <p>
-         * The 'to' value of the given presence will be overridden and the given presence must be of type
-         * 'available', otherwise an {@link IllegalArgumentException} will be thrown.
-         * <p>
-         *
-         * @param presence TODO javadoc me please
-         * @return a reference to this builder.
-         * @deprecated use {@link #withPresence(Consumer)} instead.
-         */
-        @Deprecated
-        // TODO: Remove in Smack 4.5.
-        public Builder withPresence(Presence presence) {
-            if (presence.getType() != Presence.Type.available) {
-                throw new IllegalArgumentException("Presence must be of type 'available'");
-            }
-
-            joinPresence = presence;
-            return this;
         }
 
         /**

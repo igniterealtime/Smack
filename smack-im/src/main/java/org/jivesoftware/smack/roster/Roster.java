@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2022 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,7 +218,7 @@ public final class Roster extends Manager {
      * <p>
      * This method will never return <code>null</code>, instead if the user has not yet logged into
      * the server all modifying methods of the returned roster object
-     * like {@link Roster#createEntry(BareJid, String, String[])},
+     * like {@link Roster#createItemAndRequestSubscription(BareJid, String, String[])},
      * {@link Roster#removeEntry(RosterEntry)} , etc. except adding or removing
      * {@link RosterListener}s will throw an IllegalStateException.
      * </p>
@@ -752,27 +752,6 @@ public final class Roster extends Manager {
         RosterGroup group = new RosterGroup(name, connection);
         groups.put(name, group);
         return group;
-    }
-
-    /**
-     * Creates a new roster entry and presence subscription. The server will asynchronously
-     * update the roster with the subscription status.
-     *
-     * @param user   the user. (e.g. johndoe@jabber.org)
-     * @param name   the nickname of the user.
-     * @param groups the list of group names the entry will belong to, or <code>null</code> if
-     *               the roster entry won't belong to a group.
-     * @throws NoResponseException if there was no response from the server.
-     * @throws XMPPErrorException if an XMPP exception occurs.
-     * @throws NotLoggedInException If not logged in.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @deprecated use {@link #createItemAndRequestSubscription(BareJid, String, String[])} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public void createEntry(BareJid user, String name, String[] groups) throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        createItemAndRequestSubscription(user, name, groups);
     }
 
     /**

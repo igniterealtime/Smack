@@ -1242,27 +1242,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         });
     }
 
-    @Deprecated
-    @Override
-    public void addStanzaInterceptor(StanzaListener packetInterceptor,
-            StanzaFilter packetFilter) {
-        if (packetInterceptor == null) {
-            throw new NullPointerException("Packet interceptor is null.");
-        }
-        InterceptorWrapper interceptorWrapper = new InterceptorWrapper(packetInterceptor, packetFilter);
-        synchronized (interceptors) {
-            interceptors.put(packetInterceptor, interceptorWrapper);
-        }
-    }
-
-    @Deprecated
-    @Override
-    public void removeStanzaInterceptor(StanzaListener packetInterceptor) {
-        synchronized (interceptors) {
-            interceptors.remove(packetInterceptor);
-        }
-    }
-
     private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> void addInterceptor(
                     Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors, Consumer<MPB> interceptor,
                     Predicate<MP> filter) {

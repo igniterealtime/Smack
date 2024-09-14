@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2023 Florian Schmaus
+ * Copyright 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,20 +136,6 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         assert content != null;
         element(name, content.toString());
         return this;
-    }
-
-    /**
-     * Deprecated.
-     *
-     * @param element deprecated.
-     * @return deprecated.
-     * @deprecated use {@link #append(Element)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public XmlStringBuilder element(Element element) {
-        assert element != null;
-        return append(element.toXML());
     }
 
     public XmlStringBuilder optElement(String name, String content) {

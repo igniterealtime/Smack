@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2020 Florian Schmaus
+ * Copyright 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,52 +65,6 @@ public class TLSUtils {
      */
     public static <B extends ConnectionConfiguration.Builder<B, ?>> B setEnabledTlsProtocolsToRecommended(B builder) {
         builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_3, PROTO_TLSV1_2 });
-        return builder;
-    }
-
-    /**
-     * Enable only TLS. Connections created with the given ConnectionConfiguration will only support TLS.
-     * <p>
-     * According to the <a
-     * href="https://raw.githubusercontent.com/stpeter/manifesto/master/manifesto.txt">Encrypted
-     * XMPP Manifesto</a>, TLSv1.2 shall be deployed, providing fallback support for SSLv3 and
-     * TLSv1.1. This method goes one step beyond and upgrades the handshake to use TLSv1 or better.
-     * This method requires the underlying OS to support all of TLSv1.2 , 1.1 and 1.0.
-     * </p>
-     *
-     * @param builder the configuration builder to apply this setting to
-     * @param <B> Type of the ConnectionConfiguration builder.
-     *
-     * @return the given builder
-     * @deprecated use {@link #setEnabledTlsProtocolsToRecommended(org.jivesoftware.smack.ConnectionConfiguration.Builder)} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setTLSOnly(B builder) {
-        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1 });
-        return builder;
-    }
-
-    /**
-     * Enable only TLS and SSLv3. Connections created with the given ConnectionConfiguration will
-     * only support TLS and SSLv3.
-     * <p>
-     * According to the <a
-     * href="https://raw.githubusercontent.com/stpeter/manifesto/master/manifesto.txt">Encrypted
-     * XMPP Manifesto</a>, TLSv1.2 shall be deployed, providing fallback support for SSLv3 and
-     * TLSv1.1.
-     * </p>
-     *
-     * @param builder the configuration builder to apply this setting to
-     * @param <B> Type of the ConnectionConfiguration builder.
-     *
-     * @return the given builder
-     * @deprecated use {@link #setEnabledTlsProtocolsToRecommended(org.jivesoftware.smack.ConnectionConfiguration.Builder)} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public static <B extends ConnectionConfiguration.Builder<B, ?>> B setSSLv3AndTLSOnly(B builder) {
-        builder.setEnabledSSLProtocols(new String[] { PROTO_TLSV1_2,  PROTO_TLSV1_1, PROTO_TLSV1, PROTO_SSL3 });
         return builder;
     }
 

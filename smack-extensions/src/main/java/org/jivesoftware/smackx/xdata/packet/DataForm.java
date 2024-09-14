@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2020-2021 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2020-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.StanzaView;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.CollectionUtil;
-import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -356,8 +355,7 @@ public final class DataForm implements ExtensionElement {
     }
 
     public static final class Builder {
-        // TODO: Make this field final once setType() is gone.
-        private Type type;
+        private final Type type;
         private String title;
         private List<String> instructions;
         private ReportedData reportedData;
@@ -407,20 +405,6 @@ public final class DataForm implements ExtensionElement {
                     break;
                 }
             }
-        }
-
-        /**
-         * Deprecated do not use.
-         *
-         * @param type the type.
-         * @return a reference to this builder.
-         * @deprecated use {@link DataForm#builder(Type)} instead.
-         */
-        @Deprecated
-        // TODO: Remove in Smack 4.5 and then make this.type final.
-        public Builder setType(Type type) {
-            this.type = Objects.requireNonNull(type);
-            return this;
         }
 
         /**

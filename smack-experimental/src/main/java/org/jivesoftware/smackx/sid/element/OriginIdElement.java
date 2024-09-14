@@ -41,28 +41,6 @@ public class OriginIdElement extends StableAndUniqueIdElement {
     /**
      * Add an origin-id element to a message and set the stanzas id to the same id as in the origin-id element.
      *
-     * @param message message.
-     * @return the added origin-id element.
-     * @deprecated use {@link #addTo(MessageBuilder)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public static OriginIdElement addOriginId(Message message) {
-        OriginIdElement originId = message.getExtension(OriginIdElement.class);
-        if (originId != null) {
-            return originId;
-        }
-
-        originId = new OriginIdElement();
-        message.addExtension(originId);
-        // TODO: Find solution to have both the originIds stanzaId and a nice to look at incremental stanzaID.
-        // message.setStanzaId(originId.getId());
-        return originId;
-    }
-
-    /**
-     * Add an origin-id element to a message and set the stanzas id to the same id as in the origin-id element.
-     *
      * @param messageBuilder the message builder to add an origin ID to.
      * @return the added origin-id element.
      */

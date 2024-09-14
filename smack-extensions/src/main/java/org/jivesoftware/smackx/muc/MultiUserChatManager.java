@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2021 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -419,22 +419,6 @@ public final class MultiUserChatManager extends Manager {
      */
     public List<DomainBareJid> getMucServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return serviceDiscoveryManager.findServices(MUCInitialPresence.NAMESPACE, false, false);
-    }
-
-    /**
-     * Returns a collection with the XMPP addresses of the Multi-User Chat services.
-     *
-     * @return a collection with the XMPP addresses of the Multi-User Chat services.
-     * @throws XMPPErrorException if there was an XMPP error returned.
-     * @throws NoResponseException if there was no response from the remote entity.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @deprecated use {@link #getMucServiceDomains()} instead.
-     */
-    // TODO: Remove in Smack 4.5
-    @Deprecated
-    public List<DomainBareJid> getXMPPServiceDomains() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        return getMucServiceDomains();
     }
 
     /**

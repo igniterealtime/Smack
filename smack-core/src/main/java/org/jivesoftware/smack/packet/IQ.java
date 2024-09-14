@@ -287,20 +287,6 @@ public abstract class IQ extends Stanza implements IqView {
         return ErrorIQ.createErrorResponse(request, error);
     }
 
-    /**
-     * Deprecated.
-     *
-     * @param request the request.
-     * @param error the error.
-     * @return an error IQ.
-     * @deprecated use {@link #createErrorResponse(IQ, StanzaError)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Builder error) {
-        return createErrorResponse(request, error.build());
-    }
-
     public static ErrorIQ createErrorResponse(final IQ request, final StanzaError.Condition condition) {
         return createErrorResponse(request, StanzaError.getBuilder(condition).build());
     }

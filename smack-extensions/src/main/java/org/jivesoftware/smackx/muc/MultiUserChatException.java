@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2015 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public abstract class MultiUserChatException extends SmackException {
 
     /**
      * Thrown when trying to enter a MUC room that is not hosted a domain providing a MUC service.
-     * Try {@link MultiUserChatManager#getXMPPServiceDomains()} for a list of client-local domains
+     * Try {@link MultiUserChatManager#getMucServiceDomains()} for a list of client-local domains
      * providing a MUC service.
      */
     public static class NotAMucServiceException extends MultiUserChatException {

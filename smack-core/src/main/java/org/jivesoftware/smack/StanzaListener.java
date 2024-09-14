@@ -27,12 +27,6 @@ import org.jivesoftware.smack.packet.Stanza;
  * the {@link #processStanza(Stanza)} method will be called. This is the
  * opposite approach to the functionality provided by a {@link StanzaCollector}
  * which lets you block while waiting for results.
- * <p>
- * Additionally you are able to intercept Packets that are going to be send and
- * make modifications to them. You can register a PacketListener as interceptor
- * by using {@link XMPPConnection#addStanzaInterceptor(StanzaListener,
- * org.jivesoftware.smack.filter.StanzaFilter)}
- * </p>
  *
  * @see XMPPConnection#addAsyncStanzaListener(StanzaListener, org.jivesoftware.smack.filter.StanzaFilter)
  * @author Matt Tucker

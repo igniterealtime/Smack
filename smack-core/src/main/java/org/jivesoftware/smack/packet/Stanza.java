@@ -160,22 +160,6 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
     }
 
     /**
-     * Set the stanza id if none is set.
-     *
-     * @return the stanza id.
-     * @since 4.2
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public String setStanzaId() {
-        if (!hasStanzaIdSet()) {
-            setNewStanzaId();
-        }
-        return getStanzaId();
-    }
-
-    /**
      * Throws an {@link IllegalArgumentException} if this stanza has no stanza ID set.
      *
      * @throws IllegalArgumentException if this stanza has no stanza ID set.
@@ -255,32 +239,9 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
         error = stanzaError;
     }
 
-    /**
-     * Deprecated.
-     * @param stanzaError the stanza error.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void setError(StanzaError.Builder stanzaError) {
-        setError(stanzaError.build());
-    }
-
     @Override
     public final String getLanguage() {
         return language;
-    }
-
-    /**
-     * Sets the xml:lang of this Stanza.
-     *
-     * @param language the xml:lang of this Stanza.
-     * @deprecated use {@link StanzaBuilder#setLanguage(String)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     @Override
@@ -372,22 +333,6 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
             return null;
         }
         return packetExtension;
-    }
-
-    /**
-     * This method is deprecated. Use preferably {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)}.
-     *
-     * @param <E> the type to cast to.
-     * @param elementName the XML element name of the extension. (May be null)
-     * @param namespace the XML element namespace of the extension.
-     * @return the extension, or <code>null</code> if it doesn't exist.
-     * @deprecated use {@link #getExtension(Class)} or {@link #getExtensionElement(String, String)} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public final <E extends ExtensionElement> E getExtension(String elementName, String namespace) {
-        return (E) getExtensionElement(elementName, namespace);
     }
 
     @Override
@@ -499,27 +444,6 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
         synchronized (extensionElements) {
             return extensionElements.remove(key);
         }
-    }
-
-    /**
-     * Removes a stanza extension from the packet.
-     *
-     * @param extension the stanza extension to remove.
-     * @return the removed stanza extension or null.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public final XmlElement removeExtension(XmlElement extension)  {
-        QName key = extension.getQName();
-        synchronized (extensionElements) {
-            List<XmlElement> list = extensionElements.getAll(key);
-            boolean removed = list.remove(extension);
-            if (removed) {
-                return extension;
-            }
-        }
-        return null;
     }
 
     /**

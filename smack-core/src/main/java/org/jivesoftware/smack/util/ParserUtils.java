@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2023 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
-
-import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.datatypes.UInt16;
 import org.jivesoftware.smack.datatypes.UInt32;
@@ -365,19 +363,6 @@ public class ParserUtils {
 
     public static String getXmlLang(XmlPullParser parser) {
         return parser.getAttributeValue("http://www.w3.org/XML/1998/namespace", "lang");
-    }
-
-    /**
-     * Get the QName of the current element.
-     *
-     * @param parser the parser.
-     * @return the Qname.
-     * @deprecated use {@link XmlPullParser#getQName()} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5
-    public static QName getQName(XmlPullParser parser) {
-        return parser.getQName();
     }
 
     public static InternetAddress getInternetAddressIngoringZoneIdAttribute(XmlPullParser parser, String attribute) {

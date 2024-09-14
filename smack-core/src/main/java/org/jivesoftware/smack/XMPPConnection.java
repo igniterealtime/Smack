@@ -423,7 +423,6 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
-     * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
      */
     void addSyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
@@ -449,7 +448,6 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
-     * @see #addStanzaInterceptor(StanzaListener, StanzaFilter)
      * @since 4.1
     */
     void addAsyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
@@ -482,34 +480,6 @@ public interface XMPPConnection {
      * @param stanzaListener the stanza listener to remove.
      */
     void removeStanzaSendingListener(StanzaListener stanzaListener);
-
-    /**
-     * Registers a stanza interceptor with this connection. The interceptor will be
-     * invoked every time a stanza is about to be sent by this connection. Interceptors
-     * may modify the stanza to be sent. A stanza filter determines which stanzas
-     * will be delivered to the interceptor.
-     *
-     * <p>
-     * NOTE: For a similar functionality on incoming stanzas, see {@link #addAsyncStanzaListener(StanzaListener, StanzaFilter)}.
-     * </p>
-     *
-     * @param stanzaInterceptor the stanza interceptor to notify of stanzas about to be sent.
-     * @param stanzaFilter      the stanza filter to use.
-     * @deprecated use {@link #addMessageInterceptor(Consumer, Predicate)} or {@link #addPresenceInterceptor(Consumer, Predicate)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    void addStanzaInterceptor(StanzaListener stanzaInterceptor, StanzaFilter stanzaFilter);
-
-    /**
-     * Removes a stanza interceptor.
-     *
-     * @param stanzaInterceptor the stanza interceptor to remove.
-     * @deprecated use {@link #removeMessageInterceptor(Consumer)} or {@link #removePresenceInterceptor(Consumer)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    void removeStanzaInterceptor(StanzaListener stanzaInterceptor);
 
     /**
      * Registers a stanza interceptor with this connection. The interceptor will be
@@ -610,23 +580,6 @@ public interface XMPPConnection {
      * @return the currently active {@link FromMode}
      */
     FromMode getFromMode();
-
-    /**
-     * Get the feature stanza extensions for a given stream feature of the
-     * server, or <code>null</code> if the server doesn't support that feature.
-     *
-     * @param <F> {@link ExtensionElement} type of the feature.
-     * @param element TODO javadoc me please
-     * @param namespace TODO javadoc me please
-     * @return a stanza extensions of the feature or <code>null</code>
-     * @deprecated use {@link #getFeature(Class)} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    default <F extends XmlElement> F getFeature(String element, String namespace) {
-        QName qname = new QName(namespace, element);
-        return getFeature(qname);
-    }
 
     /**
      * Get the feature stanza extensions for a given stream feature of the

@@ -184,21 +184,6 @@ public class MultiUserChatLight {
     /**
      * Sends a Message to the chat room.
      *
-     * @param message TODO javadoc me please
-     *            the message.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @deprecated use {@link #sendMessage(MessageBuilder)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void sendMessage(Message message) throws NotConnectedException, InterruptedException {
-        sendMessage(message.asBuilder());
-    }
-
-    /**
-     * Sends a Message to the chat room.
-     *
      * @param messageBuilder the message.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.

@@ -52,8 +52,6 @@ import org.jivesoftware.smackx.shim.packet.HeadersExtension;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 public abstract class Node {
     protected final PubSubManager pubSubManager;
@@ -404,39 +402,6 @@ public abstract class Node {
     }
 
     /**
-     * The user subscribes to the node using the supplied jid.  The
-     * bare jid portion of this one must match the jid for the connection.
-     *
-     * Please note that the {@link Subscription.State} should be checked
-     * on return since more actions may be required by the caller.
-     * {@link Subscription.State#pending} - The owner must approve the subscription
-     * request before messages will be received.
-     * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true,
-     * the caller must configure the subscription before messages will be received.  If it is false
-     * the caller can configure it but is not required to do so.
-     *
-     * @param jidString The jid to subscribe as.
-     * @return The subscription
-     * @throws XMPPErrorException if there was an XMPP error returned.
-     * @throws NoResponseException if there was no response from the remote entity.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @throws IllegalArgumentException if the provided string is not a valid JID.
-     * @deprecated use {@link #subscribe(Jid)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Subscription subscribe(String jidString) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        Jid jid;
-        try {
-            jid = JidCreate.from(jidString);
-        } catch (XmppStringprepException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return subscribe(jid);
-    }
-
-    /**
      * The user subscribes to the node using the supplied jid and subscription
      * options.  The bare jid portion of this one must match the jid for the
      * connection.
@@ -464,42 +429,6 @@ public abstract class Node {
         request.addExtension(new FormNode(FormNodeType.OPTIONS, submitForm));
         PubSub reply = sendPubsubPacket(request);
         return reply.getExtension(PubSubElementType.SUBSCRIPTION);
-    }
-
-    /**
-     * The user subscribes to the node using the supplied jid and subscription
-     * options.  The bare jid portion of this one must match the jid for the
-     * connection.
-     *
-     * Please note that the {@link Subscription.State} should be checked
-     * on return since more actions may be required by the caller.
-     * {@link Subscription.State#pending} - The owner must approve the subscription
-     * request before messages will be received.
-     * {@link Subscription.State#unconfigured} - If the {@link Subscription#isConfigRequired()} is true,
-     * the caller must configure the subscription before messages will be received.  If it is false
-     * the caller can configure it but is not required to do so.
-     *
-     * @param jidString The jid to subscribe as.
-     * @param subForm TODO javadoc me please
-     *
-     * @return The subscription
-     * @throws XMPPErrorException if there was an XMPP error returned.
-     * @throws NoResponseException if there was no response from the remote entity.
-     * @throws NotConnectedException if the XMPP connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
-     * @throws IllegalArgumentException if the provided string is not a valid JID.
-     * @deprecated use {@link #subscribe(Jid, FillableSubscribeForm)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Subscription subscribe(String jidString, FillableSubscribeForm subForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        Jid jid;
-        try {
-            jid = JidCreate.from(jidString);
-        } catch (XmppStringprepException e) {
-            throw new IllegalArgumentException(e);
-        }
-        return subscribe(jid, subForm);
     }
 
     /**

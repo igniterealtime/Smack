@@ -17,7 +17,6 @@
 package org.jivesoftware.smackx.disco.packet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -84,17 +83,6 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
     }
 
     /**
-     * Deprecated.
-     *
-     * @deprecated use {@link DiscoverInfoBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public DiscoverInfo() {
-        super(ELEMENT, NAMESPACE);
-    }
-
-    /**
      * Copy constructor.
      *
      * @param d TODO javadoc me please
@@ -114,83 +102,9 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
         identitiesSet.addAll(d.identitiesSet);
     }
 
-    /**
-     * Adds a new feature to the discovered information.
-     *
-     * @param feature the discovered feature
-     * @return true if the feature did not already exist.
-     * @deprecated use {@link DiscoverInfoBuilder#addFeature(String)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public boolean addFeature(String feature) {
-        return addFeature(new Feature(feature));
-    }
-
-    /**
-     * Adds a collection of features to the packet. Does noting if featuresToAdd is null.
-     *
-     * @param featuresToAdd TODO javadoc me please
-     * @deprecated use {@link DiscoverInfoBuilder#addFeatures(Collection)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void addFeatures(Collection<String> featuresToAdd) {
-        if (featuresToAdd == null) return;
-        for (String feature : featuresToAdd) {
-            addFeature(feature);
-        }
-    }
-
-    /**
-     * Deprecated.
-     *
-     * @param feature the future.
-     * @return true if the feature is new.
-     * @deprecated use {@link DiscoverInfoBuilder#addFeature(DiscoverInfo.Feature)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public boolean addFeature(Feature feature) {
-        features.add(feature);
-        boolean featureIsNew = featuresSet.add(feature);
-        if (!featureIsNew) {
-            containsDuplicateFeatures = true;
-        }
-        return featureIsNew;
-    }
-
     @Override
     public List<Feature> getFeatures() {
         return Collections.unmodifiableList(features);
-    }
-
-    /**
-     * Adds a new identity of the requested entity to the discovered information.
-     *
-     * @param identity the discovered entity's identity
-     * @deprecated use {@link DiscoverInfoBuilder#addIdentity(DiscoverInfo.Identity)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void addIdentity(Identity identity) {
-        identities.add(identity);
-        identitiesSet.add(identity.getKey());
-    }
-
-    /**
-     * Adds identities to the DiscoverInfo stanza.
-     *
-     * @param identitiesToAdd TODO javadoc me please
-     * @deprecated use {@link DiscoverInfoBuilder#addIdentities(Collection)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void addIdentities(Collection<Identity> identitiesToAdd) {
-        if (identitiesToAdd == null) return;
-        for (Identity identity : identitiesToAdd) {
-            addIdentity(identity);
-        }
     }
 
     @Override
@@ -230,22 +144,6 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
     @Override
     public String getNode() {
         return node;
-    }
-
-    /**
-     * Sets the node attribute that supplements the 'jid' attribute. A node is merely
-     * something that is associated with a JID and for which the JID can provide information.<p>
-     *
-     * Node attributes SHOULD be used only when trying to provide or query information which
-     * is not directly addressable.
-     *
-     * @param node the node attribute that supplements the 'jid' attribute
-     * @deprecated use {@link DiscoverInfoBuilder#setNode(String)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void setNode(String node) {
-        this.node = StringUtils.requireNullOrNotEmpty(node, "The node can not be the empty string");
     }
 
     /**
@@ -308,18 +206,6 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
 
     public DiscoverInfoBuilder asBuilder(String stanzaId) {
         return new DiscoverInfoBuilder(this, stanzaId);
-    }
-
-    /**
-     * Deprecated, do not use.
-     *
-     * @deprecated use {@link #asBuilder(String)} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    @Override
-    public DiscoverInfo clone() {
-        return new DiscoverInfo(this);
     }
 
     public static DiscoverInfoBuilder builder(XMPPConnection connection) {

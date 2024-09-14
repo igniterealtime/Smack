@@ -17,7 +17,6 @@
 
 package org.jivesoftware.smack.packet;
 
-import java.util.List;
 import java.util.Locale;
 
 import javax.xml.namespace.QName;
@@ -28,10 +27,6 @@ import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import org.jxmpp.jid.Jid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Represents XMPP message packets. A message can be one of several types:
@@ -63,85 +58,7 @@ public final class Message extends MessageOrPresence<MessageBuilder>
     public static final String ELEMENT = "message";
     public static final String BODY = "body";
 
-    private Type type;
-
-    /**
-     * Creates a new, "normal" message.
-     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Message() {
-    }
-
-    /**
-     * Creates a new "normal" message to the specified recipient.
-     *
-     * @param to the recipient of the message.
-     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Message(Jid to) {
-        setTo(to);
-    }
-
-    /**
-     * Creates a new message of the specified type to a recipient.
-     *
-     * @param to the user to send the message to.
-     * @param type the message type.
-     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Message(Jid to, Type type) {
-        this(to);
-        setType(type);
-    }
-
-    /**
-     * Creates a new message to the specified recipient and with the specified body.
-     *
-     * @param to the user to send the message to.
-     * @param body the body of the message.
-     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Message(Jid to, String body) {
-        this(to);
-        setBody(body);
-    }
-
-    /**
-     * Creates a new message to the specified recipient and with the specified body.
-     *
-     * @param to the user to send the message to.
-     * @param body the body of the message.
-     * @throws XmppStringprepException if 'to' is not a valid XMPP address.
-     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Message(String to, String body) throws XmppStringprepException {
-        this(JidCreate.from(to), body);
-    }
-
-    /**
-     * Creates a new message with the specified recipient and extension element.
-     *
-     * @param to TODO javadoc me please
-     * @param extensionElement TODO javadoc me please
-     * @since 4.2
-     * @deprecated use {@link StanzaBuilder}, preferable via {@link StanzaFactory}, instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public Message(Jid to, ExtensionElement extensionElement) {
-        this(to);
-        addExtension(extensionElement);
-    }
+    private final Type type;
 
     Message(MessageBuilder messageBuilder) {
         super(messageBuilder);
@@ -168,197 +85,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
             return Type.normal;
         }
         return type;
-    }
-
-    /**
-     * Sets the type of the message.
-     *
-     * @param type the type of the message.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    /**
-     * Sets the subject of the message. The subject is a short description of
-     * message contents.
-     *
-     * @param subject the subject of the message.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public void setSubject(String subject) {
-        if (subject == null) {
-            removeSubject(""); // use empty string because #removeSubject(null) is ambiguous
-            return;
-        }
-        addSubject(null, subject);
-    }
-
-    /**
-     * Adds a subject with a corresponding language.
-     *
-     * @param language the language of the subject being added.
-     * @param subject the subject being added to the message.
-     * @return the new {@link org.jivesoftware.smack.packet.Message.Subject}
-     * @throws NullPointerException if the subject is null, a null pointer exception is thrown
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public Subject addSubject(String language, String subject) {
-        language = Stanza.determineLanguage(this, language);
-
-        List<Subject> currentSubjects = getExtensions(Subject.class);
-        for (Subject currentSubject : currentSubjects) {
-            if (language.equals(currentSubject.getLanguage())) {
-                throw new IllegalArgumentException("Subject with the language " + language + " already exists");
-            }
-        }
-
-        Subject messageSubject = new Subject(language, subject);
-        addExtension(messageSubject);
-        return messageSubject;
-    }
-
-    /**
-     * Removes the subject with the given language from the message.
-     *
-     * @param language the language of the subject which is to be removed
-     * @return true if a subject was removed and false if it was not.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public boolean removeSubject(String language) {
-        language = Stanza.determineLanguage(this, language);
-        for (Subject subject : getExtensions(Subject.class)) {
-            if (language.equals(subject.language)) {
-                return removeSubject(subject);
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Removes the subject from the message and returns true if the subject was removed.
-     *
-     * @param subject the subject being removed from the message.
-     * @return true if the subject was successfully removed and false if it was not.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public boolean removeSubject(Subject subject) {
-        return removeExtension(subject) != null;
-    }
-
-    /**
-     * Sets the body of the message.
-     *
-     * @param body the body of the message.
-     * @see #setBody(String)
-     * @since 4.2
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public void setBody(CharSequence body) {
-        String bodyString;
-        if (body != null) {
-            bodyString = body.toString();
-        } else {
-            bodyString = null;
-        }
-        setBody(bodyString);
-    }
-
-    /**
-     * Sets the body of the message. The body is the main message contents.
-     *
-     * @param body the body of the message.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public void setBody(String body) {
-        if (body == null) {
-            removeBody(""); // use empty string because #removeBody(null) is ambiguous
-            return;
-        }
-        addBody(null, body);
-    }
-
-    /**
-     * Adds a body with a corresponding language.
-     *
-     * @param language the language of the body being added.
-     * @param body the body being added to the message.
-     * @return the new {@link org.jivesoftware.smack.packet.Message.Body}
-     * @throws NullPointerException if the body is null, a null pointer exception is thrown
-     * @since 3.0.2
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public Body addBody(String language, String body) {
-        language = Stanza.determineLanguage(this, language);
-
-        removeBody(language);
-
-        Body messageBody = new Body(language, body);
-        addExtension(messageBody);
-        return messageBody;
-    }
-
-    /**
-     * Removes the body with the given language from the message.
-     *
-     * @param language the language of the body which is to be removed
-     * @return true if a body was removed and false if it was not.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public boolean removeBody(String language) {
-        language = Stanza.determineLanguage(this, language);
-        for (Body body : getBodies()) {
-            String bodyLanguage = body.getLanguage();
-            if (Objects.equals(bodyLanguage, language)) {
-                removeExtension(body);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Removes the body from the message and returns true if the body was removed.
-     *
-     * @param body the body being removed from the message.
-     * @return true if the body was successfully removed and false if it was not.
-     * @since 3.0.2
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public boolean removeBody(Body body) {
-        XmlElement removedElement = removeExtension(body);
-        return removedElement != null;
-    }
-
-    /**
-     * Sets the thread id of the message, which is a unique identifier for a sequence
-     * of "chat" messages.
-     *
-     * @param thread the thread id of the message.
-     * @deprecated use {@link StanzaBuilder} instead.
-     */
-    @Deprecated
-    // TODO: Remove when stanza builder is ready.
-    public void setThread(String thread) {
-        addExtension(new Message.Thread(thread));
     }
 
     @Override
@@ -410,22 +136,6 @@ public final class Message extends MessageOrPresence<MessageBuilder>
 
         buf.closeElement(ELEMENT);
         return buf;
-    }
-
-    /**
-     * Creates and returns a copy of this message stanza.
-     * <p>
-     * This does not perform a deep clone, as extension elements are shared between the new and old
-     * instance.
-     * </p>
-     * @return a clone of this message.
-     * @deprecated use {@link #asBuilder()} instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    @Override
-    public Message clone() {
-        return new Message(this);
     }
 
     /**

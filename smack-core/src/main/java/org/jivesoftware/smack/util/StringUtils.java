@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2021 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,24 +35,6 @@ public class StringUtils {
 
     public static final String MD5 = "MD5";
     public static final String SHA1 = "SHA-1";
-
-    /**
-     * Deprecated, do not use.
-     *
-     * @deprecated use StandardCharsets.UTF_8 instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public static final String UTF8 = "UTF-8";
-
-    /**
-     * Deprecated, do not use.
-     *
-     * @deprecated use StandardCharsets.US_ASCII instead.
-     */
-    // TODO: Remove in Smack 4.5.
-    @Deprecated
-    public static final String USASCII = "US-ASCII";
 
     public static final String QUOTE_ENCODE = "&quot;";
     public static final String APOS_ENCODE = "&apos;";

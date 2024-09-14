@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018-2022 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -453,27 +453,6 @@ public final class ServiceDiscoveryManager extends Manager {
      * configure the extended info before logging to the server so that the
      * information is already available if it is required upon login.
      *
-     * @param info the data form that contains the extend service discovery
-     *            information.
-     * @deprecated use {@link #addExtendedInfo(DataForm)} instead.
-     */
-    // TODO: Remove in Smack 4.5
-    @Deprecated
-    public synchronized void setExtendedInfo(DataForm info) {
-        addExtendedInfo(info);
-    }
-
-    /**
-     * Registers extended discovery information of this XMPP entity. When this
-     * client is queried for its information this data form will be returned as
-     * specified by XEP-0128.
-     * <p>
-     *
-     * Since no stanza is actually sent to the server it is safe to perform this
-     * operation before logging to the server. In fact, you may want to
-     * configure the extended info before logging to the server so that the
-     * information is already available if it is required upon login.
-     *
      * @param extendedInfo the data form that contains the extend service discovery information.
      * @return the old data form which got replaced (if any)
      * @since 4.4.0
@@ -516,19 +495,6 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     public synchronized List<DataForm> getExtendedInfo() {
         return CollectionUtil.newListWith(extendedInfos);
-    }
-
-    /**
-     * Returns the data form as List of PacketExtensions, or null if no data form is set.
-     * This representation is needed by some classes (e.g. EntityCapsManager, NodeInformationProvider)
-     *
-     * @return the data form as List of PacketExtensions
-     * @deprecated use {@link #getExtendedInfo()} instead.
-     */
-    // TODO: Remove in Smack 4.5
-    @Deprecated
-    public List<DataForm> getExtendedInfoAsList() {
-        return getExtendedInfo();
     }
 
     /**

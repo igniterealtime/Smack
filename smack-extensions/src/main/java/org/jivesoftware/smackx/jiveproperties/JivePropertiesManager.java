@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus.
+ * Copyright 2014-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,25 +48,6 @@ public class JivePropertiesManager {
 
     public static boolean isJavaObjectEnabled() {
         return javaObjectEnabled;
-    }
-
-    /**
-     * Convenience method to add a property to a packet.
-     *
-     * @param packet the stanza to add the property to.
-     * @param name the name of the property to add.
-     * @param value the value of the property to add.
-     * @deprecated use {@link #addProperty(StanzaBuilder, String, Object)} instead.
-     */
-    @Deprecated
-    // TODO: Remove in Smack 4.5.
-    public static void addProperty(Stanza packet, String name, Object value) {
-        JivePropertiesExtension jpe = (JivePropertiesExtension) packet.getExtension(JivePropertiesExtension.NAMESPACE);
-        if (jpe == null) {
-            jpe = new JivePropertiesExtension();
-            packet.addExtension(jpe);
-        }
-        jpe.setProperty(name, value);
     }
 
     /**
