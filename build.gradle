@@ -140,7 +140,7 @@ allprojects {
 		// See also:
 		// - https://issues.apache.org/jira/browse/MNG-6232
 		// - https://issues.igniterealtime.org/browse/SMACK-858
-		jxmppVersion = '[1.0.0, 1.0.999]'
+		jxmppVersion = '[1.1.0-beta1, 1.1.999]'
 		miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
 		smackMinAndroidSdk = 21
 		junitVersion = '5.7.1'
