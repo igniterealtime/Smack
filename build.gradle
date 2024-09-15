@@ -142,7 +142,7 @@ allprojects {
 		// - https://issues.igniterealtime.org/browse/SMACK-858
 		jxmppVersion = '[1.0.0, 1.0.999]'
 		miniDnsVersion = '[1.0.0, 1.0.999]'
-		smackMinAndroidSdk = 19
+		smackMinAndroidSdk = 21
 		junitVersion = '5.7.1'
 		commonsIoVersion = '2.6'
 		bouncyCastleVersion = '1.73'
@@ -578,7 +578,7 @@ configure (project(':smack-java8-full')) {
 configure (androidProjects + androidBootClasspathProjects) {
 	apply plugin: 'ru.vyarus.animalsniffer'
 	dependencies {
-		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:4.4.2_r4@signature"
+		signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:5.0.1_r2@signature"
 	}
 	animalsniffer {
 		sourceSets = [sourceSets.main]
