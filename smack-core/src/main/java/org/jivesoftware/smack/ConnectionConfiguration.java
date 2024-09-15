@@ -544,19 +544,21 @@ public abstract class ConnectionConfiguration {
      * Returns the xml:lang string of the stream language to use when connecting to the server.
      *
      * <p>If the developer sets the language to null, this will also return null, leading to
-     * the removal of the xml:lang tag from the stream. If a Locale("") is configured, this will
-     * return "", which can be used as an override.</p>
+     * the removal of the xml:lang tag from the stream.</p>
      *
-     * @return the stream language to use when connecting to the server.
+     * @return the stream language to use when connecting to the server or <code>null</code>.
      */
     public String getXmlLang() {
-        // TODO: Change to Locale.toLanguageTag() once Smack's minimum Android API level is 21 or higher.
-        // This will need a workaround for new Locale("").getLanguageTag() returning "und". Expected
-        // behavior of this function:
-        //  - returns null if language is null
-        //  - returns "" if language.getLanguage() returns the empty string
-        //  - returns language.toLanguageTag() otherwise
-        return language != null ? language.toString().replace("_", "-") : null;
+        if (language == null) {
+            return null;
+        }
+
+        String languageTag = language.toLanguageTag();
+        if (languageTag.equals("und")) {
+            return null;
+        }
+
+        return languageTag;
     }
 
     /**
