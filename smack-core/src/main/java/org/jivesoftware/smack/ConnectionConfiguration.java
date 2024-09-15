@@ -534,7 +534,7 @@ public abstract class ConnectionConfiguration {
     /**
      * Returns the stream language to use when connecting to the server.
      *
-     * @return the stream language to use when connecting to the server.
+     * @return the stream language to use when connecting to the server or <code>null</code>.
      */
     public Locale getLanguage() {
         return language;
