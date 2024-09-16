@@ -6,13 +6,13 @@ jobs:
   build:
     name: Build Smack
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java:
-          - 11
+          - 17
     env:
-      PRIMARY_JAVA_VERSION: 11
+      PRIMARY_JAVA_VERSION: 17
 
     steps:
       - name: Checkout
