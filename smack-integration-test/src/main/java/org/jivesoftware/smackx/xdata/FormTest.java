@@ -128,22 +128,22 @@ public class FormTest extends AbstractSmackIntegrationTest {
             completedForm.setAnswer("time", true);
             completedForm.setAnswer("age", 20);
             // Create a new message to send with the completed form
-            msg2 = StanzaBuilder.buildMessage()
+            Message msg3 = StanzaBuilder.buildMessage()
                     .to(conOne.getUser().asBareJid())
-                    .setThread(msg.getThread())
+                    .setThread(msg2.getThread())
                     .ofType(Message.Type.chat)
                     .setBody("To enter a case please fill out this form and send it back to me")
                     // Add the completed form to the message
                     .addExtension(completedForm.getDataFormToSubmit())
                     .build();
             // Send the message with the completed form
-            conTwo.sendStanza(msg2);
+            conTwo.sendStanza(msg3);
 
             // Get the message with the completed form
-            Message msg3 = collector.nextResult();
-            assertNotNull(msg3, "Message not found");
+            Message msg4 = collector.nextResult();
+            assertNotNull(msg4, "Message not found");
             // Retrieve the completed form
-            final DataForm completedForm2 = DataForm.from(msg3);
+            final DataForm completedForm2 = DataForm.from(msg4);
             assertNotNull(completedForm2);
             assertNotNull(completedForm2.getField("name"));
             assertNotNull(completedForm2.getField("description"));
