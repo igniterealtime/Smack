@@ -143,7 +143,6 @@ public final class PrivacyListManager extends Manager {
                             else {
                                 cachedActiveListName = activeListName;
                             }
-                            return;
                     }
                 }, iqResultReplyFilter);
             }
@@ -165,7 +164,6 @@ public final class PrivacyListManager extends Manager {
                             else {
                                 cachedDefaultListName = defaultListName;
                             }
-                            return;
                     }
                 }, iqResultReplyFilter);
             }

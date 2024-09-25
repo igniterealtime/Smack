@@ -667,7 +667,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class DisconnectedState extends State {
-
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private DisconnectedState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -708,6 +709,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     private final class LookupRemoteConnectionEndpointsState extends State {
         boolean outgoingElementsQueueWasShutdown;
 
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private LookupRemoteConnectionEndpointsState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -818,6 +821,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class ConnectedButUnauthenticatedState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private ConnectedButUnauthenticatedState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -850,6 +855,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class SaslAuthenticationState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private SaslAuthenticationState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -893,6 +900,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     public static final class ResourceBindingStateDescriptor extends StateDescriptor {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private ResourceBindingStateDescriptor() {
             super(ResourceBindingState.class, "RFC 6120 § 7");
             addSuccessor(AuthenticatedAndResourceBoundStateDescriptor.class);
@@ -900,6 +909,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class ResourceBindingState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private ResourceBindingState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -955,6 +966,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class AuthenticatedAndResourceBoundState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private AuthenticatedAndResourceBoundState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -995,6 +1008,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class ShutdownState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private ShutdownState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
@@ -1057,6 +1072,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private static final class InstantShutdownState extends NoOpState {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private InstantShutdownState(ModularXmppClientToServerConnection connection, StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(connection, stateDescriptor, connectionInternal);
@@ -1078,6 +1095,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     }
 
     private final class CloseConnectionState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private CloseConnectionState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);

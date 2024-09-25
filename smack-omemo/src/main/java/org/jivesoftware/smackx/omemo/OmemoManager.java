@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
@@ -633,7 +634,7 @@ public final class OmemoManager extends Manager {
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
      * @throws IOException if an I/O error occurred.
      */
-    public synchronized HashMap<OmemoDevice, OmemoFingerprint> getActiveFingerprints(BareJid contact)
+    public synchronized Map<OmemoDevice, OmemoFingerprint> getActiveFingerprints(BareJid contact)
             throws SmackException.NotLoggedInException, CorruptedOmemoKeyException,
             CannotEstablishOmemoSessionException, SmackException.NotConnectedException, InterruptedException,
             SmackException.NoResponseException, IOException {
@@ -641,7 +642,7 @@ public final class OmemoManager extends Manager {
             throw new SmackException.NotLoggedInException();
         }
 
-        HashMap<OmemoDevice, OmemoFingerprint> fingerprints = new HashMap<>();
+        Map<OmemoDevice, OmemoFingerprint> fingerprints = new HashMap<>();
         OmemoCachedDeviceList deviceList = getOmemoService().getOmemoStoreBackend().loadCachedDeviceList(getOwnDevice(),
                 contact);
 

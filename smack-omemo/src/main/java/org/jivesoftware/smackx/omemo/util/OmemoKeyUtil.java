@@ -119,8 +119,8 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
          *
          * @throws CorruptedOmemoKeyException when one of the keys cannot be parsed
          */
-        public HashMap<Integer, T_Bundle> bundles(OmemoBundleElement bundle, OmemoDevice contact) throws CorruptedOmemoKeyException {
-            HashMap<Integer, T_Bundle> bundles = new HashMap<>();
+        public Map<Integer, T_Bundle> bundles(OmemoBundleElement bundle, OmemoDevice contact) throws CorruptedOmemoKeyException {
+            Map<Integer, T_Bundle> bundles = new HashMap<>();
             for (int deviceId : bundle.getPreKeys().keySet()) {
                 try {
                     bundles.put(deviceId, bundleFromOmemoBundle(bundle, contact, deviceId));
@@ -211,6 +211,8 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param count   how many keys do we want to generate
      * @return Map of new preKeys
      */
+    // We use TreeMap.lastKey()
+    @SuppressWarnings("NonApiType")
     public abstract TreeMap<Integer, T_PreKey> generateOmemoPreKeys(int startId, int count);
 
     /**
@@ -338,8 +340,8 @@ public abstract class OmemoKeyUtil<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      * @param preKeyHashMap HashMap of preKeys
      * @return HashMap of byte arrays but with the same keyIds as key
      */
-    public HashMap<Integer, byte[]> preKeyPublicKeysForBundle(TreeMap<Integer, T_PreKey> preKeyHashMap) {
-        HashMap<Integer, byte[]> out = new HashMap<>();
+    public Map<Integer, byte[]> preKeyPublicKeysForBundle(Map<Integer, T_PreKey> preKeyHashMap) {
+        Map<Integer, byte[]> out = new HashMap<>();
         for (Map.Entry<Integer, T_PreKey> e : preKeyHashMap.entrySet()) {
             out.put(e.getKey(), preKeyForBundle(e.getValue()));
         }

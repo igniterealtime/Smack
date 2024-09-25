@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muclight;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -32,7 +33,7 @@ public class MUCLightChangeAffiliationsIQTest {
 
     @Test
     public void checkChangeAffiliationsMUCLightStanza() throws Exception {
-        HashMap<Jid, MUCLightAffiliation> affiliations = new HashMap<>();
+        Map<Jid, MUCLightAffiliation> affiliations = new HashMap<>();
         affiliations.put(JidCreate.from("sarasa2@shakespeare.lit"), MUCLightAffiliation.owner);
         affiliations.put(JidCreate.from("sarasa1@shakespeare.lit"), MUCLightAffiliation.member);
         affiliations.put(JidCreate.from("sarasa3@shakespeare.lit"), MUCLightAffiliation.none);
@@ -44,7 +45,7 @@ public class MUCLightChangeAffiliationsIQTest {
         assertEquals(mucLightChangeAffiliationsIQ.getTo(), "coven@muclight.shakespeare.lit");
         assertEquals(mucLightChangeAffiliationsIQ.getType(), IQ.Type.set);
 
-        HashMap<Jid, MUCLightAffiliation> iqAffiliations = mucLightChangeAffiliationsIQ.getAffiliations();
+        Map<Jid, MUCLightAffiliation> iqAffiliations = mucLightChangeAffiliationsIQ.getAffiliations();
         assertEquals(iqAffiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
         assertEquals(iqAffiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
         assertEquals(iqAffiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);

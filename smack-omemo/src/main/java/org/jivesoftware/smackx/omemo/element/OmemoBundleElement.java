@@ -47,8 +47,8 @@ public abstract class OmemoBundleElement implements ExtensionElement {
     private byte[] signedPreKeySignature;
     private final String identityKeyB64;
     private byte[] identityKey;
-    private final HashMap<Integer, String> preKeysB64;
-    private HashMap<Integer, byte[]> preKeys;
+    private final Map<Integer, String> preKeysB64;
+    private Map<Integer, byte[]> preKeys;
 
     /**
      * Constructor to create a Bundle Element from base64 Strings.
@@ -57,9 +57,9 @@ public abstract class OmemoBundleElement implements ExtensionElement {
      * @param signedPreKeyB64 base64 encoded signedPreKey
      * @param signedPreKeySigB64 base64 encoded signedPreKeySignature
      * @param identityKeyB64 base64 encoded identityKey
-     * @param preKeysB64 HashMap of base64 encoded preKeys
+     * @param preKeysB64 Map of base64 encoded preKeys
      */
-    public OmemoBundleElement(int signedPreKeyId, String signedPreKeyB64, String signedPreKeySigB64, String identityKeyB64, HashMap<Integer, String> preKeysB64) {
+    public OmemoBundleElement(int signedPreKeyId, String signedPreKeyB64, String signedPreKeySigB64, String identityKeyB64, Map<Integer, String> preKeysB64) {
         if (signedPreKeyId < 0) {
             throw new IllegalArgumentException("signedPreKeyId MUST be greater than or equal to 0.");
         }
@@ -81,9 +81,9 @@ public abstract class OmemoBundleElement implements ExtensionElement {
      * @param signedPreKey signedPreKey
      * @param signedPreKeySig signedPreKeySignature
      * @param identityKey identityKey
-     * @param preKeys HashMap of preKeys
+     * @param preKeys Map of preKeys
      */
-    public OmemoBundleElement(int signedPreKeyId, byte[] signedPreKey, byte[] signedPreKeySig, byte[] identityKey, HashMap<Integer, byte[]> preKeys) {
+    public OmemoBundleElement(int signedPreKeyId, byte[] signedPreKey, byte[] signedPreKeySig, byte[] identityKey, Map<Integer, byte[]> preKeys) {
         this(signedPreKeyId,
                 signedPreKey != null ? Base64.encodeToString(signedPreKey) : null,
                 signedPreKeySig != null ? Base64.encodeToString(signedPreKeySig) : null,
@@ -95,12 +95,12 @@ public abstract class OmemoBundleElement implements ExtensionElement {
         this.preKeys = preKeys;
     }
 
-    private static HashMap<Integer, String> base64EncodePreKeys(HashMap<Integer, byte[]> preKeys) {
+    private static Map<Integer, String> base64EncodePreKeys(Map<Integer, byte[]> preKeys) {
         if (preKeys == null) {
             return null;
         }
 
-        HashMap<Integer, String> converted = new HashMap<>();
+        Map<Integer, String> converted = new HashMap<>();
         for (Integer id : preKeys.keySet()) {
             converted.put(id, Base64.encodeToString(preKeys.get(id)));
         }
@@ -155,12 +155,12 @@ public abstract class OmemoBundleElement implements ExtensionElement {
     }
 
     /**
-     * Return the HashMap of preKeys in the bundle.
+     * Return the Map of preKeys in the bundle.
      * The map uses the preKeys ids as key and the preKeys as value.
      *
      * @return preKeys Pre-Keys contained in the bundle
      */
-    public HashMap<Integer, byte[]> getPreKeys() {
+    public Map<Integer, byte[]> getPreKeys() {
         if (preKeys == null) {
             preKeys = new HashMap<>();
             for (int id : preKeysB64.keySet()) {

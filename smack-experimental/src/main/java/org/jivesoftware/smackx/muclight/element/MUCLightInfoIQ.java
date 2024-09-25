@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.muclight.element;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 
@@ -41,7 +41,7 @@ public class MUCLightInfoIQ extends IQ {
 
     private final String version;
     private final MUCLightRoomConfiguration configuration;
-    private final HashMap<Jid, MUCLightAffiliation> occupants;
+    private final Map<Jid, MUCLightAffiliation> occupants;
 
     /**
      * MUCLight info response IQ constructor.
@@ -51,7 +51,7 @@ public class MUCLightInfoIQ extends IQ {
      * @param occupants TODO javadoc me please
      */
     public MUCLightInfoIQ(String version, MUCLightRoomConfiguration configuration,
-            HashMap<Jid, MUCLightAffiliation> occupants) {
+            Map<Jid, MUCLightAffiliation> occupants) {
         super(ELEMENT, NAMESPACE);
         this.version = version;
         this.configuration = configuration;
@@ -90,7 +90,7 @@ public class MUCLightInfoIQ extends IQ {
      *
      * @return the occupants of the room
      */
-    public HashMap<Jid, MUCLightAffiliation> getOccupants() {
+    public Map<Jid, MUCLightAffiliation> getOccupants() {
         return occupants;
     }
 

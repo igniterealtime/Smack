@@ -1256,8 +1256,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 final boolean smResumptionPossible = isSmResumptionPossible();
                 // Don't throw a NotConnectedException is there is an resumable stream available
                 if (!smResumptionPossible) {
-                    throw new NotConnectedException(XMPPTCPConnection.this, "done=" + done
-                                    + " smResumptionPossible=" + smResumptionPossible);
+                    throw new NotConnectedException(XMPPTCPConnection.this, "done=true smResumptionPossible=false");
                 }
             }
         }

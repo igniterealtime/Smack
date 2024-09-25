@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,6 +65,8 @@ public class XmppTcpTransportModuleDescriptor extends ModularXmppClientToServerC
 
     public static final class Builder extends ModularXmppClientToServerConnectionModuleDescriptor.Builder {
 
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
         private Builder(ModularXmppClientToServerConnectionConfiguration.Builder connectionConfigurationBuilder) {
             super(connectionConfigurationBuilder);
         }

@@ -17,13 +17,13 @@
 package org.jivesoftware.smackx.jingleold.nat;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -661,21 +661,13 @@ public abstract class TransportCandidate {
             String local = id.substring(0, keySplitIndex) + ";" + localUser;
             String remote = id.substring(keySplitIndex) + ";" + remoteUser;
 
-            try {
-                if (session.getConnection().getUser().equals(session.getInitiator())) {
-
-                    this.send = local.getBytes("UTF-8");
-                    this.receive = remote.getBytes("UTF-8");
-                } else {
-                    this.receive = local.getBytes("UTF-8");
-                    this.send = remote.getBytes("UTF-8");
-                }
+            if (session.getConnection().getUser().equals(session.getInitiator())) {
+                this.send = local.getBytes(StandardCharsets.UTF_8);
+                this.receive = remote.getBytes(StandardCharsets.UTF_8);
+            } else {
+                this.receive = local.getBytes(StandardCharsets.UTF_8);
+                this.send = remote.getBytes(StandardCharsets.UTF_8);
             }
-            catch (UnsupportedEncodingException e) {
-                LOGGER.log(Level.WARNING, "exception", e);
-            }
-
-
         }
 
         @SuppressWarnings("UnusedVariable")
@@ -706,7 +698,7 @@ public abstract class TransportCandidate {
 
                     long delay = 100 / replyTries;
 
-                    String[] str = new String(packet.getData(), "UTF-8").split(";");
+                    String[] str = new String(packet.getData(), StandardCharsets.UTF_8).split(";");
                     String pass = str[0];
                     String[] address = str[1].split(":");
                     String ip = address[0];
@@ -714,13 +706,7 @@ public abstract class TransportCandidate {
 
                     if (pass.equals(candidate.getPassword()) && !accept) {
 
-                        byte[] cont = null;
-                        try {
-                            cont = (password + ";" + candidate.getIp() + ":" + candidate.getPort()).getBytes("UTF-8");
-                        }
-                        catch (UnsupportedEncodingException e) {
-                            LOGGER.log(Level.WARNING, "exception", e);
-                        }
+                        byte[] cont = (password + ";" + candidate.getIp() + ":" + candidate.getPort()).getBytes(StandardCharsets.UTF_8);
 
                         packet.setData(cont);
                         packet.setLength(cont.length);
@@ -778,31 +764,24 @@ public abstract class TransportCandidate {
                     DatagramListener listener = new DatagramListener() {
                         @Override
                         public boolean datagramReceived(DatagramPacket datagramPacket) {
+                            LOGGER.fine("ECHO Received to: " + candidate.getIp() + ":" + candidate.getPort() + "  data: " + new String(datagramPacket.getData(), StandardCharsets.UTF_8));
+                            String[] str = new String(datagramPacket.getData(), StandardCharsets.UTF_8).split(";");
+                            String pass = str[0];
+                            String[] addr = str[1].split(":");
+                            String ip = addr[0];
+                            String pt = addr[1];
 
-                            try {
-                                LOGGER.fine("ECHO Received to: " + candidate.getIp() + ":" + candidate.getPort() + "  data: " + new String(datagramPacket.getData(), "UTF-8"));
-                                String[] str = new String(datagramPacket.getData(), "UTF-8").split(";");
-                                String pass = str[0];
-                                String[] addr = str[1].split(":");
-                                String ip = addr[0];
-                                String pt = addr[1];
-
-                                // CHECKSTYLE:OFF
-                                if (pass.equals(password)
-                                        && transportCandidate.getIp().indexOf(ip) != -1
-                                        && transportCandidate.getPort() == Integer.parseInt(pt)) {
-                                    // CHECKSTYLE:ON
-                                    LOGGER.fine("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
-                                    TestResult testResult = new TestResult();
-                                    testResult.setResult(true);
-                                    ended = true;
-                                    fireTestResult(testResult, transportCandidate);
-                                    return true;
-                                }
-
-                            }
-                            catch (UnsupportedEncodingException e) {
-                                LOGGER.log(Level.WARNING, "exception", e);
+                            // CHECKSTYLE:OFF
+                            if (pass.equals(password)
+                                    && transportCandidate.getIp().indexOf(ip) != -1
+                                    && transportCandidate.getPort() == Integer.parseInt(pt)) {
+                                // CHECKSTYLE:ON
+                                LOGGER.fine("ECHO OK: " + candidate.getIp() + ":" + candidate.getPort() + " <-> " + transportCandidate.getIp() + ":" + transportCandidate.getPort());
+                                TestResult testResult = new TestResult();
+                                testResult.setResult(true);
+                                ended = true;
+                                fireTestResult(testResult, transportCandidate);
+                                return true;
                             }
 
                             LOGGER.fine("ECHO Wrong Data: " + datagramPacket.getAddress().getHostAddress() + ":" + datagramPacket.getPort());
@@ -812,13 +791,7 @@ public abstract class TransportCandidate {
 
                     addListener(listener);
 
-                    byte[] content = null;
-                    try {
-                        content = new String(password + ";" + getIp() + ":" + getPort()).getBytes("UTF-8");
-                    }
-                    catch (UnsupportedEncodingException e) {
-                        LOGGER.log(Level.WARNING, "exception", e);
-                    }
+                    byte[] content = new String(password + ";" + getIp() + ":" + getPort()).getBytes(StandardCharsets.UTF_8);
 
                     DatagramPacket packet = new DatagramPacket(content, content.length);
 

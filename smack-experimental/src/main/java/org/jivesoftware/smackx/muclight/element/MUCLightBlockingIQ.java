@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.muclight.element;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -38,8 +37,8 @@ public class MUCLightBlockingIQ extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = MultiUserChatLight.NAMESPACE + MultiUserChatLight.BLOCKING;
 
-    private final HashMap<Jid, Boolean> rooms;
-    private final HashMap<Jid, Boolean> users;
+    private final Map<Jid, Boolean> rooms;
+    private final Map<Jid, Boolean> users;
 
     /**
      * MUC Light blocking IQ constructor.
@@ -47,7 +46,7 @@ public class MUCLightBlockingIQ extends IQ {
      * @param rooms TODO javadoc me please
      * @param users TODO javadoc me please
      */
-    public MUCLightBlockingIQ(HashMap<Jid, Boolean> rooms, HashMap<Jid, Boolean> users) {
+    public MUCLightBlockingIQ(Map<Jid, Boolean> rooms, Map<Jid, Boolean> users) {
         super(ELEMENT, NAMESPACE);
         this.rooms = rooms;
         this.users = users;
@@ -58,7 +57,7 @@ public class MUCLightBlockingIQ extends IQ {
      *
      * @return the rooms JIDs with booleans (true if allow, false if deny)
      */
-    public HashMap<Jid, Boolean> getRooms() {
+    public Map<Jid, Boolean> getRooms() {
         return rooms;
     }
 
@@ -67,7 +66,7 @@ public class MUCLightBlockingIQ extends IQ {
      *
      * @return the users JIDs with booleans (true if allow, false if deny)
      */
-    public HashMap<Jid, Boolean> getUsers() {
+    public Map<Jid, Boolean> getUsers() {
         return users;
     }
 
@@ -86,7 +85,7 @@ public class MUCLightBlockingIQ extends IQ {
         return xml;
     }
 
-    private static void parseBlocking(IQChildElementXmlStringBuilder xml, HashMap<Jid, Boolean> map, boolean isRoom) {
+    private static void parseBlocking(IQChildElementXmlStringBuilder xml, Map<Jid, Boolean> map, boolean isRoom) {
         Iterator<Map.Entry<Jid, Boolean>> it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<Jid, Boolean> pair = it.next();

@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.muclight;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * MUC Light room configuration class.
@@ -28,7 +28,7 @@ public class MUCLightRoomConfiguration {
 
     private final String roomName;
     private final String subject;
-    private final HashMap<String, String> customConfigs;
+    private final Map<String, String> customConfigs;
 
     /**
      * MUC Light room configuration model constructor.
@@ -37,7 +37,7 @@ public class MUCLightRoomConfiguration {
      * @param subject TODO javadoc me please
      * @param customConfigs TODO javadoc me please
      */
-    public MUCLightRoomConfiguration(String roomName, String subject, HashMap<String, String> customConfigs) {
+    public MUCLightRoomConfiguration(String roomName, String subject, Map<String, String> customConfigs) {
         this.roomName = roomName;
         this.subject = subject;
         this.customConfigs = customConfigs;
@@ -66,7 +66,7 @@ public class MUCLightRoomConfiguration {
      *
      * @return the custom configurations of the room.
      */
-    public HashMap<String, String> getCustomConfigs() {
+    public Map<String, String> getCustomConfigs() {
         return customConfigs;
     }
 

@@ -84,6 +84,7 @@ public class JavaxResolver extends DNSResolver implements SmackInitializer {
     }
 
     @Override
+    @SuppressWarnings("BanJNDI")
     protected List<SRV> lookupSrvRecords0(DnsName name, List<RemoteConnectionEndpointLookupFailure> lookupFailures,
                     DnssecMode dnssecMode) {
         Attribute srvAttribute;

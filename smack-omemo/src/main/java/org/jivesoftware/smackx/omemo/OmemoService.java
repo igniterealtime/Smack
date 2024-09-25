@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
@@ -794,7 +795,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         }
 
         // Select random Bundle
-        HashMap<Integer, T_Bundle> bundlesList = getOmemoStoreBackend().keyUtil().BUNDLE.bundles(bundleElement, contactsDevice);
+        Map<Integer, T_Bundle> bundlesList = getOmemoStoreBackend().keyUtil().BUNDLE.bundles(bundleElement, contactsDevice);
         int randomIndex = new Random().nextInt(bundlesList.size());
         T_Bundle randomPreKeyBundle = new ArrayList<>(bundlesList.values()).get(randomIndex);
 

@@ -46,7 +46,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
      * down the entire connection. ClassCastExceptions will occur when both the sender and receiver
      * of the stanza don't have identical versions of the same class.
      * <p>
-     * Note that you have to explicitly enabled Java object deserialization with @{link
+     * Note that you have to explicitly enabled Java object deserialization with
      * {@link JivePropertiesManager#setJavaObjectEnabled(boolean)}
      *
      * @param parser the XML parser, positioned at the start of a properties sub-packet.

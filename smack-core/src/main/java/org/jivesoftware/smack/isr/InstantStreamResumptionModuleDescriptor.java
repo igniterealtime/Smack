@@ -41,6 +41,8 @@ public class InstantStreamResumptionModuleDescriptor extends ModularXmppClientTo
 
     public static final class Builder extends ModularXmppClientToServerConnectionModuleDescriptor.Builder {
 
+        // Unfinished implementation.
+        @SuppressWarnings("UnusedMethod")
         private Builder(ModularXmppClientToServerConnectionConfiguration.Builder connectionConfigurationBuilder) {
             super(connectionConfigurationBuilder);
         }

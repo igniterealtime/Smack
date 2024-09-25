@@ -23,6 +23,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -135,7 +136,7 @@ public class STUNResolver extends TransportResolver {
      * @param stunConfigStream An InputStream with the configuration file.
      * @return A list of loaded servers
      */
-    public ArrayList<STUNService> loadSTUNServers(java.io.InputStream stunConfigStream) {
+    public List<STUNService> loadSTUNServers(java.io.InputStream stunConfigStream) {
         ArrayList<STUNService> serversList = new ArrayList<>();
         String serverName;
         int serverPort;
@@ -211,7 +212,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @return a list of services
      */
-    public ArrayList<STUNService> loadSTUNServers() {
+    public List<STUNService> loadSTUNServers() {
         ArrayList<STUNService> serversList = new ArrayList<>();
 
         // Load the STUN configuration
@@ -248,7 +249,7 @@ public class STUNResolver extends TransportResolver {
      *
      * @return the best STUN server that can be used.
      */
-    private static STUNService bestSTUNServer(ArrayList<STUNService> listServers) {
+    private static STUNService bestSTUNServer(List<STUNService> listServers) {
         if (listServers.isEmpty()) {
             return null;
         } else {

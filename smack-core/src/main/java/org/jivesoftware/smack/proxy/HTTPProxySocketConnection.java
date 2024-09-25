@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +59,7 @@ class HTTPProxySocketConnection implements ProxySocketConnection {
             proxyLine = "\r\nProxy-Authorization: Basic " + Base64.encode(username + ":" + password);
         }
         socket.getOutputStream().write((hostport + " HTTP/1.1\r\nHost: "
-            + host + ":" + port + proxyLine + "\r\n\r\n").getBytes("UTF-8"));
+            + host + ":" + port + proxyLine + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
 
         InputStream in = socket.getInputStream();
         StringBuilder got = new StringBuilder(100);

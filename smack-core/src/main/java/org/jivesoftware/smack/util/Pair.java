@@ -26,12 +26,12 @@ public final class Pair<F, S> {
         this.second = second;
     }
 
-    public static <F extends Object, S extends Object> Pair<F, S> create(F first, S second) {
+    public static <F, S> Pair<F, S> create(F first, S second) {
         return new Pair<>(first, second);
     }
 
     @SuppressWarnings("ReturnValueIgnored")
-    public static <F extends Object, S extends Object> Pair<F, S> createAndInitHashCode(F first, S second) {
+    public static <F, S> Pair<F, S> createAndInitHashCode(F first, S second) {
         Pair<F, S> pair = new Pair<>(first, second);
         pair.hashCode();
         return pair;

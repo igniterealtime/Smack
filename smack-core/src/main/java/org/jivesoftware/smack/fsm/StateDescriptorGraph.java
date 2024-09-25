@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2021 Florian Schmaus
+ * Copyright 2018-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -368,7 +368,7 @@ public class StateDescriptorGraph {
         }
     }
 
-    public static <E> void stateDescriptorGraphToDot(Collection<GraphVertex<StateDescriptor>> vertexes,
+    public static void stateDescriptorGraphToDot(Collection<GraphVertex<StateDescriptor>> vertexes,
                     PrintWriter dotOut, boolean breakStateName) {
         dotOut.append("digraph {\n");
         dfs(vertexes,

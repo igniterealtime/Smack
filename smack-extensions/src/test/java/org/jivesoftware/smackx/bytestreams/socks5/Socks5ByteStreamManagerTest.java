@@ -179,7 +179,7 @@ public class Socks5ByteStreamManagerTest {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         byteStreamManager.setAnnounceLocalStreamHost(false);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -231,7 +231,7 @@ public class Socks5ByteStreamManagerTest {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         byteStreamManager.setAnnounceLocalStreamHost(false);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -292,7 +292,7 @@ public class Socks5ByteStreamManagerTest {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         byteStreamManager.setAnnounceLocalStreamHost(false);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -375,7 +375,7 @@ public class Socks5ByteStreamManagerTest {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         byteStreamManager.setAnnounceLocalStreamHost(false);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -454,7 +454,7 @@ public class Socks5ByteStreamManagerTest {
         // TODO: It appears that it is not required to disable the local stream host for this unit test.
         byteStreamManager.setAnnounceLocalStreamHost(false);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -541,7 +541,7 @@ public class Socks5ByteStreamManagerTest {
         byteStreamManager.setAnnounceLocalStreamHost(false);
         byteStreamManager.setProxyConnectionTimeout(3000);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -634,7 +634,7 @@ public class Socks5ByteStreamManagerTest {
         Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
         byteStreamManager.setAnnounceLocalStreamHost(false);
 
-        /**
+        /*
          * create responses in the order they should be queried specified by the XEP-0065
          * specification
          */
@@ -760,7 +760,7 @@ public class Socks5ByteStreamManagerTest {
             // get Socks5ByteStreamManager for connection
             Socks5BytestreamManager byteStreamManager = Socks5BytestreamManager.getBytestreamManager(connection);
 
-            /**
+            /*
              * create responses in the order they should be queried specified by the XEP-0065
              * specification
              */

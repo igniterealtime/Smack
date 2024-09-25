@@ -311,7 +311,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
                     // Sleep for some time, waiting for the candidates checks
 
                     int totalTime = CANDIDATES_ACCEPT_PERIOD + TransportResolver.CHECK_TIMEOUT;
-                    int tries = (int) Math.ceil(totalTime / 1000);
+                    int tries = (int) Math.ceil(totalTime / 1000.0);
 
                     for (int i = 0; i < tries - 1; i++) {
                         try {
@@ -478,7 +478,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
      *
      * @return The list of valid (ie, already checked) remote candidates.
      */
-    final ArrayList<TransportCandidate> getValidRemoteCandidatesList() {
+    final List<TransportCandidate> getValidRemoteCandidatesList() {
         synchronized (validRemoteCandidates) {
             return new ArrayList<>(validRemoteCandidates);
         }
@@ -872,7 +872,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         @Override
         public TransportCandidate getBestRemoteCandidate() {
             // Hopefully, we only have one validRemoteCandidate
-            ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
+            List<TransportCandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 LOGGER.fine("RAW CAND");
                 return cands.get(0);
@@ -930,7 +930,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
         public TransportCandidate getBestRemoteCandidate() {
             ICECandidate result = null;
 
-            ArrayList<TransportCandidate> cands = getValidRemoteCandidatesList();
+            List<TransportCandidate> cands = getValidRemoteCandidatesList();
             if (!cands.isEmpty()) {
                 int highest = -1;
                 ICECandidate chose = null;

@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.muclight;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -55,7 +55,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
-        HashMap<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
+        Map<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
         assertEquals(affiliations.size(), 3);
         assertEquals(affiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
         assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
@@ -68,7 +68,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
-        HashMap<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
+        Map<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
         assertEquals(affiliations.size(), 2);
         assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);
         assertEquals(affiliations.get(JidCreate.from("sarasa3@shakespeare.lit")), MUCLightAffiliation.none);
@@ -83,7 +83,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
-        HashMap<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
+        Map<Jid, MUCLightAffiliation> affiliations = affiliationsChangeExtension.getAffiliations();
         assertEquals(affiliations.size(), 2);
         assertEquals(affiliations.get(JidCreate.from("sarasa2@shakespeare.lit")), MUCLightAffiliation.owner);
         assertEquals(affiliations.get(JidCreate.from("sarasa1@shakespeare.lit")), MUCLightAffiliation.member);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2020 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public final class SmackInitialization {
 
     private static final Logger LOGGER = Logger.getLogger(SmackInitialization.class.getName());
 
-    /**
+    /*
      * Loads the configuration from the smack-config.xml and system properties file.
      * <p>
      * So far this means that:

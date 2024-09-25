@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.muclight;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
@@ -74,7 +74,7 @@ public class MUCLightGetConfigsTest {
         assertEquals("A Dark Cave", mucLightConfigurationIQ.getConfiguration().getRoomName());
         assertNull(mucLightConfigurationIQ.getConfiguration().getSubject());
 
-        HashMap<String, String> customConfigs = mucLightConfigurationIQ.getConfiguration().getCustomConfigs();
+        Map<String, String> customConfigs = mucLightConfigurationIQ.getConfiguration().getCustomConfigs();
         assertEquals("blue", customConfigs.get("color"));
         assertEquals("20", customConfigs.get("size"));
     }

@@ -274,7 +274,7 @@ public final class MultiUserChatLightManager extends Manager {
         sendBlockRooms(mucLightService, rooms);
     }
 
-    private void sendBlockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
+    private void sendBlockRooms(DomainBareJid mucLightService, Map<Jid, Boolean> rooms)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
         mucLightBlockingIQ.setType(IQ.Type.set);
@@ -318,7 +318,7 @@ public final class MultiUserChatLightManager extends Manager {
         sendBlockUsers(mucLightService, users);
     }
 
-    private void sendBlockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
+    private void sendBlockUsers(DomainBareJid mucLightService, Map<Jid, Boolean> users)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
         mucLightBlockingIQ.setType(IQ.Type.set);
@@ -362,7 +362,7 @@ public final class MultiUserChatLightManager extends Manager {
         sendUnblockRooms(mucLightService, rooms);
     }
 
-    private void sendUnblockRooms(DomainBareJid mucLightService, HashMap<Jid, Boolean> rooms)
+    private void sendUnblockRooms(DomainBareJid mucLightService, Map<Jid, Boolean> rooms)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(rooms, null);
         mucLightBlockingIQ.setType(IQ.Type.set);
@@ -406,7 +406,7 @@ public final class MultiUserChatLightManager extends Manager {
         sendUnblockUsers(mucLightService, users);
     }
 
-    private void sendUnblockUsers(DomainBareJid mucLightService, HashMap<Jid, Boolean> users)
+    private void sendUnblockUsers(DomainBareJid mucLightService, Map<Jid, Boolean> users)
             throws NoResponseException, XMPPErrorException, InterruptedException, NotConnectedException {
         MUCLightBlockingIQ mucLightBlockingIQ = new MUCLightBlockingIQ(null, users);
         mucLightBlockingIQ.setType(IQ.Type.set);

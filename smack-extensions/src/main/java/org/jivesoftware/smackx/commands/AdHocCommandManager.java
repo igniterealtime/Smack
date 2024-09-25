@@ -85,7 +85,7 @@ public final class AdHocCommandManager extends Manager {
      */
     private static final Map<XMPPConnection, AdHocCommandManager> instances = new WeakHashMap<>();
 
-    /**
+    /*
      * Register the listener for all the connection creations. When a new
      * connection is created a new AdHocCommandManager is also created and
      * related to that connection.
@@ -463,7 +463,7 @@ public final class AdHocCommandManager extends Manager {
     private AdHocCommandData processAdHocCommandOfExistingSession(AdHocCommandData request, AdHocCommandHandler command, AdHocCommandDataBuilder responseBuilder) {
         // Check if the Session data has expired (default is 10 minutes)
         long creationStamp = command.getCreationDate();
-        if (System.currentTimeMillis() - creationStamp > sessionTimeoutSecs * 1000) {
+        if (System.currentTimeMillis() - creationStamp > sessionTimeoutSecs * 1000L) {
             // Remove the expired session
             executingCommands.remove(command.getSessionId());
 
@@ -553,7 +553,7 @@ public final class AdHocCommandManager extends Manager {
                 // after the time out, then once the user requests to
                 // continue the execution he will received an
                 // invalid session error and not a time out error.
-                if (currentTime - creationStamp > getSessionRemovalTimeoutSecs() * 1000) {
+                if (currentTime - creationStamp > getSessionRemovalTimeoutSecs() * 1000L) {
                     // Remove the expired session
                     it.remove();
                 }

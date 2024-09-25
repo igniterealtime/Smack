@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.muclight.element;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -40,7 +39,7 @@ public class MUCLightAffiliationsIQ extends IQ {
     public static final String NAMESPACE = MultiUserChatLight.NAMESPACE + MultiUserChatLight.AFFILIATIONS;
 
     private final String version;
-    private HashMap<Jid, MUCLightAffiliation> affiliations;
+    private Map<Jid, MUCLightAffiliation> affiliations;
 
     /**
      * MUC Light affiliations response IQ constructor.
@@ -49,7 +48,7 @@ public class MUCLightAffiliationsIQ extends IQ {
      * @param affiliations TODO javadoc me please
      */
     @SuppressWarnings("this-escape")
-    public MUCLightAffiliationsIQ(String version, HashMap<Jid, MUCLightAffiliation> affiliations) {
+    public MUCLightAffiliationsIQ(String version, Map<Jid, MUCLightAffiliation> affiliations) {
         super(ELEMENT, NAMESPACE);
         this.version = version;
         this.affiliations = affiliations;
@@ -83,7 +82,7 @@ public class MUCLightAffiliationsIQ extends IQ {
      *
      * @return the affiliations of the room
      */
-    public HashMap<Jid, MUCLightAffiliation> getAffiliations() {
+    public Map<Jid, MUCLightAffiliation> getAffiliations() {
         return affiliations;
     }
 

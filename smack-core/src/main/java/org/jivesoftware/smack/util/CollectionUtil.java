@@ -55,6 +55,7 @@ public class CollectionUtil {
         boolean test(T t);
     }
 
+    @SuppressWarnings("NonApiType")
     public static <T> ArrayList<T> newListWith(Collection<? extends T> collection) {
         if (collection == null) {
             return null;

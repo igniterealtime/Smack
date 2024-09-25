@@ -386,7 +386,7 @@ public abstract class FormField implements XmlElement {
     protected transient List<XmlElement> extraXmlChildElements;
 
     /**
-     * Populate @{link {@link #extraXmlChildElements}}. Note that this method may be overridden by subclasses.
+     * Populate {@link #extraXmlChildElements}. Note that this method may be overridden by subclasses.
      */
     protected void populateExtraXmlChildElements() {
         List<Value> values = getRawValues();

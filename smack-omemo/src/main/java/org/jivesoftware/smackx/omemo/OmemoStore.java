@@ -20,7 +20,6 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.PRE_KEY_COUNT_PE
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -229,7 +228,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
             storeOmemoIdentityKeyPair(userDevice, identityKeyPair);
         }
 
-        TreeMap<Integer, T_SigPreKey> signedPreKeys = loadOmemoSignedPreKeys(userDevice);
+        Map<Integer, T_SigPreKey> signedPreKeys = loadOmemoSignedPreKeys(userDevice);
         if (signedPreKeys.size() == 0) {
             changeSignedPreKey(userDevice);
         }
@@ -239,7 +238,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         int startId = preKeys.size() == 0 ? 0 : preKeys.lastKey();
 
         if (newKeysCount > 0) {
-            TreeMap<Integer, T_PreKey> newKeys = generateOmemoPreKeys(startId + 1, newKeysCount);
+            Map<Integer, T_PreKey> newKeys = generateOmemoPreKeys(startId + 1, newKeysCount);
             storeOmemoPreKeys(userDevice, newKeys);
         }
     }
@@ -417,6 +416,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @param count   how many keys do we want to generate
      * @return Map of new preKeys
      */
+    @SuppressWarnings("NonApiType")
     public TreeMap<Integer, T_PreKey> generateOmemoPreKeys(int startId, int count) {
         return keyUtil().generateOmemoPreKeys(startId, count);
     }
@@ -451,7 +451,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @throws IOException if an I/O error occurred.
      */
-    public void storeOmemoPreKeys(OmemoDevice userDevice, TreeMap<Integer, T_PreKey> preKeyHashMap) throws IOException {
+    public void storeOmemoPreKeys(OmemoDevice userDevice, Map<Integer, T_PreKey> preKeyHashMap) throws IOException {
         for (Map.Entry<Integer, T_PreKey> entry : preKeyHashMap.entrySet()) {
             storeOmemoPreKey(userDevice, entry.getKey(), entry.getValue());
         }
@@ -474,6 +474,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @throws IOException if an I/O error occurred.
      */
+    @SuppressWarnings("NonApiType")
     public abstract TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException;
 
     /**
@@ -499,6 +500,8 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @throws IOException if an I/O error occurred.
      */
+    // TreeMap seems to be required for this function.
+    @SuppressWarnings("NonApiType")
     public abstract TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException;
 
     /**
@@ -554,7 +557,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @throws IOException if an I/O error occurred.
      */
-    public abstract HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException;
+    public abstract Map<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException;
 
     /**
      * Store a crypto-lib specific session to storage.
