@@ -11,6 +11,7 @@ plugins {
 	id 'maven-publish'
 	id 'net.ltgt.errorprone'
 	id 'signing'
+	id 'com.diffplug.spotless'
 
 	id 'jacoco-report-aggregation'
 	id 'test-report-aggregation'
@@ -333,6 +334,13 @@ javadoc.dependsOn copyJavadocDocFiles
 
 coveralls {
 	jacocoReportPath 'build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml'
+}
+
+spotless {
+	java {
+		eclipse().configFile("${rootDir}/resources/eclipse/smack_formatter.xml")
+		importOrderFile("${rootDir}/resources/eclipse/smack.importorder")
+	}
 }
 
 def getGitCommit() {
