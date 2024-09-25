@@ -12,4 +12,5 @@ dependencies {
 	implementation "net.ltgt.gradle:gradle-errorprone-plugin:4.0.1"
 	implementation "gradle.plugin.org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.12.2"
 	implementation "ru.vyarus:gradle-animalsniffer-plugin:1.7.1"
+	implementation "com.diffplug.spotless:spotless-plugin-gradle:7.0.0.BETA2"
 }

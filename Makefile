@@ -1,7 +1,7 @@
 GRADLE ?= ./gradlew
 
 .PHONY: all
-all: check jacocoRootReport javadocAll sinttest
+all: check format jacocoRootReport javadocAll sinttest
 
 .PHONY: codecov
 codecov:
@@ -11,6 +11,10 @@ codecov:
 .PHONY: check
 check:
 	$(GRADLE) $@
+
+.PHONY: format
+format:
+	$(GRADLE) spotlessApply
 
 .PHONY: eclipse
 eclipse:
