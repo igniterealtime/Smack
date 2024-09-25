@@ -300,6 +300,7 @@ public class OpenPgpStoreTest extends SmackTestSuite {
      */
 
     @Test
+    @SuppressWarnings("JavaUtilDate")
     public void t10_meta_emptyStoreTest() throws IOException {
         assertNotNull(openPgpStoreInstance1.getAnnouncedFingerprintsOf(alice));
         assertTrue(openPgpStoreInstance1.getAnnouncedFingerprintsOf(alice).isEmpty());
@@ -324,6 +325,7 @@ public class OpenPgpStoreTest extends SmackTestSuite {
     }
 
     @Test
+    @SuppressWarnings("JavaUtilDate")
     public void t11_key_fetchDateTest() throws IOException {
 
         Map<OpenPgpV4Fingerprint, Date> fetchDates1 = openPgpStoreInstance1.getPublicKeyFetchDates(alice);

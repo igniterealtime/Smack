@@ -66,8 +66,8 @@ public class ChatTest extends AbstractSmackIntegrationTest {
         JivePropertiesManager.setJavaObjectEnabled(false);
     }
 
-    @SuppressWarnings("deprecation")
     @SmackIntegrationTest
+    @SuppressWarnings({"deprecation", "JavaUtilDate"})
     public void testProperties() throws Exception {
         org.jivesoftware.smack.chat.Chat newChat = chatManagerOne.createChat(conTwo.getUser());
         StanzaCollector collector = conTwo.createStanzaCollector(new ThreadFilter(newChat.getThreadID()));

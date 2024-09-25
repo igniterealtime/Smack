@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2023 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -587,7 +587,7 @@ public final class Configuration {
     }
 
     private static File findPropertiesFile() {
-        List<String> possibleLocations = new LinkedList<>();
+        List<String> possibleLocations = new ArrayList<>();
         possibleLocations.add("properties");
         String userHome = System.getProperty("user.home");
         if (userHome != null) {

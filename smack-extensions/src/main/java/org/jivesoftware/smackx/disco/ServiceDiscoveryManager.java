@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -772,7 +771,7 @@ public final class ServiceDiscoveryManager extends Manager {
                 return serviceDiscoInfo;
             }
         }
-        serviceDiscoInfo = new LinkedList<>();
+        serviceDiscoInfo = new ArrayList<>();
         // Send the disco packet to the server itself
         DiscoverInfo info;
         try {

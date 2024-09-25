@@ -54,6 +54,7 @@ public class AgentChatHistory extends IQ {
 
     private final List<AgentChatSession> agentChatSessions = new ArrayList<>();
 
+    @SuppressWarnings("JavaUtilDate")
     public AgentChatHistory(EntityBareJid agentJID, int maxSessions, Date startDate) {
         this();
         this.agentJID = agentJID;
@@ -116,6 +117,7 @@ public class AgentChatHistory extends IQ {
             return agentChatHistory;
         }
 
+        @SuppressWarnings("JavaUtilDate")
         private static AgentChatSession parseChatSetting(XmlPullParser parser)
                         throws XmlPullParserException, IOException {
             boolean done = false;

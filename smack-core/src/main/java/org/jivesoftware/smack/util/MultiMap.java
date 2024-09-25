@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2015-2021 Florian Schmaus
+ * Copyright © 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,13 +184,14 @@ public class MultiMap<K, V> {
     }
 
     /**
-     * Remove the given number of values for a given key. May return less values then requested.
+     * Remove the given number of values for a given key. May return less values than requested.
      *
      * @param key the key to remove from.
      * @param num the number of values to remove.
      * @return a list of the removed values.
      * @since 4.4.0
      */
+    @SuppressWarnings("MixedMutabilityReturnType")
     public List<V> remove(K key, int num) {
         List<V> values = map.get(key);
         if (values == null) {

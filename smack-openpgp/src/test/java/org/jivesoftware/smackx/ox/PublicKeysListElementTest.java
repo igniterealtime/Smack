@@ -70,6 +70,7 @@ public class PublicKeysListElementTest extends SmackTestSuite {
     }
 
     @Test
+    @SuppressWarnings("JavaUtilDate")
     public void listBuilderRefusesDuplicatesTest() {
         PublicKeysListElement.Builder builder = PublicKeysListElement.builder();
         String fp40 = "49545320414c4c2041424f555420444120484558";

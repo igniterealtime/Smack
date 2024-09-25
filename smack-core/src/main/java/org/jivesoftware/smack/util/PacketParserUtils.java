@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019-2023 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -87,7 +86,7 @@ public class PacketParserUtils {
         return parser;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public static <S extends Stanza> S parseStanza(String stanza) throws XmlPullParserException, SmackParsingException, IOException {
         return (S) parseStanza(getParserFor(stanza), XmlEnvironment.EMPTY);
     }
@@ -644,7 +643,7 @@ public class PacketParserUtils {
         assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
         String name;
         final int initialDepth = parser.getDepth();
-        List<String> methods = new LinkedList<>();
+        List<String> methods = new ArrayList<>();
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
             switch (eventType) {

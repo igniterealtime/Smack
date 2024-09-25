@@ -66,6 +66,7 @@ public class OXInstantMessagingManagerTest extends SmackTestSuite {
     }
 
     @Test
+    @SuppressWarnings("JavaUtilDate")
     public void test() throws IOException, PGPException, InvalidAlgorithmParameterException, NoSuchAlgorithmException,
             NoSuchProviderException, SmackException, MissingUserIdOnKeyException, InterruptedException, XMPPException,
             XmlPullParserException {

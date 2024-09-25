@@ -71,6 +71,7 @@ public class OpenPgpSelf extends OpenPgpContact {
      * @throws IOException IO is dangerous
      * @throws PGPException PGP is brittle
      */
+    @SuppressWarnings("JavaUtilDate")
     public PGPSecretKeyRing getSigningKeyRing() throws IOException, PGPException {
         PGPSecretKeyRingCollection secretKeyRings = getSecretKeys();
         if (secretKeyRings == null) {

@@ -362,6 +362,7 @@ public class OpenPgpContact {
      * @throws SmackException.NoResponseException in case the server doesn't respond.
      * @throws IOException IO is dangerous.
      */
+    @SuppressWarnings("JavaUtilDate")
     public void updateKeys(XMPPConnection connection, PublicKeysListElement metadata)
             throws InterruptedException, SmackException.NotConnectedException, SmackException.NoResponseException,
             IOException {

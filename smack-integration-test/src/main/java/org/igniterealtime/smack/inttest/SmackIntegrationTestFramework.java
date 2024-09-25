@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2023 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -698,9 +697,9 @@ public class SmackIntegrationTestFramework {
          */
         public final String testRunId = StringUtils.insecureRandomString(5).toLowerCase(Locale.US);
 
-        private final List<SuccessfulTest> successfulIntegrationTests = Collections.synchronizedList(new LinkedList<SuccessfulTest>());
-        private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new LinkedList<FailedTest>());
-        private final List<TestNotPossible> impossibleIntegrationTests = Collections.synchronizedList(new LinkedList<TestNotPossible>());
+        private final List<SuccessfulTest> successfulIntegrationTests = Collections.synchronizedList(new ArrayList<SuccessfulTest>());
+        private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new ArrayList<FailedTest>());
+        private final List<TestNotPossible> impossibleIntegrationTests = Collections.synchronizedList(new ArrayList<TestNotPossible>());
 
         // TODO: Ideally three would only be a list of disabledTests, but since we do not process a disabled test class
         // any further, we can not determine the concrete disabled tests.

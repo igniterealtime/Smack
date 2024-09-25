@@ -97,6 +97,7 @@ import org.jivesoftware.smack.util.XmppElementUtil;
  *     &lt;/extensionProvider&gt;
  * &lt;/smackProviders&gt;</pre>
  *
+ * <p>
  * If multiple provider entries attempt to register to handle the same element name and namespace,
  * the first entry loaded from the classpath will take precedence. Whenever a stanza extension
  * is found in a packet, parsing will be passed to the correct provider. Each provider
@@ -106,7 +107,8 @@ import org.jivesoftware.smack.util.XmppElementUtil;
  * set the properties of th class using the values in the stanza extension sub-element. When an
  * extension provider is not registered for an element name and namespace combination, Smack will
  * store all top-level elements of the sub-packet in DefaultPacketExtension object and then
- * attach it to the packet.<p>
+ * attach it to the packet.
+ * </p>
  *
  * @author Matt Tucker
  */

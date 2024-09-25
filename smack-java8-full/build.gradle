@@ -1,3 +1,7 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+}
+
 description = """\
 Full Smack library for Java SE."""
 
@@ -44,6 +48,7 @@ task convertModularXmppClientToServerConnectionStateGraphDotToPng(type: Exec) {
 	executable 'dot'
 	args "-Tpng", "-o", "${outputs.files.first()}",  "${inputs.files.first()}"
 }
+copyJavadocDocFiles.dependsOn convertModularXmppClientToServerConnectionStateGraphDotToPng
 
 task cleanGenerateFiles(type: Delete) {
 	delete 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.dot', 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.png'

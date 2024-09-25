@@ -109,6 +109,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @throws IOException if an I/O error occurred.
      */
+    @SuppressWarnings("JavaUtilDate")
     OmemoCachedDeviceList mergeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoDeviceListElement list) throws IOException {
         OmemoCachedDeviceList cached = loadCachedDeviceList(userDevice, contact);
 
@@ -142,6 +143,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * @throws IOException if an I/O error occurred.
      * @throws IllegalStateException when our IdentityKeyPair is null.
      */
+    @SuppressWarnings("JavaUtilDate")
     void changeSignedPreKey(OmemoDevice userDevice)
             throws CorruptedOmemoKeyException, IOException {
 

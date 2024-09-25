@@ -71,6 +71,7 @@ public class XmppElementUtil {
         return qname;
     }
 
+    @SuppressWarnings("MixedMutabilityReturnType")
     public static <E extends ExtensionElement> List<E> getElementsFrom(
                     MultiMap<QName, XmlElement> elementMap, Class<E> extensionElementClass) {
         QName qname = XmppElementUtil.getQNameFor(extensionElementClass);

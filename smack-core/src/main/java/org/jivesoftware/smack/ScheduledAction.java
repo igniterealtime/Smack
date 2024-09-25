@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Florian Schmaus
+ * Copyright 2018-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,11 +50,13 @@ public class ScheduledAction implements Delayed {
         return smackReactor.cancel(this);
     }
 
+    @SuppressWarnings("JavaUtilDate")
     public boolean isDue() {
         Date now = new Date();
         return now.after(releaseTime);
     }
 
+    @SuppressWarnings("JavaUtilDate")
     public long getTimeToDueMillis() {
         long now = System.currentTimeMillis();
         return releaseTime.getTime() - now;

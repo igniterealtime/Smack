@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.bytestreams.ibb;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -135,7 +135,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * list of listeners that respond to all In-Band Bytestream requests if there are no user
      * specific listeners for that request
      */
-    private final List<BytestreamListener> allRequestListeners = Collections.synchronizedList(new LinkedList<BytestreamListener>());
+    private final List<BytestreamListener> allRequestListeners = Collections.synchronizedList(new ArrayList<BytestreamListener>());
 
     /* listener that handles all incoming In-Band Bytestream requests */
     private final InitiationListener initiationListener;
@@ -162,7 +162,7 @@ public final class InBandBytestreamManager extends Manager implements Bytestream
      * list containing session IDs of In-Band Bytestream open packets that should be ignored by the
      * InitiationListener
      */
-    private final List<String> ignoredBytestreamRequests = Collections.synchronizedList(new LinkedList<String>());
+    private final List<String> ignoredBytestreamRequests = Collections.synchronizedList(new ArrayList<String>());
 
     /**
      * Returns the InBandBytestreamManager to handle In-Band Bytestreams for a given

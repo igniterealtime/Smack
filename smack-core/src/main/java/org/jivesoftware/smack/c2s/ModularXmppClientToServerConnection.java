@@ -301,7 +301,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         currentStateVertex = StateDescriptorGraph.convertToStateGraph(initialStateDescriptorVertex, connectionInternal);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public <CM extends ModularXmppClientToServerConnectionModule<? extends ModularXmppClientToServerConnectionModuleDescriptor>> CM getConnectionModuleFor(
                     Class<? extends ModularXmppClientToServerConnectionModuleDescriptor> descriptorClass) {
         return (CM) connectionModules.get(descriptorClass);

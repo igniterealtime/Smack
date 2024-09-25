@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -218,7 +218,7 @@ public class EntityCapsManagerTest extends SmackTestSuite {
         di.to(JidCreate.from("juliet@capulet.lit/chamber"));
         di.ofType(IQ.Type.result);
 
-        Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
+        Collection<DiscoverInfo.Identity> identities = new ArrayList<DiscoverInfo.Identity>();
         DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "pc", "Psi 0.11", "en");
         identities.add(i);
         i = new DiscoverInfo.Identity("client", "pc", "Ψ 0.11", "el");
@@ -241,7 +241,7 @@ public class EntityCapsManagerTest extends SmackTestSuite {
         di.to(")juliet@capulet.lit/chamber");
         di.ofType(IQ.Type.result);
 
-        Collection<DiscoverInfo.Identity> identities = new LinkedList<DiscoverInfo.Identity>();
+        Collection<DiscoverInfo.Identity> identities = new ArrayList<DiscoverInfo.Identity>();
         DiscoverInfo.Identity i = new DiscoverInfo.Identity("client", "pc", "Psi 0.11", "en");
         identities.add(i);
         i = new DiscoverInfo.Identity("client", "pc", "Ψ 0.11", "el");

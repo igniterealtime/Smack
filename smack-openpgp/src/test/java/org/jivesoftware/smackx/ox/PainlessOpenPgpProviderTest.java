@@ -72,6 +72,7 @@ public class PainlessOpenPgpProviderTest extends SmackTestSuite {
     }
 
     @Test
+    @SuppressWarnings("JavaUtilDate")
     public void encryptDecryptTest() throws PGPException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, IOException, MissingUserIdOnKeyException, XmlPullParserException {
 
         // Initialize

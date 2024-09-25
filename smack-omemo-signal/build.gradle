@@ -1,3 +1,8 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.android-conventions'
+}
+
 description="""
 Smack API for XEP-0384: OMEMO Encryption using libsignal
 """
@@ -7,6 +12,9 @@ dependencies {
 	api project(":smack-extensions")
 	api project(":smack-omemo")
 	implementation 'org.whispersystems:signal-protocol-java:2.8.1'
+
+	// TODO: Migrate Junit4 tests to Junit5.
+	testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
 
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testImplementation project(path: ":smack-omemo", configuration: "testRuntime")

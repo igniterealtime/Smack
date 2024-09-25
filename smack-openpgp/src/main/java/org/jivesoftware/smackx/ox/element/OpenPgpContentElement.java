@@ -132,7 +132,7 @@ public abstract class OpenPgpContentElement implements ExtensionElement {
      * @param <PE> type of the ExtensionElement.
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public <PE extends ExtensionElement> PE getExtension(String elementName, String namespace) {
         if (namespace == null) {
             return null;

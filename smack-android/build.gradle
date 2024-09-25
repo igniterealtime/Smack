@@ -1,3 +1,9 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.android-conventions'
+	id 'org.igniterealtime.smack.android-boot-classpath-conventions'
+}
+
 description = """\
 Smack for Android.
 All the required dependencies to run Smack on Android.
@@ -16,13 +22,13 @@ dependencies {
 	// used in non-Android projects.
 	implementation "org.minidns:minidns-android21:$miniDnsVersion"
 
-	// androidProjects lists all projects that are checked to compile against android.jar
-	// Filter out the optional Smack dependencies from androidProjects
-	(androidProjects - androidOptionalProjects)
-	.each { project ->
-		api project
-	}
+	api project(':smack-core')
+	api project(':smack-im')
+	api project(':smack-resolver-minidns')
+	api project(':smack-sasl-provided')
+	api project(':smack-xmlparser')
+	api project(':smack-xmlparser-xpp3')
 
 	// Add the Android jar to the Eclipse .classpath.
-	compileClasspath files(androidBootClasspath)
+	implementation files(androidBootClasspath)
 }

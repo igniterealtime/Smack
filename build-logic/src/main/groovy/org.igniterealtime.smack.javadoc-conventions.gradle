@@ -1,0 +1,30 @@
+plugins {
+	// Javadoc linking requires repositories to bet configured. And
+	// those are declared in global-conventions, hence we add it here.
+	id 'org.igniterealtime.smack.global-conventions'
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+	tasks.withType(Javadoc) {
+		// The '-quiet' as second argument is actually a hack,
+		// since the one parameter addStringOption doesn't seem to
+		// work, we extra add '-quiet', which is added anyway by
+		// gradle.
+		// We disable 'missing' as we do most of javadoc checking via checkstyle.
+		options.addStringOption('Xdoclint:all,-missing', '-quiet')
+		// Abort on javadoc warnings.
+		// See JDK-8200363 (https://bugs.openjdk.java.net/browse/JDK-8200363)
+		// for information about the -Xwerror option.
+		options.addStringOption('Xwerror', '-quiet')
+	}
+}
+
+if (JavaVersion.current().isJava9Compatible()) {
+	tasks.withType(Javadoc) {
+		options.addStringOption('-release', javaMajor)
+	}
+}
+
+tasks.withType(Javadoc) {
+	options.charSet = "UTF-8"
+}

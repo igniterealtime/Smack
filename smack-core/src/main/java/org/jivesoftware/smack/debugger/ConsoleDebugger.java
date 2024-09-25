@@ -41,6 +41,7 @@ public class ConsoleDebugger extends AbstractDebugger {
         super(connection);
     }
 
+    @SuppressWarnings("JavaUtilDate")
     @Override
     protected void log(String logMessage) {
         String formatedDate;

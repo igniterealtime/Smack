@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.workgroup.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +45,7 @@ public class MetaDataUtils {
      * @throws XmlPullParserException if an error occurs while parsing the XML.
      * @throws IOException            if an error occurs while parsing the XML.
      */
+    @SuppressWarnings("MixedMutabilityReturnType")
     public static Map<String, List<String>> parseMetaData(XmlPullParser parser) throws XmlPullParserException, IOException {
         XmlPullParser.Event eventType = parser.getEventType();
 
@@ -52,7 +53,7 @@ public class MetaDataUtils {
         if ((eventType == XmlPullParser.Event.START_ELEMENT)
                 && parser.getName().equals(MetaData.ELEMENT_NAME)
                 && parser.getNamespace().equals(MetaData.NAMESPACE)) {
-            Map<String, List<String>> metaData = new Hashtable<>();
+            Map<String, List<String>> metaData = new LinkedHashMap<>();
 
             eventType = parser.next();
 

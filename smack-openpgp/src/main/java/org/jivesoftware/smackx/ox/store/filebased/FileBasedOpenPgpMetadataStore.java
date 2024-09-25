@@ -118,6 +118,7 @@ public class FileBasedOpenPgpMetadataStore extends AbstractOpenPgpMetadataStore 
         }
     }
 
+    @SuppressWarnings("JavaUtilDate")
     static void writeFingerprintsAndDates(Map<OpenPgpV4Fingerprint, Date> data, File destination)
             throws IOException {
         if (data == null || data.isEmpty()) {

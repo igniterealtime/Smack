@@ -160,6 +160,7 @@ public class EnhancedDebugger extends SmackDebugger {
     private ReaderListener readerListener;
     private WriterListener writerListener;
 
+    @SuppressWarnings("JavaUtilDate")
     private Date creationTime = new Date();
 
     // Statistics variables
@@ -756,6 +757,7 @@ public class EnhancedDebugger extends SmackDebugger {
      * @param dateFormatter the SimpleDateFormat to use to format Dates
      * @param packet        the read stanza to add to the table
      */
+    @SuppressWarnings("JavaUtilDate")
     private void addReadPacketToTable(final SimpleDateFormat dateFormatter, final TopLevelStreamElement packet) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -827,6 +829,7 @@ public class EnhancedDebugger extends SmackDebugger {
      * @param dateFormatter the SimpleDateFormat to use to format Dates
      * @param packet        the sent stanza to add to the table
      */
+    @SuppressWarnings("JavaUtilDate")
     private void addSentPacketToTable(final SimpleDateFormat dateFormatter, final TopLevelStreamElement packet) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

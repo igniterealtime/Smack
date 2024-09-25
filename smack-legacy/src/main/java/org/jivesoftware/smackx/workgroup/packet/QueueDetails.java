@@ -145,6 +145,7 @@ public final class QueueDetails implements ExtensionElement {
      */
     public static class Provider extends ExtensionElementProvider<QueueDetails> {
 
+        @SuppressWarnings("JavaUtilDate")
         @Override
         public QueueDetails parse(XmlPullParser parser,
                         int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,

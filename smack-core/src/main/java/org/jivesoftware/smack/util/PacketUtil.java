@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2021 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class PacketUtil {
      *
      * @return the extension element
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public static <PE extends XmlElement> PE extensionElementFrom(Collection<XmlElement> collection,
                     String element, String namespace) {
         for (XmlElement packetExtension : collection) {

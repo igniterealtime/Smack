@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2020 Florian Schmaus
+ * Copyright 2013-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.minidns.record.SRV;
  * @author Florian Schmaus
  *
  */
+@SuppressWarnings("JdkObsolete")
 public class JavaxResolver extends DNSResolver implements SmackInitializer {
 
     private static JavaxResolver instance;

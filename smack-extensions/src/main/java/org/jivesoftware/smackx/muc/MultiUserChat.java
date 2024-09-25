@@ -1842,7 +1842,7 @@ public class MultiUserChat {
 
     /**
      * Returns the presence info for a particular user, or <code>null</code> if the user
-     * is not in the room.<p>
+     * is not in the room.
      *
      * @param user the room occupant to search for his presence. The format of user must
      * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).
@@ -1856,7 +1856,7 @@ public class MultiUserChat {
     /**
      * Returns the Occupant information for a particular occupant, or <code>null</code> if the
      * user is not in the room. The Occupant object may include information such as full
-     * JID of the user as well as the role and affiliation of the user in the room.<p>
+     * JID of the user as well as the role and affiliation of the user in the room.
      *
      * @param user the room occupant to search for his presence. The format of user must
      * be: roomName@service/nickname (e.g. darkcave@macbeth.shakespeare.lit/thirdwitch).

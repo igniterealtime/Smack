@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2021 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ public interface StanzaView extends XmlLangElement {
     /**
      * Returns who the stanza is being sent "to", or <code>null</code> if
      * the value is not set. The XMPP protocol often makes the "to"
-     * attribute optional, so it does not always need to be set.<p>
+     * attribute optional, so it does not always need to be set.
      *
      * @return who the stanza is being sent to, or <code>null</code> if the
      *      value has not been set.
@@ -46,7 +46,7 @@ public interface StanzaView extends XmlLangElement {
     /**
      * Returns who the stanza is being sent "from" or <code>null</code> if
      * the value is not set. The XMPP protocol often makes the "from"
-     * attribute optional, so it does not always need to be set.<p>
+     * attribute optional, so it does not always need to be set.
      *
      * @return who the stanza is being sent from, or <code>null</code> if the
      *      value has not been set.

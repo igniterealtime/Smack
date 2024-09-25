@@ -89,6 +89,7 @@ public class Protocol {
     public boolean printProtocol = false;
 
     // responses to requests are taken form this queue
+    @SuppressWarnings("JdkObsolete")
     private final Queue<Stanza> responses = new LinkedList<>();
 
     // list of verifications

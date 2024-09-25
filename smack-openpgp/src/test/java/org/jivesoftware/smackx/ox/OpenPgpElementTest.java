@@ -51,6 +51,7 @@ public class OpenPgpElementTest extends SmackTestSuite {
     private final Set<Jid> recipients;
 
     // 2014-07-10T15:06:00.000+00:00
+    @SuppressWarnings("JavaUtilDate")
     private static final Date testDate = new Date(1405004760000L);
 
     public OpenPgpElementTest() throws XmppStringprepException {

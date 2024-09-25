@@ -1,7 +1,7 @@
-// Note that this is also declared in the main build.gradle for
-// subprojects, but since evaluationDependsOnChildren is enabled we
-// need to declare it here too to have bundle{bnd{...}} available
-apply plugin: 'biz.aQute.bnd.builder'
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.android-conventions'
+}
 
 description = """\
 Smack core components."""
@@ -15,6 +15,9 @@ dependencies {
 	api "org.jxmpp:jxmpp-core:$jxmppVersion"
 	api "org.jxmpp:jxmpp-jid:$jxmppVersion"
 	api "org.minidns:minidns-core:$miniDnsVersion"
+
+	// TODO: Migrate Junit4 tests to Junit5.
+	testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
 
 	testFixturesImplementation project(':smack-xmlparser-stax')
 	testFixturesImplementation project(':smack-xmlparser-xpp3')
@@ -59,7 +62,7 @@ task createVersionResource(type: CreateFileTask) {
 	outputFile = new File(projectDir, 'src/main/resources/org.jivesoftware.smack/version')
 }
 
-compileJava.dependsOn(createVersionResource)
+processResources.dependsOn(createVersionResource)
 
 jar {
 	bundle {

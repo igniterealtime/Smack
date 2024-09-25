@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2019 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @return the next stanza result, or <code>null</code> if there are no more
      *      results.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public synchronized <P extends Stanza> P pollResult() {
         return (P) resultQueue.poll();
     }
@@ -134,6 +134,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @return the next available packet.
      * @throws XMPPErrorException in case an error response.
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <P extends Stanza> P pollResultOrThrow() throws XMPPErrorException {
         P result = pollResult();
         if (result != null) {
@@ -150,7 +151,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @return the next available packet.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     // TODO: Consider removing this method as it is hardly ever useful.
     public synchronized <P extends Stanza> P nextResultBlockForever() throws InterruptedException {
         throwIfCancelled();
@@ -175,6 +176,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @return the next available packet.
      * @throws InterruptedException if the calling thread was interrupted.
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <P extends Stanza> P nextResult() throws InterruptedException {
         return nextResult(connection.getReplyTimeout());
     }
@@ -191,7 +193,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @return the next available stanza or <code>null</code> on timeout or connection error.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public <P extends Stanza> P nextResult(long timeout) throws InterruptedException {
         throwIfCancelled();
         P res = null;
@@ -223,6 +225,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @see #nextResultOrThrow(long)
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <P extends Stanza> P nextResultOrThrow() throws NoResponseException, XMPPErrorException,
                     InterruptedException, NotConnectedException {
         return nextResultOrThrow(connection.getReplyTimeout());
@@ -263,6 +266,7 @@ public final class StanzaCollector implements AutoCloseable {
      * @throws InterruptedException if the calling thread was interrupted.
      * @throws NotConnectedException if there was no response and the connection got disconnected.
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <P extends Stanza> P nextResultOrThrow(long timeout) throws NoResponseException,
                     XMPPErrorException, InterruptedException, NotConnectedException {
         P result;

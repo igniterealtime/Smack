@@ -91,6 +91,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         user = getUserJid();
     }
 
+    @SuppressWarnings("JavaUtilDate")
     @Override
     protected void connectInternal() {
         connected = true;
@@ -162,6 +163,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param <P> the top level stream element class.
      * @return a sent packet.
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <P extends TopLevelStreamElement> P getSentPacket() {
         return getSentPacket(5 * 60);
     }
@@ -176,7 +178,7 @@ public class DummyConnection extends AbstractXMPPConnection {
      * @param <P> the top level stream element class.
      * @return a sent packet.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public <P extends TopLevelStreamElement> P getSentPacket(int wait) {
         try {
             return (P) queue.poll(wait, TimeUnit.SECONDS);

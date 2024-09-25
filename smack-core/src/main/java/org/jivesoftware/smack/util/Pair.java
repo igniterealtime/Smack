@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus.
+ * Copyright 2020-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ public final class Pair<F, S> {
         return new Pair<>(first, second);
     }
 
+    @SuppressWarnings("ReturnValueIgnored")
     public static <F extends Object, S extends Object> Pair<F, S> createAndInitHashCode(F first, S second) {
         Pair<F, S> pair = new Pair<>(first, second);
         pair.hashCode();

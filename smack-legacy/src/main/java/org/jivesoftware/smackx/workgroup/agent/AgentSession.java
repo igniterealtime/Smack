@@ -710,6 +710,7 @@ public class AgentSession {
         }
     }
 
+    @SuppressWarnings("JavaUtilDate")
     private void fireOfferRequestEvent(OfferRequestProvider.OfferRequestPacket requestPacket) {
         Offer offer = new Offer(this.connection, this, requestPacket.getUserID(),
                 requestPacket.getUserJID(), this.getWorkgroupJID(),
@@ -723,6 +724,7 @@ public class AgentSession {
         }
     }
 
+    @SuppressWarnings("JavaUtilDate")
     private void fireOfferRevokeEvent(OfferRevokeProvider.OfferRevokePacket orp) {
         RevokedOffer revokedOffer = new RevokedOffer(orp.getUserJID(), orp.getUserID(),
                 this.getWorkgroupJID(), orp.getSessionID(), orp.getReason(), new Date());
