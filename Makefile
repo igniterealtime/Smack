@@ -5,8 +5,8 @@ all: check jacocoRootReport javadocAll sinttest
 
 .PHONY: codecov
 codecov:
-	$(GRADLE) smack-java8-full:testCodeCoverageReport
-	echo "Report available at smack-java8-full/build/reports/jacoco/testCodeCoverageReport/html/index.html"
+	$(GRADLE) smack-java11-full:testCodeCoverageReport
+	echo "Report available at smack-java11-full/build/reports/jacoco/testCodeCoverageReport/html/index.html"
 
 .PHONY: check
 check:
