@@ -55,6 +55,7 @@ public class JingleTransport implements ExtensionElement {
      *
      * @param candidate A transport candidate element to add.
      */
+    @SuppressWarnings("this-escape")
     public JingleTransport(final JingleTransportCandidate candidate) {
         super();
         addCandidate(candidate);
@@ -202,6 +203,7 @@ public class JingleTransport implements ExtensionElement {
          *
          * @param candidate the jmf transport candidate
          */
+        @SuppressWarnings("this-escape")
         public JingleTransportCandidate(final TransportCandidate candidate) {
             super();
             setMediaTransport(candidate);
@@ -272,6 +274,7 @@ public class JingleTransport implements ExtensionElement {
     public static class Ice extends JingleTransport {
         public static final String NAMESPACE = "urn:xmpp:tmp:jingle:transports:ice-udp";
 
+        @SuppressWarnings("this-escape")
         public Ice() {
             super();
             setNamespace(NAMESPACE);
@@ -359,6 +362,7 @@ public class JingleTransport implements ExtensionElement {
     public static class RawUdp extends JingleTransport {
         public static final String NAMESPACE = "http://www.xmpp.org/extensions/xep-0177.html#ns";
 
+        @SuppressWarnings("this-escape")
         public RawUdp() {
             super();
             setNamespace(NAMESPACE);

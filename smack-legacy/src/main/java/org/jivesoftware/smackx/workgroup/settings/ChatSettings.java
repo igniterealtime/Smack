@@ -66,6 +66,7 @@ public class ChatSettings extends IQ {
         settings = new ArrayList<>();
     }
 
+    @SuppressWarnings("this-escape")
     public ChatSettings(String key) {
         this();
         setKey(key);

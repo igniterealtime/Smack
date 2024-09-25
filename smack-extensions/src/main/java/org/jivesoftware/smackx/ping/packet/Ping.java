@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2012-2019 Florian Schmaus
+ * Copyright 2012-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ public class Ping extends SimpleIQ {
         super(ELEMENT, NAMESPACE);
     }
 
+    @SuppressWarnings("this-escape")
     public Ping(Jid to) {
         this();
         setTo(to);

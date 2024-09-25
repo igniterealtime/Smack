@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class DnsIq extends IQ {
         this(new DnsMessage(dnsMessage));
     }
 
+    @SuppressWarnings("this-escape")
     public DnsIq(DnsMessage dnsQuery, Jid to) {
         this(dnsQuery);
         setTo(to);

@@ -41,6 +41,7 @@ public class MUCLightGetConfigsIQ extends IQ {
      * @param roomJid TODO javadoc me please
      * @param version TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MUCLightGetConfigsIQ(Jid roomJid, String version) {
         super(ELEMENT, NAMESPACE);
         this.version = version;

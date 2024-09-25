@@ -43,6 +43,7 @@ public class DisablePushNotificationsIQ extends IQ {
     private final Jid jid;
     private final String node;
 
+    @SuppressWarnings("this-escape")
     public DisablePushNotificationsIQ(Jid jid, String node) {
         super(ELEMENT, NAMESPACE);
         this.jid = jid;

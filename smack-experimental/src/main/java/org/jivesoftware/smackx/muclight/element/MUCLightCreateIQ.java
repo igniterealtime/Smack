@@ -53,6 +53,7 @@ public class MUCLightCreateIQ extends IQ {
      * @param customConfigs TODO javadoc me please
      * @param occupants TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MUCLightCreateIQ(EntityJid room, String roomName, String subject, HashMap<String, String> customConfigs,
             List<Jid> occupants) {
         super(ELEMENT, NAMESPACE);

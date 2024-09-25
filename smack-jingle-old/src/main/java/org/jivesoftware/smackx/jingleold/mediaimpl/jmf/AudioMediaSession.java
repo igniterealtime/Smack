@@ -53,6 +53,7 @@ public class AudioMediaSession extends JingleMediaSession {
      * @param locator     media locator
      * @param jingleSession the jingle session.
      */
+    @SuppressWarnings("this-escape")
     public AudioMediaSession(final PayloadType payloadType, final TransportCandidate remote,
             final TransportCandidate local, String locator, JingleSession jingleSession) {
         super(payloadType, remote, local, locator == null ? "dsound://" : locator, jingleSession);

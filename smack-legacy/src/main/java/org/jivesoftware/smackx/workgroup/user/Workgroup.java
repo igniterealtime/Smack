@@ -99,6 +99,7 @@ public class Workgroup {
      * @param connection   an XMPP connection which must have already undergone a
      *                     successful login.
      */
+    @SuppressWarnings("this-escape")
     public Workgroup(EntityBareJid workgroupJID, XMPPConnection connection) {
         // Login must have been done before passing in connection.
         if (!connection.isAuthenticated()) {

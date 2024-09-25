@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2021 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class Time extends IQ implements TimeView {
     private final String utc;
     private final String tzo;
 
+    @SuppressWarnings("this-escape")
     public Time(TimeBuilder timeBuilder) {
         super(timeBuilder, ELEMENT, NAMESPACE);
         utc = timeBuilder.getUtc();

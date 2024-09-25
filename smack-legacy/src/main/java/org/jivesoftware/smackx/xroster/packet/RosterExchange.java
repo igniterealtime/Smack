@@ -70,6 +70,7 @@ public class RosterExchange implements ExtensionElement {
      *
      * @param roster the roster to send to other XMPP entity.
      */
+    @SuppressWarnings("this-escape")
     public RosterExchange(Roster roster) {
         // Add all the roster entries to the new RosterExchange
         for (RosterEntry rosterEntry : roster.getEntries()) {

@@ -42,6 +42,7 @@ import org.jxmpp.jid.parts.Resourcepart;
 @SpecificationReference(document = "XEP-0048", version = "1.2")
 public class MultiUserChatLowLevelIntegrationTest extends AbstractSmackLowLevelIntegrationTest {
 
+    @SuppressWarnings("this-escape")
     public MultiUserChatLowLevelIntegrationTest(SmackIntegrationTestEnvironment environment) throws Exception {
         super(environment);
         AbstractXMPPConnection connection = getConnectedConnection();

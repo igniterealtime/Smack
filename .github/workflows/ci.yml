@@ -11,8 +11,9 @@ jobs:
       matrix:
         java:
           - 17
+          - 21
     env:
-      PRIMARY_JAVA_VERSION: 17
+      PRIMARY_JAVA_VERSION: 21
 
     steps:
       - name: Checkout

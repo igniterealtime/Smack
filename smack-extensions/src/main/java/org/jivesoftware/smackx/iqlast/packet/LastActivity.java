@@ -45,11 +45,13 @@ public class LastActivity extends IQ {
     public long lastActivity = -1;
     public String message;
 
+    @SuppressWarnings("this-escape")
     public LastActivity() {
         super(ELEMENT, NAMESPACE);
         setType(IQ.Type.get);
     }
 
+    @SuppressWarnings("this-escape")
     public LastActivity(Jid to) {
         this();
         setTo(to);

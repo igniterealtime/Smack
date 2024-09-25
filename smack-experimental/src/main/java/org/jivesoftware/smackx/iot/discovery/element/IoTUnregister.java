@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ public class IoTUnregister extends IQ {
 
     private final NodeInfo nodeInfo;
 
+    @SuppressWarnings("this-escape")
     public IoTUnregister(NodeInfo nodeInfo) {
         super(ELEMENT, NAMESPACE);
         this.nodeInfo = nodeInfo;

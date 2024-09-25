@@ -57,6 +57,7 @@ public abstract class AdHocCommandHandler extends AbstractAdHocCommand {
      */
     private int currentStage;
 
+    @SuppressWarnings("this-escape")
     public AdHocCommandHandler(String node, String name, String sessionId) {
         super(node, name);
         setSessionId(sessionId);

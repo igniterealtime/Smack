@@ -36,6 +36,7 @@ public class Close extends IQ {
      *
      * @param sessionID unique session ID identifying this In-Band Bytestream
      */
+    @SuppressWarnings("this-escape")
     public Close(String sessionID) {
         super(ELEMENT, NAMESPACE);
         if (sessionID == null || "".equals(sessionID)) {

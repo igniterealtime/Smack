@@ -88,7 +88,7 @@ public abstract class IQ extends Stanza implements IqView {
     }
 
     @Override
-    public Type getType() {
+    public final Type getType() {
         return type;
     }
 

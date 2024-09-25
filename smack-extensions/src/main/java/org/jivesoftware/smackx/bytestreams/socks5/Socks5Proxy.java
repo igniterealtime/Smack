@@ -149,6 +149,7 @@ public class Socks5Proxy {
      *
      * @param serverSocket the server socket to use
      */
+    @SuppressWarnings("this-escape")
     protected Socks5Proxy(ServerSocket serverSocket) {
         this.serverProcess = new Socks5ServerProcess();
         this.serverSocket = serverSocket;

@@ -37,6 +37,7 @@ public class TestMediaSession extends JingleMediaSession {
      * @param locator     media locator
      * @param jingleSession the jingle session.
      */
+    @SuppressWarnings("this-escape")
     public TestMediaSession(final PayloadType payloadType, final TransportCandidate remote, final TransportCandidate local,
             final String locator, JingleSession jingleSession) {
         super(payloadType, remote, local, "Test", jingleSession);

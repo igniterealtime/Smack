@@ -49,6 +49,7 @@ public class FillableForm extends FilledForm {
 
     private final Map<String, FormField> filledFields = new HashMap<>();
 
+    @SuppressWarnings("this-escape")
     public FillableForm(DataForm dataForm) {
         super(dataForm);
         if (dataForm.getType() != DataForm.Type.form) {

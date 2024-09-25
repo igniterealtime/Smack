@@ -34,6 +34,7 @@ public class Data extends IQ {
      *
      * @param data data stanza extension containing the encoded data
      */
+    @SuppressWarnings("this-escape")
     public Data(DataPacketExtension data) {
         super(DataPacketExtension.ELEMENT, DataPacketExtension.NAMESPACE);
         if (data == null) {

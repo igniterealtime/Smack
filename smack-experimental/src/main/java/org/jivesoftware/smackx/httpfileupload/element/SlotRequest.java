@@ -53,6 +53,7 @@ public class SlotRequest extends IQ {
         this(uploadServiceAddress, filename, size, contentType, NAMESPACE);
     }
 
+    @SuppressWarnings("this-escape")
     protected SlotRequest(DomainBareJid uploadServiceAddress, String filename, long size, String contentType, String namespace) {
         super(ELEMENT, namespace);
 

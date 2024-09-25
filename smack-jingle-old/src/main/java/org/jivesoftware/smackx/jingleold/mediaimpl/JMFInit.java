@@ -43,6 +43,7 @@ public class JMFInit extends Frame implements Runnable {
 
     private boolean visible = false;
 
+    @SuppressWarnings("this-escape")
     public JMFInit(String[] args, boolean visible) {
         super("Initializing JMF...");
 

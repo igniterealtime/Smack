@@ -41,6 +41,7 @@ public class ProxyInfo {
     private ProxyType proxyType;
     private final ProxySocketConnection proxySocketConnection;
 
+    @SuppressWarnings("this-escape")
     public ProxyInfo(ProxyType pType, String pHost, int pPort, String pUser,
                         String pPass) {
         this.proxyType = pType;

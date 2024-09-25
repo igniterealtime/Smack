@@ -45,6 +45,7 @@ public class MamQueryIQ extends IQ {
      * @param version TODO javadoc me please
      * @param queryId TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MamQueryIQ(MamVersion version, String queryId) {
         this(version, queryId, null, null);
         setType(IQ.Type.get);
@@ -79,6 +80,7 @@ public class MamQueryIQ extends IQ {
      * @param node TODO javadoc me please
      * @param dataForm TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MamQueryIQ(MamVersion version, String queryId, String node, DataForm dataForm) {
         super(ELEMENT, version.getNamespace());
         this.queryId = queryId;
