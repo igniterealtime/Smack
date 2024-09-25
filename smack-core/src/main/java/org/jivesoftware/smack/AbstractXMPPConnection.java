@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2022 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1067,6 +1068,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <I extends IQ> I sendIqRequestAndWaitForResponse(IQ request)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         StanzaCollector collector = createStanzaCollectorAndSend(request);
@@ -1214,7 +1216,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
         Stanza packet = (Stanza) sendTopLevelStreamElement;
 
-        final List<StanzaListener> listenersToNotify = new LinkedList<>();
+        final List<StanzaListener> listenersToNotify = new ArrayList<>();
         synchronized (sendListeners) {
             for (ListenerWrapper listenerWrapper : sendListeners.values()) {
                 if (listenerWrapper.filterMatches(packet)) {
@@ -1284,7 +1286,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     private static <MPB extends MessageOrPresenceBuilder<MP, MPB>, MP extends MessageOrPresence<MPB>> MP fireMessageOrPresenceInterceptors(
                     MP messageOrPresence, Map<Consumer<MPB>, GenericInterceptorWrapper<MPB, MP>> interceptors) {
-        List<Consumer<MPB>> interceptorsToInvoke = new LinkedList<>();
+        List<Consumer<MPB>> interceptorsToInvoke = new ArrayList<>();
         synchronized (interceptors) {
             for (GenericInterceptorWrapper<MPB, MP> interceptorWrapper : interceptors.values()) {
                 if (interceptorWrapper.filterMatches(messageOrPresence)) {
@@ -1319,7 +1321,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @return the, potentially modified stanza, after the interceptors are run.
      */
     private Stanza firePacketInterceptors(Stanza packet) {
-        List<StanzaListener> interceptorsToInvoke = new LinkedList<>();
+        List<StanzaListener> interceptorsToInvoke = new ArrayList<>();
         synchronized (interceptors) {
             for (InterceptorWrapper interceptorWrapper : interceptors.values()) {
                 if (interceptorWrapper.filterMatches(packet)) {
@@ -1604,7 +1606,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // First handle the async recv listeners. Note that this code is very similar to what follows a few lines below,
         // the only difference is that asyncRecvListeners is used here and that the packet listeners are started in
         // their own thread.
-        final Collection<StanzaListener> listenersToNotify = new LinkedList<>();
+        final Collection<StanzaListener> listenersToNotify = new ArrayList<>();
         extractMatchingListeners(packet, asyncRecvListeners, listenersToNotify);
         for (final StanzaListener listener : listenersToNotify) {
             asyncGoLimited(new Runnable() {
@@ -1930,7 +1932,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         // Default implementation does nothing
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     @Override
     public <F extends XmlElement> F getFeature(QName qname) {
         return (F) streamFeatures.get(qname);
@@ -2175,6 +2177,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * {@link #maxAsyncRunnables}. Note that we use a {@code LinkedList} in order to avoid space blowups in case the
      * list ever becomes very big and shrinks again.
      */
+    @SuppressWarnings("JdkObsolete")
     private final Queue<Runnable> deferredAsyncRunnables = new LinkedList<>();
 
     private int deferredAsyncRunnablesCount;

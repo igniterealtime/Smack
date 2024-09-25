@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smackx.disco.packet;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -40,7 +40,7 @@ public class DiscoverItems extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "http://jabber.org/protocol/disco#items";
 
-    private final List<Item> items = new LinkedList<>();
+    private final List<Item> items = new ArrayList<>();
     private String node;
 
     public DiscoverItems() {

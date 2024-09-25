@@ -247,8 +247,8 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
         assertEquals(0, store.loadOmemoSignedPreKeys(alice).size());
     }
 
-    @SuppressWarnings("UndefinedEquals")
     @Test
+    @SuppressWarnings({"UndefinedEquals", "JavaUtilDate"})
     public void loadStoreDateOfLastSignedPreKeyRenewal() throws IOException {
         assertNull("The date of last signed preKey renewal must be null at this stage.",
                 store.getDateOfLastSignedPreKeyRenewal(alice));
@@ -258,8 +258,8 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
         assertEquals("Dates must equal.", after, before);
     }
 
-    @SuppressWarnings("UndefinedEquals")
     @Test
+    @SuppressWarnings({"UndefinedEquals", "JavaUtilDate"})
     public void loadStoreDateOfLastMessageReceived() throws IOException {
         assertNull("The date of last message received must be null at this stage.",
                 store.getDateOfLastReceivedMessage(alice, bob));

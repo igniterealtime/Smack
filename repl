@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-set -e
-set -u
-set -o pipefail
+set -euo pipefail
 
 JDWP=false
 JDWP_PORT=8000
@@ -37,12 +35,13 @@ echo "Compiling and computing classpath (May take a while)"
 # /smack/smack-repl/build/classes/main:/smack/smack-repl/build/
 # resources/main:/smack/smack-tcp/build/libs/smack-tcp-4.2.0-alpha4-SNAPSHOT.jar
 # So perform a "tail -n1" on the output of gradle
-GRADLE_CLASSPATH="$(gradle :smack-repl:printClasspath --quiet |\
+GRADLE_CLASSPATH="$(${GRADLE_BIN:-./gradlew} :smack-repl:printClasspath --quiet |\
 	tail -n1)"
 echo "Finished, starting REPL"
 
-java "${EXTRA_JAVA_ARGS[@]}" \
+exec java \
+	"${EXTRA_JAVA_ARGS[@]}" \
 	-Dscala.usejavacp=true \
 	-classpath "${GRADLE_CLASSPATH}" \
 	ammonite.Main \
-	--predef "smack-repl/scala.repl"
+	--predef smack-repl/scala.repl

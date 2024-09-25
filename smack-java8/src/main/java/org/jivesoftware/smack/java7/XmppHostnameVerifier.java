@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@ import java.security.Principal;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -135,7 +135,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
     private static void matchDns(String name, X509Certificate cert) throws CertificateException {
         Collection<List<?>> subjAltNames = cert.getSubjectAlternativeNames();
         if (subjAltNames != null) {
-            List<String> nonMatchingDnsAltnames = new LinkedList<>();
+            List<String> nonMatchingDnsAltnames = new ArrayList<>();
             for (List<?> san : subjAltNames) {
                 if (((Integer) san.get(0)).intValue() != ALTNAME_DNS) {
                     continue;
@@ -253,7 +253,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
         if (subjectAlternativeNames == null) {
             throw new CertificateException("No subject alternative names present");
         }
-        List<String> nonMatchingIpAltnames = new LinkedList<>();
+        List<String> nonMatchingIpAltnames = new ArrayList<>();
         for (List<?> san : subjectAlternativeNames) {
             if (((Integer) san.get(0)).intValue() != ALTNAME_IP) {
                 continue;

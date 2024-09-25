@@ -19,7 +19,6 @@ package org.jivesoftware.smackx.disco.packet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -184,7 +183,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
      * @return true if duplicate identities where found, otherwise false
      */
     public boolean containsDuplicateIdentities() {
-        List<Identity> checkedIdentities = new LinkedList<>();
+        List<Identity> checkedIdentities = new ArrayList<>(identities.size());
         for (Identity i : identities) {
             for (Identity i2 : checkedIdentities) {
                 if (i.equals(i2))

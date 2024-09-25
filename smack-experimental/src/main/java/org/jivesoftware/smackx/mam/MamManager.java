@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017-2023 Florian Schmaus, 2016-2017 Fernando Ramirez
+ * Copyright © 2017-2024 Florian Schmaus, 2016-2017 Fernando Ramirez
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -387,6 +387,7 @@ public final class MamManager extends Manager {
                 return this;
             }
 
+            @SuppressWarnings("JavaUtilDate")
             public Builder limitResultsSince(Date start) {
                 if (start == null) {
                     return this;
@@ -415,6 +416,7 @@ public final class MamManager extends Manager {
                 return this;
             }
 
+            @SuppressWarnings("JavaUtilDate")
             public Builder limitResultsBefore(Date end) {
                 if (end == null) {
                     return this;

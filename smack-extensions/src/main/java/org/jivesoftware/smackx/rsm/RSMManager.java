@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2021 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.rsm;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.XmlElement;
@@ -29,7 +29,7 @@ import org.jivesoftware.smackx.rsm.packet.RSMSet.PageDirection;
 public class RSMManager {
 
     Collection<XmlElement> page(int max) {
-        List<XmlElement> packetExtensions = new LinkedList<>();
+        List<XmlElement> packetExtensions = new ArrayList<>();
         packetExtensions.add(new RSMSet(max));
         return packetExtensions;
     }
@@ -45,7 +45,7 @@ public class RSMManager {
             throw new IllegalArgumentException("returnedExtensions must no be null");
         }
         if (additionalExtensions == null) {
-            additionalExtensions = new LinkedList<>();
+            additionalExtensions = new ArrayList<>();
         }
         RSMSet resultRsmSet = PacketUtil.extensionElementFrom(returnedExtensions, RSMSet.ELEMENT, RSMSet.NAMESPACE);
         if (resultRsmSet == null) {

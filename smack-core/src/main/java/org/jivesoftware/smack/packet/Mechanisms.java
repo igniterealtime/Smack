@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2020 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
  */
 package org.jivesoftware.smack.packet;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -31,7 +31,7 @@ public class Mechanisms implements ExtensionElement {
     public static final String NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl";
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-    public final List<String> mechanisms = new LinkedList<String>();
+    public final List<String> mechanisms = new ArrayList<String>();
 
     public Mechanisms(String mechanism) {
         mechanisms.add(mechanism);

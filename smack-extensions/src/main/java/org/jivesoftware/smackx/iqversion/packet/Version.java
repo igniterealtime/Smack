@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2021 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2021-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * A Version IQ packet, which is used by XMPP clients to discover version information
- * about the software running at another entity's JID.<p>
+ * about the software running at another entity's JID.
  *
  * @author Gaston Dombiak
  */

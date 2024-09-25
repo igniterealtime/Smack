@@ -1,3 +1,7 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+}
+
 description = """\
 Smack for XMPP connections over WebSocket (RFC 7395) using java.net.http.WebSocket."""
 

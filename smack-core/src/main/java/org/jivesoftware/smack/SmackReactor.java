@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2023 Florian Schmaus
+ * Copyright 2018-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,6 +144,7 @@ public class SmackReactor {
         }
     }
 
+    @SuppressWarnings("JavaUtilDate")
     ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit, ScheduledAction.Kind scheduledActionKind) {
         long releaseTimeEpoch = System.currentTimeMillis() + unit.toMillis(delay);
         Date releaseTimeDate = new Date(releaseTimeEpoch);

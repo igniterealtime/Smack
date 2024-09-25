@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2018 Florian Schmaus
+ * Copyright 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.jivesoftware.smack.initializer;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,7 +42,7 @@ public abstract class UrlInitializer implements SmackInitializer {
     public List<Exception> initialize() {
         InputStream is = null;
         final ClassLoader classLoader = this.getClass().getClassLoader();
-        final List<Exception> exceptions = new LinkedList<Exception>();
+        final List<Exception> exceptions = new ArrayList<Exception>();
         final String providerUriString = getProvidersUri();
         if (providerUriString != null) {
             try {

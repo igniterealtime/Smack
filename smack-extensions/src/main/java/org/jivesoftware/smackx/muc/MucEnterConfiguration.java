@@ -101,9 +101,7 @@ public final class MucEnterConfiguration {
 
         /**
          * Set the presence used to join the MUC room.
-         * <p>
          * The consumer must not modify the presence type, otherwise an {@link IllegalArgumentException} will be thrown.
-         * <p>
          *
          * @param presenceBuilderConsumer a consumer which will be passed the presence build.
          * @return a reference to this builder.

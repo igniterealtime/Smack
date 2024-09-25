@@ -45,6 +45,7 @@ import org.jxmpp.util.XmppDateTime;
 public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
     private static final Logger LOGGER = Logger.getLogger(StreamInitiationProvider.class.getName());
 
+    @SuppressWarnings("JavaUtilDate")
     @Override
     public StreamInitiation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         // si

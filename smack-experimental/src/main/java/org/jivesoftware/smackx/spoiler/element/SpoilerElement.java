@@ -114,6 +114,7 @@ public class SpoilerElement implements ExtensionElement {
      * @param message message
      * @return map of spoilers
      */
+    @SuppressWarnings("MixedMutabilityReturnType")
     public static Map<String, String> getSpoilers(Message message) {
         if (!containsSpoiler(message)) {
             return Collections.emptyMap();

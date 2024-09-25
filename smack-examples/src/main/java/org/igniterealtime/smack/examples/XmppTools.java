@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2021 Florian Schmaus
+ * Copyright 2016-2024 Florian Schmaus
  *
  * This file is part of smack-examples.
  *
@@ -136,6 +136,7 @@ public class XmppTools {
         // CHECKSTYLE:ON
     }
 
+    @SuppressWarnings("JavaUtilDate")
     public static void sendItsAlive(String to, XMPPConnection connection)
                     throws XmppStringprepException, NotConnectedException, InterruptedException {
         if (to == null) {

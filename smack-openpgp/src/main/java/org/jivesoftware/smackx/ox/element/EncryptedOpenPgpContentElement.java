@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2024 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ public abstract class EncryptedOpenPgpContentElement extends OpenPgpContentEleme
         this.rpad = Objects.requireNonNull(rpad);
     }
 
+    @SuppressWarnings("JavaUtilDate")
     protected EncryptedOpenPgpContentElement(Set<? extends Jid> to, List<ExtensionElement> payload) {
         super(Objects.requireNonNullNorEmpty(
                 to, "Encrypted OpenPGP content elements must have at least one 'to' attribute."),

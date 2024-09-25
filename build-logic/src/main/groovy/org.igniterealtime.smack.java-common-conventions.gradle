@@ -1,0 +1,373 @@
+plugins {
+	id 'biz.aQute.bnd.builder'
+	id 'checkstyle'
+	id 'com.github.kt3k.coveralls'
+	id 'eclipse'
+	id 'idea'
+	id 'jacoco'
+	id 'java'
+	id 'java-library'
+	id 'java-test-fixtures'
+	id 'maven-publish'
+	id 'net.ltgt.errorprone'
+	id 'signing'
+
+	id 'jacoco-report-aggregation'
+	id 'test-report-aggregation'
+
+	id 'org.igniterealtime.smack.global-conventions'
+	id 'org.igniterealtime.smack.javadoc-conventions'
+}
+
+version readVersionFile()
+
+ext {
+	isSnapshot = version.endsWith('-SNAPSHOT')
+	gitCommit = getGitCommit()
+	rootConfigDir = new File(rootDir, 'config')
+	sonatypeCredentialsAvailable = project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
+	isReleaseVersion = !isSnapshot
+	isContinuousIntegrationEnvironment = Boolean.parseBoolean(System.getenv('CI'))
+	signingRequired = !(isSnapshot || isContinuousIntegrationEnvironment)
+	sonatypeSnapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+	sonatypeStagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+	builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
+	oneLineDesc = 'An Open Source XMPP (Jabber) client library'
+
+	jxmppVersion = '[1.1.0-beta1, 1.1.999]'
+	miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
+	junitVersion = '5.9.2'
+	commonsIoVersion = '2.6'
+	bouncyCastleVersion = '1.73'
+	guavaVersion = '30.1-jre'
+	mockitoVersion = '5.13.0'
+	orgReflectionsVersion = '0.9.11'
+
+	if (project.hasProperty("useSonatype")) {
+		useSonatype = project.getProperty("useSonatype").toBoolean()
+	} else {
+		// Default to true
+		useSonatype = true
+	}
+
+	gplLicensedProjects = [
+			':smack-examples',
+			':smack-omemo-signal',
+			':smack-omemo-signal-integration-test',
+			':smack-repl'
+		].collect{ project(it) }
+}
+
+group = 'org.igniterealtime.smack'
+
+java {
+	sourceCompatibility = javaVersion
+	targetCompatibility = sourceCompatibility
+}
+
+eclipse {
+	classpath {
+		downloadJavadoc = true
+	}
+}
+
+// Make all project's 'test' target depend on javadoc, so that
+// javadoc is also linted.
+test.dependsOn javadoc
+
+tasks.withType(JavaCompile) {
+	// Some systems may not have set their platform default
+	// converter to 'utf8', but we use unicode in our source
+	// files. Therefore ensure that javac uses unicode
+	options.encoding = "utf8"
+	options.compilerArgs = [
+		'-Xlint:all',
+		// Set '-options' because a non-java7 javac will emit a
+		// warning if source/target is set to 1.7 and
+		// bootclasspath is *not* set.
+		'-Xlint:-options',
+		// TODO: Enable xlint serial
+		'-Xlint:-serial',
+		'-Werror',
+	]
+}
+if (JavaVersion.current().isJava8Compatible()) {
+	tasks.withType(Javadoc) {
+		// The '-quiet' as second argument is actually a hack,
+		// since the one parameter addStringOption doesn't seem to
+		// work, we extra add '-quiet', which is added anyway by
+		// gradle.
+		// We disable 'missing' as we do most of javadoc checking via checkstyle.
+		options.addStringOption('Xdoclint:all,-missing', '-quiet')
+		// Abort on javadoc warnings.
+		// See JDK-8200363 (https://bugs.openjdk.java.net/browse/JDK-8200363)
+		// for information about the -Xwerror option.
+		options.addStringOption('Xwerror', '-quiet')
+	}
+}
+
+if (JavaVersion.current().isJava9Compatible()) {
+	tasks.withType(JavaCompile) {
+		options.compilerArgs.addAll([
+			'--release', javaMajor,
+		])
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.12"
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = true
+	}
+}
+
+dependencies {
+	testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+
+	testFixturesApi "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+	testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+	// https://stackoverflow.com/a/77274251/194894
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.11.0"
+
+	// The smack-extensions subproject uses mockito in its fest
+	// fixtures, and we want to have mockito also available in
+	// test, so we use API here.
+	testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
+
+	testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
+
+	errorprone 'com.google.errorprone:error_prone_core:2.9.0'
+	errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
+}
+
+test {
+	useJUnitPlatform()
+
+	maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+
+	// Enable full stacktraces of failed tests. Especially handy
+	// for CI environments.
+	testLogging {
+		events "failed"
+		exceptionFormat "full"
+	}
+}
+
+jar {
+	manifest {
+		attributes(
+			'Implementation-Version': version,
+			'Implementation-GitRevision': gitCommit,
+			'Built-JDK': System.getProperty('java.version'),
+			'Built-Gradle': gradle.gradleVersion,
+			'Built-By': System.getProperty('user.name')
+		)
+	}
+
+	bundle {
+		bnd(
+				'-removeheaders': 'Tool, Bnd-*',
+				'-exportcontents': '*',
+		)
+	}
+}
+
+checkstyle {
+	toolVersion = '8.27'
+
+	if (project in gplLicensedProjects) {
+		configProperties.checkstyleLicenseHeader = "${project.name}-gplv3-license-header"
+	} else {
+		configProperties.checkstyleLicenseHeader = "header"
+	}
+}
+task sourcesJar(type: Jar, dependsOn: classes) {
+	archiveClassifier = 'sources'
+	from sourceSets.main.allSource
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	archiveClassifier = 'javadoc'
+	from javadoc.destinationDir
+}
+task testsJar(type: Jar) {
+	archiveClassifier = 'tests'
+	from sourceSets.test.output
+}
+configurations {
+	testRuntime
+}
+artifacts {
+	// Add a 'testRuntime' configuration including the tests so that
+	// it can be consumed by other projects (smack-omemo-signal for
+	// example).  See http://stackoverflow.com/a/21946676/194894
+	testRuntime testsJar
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+			artifact testsJar
+			pom {
+				name = 'Smack'
+				packaging = 'jar'
+				inceptionYear = '2003'
+				url = 'http://www.igniterealtime.org/projects/jxmpp/'
+				afterEvaluate {
+					description = project.description
+				}
+
+				issueManagement {
+					system = 'JIRA'
+					url = 'http://issues.igniterealtime.org/browse/SMACK'
+				}
+
+				scm {
+					url = 'https://github.com/igniterealtime/Smack'
+					connection = 'scm:git:https://github.com/igniterealtime/Smack.git'
+					developerConnection = 'scm:git:https://github.com/igniterealtime/Smack.git'
+				}
+
+				licenses {
+					if (project in gplLicensedProjects) {
+						license {
+							name = 'GNU General Public License, version 3 or any later version'
+							url = 'https://www.gnu.org/licenses/gpl.txt'
+							distribution = 'repo'
+						}
+					} else {
+						license {
+							name = 'The Apache Software License, Version 2.0'
+							url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+							distribution = 'repo'
+						}
+					}
+				}
+
+				developers {
+					developer {
+						id = 'flow'
+						name = 'Florian Schmaus'
+						email = 'flow@igniterealtime.org'
+					}
+				}
+			}
+		}
+	}
+	repositories {
+		if (sonatypeCredentialsAvailable && useSonatype) {
+			maven {
+				url isSnapshot ? sonatypeSnapshotUrl : sonatypeStagingUrl
+				credentials {
+					username = sonatypeUsername
+					password = sonatypePassword
+				}
+			}
+		}
+		// Use
+		// gradle publish -P customRepoUrl=https://www.igniterealtime.org/archiva/repository/maven -P customRepoUsername=bamboo -P customRepoPassword=hidden -P useSonatype=false
+		// to deploy to this repo.
+		if (project.hasProperty("customRepoUrl")) {
+			maven {
+				name 'customRepo'
+				url customRepoUrl
+				if (project.hasProperty("customRepoUsername")) {
+					credentials {
+						username customRepoUsername
+						password customRepoPassword
+					}
+				}
+			}
+		}
+	}
+}
+
+// Workaround for gpg signatory not supporting the 'required' option
+// See https://github.com/gradle/gradle/issues/5064#issuecomment-381924984
+// Note what we use 'signing.gnupg.keyName' instead of 'signing.keyId'.
+tasks.withType(Sign) {
+	onlyIf {
+		project.hasProperty('signing.gnupg.keyName')
+	}
+}
+signing {
+	required { signingRequired }
+	useGpgCmd()
+	sign publishing.publications.mavenJava
+}
+
+tasks.withType(JavaCompile) {
+	options.errorprone {
+		disableWarningsInGeneratedCode = true
+		excludedPaths = ".*/jmh_generated/.*"
+		error(
+			"UnusedVariable",
+			"UnusedMethod",
+			"MethodCanBeStatic",
+		)
+		errorproneArgs = [
+			// Disable MissingCasesInEnumSwitch error prone check
+			// because this check is already done by javac as incomplete-switch.
+			'-Xep:MissingCasesInEnumSwitch:OFF',
+			'-Xep:StringSplitter:OFF',
+			'-Xep:JavaTimeDefaultTimeZone:OFF',
+			'-Xep:InlineMeSuggester:OFF',
+		]
+	}
+}
+
+// Work around https://github.com/gradle/gradle/issues/4046
+task copyJavadocDocFiles(type: Copy) {
+	from('src/javadoc')
+	into 'build/docs/javadoc'
+	include '**/doc-files/*.*'
+}
+javadoc.dependsOn copyJavadocDocFiles
+
+coveralls {
+	jacocoReportPath 'build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml'
+}
+
+def getGitCommit() {
+	def projectDirFile = new File("$projectDir")
+
+	def cmd = 'git describe --always --tags --dirty=+'
+	def proc = cmd.execute(null, projectDirFile)
+
+	def exitStatus = proc.waitFor()
+	if (exitStatus != 0) return "non-git build"
+
+	def gitCommit = proc.text.trim()
+	assert !gitCommit.isEmpty()
+	gitCommit
+}
+
+def getAndroidRuntimeJar() {
+	def androidHome = new File("$System.env.ANDROID_HOME")
+	if (!androidHome.isDirectory()) throw new Exception("ANDROID_HOME not found or set")
+	def androidJar = new File("$androidHome/platforms/android-$smackMinAndroidSdk/android.jar")
+	if (androidJar.isFile()) {
+		return androidJar
+	} else {
+		throw new Exception("Can't find android.jar for $smackMinAndroidSdk API. Please install corresponding SDK platform package")
+	}
+}
+
+def readVersionFile() {
+	def versionFile = new File(rootDir, 'version')
+	if (!versionFile.isFile()) {
+		throw new Exception("Could not find version file")
+	}
+	if (versionFile.text.isEmpty()) {
+		throw new Exception("Version file does not contain a version")
+	}
+	versionFile.text.trim()
+}

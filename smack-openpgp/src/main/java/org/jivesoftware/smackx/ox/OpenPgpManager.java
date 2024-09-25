@@ -246,6 +246,7 @@ public final class OpenPgpManager extends Manager {
      * @throws SmackException.NotLoggedInException if we are not logged in.
      * @throws PGPException if something goes wrong during key loading/generating
      */
+    @SuppressWarnings("JavaUtilDate")
     public void announceSupportAndPublish()
             throws NoSuchAlgorithmException, NoSuchProviderException, InterruptedException,
             PubSubException.NotALeafNodeException, XMPPException.XMPPErrorException,

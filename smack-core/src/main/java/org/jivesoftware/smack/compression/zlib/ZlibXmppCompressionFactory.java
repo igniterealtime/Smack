@@ -143,7 +143,9 @@ public final class ZlibXmppCompressionFactory extends XmppCompressionFactory {
                 int bytesWritten = compressor.deflate(buffer, initialOutputBufferPosition, length, flushMode);
 
                 int newOutputBufferPosition = initialOutputBufferPosition + bytesWritten;
-                outputBuffer.position(newOutputBufferPosition);
+                // Workaround for Android API not matching Java >=9 API.
+                // See https://issuetracker.google.com/issues/369219141
+               ((java.nio.Buffer) outputBuffer).position(newOutputBufferPosition);
 
                 totalBytesWritten += bytesWritten;
 
@@ -156,7 +158,9 @@ public final class ZlibXmppCompressionFactory extends XmppCompressionFactory {
                     increasedBufferSize = MINIMUM_OUTPUT_BUFFER_INCREASE;
                 }
                 ByteBuffer newCurrentOutputBuffer = ByteBuffer.allocate(increasedBufferSize);
-                outputBuffer.flip();
+                // Workaround for Android API not matching Java >=9 API.
+                // See https://issuetracker.google.com/issues/369219141
+                ((java.nio.Buffer) outputBuffer).flip();
                 newCurrentOutputBuffer.put(outputBuffer);
                 outputBuffer = newCurrentOutputBuffer;
             }
@@ -202,7 +206,9 @@ public final class ZlibXmppCompressionFactory extends XmppCompressionFactory {
                     throw new IOException(e);
                 }
 
-                outputBuffer.position(inflateOutputBufferOffset + bytesInflated);
+                // Workaround for Android API not matching Java >=9 API.
+                // See https://issuetracker.google.com/issues/369219141
+                ((java.nio.Buffer) outputBuffer).position(inflateOutputBufferOffset + bytesInflated);
 
                 decompressorOutBytes += bytesInflated;
 
@@ -212,7 +218,9 @@ public final class ZlibXmppCompressionFactory extends XmppCompressionFactory {
 
                 int increasedBufferSize = outputBuffer.capacity() * 2;
                 ByteBuffer increasedOutputBuffer = ByteBuffer.allocate(increasedBufferSize);
-                outputBuffer.flip();
+                // Workaround for Android API not matching Java >=9 API.
+                // See https://issuetracker.google.com/issues/369219141
+                ((java.nio.Buffer) outputBuffer).flip();
                 increasedOutputBuffer.put(outputBuffer);
                 outputBuffer = increasedOutputBuffer;
             }

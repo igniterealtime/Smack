@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2009 Jonas Ådahl, 2011-2022 Florian Schmaus
+ * Copyright © 2009 Jonas Ådahl, 2011-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,12 @@ package org.jivesoftware.smackx.caps;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -555,7 +555,7 @@ public final class EntityCapsManager extends Manager {
         if (connection != null)
             JID_TO_NODEVER_CACHE.put(connection.getUser(), new NodeVerHash(entityNode, currentCapsVersion));
 
-        final List<Identity> identities = new LinkedList<>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
+        final List<Identity> identities = new ArrayList<>(ServiceDiscoveryManager.getInstanceFor(connection).getIdentities());
         sdm.setNodeInformationProvider(localNodeVer, new AbstractNodeInformationProvider() {
             List<String> features = sdm.getFeatures();
             List<DataForm> packetExtensions = sdm.getExtendedInfo();

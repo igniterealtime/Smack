@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2021 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2024 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package org.jivesoftware.smackx.ox.provider;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -87,7 +87,7 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
         Set<Jid> to = new HashSet<>();
         Date timestamp = null;
         String rpad = null;
-        List<ExtensionElement> payload = new LinkedList<>();
+        List<ExtensionElement> payload = new ArrayList<>();
 
         outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();

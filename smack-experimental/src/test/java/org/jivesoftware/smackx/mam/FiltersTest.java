@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2018-2020 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2018-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class FiltersTest extends MamTest {
         return xml;
     }
 
+    @SuppressWarnings("JavaUtilDate")
     @Test
     public void checkStartDateFilter() throws Exception {
         Date date = new Date();
@@ -61,6 +62,7 @@ public class FiltersTest extends MamTest {
         assertEquals(getMamXMemberWith(fields, values), dataForm.toXML().toString());
     }
 
+    @SuppressWarnings("JavaUtilDate")
     @Test
     public void checkEndDateFilter() throws Exception {
         Date date = new Date();

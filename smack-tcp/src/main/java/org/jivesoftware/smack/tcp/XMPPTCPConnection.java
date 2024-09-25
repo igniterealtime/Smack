@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -415,7 +414,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // bind IQ may trigger a SM ack request, which would be invalid in the pre resource bound state.
         smEnabledSyncPoint = false;
 
-        List<Stanza> previouslyUnackedStanzas = new LinkedList<Stanza>();
+        List<Stanza> previouslyUnackedStanzas = new ArrayList<Stanza>();
         if (unacknowledgedStanzas != null) {
             // There was a previous connection with SM enabled but that was either not resumable or
             // failed to resume. Make sure that we (re-)send the unacknowledged stanzas.

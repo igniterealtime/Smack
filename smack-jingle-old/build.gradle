@@ -1,3 +1,7 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+}
+
 description = """\
 Smack Jingle API.
 Warning: This API is beta, outdated and currenlty unmaintained."""

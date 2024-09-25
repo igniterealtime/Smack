@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Florian Schmaus
+ * Copyright 2016-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import org.jxmpp.jid.Jid;
 
 public class RosterUtil {
 
+    @SuppressWarnings("JavaUtilDate")
     public static void waitUntilOtherEntityIsSubscribed(Roster roster, BareJid otherEntity, long timeoutMillis)
                     throws InterruptedException, TimeoutException {
         Date deadline = new Date(System.currentTimeMillis() + timeoutMillis);
@@ -147,6 +148,7 @@ public class RosterUtil {
         ensureSubscribedTo(connectionTwo, connectionOne, timeout);
     }
 
+    @SuppressWarnings("JavaUtilDate")
     public static void ensureSubscribedTo(XMPPConnection connectionOne, XMPPConnection connectionTwo, long timeout)
                     throws NotLoggedInException, NotConnectedException, InterruptedException, TimeoutException {
         Date deadline = new Date(System.currentTimeMillis() + timeout);

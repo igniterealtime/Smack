@@ -6,13 +6,13 @@ jobs:
   build:
     name: Build Smack
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java:
-          - 11
+          - 17
     env:
-      PRIMARY_JAVA_VERSION: 11
+      PRIMARY_JAVA_VERSION: 17
 
     steps:
       - name: Checkout
@@ -57,6 +57,17 @@ jobs:
         run: |
           sdkmanager "platforms;android-21"
 
+      # Workaround
+      - name: Create gradle.properties
+        run: |
+          cat <<-EOF > gradle.properties
+          # Workaround for https://github.com/CycloneDX/cyclonedx-gradle-plugin/issues/349
+          # suggested at https://docs.gradle.org/current/userguide/upgrading_version_8.html#xml_parsing_now_requires_recent_parsers
+          systemProp.javax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl
+          systemProp.javax.xml.transform.TransformerFactory=com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl
+          systemProp.javax.xml.parsers.DocumentBuilderFactory=com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl
+          EOF
+
       # Testing
       - name: Gradle Check
         run: ./gradlew check --stacktrace
@@ -72,10 +83,19 @@ jobs:
 
       # Test Coverage Report
       - name: Jacoco Test Coverage
-        if: ${{ matrix.java == env.PRIMARY_JAVA_VERSION }}
-        run: ./gradlew jacocoRootReport coveralls
         env:
-          COVERALLS_REPO_TOKEN: S2ecSJja2cKJa9yv45C8ZFPohXuRrTXKd
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        if: |
+          ${{ matrix.java == env.PRIMARY_JAVA_VERSION }} &&
+          ${{ env.COVERALLS_REPO_TOKEN != '' }}
+        run: |
+          if [[ -z ${COVERALLS_REPO_TOKEN} ]]; then
+              echo WARNING: COVERALLS_REPO_TOKEN is empty
+          else
+              echo COVERALLS_REPO_TOKEN is not empty
+          fi
+          ./gradlew smack-java8-full:testCodeCoverageReport
+          ./gradlew smack-java8-full:coveralls
 
       # Upload build artifacts
       - name: Upload build artifacts

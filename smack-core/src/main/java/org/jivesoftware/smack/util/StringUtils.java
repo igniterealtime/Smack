@@ -329,7 +329,10 @@ public class StringUtils {
             throw new AssertionError(e);
         }
 
-        return charBuffer.flip().toString();
+        // Workaround for Android API not matching Java >=9 API.
+        // See https://issuetracker.google.com/issues/369219141
+        ((java.nio.Buffer) charBuffer).flip();
+        return charBuffer.toString();
     }
 
     private static void randomString(Appendable appendable, Random random, char[] alphabet, int numRandomChars)

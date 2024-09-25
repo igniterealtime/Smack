@@ -133,12 +133,13 @@ public final class PublicKeysListElement implements ExtensionElement {
             return xml;
         }
 
+        @SuppressWarnings("JavaUtilDate")
         @Override
         public int hashCode() {
             return getV4Fingerprint().hashCode() + 3 * getDate().hashCode();
         }
 
-        @SuppressWarnings("UndefinedEquals")
+        @SuppressWarnings({"UndefinedEquals", "JavaUtilDate"})
         // TODO: Fix the UndefinedEquals due using Date.equals(Date)
         @Override
         public boolean equals(Object o) {

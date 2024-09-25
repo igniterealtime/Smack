@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2021 Florian Schmaus
+ * Copyright 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,6 +108,7 @@ public class AbstractError {
      * @param <PE> type of the ExtensionElement.
      * @return the extension, or <code>null</code> if it doesn't exist.
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     public <PE extends XmlElement> PE getExtension(String elementName, String namespace) {
         return PacketUtil.extensionElementFrom(extensions, elementName, namespace);
     }

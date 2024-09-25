@@ -124,6 +124,7 @@ public class OpenPgpPubSubUtil {
      * @throws SmackException.NotConnectedException if we are not connected.
      * @throws SmackException.NoResponseException if the server doesn't respond.
      */
+    @SuppressWarnings("JavaUtilDate")
     public static void publishPublicKey(PepManager pepManager, PubkeyElement pubkeyElement, OpenPgpV4Fingerprint fingerprint)
             throws InterruptedException, PubSubException.NotALeafNodeException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException {
@@ -464,8 +465,7 @@ public class OpenPgpPubSubUtil {
 
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException |
                 NoSuchFieldException e) {
-            LOGGER.log(Level.SEVERE, "Using reflections to create a LeafNode and put it into PubSubManagers nodeMap failed.", e);
-            throw new AssertionError(e);
+            throw new LinkageError("Using reflections to create a LeafNode and put it into PubSubManagers nodeMap failed.", e);
         }
     }
 }

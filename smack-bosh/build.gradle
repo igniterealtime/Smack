@@ -1,3 +1,8 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.android-conventions'
+}
+
 description = """\
 Smack BOSH API.
 This API is considered beta quality."""

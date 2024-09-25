@@ -318,6 +318,7 @@ public interface XMPPConnection {
      * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.3
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     <I extends IQ> I sendIqRequestAndWaitForResponse(IQ request)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException;
 
@@ -590,6 +591,7 @@ public interface XMPPConnection {
      * @return a stanza extensions of the feature or <code>null</code>
      * @since 4.4
      */
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     <F extends XmlElement> F getFeature(QName qname);
 
     /**

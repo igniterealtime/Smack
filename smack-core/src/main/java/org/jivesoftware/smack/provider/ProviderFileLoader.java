@@ -17,9 +17,9 @@
 package org.jivesoftware.smack.provider;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,11 +39,11 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 public class ProviderFileLoader implements ProviderLoader {
     private static final Logger LOGGER = Logger.getLogger(ProviderFileLoader.class.getName());
 
-    private final Collection<IQProviderInfo> iqProviders = new LinkedList<IQProviderInfo>();
-    private final Collection<ExtensionProviderInfo> extProviders  = new LinkedList<ExtensionProviderInfo>();
-    private final Collection<StreamFeatureProviderInfo> sfProviders = new LinkedList<StreamFeatureProviderInfo>();
+    private final Collection<IQProviderInfo> iqProviders = new ArrayList<IQProviderInfo>();
+    private final Collection<ExtensionProviderInfo> extProviders  = new ArrayList<ExtensionProviderInfo>();
+    private final Collection<StreamFeatureProviderInfo> sfProviders = new ArrayList<StreamFeatureProviderInfo>();
 
-    private List<Exception> exceptions = new LinkedList<Exception>();
+    private List<Exception> exceptions = new ArrayList<Exception>();
 
     public ProviderFileLoader(InputStream providerStream) {
         this(providerStream, ProviderFileLoader.class.getClassLoader());

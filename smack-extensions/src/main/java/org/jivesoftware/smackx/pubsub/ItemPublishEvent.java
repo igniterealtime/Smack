@@ -109,6 +109,7 @@ public class ItemPublishEvent<T extends Item> extends SubscriptionEvent {
         return originalDate;
     }
 
+    @SuppressWarnings("JavaUtilDate")
     @Override
     public String toString() {
         return getClass().getName() + "  [subscriptions: " + getSubscriptions() + "], [Delayed: " +

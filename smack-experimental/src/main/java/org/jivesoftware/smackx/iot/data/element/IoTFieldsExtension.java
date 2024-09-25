@@ -83,6 +83,7 @@ public class IoTFieldsExtension implements ExtensionElement {
         return xml;
     }
 
+    @SuppressWarnings("JavaUtilDate")
     public static IoTFieldsExtension buildFor(int seqNr, boolean done, NodeInfo nodeInfo,
                     List<? extends IoTDataField> data) {
         TimestampElement timestampElement = new TimestampElement(new Date(), data);

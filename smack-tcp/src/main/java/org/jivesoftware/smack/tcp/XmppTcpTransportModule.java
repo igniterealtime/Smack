@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2021 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -369,7 +369,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                         newPendingOutputFilterData |= outputResult.pendingFilterData;
                         outputFilterInputData = outputResult.filteredOutputData;
                         if (outputFilterInputData != null) {
-                            outputFilterInputData.flip();
+                            ((java.nio.Buffer) outputFilterInputData).flip();
                         }
                     }
 
@@ -459,7 +459,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                 }
 
                 int bytesRead;
-                incomingBuffer.clear();
+                ((java.nio.Buffer) incomingBuffer).clear();
                 try {
                     bytesRead = selectedSocketChannel.read(incomingBuffer);
                 } catch (IOException e) {
@@ -503,7 +503,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
                 ByteBuffer filteredIncomingBuffer = incomingBuffer;
                 for (ListIterator<XmppInputOutputFilter> it = connectionInternal.getXmppInputOutputFilterEndIterator(); it.hasPrevious();) {
-                    filteredIncomingBuffer.flip();
+                    ((java.nio.Buffer) filteredIncomingBuffer).flip();
 
                     ByteBuffer newFilteredIncomingBuffer;
                     try {
@@ -518,7 +518,8 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     filteredIncomingBuffer = newFilteredIncomingBuffer;
                 }
 
-                final int bytesReadAfterFilter = filteredIncomingBuffer.flip().remaining();
+                ((java.nio.Buffer) filteredIncomingBuffer).flip();
+                final int bytesReadAfterFilter = filteredIncomingBuffer.remaining();
 
                 totalBytesReadAfterFilter += bytesReadAfterFilter;
 
@@ -980,7 +981,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
             ByteBuffer[] outputDataArray = pendingOutputData.toArray(new ByteBuffer[pendingOutputData.size()]);
 
-            myNetData.clear();
+            ((java.nio.Buffer) myNetData).clear();
 
             while (true) {
                 SSLEngineResult result;
@@ -1037,7 +1038,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                         newCapacity = 2 * myNetData.capacity();
                     }
                     ByteBuffer newMyNetData = ByteBuffer.allocateDirect(newCapacity);
-                    myNetData.flip();
+                    ((java.nio.Buffer) myNetData).flip();
                     newMyNetData.put(myNetData);
                     myNetData = newMyNetData;
                     continue;
@@ -1060,12 +1061,12 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                 int accumulatedDataBytes = pendingInputData.remaining() + inputData.remaining();
                 accumulatedData = ByteBuffer.allocate(accumulatedDataBytes);
                 accumulatedData.put(pendingInputData)
-                               .put(inputData)
-                               .flip();
+                               .put(inputData);
+                ((java.nio.Buffer) accumulatedData).flip();
                 pendingInputData = null;
             }
 
-            peerAppData.clear();
+            ((java.nio.Buffer) peerAppData).clear();
 
             while (true) {
                 SSLEngineResult result;
@@ -1143,7 +1144,8 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             // higher layer. That is, here 'byteBuffer' is typically 'incomingBuffer', which is a direct buffer only
             // allocated once per connection for performance reasons and hence re-used for read() calls.
             pendingInputData = ByteBuffer.allocate(byteBuffer.remaining());
-            pendingInputData.put(byteBuffer).flip();
+            pendingInputData.put(byteBuffer);
+            ((java.nio.Buffer) pendingInputData).flip();
 
             pendingInputFilterData = pendingInputData.hasRemaining();
         }

@@ -1,3 +1,8 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.android-conventions'
+}
+
 description = """\
 SASL with Smack provided code
 Use Smack provided code for SASL."""

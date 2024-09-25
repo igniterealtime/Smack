@@ -49,7 +49,7 @@ public class PubSub extends IQ {
         setType(type);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public <PE extends XmlElement> PE getExtension(PubSubElementType elem) {
         return (PE) getExtensionElement(elem.getElementName(), elem.getNamespace().getXmlns());
     }

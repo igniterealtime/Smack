@@ -1,12 +1,13 @@
 plugins {
-	id "com.github.alisiikh.scalastyle_2.12" version "2.1.0"
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id "com.github.alisiikh.scalastyle" version "3.5.0"
 }
 
 description = """\
 A REPL (Read-Eval-Print-Loop) for Smack, or, in other words, a CLI (Command Line Interface) for Smack."""
 
 apply plugin: 'scala'
-apply plugin: 'com.github.alisiikh.scalastyle_2.12'
+apply plugin: 'com.github.alisiikh.scalastyle'
 
 ext {
     scalaVersion = '2.13.13'
@@ -19,13 +20,13 @@ dependencies {
     implementation "com.lihaoyi:ammonite_$scalaVersion:3.0.0-M1"
 }
 
-scalaStyle {
+scalastyle {
 	config = new File(rootConfigDir, 'scalaStyle.xml')
 	verbose = true
-	failOnViolation = true
+	failOnWarning = true
 }
 
-check.dependsOn(scalaStyleCheck)
+check.dependsOn(scalastyleCheck)
 
 task printClasspath(dependsOn: assemble) {
     doLast {

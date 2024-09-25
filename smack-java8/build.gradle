@@ -1,7 +1,11 @@
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+}
+
 description = """\
-Smack for Java7 (or higher).
+Smack for Java 11 (or higher).
 This is a pseudo-artifact that pulls all the required dependencies to
-run Smack on Java 7 (or higher) JVMs. Usually you want to add additional
+run Smack on Java 11 (or higher) JVMs. Usually you want to add additional
 dependencies to smack-tcp, smack-extensions and smack-experimental."""
 
 dependencies {

@@ -22,7 +22,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -128,7 +127,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * list of listeners that respond to all bytestream requests if there are not user specific
      * listeners for that request
      */
-    private final List<BytestreamListener> allRequestListeners = Collections.synchronizedList(new LinkedList<BytestreamListener>());
+    private final List<BytestreamListener> allRequestListeners = Collections.synchronizedList(new ArrayList<BytestreamListener>());
 
     /* listener that handles all incoming bytestream requests */
     private final InitiationListener initiationListener;
@@ -154,7 +153,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
      * list containing session IDs of SOCKS5 Bytestream initialization packets that should be
      * ignored by the InitiationListener
      */
-    private final List<String> ignoredBytestreamRequests = Collections.synchronizedList(new LinkedList<String>());
+    private final List<String> ignoredBytestreamRequests = Collections.synchronizedList(new ArrayList<String>());
 
     /**
      * Returns the Socks5BytestreamManager to handle SOCKS5 Bytestreams for a given

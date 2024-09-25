@@ -1,17 +1,16 @@
-apply plugin: 'application'
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.application-conventions'
+}
 
 description = """\
 Smack integration tests for OMEMO using libsignal."""
 
-mainClassName = 'org.igniterealtime.smack.inttest.smack_omemo_signal.SmackOmemoSignalIntegrationTestFramework'
-applicationDefaultJvmArgs = ["-enableassertions"]
+application {
+	mainClass = 'org.igniterealtime.smack.inttest.smack_omemo_signal.SmackOmemoSignalIntegrationTestFramework'
+}
 
 dependencies {
 	api project(':smack-integration-test')
 	api project(':smack-omemo-signal')
-}
-
-run {
-	// Pass all system properties down to the "application" run
-	systemProperties System.getProperties()
 }

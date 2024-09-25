@@ -1,0 +1,6 @@
+compileJava {
+	options.bootstrapClasspath = files(androidBootClasspath)
+}
+javadoc {
+	classpath += files(androidBootClasspath)
+}

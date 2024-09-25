@@ -914,6 +914,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @throws IOException if an I/O error occurred.
      */
+    @SuppressWarnings("JavaUtilDate")
     private boolean shouldRotateSignedPreKey(OmemoDevice userDevice) throws IOException {
         if (!OmemoConfiguration.getRenewOldSignedPreKeys()) {
             return false;
@@ -965,6 +966,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @throws IOException if an I/O error occurred.
      */
+    @SuppressWarnings("JavaUtilDate")
     private OmemoCachedDeviceList removeStaleDevicesFromDeviceList(OmemoDevice userDevice,
                                                                    BareJid contact,
                                                                    OmemoCachedDeviceList contactsDeviceList,
@@ -1020,6 +1022,7 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * @return true if the subject device is considered stale
      */
+    @SuppressWarnings("JavaUtilDate")
     static boolean isStale(OmemoDevice userDevice, OmemoDevice subject, Date lastReceipt, int maxAgeHours) {
         if (userDevice.equals(subject)) {
             return false;

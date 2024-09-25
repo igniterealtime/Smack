@@ -56,6 +56,7 @@ public class TimestampAffixElement implements NamedElement, AffixElement {
         return EqualsUtil.equals(this, obj, (e, o) -> e.append(getTimestamp(), o.getTimestamp()));
     }
 
+    @SuppressWarnings("JavaUtilDate")
     @Override
     public int hashCode() {
         return timestamp.hashCode();

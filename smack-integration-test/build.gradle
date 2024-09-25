@@ -1,10 +1,15 @@
-apply plugin: 'application'
+plugins {
+	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.application-conventions'
+}
 
 description = """\
 Smack integration tests."""
 
-mainClassName = 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework'
-applicationDefaultJvmArgs = ["-enableassertions"]
+
+application {
+	mainClass = 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework'
+}
 
 dependencies {
 	api project(':smack-java8-full')
@@ -19,9 +24,4 @@ dependencies {
 	api "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testImplementation "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
-}
-
-run {
-	// Pass all system properties down to the "application" run
-	systemProperties System.getProperties()
 }

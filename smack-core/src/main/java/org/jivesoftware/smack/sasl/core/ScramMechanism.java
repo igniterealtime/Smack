@@ -271,6 +271,7 @@ public abstract class ScramMechanism extends SASLMechanism {
         return null;
     }
 
+    @SuppressWarnings("MixedMutabilityReturnType")
     private static Map<Character, String> parseAttributes(String string) throws SmackSaslException {
         if (string.length() == 0) {
             return Collections.emptyMap();

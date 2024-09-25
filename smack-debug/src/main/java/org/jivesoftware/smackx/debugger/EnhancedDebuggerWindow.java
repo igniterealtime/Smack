@@ -204,7 +204,7 @@ public final class EnhancedDebuggerWindow {
      * Creates the main debug window that provides information about Smack and also shows
      * a tab panel for each connection that is being debugged.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked", "JdkObsolete" })
     private void createDebug() {
 
         frame = new JFrame("Smack Debug Window");

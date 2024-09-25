@@ -125,12 +125,14 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
+    @SuppressWarnings("JavaUtilDate")
     public void setDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException {
         File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(userDevice, contactsDevice);
         writeLong(lastMessageReceived, date.getTime());
     }
 
     @Override
+    @SuppressWarnings("JavaUtilDate")
     public Date getDateOfLastReceivedMessage(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         File lastMessageReceived = hierarchy.getLastMessageReceivedDatePath(userDevice, contactsDevice);
         Long date = readLong(lastMessageReceived);
@@ -138,12 +140,14 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
+    @SuppressWarnings("JavaUtilDate")
     public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException {
         File lastDeviceIdPublished = hierarchy.getLastDeviceIdPublicationDatePath(userDevice, contactsDevice);
         writeLong(lastDeviceIdPublished, date.getTime());
     }
 
     @Override
+    @SuppressWarnings("JavaUtilDate")
     public Date getDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice) throws IOException {
         File lastDeviceIdPublished = hierarchy.getLastDeviceIdPublicationDatePath(userDevice, contactsDevice);
         Long date = readLong(lastDeviceIdPublished);
@@ -151,12 +155,14 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
+    @SuppressWarnings("JavaUtilDate")
     public void setDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice, Date date) throws IOException {
         File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(userDevice);
         writeLong(lastSignedPreKeyRenewal, date.getTime());
     }
 
     @Override
+    @SuppressWarnings("JavaUtilDate")
     public Date getDateOfLastSignedPreKeyRenewal(OmemoDevice userDevice) throws IOException {
         File lastSignedPreKeyRenewal = hierarchy.getLastSignedPreKeyRenewal(userDevice);
         Long date = readLong(lastSignedPreKeyRenewal);
@@ -517,6 +523,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
      * Delete a directory with all subdirectories.
      * @param root directory to be deleted
      */
+    @SuppressWarnings("JdkObsolete")
     public static void deleteDirectory(File root) {
         File[] currList;
         Stack<File> stack = new Stack<>();

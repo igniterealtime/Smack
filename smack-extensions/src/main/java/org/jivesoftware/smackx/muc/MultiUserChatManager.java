@@ -108,6 +108,7 @@ public final class MultiUserChatManager extends Manager {
                 final WeakReference<XMPPConnection> weakRefConnection = new WeakReference<XMPPConnection>(connection);
                 ServiceDiscoveryManager.getInstanceFor(connection).setNodeInformationProvider(DISCO_NODE,
                                 new AbstractNodeInformationProvider() {
+                                    @SuppressWarnings({"JavaUtilDate", "MixedMutabilityReturnType"})
                                     @Override
                                     public List<DiscoverItems.Item> getNodeItems() {
                                         XMPPConnection connection = weakRefConnection.get();

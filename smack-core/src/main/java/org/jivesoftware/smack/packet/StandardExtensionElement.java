@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2021 Florian Schmaus.
+ * Copyright 2015-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,9 +53,7 @@ public final class StandardExtensionElement implements XmlElement {
 
     /**
      * Constructs a new extension element with the given name and namespace and nothing else.
-     * <p>
      * This is meant to construct extension elements used as simple flags in Stanzas.
-     * <p>
      *
      * @param name the name of the extension element.
      * @param namespace the namespace of the extension element.
