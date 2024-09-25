@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.omemo.element;
 
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * OMEMO device bundle as described by the protocol.
@@ -29,11 +29,11 @@ import java.util.HashMap;
  */
 public class OmemoBundleElement_VAxolotl extends OmemoBundleElement {
 
-    public OmemoBundleElement_VAxolotl(int signedPreKeyId, String signedPreKeyB64, String signedPreKeySigB64, String identityKeyB64, HashMap<Integer, String> preKeysB64) {
+    public OmemoBundleElement_VAxolotl(int signedPreKeyId, String signedPreKeyB64, String signedPreKeySigB64, String identityKeyB64, Map<Integer, String> preKeysB64) {
         super(signedPreKeyId, signedPreKeyB64, signedPreKeySigB64, identityKeyB64, preKeysB64);
     }
 
-    public OmemoBundleElement_VAxolotl(int signedPreKeyId, byte[] signedPreKey, byte[] signedPreKeySig, byte[] identityKey, HashMap<Integer, byte[]> preKeys) {
+    public OmemoBundleElement_VAxolotl(int signedPreKeyId, byte[] signedPreKey, byte[] signedPreKeySig, byte[] identityKey, Map<Integer, byte[]> preKeys) {
         super(signedPreKeyId, signedPreKey, signedPreKeySig, identityKey, preKeys);
     }
 

@@ -137,7 +137,7 @@ public class Workgroup {
             }
         });
 
-        /**
+        /*
          * Internal handling of an invitation. Receiving an invitation removes the user from the queue.
          */
         MultiUserChatManager.getInstanceFor(connection).addInvitationListener(

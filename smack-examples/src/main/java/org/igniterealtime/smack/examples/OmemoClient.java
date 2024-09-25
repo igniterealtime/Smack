@@ -185,7 +185,7 @@ public class OmemoClient {
 
                 BareJid contact = JidCreate.bareFrom(com[1]);
 
-                HashMap<OmemoDevice, OmemoFingerprint> devices;
+                Map<OmemoDevice, OmemoFingerprint> devices;
                 try {
                     devices = omemoManager.getActiveFingerprints(contact);
                 } catch (CorruptedOmemoKeyException | CannotEstablishOmemoSessionException | SmackException.NoResponseException e) {

@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.push_notifications;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -122,7 +121,7 @@ public final class PushNotificationsManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public boolean enable(Jid pushJid, String node, HashMap<String, String> publishOptions)
+    public boolean enable(Jid pushJid, String node, Map<String, String> publishOptions)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         EnablePushNotificationsIQ enablePushNotificationsIQ = new EnablePushNotificationsIQ(pushJid, node,
                 publishOptions);

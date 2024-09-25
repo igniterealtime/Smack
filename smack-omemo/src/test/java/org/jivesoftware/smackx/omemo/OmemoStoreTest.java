@@ -27,8 +27,8 @@ import static junit.framework.TestCase.assertTrue;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.TreeMap;
 
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -174,7 +174,7 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
     public void storeLoadRemoveOmemoPreKeys()
             throws IOException, InterruptedException {
 
-        TreeMap<Integer, T_PreKey> before = store.generateOmemoPreKeys(1, 10);
+        Map<Integer, T_PreKey> before = store.generateOmemoPreKeys(1, 10);
         assertEquals("The store must have no prekeys before this test.", 0, store.loadOmemoPreKeys(alice).size());
 
         store.storeOmemoPreKeys(alice, before);
@@ -305,7 +305,7 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
 
     @Test
     public void loadAllRawSessionsReturnsEmptyMapTest() throws IOException {
-        HashMap<Integer, T_Sess> sessions = store.loadAllRawSessionsOf(alice, bob.getJid());
+        Map<Integer, T_Sess> sessions = store.loadAllRawSessionsOf(alice, bob.getJid());
         assertNotNull(sessions);
         assertEquals(0, sessions.size());
     }

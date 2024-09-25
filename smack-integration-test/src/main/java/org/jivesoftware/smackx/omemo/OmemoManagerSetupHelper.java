@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -54,7 +54,7 @@ public class OmemoManagerSetupHelper {
         }
 
         alice.requestDeviceListUpdateFor(bob.getOwnJid());
-        HashMap<OmemoDevice, OmemoFingerprint> fingerprints = alice.getActiveFingerprints(bob.getOwnJid());
+        Map<OmemoDevice, OmemoFingerprint> fingerprints = alice.getActiveFingerprints(bob.getOwnJid());
 
         for (OmemoDevice device : fingerprints.keySet()) {
             OmemoFingerprint fingerprint = fingerprints.get(device);
@@ -67,7 +67,7 @@ public class OmemoManagerSetupHelper {
             SmackException.NoResponseException, CannotEstablishOmemoSessionException, CorruptedOmemoKeyException,
             XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, IOException {
         alice.requestDeviceListUpdateFor(bob.getOwnJid());
-        HashMap<OmemoDevice, OmemoFingerprint> fps1 = alice.getActiveFingerprints(bob.getOwnJid());
+        Map<OmemoDevice, OmemoFingerprint> fps1 = alice.getActiveFingerprints(bob.getOwnJid());
 
         assertFalse(fps1.isEmpty());
         assertAllDevicesAreUndecided(alice, fps1);
@@ -75,7 +75,7 @@ public class OmemoManagerSetupHelper {
 
         trustAllIdentities(alice, bob);
 
-        HashMap<OmemoDevice, OmemoFingerprint> fps2 = alice.getActiveFingerprints(bob.getOwnJid());
+        Map<OmemoDevice, OmemoFingerprint> fps2 = alice.getActiveFingerprints(bob.getOwnJid());
         assertEquals(fps1.size(), fps2.size());
         assertTrue(Maps.difference(fps1, fps2).areEqual());
 
@@ -95,28 +95,28 @@ public class OmemoManagerSetupHelper {
         return manager;
     }
 
-    public static void assertAllDevicesAreUndecided(OmemoManager manager, HashMap<OmemoDevice, OmemoFingerprint> devices) {
+    public static void assertAllDevicesAreUndecided(OmemoManager manager, Map<OmemoDevice, OmemoFingerprint> devices) {
         for (OmemoDevice device : devices.keySet()) {
             // All fingerprints MUST be neither decided, nor trusted.
             assertFalse(manager.isDecidedOmemoIdentity(device, devices.get(device)));
         }
     }
 
-    public static void assertAllDevicesAreUntrusted(OmemoManager manager, HashMap<OmemoDevice, OmemoFingerprint> devices) {
+    public static void assertAllDevicesAreUntrusted(OmemoManager manager, Map<OmemoDevice, OmemoFingerprint> devices) {
         for (OmemoDevice device : devices.keySet()) {
             // All fingerprints MUST be neither decided, nor trusted.
             assertFalse(manager.isTrustedOmemoIdentity(device, devices.get(device)));
         }
     }
 
-    public static void assertAllDevicesAreDecided(OmemoManager manager, HashMap<OmemoDevice, OmemoFingerprint> devices) {
+    public static void assertAllDevicesAreDecided(OmemoManager manager, Map<OmemoDevice, OmemoFingerprint> devices) {
         for (OmemoDevice device : devices.keySet()) {
             // All fingerprints MUST be neither decided, nor trusted.
             assertTrue(manager.isDecidedOmemoIdentity(device, devices.get(device)));
         }
     }
 
-    public static void assertAllDevicesAreTrusted(OmemoManager manager, HashMap<OmemoDevice, OmemoFingerprint> devices) {
+    public static void assertAllDevicesAreTrusted(OmemoManager manager, Map<OmemoDevice, OmemoFingerprint> devices) {
         for (OmemoDevice device : devices.keySet()) {
             // All fingerprints MUST be neither decided, nor trusted.
             assertTrue(manager.isTrustedOmemoIdentity(device, devices.get(device)));

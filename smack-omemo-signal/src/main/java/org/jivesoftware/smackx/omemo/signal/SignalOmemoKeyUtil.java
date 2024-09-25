@@ -55,6 +55,7 @@ public class SignalOmemoKeyUtil extends OmemoKeyUtil<IdentityKeyPair, IdentityKe
     }
 
     @Override
+    @SuppressWarnings("NonApiType")
     public TreeMap<Integer, PreKeyRecord> generateOmemoPreKeys(int currentPreKeyId, int count) {
         List<PreKeyRecord> preKeyRecords = KeyHelper.generatePreKeys(currentPreKeyId, count);
         TreeMap<Integer, PreKeyRecord> map = new TreeMap<>();

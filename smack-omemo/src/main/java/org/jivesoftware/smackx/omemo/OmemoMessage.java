@@ -22,6 +22,7 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.Message;
@@ -78,7 +79,7 @@ public class OmemoMessage {
      */
     public static class Sent extends OmemoMessage {
         private final Set<OmemoDevice> intendedDevices = new HashSet<>();
-        private final HashMap<OmemoDevice, Throwable> skippedDevices = new HashMap<>();
+        private final Map<OmemoDevice, Throwable> skippedDevices = new HashMap<>();
 
         /**
          * Create a new outgoing OMEMO message.
@@ -90,7 +91,7 @@ public class OmemoMessage {
          * @param skippedDevices devices which were skipped during encryption process because encryption
          *                       failed for some reason
          */
-        Sent(OmemoElement element, byte[] key, byte[] iv, Set<OmemoDevice> intendedDevices, HashMap<OmemoDevice, Throwable> skippedDevices) {
+        Sent(OmemoElement element, byte[] key, byte[] iv, Set<OmemoDevice> intendedDevices, Map<OmemoDevice, Throwable> skippedDevices) {
             super(element, key, iv);
             this.intendedDevices.addAll(intendedDevices);
             this.skippedDevices.putAll(skippedDevices);
@@ -110,7 +111,7 @@ public class OmemoMessage {
          *
          * @return map of skipped recipients and reasons for that.
          */
-        public HashMap<OmemoDevice, Throwable> getSkippedDevices() {
+        public Map<OmemoDevice, Throwable> getSkippedDevices() {
             return skippedDevices;
         }
 

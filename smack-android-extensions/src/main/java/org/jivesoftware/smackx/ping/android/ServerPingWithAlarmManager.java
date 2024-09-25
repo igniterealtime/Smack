@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2021 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,6 +121,7 @@ public final class ServerPingWithAlarmManager extends Manager {
 
     private static final BroadcastReceiver ALARM_BROADCAST_RECEIVER = new BroadcastReceiver() {
         @Override
+        @SuppressWarnings("LockOnNonEnclosingClassLiteral")
         public void onReceive(Context context, Intent intent) {
             LOGGER.fine("Ping Alarm broadcast received");
             Set<Map.Entry<XMPPConnection, ServerPingWithAlarmManager>> managers;

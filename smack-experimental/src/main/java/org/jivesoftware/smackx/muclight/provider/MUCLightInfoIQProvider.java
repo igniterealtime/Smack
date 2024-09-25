@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.muclight.provider;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
@@ -45,8 +46,8 @@ public class MUCLightInfoIQProvider extends IqProvider<MUCLightInfoIQ> {
         String version = null;
         String roomName = null;
         String subject = null;
-        HashMap<String, String> customConfigs = null;
-        HashMap<Jid, MUCLightAffiliation> occupants = new HashMap<>();
+        Map<String, String> customConfigs = null;
+        Map<Jid, MUCLightAffiliation> occupants = new HashMap<>();
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -97,8 +98,8 @@ public class MUCLightInfoIQProvider extends IqProvider<MUCLightInfoIQ> {
         return new MUCLightInfoIQ(version, new MUCLightRoomConfiguration(roomName, subject, customConfigs), occupants);
     }
 
-    private static HashMap<Jid, MUCLightAffiliation> iterateOccupants(XmlPullParser parser) throws XmlPullParserException, IOException {
-        HashMap<Jid, MUCLightAffiliation> occupants = new HashMap<>();
+    private static Map<Jid, MUCLightAffiliation> iterateOccupants(XmlPullParser parser) throws XmlPullParserException, IOException {
+        Map<Jid, MUCLightAffiliation> occupants = new HashMap<>();
         int depth = parser.getDepth();
 
         outerloop: while (true) {

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.omemo.exceptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -32,8 +33,8 @@ import org.jxmpp.jid.BareJid;
 public class CannotEstablishOmemoSessionException extends Exception {
 
     private static final long serialVersionUID = 3165844730283295249L;
-    private final HashMap<BareJid, HashMap<OmemoDevice, Throwable>> failures = new HashMap<>();
-    private final HashMap<BareJid, ArrayList<OmemoDevice>> successes = new HashMap<>();
+    private final Map<BareJid, Map<OmemoDevice, Throwable>> failures = new HashMap<>();
+    private final Map<BareJid, List<OmemoDevice>> successes = new HashMap<>();
 
     public CannotEstablishOmemoSessionException(OmemoDevice failed, Throwable reason) {
         super();
@@ -41,7 +42,7 @@ public class CannotEstablishOmemoSessionException extends Exception {
     }
 
     public void addFailures(CannotEstablishOmemoSessionException otherFailures) {
-        for (Map.Entry<BareJid, HashMap<OmemoDevice, Throwable>> entry : otherFailures.getFailures().entrySet()) {
+        for (Map.Entry<BareJid, Map<OmemoDevice, Throwable>> entry : otherFailures.getFailures().entrySet()) {
             getFailsOfContact(entry.getKey()).putAll(entry.getValue());
         }
     }
@@ -50,16 +51,16 @@ public class CannotEstablishOmemoSessionException extends Exception {
         getSuccessesOfContact(success.getJid()).add(success);
     }
 
-    public HashMap<BareJid, HashMap<OmemoDevice, Throwable>> getFailures() {
+    public Map<BareJid, Map<OmemoDevice, Throwable>> getFailures() {
         return failures;
     }
 
-    public HashMap<BareJid, ArrayList<OmemoDevice>> getSuccesses() {
+    public Map<BareJid, List<OmemoDevice>> getSuccesses() {
         return successes;
     }
 
-    private HashMap<OmemoDevice, Throwable> getFailsOfContact(BareJid contact) {
-        HashMap<OmemoDevice, Throwable> h = failures.get(contact);
+    private Map<OmemoDevice, Throwable> getFailsOfContact(BareJid contact) {
+        Map<OmemoDevice, Throwable> h = failures.get(contact);
         if (h == null) {
             h = new HashMap<>();
             failures.put(contact, h);
@@ -67,8 +68,8 @@ public class CannotEstablishOmemoSessionException extends Exception {
         return h;
     }
 
-    private ArrayList<OmemoDevice> getSuccessesOfContact(BareJid contact) {
-        ArrayList<OmemoDevice> suc = successes.get(contact);
+    private List<OmemoDevice> getSuccessesOfContact(BareJid contact) {
+        List<OmemoDevice> suc = successes.get(contact);
         if (suc == null) {
             suc = new ArrayList<>();
             successes.put(contact, suc);
@@ -83,8 +84,8 @@ public class CannotEstablishOmemoSessionException extends Exception {
      * @return true if the exception requires to be thrown
      */
     public boolean requiresThrowing() {
-        for (Map.Entry<BareJid, HashMap<OmemoDevice, Throwable>> entry : failures.entrySet()) {
-            ArrayList<OmemoDevice> suc = successes.get(entry.getKey());
+        for (Map.Entry<BareJid, Map<OmemoDevice, Throwable>> entry : failures.entrySet()) {
+            List<OmemoDevice> suc = successes.get(entry.getKey());
             if (suc == null || suc.isEmpty()) {
                 return true;
             }

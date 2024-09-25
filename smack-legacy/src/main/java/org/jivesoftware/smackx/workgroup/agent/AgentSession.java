@@ -349,15 +349,9 @@ public class AgentSession {
                             new StanzaTypeFilter(Presence.class), FromMatchesFilter.create(workgroupJID)), presence);
 
             presence = collector.nextResultOrThrow();
-
-            // We can safely update this iv since we didn't get any error
-            this.online = online;
         }
         // Otherwise the user is going offline...
         else {
-            // Update this iv now since we don't care at this point of any error
-            this.online = online;
-
             presence = connection.getStanzaFactory().buildPresenceStanza()
                     .ofType(Presence.Type.unavailable)
                     .to(workgroupJID)
@@ -714,7 +708,7 @@ public class AgentSession {
     private void fireOfferRequestEvent(OfferRequestProvider.OfferRequestPacket requestPacket) {
         Offer offer = new Offer(this.connection, this, requestPacket.getUserID(),
                 requestPacket.getUserJID(), this.getWorkgroupJID(),
-                                new Date(new Date().getTime() + (requestPacket.getTimeout() * 1000)),
+                                new Date(new Date().getTime() + (requestPacket.getTimeout() * 1000L)),
                 requestPacket.getSessionID(), requestPacket.getMetaData(), requestPacket.getContent());
 
         synchronized (offerListeners) {

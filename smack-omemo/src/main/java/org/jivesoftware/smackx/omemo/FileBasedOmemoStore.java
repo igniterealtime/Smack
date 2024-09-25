@@ -200,6 +200,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
+    @SuppressWarnings("NonApiType")
     public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException {
         File preKeyDirectory = hierarchy.getPreKeysDirectory(userDevice);
         TreeMap<Integer, T_PreKey> preKeys = new TreeMap<>();
@@ -240,6 +241,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
+    @SuppressWarnings("NonApiType")
     public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException {
         File signedPreKeysDirectory = hierarchy.getSignedPreKeysDirectory(userDevice);
         TreeMap<Integer, T_SigPreKey> signedPreKeys = new TreeMap<>();
@@ -296,6 +298,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     }
 
     @Override
+    @SuppressWarnings("NonApiType")
     public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException {
         File contactsDirectory = hierarchy.getContactsDir(userDevice, contact);
         HashMap<Integer, T_Sess> sessions = new HashMap<>();

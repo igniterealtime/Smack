@@ -210,7 +210,7 @@ public abstract class TransportResolver {
      *
      * @return the list of listeners
      */
-    public ArrayList<TransportResolverListener> getListenersList() {
+    public List<TransportResolverListener> getListenersList() {
         synchronized (listeners) {
             return new ArrayList<>(listeners);
         }

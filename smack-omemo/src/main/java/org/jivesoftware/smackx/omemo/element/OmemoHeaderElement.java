@@ -57,7 +57,7 @@ public abstract class OmemoHeaderElement implements XmlElement {
         return sid;
     }
 
-    public ArrayList<OmemoKeyElement> getKeys() {
+    public List<OmemoKeyElement> getKeys() {
         return new ArrayList<>(keys);
     }
 

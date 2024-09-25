@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.muclight;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightCreateIQ;
 
@@ -43,7 +43,7 @@ public class MUCLightCreateIQTest {
 
         assertEquals(mucLightCreateIQ.getConfiguration().getRoomName(), "test");
 
-        HashMap<Jid, MUCLightAffiliation> iqOccupants = mucLightCreateIQ.getOccupants();
+        Map<Jid, MUCLightAffiliation> iqOccupants = mucLightCreateIQ.getOccupants();
         assertEquals(iqOccupants.get(JidCreate.from("charlie@test.com")), MUCLightAffiliation.member);
         assertEquals(iqOccupants.get(JidCreate.from("pep@test.com")), MUCLightAffiliation.member);
     }

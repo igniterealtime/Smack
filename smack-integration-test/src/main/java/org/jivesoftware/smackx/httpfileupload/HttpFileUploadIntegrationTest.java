@@ -82,7 +82,7 @@ public class HttpFileUploadIntegrationTest extends AbstractSmackIntegrationTest 
         URL getUrl = hfumOne.uploadFile(file, new UploadProgressListener() {
             @Override
             public void onUploadProgress(long uploadedBytes, long totalBytes) {
-                double progress = uploadedBytes / totalBytes;
+                double progress = uploadedBytes / ((double) totalBytes);
                 LOGGER.fine("HTTP File Upload progress " + progress + "% (" + uploadedBytes + '/' + totalBytes + ')');
             }
         });

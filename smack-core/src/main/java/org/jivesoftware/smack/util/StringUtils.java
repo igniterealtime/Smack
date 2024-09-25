@@ -464,7 +464,7 @@ public class StringUtils {
         appendTo(collection, ", ", sb);
     }
 
-    public static <O extends Object> void appendTo(Collection<O> collection, StringBuilder sb,
+    public static <O> void appendTo(Collection<O> collection, StringBuilder sb,
                     Consumer<O> appendFunction) {
         appendTo(collection, ", ", sb, appendFunction);
     }
@@ -473,7 +473,7 @@ public class StringUtils {
         appendTo(collection, delimiter, sb, o -> sb.append(o));
     }
 
-    public static <O extends Object> void appendTo(Collection<O> collection, String delimiter, StringBuilder sb,
+    public static <O> void appendTo(Collection<O> collection, String delimiter, StringBuilder sb,
                     Consumer<O> appendFunction) {
         for (Iterator<O> it = collection.iterator(); it.hasNext();) {
             O cs = it.next();

@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.muclight.element;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -39,7 +38,7 @@ public class MUCLightSetConfigsIQ extends IQ {
 
     private String roomName;
     private String subject;
-    private HashMap<String, String> customConfigs;
+    private Map<String, String> customConfigs;
 
     /**
      * MUC Light set configuration IQ constructor.
@@ -50,7 +49,7 @@ public class MUCLightSetConfigsIQ extends IQ {
      * @param customConfigs TODO javadoc me please
      */
     @SuppressWarnings("this-escape")
-    public MUCLightSetConfigsIQ(Jid roomJid, String roomName, String subject, HashMap<String, String> customConfigs) {
+    public MUCLightSetConfigsIQ(Jid roomJid, String roomName, String subject, Map<String, String> customConfigs) {
         super(ELEMENT, NAMESPACE);
         this.roomName = roomName;
         this.subject = subject;
@@ -66,7 +65,7 @@ public class MUCLightSetConfigsIQ extends IQ {
      * @param roomName TODO javadoc me please
      * @param customConfigs TODO javadoc me please
      */
-    public MUCLightSetConfigsIQ(Jid roomJid, String roomName, HashMap<String, String> customConfigs) {
+    public MUCLightSetConfigsIQ(Jid roomJid, String roomName, Map<String, String> customConfigs) {
         this(roomJid, roomName, null, customConfigs);
     }
 

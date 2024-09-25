@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.omemo;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -268,8 +269,9 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
+    @SuppressWarnings("NonApiType")
     public TreeMap<Integer, T_PreKey> loadOmemoPreKeys(OmemoDevice userDevice) throws IOException {
-        TreeMap<Integer, T_PreKey> preKeys = getCache(userDevice).preKeys;
+        Map<Integer, T_PreKey> preKeys = getCache(userDevice).preKeys;
 
         if (preKeys.isEmpty() && persistent != null) {
             preKeys.putAll(persistent.loadOmemoPreKeys(userDevice));
@@ -293,8 +295,9 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
+    @SuppressWarnings("NonApiType")
     public TreeMap<Integer, T_SigPreKey> loadOmemoSignedPreKeys(OmemoDevice userDevice) throws IOException {
-        TreeMap<Integer, T_SigPreKey> sigPreKeys = getCache(userDevice).signedPreKeys;
+        Map<Integer, T_SigPreKey> sigPreKeys = getCache(userDevice).signedPreKeys;
 
         if (sigPreKeys.isEmpty() && persistent != null) {
             sigPreKeys.putAll(persistent.loadOmemoSignedPreKeys(userDevice));
@@ -341,7 +344,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     }
 
     @Override
-    public HashMap<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException {
+    public Map<Integer, T_Sess> loadAllRawSessionsOf(OmemoDevice userDevice, BareJid contact) throws IOException {
         HashMap<Integer, T_Sess> sessions = getCache(userDevice).sessions.get(contact);
         if (sessions == null) {
             sessions = new HashMap<>();

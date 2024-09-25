@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.push_notifications.element;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -51,10 +50,10 @@ public class EnablePushNotificationsIQ extends IQ {
 
     private final Jid jid;
     private final String node;
-    private final HashMap<String, String> publishOptions;
+    private final Map<String, String> publishOptions;
 
     @SuppressWarnings("this-escape")
-    public EnablePushNotificationsIQ(Jid jid, String node, HashMap<String, String> publishOptions) {
+    public EnablePushNotificationsIQ(Jid jid, String node, Map<String, String> publishOptions) {
         super(ELEMENT, NAMESPACE);
         this.jid = jid;
         this.node = node;
@@ -89,7 +88,7 @@ public class EnablePushNotificationsIQ extends IQ {
      *
      * @return the publish options
      */
-    public HashMap<String, String> getPublishOptions() {
+    public Map<String, String> getPublishOptions() {
         return publishOptions;
     }
 

@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.muclight.element;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -48,11 +47,11 @@ public abstract class MUCLightElements {
         public static final String NAMESPACE = MultiUserChatLight.NAMESPACE + MultiUserChatLight.AFFILIATIONS;
         public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
-        private final HashMap<Jid, MUCLightAffiliation> affiliations;
+        private final Map<Jid, MUCLightAffiliation> affiliations;
         private final String prevVersion;
         private final String version;
 
-        public AffiliationsChangeExtension(HashMap<Jid, MUCLightAffiliation> affiliations, String prevVersion,
+        public AffiliationsChangeExtension(Map<Jid, MUCLightAffiliation> affiliations, String prevVersion,
                 String version) {
             this.affiliations = affiliations;
             this.prevVersion = prevVersion;
@@ -74,7 +73,7 @@ public abstract class MUCLightElements {
          *
          * @return the affiliations
          */
-        public HashMap<Jid, MUCLightAffiliation> getAffiliations() {
+        public Map<Jid, MUCLightAffiliation> getAffiliations() {
             return affiliations;
         }
 
@@ -135,7 +134,7 @@ public abstract class MUCLightElements {
         private final String version;
         private final String roomName;
         private final String subject;
-        private final HashMap<String, String> customConfigs;
+        private final Map<String, String> customConfigs;
 
         /**
          * Configurations change extension constructor.
@@ -147,7 +146,7 @@ public abstract class MUCLightElements {
          * @param customConfigs TODO javadoc me please
          */
         public ConfigurationsChangeExtension(String prevVersion, String version, String roomName, String subject,
-                HashMap<String, String> customConfigs) {
+                Map<String, String> customConfigs) {
             this.prevVersion = prevVersion;
             this.version = version;
             this.roomName = roomName;
@@ -206,7 +205,7 @@ public abstract class MUCLightElements {
          *
          * @return the room custom configurations
          */
-        public HashMap<String, String> getCustomConfigs() {
+        public Map<String, String> getCustomConfigs() {
             return customConfigs;
         }
 
@@ -287,14 +286,14 @@ public abstract class MUCLightElements {
      */
     public static class OccupantsElement implements Element {
 
-        private HashMap<Jid, MUCLightAffiliation> occupants;
+        private Map<Jid, MUCLightAffiliation> occupants;
 
         /**
          * Occupants element constructor.
          *
          * @param occupants TODO javadoc me please
          */
-        public OccupantsElement(HashMap<Jid, MUCLightAffiliation> occupants) {
+        public OccupantsElement(Map<Jid, MUCLightAffiliation> occupants) {
             this.occupants = occupants;
         }
 

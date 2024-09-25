@@ -16,7 +16,7 @@
  */
 package org.jivesoftware.smackx.muclight;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.jxmpp.jid.Jid;
 
@@ -30,7 +30,7 @@ public class MUCLightRoomInfo {
     private final String version;
     private final Jid room;
     private final MUCLightRoomConfiguration configuration;
-    private final HashMap<Jid, MUCLightAffiliation> occupants;
+    private final Map<Jid, MUCLightAffiliation> occupants;
 
     /**
      * MUC Light room info model constructor.
@@ -41,7 +41,7 @@ public class MUCLightRoomInfo {
      * @param occupants TODO javadoc me please
      */
     public MUCLightRoomInfo(String version, Jid roomJid, MUCLightRoomConfiguration configuration,
-            HashMap<Jid, MUCLightAffiliation> occupants) {
+            Map<Jid, MUCLightAffiliation> occupants) {
         this.version = version;
         this.room = roomJid;
         this.configuration = configuration;
@@ -80,7 +80,7 @@ public class MUCLightRoomInfo {
      *
      * @return the occupants of the room.
      */
-    public HashMap<Jid, MUCLightAffiliation> getOccupants() {
+    public Map<Jid, MUCLightAffiliation> getOccupants() {
         return occupants;
     }
 

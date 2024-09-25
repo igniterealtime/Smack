@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.muclight.provider;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
@@ -42,8 +43,8 @@ public class MUCLightBlockingIQProvider extends IqProvider<MUCLightBlockingIQ> {
 
     @Override
     public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
-        HashMap<Jid, Boolean> rooms = null;
-        HashMap<Jid, Boolean> users = null;
+        Map<Jid, Boolean> rooms = null;
+        Map<Jid, Boolean> users = null;
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -70,7 +71,7 @@ public class MUCLightBlockingIQProvider extends IqProvider<MUCLightBlockingIQ> {
         return mucLightBlockingIQ;
     }
 
-    private static HashMap<Jid, Boolean> parseBlocking(XmlPullParser parser, HashMap<Jid, Boolean> map)
+    private static Map<Jid, Boolean> parseBlocking(XmlPullParser parser, Map<Jid, Boolean> map)
             throws XmppStringprepException, XmlPullParserException, IOException {
         if (map == null) {
             map = new HashMap<>();

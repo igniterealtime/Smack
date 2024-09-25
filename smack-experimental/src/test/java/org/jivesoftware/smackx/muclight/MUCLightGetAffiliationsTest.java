@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.muclight;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
@@ -57,7 +57,7 @@ public class MUCLightGetAffiliationsTest {
 
         assertEquals("123456", mucLightAffiliationsIQ.getVersion());
 
-        HashMap<Jid, MUCLightAffiliation> affiliations = mucLightAffiliationsIQ.getAffiliations();
+        Map<Jid, MUCLightAffiliation> affiliations = mucLightAffiliationsIQ.getAffiliations();
         assertEquals(3, affiliations.size());
         assertEquals(MUCLightAffiliation.owner, affiliations.get(JidCreate.from("user1@shakespeare.lit")));
         assertEquals(MUCLightAffiliation.member, affiliations.get(JidCreate.from("user2@shakespeare.lit")));

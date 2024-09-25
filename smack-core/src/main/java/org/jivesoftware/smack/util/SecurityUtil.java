@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus.
+ * Copyright 2019-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ public class SecurityUtil {
 
     private static final LruCache<Class<? extends Provider>, Void> INSERTED_PROVIDERS_CACHE = new LruCache<>(8);
 
+    @SuppressWarnings("LockOnNonEnclosingClassLiteral")
     public static void ensureProviderAtFirstPosition(Class<? extends Provider> providerClass) {
         if (INSERTED_PROVIDERS_CACHE.containsKey(providerClass)) {
             return;
@@ -41,7 +42,7 @@ public class SecurityUtil {
 
         String providerName = provider.getName();
 
-        int installedPosition ;
+        int installedPosition;
         synchronized (Security.class) {
             Security.removeProvider(providerName);
             installedPosition = Security.insertProviderAt(provider, 1);

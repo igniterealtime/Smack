@@ -40,7 +40,7 @@ public final class PublicKeysListElement implements ExtensionElement {
 
     private final Map<OpenPgpV4Fingerprint, PubkeyMetadataElement> metadata;
 
-    private PublicKeysListElement(TreeMap<OpenPgpV4Fingerprint, PubkeyMetadataElement> metadata) {
+    private PublicKeysListElement(Map<OpenPgpV4Fingerprint, PubkeyMetadataElement> metadata) {
         this.metadata = Collections.unmodifiableMap(Objects.requireNonNull(metadata));
     }
 
@@ -48,7 +48,8 @@ public final class PublicKeysListElement implements ExtensionElement {
         return new Builder();
     }
 
-    public TreeMap<OpenPgpV4Fingerprint, PubkeyMetadataElement> getMetadata() {
+    @SuppressWarnings("NonApiType")
+    public Map<OpenPgpV4Fingerprint, PubkeyMetadataElement> getMetadata() {
         return new TreeMap<>(metadata);
     }
 
@@ -72,7 +73,7 @@ public final class PublicKeysListElement implements ExtensionElement {
 
     public static final class Builder {
 
-        private final TreeMap<OpenPgpV4Fingerprint, PubkeyMetadataElement> metadata = new TreeMap<>();
+        private final Map<OpenPgpV4Fingerprint, PubkeyMetadataElement> metadata = new TreeMap<>();
 
         private Builder() {
             // Empty
