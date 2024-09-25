@@ -672,6 +672,7 @@ public abstract class ConnectionConfiguration {
         private boolean compressionEnabled = false;
         private StanzaIdSourceFactory stanzaIdSourceFactory = new StandardStanzaIdSource.Factory();
 
+        @SuppressWarnings("this-escape")
         protected Builder() {
             if (SmackConfiguration.DEBUG) {
                 enableDefaultDebugger();

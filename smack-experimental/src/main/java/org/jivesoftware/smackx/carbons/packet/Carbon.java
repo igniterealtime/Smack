@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ public class Carbon {
     public static class Enable extends SimpleIQ {
         public static final String ELEMENT = "enable";
 
+        @SuppressWarnings("this-escape")
         public Enable() {
             super(ELEMENT, NAMESPACE);
             setType(Type.set);
@@ -37,6 +38,7 @@ public class Carbon {
     public static class Disable extends SimpleIQ {
         public static final String ELEMENT = "disable";
 
+        @SuppressWarnings("this-escape")
         public Disable() {
             super(ELEMENT, NAMESPACE);
             setType(Type.set);

@@ -388,6 +388,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      *
      * @param configuration The configuration which is used to establish the connection.
      */
+    @SuppressWarnings("this-escape")
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         saslAuthentication = new SASLAuthentication(this, configuration);
         config = configuration;

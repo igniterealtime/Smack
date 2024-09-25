@@ -68,6 +68,7 @@ public class Bytestream extends IQ {
      * @param SID The session ID related to the negotiation.
      * @see #setSessionID(String)
      */
+    @SuppressWarnings("this-escape")
     public Bytestream(final String SID) {
         this();
         setSessionID(SID);

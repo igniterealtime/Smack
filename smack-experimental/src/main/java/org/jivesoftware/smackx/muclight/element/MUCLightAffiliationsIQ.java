@@ -48,6 +48,7 @@ public class MUCLightAffiliationsIQ extends IQ {
      * @param version TODO javadoc me please
      * @param affiliations TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MUCLightAffiliationsIQ(String version, HashMap<Jid, MUCLightAffiliation> affiliations) {
         super(ELEMENT, NAMESPACE);
         this.version = version;

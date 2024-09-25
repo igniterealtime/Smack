@@ -56,6 +56,7 @@ public class ICEResolver extends TransportResolver {
     static Map<String, ICENegociator> negociatorsMap = new HashMap<>();
     // ICENegociator iceNegociator = null;
 
+    @SuppressWarnings("this-escape")
     public ICEResolver(XMPPConnection connection, String server, int port) {
         super();
         this.connection = connection;

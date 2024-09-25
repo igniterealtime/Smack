@@ -76,7 +76,7 @@ public class OctTreeQuantizer implements Quantizer {
     private int colors = 0;
     private final List<Vector<OctTreeNode>> colorList;
 
-    @SuppressWarnings("JdkObsolete")
+    @SuppressWarnings({"JdkObsolete", "this-escape"})
     public OctTreeQuantizer() {
         setup(256);
         colorList = new ArrayList<>(MAX_LEVEL + 1);

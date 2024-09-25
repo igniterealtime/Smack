@@ -178,6 +178,7 @@ public class EnhancedDebugger extends SmackDebugger {
 
     JTabbedPane tabbedPane;
 
+    @SuppressWarnings("this-escape")
     public EnhancedDebugger(XMPPConnection connection) {
         super(connection);
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ public class ClearCache extends SimpleIQ {
     public static final String ELEMENT = "clearCache";
     public static final String NAMESPACE = Constants.IOT_PROVISIONING_NAMESPACE;
 
+    @SuppressWarnings("this-escape")
     public ClearCache() {
         super(ELEMENT, NAMESPACE);
         // <clearCache/> IQs are always of type 'get' (XEP-0324 § 3.5.1, see also the XEPs history remarks)

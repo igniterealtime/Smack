@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2010 Jive Software, 2022 Florian Schmaus.
+ * Copyright 2010 Jive Software, 2022-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,6 +82,7 @@ public class DummyConnection extends AbstractXMPPConnection {
         }
     }
 
+    @SuppressWarnings("this-escape")
     public DummyConnection(DummyConnectionConfiguration configuration) {
         super(configuration);
 

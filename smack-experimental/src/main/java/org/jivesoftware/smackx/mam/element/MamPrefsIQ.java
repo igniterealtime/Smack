@@ -81,6 +81,7 @@ public class MamPrefsIQ extends IQ {
      * @param neverJids TODO javadoc me please
      * @param defaultBehavior TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MamPrefsIQ(MamVersion version, List<Jid> alwaysJids, List<Jid> neverJids, DefaultBehavior defaultBehavior) {
         super(ELEMENT, version.getNamespace());
         setType(Type.set);

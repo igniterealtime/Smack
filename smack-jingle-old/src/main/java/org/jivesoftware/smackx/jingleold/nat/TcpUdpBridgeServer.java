@@ -48,6 +48,7 @@ public class TcpUdpBridgeServer {
     private Socket localTcpSocket;
     private ServerSocket serverTcpSocket;
 
+    @SuppressWarnings("this-escape")
     public TcpUdpBridgeServer(String remoteTcpHost, String remoteUdpHost, int remoteTcpPort, int remoteUdpPort) {
         this.remoteTcpHost = remoteTcpHost;
         this.remoteUdpHost = remoteUdpHost;

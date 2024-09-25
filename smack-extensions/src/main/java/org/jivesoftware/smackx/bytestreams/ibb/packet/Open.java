@@ -54,6 +54,7 @@ public class Open extends IQ {
      * @param blockSize block size in which the data will be fragmented
      * @param stanza stanza type used to encapsulate the data
      */
+    @SuppressWarnings("this-escape")
     public Open(String sessionID, int blockSize, StanzaType stanza) {
         super(ELEMENT, NAMESPACE);
         if (sessionID == null || "".equals(sessionID)) {

@@ -47,6 +47,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         this(pe, null);
     }
 
+    @SuppressWarnings("this-escape")
     public XmlStringBuilder(NamedElement e) {
         this();
         halfOpenElement(e.getElementName());
@@ -56,6 +57,7 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         this(element.getElementName(), element.getNamespace(), element.getLanguage(), enclosingXmlEnvironment);
     }
 
+    @SuppressWarnings("this-escape")
     public XmlStringBuilder(String elementName, String xmlNs, String xmlLang, XmlEnvironment enclosingXmlEnvironment) {
         sb = new LazyStringBuilder();
         halfOpenElement(elementName);

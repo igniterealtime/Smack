@@ -99,6 +99,7 @@ public class JingleContentInfo implements ExtensionElement {
 
         public static final String NAMESPACE = "urn:xmpp:tmp:jingle:apps:rtp";
 
+        @SuppressWarnings("this-escape")
         public Audio(final ContentInfo mi) {
             super(mi);
             setNamespace(NAMESPACE);

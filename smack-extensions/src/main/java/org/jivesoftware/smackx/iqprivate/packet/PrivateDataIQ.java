@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright 2014-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,13 @@ public class PrivateDataIQ extends IQ {
     private final String getElement;
     private final String getNamespace;
 
+    @SuppressWarnings("this-escape")
     public PrivateDataIQ(PrivateData privateData) {
         this(privateData, null, null);
         setType(Type.set);
     }
 
+    @SuppressWarnings("this-escape")
     public PrivateDataIQ(String element, String namespace) {
         this(null, element, namespace);
         setType(Type.get);

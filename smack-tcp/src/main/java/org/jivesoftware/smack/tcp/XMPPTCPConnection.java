@@ -294,6 +294,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      *
      * @param config the connection configuration.
      */
+    @SuppressWarnings("this-escape")
     public XMPPTCPConnection(XMPPTCPConnectionConfiguration config) {
         super(config);
         this.config = config;

@@ -47,6 +47,7 @@ public class MUCLightChangeAffiliationsIQ extends IQ {
      * @param room TODO javadoc me please
      * @param affiliations TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MUCLightChangeAffiliationsIQ(Jid room, HashMap<Jid, MUCLightAffiliation> affiliations) {
         super(ELEMENT, NAMESPACE);
         this.setType(Type.set);

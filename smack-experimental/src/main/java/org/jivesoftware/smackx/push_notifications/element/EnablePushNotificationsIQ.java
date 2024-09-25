@@ -53,6 +53,7 @@ public class EnablePushNotificationsIQ extends IQ {
     private final String node;
     private final HashMap<String, String> publishOptions;
 
+    @SuppressWarnings("this-escape")
     public EnablePushNotificationsIQ(Jid jid, String node, HashMap<String, String> publishOptions) {
         super(ELEMENT, NAMESPACE);
         this.jid = jid;

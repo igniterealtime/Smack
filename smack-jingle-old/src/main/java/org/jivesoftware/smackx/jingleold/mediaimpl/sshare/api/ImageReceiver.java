@@ -48,6 +48,7 @@ public class ImageReceiver extends Canvas {
     private int remotePort;
     private ImageDecoder decoder;
 
+    @SuppressWarnings("this-escape")
     public ImageReceiver(final InetAddress remoteHost, final int remotePort, final int localPort, int width, int height) {
         tiles = new BufferedImage[width][height];
 

@@ -43,6 +43,7 @@ public class PubSub extends IQ {
         super(ELEMENT, ns.getXmlns());
     }
 
+    @SuppressWarnings("this-escape")
     public PubSub(Jid to, Type type, PubSubNamespace ns) {
         super(ELEMENT, (ns == null ? PubSubNamespace.basic : ns).getXmlns());
         setTo(to);

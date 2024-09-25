@@ -22,6 +22,7 @@ public class ChatSetting {
     private String value;
     private int type;
 
+    @SuppressWarnings("this-escape")
     public ChatSetting(String key, String value, int type) {
         setKey(key);
         setValue(value);

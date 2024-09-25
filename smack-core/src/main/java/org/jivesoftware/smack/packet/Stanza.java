@@ -203,7 +203,7 @@ public abstract class Stanza implements StanzaView, TopLevelStreamElement {
      * @param to who the packet is being sent to.
      */
     // TODO: Mark this as deprecated once StanzaBuilder is ready and all call sites are gone.
-    public void setTo(Jid to) {
+    public final void setTo(Jid to) {
         this.to = to;
     }
 

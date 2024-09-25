@@ -191,6 +191,7 @@ public abstract class JingleDescription implements ExtensionElement {
          *
          * @param pt the payload type.
          */
+        @SuppressWarnings("this-escape")
         public Audio(final PayloadType pt) {
             super();
             addPayloadType(pt);

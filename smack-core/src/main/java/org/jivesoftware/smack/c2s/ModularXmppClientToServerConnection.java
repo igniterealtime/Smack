@@ -658,6 +658,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         updateOutgoingStreamXmlEnvironmentOnStreamOpen(streamOpen);
     }
 
+    @SuppressWarnings("this-escape")
     public static class DisconnectedStateDescriptor extends StateDescriptor {
         protected DisconnectedStateDescriptor() {
             super(DisconnectedState.class, StateDescriptor.Property.finalState);

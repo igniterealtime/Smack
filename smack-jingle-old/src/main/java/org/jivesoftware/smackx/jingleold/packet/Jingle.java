@@ -71,6 +71,7 @@ public class Jingle extends IQ {
      * @param mi the jingle content info
      * @param sid the sid.
      */
+    @SuppressWarnings("this-escape")
     public Jingle(final List<JingleContent> contents, final JingleContentInfo mi,
                   final String sid) {
         this();
@@ -93,6 +94,7 @@ public class Jingle extends IQ {
      *
      * @param content a content
      */
+    @SuppressWarnings("this-escape")
     public Jingle(final JingleContent content) {
         this();
 
@@ -112,6 +114,7 @@ public class Jingle extends IQ {
      *
      * @param info The content info
      */
+    @SuppressWarnings("this-escape")
     public Jingle(final JingleContentInfo info) {
         this();
 
@@ -131,6 +134,7 @@ public class Jingle extends IQ {
      *
      * @param action The action.
      */
+    @SuppressWarnings("this-escape")
     public Jingle(final JingleActionEnum action) {
         this(null, null, null);
         this.action = action;

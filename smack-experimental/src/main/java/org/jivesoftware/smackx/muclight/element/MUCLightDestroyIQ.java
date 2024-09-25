@@ -38,6 +38,7 @@ public class MUCLightDestroyIQ extends IQ {
      *
      * @param roomJid TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MUCLightDestroyIQ(Jid roomJid) {
         super(ELEMENT, NAMESPACE);
         this.setType(Type.set);

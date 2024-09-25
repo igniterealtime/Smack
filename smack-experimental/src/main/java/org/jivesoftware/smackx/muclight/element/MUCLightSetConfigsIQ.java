@@ -49,6 +49,7 @@ public class MUCLightSetConfigsIQ extends IQ {
      * @param subject TODO javadoc me please
      * @param customConfigs TODO javadoc me please
      */
+    @SuppressWarnings("this-escape")
     public MUCLightSetConfigsIQ(Jid roomJid, String roomName, String subject, HashMap<String, String> customConfigs) {
         super(ELEMENT, NAMESPACE);
         this.roomName = roomName;
