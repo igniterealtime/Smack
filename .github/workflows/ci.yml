@@ -95,8 +95,8 @@ jobs:
           else
               echo COVERALLS_REPO_TOKEN is not empty
           fi
-          ./gradlew smack-java8-full:testCodeCoverageReport
-          ./gradlew smack-java8-full:coveralls
+          ./gradlew smack-java11-full:testCodeCoverageReport
+          ./gradlew smack-java11-full:coveralls
 
       # Upload build artifacts
       - name: Upload build artifacts
