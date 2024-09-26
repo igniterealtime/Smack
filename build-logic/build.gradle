@@ -10,6 +10,5 @@ dependencies {
 	implementation "biz.aQute.bnd:biz.aQute.bnd.gradle:7.0.0"
 	implementation "me.champeau.jmh:jmh-gradle-plugin:0.7.2"
 	implementation "net.ltgt.gradle:gradle-errorprone-plugin:4.0.1"
-	implementation "gradle.plugin.org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.12.2"
 	implementation "ru.vyarus:gradle-animalsniffer-plugin:1.7.1"
 }
