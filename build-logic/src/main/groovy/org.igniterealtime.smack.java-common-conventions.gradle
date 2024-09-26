@@ -1,7 +1,6 @@
 plugins {
 	id 'biz.aQute.bnd.builder'
 	id 'checkstyle'
-	id 'com.github.kt3k.coveralls'
 	id 'eclipse'
 	id 'idea'
 	id 'jacoco'
@@ -330,10 +329,6 @@ task copyJavadocDocFiles(type: Copy) {
 	include '**/doc-files/*.*'
 }
 javadoc.dependsOn copyJavadocDocFiles
-
-coveralls {
-	jacocoReportPath 'build/reports/jacoco/testCodeCoverageReport/testCodeCoverageReport.xml'
-}
 
 def getGitCommit() {
 	def projectDirFile = new File("$projectDir")
