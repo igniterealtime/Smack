@@ -12,7 +12,6 @@
 .project
 .settings
 .gradle
-gradle.properties
 
 build/
 core/build/
