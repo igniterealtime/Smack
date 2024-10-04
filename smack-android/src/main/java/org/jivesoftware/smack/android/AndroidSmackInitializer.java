@@ -37,6 +37,8 @@ import org.minidns.dnsserverlookup.android21.AndroidUsingLinkProperties;
 public class AndroidSmackInitializer implements SmackInitializer {
 
     @Override
+    // Android deprecated StrictHostnameVerifier in API level 22
+    @SuppressWarnings("deprecation")
     public List<Exception> initialize() {
         SmackConfiguration.setDefaultHostnameVerifier(new StrictHostnameVerifier());
         Base64.setEncoder(AndroidBase64Encoder.INSTANCE);

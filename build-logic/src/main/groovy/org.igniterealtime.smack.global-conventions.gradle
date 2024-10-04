@@ -1,7 +1,7 @@
 ext {
 	javaVersion = JavaVersion.VERSION_11
 	javaMajor = javaVersion.getMajorVersion()
-	smackMinAndroidSdk = 21
+	smackMinAndroidSdk = 23
 
 	androidBootClasspath = { getAndroidRuntimeJar() }
 }

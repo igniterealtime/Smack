@@ -3,7 +3,7 @@ plugins {
 	id 'org.igniterealtime.smack.global-conventions'
 }
 dependencies {
-	signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:5.0.1_r2@signature"
+	signature "net.sf.androidscents.signature:android-api-level-${smackMinAndroidSdk}:6.0_r3@signature"
 }
 animalsniffer {
 	sourceSets = [sourceSets.main]
