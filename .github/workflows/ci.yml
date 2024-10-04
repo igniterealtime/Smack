@@ -56,7 +56,7 @@ jobs:
         uses: android-actions/setup-android@v3
       - name: Install Android SDK
         run: |
-          sdkmanager "platforms;android-21"
+          sdkmanager "platforms;android-23"
 
       # Testing
       - name: Gradle Check
