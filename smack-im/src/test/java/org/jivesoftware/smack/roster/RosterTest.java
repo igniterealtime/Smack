@@ -518,6 +518,32 @@ public class RosterTest extends InitSmackIm {
         assertSame("Wrong number of roster entries.", 4, roster.getEntries().size());
     }
 
+    @Test
+    public void testContactBelongsToRoster() throws Exception {
+        assertNotNull("Can't get the roster from the provided connection!", roster);
+        initRoster();
+
+        // Verify the contact belongs to roster
+        final BareJid contactJID = JidCreate.entityBareFrom("romeo@example.net");
+        assertTrue("Contact doesn't belong to the roster.", roster.contains(contactJID));
+
+        // Verify the non-existent contact does not belong to roster
+        final BareJid nonExistentContactJID = JidCreate.entityBareFrom("juliet@example.net");
+        assertFalse("Non-existent contact found in the roster.", roster.contains(nonExistentContactJID));
+    }
+
+    @Test
+    public void testAccountBelongsToRoster() {
+        // Verify the connection account belongs to roster
+        final BareJid accountJID = connection.getUser().asBareJid();
+        assertTrue("Connection account doesn't belong to the connected roster.", roster.contains(accountJID));
+
+        connection.instantShutdown();
+
+        // Verify the connection account no longer belongs to the roster now it has been disconnected.
+        assertFalse("Connection account erroneously belongs to the disconnected roster.", roster.contains(accountJID));
+    }
+
     /**
      * Remove all roster entries by iterating trough {@link Roster#getEntries()}
      * and simulating receiving roster pushes from the server.
