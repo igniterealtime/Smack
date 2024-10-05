@@ -79,4 +79,13 @@ public interface RosterListener {
      * @see Roster#getPresence(org.jxmpp.jid.BareJid)
      */
     void presenceChanged(Presence presence);
+
+    /**
+     * Called when the presence of one of the own available resources is changed.
+     *
+     * @param presence the presence that changed.
+     * @see Roster#getPresence(org.jxmpp.jid.BareJid)
+     * @since 4.5
+     */
+    default void ownPresenceChanged(Presence presence) { };
 }
