@@ -12,7 +12,7 @@ ext {
 
 dependencies {
 	api "xpp3:xpp3_min:$xpp3Version"
-	implementation "xpp3:xpp3:$xpp3Version"
+	implementation "org.codelibs:xpp3:${xpp3Version}.0"
 	api project(':smack-xmlparser')
 	//testCompile project(path: ":smack-xmlparser", configuration: "testRuntime")
 }
