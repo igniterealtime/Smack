@@ -1462,7 +1462,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         try {
             try {
                 stanza = PacketParserUtils.parseStanza(parser, incomingStreamXmlEnvironment);
-            } catch (NullPointerException | NumberFormatException e) {
+            } catch (NullPointerException e) {
                 // Those exceptions should probably be wrapped into a SmackParsingException and therefore likely constitute a missing verification in the throwing parser.
                 String message = "Smack parser throw unexpected exception '" + e.getMessage() + "', please report this at " + Smack.BUG_REPORT_URL;
                 LOGGER.log(Level.SEVERE, message, e);
