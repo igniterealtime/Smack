@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.SmackParsingException.RequiredValueMissingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.provider.RosterPacketProvider;
@@ -185,9 +186,8 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         FormField.Type type = null;
         {
             String fieldTypeString = parser.getAttributeValue("type");
-            if (fieldTypeString != null) {
-                type = FormField.Type.fromString(fieldTypeString);
-            }
+            // FormField.Type.fromString() will return null if its input is null.
+            type = FormField.Type.fromString(fieldTypeString);
         }
 
         List<FormField.Value> values = new ArrayList<>();
@@ -236,6 +236,14 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
             if (reportedFormField != null) {
                 type = reportedFormField.getType();
             }
+        }
+
+        if (type != FormField.Type.fixed && fieldName == null) {
+            String typeString = "unspecified";
+            if (type != null) {
+                typeString = type.toString();
+            }
+            throw new RequiredValueMissingException("The data form field of " + typeString + " type has no 'var' attribute, even though one is required as per XEP-0004 § 3.2");
         }
 
         if (type == null) {

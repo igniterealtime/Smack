@@ -17,11 +17,13 @@
 package org.jivesoftware.smackx.xdata.provider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
@@ -30,6 +32,8 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class DataFormProviderTest {
 
@@ -143,5 +147,15 @@ public class DataFormProviderTest {
         FormField usernameFormField = dataForm.getField("FORM_TYPE");
         assertEquals(FormField.Type.hidden, usernameFormField.getType());
         assertEquals("", usernameFormField.getLabel());
+    }
+
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void testShouldThrowSmackParsingException(SmackTestUtil.XmlPullParserKind parserKind) {
+        String form = "<x xmlns='jabber:x:data' type='form'>"
+                    +   "<field/>"
+                    + "</x>";
+        SmackParsingException.RequiredValueMissingException exception = assertThrows(SmackParsingException.RequiredValueMissingException.class, () -> SmackTestUtil.parse(form, DataFormProvider.class, parserKind));
+        assertEquals("The data form field of unspecified type has no 'var' attribute, even though one is required as per XEP-0004 § 3.2", exception.getMessage());
     }
 }
