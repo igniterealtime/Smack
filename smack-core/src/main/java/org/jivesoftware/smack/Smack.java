@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020-2021 Florian Schmaus
+ * Copyright 2020-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.jivesoftware.smack;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.FileUtils;
@@ -28,6 +30,16 @@ public class Smack {
     private static final String SMACK_ORG = "org.jivesoftware";
 
     public static final String SMACK_PACKAGE = SMACK_ORG + ".smack";
+
+    public static final URL BUG_REPORT_URL;
+
+    static {
+        try {
+            BUG_REPORT_URL = new URL("https://discourse.igniterealtime.org/c/smack/smack-support/9");
+        } catch (MalformedURLException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     /**
      * Returns the Smack version information, e.g."1.3.0".
