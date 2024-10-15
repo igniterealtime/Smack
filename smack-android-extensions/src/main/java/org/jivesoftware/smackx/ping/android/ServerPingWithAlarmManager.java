@@ -173,7 +173,13 @@ public final class ServerPingWithAlarmManager extends Manager {
      */
     public static void onCreate(Context context) {
         sContext = context;
-        context.registerReceiver(ALARM_BROADCAST_RECEIVER, new IntentFilter(PING_ALARM_ACTION));
+
+        int receiverFlags = 0;
+        if (Build.VERSION.SDK_INT >= 34) {
+            receiverFlags |= 4; // RECEIVER_NOT_EXPORTED
+        }
+        context.registerReceiver(ALARM_BROADCAST_RECEIVER, new IntentFilter(PING_ALARM_ACTION), receiverFlags);
+
         sAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         int pendingIntentFlags = 0;
         if (Build.VERSION.SDK_INT >= 23) {
