@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2021 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,15 @@ import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 public class AbstractProvider<E extends Element> {
@@ -105,5 +110,15 @@ public class AbstractProvider<E extends Element> {
         }
 
         return e;
+    }
+
+    public static URL toUrl(String string) throws SmackUriSyntaxParsingException, MalformedURLException {
+        URI uri;
+        try {
+            uri = new URI(string);
+        } catch (URISyntaxException e) {
+            throw new SmackUriSyntaxParsingException(e);
+        }
+        return uri.toURL();
     }
 }

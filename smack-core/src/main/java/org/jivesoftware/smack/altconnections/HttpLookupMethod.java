@@ -117,7 +117,7 @@ public final class HttpLookupMethod {
      */
     public static InputStream getXrdStream(DomainBareJid xmppServiceAddress) throws IOException {
         final String metadataUrl = "https://" + xmppServiceAddress + "/.well-known/host-meta";
-        final URL putUrl = new URL(metadataUrl);
+        final URL putUrl = URI.create(metadataUrl).toURL();
         final URLConnection urlConnection = putUrl.openConnection();
         return  urlConnection.getInputStream();
     }

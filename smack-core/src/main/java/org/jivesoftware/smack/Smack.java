@@ -18,6 +18,7 @@ package org.jivesoftware.smack;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -35,7 +36,7 @@ public class Smack {
 
     static {
         try {
-            BUG_REPORT_URL = new URL("https://discourse.igniterealtime.org/c/smack/smack-support/9");
+            BUG_REPORT_URL = URI.create("https://discourse.igniterealtime.org/c/smack/smack-support/9").toURL();
         } catch (MalformedURLException e) {
             throw new ExceptionInInitializerError(e);
         }

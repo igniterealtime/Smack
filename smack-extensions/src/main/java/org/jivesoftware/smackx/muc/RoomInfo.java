@@ -18,10 +18,11 @@
 package org.jivesoftware.smackx.muc;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
@@ -215,9 +216,9 @@ public class RoomInfo {
             if (urlField != null && !urlField.getValues().isEmpty()) {
                 String urlString = urlField.getFirstValue();
                 try {
-                    logs = new URL(urlString);
-                } catch (MalformedURLException e) {
-                    LOGGER.log(Level.SEVERE, "Could not parse URL", e);
+                    logs = new URI(urlString).toURL();
+                } catch (MalformedURLException | URISyntaxException e) {
+                    throw new IllegalArgumentException("Could not parse '" + urlString + "' to URL", e);
                 }
             }
 

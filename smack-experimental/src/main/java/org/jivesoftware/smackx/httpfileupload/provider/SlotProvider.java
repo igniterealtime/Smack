@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2017 Grigory Fedorov, 2017-2019 Florian Schmaus
+ * Copyright © 2017 Grigory Fedorov, 2017-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
 package org.jivesoftware.smackx.httpfileupload.provider;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsingException;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -42,7 +44,7 @@ import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
 public class SlotProvider extends IqProvider<Slot> {
 
     @Override
-    public Slot parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Slot parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackUriSyntaxParsingException {
         final String namespace = parser.getNamespace();
 
         final UploadService.Version version = HttpFileUploadManager.namespaceToVersion(namespace);
@@ -63,7 +65,7 @@ public class SlotProvider extends IqProvider<Slot> {
                             switch (version) {
                             case v0_2:
                                 String putUrlString = parser.nextText();
-                                putUrl = new URL(putUrlString);
+                                putUrl = toUrl(putUrlString);
                                 break;
                             case v0_3:
                                 putElementV04Content = parsePutElement_V0_4(parser);
@@ -85,7 +87,7 @@ public class SlotProvider extends IqProvider<Slot> {
                             default:
                                 throw new AssertionError();
                             }
-                            getUrl = new URL(getUrlString);
+                            getUrl = toUrl(getUrlString);
                             break;
                     }
                     break;
@@ -114,7 +116,7 @@ public class SlotProvider extends IqProvider<Slot> {
         final int initialDepth = parser.getDepth();
 
         String putUrlString = parser.getAttributeValue(null, "url");
-        URL putUrl = new URL(putUrlString);
+        URL putUrl = URI.create(putUrlString).toURL();
 
         Map<String, String> headers = null;
         outerloop: while (true) {

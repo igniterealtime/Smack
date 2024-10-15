@@ -18,6 +18,7 @@
 package org.jivesoftware.smack;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +61,7 @@ public final class SmackConfiguration {
 
     static {
         try {
-            SMACK_URL = new URL(SMACK_URL_STRING);
+            SMACK_URL = URI.create(SMACK_URL_STRING).toURL();
         } catch (MalformedURLException e) {
             throw new IllegalStateException(e);
         }
