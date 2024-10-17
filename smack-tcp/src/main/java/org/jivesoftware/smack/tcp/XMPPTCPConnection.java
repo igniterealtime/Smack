@@ -1798,6 +1798,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (smSessionId == null)
             return false;
 
+        // If we are not in instant shutdown, i.e., a shutdown which leaves the connection in a resumable state, then SM resumption is not possible.
+        if (!packetWriter.instantShutdown)
+            return false;
+
         final Long shutdownTimestamp = packetWriter.shutdownTimestamp;
         // Seems like we are already reconnected, report true
         if (shutdownTimestamp == null) {
