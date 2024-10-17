@@ -151,7 +151,10 @@ public class SmackIntegrationTestFramework {
                 + successfulTests + '/' + availableTests + " [" + failedTests + " failed]");
 
             if (failedTests > 0) {
-                LOGGER.warning("💀 The following " + failedTests + " tests failed! 💀");
+                StringBuilder sb = new StringBuilder("💀 The following " + failedTests + " tests failed! 💀\n -");
+                StringUtils.appendTo(testRunResult.failedIntegrationTests, "\n- ", sb, t -> sb.append(t.concreteTest));
+                LOGGER.warning(sb.toString());
+
                 final SortedSet<String> bySpecification = new TreeSet<>();
                 for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
                     final Throwable cause = failedTest.failureReason;
