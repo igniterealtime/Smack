@@ -46,9 +46,11 @@ import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByClientException;
 import org.jivesoftware.smack.SmackException.SecurityRequiredByServerException;
 import org.jivesoftware.smack.SmackException.SmackCertificateException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.SmackFuture.InternalSmackFuture;
 import org.jivesoftware.smack.SmackReactor.SelectionKeyAttachment;
@@ -1201,7 +1203,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             return handshakeStatus == TlsHandshakeStatus.successful || handshakeStatus == TlsHandshakeStatus.failed;
         }
 
-        private void waitForHandshakeFinished() throws InterruptedException, CertificateException, SSLException, SmackException, XMPPException {
+        private void waitForHandshakeFinished() throws InterruptedException, CertificateException, SSLException, SmackWrappedException, NoResponseException {
             connectionInternal.waitForConditionOrThrowConnectionException(() -> isHandshakeFinished(), "TLS handshake to finish");
 
             if (handshakeStatus == TlsHandshakeStatus.failed) {
@@ -1234,8 +1236,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         }
 
         @Override
-        public void waitUntilInputOutputClosed() throws IOException, CertificateException, InterruptedException,
-                SmackException, XMPPException {
+        public void waitUntilInputOutputClosed() throws IOException, CertificateException, InterruptedException, SmackWrappedException, NoResponseException {
             waitForHandshakeFinished();
         }
 

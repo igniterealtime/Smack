@@ -281,8 +281,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected Writer writer;
 
-    protected SmackException currentSmackException;
-    protected XMPPException currentXmppException;
+    private Exception currentConnectionException;
 
     protected boolean tlsHandled;
 
@@ -511,8 +510,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     public abstract boolean isUsingCompression();
 
     protected void initState() {
-        currentSmackException = null;
-        currentXmppException = null;
+        currentConnectionException = null;
         saslFeatureReceived = lastFeaturesReceived = tlsHandled = false;
         // TODO: We do not init closingStreamReceived here, as the integration tests use it to check if we waited for
         // it.
@@ -686,28 +684,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return streamId;
     }
 
-    protected final void throwCurrentConnectionException() throws SmackException, XMPPException {
-        if (currentSmackException != null) {
-            throw currentSmackException;
-        } else if (currentXmppException != null) {
-            throw currentXmppException;
-        }
-
-        throw new AssertionError("No current connection exception set, although throwCurrentException() was called");
-    }
-
     protected final boolean hasCurrentConnectionException() {
-        return currentSmackException != null || currentXmppException != null;
+        return currentConnectionException != null;
     }
 
     protected final void setCurrentConnectionExceptionAndNotify(Exception exception) {
-        if (exception instanceof SmackException) {
-            currentSmackException = (SmackException) exception;
-        } else if (exception instanceof XMPPException) {
-            currentXmppException = (XMPPException) exception;
-        } else {
-            currentSmackException = new SmackException.SmackWrappedException(exception);
-        }
+        currentConnectionException = exception;
 
         notifyWaitingThreads();
     }
@@ -741,10 +723,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return true;
     }
 
-    protected final void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException {
+    protected final void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor)
+                    throws InterruptedException, SmackException.SmackWrappedException, NoResponseException {
         boolean success = waitFor(() -> condition.get().booleanValue() || hasCurrentConnectionException());
-        if (hasCurrentConnectionException()) {
-            throwCurrentConnectionException();
+        final Exception currentConnectionException = this.currentConnectionException;
+        if (currentConnectionException != null) {
+            throw new SmackException.SmackWrappedException(currentConnectionException);
         }
 
         // If there was no connection exception and we still did not successfully wait for the condition to hold, then
@@ -1048,7 +1032,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected final boolean waitForClosingStreamTagFromServer() {
         try {
             waitForConditionOrThrowConnectionException(() -> closingStreamReceived, "closing stream tag from the server");
-        } catch (InterruptedException | SmackException | XMPPException e) {
+        } catch (InterruptedException | SmackException.SmackWrappedException | NoResponseException e) {
             LOGGER.log(Level.INFO, "Exception while waiting for closing stream element from the server " + this, e);
             return false;
         }

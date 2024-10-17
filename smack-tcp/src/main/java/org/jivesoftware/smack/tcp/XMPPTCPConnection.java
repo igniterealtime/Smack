@@ -889,8 +889,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         if (startTlsFeature != null) {
             if (startTlsFeature.required() && config.getSecurityMode() == SecurityMode.disabled) {
                 SecurityRequiredByServerException smackException = new SecurityRequiredByServerException();
-                currentSmackException = smackException;
-                notifyWaitingThreads();
+                setCurrentConnectionExceptionAndNotify(smackException);
                 throw smackException;
             }
 
@@ -1020,8 +1019,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                                 // situation. It is still possible to authenticate and
                                 // use the connection but using an uncompressed connection
                                 // TODO Parse failure stanza
-                                currentSmackException = new SmackException.SmackMessageException("Could not establish compression");
-                                notifyWaitingThreads();
+                                SmackException.SmackMessageException exception = new SmackException.SmackMessageException("Could not establish compression");
+                                setCurrentConnectionExceptionAndNotify(exception);
                                 break;
                             default:
                                 parseAndProcessNonza(parser);

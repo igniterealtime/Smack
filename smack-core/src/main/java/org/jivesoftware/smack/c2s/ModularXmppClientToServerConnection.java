@@ -39,6 +39,7 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.OutgoingQueueFullException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackFuture;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.FailedNonzaException;
@@ -259,7 +260,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             @Override
             public void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor)
-                            throws InterruptedException, SmackException, XMPPException {
+                            throws InterruptedException, SmackWrappedException, NoResponseException {
                 ModularXmppClientToServerConnection.this.waitForConditionOrThrowConnectionException(condition, waitFor);
             }
 
@@ -596,8 +597,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                     case "error":
                         StreamError streamError = PacketParserUtils.parseStreamError(parser, null);
                         StreamErrorException streamErrorException = new StreamErrorException(streamError);
-                        currentXmppException = streamErrorException;
-                        notifyWaitingThreads();
+                        setCurrentConnectionExceptionAndNotify(streamErrorException);
                         throw streamErrorException;
                     case "features":
                         parseFeatures(parser);
@@ -1048,8 +1048,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                         XmppInputOutputFilter filter = it.next();
                         try {
                             filter.waitUntilInputOutputClosed();
-                        } catch (IOException | CertificateException | InterruptedException | SmackException
-                                        | XMPPException e) {
+                        } catch (IOException | CertificateException | InterruptedException | SmackException | XMPPException  e) {
                             LOGGER.log(Level.WARNING, "waitUntilInputOutputClosed() threw", e);
                         }
                     }

@@ -26,6 +26,7 @@ import java.util.Queue;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackWrappedException;
 import org.jivesoftware.smack.SmackReactor;
 import org.jivesoftware.smack.SmackReactor.ChannelSelectedCallback;
 import org.jivesoftware.smack.XMPPException;
@@ -127,7 +128,8 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract void asyncGo(Runnable runnable);
 
-    public abstract void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor) throws InterruptedException, SmackException, XMPPException;
+    public abstract void waitForConditionOrThrowConnectionException(Supplier<Boolean> condition, String waitFor)
+                    throws InterruptedException, SmackWrappedException, NoResponseException;
 
     public abstract void notifyWaitingThreads();
 
