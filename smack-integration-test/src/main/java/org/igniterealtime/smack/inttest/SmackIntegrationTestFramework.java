@@ -150,27 +150,28 @@ public class SmackIntegrationTestFramework {
             LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + " finished: "
                 + successfulTests + '/' + availableTests + " [" + failedTests + " failed]");
 
-            if (failedTests > 0) {
-                StringBuilder sb = new StringBuilder("💀 The following " + failedTests + " tests failed! 💀\n -");
-                StringUtils.appendTo(testRunResult.failedIntegrationTests, "\n- ", sb, t -> sb.append(t.concreteTest));
-                LOGGER.warning(sb.toString());
+            if (failedTests == 0) {
+                LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
+                return;
+            }
 
-                final SortedSet<String> bySpecification = new TreeSet<>();
-                for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
-                    final Throwable cause = failedTest.failureReason;
-                    LOGGER.log(Level.SEVERE, failedTest.concreteTest + " failed: " + cause, cause);
-                    if (failedTest.concreteTest.method.getDeclaringClass().isAnnotationPresent(SpecificationReference.class)) {
-                        final String specificationReference = getSpecificationReference(failedTest.concreteTest.method);
-                        if (specificationReference != null) {
-                            bySpecification.add("- " + specificationReference + " (as tested by '" + failedTest.concreteTest + "')");
-                        }
+            StringBuilder sb = new StringBuilder("💀 The following " + failedTests + " tests failed! 💀\n -");
+            StringUtils.appendTo(testRunResult.failedIntegrationTests, "\n- ", sb, t -> sb.append(t.concreteTest));
+            LOGGER.warning(sb.toString());
+
+            final SortedSet<String> bySpecification = new TreeSet<>();
+            for (FailedTest failedTest : testRunResult.failedIntegrationTests) {
+                final Throwable cause = failedTest.failureReason;
+                LOGGER.log(Level.SEVERE, failedTest.concreteTest + " failed: " + cause, cause);
+                if (failedTest.concreteTest.method.getDeclaringClass().isAnnotationPresent(SpecificationReference.class)) {
+                    final String specificationReference = getSpecificationReference(failedTest.concreteTest.method);
+                    if (specificationReference != null) {
+                        bySpecification.add("- " + specificationReference + " (as tested by '" + failedTest.concreteTest + "')");
                     }
                 }
-                if (!bySpecification.isEmpty()) {
-                    LOGGER.log(Level.SEVERE, "The failed tests correspond to the following specifications:" + System.lineSeparator() + String.join(System.lineSeparator(), bySpecification));
-                }
-            } else {
-                LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
+            }
+            if (!bySpecification.isEmpty()) {
+                 LOGGER.log(Level.SEVERE, "The failed tests correspond to the following specifications:" + System.lineSeparator() + String.join(System.lineSeparator(), bySpecification));
             }
         }
     }
