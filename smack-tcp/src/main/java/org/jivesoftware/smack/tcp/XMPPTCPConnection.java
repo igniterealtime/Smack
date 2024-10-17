@@ -1305,8 +1305,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
          */
         void shutdown(boolean instant) {
             instantShutdown = instant;
-            queue.shutdown();
             shutdownTimestamp = System.currentTimeMillis();
+            queue.shutdown();
         }
 
         /**
