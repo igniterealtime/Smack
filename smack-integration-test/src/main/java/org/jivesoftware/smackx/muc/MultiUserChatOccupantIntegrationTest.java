@@ -49,6 +49,7 @@ import org.jivesoftware.smackx.muc.packet.MUCItem;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.igniterealtime.smack.inttest.Configuration;
+import org.igniterealtime.smack.inttest.Configuration.CompatibilityMode;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
@@ -129,6 +130,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             mucAsSeenByTwo.join(nicknameTwo);
 
             subjectResultSyncPoint.waitForResult(timeout); // Wait for subject, as it should be 4th (last)
+
+            if (sinttestConfiguration.compatibilityMode == CompatibilityMode.ejabberd) {
+                // ejabberd MUCs also send their own presence with caps information as very first presence.
+                results.remove(0);
+            }
 
             assertEquals(4, results.size(), "Unexpected amount of stanzas received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'. Results: " + results);
             assertTrue(results.get(0) instanceof Presence, "Expected the first stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a presence stanza (but it was not).");
