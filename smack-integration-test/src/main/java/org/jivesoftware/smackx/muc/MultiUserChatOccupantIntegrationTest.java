@@ -114,8 +114,13 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final List<Stanza> results = new ArrayList<>();
         final StanzaListener stanzaListener = stanza -> {
             results.add(stanza);
-            if (stanza instanceof Message && ((Message) stanza).getSubject() != null) {
-                subjectResultSyncPoint.signal(((Message) stanza).getSubject());
+            // TODO: Use pattern matching for instanceof once Smack is Java 16 or higher.
+            if (stanza instanceof Message) {
+                Message message = (Message) stanza;
+                String subject = message.getSubject();
+                if (subject != null) {
+                    subjectResultSyncPoint.signal(subject);
+                }
             }
         };
         conTwo.addStanzaListener(stanzaListener, FromMatchesFilter.create(mucAddress));
