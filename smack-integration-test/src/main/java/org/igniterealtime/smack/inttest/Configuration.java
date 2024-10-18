@@ -392,12 +392,12 @@ public final class Configuration {
         }
 
         public Builder setEnabledTests(String enabledTestsString) {
-            enabledTests = getTestSetFrom(enabledTestsString);
+            enabledTests = getTestSetFrom(enabledTestsString, "enabled");
             return this;
         }
 
         public Builder setDisabledTests(String disabledTestsString) {
-            disabledTests = getTestSetFrom(disabledTestsString);
+            disabledTests = getTestSetFrom(disabledTestsString, "disabled");
             return this;
         }
 
@@ -625,7 +625,8 @@ public final class Configuration {
         return res;
     }
 
-    private static Set<String> getTestSetFrom(String input) {
+    private static Set<String> getTestSetFrom(String input, String name) {
+        StringUtils.requireNullOrNotEmpty(input, "Most provide a value for " + name + " tests");
         return split(input, s -> {
             s = s.trim();
             if (s.startsWith("smackx.") || s.startsWith("smack.")) {
