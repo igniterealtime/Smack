@@ -125,7 +125,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
             subjectResultSyncPoint.waitForResult(timeout); // Wait for subject, as it should be 4th (last)
 
-            assertEquals(4, results.size(), "Unexpected amount of stanzas received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
+            assertEquals(4, results.size(), "Unexpected amount of stanzas received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'. Results: " + results);
             assertTrue(results.get(0) instanceof Presence, "Expected the first stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a presence stanza (but it was not).");
             assertEquals(JidCreate.fullFrom(mucAddress, nicknameOne), results.get(0).getFrom(), "Unexpected 'from' address of the first stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "'.");
             assertTrue(results.get(1) instanceof Presence, "Expected the second stanza that was received by '" + conTwo.getUser() + "' after it joined room '" + mucAddress + "' to be a presence stanza (but it was not).");
