@@ -97,7 +97,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         "service. The service SHOULD return a full list of the public rooms it hosts (i.e., not return any rooms that" +
         "are hidden).")
     public void mucTestForDiscoveringRooms() throws Exception {
-        EntityBareJid mucAddressPublic = getRandomRoom("smack-inttest-publicroom");
+        EntityBareJid mucAddressPublic = getRandomRoom("publicroom");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddressPublic);
 
         EntityBareJid mucAddressHidden = getRandomRoom("smack-inttest-hiddenroom");
@@ -127,7 +127,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         "Using the disco#info protocol, an entity may also query a specific chat room for more detailed information " +
         "about the room....The room MUST return its identity and SHOULD return the features it supports")
     public void mucTestForDiscoveringRoomInfo() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-discoinfo");
+        EntityBareJid mucAddress = getRandomRoom("discoinfo");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
 
@@ -154,7 +154,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         "of existing occupants if that information is publicly available, or return no list at all if this " +
         "information is kept private.")
     public void mucTestForDiscoveringRoomItems() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-discoitems");
+        EntityBareJid mucAddress = getRandomRoom("discoitems");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
 
@@ -178,7 +178,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
         "If a non-occupant attempts to send a disco request to an address of the form <room@service/nick>, a MUC " +
         "service MUST return a <bad-request> error")
     public void mucTestForRejectingDiscoOnRoomOccupantByNonOccupant() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-discoitems");
+        EntityBareJid mucAddress = getRandomRoom("discoitems");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         createMuc(mucAsSeenByOne, nicknameOne);

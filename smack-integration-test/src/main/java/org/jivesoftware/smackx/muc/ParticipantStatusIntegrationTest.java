@@ -48,7 +48,7 @@ public class ParticipantStatusIntegrationTest extends AbstractMultiUserChatInteg
     @SmackIntegrationTest(section = "9.4", quote = "An admin might want to revoke a user's membership [...] The service MUST then send updated presence from this individual to all occupants, indicating the loss of membership by sending a presence element that contains an <x/> element qualified by the 'http://jabber.org/protocol/muc#user' namespace and containing an <item/> child with the 'affiliation' attribute set to a value of \"none\".")
     public void testMembershipRevokedInOpenRoom() throws Exception {
         // Setup test fixture.
-        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-participantstatus-membership-revoked-open");
+        final EntityBareJid mucAddress = getRandomRoom("participantstatus-membership-revoked-open");
         final MultiUserChat mucAsSeenByOwner = mucManagerOne.getMultiUserChat(mucAddress);
         final MultiUserChat mucAsSeenByTarget = mucManagerTwo.getMultiUserChat(mucAddress);
 
@@ -89,7 +89,7 @@ public class ParticipantStatusIntegrationTest extends AbstractMultiUserChatInteg
     @SmackIntegrationTest(section = "9.4", quote = "An admin might want to revoke a user's membership [...] If the room is members-only, the service MUST remove the user from the room, including a status code of 321 to indicate that the user was removed because of an affiliation change, and inform all remaining occupants")
     public void testMembershipRevokedInMemberOnlyRoom() throws Exception {
         // Setup test fixture.
-        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-participantstatus-membership-revoked-membersonly");
+        final EntityBareJid mucAddress = getRandomRoom("participantstatus-membership-revoked-membersonly");
         final MultiUserChat mucAsSeenByOwner = mucManagerOne.getMultiUserChat(mucAddress);
         final MultiUserChat mucAsSeenByTarget = mucManagerTwo.getMultiUserChat(mucAddress);
 

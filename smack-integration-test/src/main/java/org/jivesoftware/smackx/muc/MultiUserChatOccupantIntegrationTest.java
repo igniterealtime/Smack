@@ -84,7 +84,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         // stanzas arrive. Instead, it joins a chatroom and listens for its stanzas using basic stanza handling. As
         // this uses exactly one stanza listener, that's guaranteed to be invoked in order of stanza arrival, which is
         // not necessarily the case when using the MUC API.
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-eventordering");
+        EntityBareJid mucAddress = getRandomRoom("eventordering");
         final String mucSubject = "Subject smack-inttest-eventordering " + randomString;
         final String mucMessage = "Message smack-inttest-eventordering " + randomString;
 
@@ -173,7 +173,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "§ 7.2.1: In order to participate in the discussions held in a multi-user chat room, a user MUST first become an occupant by entering the room [...] " +
         "§ 7.4: If the sender is not an occupant of the room, the service SHOULD return a <not-acceptable/> error to the sender and SHOULD NOT reflect the message to all occupants")
     public void mucSendBeforeJoiningTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-send-without-joining");
+        EntityBareJid mucAddress = getRandomRoom("send-without-joining");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -213,7 +213,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "complete list of the existing occupants to the new occupant and only then send the new occupant's own " +
         "presence to the new occupant.")
     public void mucJoinPresenceInformationTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-presenceinfo");
+        EntityBareJid mucAddress = getRandomRoom("presenceinfo");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -272,7 +272,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "the service MUST also send presence from the new participant's occupant JID to the full JIDs of all the " +
         "occupants (including the new occupant)")
     public void mucJoinPresenceBroadcastTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-presenceinfo");
+        EntityBareJid mucAddress = getRandomRoom("presenceinfo");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -331,7 +331,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "full JID as shown above), the service MUST warn the user by including a status code of \"100\" in the " +
         "initial presence that the room sends to the new occupant.")
     public void mucJoinNonAnonymousRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-joinnonanonymousroom");
+        EntityBareJid mucAddress = getRandomRoom("joinnonanonymousroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -388,7 +388,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "option), but MUST include the new occupant's full JID only in the presence notifications it sends to " +
         "occupants with a role of \"moderator\" and not to non-moderator occupants.")
     public void mucJoinSemiAnonymousRoomReceivedByNonModeratorTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-seminanonymous-by-non-moderator");
+        EntityBareJid mucAddress = getRandomRoom("seminanonymous-by-non-moderator");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -434,7 +434,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "option), but MUST include the new occupant's full JID only in the presence notifications it sends to " +
         "occupants with a role of \"moderator\" and not to non-moderator occupants.")
     public void mucJoinSemiAnonymousRoomReceivedByModeratorTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-seminanonymous-by-moderator");
+        EntityBareJid mucAddress = getRandomRoom("seminanonymous-by-moderator");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -478,7 +478,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "service MUST deny access to the room and inform the user that they are unauthorized; this is done by returning " +
         "a presence stanza of type \"error\" specifying a <not-authorized/> error.")
     public void mucJoinPasswordProtectedWithoutPasswordRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-enterpasswordprotectedroom");
+        EntityBareJid mucAddress = getRandomRoom("enterpasswordprotectedroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -514,7 +514,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             "service MUST deny access to the room and inform the user that they are unauthorized; this is done by returning " +
             "a presence stanza of type \"error\" specifying a <not-authorized/> error.")
     public void mucJoinPasswordProtectedRoomWrongPasswordTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-enterpasswordprotectedroom");
+        EntityBareJid mucAddress = getRandomRoom("enterpasswordprotectedroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -551,7 +551,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             "service MUST deny access to the room and inform the user that they are unauthorized; this is done by returning " +
             "a presence stanza of type \"error\" specifying a <not-authorized/> error.")
     public void mucJoinPasswordProtectedRoomCorrectPasswordTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-enterpasswordprotectedroom");
+        EntityBareJid mucAddress = getRandomRoom("enterpasswordprotectedroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -593,7 +593,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "room and inform the user that they are not allowed to enter the room; this is done by returning a presence " +
         "stanza of type \"error\" specifying a <registration-required/> error condition.")
     public void mucJoinMembersOnlyRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-entermembersonlyroom");
+        EntityBareJid mucAddress = getRandomRoom("entermembersonlyroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -631,7 +631,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "access to the room and inform the user of the fact that they are banned; this is done by returning a presence " +
         "stanza of type \"error\" specifying a <forbidden/> error condition.")
     public void mucBannedUserJoinRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-banneduser");
+        EntityBareJid mucAddress = getRandomRoom("banneduser");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -667,7 +667,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "room and inform the user of the conflict; this is done by returning a presence stanza of type \"error\" " +
         "specifying a <conflict/> error condition.")
     public void mucNicknameConflictJoinRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-nicknameclash");
+        EntityBareJid mucAddress = getRandomRoom("nicknameclash");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -701,7 +701,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "specifying a <service-unavailable/> error condition. Alternatively, the room could kick an \"idle user\" " +
         "in order to free up space (where the definition of \"idle user\" is up to the implementation).")
     public void mucMaxUsersLimitJoinRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-maxusersreached");
+        EntityBareJid mucAddress = getRandomRoom("maxusersreached");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -780,7 +780,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "room MUST allow the admin or owner to join, up to some reasonable number of additional occupants; this " +
         "helps to prevent denial of service attacks caused by stuffing the room with non-admin users.")
     public void mucMaxUsersLimitAdminCanStillJoinRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-maxusersreached-adminjoin");
+        EntityBareJid mucAddress = getRandomRoom("maxusersreached-adminjoin");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -832,7 +832,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "room MUST allow the admin or owner to join, up to some reasonable number of additional occupants; this " +
         "helps to prevent denial of service attacks caused by stuffing the room with non-admin users.")
     public void mucMaxUsersLimitOwnerCanStillJoinRoomTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-maxusersreached-ownerjoin");
+        EntityBareJid mucAddress = getRandomRoom("maxusersreached-ownerjoin");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -889,7 +889,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
             throw new TestNotPossibleException("ejabberd does not implement MUC locked rooms as per XEP-0045 § 7.2.10");
         }
 
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-lockedroom");
+        EntityBareJid mucAddress = getRandomRoom("lockedroom");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -926,7 +926,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "discussions are logged. This is done by including a status code of \"170\" in the initial presence that the " +
         "room sends to the new occupant.")
     public void mucJoinRoomWithPublicLoggingTest() throws Exception {
-        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-publiclogging");
+        final EntityBareJid mucAddress = getRandomRoom("publiclogging");
 
         final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -967,7 +967,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "case, nick='oldhag') - A status code of 303 This enables the recipients to correlate the old roomnick with " +
         "the new roomnick.\n")
     public void mucChangeNicknameInformationTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-changenickname");
+        EntityBareJid mucAddress = getRandomRoom("changenickname");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -1062,7 +1062,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "service MUST deny the nickname change request and inform the user of the conflict; this is done by " +
         "returning a presence stanza of type \"error\" specifying a <conflict/> error condition:")
     public void mucBlockChangeNicknameInformationTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-blockchangenickname");
+        EntityBareJid mucAddress = getRandomRoom("blockchangenickname");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -1107,7 +1107,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         "JID to the departing occupant's full JIDs, including a status code of \"110\" to indicate that this " +
         "notification is \"self-presence\"")
     public void mucLeaveTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-leave");
+        EntityBareJid mucAddress = getRandomRoom("leave");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
         try {

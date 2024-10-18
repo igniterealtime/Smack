@@ -105,7 +105,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
      * @throws XmppStringprepException if the prefix isn't a valid XMPP Localpart
      */
     public EntityBareJid getRandomRoom(String prefix) throws XmppStringprepException {
-        final String roomNameLocal = String.join("-", prefix, testRunId, StringUtils.insecureRandomString(6));
+        final String roomNameLocal = String.join("-", "sinttest", prefix, testRunId, StringUtils.insecureRandomString(3));
         return JidCreate.entityBareFrom(Localpart.from(roomNameLocal), mucService.getDomain());
     }
 

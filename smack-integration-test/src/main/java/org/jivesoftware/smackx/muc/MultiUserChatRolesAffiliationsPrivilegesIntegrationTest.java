@@ -70,7 +70,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate the change to all occupants [...] (§ 9.6) The service MUST then send updated presence from this " +
         "individual to all occupants, indicating the addition of moderator status...")
     public void mucRoleTestForReceivingModerator() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -109,7 +109,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate the change to all occupants [...] (§ 9.6) The service MUST then send updated presence from this " +
         "individual to all occupants, indicating the addition of moderator status...")
     public void mucRoleTestForWitnessingModerator() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -150,7 +150,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate the change to all occupants [...] (§ 9.7) The service MUST then send updated presence from this " +
         "individual to all occupants, indicating the removal of moderator status...")
     public void mucRoleTestForRemovingModerator() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -188,7 +188,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate the change to all occupants [...] (§ 9.7) The service MUST then send updated presence from this " +
         "individual to all occupants, indicating the removal of moderator status...")
     public void mucRoleTestForWitnessingModeratorRemoval() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -228,7 +228,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate the change to all occupants [...] (§ 8.4) The service MUST then send updated presence from " +
         "this individual to all occupants, indicating the removal of voice privileges...")
     public void mucRoleTestForRevokingVoice() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -263,7 +263,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate the change to all occupants [...] (§ 8.4) The service MUST then send updated presence from " +
         "this individual to all occupants, indicating the removal of voice privileges...")
     public void mucRoleTestForWitnessingRevokingVoice() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -302,7 +302,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate that to all occupants [...] (§ 10.6) If the user is in the room, the service MUST then send " +
         "updated presence from this individual to all occupants, indicating the granting of admin status...")
     public void mucAffiliationTestForReceivingAdmin() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -341,7 +341,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "communicate that to all occupants [...] (§ 10.6) If the user is in the room, the service MUST then send " +
         "updated presence from this individual to all occupants, indicating the granting of admin status...")
     public void mucAffiliationTestForWitnessingAdmin() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -381,7 +381,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "updated presence from this individual to all occupants, indicating the loss of admin status by sending a " +
         "presence element...")
     public void mucAffiliationTestForRemovingAdmin() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -431,7 +431,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "updated presence from this individual to all occupants, indicating the loss of admin status by sending a " +
         "presence element...")
     public void mucAffiliationTestForWitnessingAdminRemoval() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -473,7 +473,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "presence information, optionally along with the reason (if provided) and the roomnick or bare JID of the " +
         "user who initiated the kick.")
     public void mucPresenceTestForGettingKicked() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -517,7 +517,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "(<room@service/nick>) to all the remaining occupants (just as it does when occupants exit the room of their " +
         "own volition), including the status code and optionally the reason and actor.")
     public void mucPresenceTestForWitnessingKick() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -564,7 +564,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "affected by happenings in the room...Affiliations are granted, revoked, and maintained based on the user's " +
         "bare JID, not the nick as with roles.")
     public void mucTestPersistentAffiliation() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -605,7 +605,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "moderator attempts to revoke voice privileges from such a user, the service MUST deny the request and return " +
         "a <not-allowed/> error to the sender along with the offending item(s)")
     public void mucTestModeratorCannotRevokeVoiceFromOwner() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -637,7 +637,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
         "than themselves (i.e., an unaffiliated moderator SHOULD NOT be allowed to revoke moderation privileges from " +
         "an admin or an owner, and an admin SHOULD NOT be allowed to revoke moderation privileges from an owner)")
     public void mucTestModeratorCannotBeRevokedFromHigherAffiliation() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest");
+        EntityBareJid mucAddress = getRandomRoom("inttest");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -683,7 +683,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     @SmackIntegrationTest(section = "5.1.2", quote =
         "...the initial default roles that a service SHOULD set based on the user's affiliation...")
     public void mucTestDefaultRoleForAffiliationInUnmoderatedRoom() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-unmoderatedroles");
+        EntityBareJid mucAddress = getRandomRoom("unmoderatedroles");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -736,7 +736,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     @SmackIntegrationTest(section = "5.1.2", quote =
         "...the initial default roles that a service SHOULD set based on the user's affiliation...")
     public void mucTestDefaultRoleForAffiliationInModeratedRoom() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-moderatedroles");
+        EntityBareJid mucAddress = getRandomRoom("moderatedroles");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -799,7 +799,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     @SmackIntegrationTest(section = "5.1.2", quote =
         "...the initial default roles that a service SHOULD set based on the user's affiliation...")
     public void mucTestDefaultRoleForAffiliationInMembersOnlyRoom() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-membersonlyroles");
+        EntityBareJid mucAddress = getRandomRoom("membersonlyroles");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);

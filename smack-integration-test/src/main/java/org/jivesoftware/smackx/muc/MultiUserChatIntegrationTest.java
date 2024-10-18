@@ -57,7 +57,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
     @SmackIntegrationTest
     public void mucTest() throws Exception {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-message");
+        EntityBareJid mucAddress = getRandomRoom("message");
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -98,7 +98,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         "users from the room... and destroys the room")
     public void mucDestroyOwnerTest() throws TimeoutException, Exception {
 
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy-owner");
+        EntityBareJid mucAddress = getRandomRoom("destroy-owner");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
         createMuc(muc, Resourcepart.from("one-" + randomString));
@@ -145,7 +145,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             "users from the room... and destroys the room")
     public void mucDestroyTestOccupant() throws TimeoutException, Exception {
 
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-destroy-occupant");
+        EntityBareJid mucAddress = getRandomRoom("destroy-occupant");
 
         MultiUserChat mucAsSeenByOwner = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByParticipant = mucManagerTwo.getMultiUserChat(mucAddress);
@@ -189,7 +189,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
                     throws XmppStringprepException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException,
                     NotAMucServiceException, NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException, MucConfigurationNotSupportedException {
-        EntityBareJid mucAddress = getRandomRoom("smack-inttest-muc-name-change");
+        EntityBareJid mucAddress = getRandomRoom("muc-name-change");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
         createMuc(muc, Resourcepart.from("one-" + randomString));
@@ -214,7 +214,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
     public void mucTestVisitorNotAllowedToChangeSubject() throws XmppStringprepException, MucAlreadyJoinedException,
                     MissingMucCreationAcknowledgeException, NotAMucServiceException, NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
-        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-visitor-change-subject");
+        final EntityBareJid mucAddress = getRandomRoom("visitor-change-subject");
         final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
@@ -250,7 +250,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
     public void mucTestChangeRoomName() throws XmppStringprepException, MucAlreadyJoinedException,
                     MissingMucCreationAcknowledgeException, NotAMucServiceException, NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
-        final EntityBareJid mucAddress = getRandomRoom("smack-inttest-change-room-name");
+        final EntityBareJid mucAddress = getRandomRoom("change-room-name");
         final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
 
