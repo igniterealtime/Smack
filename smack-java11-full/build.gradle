@@ -50,7 +50,7 @@ task convertModularXmppClientToServerConnectionStateGraphDotToPng(type: Exec) {
 }
 copyJavadocDocFiles.dependsOn convertModularXmppClientToServerConnectionStateGraphDotToPng
 
-task cleanGenerateFiles(type: Delete) {
+task cleanGeneratedFiles(type: Delete) {
 	delete 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.dot', 'src/javadoc/org/jivesoftware/smack/full/doc-files/ModularXmppClientToServerConnectionStateGraph.png'
 }
-clean.dependsOn cleanGenerateFiles
+clean.dependsOn cleanGeneratedFiles
