@@ -13,6 +13,7 @@ application {
 
 dependencies {
 	api project(':smack-java11-full')
+	api project(':smack-websocket-okhttp')
 	api project(':smack-resolver-dnsjava')
 	implementation project(':smack-websocket-java11')
 	implementation "com.google.guava:guava:${guavaVersion}"
