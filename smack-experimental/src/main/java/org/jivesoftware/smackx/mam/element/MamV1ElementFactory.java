@@ -17,9 +17,11 @@
 package org.jivesoftware.smackx.mam.element;
 
 import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.packet.DataForm;

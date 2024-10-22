@@ -34,6 +34,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.junit.jupiter.api.Assertions;
 
 @SpecificationReference(document = "XEP-0118", version = "1.3.0")

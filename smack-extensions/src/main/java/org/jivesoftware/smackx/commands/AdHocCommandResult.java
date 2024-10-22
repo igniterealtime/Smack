@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.commands;
 
 import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.packet.DataForm;

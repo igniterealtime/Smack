@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
+
 import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
@@ -43,6 +44,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;

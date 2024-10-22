@@ -34,6 +34,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;

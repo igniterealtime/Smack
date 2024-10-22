@@ -32,6 +32,7 @@ import org.igniterealtime.smack.inttest.AbstractSmackSpecificLowLevelIntegration
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
+
 import org.jxmpp.jid.EntityFullJid;
 
 public class StreamManagementTest extends AbstractSmackSpecificLowLevelIntegrationTest<XMPPTCPConnection> {

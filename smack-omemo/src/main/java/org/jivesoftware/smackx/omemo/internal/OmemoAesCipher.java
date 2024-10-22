@@ -30,6 +30,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.jivesoftware.smack.util.RandomUtil;
+
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.omemo.util.OmemoMessageBuilder;
 

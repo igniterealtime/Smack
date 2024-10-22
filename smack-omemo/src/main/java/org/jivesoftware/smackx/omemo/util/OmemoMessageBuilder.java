@@ -24,12 +24,14 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 
 import org.jivesoftware.smack.util.RandomUtil;
+
 import org.jivesoftware.smackx.omemo.OmemoRatchet;
 import org.jivesoftware.smackx.omemo.OmemoService;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;

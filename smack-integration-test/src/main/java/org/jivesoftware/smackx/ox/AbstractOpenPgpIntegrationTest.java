@@ -26,6 +26,7 @@ import org.jivesoftware.smackx.pep.PepManager;
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
+
 import org.jxmpp.jid.BareJid;
 
 public abstract class AbstractOpenPgpIntegrationTest extends AbstractSmackIntegrationTest {

@@ -301,7 +301,7 @@ public class AgentRoster {
     /**
      * Listens for all presence packets and processes them.
      */
-    private class PresencePacketListener implements StanzaListener {
+    private final class PresencePacketListener implements StanzaListener {
         @Override
         public void processStanza(Stanza packet) {
             Presence presence = (Presence) packet;
@@ -376,7 +376,7 @@ public class AgentRoster {
     /**
      * Listens for all roster packets and processes them.
      */
-    private class AgentStatusListener implements StanzaListener {
+    private final class AgentStatusListener implements StanzaListener {
 
         @Override
         public void processStanza(Stanza packet) {

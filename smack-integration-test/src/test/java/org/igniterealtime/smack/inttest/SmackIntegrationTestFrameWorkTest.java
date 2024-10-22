@@ -30,26 +30,26 @@ import org.junit.jupiter.api.Test;
 
 public class SmackIntegrationTestFrameWorkTest {
 
-    private static class ValidLowLevelList {
+    private static final class ValidLowLevelList {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
         public void test(List<AbstractXMPPConnection> connections) {
         }
     }
 
-    private static class InvalidLowLevelList {
+    private static final class InvalidLowLevelList {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
         public void test(List<AbstractXMPPConnection> connections, boolean invalid) {
         }
     }
 
-    private static class ValidLowLevelVarargs {
+    private static final class ValidLowLevelVarargs {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
         public void test(AbstractXMPPConnection connectionOne, AbstractXMPPConnection connectionTwo,
                         AbstractXMPPConnection connectionThree) {
         }
     }
 
-    private static class InvalidLowLevelVarargs {
+    private static final class InvalidLowLevelVarargs {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
         public void test(AbstractXMPPConnection connectionOne, Integer invalid, AbstractXMPPConnection connectionTwo,
                         AbstractXMPPConnection connectionThree) {
@@ -96,7 +96,7 @@ public class SmackIntegrationTestFrameWorkTest {
         assertNull(determinedParameterType);
     }
 
-    private static class ValidUnconnectedConnectionSource {
+    private static final class ValidUnconnectedConnectionSource {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
         public void test(AbstractSmackLowLevelIntegrationTest.UnconnectedConnectionSource source) {
         }

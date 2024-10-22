@@ -26,6 +26,7 @@ import java.util.Arrays;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.filetransfer.FileTransfer.Status;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;

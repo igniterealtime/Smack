@@ -31,6 +31,7 @@ import java.security.NoSuchProviderException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.exception.InvalidBackupCodeException;
 import org.jivesoftware.smackx.ox.exception.MissingOpenPgpKeyException;
@@ -41,15 +42,16 @@ import org.jivesoftware.smackx.ox.store.filebased.FileBasedOpenPgpStore;
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 
-import org.bouncycastle.openpgp.PGPException;
-import org.bouncycastle.openpgp.PGPPublicKeyRing;
-import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+
+import org.bouncycastle.openpgp.PGPException;
+import org.bouncycastle.openpgp.PGPPublicKeyRing;
+import org.bouncycastle.openpgp.PGPSecretKeyRing;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 import org.pgpainless.key.protection.UnprotectedKeysProtector;
 

@@ -26,6 +26,7 @@ import java.util.Date;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
+
 import org.jivesoftware.smackx.file_metadata.element.FileMetadataElement;
 import org.jivesoftware.smackx.file_metadata.provider.FileMetadataElementProvider;
 import org.jivesoftware.smackx.hashes.HashManager;

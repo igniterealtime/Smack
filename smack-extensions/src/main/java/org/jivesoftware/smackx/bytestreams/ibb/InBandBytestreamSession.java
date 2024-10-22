@@ -461,7 +461,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * IQIBBInputStream class implements IBBInputStream to be used with IQ stanzas encapsulating the
      * data packets.
      */
-    private class IQIBBInputStream extends IBBInputStream {
+    private final class IQIBBInputStream extends IBBInputStream {
 
         @Override
         protected StanzaListener getDataPacketListener() {
@@ -541,7 +541,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * MessageIBBInputStream class implements IBBInputStream to be used with message stanzas
      * encapsulating the data packets.
      */
-    private class MessageIBBInputStream extends IBBInputStream {
+    private final class MessageIBBInputStream extends IBBInputStream {
 
         @Override
         protected StanzaListener getDataPacketListener() {
@@ -590,7 +590,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * containing an In-Band Bytestream data stanza extension whose session ID matches this sessions
      * ID.
      */
-    private class IBBDataPacketFilter implements StanzaFilter {
+    private final class IBBDataPacketFilter implements StanzaFilter {
 
         @Override
         public boolean accept(Stanza packet) {
@@ -814,7 +814,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * IQIBBOutputStream class implements IBBOutputStream to be used with IQ stanzas encapsulating
      * the data packets.
      */
-    private class IQIBBOutputStream extends IBBOutputStream {
+    private final class IQIBBOutputStream extends IBBOutputStream {
 
         @Override
         protected synchronized void writeToXML(DataPacketExtension data) throws IOException {
@@ -845,7 +845,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * MessageIBBOutputStream class implements IBBOutputStream to be used with message stanzas
      * encapsulating the data packets.
      */
-    private class MessageIBBOutputStream extends IBBOutputStream {
+    private final class MessageIBBOutputStream extends IBBOutputStream {
 
         @Override
         protected synchronized void writeToXML(DataPacketExtension data) throws NotConnectedException, InterruptedException {

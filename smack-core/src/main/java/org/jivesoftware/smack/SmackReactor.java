@@ -164,7 +164,7 @@ public class SmackReactor {
         return scheduledActions.remove(scheduledAction);
     }
 
-    private class Reactor extends Thread {
+    private final class Reactor extends Thread {
 
         private volatile long shutdownRequestTimestamp = -1;
 

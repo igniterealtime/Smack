@@ -1,6 +1,8 @@
 #Organize Import Order
 #Wed Jun 14 16:42:40 CEST 2017
-5=
+7=
+6=org.igniterealtime.smackx
+5=org.igniterealtime.smack
 4=org.jivesoftware.smackx
 3=org.jivesoftware.smack
 2=javax

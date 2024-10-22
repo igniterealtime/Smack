@@ -146,7 +146,7 @@ public final class DnsOverXmppMiniDnsResolverTest {
 
     // TODO: Workaround for NPE-if-no-cache-set bug in MiniDNS. Remove we use a MiniDNS version where this is fixed,
     // i.e. one that has 864fbb5 ("Fix NPE in AbstractDnsClient if cache is 'null'")
-    private static class NoopDnsCache extends DnsCache {
+    private static final class NoopDnsCache extends DnsCache {
 
         private static final NoopDnsCache INSTANCE = new NoopDnsCache();
 

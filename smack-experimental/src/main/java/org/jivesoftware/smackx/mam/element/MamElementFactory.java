@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.xml.XmlPullParser;
+
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.xdata.packet.DataForm;

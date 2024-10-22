@@ -32,6 +32,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaError;
+
 import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
@@ -42,6 +43,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;

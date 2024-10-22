@@ -44,6 +44,7 @@ import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
 import org.igniterealtime.smack.XmppConnectionStressTest.StressTestFailedException.ErrorsWhileSendingOrReceivingException;
 import org.igniterealtime.smack.XmppConnectionStressTest.StressTestFailedException.NotAllMessagesReceivedException;
+
 import org.jxmpp.jid.EntityFullJid;
 
 public class XmppConnectionStressTest {

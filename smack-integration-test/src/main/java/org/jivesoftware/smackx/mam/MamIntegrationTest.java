@@ -35,6 +35,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StanzaError;
+
 import org.jivesoftware.smackx.mam.MamManager.MamQuery;
 import org.jivesoftware.smackx.mam.MamManager.MamQueryArgs;
 
@@ -44,6 +45,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.EntityBareJid;
 
 @SpecificationReference(document = "XEP-0313", version = "0.6.3")

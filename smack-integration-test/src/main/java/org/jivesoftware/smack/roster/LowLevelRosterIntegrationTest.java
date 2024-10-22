@@ -26,6 +26,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.FullJid;
 
 public class LowLevelRosterIntegrationTest extends AbstractSmackLowLevelIntegrationTest {

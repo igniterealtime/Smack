@@ -49,6 +49,7 @@ import org.jivesoftware.smackx.iot.provisioning.BecameFriendListener;
 import org.jivesoftware.smackx.iot.provisioning.IoTProvisioningManager;
 
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;

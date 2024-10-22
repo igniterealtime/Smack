@@ -32,6 +32,7 @@ import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;

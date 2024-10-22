@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.Async.ThrowingRunnable;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.mediaelement.element.MediaElement;
 import org.jivesoftware.smackx.softwareinfo.SoftwareInfoManager;
 import org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm;

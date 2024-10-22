@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
+
 import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
 import org.jivesoftware.smackx.mediaelement.element.MediaElement;
 import org.jivesoftware.smackx.xdata.FormField;

@@ -29,6 +29,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
 

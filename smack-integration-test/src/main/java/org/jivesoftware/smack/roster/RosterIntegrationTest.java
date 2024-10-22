@@ -40,6 +40,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 

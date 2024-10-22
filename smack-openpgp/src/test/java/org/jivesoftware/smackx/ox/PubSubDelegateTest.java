@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.ox;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.ox.util.OpenPgpPubSubUtil;
 
 import org.junit.jupiter.api.Test;

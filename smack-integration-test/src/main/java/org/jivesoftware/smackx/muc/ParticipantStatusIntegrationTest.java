@@ -24,6 +24,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;

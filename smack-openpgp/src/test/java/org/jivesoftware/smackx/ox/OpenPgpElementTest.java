@@ -34,6 +34,7 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.ox.element.CryptElement;
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 import org.jivesoftware.smackx.ox.element.SignElement;

@@ -96,7 +96,7 @@ public class DeliveryReceiptTest extends SmackTestSuite {
         rrl.waitUntilInvocationOrTimeout();
     }
 
-    private static class TestReceiptReceivedListener extends WaitForPacketListener implements ReceiptReceivedListener {
+    private static final class TestReceiptReceivedListener extends WaitForPacketListener implements ReceiptReceivedListener {
         @Override
         public void onReceiptReceived(Jid fromJid, Jid toJid, String receiptId, Stanza receipt) {
             assertThat("julia@capulet.com", equalsCharSequence(fromJid));

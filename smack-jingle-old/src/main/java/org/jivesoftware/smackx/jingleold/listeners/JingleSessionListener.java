@@ -20,6 +20,7 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.jingleold.JingleSession;
 import org.jivesoftware.smackx.jingleold.media.PayloadType;
 import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;

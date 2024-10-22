@@ -28,6 +28,7 @@ import org.jivesoftware.smack.Manager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPConnectionRegistry;
 import org.jivesoftware.smack.util.Async;
+
 import org.jivesoftware.smackx.ping.PingManager;
 
 import android.app.AlarmManager;

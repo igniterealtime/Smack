@@ -42,6 +42,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.ox.callback.backup.AskForBackupCodeCallback;
 import org.jivesoftware.smackx.ox.callback.backup.SecretKeyBackupSelectionCallback;

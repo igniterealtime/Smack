@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.muc;
 
 import org.jivesoftware.smack.packet.Stanza;
+
 import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
 
 public interface DirectMucInvitationListener {

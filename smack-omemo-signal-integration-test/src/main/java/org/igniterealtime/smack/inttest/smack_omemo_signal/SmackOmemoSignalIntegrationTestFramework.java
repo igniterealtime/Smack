@@ -39,8 +39,9 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.signal.SignalOmemoService;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class SmackOmemoSignalIntegrationTestFramework {
 

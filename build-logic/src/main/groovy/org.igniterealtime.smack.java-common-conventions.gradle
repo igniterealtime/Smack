@@ -156,7 +156,7 @@ jar {
 }
 
 checkstyle {
-	toolVersion = '8.27'
+	toolVersion = '10.18.2'
 
 	if (project in gplLicensedProjects) {
 		configProperties.checkstyleLicenseHeader = "${project.name}-gplv3-license-header"

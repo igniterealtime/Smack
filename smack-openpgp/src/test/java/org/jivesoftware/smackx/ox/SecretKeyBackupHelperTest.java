@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
 import org.jivesoftware.smackx.ox.exception.InvalidBackupCodeException;

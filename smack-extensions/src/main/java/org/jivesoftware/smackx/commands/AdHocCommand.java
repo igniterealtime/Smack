@@ -22,6 +22,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.util.Objects;
+
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.SubmitForm;

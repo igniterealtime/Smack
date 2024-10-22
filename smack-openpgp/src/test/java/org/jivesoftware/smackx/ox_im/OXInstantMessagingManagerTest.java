@@ -38,6 +38,7 @@ import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpManager;

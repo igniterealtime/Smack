@@ -47,11 +47,13 @@ import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.websocket.java11.Java11WebSocketFactory;
 import org.jivesoftware.smack.websocket.okhttp.OkHttpWebSocketFactory;
+
 import org.jivesoftware.smackx.admin.ServiceAdministrationManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.AccountNum;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Localpart;

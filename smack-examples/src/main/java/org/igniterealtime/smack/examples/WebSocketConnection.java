@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus
+ * Copyright 2021-2024 Florian Schmaus
  *
  * This file is part of smack-examples.
  *
@@ -25,7 +25,6 @@ import java.net.URISyntaxException;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
-
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.util.TLSUtils;

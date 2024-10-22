@@ -28,7 +28,7 @@ public interface FormFieldWithOptions {
      */
     List<FormField.Option> getOptions();
 
-    public interface Builder<B extends FormField.Builder<?, ?>> {
+    interface Builder<B extends FormField.Builder<?, ?>> {
 
         default B addOption(String option) {
             return addOption(new FormField.Option(option));

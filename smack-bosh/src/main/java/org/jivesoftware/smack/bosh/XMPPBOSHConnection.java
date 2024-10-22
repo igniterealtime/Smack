@@ -499,7 +499,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      *
      * @author Guenther Niess
      */
-    private class BOSHConnectionListener implements BOSHClientConnListener {
+    private final class BOSHConnectionListener implements BOSHClientConnListener {
 
         /**
          * Notify the BOSHConnection about connection state changes.
@@ -556,7 +556,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
      *
      * @author Guenther Niess
      */
-    private class BOSHPacketReader implements BOSHClientResponseListener {
+    private final class BOSHPacketReader implements BOSHClientResponseListener {
 
         /**
          * Parse the received packets and notify the corresponding connection.

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
+
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -26,6 +27,7 @@ import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.impl.JidCreate;

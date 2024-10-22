@@ -46,6 +46,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.test.util.NetworkUtil;
 import org.jivesoftware.smack.util.ExceptionUtil;
+
 import org.jivesoftware.smackx.bytestreams.ibb.IBBPacketUtils;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;

@@ -74,6 +74,7 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.MethodParameterScanner;

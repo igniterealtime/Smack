@@ -1557,6 +1557,9 @@ public final class Roster extends Manager {
      * Ignore ItemTypes as of RFC 6121, 2.1.2.5.
      *
      * This is used by {@link RosterPushListener} and {@link RosterResultListener}.
+     *
+     * @param item the roster item to check
+     * @return <code>true</code> if the item type should be ignored
      * */
     private static boolean hasValidSubscriptionType(RosterPacket.Item item) {
         switch (item.getItemType()) {
@@ -1615,7 +1618,7 @@ public final class Roster extends Manager {
     /**
      * Listens for all presence packets and processes them.
      */
-    private class PresencePacketListener implements StanzaListener {
+    private final class PresencePacketListener implements StanzaListener {
 
         @Override
         public void processStanza(Stanza packet) throws NotConnectedException, InterruptedException {
@@ -1790,7 +1793,7 @@ public final class Roster extends Manager {
     /**
      * Handles Roster results as described in <a href="https://tools.ietf.org/html/rfc6121#section-2.1.4">RFC 6121 2.1.4</a>.
      */
-    private class RosterResultListener implements SuccessCallback<IQ> {
+    private final class RosterResultListener implements SuccessCallback<IQ> {
 
         @Override
         public void onSuccess(IQ packet) {

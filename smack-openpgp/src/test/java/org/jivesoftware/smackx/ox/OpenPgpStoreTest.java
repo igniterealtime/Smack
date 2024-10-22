@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+
 import org.jivesoftware.smackx.ox.callback.SecretKeyPassphraseCallback;
 import org.jivesoftware.smackx.ox.exception.MissingUserIdOnKeyException;
 import org.jivesoftware.smackx.ox.store.definition.OpenPgpStore;

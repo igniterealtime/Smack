@@ -97,7 +97,7 @@ public class MultiResultSyncPointTest {
         }
     }
 
-    private static class TestException extends Exception {
+    private static final class TestException extends Exception {
 
         /**
          *

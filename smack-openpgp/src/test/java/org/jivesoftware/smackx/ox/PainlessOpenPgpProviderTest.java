@@ -35,6 +35,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.ox.crypto.OpenPgpElementAndMetadata;
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.CryptElement;

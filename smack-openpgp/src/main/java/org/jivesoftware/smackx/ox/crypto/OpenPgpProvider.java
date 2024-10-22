@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.jivesoftware.smack.XMPPConnection;
+
 import org.jivesoftware.smackx.ox.OpenPgpContact;
 import org.jivesoftware.smackx.ox.OpenPgpMessage;
 import org.jivesoftware.smackx.ox.OpenPgpSelf;

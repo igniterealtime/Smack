@@ -35,6 +35,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+
 import org.jxmpp.jid.DomainBareJid;
 
 @SpecificationReference(document = "XEP-0060", version = "1.26.0")

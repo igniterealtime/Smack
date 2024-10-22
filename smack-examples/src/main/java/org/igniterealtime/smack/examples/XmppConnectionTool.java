@@ -31,6 +31,7 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
+
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.pubsub.PubSubManager;

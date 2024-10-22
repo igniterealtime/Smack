@@ -25,6 +25,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.file_metadata.element.FileMetadataElement;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.hashes.provider.HashElementProvider;

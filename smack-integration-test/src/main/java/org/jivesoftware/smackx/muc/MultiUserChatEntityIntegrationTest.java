@@ -28,6 +28,7 @@ import java.util.Map;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.StanzaError;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;

@@ -31,6 +31,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
+
 import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 import org.jivesoftware.smackx.muc.packet.MUCUser.Invite;

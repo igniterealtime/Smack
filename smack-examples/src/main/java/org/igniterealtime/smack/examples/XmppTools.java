@@ -37,6 +37,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.TLSUtils;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 

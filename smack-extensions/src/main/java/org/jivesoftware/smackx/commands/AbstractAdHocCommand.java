@@ -25,6 +25,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.StringUtils;
+
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData.Action;
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData.AllowedAction;

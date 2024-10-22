@@ -221,7 +221,7 @@ public class XmppHostnameVerifier implements HostnameVerifier {
             afterWildcard = afterWildcard.substring(wildcardIndex + 1);
 
             int beforeStartIndex = name.indexOf(beforeWildcard);
-            if ((beforeStartIndex == -1) || (isBeginning && beforeStartIndex != 0)) {
+            if (beforeStartIndex == -1 || (isBeginning && beforeStartIndex != 0)) {
                 return false;
             }
             isBeginning = false;

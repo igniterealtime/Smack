@@ -104,7 +104,7 @@
 		</module>
 		<module name="JavadocMethod">
 			<!-- TODO stricten those checks -->
-			<property name="scope" value="protected"/>
+			<property name="accessModifiers" value="public,protected"/>
 		</module>
 		<module name="JavadocStyle">
 			<property name="scope" value="public"/>
@@ -195,15 +195,15 @@
 					 , TYPE_EXTENSION_AND
 					 "/>
 		</module>
-		<module name="CustomImportOrder">
-			<property name="customImportOrderRules"
-					  value="STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
-			<property name="specialImportsRegExp" value="^org\.jivesoftware\.smack"/>
-			<property name="sortImportsInGroupAlphabetically" value="true"/>
-			<property name="separateLineBetweenGroups" value="true"/>
+		<module name="ImportOrder">
+			<property name="groups" value="/^java\./,/^javax\./,/^org\.jivesoftware\.smack\./,/^org\.jivesoftware\.smackx\./,/^org\.igniterealtime\.smack\./,/^org\.igniterealtime\.smackx\./"/>
+			<property name="separated" value="true"/>
+			<property name="option" value="top"/>
 		</module>
 		<module name="MissingJavadocPackage"/>
+		<!-- this seems to cause false positives with checkstyle 10.18.2
 		<module name="UnnecessaryParentheses"/>
+		-->
 		<module name="UnnecessarySemicolonInEnumeration"/>
 		<module name="UnnecessarySemicolonInTryWithResources"/>
 	</module>

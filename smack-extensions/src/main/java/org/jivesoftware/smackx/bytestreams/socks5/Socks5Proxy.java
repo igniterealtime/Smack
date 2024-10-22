@@ -433,7 +433,7 @@ public class Socks5Proxy {
     /**
      * Implementation of a simplified SOCKS5 proxy server.
      */
-    private class Socks5ServerProcess implements Runnable {
+    private final class Socks5ServerProcess implements Runnable {
 
         @Override
         public void run() {

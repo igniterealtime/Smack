@@ -160,7 +160,7 @@ public abstract class AbstractHttpOverXmppProvider<H extends AbstractHttpOverXmp
         while (!done) {
             XmlPullParser.Event eventType = parser.next();
 
-            if ((eventType == XmlPullParser.Event.END_ELEMENT) && parser.getName().equals(ELEMENT_XML)) {
+            if (eventType == XmlPullParser.Event.END_ELEMENT && parser.getName().equals(ELEMENT_XML)) {
                 done = true;
             } else { // just write everything else as text
 

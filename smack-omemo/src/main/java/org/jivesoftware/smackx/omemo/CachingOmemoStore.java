@@ -468,7 +468,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
      * @param <T_SigPreKey> type of the public signed preKey
      * @param <T_Sess> type of the OMEMO session
      */
-    private static class KeyCache<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess> {
+    private static final class KeyCache<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess> {
         private T_IdKeyPair identityKeyPair;
         private final TreeMap<Integer, T_PreKey> preKeys = new TreeMap<>();
         private final TreeMap<Integer, T_SigPreKey> signedPreKeys = new TreeMap<>();

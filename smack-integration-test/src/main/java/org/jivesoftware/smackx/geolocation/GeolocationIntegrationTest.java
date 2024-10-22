@@ -36,6 +36,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+
 import org.jxmpp.util.XmppDateTime;
 
 @SpecificationReference(document = "XEP-0080", version = "1.9")
