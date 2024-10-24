@@ -36,11 +36,11 @@ ext {
 
 	jxmppVersion = '[1.1.0-beta1, 1.1.999]'
 	miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
-	junitVersion = '5.9.2'
+	junitVersion = '5.11.3'
 	commonsIoVersion = '2.6'
 	bouncyCastleVersion = '1.73'
 	guavaVersion = '30.1-jre'
-	mockitoVersion = '5.13.0'
+	mockitoVersion = '5.14.2'
 	orgReflectionsVersion = '0.9.11'
 
 	if (project.hasProperty("useSonatype")) {
@@ -112,16 +112,16 @@ dependencies {
 	testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 	// https://stackoverflow.com/a/77274251/194894
-	testImplementation "org.junit.platform:junit-platform-launcher:1.11.0"
+	testImplementation "org.junit.platform:junit-platform-launcher:1.11.3"
 
 	// The smack-extensions subproject uses mockito in its fest
 	// fixtures, and we want to have mockito also available in
 	// test, so we use API here.
 	testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
 
-	testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.2'
+	testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.3'
 
-	errorprone 'com.google.errorprone:error_prone_core:2.32.0'
+	errorprone 'com.google.errorprone:error_prone_core:2.34.0'
 }
 
 test {
