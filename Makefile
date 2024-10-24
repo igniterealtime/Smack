@@ -1,7 +1,7 @@
 GRADLE ?= ./gradlew
 
 .PHONY: all
-all: check codecov eclipse javadocAll sinttest
+all: check codecov eclipse javadocAll sinttest show-dependency-updates
 
 .PHONY: codecov
 codecov:
@@ -24,3 +24,7 @@ sinttest:
 javadocAll:
 	$(GRADLE) $@
 	echo "javadoc available at file://$(PWD)/build/javadoc/index.html"
+
+.PHONY: show-dependency-updates
+show-dependency-updates:
+	$(GRADLE) dependencyUpdates

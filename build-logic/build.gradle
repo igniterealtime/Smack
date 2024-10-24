@@ -11,4 +11,5 @@ dependencies {
 	implementation "me.champeau.jmh:jmh-gradle-plugin:0.7.2"
 	implementation "net.ltgt.gradle:gradle-errorprone-plugin:4.0.1"
 	implementation "ru.vyarus:gradle-animalsniffer-plugin:1.7.1"
+	implementation "com.github.ben-manes:gradle-versions-plugin:0.51.0"
 }
