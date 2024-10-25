@@ -63,7 +63,7 @@ task javadocAll(type: Javadoc) {
 	}
 }
 
-task integrationTest {
+task sinttest {
 	description 'Verify correct functionality of Smack by running some integration tests.'
 	dependsOn project(':smack-integration-test').tasks.run
 }
@@ -73,10 +73,10 @@ task omemoSignalIntTest {
 	dependsOn 'smack-omemo-signal-integration-test:run'
 }
 
-task sinttestAll {
+task inttestFull {
 	description 'Run all of Smack\'s integration tests.'
 	dependsOn {[
-		integrationTest,
+		sinttest,
 		omemoSignalIntTest,
 	]}
 }

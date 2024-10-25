@@ -1,7 +1,7 @@
 GRADLE ?= ./gradlew
 
 .PHONY: all
-all: check codecov eclipse javadocAll sinttest show-dependency-updates
+all: check codecov eclipse javadocAll inttestFull show-dependency-updates
 
 .PHONY: codecov
 codecov:
@@ -16,8 +16,8 @@ check:
 eclipse:
 	$(GRADLE) $@
 
-.PHONY: sinttest
-sinttest:
+.PHONY: inttestFull
+inttestFull:
 	$(GRADLE) $@
 
 .PHONY: javadocAll
