@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2014 Jive Software, 2017 Florian Schmaus.
+ * Copyright 2003-2014 Jive Software, 2017-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.jivesoftware.smack.filter;
 
 import org.jivesoftware.smack.packet.Stanza;
 
+import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -45,6 +46,10 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
         super(address, ignoreResourcepart);
     }
 
+    private FromMatchesFilter(Jid address, AbstractFromToMatchesFilter.MatchMode matchMode) {
+        super(address, matchMode);
+    }
+
     /**
      * Creates a filter matching on the "from" field. If the filter address is bare, compares
      * the filter address with the bare from address. Otherwise, compares the filter address
@@ -68,6 +73,10 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      */
     public static FromMatchesFilter createBare(Jid address) {
         return new FromMatchesFilter(address, true);
+    }
+
+    public static FromMatchesFilter createStrictChildOf(BareJid address) {
+        return new FromMatchesFilter(address, AbstractFromToMatchesFilter.MatchMode.strictChild);
     }
 
     /**

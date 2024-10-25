@@ -34,7 +34,7 @@ ext {
 	builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 	oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 
-	jxmppVersion = '[1.1.0-beta1, 1.1.999]'
+	jxmppVersion = '[1.1.0, 1.1.999]'
 	miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
 	junitVersion = '5.11.3'
 	commonsIoVersion = '2.6'
