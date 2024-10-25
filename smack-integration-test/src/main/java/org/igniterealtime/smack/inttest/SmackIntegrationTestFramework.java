@@ -156,7 +156,7 @@ public class SmackIntegrationTestFramework {
                 return;
             }
 
-            StringBuilder sb = new StringBuilder("💀 The following " + failedTests + " tests failed! 💀\n -");
+            StringBuilder sb = new StringBuilder("💀 The following " + failedTests + " tests failed! 💀\n- ");
             StringUtils.appendTo(testRunResult.failedIntegrationTests, "\n- ", sb, t -> sb.append(t.concreteTest));
             LOGGER.warning(sb.toString());
 
