@@ -41,7 +41,7 @@ public final class FromMatchesFilter extends AbstractFromToMatchesFilter {
      *        have a from address.
      * @param ignoreResourcepart TODO javadoc me please
      */
-    public FromMatchesFilter(Jid address, boolean ignoreResourcepart) {
+    private FromMatchesFilter(Jid address, boolean ignoreResourcepart) {
         super(address, ignoreResourcepart);
     }
 
