@@ -397,9 +397,10 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
+     * @return a handle which can be used in try-with-resources statements.
      * @since 4.4.0
      */
-    void addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
+    ListenerHandle addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
      * Removes a stanza listener for received stanzas from this connection.
@@ -424,9 +425,10 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
+     * @return a handle which can be used in try-with-resources statements.
      * @since 4.1
      */
-    void addSyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
+    ListenerHandle addSyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
      * Removes a stanza listener for received stanzas from this connection.
@@ -449,9 +451,10 @@ public interface XMPPConnection {
      *
      * @param stanzaListener the stanza listener to notify of new received stanzas.
      * @param stanzaFilter the stanza filter to use.
+     * @return a handle which can be used in try-with-resources statements.
      * @since 4.1
     */
-    void addAsyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
+    ListenerHandle addAsyncStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter);
 
     /**
      * Removes an <b>asynchronous</b> stanza listener for received stanzas from this connection.

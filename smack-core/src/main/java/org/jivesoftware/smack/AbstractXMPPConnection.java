@@ -1110,7 +1110,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public final void addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter) {
+    public final ListenerHandle addStanzaListener(StanzaListener stanzaListener, StanzaFilter stanzaFilter) {
         if (stanzaListener == null) {
             throw new NullPointerException("Given stanza listener must not be null");
         }
@@ -1118,6 +1118,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         synchronized (recvListeners) {
             recvListeners.put(stanzaListener, wrapper);
         }
+        return new ListenerHandle.StanzaListenerHandle(this, stanzaListener);
     }
 
     @Override
@@ -1128,7 +1129,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
+    public ListenerHandle addSyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -1136,6 +1137,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         synchronized (syncRecvListeners) {
             syncRecvListeners.put(packetListener, wrapper);
         }
+        return new ListenerHandle.SyncStanzaListenerHandle(this, packetListener);
     }
 
     @Override
@@ -1146,7 +1148,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     }
 
     @Override
-    public void addAsyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
+    public ListenerHandle addAsyncStanzaListener(StanzaListener packetListener, StanzaFilter packetFilter) {
         if (packetListener == null) {
             throw new NullPointerException("Packet listener is null.");
         }
@@ -1154,6 +1156,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         synchronized (asyncRecvListeners) {
             asyncRecvListeners.put(packetListener, wrapper);
         }
+        return new ListenerHandle.AsyncStanzaListenerHandle(this, packetListener);
     }
 
     @Override

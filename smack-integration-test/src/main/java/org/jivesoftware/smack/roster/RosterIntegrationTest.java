@@ -183,24 +183,22 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         "if there is at least one available resource associated with the contact when the subscription request is " +
         "received by the contact's server, then the contact's server MUST send that subscription request to all " +
         "available resources in accordance with Section 8.")
+    @SuppressWarnings("try")
     public void testPresenceDeliveredToRecipient() throws Exception {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
 
         final ResultSyncPoint<Presence, Exception> added = new ResultSyncPoint<>();
-        final StanzaListener stanzaListener = stanza -> added.signal((Presence) stanza);
-        conTwo.addAsyncStanzaListener(stanzaListener, new AndFilter(StanzaTypeFilter.PRESENCE, FromMatchesFilter.createBare(conOne.getUser())));
+        // TODO: Use unnamed variable instead of 'h' and remove the @SuppressWarnings("try") once Smack is Java 22 or higher.
+        try (var h = conTwo.addAsyncStanzaListener(stanza -> added.signal((Presence) stanza),
+                        new AndFilter(StanzaTypeFilter.PRESENCE, FromMatchesFilter.createBare(conOne.getUser())))) {
+            final Presence subscribe = conOne.getStanzaFactory().buildPresenceStanza()
+                   .ofType(Presence.Type.subscribe)
+                   .to(conTwo.getUser().asBareJid())
+                   .build();
 
-        final Presence subscribe = conOne.getStanzaFactory().buildPresenceStanza()
-                .ofType(Presence.Type.subscribe)
-                .to(conTwo.getUser().asBareJid())
-                .build();
-
-        try {
             conOne.sendStanza(subscribe);
             final Presence received = assertResult(added, "Expected subscription request from '" + conOne.getUser() + "' to '" + conTwo.getUser().asBareJid() + "' to be delivered to " + conTwo.getUser() + " (but it did not).");
             assertEquals(Presence.Type.subscribe, received.getType(), "Unexpected presence type in presence stanza received by '" + conTwo.getUser() + "' after '" + conOne.getUser() + "' sent a presence subscription request.");
-        } finally {
-            conTwo.removeAsyncStanzaListener(stanzaListener);
         }
     }
 
