@@ -114,14 +114,6 @@ public class SmackIntegrationTestFramework {
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
 
-        for (final TestRunResultProcessor testRunResultProcessor : config.testRunResultProcessors) {
-            try {
-                testRunResultProcessor.process(testRunResult);
-            } catch (Throwable t) {
-                LOGGER.log(Level.WARNING, "Invocation of TestRunResultProcessor " + testRunResultProcessor + " failed.", t);
-            }
-        }
-
         if (config.debuggerFactory instanceof EnhancedDebugger) {
             EnhancedDebuggerWindow.getInstance().waitUntilClosed();
         }
@@ -288,6 +280,10 @@ public class SmackIntegrationTestFramework {
         finally {
             // Ensure that the accounts are deleted and disconnected before we continue
             connectionManager.disconnectAndCleanup();
+        }
+
+        for (final TestRunResultProcessor testRunResultProcessor : config.testRunResultProcessors) {
+            testRunResultProcessor.process(testRunResult);
         }
 
         return testRunResult;
