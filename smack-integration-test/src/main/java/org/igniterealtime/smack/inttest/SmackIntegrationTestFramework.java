@@ -114,7 +114,7 @@ public class SmackIntegrationTestFramework {
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
 
-        if (config.debuggerFactory instanceof EnhancedDebugger) {
+        if (config.debuggerFactory instanceof EnhancedDebugger.Factory) {
             EnhancedDebuggerWindow.getInstance().waitUntilClosed();
         }
 
