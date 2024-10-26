@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,8 +48,7 @@ public final class UInt32 extends Scalar {
 
     @Override
     public int hashCode() {
-        // TODO: Use Long.hashCode(number) once Smack's minimum Android SDK level is 24 or higher.
-        return (int) (number ^ (number >>> 32));
+        return Long.hashCode(number);
     }
 
     @Override

@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -662,14 +662,10 @@ public abstract class FormField implements XmlElement {
                 return getThis();
             }
 
-            // TODO: Use Java' stream API once Smack's minimum Android SDK level is 24 or higher.
-            Iterator<FormFieldChildElement> it = formFieldChildElements.iterator();
-            while (it.hasNext()) {
-                FormFieldChildElement formFieldChildElement = it.next();
-                if (formFieldChildElement instanceof Value) {
-                    it.remove();
-                }
-            }
+            formFieldChildElements = formFieldChildElements
+                            .stream()
+                            .filter(f -> !(f instanceof Value))
+                            .collect(Collectors.toList());
 
             disallowType = disallowFurtherFormFieldChildElements = false;
 

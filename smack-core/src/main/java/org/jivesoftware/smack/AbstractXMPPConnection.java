@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -366,8 +367,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected boolean authenticated = false;
 
-    // TODO: Migrate to ZonedDateTime once Smack's minimum required Android SDK level is 26 (8.0, Oreo) or higher.
-    protected long authenticatedConnectionInitiallyEstablishedTimestamp;
+    protected ZonedDateTime authenticatedConnectionInitiallyEstablishedTimestamp;
 
     /**
      * Flag that indicates if the user was authenticated with the server when the connection
@@ -779,7 +779,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
 
     protected void afterSuccessfulLogin(final boolean resumed) throws NotConnectedException, InterruptedException {
         if (!resumed) {
-            authenticatedConnectionInitiallyEstablishedTimestamp = System.currentTimeMillis();
+            authenticatedConnectionInitiallyEstablishedTimestamp = ZonedDateTime.now();
         }
         // Indicate that we're now authenticated.
         this.authenticated = true;
@@ -2137,7 +2137,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      * @return the timestamp or {@code null}.
      * @since 4.3.3
      */
-    public final long getAuthenticatedConnectionInitiallyEstablishedTimestamp() {
+    public final ZonedDateTime getAuthenticatedConnectionInitiallyEstablishedTimestamp() {
         return authenticatedConnectionInitiallyEstablishedTimestamp;
     }
 

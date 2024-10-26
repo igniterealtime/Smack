@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -138,11 +138,10 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
     private int sslEngineDelegatedTasks;
     private int maxPendingSslEngineDelegatedTasks;
 
-    // TODO: Use LongAdder once Smack's minimum Android API level is 24 or higher.
-    private final AtomicLong setWriteInterestAfterChannelSelectedCallback = new AtomicLong();
-    private final AtomicLong reactorThreadAlreadyRacing = new AtomicLong();
-    private final AtomicLong afterOutgoingElementsQueueModifiedSetInterestOps = new AtomicLong();
-    private final AtomicLong rejectedChannelSelectedCallbacks = new AtomicLong();
+    private final LongAdder setWriteInterestAfterChannelSelectedCallback = new LongAdder();
+    private final LongAdder reactorThreadAlreadyRacing = new LongAdder();
+    private final LongAdder afterOutgoingElementsQueueModifiedSetInterestOps = new LongAdder();
+    private final LongAdder rejectedChannelSelectedCallbacks = new LongAdder();
 
     private Jid lastDestinationAddress;
 
@@ -275,7 +274,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         boolean newPendingOutputFilterData = false;
 
         if (!channelSelectedCallbackLock.tryLock()) {
-            rejectedChannelSelectedCallbacks.incrementAndGet();
+            rejectedChannelSelectedCallbacks.increment();
             return;
         }
 
@@ -548,7 +547,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         // Check the queue again to prevent lost wakeups caused by elements inserted before we
         // called resetReactorThreadRacing() a few lines above.
         if (!connectionInternal.outgoingElementsQueue.isEmpty()) {
-            setWriteInterestAfterChannelSelectedCallback.incrementAndGet();
+            setWriteInterestAfterChannelSelectedCallback.increment();
             newInterestedOps |= SelectionKey.OP_WRITE;
         }
 
@@ -706,11 +705,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         final SelectionKeyAttachment selectionKeyAttachment = this.selectionKeyAttachment;
         if (selectionKeyAttachment != null && selectionKeyAttachment.isReactorThreadRacing()) {
             // A reactor thread is already racing to the channel selected callback and will take care of this.
-            reactorThreadAlreadyRacing.incrementAndGet();
+            reactorThreadAlreadyRacing.increment();
             return;
         }
 
-        afterOutgoingElementsQueueModifiedSetInterestOps.incrementAndGet();
+        afterOutgoingElementsQueueModifiedSetInterestOps.increment();
 
         // Add OP_WRITE to the interested Ops, since we have now new things to write. Note that this may cause
         // multiple reactor threads to race to the channel selected callback in case we perform this right after
@@ -1369,11 +1368,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             readRatio = (double) totalBytesRead / totalBytesReadAfterFilter;
 
             handledChannelSelectedCallbacks = connection.handledChannelSelectedCallbacks;
-            setWriteInterestAfterChannelSelectedCallback = connection.setWriteInterestAfterChannelSelectedCallback.get();
-            reactorThreadAlreadyRacing = connection.reactorThreadAlreadyRacing.get();
+            setWriteInterestAfterChannelSelectedCallback = connection.setWriteInterestAfterChannelSelectedCallback.sum();
+            reactorThreadAlreadyRacing = connection.reactorThreadAlreadyRacing.sum();
             afterOutgoingElementsQueueModifiedSetInterestOps = connection.afterOutgoingElementsQueueModifiedSetInterestOps
-                    .get();
-            rejectedChannelSelectedCallbacks = connection.rejectedChannelSelectedCallbacks.get();
+                    .sum();
+            rejectedChannelSelectedCallbacks = connection.rejectedChannelSelectedCallbacks.sum();
 
             totalCallbackRequests = handledChannelSelectedCallbacks + rejectedChannelSelectedCallbacks;
 

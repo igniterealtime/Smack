@@ -27,6 +27,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -133,8 +135,7 @@ public final class AdHocCommandManager extends Manager {
      * Value=command. Command node matches the node attribute sent by command
      * requesters.
      */
-    // TODO: Change to Map once Smack's minimum Android API level is 24 or higher.
-    private final ConcurrentHashMap<String, AdHocCommandInfo> commands = new ConcurrentHashMap<>();
+    private final Map<String, AdHocCommandInfo> commands = new ConcurrentHashMap<>();
 
     /**
      * Map a command session ID with the instance LocalCommand. The LocalCommand
@@ -643,8 +644,6 @@ public final class AdHocCommandManager extends Manager {
         private final String name;
         private final AdHocCommandHandlerFactory factory;
 
-        private static final int MAX_SESSION_GEN_ATTEMPTS = 3;
-
         private AdHocCommandInfo(String node, String name, AdHocCommandHandlerFactory factory) {
             this.node = node;
             this.name = name;
@@ -653,20 +652,40 @@ public final class AdHocCommandManager extends Manager {
 
         public AdHocCommandHandler getCommandInstance() throws InstantiationException,
                 IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            String sessionId;
-            // TODO: The code below contains a race condition. Use ConcurrentHashMap.computeIfAbsent() to remove the
-            // race condition once Smack's minimum Android API level 24 or higher.
-            int attempt = 0;
-            do {
-                attempt++;
-                if (attempt > MAX_SESSION_GEN_ATTEMPTS) {
-                    throw new RuntimeException("Failed to compute unique session ID");
-                }
-                // Create new session ID
-                sessionId = StringUtils.randomString(15);
-            } while (executingCommands.containsKey(sessionId));
+            AdHocCommandHandler handler;
+            AtomicBoolean isNew = new AtomicBoolean();
+            AtomicReference<Exception> exceptionReference = new AtomicReference<>();
 
-            return factory.create(node, name, sessionId);
+            // TODO: Use Atomic(Boolean|Reference).getAcquire() once Smacks' minimum Android SDK API level is 33 or higher.
+            do {
+                var sessionId = StringUtils.randomString(15);
+                handler = executingCommands.computeIfAbsent(sessionId, (s) -> {
+                    isNew.lazySet(true);
+                    try {
+                        return factory.create(node, name, s);
+                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                                    | InvocationTargetException e) {
+                        exceptionReference.lazySet(e);
+                        return null;
+                    }
+                });
+            } while (isNew.get() == false);
+
+            Exception exception = exceptionReference.get();
+            if (exception != null) {
+                if (exception instanceof InstantiationException)
+                    throw (InstantiationException) exception;
+                if (exception instanceof IllegalAccessException)
+                    throw (IllegalAccessException) exception;
+                if (exception instanceof IllegalArgumentException)
+                    throw (IllegalArgumentException) exception;
+                if (exception instanceof InvocationTargetException)
+                    throw (InvocationTargetException) exception;
+
+                throw new AssertionError("Unexpected exception type: " + exception, exception);
+            }
+
+            return handler;
         }
 
         public String getName() {

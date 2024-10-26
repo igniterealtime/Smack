@@ -250,16 +250,14 @@ public class Socks5ProxySocketConnection implements ProxySocketConnection {
         }
 
         final int addressBytes;
-        // TODO: Use Byte.toUnsignedInt() once Smack's minimum Android SDK level is 26 or higher.
-        final int atyp = inBuf[3] & 0xff;
+        final int atyp = Byte.toUnsignedInt(inBuf[3]);
         switch (atyp) {
             case 1:
                 addressBytes = 4;
                 break;
             case 3:
                 byte domainnameLengthByte = dis.readByte();
-                // TODO: Use Byte.toUnsignedInt() once Smack's minimum Android SDK level is 26 or higher.
-                addressBytes = domainnameLengthByte & 0xff;
+                addressBytes = Byte.toUnsignedInt(domainnameLengthByte);
                 break;
             case 4:
                 addressBytes = 16;

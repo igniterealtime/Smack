@@ -265,11 +265,10 @@ public class MultiMap<K, V> {
     public MultiMap<K, V> clone() {
         Map<K, List<V>> clonedMap = new LinkedHashMap<>(map.size());
 
-        // TODO: Use Map.forEach() once Smack's minimum Android API is 24 or higher.
-        for (Map.Entry<K, List<V>> entry : map.entrySet()) {
-            List<V> clonedList = CollectionUtil.newListWith(entry.getValue());
-            clonedMap.put(entry.getKey(), clonedList);
-        }
+        map.forEach((k, v) -> {
+            List<V> clonedList = CollectionUtil.newListWith(v);
+            clonedMap.put(k, clonedList);
+        });
 
         return new MultiMap<>(clonedMap);
     }

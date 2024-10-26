@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 the original author or authors, 2020 Florian Schmaus
+ * Copyright 2013-2015 the original author or authors, 2020-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,9 @@
 package org.jivesoftware.smack.roster.rosterstore;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -179,13 +178,11 @@ public final class DirectoryRosterStore implements RosterStore {
         resetEntries(Collections.<Item>emptyList(), "");
     }
 
-    @SuppressWarnings("DefaultCharset")
     private static Item readEntry(File file) {
         Reader reader;
         try {
-            // TODO: Use Files.newBufferedReader() once Smack's minimum Android API level is 26 or higher.
-            reader = new FileReader(file);
-        } catch (FileNotFoundException e) {
+            reader = Files.newBufferedReader(file.toPath());
+        } catch (IOException e) {
             LOGGER.log(Level.FINE, "Roster entry file not found", e);
             return null;
         }
