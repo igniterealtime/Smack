@@ -17,8 +17,9 @@
 
 package org.jivesoftware.smack.filter;
 
+import java.util.function.Predicate;
+
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.Predicate;
 
 /**
  * Defines a way to filter stanzas for particular attributes. Stanza filters are used when

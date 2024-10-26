@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smack.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 public class ToStringUtil {
 
@@ -46,7 +47,7 @@ public class ToStringUtil {
             return this;
         }
 
-        public <V> Builder add(String name, Collection<? extends V> values, Function<?, V> toStringFunction) {
+        public <V> Builder add(String name, Collection<? extends V> values, Function<V, ?> toStringFunction) {
             if (values.isEmpty()) {
                 return this;
             }

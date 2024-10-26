@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2021 Florian Schmaus
+ * Copyright 2019-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@ package org.jivesoftware.smack.packet;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
-import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.MultiMap;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.ToStringUtil;
@@ -315,7 +315,7 @@ public abstract class StanzaBuilder<B extends StanzaBuilder<B>> implements Stanz
         return new IqData(stanzaId);
     }
 
-    public static <SB extends StanzaBuilder<?>> SB buildResponse(StanzaView request, Function<SB, String> builderFromStanzaId) {
+    public static <SB extends StanzaBuilder<?>> SB buildResponse(StanzaView request, Function<String, SB> builderFromStanzaId) {
         SB responseBuilder = builderFromStanzaId.apply(request.getStanzaId());
 
         responseBuilder.to(request.getFrom())

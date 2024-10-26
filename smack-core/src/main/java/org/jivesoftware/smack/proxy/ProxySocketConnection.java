@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus.
+ * Copyright 2015-2024 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package org.jivesoftware.smack.proxy;
 
 import java.io.IOException;
 import java.net.Socket;
-
-import org.jivesoftware.smack.util.Function;
+import java.util.function.Function;
 
 public interface ProxySocketConnection {
 
@@ -36,7 +35,7 @@ public interface ProxySocketConnection {
     void connect(Socket socket, String host, int port, int timeout)
                     throws IOException;
 
-    static Function<ProxySocketConnection, ProxyInfo> forProxyType(ProxyInfo.ProxyType proxyType) {
+    static Function<ProxyInfo, ProxySocketConnection> forProxyType(ProxyInfo.ProxyType proxyType) {
         switch (proxyType) {
             case HTTP:
                 return HTTPProxySocketConnection::new;

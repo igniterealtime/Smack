@@ -32,6 +32,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,6 @@ import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.debugger.ConsoleDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.util.CollectionUtil;
-import org.jivesoftware.smack.util.Function;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.SslContextFactory;
