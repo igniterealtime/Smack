@@ -24,10 +24,6 @@ import org.jivesoftware.smack.ReconnectionListener;
 import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
-import org.jivesoftware.smack.util.ObservableReader;
-import org.jivesoftware.smack.util.ObservableWriter;
-import org.jivesoftware.smack.util.ReaderListener;
-import org.jivesoftware.smack.util.WriterListener;
 
 import org.jxmpp.jid.EntityFullJid;
 
@@ -39,34 +35,9 @@ public abstract class AbstractDebugger extends SmackDebugger {
 
     private final ConnectionListener connListener;
     private final ReconnectionListener reconnectionListener;
-    private final ReaderListener readerListener;
-    private final WriterListener writerListener;
-
-    private ObservableWriter writer;
-    private ObservableReader reader;
 
     public AbstractDebugger(final XMPPConnection connection) {
         super(connection);
-
-        // Create a special Reader that wraps the main Reader and logs data to the GUI.
-        this.reader = new ObservableReader(reader);
-        readerListener = new ReaderListener() {
-            @Override
-            public void read(String str) {
-                log("RECV (" + connection.getConnectionCounter() + "): " + str);
-            }
-        };
-        this.reader.addReaderListener(readerListener);
-
-        // Create a special Writer that wraps the main Writer and logs data to the GUI.
-        this.writer = new ObservableWriter(writer);
-        writerListener = new WriterListener() {
-            @Override
-            public void write(String str) {
-                log("SENT (" + connection.getConnectionCounter() + "): " + str);
-            }
-        };
-        this.writer.addWriterListener(writerListener);
 
         connListener = new ConnectionListener() {
             @Override
