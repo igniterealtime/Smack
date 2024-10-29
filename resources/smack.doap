@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xmpp="https://linkmauve.fr/ns/xmpp-doap#"
+         xmlns:schema="https://schema.org/"
+         xmlns="http://usefulinc.com/ns/doap#">
+    <Project>
+        <name>Smack</name>
+        <short-name>smack</short-name>
+
+        <shortdesc xml:lang="en">XMPP Library</shortdesc>
+        <description xml:lang="en">
+            Smack is an Open Source XMPP client library for instant messaging and presence. A pure Java library, it can
+            be embedded into your applications to create anything from a full XMPP client to simple XMPP integrations
+            such as sending notification messages and presence-enabling devices.
+        </description>
+
+        <homepage rdf:resource="https://igniterealtime.org/projects/smack/"/>
+        <schema:logo rdf:resource="https://www.igniterealtime.org/fans/logo-smack.svg"/>
+
+        <download-page rdf:resource="https://www.igniterealtime.org/downloads/"/>
+        <support-forum rdf:resource="https://discourse.igniterealtime.org/"/>
+
+        <bug-database rdf:resource="https://igniterealtime.atlassian.net/projects/SMACK/issues"/>
+        <category rdf:resource="https://linkmauve.fr/ns/xmpp-doap#category-xmpp"/>
+        <category rdf:resource="https://linkmauve.fr/ns/xmpp-doap#category-jabber"/>
+        <category rdf:resource="https://linkmauve.fr/ns/xmpp-doap#category-library"/>
+        <license rdf:resource="http://usefulinc.com/doap/licenses/asl20"/>
+
+        <programming-language>Java</programming-language>
+        <os>Android</os>
+        <os>Linux</os>
+        <os>macOS</os>
+        <os>Windows</os>
+
+        <repository>
+            <GitRepository>
+                <location rdf:resource="https://github.com/igniterealtime/Smack.git"/>
+                <browse rdf:resource="https://github.com/igniterealtime/Smack"/>
+            </GitRepository>
+        </repository>
+
+    </Project>
+</rdf:RDF>
