@@ -1432,12 +1432,22 @@ public final class Roster extends Manager {
     /**
      * Fires roster presence changed event to roster listeners.
      *
+     * @param bareFrom the bare JID that send the presence.
+     * @param ownPresence true if this is a presence from one of our available resources.
      * @param presence the presence change.
      */
-    private void fireRosterPresenceEvent(final Presence presence) {
+    private void fireRosterPresenceEvent(BareJid bareFrom, boolean ownPresence, Presence presence) {
+        if (!ownPresence && !contains(bareFrom)) {
+            return;
+        }
+
         synchronized (rosterListenersAndEntriesLock) {
             for (RosterListener listener : rosterListeners) {
-                listener.presenceChanged(presence);
+                if (ownPresence) {
+                    listener.ownPresenceChanged(presence);
+                } else {
+                    listener.presenceChanged(presence);
+                }
             }
         }
     }
@@ -1636,28 +1646,30 @@ public final class Roster extends Manager {
             }
 
             final Jid from = packet.getFrom();
+            final Presence presence = (Presence) packet;
+            final XMPPConnection connection = connection();
+            if (connection == null) {
+                LOGGER.finest("Connection was null while trying to handle exotic presence stanza: " + presence);
+                return;
+            }
 
             if (!isLoaded() && rosterLoadedAtLogin) {
-                XMPPConnection connection = connection();
-
                 // Only log the warning, if this is not the reflected self-presence. Otherwise,
                 // the reflected self-presence may cause a spurious warning in case the
                 // connection got quickly shut down. See SMACK-941.
-                if (connection != null && from != null && !from.equals(connection.getUser())) {
+                if (from != null && !from.equals(connection.getUser())) {
                     LOGGER.warning("Roster not loaded while processing " + packet);
                 }
             }
-            final Presence presence = (Presence) packet;
 
             final BareJid key;
+            final boolean ownPresence;
             if (from != null) {
+                EntityFullJid myJid = connection.getUser();
+                ownPresence = from.isParentOf(myJid);
+
                 key = from.asBareJid();
             } else {
-                XMPPConnection connection = connection();
-                if (connection == null) {
-                    LOGGER.finest("Connection was null while trying to handle exotic presence stanza: " + presence);
-                    return;
-                }
                 // Assume the presence come "from the users account on the server" since no from was set (RFC 6120 §
                 // 8.1.2.1 4.). Note that getUser() may return null, but should never return null in this case as where
                 // connected.
@@ -1671,6 +1683,7 @@ public final class Roster extends Manager {
                 }
                 LOGGER.info("Exotic presence stanza without from received: " + presence);
                 key = myJid.asBareJid();
+                ownPresence = true;
             }
 
             asyncButOrdered.performAsyncButOrdered(key, new Runnable() {
@@ -1704,10 +1717,10 @@ public final class Roster extends Manager {
                         userPresences.remove(Resourcepart.EMPTY);
                         // Add the new presence, using the resources as a key.
                         userPresences.put(fromResource, presence);
-                        // If the user is in the roster, fire an event.
-                        if (contains(key)) {
-                            fireRosterPresenceEvent(presence);
-                        }
+
+                        // If the user is in the roster or if its our own presence, fire an event.
+                        fireRosterPresenceEvent(key, ownPresence, presence);
+
                         for (PresenceEventListener presenceEventListener : presenceEventListeners) {
                             presenceEventListener.presenceAvailable(fullFrom, presence);
                         }
@@ -1727,10 +1740,9 @@ public final class Roster extends Manager {
                             // such as the user being on vacation.
                             userPresences.put(fromResource, presence);
                         }
-                        // If the user is in the roster, fire an event.
-                        if (contains(key)) {
-                            fireRosterPresenceEvent(presence);
-                        }
+
+                        // If the user is in the roster or if its our own presence, fire an event.
+                        fireRosterPresenceEvent(key, ownPresence, presence);
 
                         // Ensure that 'from' is a full JID before invoking the presence unavailable
                         // listeners. Usually unavailable presences always have a resourcepart, i.e. are
@@ -1764,10 +1776,10 @@ public final class Roster extends Manager {
 
                         // Set the new presence using the empty resource as a key.
                         userPresences.put(Resourcepart.EMPTY, presence);
-                        // If the user is in the roster, fire an event.
-                        if (contains(key)) {
-                            fireRosterPresenceEvent(presence);
-                        }
+
+                        // If the user is in the roster or if its our own presence, fire an event.
+                        fireRosterPresenceEvent(key, ownPresence, presence);
+
                         for (PresenceEventListener presenceEventListener : presenceEventListeners) {
                             presenceEventListener.presenceError(from, presence);
                         }
