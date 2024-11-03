@@ -34,6 +34,7 @@ import org.jivesoftware.smack.util.ExceptionUtil;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.ConcreteTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResult;
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint.ResultSyncPointTimeoutException;
 
 public class StandardSinttestDebugger implements SinttestDebugger {
 
@@ -236,6 +237,16 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         Path markerFile = createTestMarkerFile("failed");
         if (markerFile != null) {
             Files.writeString(markerFile, stacktrace);
+        }
+        if (currentTestMethodDirectory != null) {
+            if (throwable instanceof ResultSyncPointTimeoutException) {
+                var resultSyncPointTimeoutException = (ResultSyncPointTimeoutException) throwable;
+                var threadDump = resultSyncPointTimeoutException.getThreadDump();
+                var threadDumpFile = currentTestMethodDirectory.resolve("thread-dump");
+                Files.writeString(threadDumpFile, threadDump);
+
+                logSink("Wrote thread dump to file://" + threadDumpFile);
+            }
         }
 
         onTestEnd();

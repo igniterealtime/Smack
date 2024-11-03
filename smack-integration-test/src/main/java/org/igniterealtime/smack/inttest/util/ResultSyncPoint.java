@@ -25,11 +25,11 @@ public class ResultSyncPoint<R, E extends Exception> {
     private R result;
     private E exception;
 
-    public R waitForResult(long timeout) throws E, InterruptedException, TimeoutException {
+    public R waitForResult(long timeout) throws E, InterruptedException, ResultSyncPointTimeoutException {
         return waitForResult(timeout, null);
     }
 
-    public R waitForResult(long timeout, String timeoutMessage) throws E, InterruptedException, TimeoutException {
+    public R waitForResult(long timeout, String timeoutMessage) throws E, InterruptedException, ResultSyncPointTimeoutException {
         synchronized (this) {
             if (result != null) {
                 return result;
@@ -55,7 +55,7 @@ public class ResultSyncPoint<R, E extends Exception> {
         if (timeoutMessage != null) {
             message += ": " + timeoutMessage;
         }
-        throw new TimeoutException(message);
+        throw new ResultSyncPointTimeoutException(message);
     }
 
 
@@ -70,6 +70,21 @@ public class ResultSyncPoint<R, E extends Exception> {
         synchronized (this) {
             this.exception = Objects.requireNonNull(exception);
             notifyAll();
+        }
+    }
+
+    public static class ResultSyncPointTimeoutException extends TimeoutException {
+
+        private static final long serialVersionUID = 1L;
+
+        private final String threadDump = ThreadDumpUtil.threadDump();
+
+        public ResultSyncPointTimeoutException(String message) {
+            super(message);
+        }
+
+        public String getThreadDump() {
+            return threadDump;
         }
     }
 }
