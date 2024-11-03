@@ -14,15 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.igniterealtime.smack.inttest;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-
-public class SuccessfulTest extends TestResult {
-
-    public SuccessfulTest(SmackIntegrationTestFramework.ConcreteTest concreteTest, ZonedDateTime startTime, ZonedDateTime endTime, List<String> logMessages) {
-        super(concreteTest, startTime, endTime, logMessages);
-    }
-
-}
+/**
+ * Debugger for Smack's Integration Test Framework (sinttest).
+ */
+package org.igniterealtime.smack.inttest.debugger;

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,15 +40,17 @@ import java.util.stream.Collectors;
 import javax.net.ssl.SSLContext;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
-import org.jivesoftware.smack.debugger.ConsoleDebugger;
-import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.StringUtils;
 
-import org.jivesoftware.smackx.debugger.EnhancedDebugger;
+import org.igniterealtime.smack.inttest.debugger.EnhancedSinttestDebugger;
+import org.igniterealtime.smack.inttest.debugger.SinttesDebuggerFactory;
+import org.igniterealtime.smack.inttest.debugger.SinttesDebuggerMetaFactory;
+import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
+import org.igniterealtime.smack.inttest.debugger.StandardSinttestDebugger;
 
 import eu.geekplace.javapinning.java7.Java7Pinning;
 import org.jxmpp.jid.DomainBareJid;
@@ -101,7 +104,7 @@ public final class Configuration {
 
     public final String accountThreePassword;
 
-    public final SmackDebuggerFactory debuggerFactory;
+    private final SinttesDebuggerFactory debuggerFactory;
 
     public final Set<String> enabledTests;
 
@@ -204,10 +207,6 @@ public final class Configuration {
             if (host != null) {
                 b.setHost(host);
             }
-
-            if (debuggerFactory != null) {
-                b.setDebuggerFactory(debuggerFactory);
-            }
         };
 
         this.verbose = builder.verbose;
@@ -253,7 +252,7 @@ public final class Configuration {
 
         public String accountThreePassword;
 
-        private SmackDebuggerFactory debuggerFactory;
+        private SinttesDebuggerFactory debuggerFactory;
 
         private Set<String> enabledTests;
 
@@ -277,7 +276,7 @@ public final class Configuration {
 
         private CompatibilityMode compatibilityMode = CompatibilityMode.standardsCompliant;
 
-        private List<? extends SmackIntegrationTestFramework.TestRunResultProcessor> testRunResultProcessors;
+        private List<? extends SmackIntegrationTestFramework.TestRunResultProcessor> testRunResultProcessors = Collections.emptyList();
 
         private Builder() {
         }
@@ -366,7 +365,24 @@ public final class Configuration {
             if (debuggerString == null) {
                 return this;
             }
-            switch (debuggerString) {
+
+            int firstComma = debuggerString.indexOf(',');
+
+            final String debugger;
+            final String debuggerOptions;
+            if (firstComma >= 0) {
+                if (firstComma + 1 <= debuggerString.length()) {
+                    throw new IllegalArgumentException("No debugger options provided after comma");
+                }
+
+                debugger = debuggerString.substring(0, firstComma);
+                debuggerOptions = debuggerString.substring(firstComma + 1);
+            } else {
+                debugger = debuggerString;
+                debuggerOptions = null;
+            }
+
+            switch (debugger) {
             case "false": // For backwards compatibility settings with previous boolean setting.
                 LOGGER.warning("Debug string \"" + debuggerString + "\" is deprecated, please use \"none\" instead");
             case "none":
@@ -375,19 +391,29 @@ public final class Configuration {
             case "true": // For backwards compatibility settings with previous boolean setting.
                 LOGGER.warning("Debug string \"" + debuggerString + "\" is deprecated, please use \"console\" instead");
             case "console":
-                debuggerFactory = ConsoleDebugger.Factory.INSTANCE;
+                debuggerFactory = (testRunStart, testRunId) -> new StandardSinttestDebugger(testRunStart, testRunId, "dir=off");
                 break;
             case "enhanced":
-                debuggerFactory = EnhancedDebugger.Factory.INSTANCE;
+                debuggerFactory = (testRunStart, testRunId) -> new EnhancedSinttestDebugger();
+                break;
+            case "standard":
+                debuggerFactory = (testRunStart, testRunId) -> new StandardSinttestDebugger(testRunStart, testRunId, debuggerOptions);
                 break;
             default:
                 try {
-                    final Class<? extends SmackDebuggerFactory> aClass = Class.forName(debuggerString).asSubclass(SmackDebuggerFactory.class);
-                    debuggerFactory = aClass.getConstructor().newInstance();
+                    debuggerFactory = Class.forName(debuggerString)
+                                    .asSubclass(SinttesDebuggerMetaFactory.class)
+                                    .getDeclaredConstructor().newInstance()
+                                    .create(debuggerOptions);
                 } catch (Exception e) {
                     throw new IllegalArgumentException("Unable to construct debugger from value: " + debuggerString, e);
                 }
             }
+            return this;
+        }
+
+        public Builder setDebugger(SinttesDebuggerFactory factory) {
+            debuggerFactory = factory;
             return this;
         }
 
@@ -790,5 +816,13 @@ public final class Configuration {
             return null;
         }
         return specification.replaceAll("[\\s-]", "").toUpperCase(Locale.ROOT);
+    }
+
+    public SinttestDebugger createSinttestDebugger(ZonedDateTime testRunStart, String testRunId) {
+        if (debuggerFactory == null) {
+            return null;
+        }
+
+        return debuggerFactory.create(testRunStart, testRunId);
     }
 }

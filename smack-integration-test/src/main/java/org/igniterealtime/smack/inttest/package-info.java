@@ -35,9 +35,9 @@
  * </p>
  *
  * <pre>
- * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org \
- *                          -Dsinttest.adminAccountUsername=admin \
- *                          -Dsinttest.adminAccountPassword=aeR0Wuub
+ * $ ./gradlew integrationTest -Dsinttest.service=my.xmppservice.org \
+ *                             -Dsinttest.adminAccountUsername=admin \
+ *                             -Dsinttest.adminAccountPassword=aeR0Wuub
  * </pre>
  * <p>
  * to run Smack's integration test framework against my.xmppservice.org with an admin account named 'admin' and
@@ -129,7 +129,7 @@
  * </tr>
  * <tr>
  * <td>debugger</td>
- * <td>‘console’ for console debugger, ‘enhanced’ for the enhanced debugger, or the name of a class that implements SmackDebuggerFactory for a custom debugger</td>
+ * <td>'standard' for the standard debugger, ‘console’ for console debugger, ‘enhanced’ for the enhanced debugger, or the name of a class that implements SinttesDebuggerMetaFactory for a custom debugger</td>
  * </tr>
  * <tr>
  * <td>enabledTests</td>

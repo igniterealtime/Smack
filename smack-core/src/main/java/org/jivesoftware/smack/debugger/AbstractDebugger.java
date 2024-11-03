@@ -101,12 +101,12 @@ public abstract class AbstractDebugger extends SmackDebugger {
     protected abstract void log(String logMessage, Throwable throwable);
 
     @Override
-    public final void outgoingStreamSink(CharSequence outgoingCharSequence) {
+    public void outgoingStreamSink(CharSequence outgoingCharSequence) {
         log("SENT (" + connection.getConnectionCounter() + "): " + outgoingCharSequence);
     }
 
     @Override
-    public final void incomingStreamSink(CharSequence incomingCharSequence) {
+    public void incomingStreamSink(CharSequence incomingCharSequence) {
         log("RECV (" + connection.getConnectionCounter() + "): " + incomingCharSequence);
     }
 

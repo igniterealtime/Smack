@@ -53,6 +53,7 @@ import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.AccountNum;
+import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
 
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -336,7 +337,8 @@ public class XmppConnectionManager {
             registerAccount(finalAccountUsername, finalAccountPassword);
         }
 
-        AbstractXMPPConnection mainConnection = defaultConnectionDescriptor.construct(sinttestConfiguration, builder -> {
+        List<ConnectionConfigurationBuilderApplier> connectionConfigurationAppliers = new ArrayList<ConnectionConfigurationBuilderApplier>();
+        connectionConfigurationAppliers.add(builder -> {
             try {
                 builder.setUsernameAndPassword(finalAccountUsername, finalAccountPassword)
                     .setResource(middlefix + '-' + testRunId);
@@ -344,6 +346,14 @@ public class XmppConnectionManager {
                 throw new IllegalArgumentException(e);
             }
         });
+
+        SinttestDebugger sinttestDebugger = sinttestFramework.sinttestDebugger;
+        if (sinttestDebugger != null) {
+            var applier = sinttestDebugger.getConnectionConfigurationBuilderApplier();
+            connectionConfigurationAppliers.add(applier);
+        }
+
+        AbstractXMPPConnection mainConnection = defaultConnectionDescriptor.construct(sinttestConfiguration, connectionConfigurationAppliers);
 
         connections.put(mainConnection, defaultConnectionDescriptor);
 
@@ -453,14 +463,19 @@ public class XmppConnectionManager {
             throw new IllegalArgumentException(e);
         }
 
+        if (customConnectionConfigurationAppliers == null) {
+            customConnectionConfigurationAppliers = new ArrayList<>();
+        }
+
         ConnectionConfigurationBuilderApplier usernameAndPasswordApplier = configurationBuilder -> {
             configurationBuilder.setUsernameAndPassword(username, password);
         };
+        customConnectionConfigurationAppliers.add(usernameAndPasswordApplier);
 
-        if (customConnectionConfigurationAppliers == null) {
-            customConnectionConfigurationAppliers = Collections.singleton(usernameAndPasswordApplier);
-        } else {
-            customConnectionConfigurationAppliers.add(usernameAndPasswordApplier);
+        SinttestDebugger sinttestDebugger = sinttestFramework.sinttestDebugger;
+        if (sinttestDebugger != null) {
+            var applier = sinttestDebugger.getConnectionConfigurationBuilderApplier();
+            customConnectionConfigurationAppliers.add(applier);
         }
 
         C connection;

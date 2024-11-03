@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2021 Florian Schmaus
+ * Copyright 2018-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -69,15 +66,6 @@ public final class XmppConnectionDescriptor<
     }
 
     public C construct(Configuration sinttestConfiguration,
-                    ConnectionConfigurationBuilderApplier... customConnectionConfigurationAppliers)
-                    throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-                    InvocationTargetException {
-        List<ConnectionConfigurationBuilderApplier> customConnectionConfigurationAppliersList = new ArrayList<ConnectionConfigurationBuilderApplier>(
-                        Arrays.asList(customConnectionConfigurationAppliers));
-        return construct(sinttestConfiguration, customConnectionConfigurationAppliersList);
-    }
-
-    public C construct(Configuration sinttestConfiguration,
             Collection<ConnectionConfigurationBuilderApplier> customConnectionConfigurationAppliers)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         CCB connectionConfigurationBuilder = getNewBuilder();
@@ -88,6 +76,7 @@ public final class XmppConnectionDescriptor<
             customConnectionConfigurationApplier.applyConfigurationTo(connectionConfigurationBuilder);
         }
         sinttestConfiguration.configurationApplier.applyConfigurationTo(connectionConfigurationBuilder);
+
         ConnectionConfiguration connectionConfiguration = connectionConfigurationBuilder.build();
         CC concreteConnectionConfiguration = connectionConfigurationClass.cast(connectionConfiguration);
 

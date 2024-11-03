@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,24 @@
  */
 package org.igniterealtime.smack.inttest;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public abstract class TestResult {
 
     public final SmackIntegrationTestFramework.ConcreteTest concreteTest;
-    public final long startTime;
-    public final long endTime;
-    public final long duration;
+    public final ZonedDateTime startTime;
+    public final ZonedDateTime endTime;
+    public final Duration duration;
     public final List<String> logMessages;
 
-    public TestResult(SmackIntegrationTestFramework.ConcreteTest concreteTest, long startTime, long endTime, List<String> logMessages) {
+    public TestResult(SmackIntegrationTestFramework.ConcreteTest concreteTest, ZonedDateTime startTime, ZonedDateTime endTime, List<String> logMessages) {
         this.concreteTest = concreteTest;
-        assert endTime >= startTime;
+        assert endTime.isAfter(startTime);
         this.startTime = startTime;
         this.endTime = endTime;
-        this.duration = endTime - startTime;
+        this.duration = Duration.between(startTime, endTime);
         this.logMessages = logMessages;
     }
 }

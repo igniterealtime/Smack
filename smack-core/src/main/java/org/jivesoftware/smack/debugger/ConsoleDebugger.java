@@ -16,11 +16,7 @@
  */
 package org.jivesoftware.smack.debugger;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.util.ExceptionUtil;
 
 /**
  * Very simple debugger that prints to the console (stdout) the sent and received stanzas. Use
@@ -34,29 +30,17 @@ import org.jivesoftware.smack.util.ExceptionUtil;
  *
  * @author Gaston Dombiak
  */
-public class ConsoleDebugger extends AbstractDebugger {
-    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm:ss.S");
+public class ConsoleDebugger extends SimpleAbstractDebugger {
 
     public ConsoleDebugger(XMPPConnection connection) {
         super(connection);
     }
 
-    @SuppressWarnings("JavaUtilDate")
     @Override
-    protected void log(String logMessage) {
-        String formatedDate;
-        synchronized (dateFormatter) {
-            formatedDate = dateFormatter.format(new Date());
-        }
+    protected void logSink(String message) {
         // CHECKSTYLE:OFF
-        System.out.println(formatedDate + ' ' + logMessage);
+        System.out.println(message);
         // CHECKSTYLE:ON
-    }
-
-    @Override
-    protected void log(String logMessage, Throwable throwable) {
-        String stacktrace = ExceptionUtil.getStackTrace(throwable);
-        log(logMessage + '\n' + stacktrace);
     }
 
     public static final class Factory implements SmackDebuggerFactory {

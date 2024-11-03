@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2019 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,14 @@
  */
 package org.igniterealtime.smack.inttest;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class FailedTest extends TestResult {
 
     public final Throwable failureReason;
 
-    public FailedTest(SmackIntegrationTestFramework.ConcreteTest concreteTest, long startTime, long endTime, List<String> logMessages, Throwable failureReason) {
+    public FailedTest(SmackIntegrationTestFramework.ConcreteTest concreteTest, ZonedDateTime startTime, ZonedDateTime endTime, List<String> logMessages, Throwable failureReason) {
         super(concreteTest, startTime, endTime, logMessages);
         this.failureReason = failureReason;
     }

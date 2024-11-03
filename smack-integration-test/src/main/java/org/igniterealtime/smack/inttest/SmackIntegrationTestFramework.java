@@ -32,6 +32,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -58,15 +59,12 @@ import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.dnsjava.DNSJavaResolver;
 import org.jivesoftware.smack.util.dns.javax.JavaxResolver;
 import org.jivesoftware.smack.util.dns.minidns.MiniDnsResolver;
 
-import org.jivesoftware.smackx.debugger.EnhancedDebugger;
-import org.jivesoftware.smackx.debugger.EnhancedDebuggerWindow;
 import org.jivesoftware.smackx.iqregister.AccountManager;
 
 import org.igniterealtime.smack.inttest.Configuration.AccountRegistration;
@@ -74,6 +72,7 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -91,11 +90,13 @@ public class SmackIntegrationTestFramework {
 
     public static boolean SINTTEST_UNIT_TEST = false;
 
+    // TODO: Remove in Smack 4.6
     private static ConcreteTest TEST_UNDER_EXECUTION;
 
     protected final Configuration config;
 
     protected TestRunResult testRunResult;
+    SinttestDebugger sinttestDebugger;
 
     private SmackIntegrationTestEnvironment environment;
     protected XmppConnectionManager connectionManager;
@@ -113,10 +114,6 @@ public class SmackIntegrationTestFramework {
 
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
-
-        if (config.debuggerFactory instanceof EnhancedDebugger.Factory) {
-            EnhancedDebuggerWindow.getInstance().waitUntilClosed();
-        }
 
         final int exitStatus = testRunResult.failedIntegrationTests.isEmpty() ? 0 : 2;
         System.exit(exitStatus);
@@ -210,13 +207,14 @@ public class SmackIntegrationTestFramework {
             DNSJavaResolver.setup();
             break;
         }
-        testRunResult = new TestRunResult();
 
+        testRunResult = new TestRunResult();
+        sinttestDebugger = config.createSinttestDebugger(testRunResult.testRunStart, testRunResult.testRunId);
         // Create a connection manager *after* we created the testRunId (in testRunResult).
         this.connectionManager = new XmppConnectionManager(this);
 
         LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting\nSmack version: " + Smack.getVersion());
-        if (config.debuggerFactory != null) {
+        if (sinttestDebugger != null) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
             // TODO configure JUL for log?
@@ -286,9 +284,21 @@ public class SmackIntegrationTestFramework {
             testRunResultProcessor.process(testRunResult);
         }
 
+        if (sinttestDebugger != null) {
+            sinttestDebugger.onSinttestFinished(testRunResult);
+            sinttestDebugger = null;
+        }
+
         return testRunResult;
     }
 
+    /**
+     * Get the test under execution.
+     * @return the test under execution
+     * @deprecated use {@link SinttestDebugger} instead.
+     */
+    // TODO: Remove in Smack 4.6
+    @Deprecated
     public static ConcreteTest getTestUnderExecution() {
         return TEST_UNDER_EXECUTION;
     }
@@ -551,15 +561,16 @@ public class SmackIntegrationTestFramework {
     private void runConcreteTest(ConcreteTest concreteTest)
             throws InterruptedException, XMPPException, IOException, SmackException {
         LOGGER.info(concreteTest + " Start");
-        long testStart = System.currentTimeMillis();
+        var testStart = ZonedDateTime.now();
+        if (sinttestDebugger != null) {
+            sinttestDebugger.onTestStart(concreteTest, testStart);
+        }
+
         try {
             concreteTest.executor.execute();
-            long testEnd = System.currentTimeMillis();
-            LOGGER.info(concreteTest + " Success");
-            testRunResult.successfulIntegrationTests.add(new SuccessfulTest(concreteTest, testStart, testEnd, null));
         }
         catch (InvocationTargetException e) {
-            long testEnd = System.currentTimeMillis();
+            ZonedDateTime testEnd = ZonedDateTime.now();
             Throwable cause = e.getCause();
             if (cause instanceof TestNotPossibleException) {
                 LOGGER.info(concreteTest + " is not possible");
@@ -578,11 +589,22 @@ public class SmackIntegrationTestFramework {
             // An integration test failed
             testRunResult.failedIntegrationTests.add(new FailedTest(concreteTest, testStart, testEnd, null,
                             nonFatalFailureReason));
+            if (sinttestDebugger != null) {
+                sinttestDebugger.onTestFailure(concreteTest, testEnd, nonFatalFailureReason);
+            }
             LOGGER.log(Level.SEVERE, concreteTest + " Failed", e);
+            return;
         }
         catch (IllegalArgumentException | IllegalAccessException e) {
             throw new AssertionError(e);
         }
+
+        var testEnd = ZonedDateTime.now();
+        if (sinttestDebugger != null) {
+            sinttestDebugger.onTestSuccess(concreteTest, testEnd);
+        }
+        LOGGER.info(concreteTest + " Success");
+        testRunResult.successfulIntegrationTests.add(new SuccessfulTest(concreteTest, testStart, testEnd, null));
     }
 
     private static void verifyLowLevelTestMethod(Method method,
@@ -654,14 +676,6 @@ public class SmackIntegrationTestFramework {
         Three,
     }
 
-    static XMPPTCPConnectionConfiguration.Builder getConnectionConfigurationBuilder(Configuration config) {
-        XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder();
-
-        config.configurationApplier.applyConfigurationTo(builder);
-
-        return builder;
-    }
-
     private static Exception throwFatalException(Throwable e) throws Error, NoResponseException,
                     InterruptedException {
         if (e instanceof InterruptedException) {
@@ -697,6 +711,8 @@ public class SmackIntegrationTestFramework {
          * localpart of the used JIDs (and the localpart is case-insensitive).
          */
         public final String testRunId = StringUtils.insecureRandomString(5).toLowerCase(Locale.US);
+
+        public final ZonedDateTime testRunStart = ZonedDateTime.now();
 
         private final List<SuccessfulTest> successfulIntegrationTests = Collections.synchronizedList(new ArrayList<SuccessfulTest>());
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new ArrayList<FailedTest>());
