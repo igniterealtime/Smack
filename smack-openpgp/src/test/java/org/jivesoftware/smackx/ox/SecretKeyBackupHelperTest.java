@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 
 import org.jivesoftware.smack.test.util.SmackTestSuite;
+import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.ox.crypto.PainlessOpenPgpProvider;
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
@@ -51,7 +52,7 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
     private static final File basePath;
 
     static {
-        basePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "ox_secret_keys");
+        basePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "ox_secret_keys_" + StringUtils.randomString(10));
     }
 
     @Test
