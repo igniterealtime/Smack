@@ -192,7 +192,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             currentWriter = newWriter;
         }
 
-        completeWriter.append("START: " + test);
+        completeWriter.append("START: " + test + "\n");
     }
 
     private void onTestEnd() throws IOException {
