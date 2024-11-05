@@ -50,6 +50,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
     private final Path basePath;
     private final Writer completeWriter;
     private final Writer outsideTestWriter;
+    private final Writer testsWriter;
     private final boolean console;
 
     public StandardSinttestDebugger(ZonedDateTime restRunStart, String testRunId, String options) {
@@ -109,6 +110,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             this.basePath = Path.of(basePath);
             Path completeLogFile = this.basePath.resolve("completeLog");
             Path outsideTestLogFile = this.basePath.resolve("outsideTestLog");
+            Path testsFile = this.basePath.resolve("tests");
             try {
                 boolean created = this.basePath.toFile().mkdir();
                 if (!created) {
@@ -117,6 +119,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
 
                 completeWriter = Files.newBufferedWriter(completeLogFile);
                 outsideTestWriter = currentWriter = Files.newBufferedWriter(outsideTestLogFile);
+                testsWriter = Files.newBufferedWriter(testsFile);
             } catch (IOException e) {
                 throw new IllegalStateException(e);
             }
@@ -124,6 +127,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             this.basePath = null;
             completeWriter = null;
             outsideTestWriter = null;
+            testsWriter = null;
         }
         this.console = console;
     }
@@ -193,9 +197,11 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
 
         completeWriter.append("START: " + test + "\n");
+
+        testsWriter.append(test.toString());
     }
 
-    private void onTestEnd() throws IOException {
+    private void onTestEnd(Throwable throwable) throws IOException {
         if (basePath == null) {
             return;
         }
@@ -208,6 +214,13 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         if (oldWriter != null) {
             oldWriter.close();
         }
+
+        if (throwable == null) {
+            testsWriter.append(" ✓");
+        } else {
+            testsWriter.append(" ✗ [FAILED: ").append(throwable.getClass().getSimpleName()).append(']');
+        }
+        testsWriter.append('\n');
     }
 
     private Path createTestMarkerFile(String name) throws IOException {
@@ -225,7 +238,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
 
         createTestMarkerFile("successful");
 
-        onTestEnd();
+        onTestEnd(null);
     }
 
     @Override
@@ -249,15 +262,19 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             }
         }
 
-        onTestEnd();
+        onTestEnd(throwable);
     }
 
     @Override
     public void onSinttestFinished(TestRunResult testRunResult) throws IOException {
-        if (basePath != null) {
-            outsideTestWriter.close();
-
-            LOGGER.info("Test data file://" + basePath);
+        if (basePath == null) {
+            return;
         }
+
+        outsideTestWriter.close();
+        completeWriter.close();
+        testsWriter.close();
+
+        LOGGER.info("Test data file://" + basePath);
     }
 }
