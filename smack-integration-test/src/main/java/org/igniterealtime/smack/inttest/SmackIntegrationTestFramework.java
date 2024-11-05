@@ -48,6 +48,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -57,6 +58,7 @@ import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.util.StringUtils;
@@ -483,7 +485,13 @@ public class SmackIntegrationTestFramework {
             for (Method testMethod : smackIntegrationTestMethods) {
                 switch (testType) {
                 case Normal: {
-                    ConcreteTest.Executor concreteTestExecutor = () -> testMethod.invoke(test);
+                    ConcreteTest.Executor concreteTestExecutor = () -> {
+                        AbstractSmackIntegrationTest abstractTest = (AbstractSmackIntegrationTest) test;
+
+                        throwIfDisconnectedConnections(abstractTest, testMethod, "Cannot execute test of");
+                        testMethod.invoke(test);
+                        throwIfDisconnectedConnections(abstractTest, testMethod, "There where disconnected connections after executing");
+                    };
                     ConcreteTest concreteTest = new ConcreteTest(testType, testMethod, concreteTestExecutor);
                     concreteTests.add(concreteTest);
                 }
@@ -1111,4 +1119,12 @@ public class SmackIntegrationTestFramework {
         return null;
     }
 
+    private static void throwIfDisconnectedConnections(AbstractSmackIntegrationTest abstractTest, Method testMethod, String message) throws IOException {
+        List<XMPPConnection> disconnectedConnections = abstractTest.connections.stream().filter(c -> !c.isConnected()).collect(Collectors.toList());
+        if (disconnectedConnections.isEmpty()) return;
+
+        throw new IOException(message + " " + testMethod.getDeclaringClass().getSimpleName() + "."
+                        + testMethod.getName() + ", as not all connections are connected. Disconnected connections: "
+                        + disconnectedConnections);
+    }
 }
