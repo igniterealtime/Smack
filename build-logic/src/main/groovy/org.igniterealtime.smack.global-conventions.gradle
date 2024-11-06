@@ -7,8 +7,8 @@ ext {
 }
 
 repositories {
-	mavenLocal()
 	mavenCentral()
+	mavenLocal()
 }
 
 def getAndroidRuntimeJar() {
