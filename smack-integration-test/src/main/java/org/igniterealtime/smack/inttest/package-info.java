@@ -164,6 +164,10 @@
  * <td>List of packages with tests</td>
  * </tr>
  * <tr>
+ * <td>failFast</td>
+ * <td>If <code>true</code> exit immediatly on the first failure.</td>
+ * </tr>
+ * <tr>
  * <td>verbose</td>
  * <td>If <code>true</code> set output to verbose</td>
  * </tr>

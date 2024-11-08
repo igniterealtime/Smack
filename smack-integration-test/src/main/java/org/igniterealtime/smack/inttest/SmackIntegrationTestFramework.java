@@ -551,14 +551,20 @@ public class SmackIntegrationTestFramework {
         LOGGER.info(sb.toString());
 
         for (PreparedTest test : tests) {
-            test.run();
+            boolean successful = test.run();
+            // Will only be not successful if a test failed and config.failFast is enabled.
+            if (!successful) {
+                break;
+            }
         }
 
-        // Assert that all tests in the 'tests' list produced a result.
-        assert numberOfAvailableTests == testRunResult.getNumberOfAvailableTests();
+        if (!config.failFast) {
+            // Assert that all tests in the 'tests' list produced a result.
+            assert numberOfAvailableTests == testRunResult.getNumberOfAvailableTests();
+        }
     }
 
-    private void runConcreteTest(ConcreteTest concreteTest)
+    private boolean runConcreteTest(ConcreteTest concreteTest)
             throws InterruptedException, XMPPException, IOException, SmackException {
         LOGGER.info(concreteTest + " Start");
         var testStart = ZonedDateTime.now();
@@ -576,7 +582,7 @@ public class SmackIntegrationTestFramework {
                 LOGGER.info(concreteTest + " is not possible");
                 testRunResult.impossibleIntegrationTests.add(new TestNotPossible(concreteTest, testStart, testEnd,
                                 null, (TestNotPossibleException) cause));
-                return;
+                return true;
             }
             Throwable nonFatalFailureReason;
             // junit asserts throw an AssertionError if they fail, those should not be
@@ -593,7 +599,7 @@ public class SmackIntegrationTestFramework {
                 sinttestDebugger.onTestFailure(concreteTest, testEnd, nonFatalFailureReason);
             }
             LOGGER.log(Level.SEVERE, concreteTest + " Failed", e);
-            return;
+            return false;
         }
         catch (IllegalArgumentException | IllegalAccessException e) {
             throw new AssertionError(e);
@@ -605,6 +611,7 @@ public class SmackIntegrationTestFramework {
         }
         LOGGER.info(concreteTest + " Success");
         testRunResult.successfulIntegrationTests.add(new SuccessfulTest(concreteTest, testStart, testEnd, null));
+        return true;
     }
 
     private static void verifyLowLevelTestMethod(Method method,
@@ -769,23 +776,29 @@ public class SmackIntegrationTestFramework {
             afterClassMethod = getSinttestSpecialMethod(testClass, AfterClass.class);
         }
 
-        public void run() throws InterruptedException, XMPPException, IOException, SmackException {
+        public boolean run() throws InterruptedException, XMPPException, IOException, SmackException {
             try {
                 // Run the @BeforeClass methods (if any)
                 executeSinttestSpecialMethod(beforeClassMethod);
 
                 for (ConcreteTest concreteTest : concreteTests) {
                     TEST_UNDER_EXECUTION = concreteTest;
+                    boolean successful;
                     try {
-                        runConcreteTest(concreteTest);
+                        successful = runConcreteTest(concreteTest);
                     } finally {
                         TEST_UNDER_EXECUTION = null;
+                    }
+
+                    if (config.failFast && !successful) {
+                        return false;
                     }
                 }
             }
             finally {
                 executeSinttestSpecialMethod(afterClassMethod);
             }
+            return true;
         }
 
         private void executeSinttestSpecialMethod(Method method) {

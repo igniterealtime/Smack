@@ -128,6 +128,8 @@ public final class Configuration {
 
     public final ConnectionConfigurationBuilderApplier configurationApplier;
 
+    public final boolean failFast;
+
     public final boolean verbose;
 
     public final DnsResolver dnsResolver;
@@ -209,6 +211,7 @@ public final class Configuration {
             }
         };
 
+        this.failFast = builder.failFast;
         this.verbose = builder.verbose;
 
         this.dnsResolver = builder.dnsResolver;
@@ -269,6 +272,8 @@ public final class Configuration {
         private Set<String> disabledConnections;
 
         private Set<String> testPackages;
+
+        private boolean failFast;
 
         private boolean verbose;
 
@@ -478,6 +483,20 @@ public final class Configuration {
             return this;
         }
 
+        public Builder setFailFast(boolean failFast) {
+            this.failFast = failFast;
+            return this;
+        }
+
+        public Builder setFailFast(String failFastBooleanString) {
+            if (failFastBooleanString == null) {
+                return this;
+            }
+
+            boolean failFast = ParserUtils.parseXmlBoolean(failFastBooleanString);
+            return setFailFast(failFast);
+        }
+
         public Builder setVerbose(boolean verbose) {
             this.verbose = verbose;
             return this;
@@ -601,6 +620,7 @@ public final class Configuration {
         builder.addTestPackages(properties.getProperty("testPackages"));
         builder.addTestPackages(testPackages);
 
+        builder.setFailFast(properties.getProperty("failFast"));
         builder.setVerbose(properties.getProperty("verbose"));
 
         builder.setDnsResolver(properties.getProperty("dnsResolver"));
