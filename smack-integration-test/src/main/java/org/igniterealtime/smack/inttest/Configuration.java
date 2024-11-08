@@ -371,7 +371,7 @@ public final class Configuration {
             final String debugger;
             final String debuggerOptions;
             if (firstComma >= 0) {
-                if (firstComma + 1 <= debuggerString.length()) {
+                if (firstComma + 1 >= debuggerString.length()) {
                     throw new IllegalArgumentException("No debugger options provided after comma");
                 }
 
