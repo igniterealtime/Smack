@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2020 Florian Schmaus
+ * Copyright 2015-2024 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,11 @@ public class DummySmackIntegrationTestFramework extends SmackIntegrationTestFram
     @Override
     protected SmackIntegrationTestEnvironment prepareEnvironment() {
         DummyConnection dummyConnection = new DummyConnection();
+        try {
+            dummyConnection.connect();
+        } catch (SmackException | IOException | XMPPException | InterruptedException e) {
+            throw new AssertionError(e);
+        }
         connectionManager.conOne = connectionManager.conTwo = connectionManager.conThree = dummyConnection;
         return new SmackIntegrationTestEnvironment(dummyConnection, dummyConnection, dummyConnection,
                         testRunResult.getTestRunId(), config, null);
