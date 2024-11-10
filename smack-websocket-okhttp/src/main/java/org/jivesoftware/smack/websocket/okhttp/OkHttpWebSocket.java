@@ -88,7 +88,6 @@ public final class OkHttpWebSocket extends AbstractWebSocket {
 
     @Override
     public void disconnect(int code, String message) {
-        LOGGER.log(Level.INFO, "WebSocket closing with code: " + code + " and message: " + message);
         okHttpWebSocket.close(code, message);
     }
 
