@@ -77,10 +77,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
 
 import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.MethodParameterScanner;
-import org.reflections.scanners.SubTypesScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.scanners.Scanners;
 
 public class SmackIntegrationTestFramework {
 
@@ -238,8 +235,8 @@ public class SmackIntegrationTestFramework {
         else {
             testPackages = config.testPackages.toArray(new String[config.testPackages.size()]);
         }
-        Reflections reflections = new Reflections(testPackages, new SubTypesScanner(),
-                        new TypeAnnotationsScanner(), new MethodAnnotationsScanner(), new MethodParameterScanner());
+        Reflections reflections = new Reflections(testPackages, Scanners.SubTypes,
+                        Scanners.TypesAnnotated, Scanners.MethodsAnnotated, Scanners.MethodsParameter);
         Set<Class<? extends AbstractSmackIntegrationTest>> inttestClasses = reflections.getSubTypesOf(AbstractSmackIntegrationTest.class);
         Set<Class<? extends AbstractSmackLowLevelIntegrationTest>> lowLevelInttestClasses = reflections.getSubTypesOf(AbstractSmackLowLevelIntegrationTest.class);
 

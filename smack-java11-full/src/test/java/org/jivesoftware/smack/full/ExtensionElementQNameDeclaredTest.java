@@ -28,7 +28,7 @@ import org.jivesoftware.smack.util.XmppElementUtil;
 
 import org.junit.jupiter.api.Test;
 import org.reflections.Reflections;
-import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.Scanners;
 
 public class ExtensionElementQNameDeclaredTest {
 
@@ -38,7 +38,7 @@ public class ExtensionElementQNameDeclaredTest {
                         "org.jivesoftware.smack",
                         "org.igniterealtime.smack",
         };
-        Reflections reflections = new Reflections(smackPackages, new SubTypesScanner());
+        Reflections reflections = new Reflections(smackPackages, Scanners.SubTypes);
         Set<Class<? extends ExtensionElement>> extensionElementClasses = reflections.getSubTypesOf(
                         ExtensionElement.class);
 
