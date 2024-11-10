@@ -11,5 +11,5 @@ dependencies {
 
 	testFixturesApi(testFixtures(project(':smack-websocket')))
 
-	implementation("com.squareup.okhttp3:okhttp:4.6.0")
+	implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
