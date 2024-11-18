@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -51,7 +52,11 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
     private static final File basePath;
 
     static {
-        basePath = new File(org.apache.commons.io.FileUtils.getTempDirectory(), "ox_secret_keys");
+        try {
+            basePath = Files.createTempDirectory("ox_secret_keys_").toFile();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
     }
 
     @Test
