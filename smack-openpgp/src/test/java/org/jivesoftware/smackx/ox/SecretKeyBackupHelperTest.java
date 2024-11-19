@@ -38,9 +38,9 @@ import org.jivesoftware.smackx.ox.util.SecretKeyBackupHelper;
 
 import org.bouncycastle.openpgp.PGPException;
 import org.bouncycastle.openpgp.PGPSecretKeyRing;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -49,14 +49,11 @@ import org.pgpainless.key.OpenPgpV4Fingerprint;
 
 public class SecretKeyBackupHelperTest extends SmackTestSuite {
 
-    private static final File basePath;
+    private static File basePath;
 
-    static {
-        try {
-            basePath = Files.createTempDirectory("ox_secret_keys_").toFile();
-        } catch (IOException e) {
-            throw new AssertionError(e);
-        }
+    @BeforeAll
+    public static void createTemptDir() throws IOException {
+        basePath = Files.createTempDirectory("ox_secret_keys_").toFile();
     }
 
     @Test
@@ -98,8 +95,7 @@ public class SecretKeyBackupHelperTest extends SmackTestSuite {
         Assertions.assertArrayEquals(secretKeys.getEncoded(), secretKeyRing.getEncoded());
     }
 
-    @AfterClass
-    @BeforeClass
+    @AfterAll
     public static void deleteDirs() throws IOException {
         org.apache.commons.io.FileUtils.deleteDirectory(basePath);
     }
