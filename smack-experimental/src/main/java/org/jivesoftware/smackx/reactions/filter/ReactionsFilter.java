@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.reactions.filter;
 
 import org.jivesoftware.smack.filter.StanzaExtensionFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
-import org.jivesoftware.smackx.reactions.element.ReactionsElement;
 
+import org.jivesoftware.smackx.reactions.element.ReactionsElement;
 
 /**
  * Message Reactions filter class.
@@ -31,9 +31,9 @@ import org.jivesoftware.smackx.reactions.element.ReactionsElement;
  */
 public final class ReactionsFilter extends StanzaExtensionFilter {
 
-    public static final StanzaFilter INSTANCE = new ReactionsFilter(ReactionsElement.ELEMENT,ReactionsElement.NAMESPACE);
+    public static final StanzaFilter INSTANCE = new ReactionsFilter(ReactionsElement.ELEMENT, ReactionsElement.NAMESPACE);
 
-    private ReactionsFilter(String element,String namespace) {
-        super(element,namespace);
+    private ReactionsFilter(String element, String namespace) {
+        super(element, namespace);
     }
 }

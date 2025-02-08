@@ -16,13 +16,13 @@
  */
 package org.jivesoftware.smackx.reactions.element;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Represents the reactions element in an XMPP message. This class is used to manage and serialize
@@ -34,6 +34,7 @@ import java.util.List;
  * @see ExtensionElement
  */
 public class ReactionsElement implements ExtensionElement {
+
     public static final String ELEMENT = "reactions";
     public static final String NAMESPACE = "urn:xmpp:reactions:0";
 
@@ -69,7 +70,6 @@ public class ReactionsElement implements ExtensionElement {
         return id;
     }
 
-
     /**
      * Returns the namespace for this extension element.
      *
@@ -100,8 +100,12 @@ public class ReactionsElement implements ExtensionElement {
     public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this);
         xml.attribute("id", id);
+
+        xml.rightAngleBracket();
         for (Reaction reaction : reactions) {
-            xml.append(reaction.toXML(xmlEnvironment));
+            if (reaction != null) {
+                xml.append(reaction.toXML());
+            }
         }
         xml.closeElement(this);
         return xml;
@@ -113,7 +117,7 @@ public class ReactionsElement implements ExtensionElement {
      * @param message The XMPP message from which the reactions element is extracted.
      * @return The ReactionsElement from the message, or {@code null} if not present.
      */
-    public static ReactionsElement fromMessage(Message message){
+    public static ReactionsElement fromMessage(Message message) {
         return message.getExtension(ReactionsElement.class);
     }
 }

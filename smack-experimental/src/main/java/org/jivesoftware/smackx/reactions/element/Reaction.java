@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.reactions.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.StreamOpen;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -32,7 +33,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 public class Reaction implements ExtensionElement {
 
     public static final String ELEMENT = "reaction";
-    public static final String NAMESPACE = "";
+    public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
 
     private final String emoji;
 
@@ -81,11 +82,15 @@ public class Reaction implements ExtensionElement {
      * @return The XML string builder containing the XML representation of the reaction element.
      */
     @Override
-    public XmlStringBuilder toXML(XmlEnvironment xmlEnvironment) {
+    public CharSequence toXML(XmlEnvironment xmlEnvironment) {
         XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
-        xml.openElement(getElementName());
-        xml.append(getEmoji());
-        xml.closeElement(getElementName());
+        if (getEmoji() == null) {
+            xml.closeEmptyElement();
+        } else {
+            xml.rightAngleBracket();
+            xml.append(getEmoji());
+            xml.closeElement(this);
+        }
         return xml;
     }
 
@@ -95,7 +100,7 @@ public class Reaction implements ExtensionElement {
      * @param message The XMPP message from which to extract the reaction.
      * @return The Reaction extension from the message, or {@code null} if not present.
      */
-    public static Reaction fromMessage(Message message){
+    public static Reaction fromMessage(Message message) {
         return message.getExtension(Reaction.class);
     }
 }

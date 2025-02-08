@@ -16,6 +16,14 @@
  */
 package org.jivesoftware.smackx.reactions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
+
 import org.jivesoftware.smack.AsyncButOrdered;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.Manager;
@@ -27,8 +35,11 @@ import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.StanzaFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.XmlElement;
+
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.reactions.element.Reaction;
@@ -38,14 +49,6 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
 import org.jivesoftware.smackx.xdata.form.Form;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
 
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
@@ -67,7 +70,6 @@ public final class ReactionsManager extends Manager {
 
     private static final Map<XMPPConnection, ReactionsManager> INSTANCES = new WeakHashMap<>();
 
-
     static {
         XMPPConnectionRegistry.addConnectionCreationListener(new ConnectionCreationListener() {
             @Override
@@ -80,8 +82,7 @@ public final class ReactionsManager extends Manager {
     private static final String REACTIONS_RESTRICTIONS_NAMESPACE = "urn:xmpp:reactions:0:restrictions";
     private final Set<ReactionsListener> listeners = new CopyOnWriteArraySet<>();
     private final AsyncButOrdered<BareJid> asyncButOrdered = new AsyncButOrdered<>();
-    private final  StanzaFilter reactionsElementFilter = new AndFilter(StanzaTypeFilter.MESSAGE,ReactionsFilter.INSTANCE);
-
+    private final StanzaFilter reactionsElementFilter = new AndFilter(StanzaTypeFilter.MESSAGE, ReactionsFilter.INSTANCE);
 
     /**
      * Constructs an instance of the reactions manager and add ReactionsElement to disco features.
@@ -90,7 +91,7 @@ public final class ReactionsManager extends Manager {
      */
     public ReactionsManager(XMPPConnection connection) {
         super(connection);
-        connection.addAsyncStanzaListener(this::reactionsElementListener,reactionsElementFilter);
+        connection.addAsyncStanzaListener(this::reactionsElementListener, reactionsElementFilter);
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection);
         sdm.addFeature(ReactionsElement.NAMESPACE);
     }
@@ -102,14 +103,12 @@ public final class ReactionsManager extends Manager {
      *
      * @param packet The received XMPP stanza (message).
      */
-    public  void reactionsElementListener(Stanza packet){
+    public void reactionsElementListener(Stanza packet) {
         Message message = (Message) packet;
         ReactionsElement reactionsElement = ReactionsElement.fromMessage(message);
-
-        if (reactionsElement != null){
-            notifyReactionListeners(message,reactionsElement);
+        if (reactionsElement != null) {
+            notifyReactionListeners(message, reactionsElement);
         }
-
     }
 
     /**
@@ -120,14 +119,13 @@ public final class ReactionsManager extends Manager {
      * @param message The XMPP message that contains the reactions.
      * @param reactionsElement The {@link ReactionsElement} containing the reactions.
      */
-    public  void notifyReactionListeners(Message message, ReactionsElement reactionsElement) {
+    public void notifyReactionListeners(Message message, ReactionsElement reactionsElement) {
         for (ReactionsListener listener : listeners) {
             asyncButOrdered.performAsyncButOrdered(message.getFrom().asBareJid(), () -> {
                 listener.onReactionReceived(message, reactionsElement);
             });
         }
     }
-
 
     /**
      * Retrieves the instance of the ReactionsManager for the given XMPP connection.
@@ -157,7 +155,7 @@ public final class ReactionsManager extends Manager {
      */
     public boolean userSupportsReactions(EntityBareJid jid) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException,
                     InterruptedException, SmackException.NoResponseException {
-        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid,ReactionsElement.NAMESPACE);
+        return ServiceDiscoveryManager.getInstanceFor(connection()).supportsFeature(jid, ReactionsElement.NAMESPACE);
     }
 
     /**
@@ -177,20 +175,21 @@ public final class ReactionsManager extends Manager {
     }
 
     /**
-     * Adds reactions to a message.
+     * Creates a new message builder that contains reactions to the original message identified by its ID.
+     * The reactions are added to the new message, ensuring they meet the specified restrictions.
      *
-     * @param message           The message builder where the reactions will be added.
-     * @param emojis            The list of emojis to be added as reactions.
-     * @param originalMessageId The ID of the original message being reacted to.
-     * @param restrictions      The reaction restrictions such as max reactions per user and allowed emojis.
-     * @throws IllegalArgumentException If the reactions exceed the allowed limit or if any emoji is not allowed.
+     * <p>This method generates a new message builder that will create a message containing the list of reactions (emojis)
+     * to the original message identified by its ID. It ensures that the number of reactions and the emojis used comply
+     * with the given restrictions.</p>
+     *
+     * @param emojis              The list of emojis to be added as reactions.
+     * @param originalMessageId   The ID of the original message being reacted to. This ID will be used for the {@link ReactionsElement}.
+     * @param restrictions        The reaction restrictions, such as the maximum number of reactions per user and allowed emojis.
+     * @return                   A message builder containing the reactions to the original message.
+     * @throws IllegalArgumentException If the number of reactions exceeds the allowed limit or if any emoji is not allowed.
      */
-    public static void addReactionsToMessage(Message message, List<String> emojis,
-                    String originalMessageId, ReactionRestrictions restrictions){
-        List<Reaction> reactions = new ArrayList<>();
-
+    public MessageBuilder createMessageWithReactions(List<String> emojis, String originalMessageId, ReactionRestrictions restrictions) {
         if (restrictions != null) {
-
             if (emojis.size() > restrictions.getMaxReactionsPerUser()) {
                 throw new IllegalArgumentException("Exceeded maximum number of reactions per user");
             }
@@ -203,36 +202,47 @@ public final class ReactionsManager extends Manager {
             }
         }
 
-
+        List<Reaction> reactions = new ArrayList<>();
         for (String emoji : emojis) {
-            Reaction reaction = new Reaction(emoji);
-            reactions.add(reaction);
+            reactions.add(new Reaction(emoji));
         }
 
         ReactionsElement reactionsElement = new ReactionsElement(reactions, originalMessageId);
 
-        message.addExtension(reactionsElement);
+        MessageBuilder newMessage = StanzaBuilder.buildMessage();
 
+        newMessage.addExtension(reactionsElement);
+
+        return newMessage;
     }
 
     /**
-     * Adds a reactions' listener.
+     * Adds a reactions listener to the collection.
+     * <p>
+     * This method ensures that the listener is only added if it is not already present in the set.
+     * It is synchronized to ensure thread safety when adding listeners.
      *
-     * @param listener The reactions listener to be added.
+     * @param listener The reactions listener to be added to the set.
+     * @return {@code true} if the listener was successfully added;
+     *         {@code false} if the listener was already present and not added.
      */
-    public synchronized void addReactionsListener(ReactionsListener listener){
-        listeners.add(listener);
+    public synchronized boolean addReactionsListener(ReactionsListener listener) {
+        return listeners.add(listener);
     }
 
     /**
-     * Removes a reactions listener.
+     * Removes a reactions listener from the collection.
+     * <p>
+     * This method ensures that the listener is removed from the set, if it exists.
+     * It is synchronized to ensure thread safety when removing listeners.
      *
-     * @param listener The reactions listener to be removed.
+     * @param listener The reactions listener to be removed from the set.
+     * @return {@code true} if the listener was successfully removed;
+     *         {@code false} if the listener was not found in the set.
      */
-    public synchronized void removeReactionsListener(ReactionsListener listener){
-        listeners.remove(listener);
+    public synchronized boolean removeReactionsListener(ReactionsListener listener) {
+        return listeners.remove(listener);
     }
-
 
     /**
      * Creates a form for reaction restrictions, including the max number of reactions per user
@@ -242,13 +252,11 @@ public final class ReactionsManager extends Manager {
      * @param allowedEmojis The list of allowed emojis.
      * @return The reaction restrictions form.
      */
-    public static DataForm createReactionRestrictionsForm(int maxReactionsPerUser, List<String> allowedEmojis) {
+    public DataForm createReactionRestrictionsForm(int maxReactionsPerUser, List<String> allowedEmojis) {
 
         DataForm.Builder builder = DataForm.builder();
         builder.setFormType(String.valueOf(DataForm.Type.result));
-        builder.addField(
-                        FormField.buildHiddenFormType("urn:xmpp:reactions:0:restrictions")
-        );
+
         builder.addField(
                         FormField.builder("max_reactions_per_user").setValue(String.valueOf(maxReactionsPerUser))
                                         .build()
@@ -257,7 +265,7 @@ public final class ReactionsManager extends Manager {
         FormField.Builder<TextSingleFormField, TextSingleFormField.Builder> allowlistFieldBuilder = FormField.builder("allowlist");
         for (String emoji : allowedEmojis) {
             Reaction reaction = new Reaction(emoji);
-            FormField.builder("value").setValue((CharSequence) reaction);
+            FormField.builder("value").setValue(reaction.getEmoji());
         }
         builder.addField(allowlistFieldBuilder.build());
 
@@ -353,5 +361,4 @@ public final class ReactionsManager extends Manager {
             return allowedEmojis;
         }
     }
-
 }

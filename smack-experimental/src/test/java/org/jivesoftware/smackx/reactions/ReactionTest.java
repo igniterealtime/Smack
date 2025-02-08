@@ -16,6 +16,16 @@
  */
 package org.jivesoftware.smackx.reactions;
 
+import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
@@ -25,22 +35,13 @@ import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.reactions.element.Reaction;
 import org.jivesoftware.smackx.reactions.element.ReactionsElement;
 import org.jivesoftware.smackx.reactions.provider.ReactionsElementProvider;
+
 import org.junit.jupiter.api.Test;
-import org.jxmpp.jid.impl.JidCreate;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
+import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * Tests related to managing reactions in Smack XMPP.
@@ -55,7 +56,7 @@ public class ReactionTest extends SmackTestSuite {
 
     /**
      * Tests parsing of a reactions XML and validates the extracted data.
-     *
+     * <p>
      * This test validates the creation of a `ReactionsElement` from an XML
      * and checks if the message ID and emoji reactions are correctly extracted.
      *
@@ -83,48 +84,45 @@ public class ReactionTest extends SmackTestSuite {
 
     /**
      * Tests adding reactions to a message.
-     *
+     * <p>
      * This test ensures that the `addReactionsToMessage` method correctly
      * adds reactions to a message and that the reactions are correctly
      * reflected in the message's extension elements.
      *
-     * @throws Exception If an error occurs during message handling or assertions.
      */
     @Test
-    public void testAddReactionsToMessage() throws Exception {
-
-        List<String> emojis = Arrays.asList("❤️", "❤️");
+    public void testAddReactionsToMessage() throws XmppStringprepException {
         String messageId = "1234";
 
-        MessageBuilder messageBuilder = StanzaBuilder.buildMessage();
+        List<String> emojis = Arrays.asList("❤️", "\uD83D\uDE02");
+
+        XMPPConnection connection = mock(XMPPConnection.class);
+        ReactionsManager reactionsManager = new ReactionsManager(connection);
+
+        MessageBuilder messageBuilder = reactionsManager.createMessageWithReactions(emojis, messageId, null);
         Message message = messageBuilder
-                        .setBody("Hello")
                         .ofType(Message.Type.chat)
-                        .to("teste@domain.com")
                         .build();
 
-        ReactionsManager.addReactionsToMessage(message, emojis, messageId, null);
-
-        ReactionsElement reactionsElement = (ReactionsElement) message.getExtensionElement(ReactionsElement.ELEMENT, ReactionsElement.NAMESPACE);
+        ReactionsElement reactionsElement = ReactionsElement.fromMessage(message);
 
         assertEquals(messageId, reactionsElement.getId());
         assertEquals(2, reactionsElement.getReactions().size());
         assertEquals("❤️", reactionsElement.getReactions().get(0).getEmoji());
-        assertEquals("❤️", reactionsElement.getReactions().get(1).getEmoji());
+        assertEquals("\uD83D\uDE02", reactionsElement.getReactions().get(1).getEmoji());
 
     }
 
     /**
      * Tests the reactions element listener.
-     *
+     * <p>
      * This test simulates the receipt of a message with reactions and validates
      * that the `reactionsElementListener` properly processes the reactions
      * and adds the reactions extension to the message.
      *
-     * @throws Exception If an error occurs during message handling or listener processing.
      */
     @Test
-    public void testReactionsElementListener() throws Exception {
+    public void testReactionsElementListener() {
 
         // Define reactions
         List<Reaction> reactions = Arrays.asList(new Reaction("😊"), new Reaction("😂"));
@@ -140,24 +138,31 @@ public class ReactionTest extends SmackTestSuite {
         ReactionsManager reactionsManager = new ReactionsManager(connection);
         reactionsManager.reactionsElementListener(message);
 
+        ReactionsElement reactionsFromMessage = ReactionsElement.fromMessage(message);
         // Assertions: Ensure that the message contains the reactions element
-        assertNotNull(message.getExtensionElement(ReactionsElement.ELEMENT, ReactionsElement.NAMESPACE));
+        assertNotNull(reactionsFromMessage);
+
     }
 
-    /**
-     * Tests that an exception is thrown when invalid reaction restrictions are provided.
-     *
-     * This test checks that the system throws an `IllegalArgumentException` when
-     * attempting to create a reaction restriction form with invalid values (e.g., negative values).
-     *
-     * @throws Exception If an error occurs during the test execution.
-     */
     @Test
-    public void testInvalidReactionRestrictions() {
-        // Check invalid restrictions, like negative values
-        assertThrows(IllegalArgumentException.class, () -> {
-            ReactionsManager.createReactionRestrictionsForm(-1, Arrays.asList("😊", "😂"));
-        });
+    void testXMLParsing() {
+
+        String emoji = "❤️";
+        Reaction reaction = new Reaction(emoji);
+        String expectedXml = "<reaction xmlns='jabber:client'>❤️</reaction>";
+        assertEquals(expectedXml, reaction.toXML().toString(), "O XML gerado não corresponde ao esperado.");
+
+        String reactions = "<reactions xmlns='urn:xmpp:reactions:0' id='744f6e18-a57a-11e9-a656-4889e7820c76'>"
+                        + "<reaction xmlns='jabber:client'>\uD83D\uDC4B</reaction>" +
+                          "<reaction xmlns='jabber:client'>\uD83D\uDC22</reaction>"
+                        + "</reactions>";
+        List<Reaction> emojis = new ArrayList<>();
+        emojis.add(new Reaction("\uD83D\uDC4B"));
+        emojis.add(new Reaction("\uD83D\uDC22"));
+        ReactionsElement reactionsElement = new ReactionsElement(emojis, "744f6e18-a57a-11e9-a656-4889e7820c76");
+
+        assertXmlSimilar(reactions, reactionsElement.toXML());
+
     }
 
 

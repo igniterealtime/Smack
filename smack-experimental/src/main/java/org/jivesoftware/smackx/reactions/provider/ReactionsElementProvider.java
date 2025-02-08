@@ -16,34 +16,51 @@
  */
 package org.jivesoftware.smackx.reactions.provider;
 
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
-import org.jivesoftware.smack.xml.XmlPullParser;
-import org.jivesoftware.smack.xml.XmlPullParserException;
-import org.jivesoftware.smackx.reactions.element.Reaction;
-import org.jivesoftware.smackx.reactions.element.ReactionsElement;
-
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jivesoftware.smackx.reactions.element.Reaction;
+import org.jivesoftware.smackx.reactions.element.ReactionsElement;
+
+/**
+ * A provider class for parsing {@link ReactionsElement} from an XML stream.
+ * <p>
+ * This class is responsible for extracting the relevant information from an XML input stream and converting it into a {@link ReactionsElement}.
+ * It processes the XML structure according to the expected format of the reactions element and its child elements.
+ * </p>
+ * @see <a href="http://xmpp.org/extensions/xep-0444.html">XEP-0444: Message
+ *       Reactions</a>
+ *
+ *  @author Ismael Nunes Campos
+ */
 public class ReactionsElementProvider extends ExtensionElementProvider<ReactionsElement> {
+
     @Override
     public ReactionsElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String id = parser.getAttributeValue(null, "id");
         List<Reaction> reactions = new ArrayList<>();
 
-        while (true) {
+        outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();
 
-            if (tag == XmlPullParser.Event.END_ELEMENT && parser.getName().equals(ReactionsElement.ELEMENT)) {
-                break;
-            }
-            if (tag == XmlPullParser.Event.START_ELEMENT && parser.getName().equals(Reaction.ELEMENT)) {
-                String emoji = parser.nextText();
-                reactions.add(new Reaction(emoji));
+            if (tag == XmlPullParser.Event.START_ELEMENT) {
+                if (parser.getName().equals(Reaction.ELEMENT)) {
+
+                    String emoji = parser.nextText();
+                    reactions.add(new Reaction(emoji));
+                }
+            } else if (tag == XmlPullParser.Event.END_ELEMENT) {
+                if (parser.getName().equals(ReactionsElement.ELEMENT) && parser.getDepth() == initialDepth) {
+                    break outerloop;
+                }
             }
         }
 

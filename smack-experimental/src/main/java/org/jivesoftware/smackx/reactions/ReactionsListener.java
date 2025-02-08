@@ -17,15 +17,16 @@
 package org.jivesoftware.smackx.reactions;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.reactions.element.ReactionsElement;
 
 public interface ReactionsListener {
 
-
     /**
      * Listener method that gets called when a {@link Message} containing a {@link ReactionsElement} is received.
-     *
+     * @param reactionsElement reactionsElement
      * @param message message
      */
     void onReactionReceived(Message message, ReactionsElement reactionsElement);
+
 }
