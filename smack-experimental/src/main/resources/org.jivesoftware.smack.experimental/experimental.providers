@@ -399,5 +399,12 @@
         <className>org.jivesoftware.smackx.gcm.provider.GcmExtensionProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0461: Message Replies -->
+    <extensionProvider>
+       <elementName>reply</elementName>
+       <namespace>urn:xmpp:reply:0</namespace>
+       <className>org.jivesoftware.smackx.reply.provider.ReplyElementProvider</className>
+    </extensionProvider>
+
 
 </smackProviders>
