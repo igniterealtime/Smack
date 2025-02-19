@@ -51,7 +51,7 @@ import org.jxmpp.jid.EntityBareJid;
  *
  * @see <a href="https://xmpp.org/extensions/xep-0461.html">XEP-0461: Message Replies</a>
  */
-public class ReplyManager extends Manager {
+public final class ReplyManager extends Manager {
 
     private static final Map<XMPPConnection, ReplyManager> INSTANCES = new WeakHashMap<>();
 
@@ -82,7 +82,7 @@ public class ReplyManager extends Manager {
 
     private ReplyManager(XMPPConnection connection) {
         super(connection);
-        connection.addAsyncStanzaListener(this::replyElementListener,replyElementFilter);
+        connection.addAsyncStanzaListener(this::replyElementListener, replyElementFilter);
         ServiceDiscoveryManager.getInstanceFor(connection).addFeature(ReplyElement.NAMESPACE);
     }
 
@@ -108,7 +108,7 @@ public class ReplyManager extends Manager {
     public boolean userSupportsReplies(EntityBareJid jid) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException,
                     SmackException.NoResponseException {
         return ServiceDiscoveryManager.getInstanceFor(connection())
-                        .supportsFeature(jid,ReplyElement.NAMESPACE);
+                        .supportsFeature(jid, ReplyElement.NAMESPACE);
 
     }
 

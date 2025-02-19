@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.reply;
 
 import org.jivesoftware.smack.packet.Message;
+
 import org.jivesoftware.smackx.reply.element.ReplyElement;
 
 public interface ReplyListener {

@@ -24,6 +24,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.jivesoftware.smackx.reply.element.ReplyElement;
 
 public class ReplyElementProvider extends ExtensionElementProvider<ReplyElement> {
@@ -31,9 +32,9 @@ public class ReplyElementProvider extends ExtensionElementProvider<ReplyElement>
     @Override public ReplyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
 
-        String replyTo = parser.getAttributeValue("", "to");;
-        String replyId = parser.getAttributeValue("", "id");
+        String replyTo = parser.getAttributeValue("to");
+        String replyId = parser.getAttributeValue("id");
 
-        return new ReplyElement(replyTo,replyId);
+        return new ReplyElement(replyTo, replyId);
     }
 }
