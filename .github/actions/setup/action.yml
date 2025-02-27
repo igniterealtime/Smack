@@ -1,0 +1,53 @@
+name: CI Setup
+description: 'Sets up the environment for jobs during CI workflow'
+
+inputs:
+  java-major-version:
+    required: true
+    
+runs:
+  using: composite
+  steps:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ inputs.java-major-version }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ inputs.java-major-version }}
+          distribution: temurin
+
+      # Caches
+      - name: Cache Maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/build.gradle') }}
+          restore-keys: |
+            maven-
+      - name: Cache Gradle
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: gradle-caches-${{ hashFiles('**/build.gradle') }}
+          restore-keys:
+            gradle-caches
+      - name: Cache Android SDK
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.android/sdk
+          key: android-${{ hashFiles('build.gradle') }}
+          restore-keys: |
+            android-
+
+      # Pre-reqs
+      - name: Install GraphViz
+        run: sudo apt update && sudo apt install graphviz
+      - name: Install Android SDK Manager
+        uses: android-actions/setup-android@v3
+      - name: Install Android SDK
+        run: |
+          sdkmanager "platforms;android-26"
+    
