@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.reactions;
 
+import java.util.Set;
+
 import org.jivesoftware.smack.packet.Message;
 
 import org.jivesoftware.smackx.reactions.element.ReactionsElement;
@@ -24,9 +26,11 @@ public interface ReactionsListener {
 
     /**
      * Listener method that gets called when a {@link Message} containing a {@link ReactionsElement} is received.
-     * @param reactionsElement reactionsElement
-     * @param message message
+     *
+     * @param id                The unique identifier of the original {@link Message} that the reaction is associated with.
+     * @param reactions        A {@link Set} of reaction identifiers that were added or removed.
+     * @param reactionsElement The {@link ReactionsElement} containing details about the reactions.
+     * @param message          The {@link Message} containing the received reaction.
      */
-    void onReactionReceived(Message message, ReactionsElement reactionsElement);
-
+    void onReactionReceived(String id, Set<String> reactions, ReactionsElement reactionsElement, Message message);
 }

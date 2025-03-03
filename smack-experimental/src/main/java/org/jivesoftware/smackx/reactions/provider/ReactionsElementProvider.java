@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.reactions.provider;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
@@ -45,22 +45,25 @@ public class ReactionsElementProvider extends ExtensionElementProvider<Reactions
 
     @Override
     public ReactionsElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        String id = parser.getAttributeValue(null, "id");
-        List<Reaction> reactions = new ArrayList<>();
+        String id = parser.getAttributeValue("id");
+        Set<Reaction> reactions = new HashSet<>();
 
         outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();
 
-            if (tag == XmlPullParser.Event.START_ELEMENT) {
+            switch (tag) {
+            case START_ELEMENT:
                 if (parser.getName().equals(Reaction.ELEMENT)) {
-
                     String emoji = parser.nextText();
                     reactions.add(new Reaction(emoji));
                 }
-            } else if (tag == XmlPullParser.Event.END_ELEMENT) {
-                if (parser.getName().equals(ReactionsElement.ELEMENT) && parser.getDepth() == initialDepth) {
+                break;
+
+            case END_ELEMENT:
+                if (parser.getDepth() == initialDepth) {
                     break outerloop;
                 }
+                break;
             }
         }
 

@@ -16,9 +16,8 @@
  */
 package org.jivesoftware.smackx.reactions.element;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -27,13 +26,12 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * is used to handle the individual reaction data, including the emoji and its associated message.
  * It is an extension element used in XMPP messages.
  *
- * @see ExtensionElement
+ * @see NamedElement
  * @see Message
  */
-public class Reaction implements ExtensionElement {
+public class Reaction implements NamedElement {
 
     public static final String ELEMENT = "reaction";
-    public static final String NAMESPACE = StreamOpen.CLIENT_NAMESPACE;
 
     private final String emoji;
 
@@ -56,16 +54,6 @@ public class Reaction implements ExtensionElement {
     }
 
     /**
-     * Returns the namespace for this extension element. As the namespace is empty, it returns an empty string.
-     *
-     * @return The namespace of the reaction element, which is an empty string.
-     */
-    @Override
-    public String getNamespace() {
-        return NAMESPACE;
-    }
-
-    /**
      * Returns the name of the XML element for this reaction, which is "reaction".
      *
      * @return The name of the XML element, which is "reaction".
@@ -83,7 +71,7 @@ public class Reaction implements ExtensionElement {
      */
     @Override
     public CharSequence toXML(XmlEnvironment xmlEnvironment) {
-        XmlStringBuilder xml = new XmlStringBuilder(this, xmlEnvironment);
+        XmlStringBuilder xml = new XmlStringBuilder(this);
         if (getEmoji() == null) {
             xml.closeEmptyElement();
         } else {
@@ -94,13 +82,4 @@ public class Reaction implements ExtensionElement {
         return xml;
     }
 
-    /**
-     * Retrieves the Reaction extension from an XMPP message.
-     *
-     * @param message The XMPP message from which to extract the reaction.
-     * @return The Reaction extension from the message, or {@code null} if not present.
-     */
-    public static Reaction fromMessage(Message message) {
-        return message.getExtension(Reaction.class);
-    }
 }

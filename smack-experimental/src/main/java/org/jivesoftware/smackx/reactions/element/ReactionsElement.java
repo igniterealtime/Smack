@@ -16,8 +16,7 @@
  */
 package org.jivesoftware.smackx.reactions.element;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Message;
@@ -38,7 +37,7 @@ public class ReactionsElement implements ExtensionElement {
     public static final String ELEMENT = "reactions";
     public static final String NAMESPACE = "urn:xmpp:reactions:0";
 
-    private final List<Reaction> reactions;
+    private final Set<Reaction> reactions;
     private final String id;
 
     /**
@@ -47,8 +46,8 @@ public class ReactionsElement implements ExtensionElement {
      * @param reactions A list of reactions associated with a message.
      * @param id The ID of the message being reacted to.
      */
-    public ReactionsElement(List<Reaction> reactions, String id) {
-        this.reactions = Collections.unmodifiableList(reactions);
+    public ReactionsElement(Set<Reaction> reactions, String id) {
+        this.reactions = reactions;
         this.id = id;
     }
 
@@ -57,7 +56,7 @@ public class ReactionsElement implements ExtensionElement {
      *
      * @return The list of reactions.
      */
-    public List<Reaction> getReactions() {
+    public Set<Reaction> getReactions() {
         return reactions;
     }
 
@@ -103,9 +102,7 @@ public class ReactionsElement implements ExtensionElement {
 
         xml.rightAngleBracket();
         for (Reaction reaction : reactions) {
-            if (reaction != null) {
-                xml.append(reaction.toXML());
-            }
+          xml.append(reaction.toXML());
         }
         xml.closeElement(this);
         return xml;
