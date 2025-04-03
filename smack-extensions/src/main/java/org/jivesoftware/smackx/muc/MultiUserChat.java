@@ -260,7 +260,8 @@ public class MultiUserChat {
                     occupantsMap.remove(from);
                     Set<Status> status = mucUser.getStatus();
                     if (mucUser != null && !status.isEmpty()) {
-                        if (isUserStatusModification && !status.contains(MUCUser.Status.NEW_NICKNAME_303)) {
+                        if (isUserStatusModification && !status.contains(MUCUser.Status.NEW_NICKNAME_303)
+                                        && !leaving) {
                             userHasLeft();
                         }
                         // Fire events according to the received presence code
@@ -292,7 +293,9 @@ public class MultiUserChat {
                         for (UserStatusListener listener : userStatusListeners) {
                             listener.roomDestroyed(alternateMuc, destroy.getPassword(), destroy.getReason());
                         }
-                        userHasLeft();
+                        if (!destroying) {
+                            userHasLeft();
+                        }
                     }
 
                     if (isUserStatusModification) {
@@ -738,6 +741,8 @@ public class MultiUserChat {
         return getMyRoomJid() != null;
     }
 
+    private volatile boolean leaving;
+
     /**
      * Leave the chat room.
      *
@@ -783,10 +788,12 @@ public class MultiUserChat {
 
         StanzaFilter reflectedLeavePresenceFilter = new AndFilter(reflectedLeavePresenceFilters);
 
+        leaving = true;
         Presence reflectedLeavePresence;
         try {
             reflectedLeavePresence = connection.createStanzaCollectorAndSend(reflectedLeavePresenceFilter, leavePresence).nextResultOrThrow();
         } finally {
+            leaving = false;
             // Reset occupant information after we send the leave presence. This ensures that we only call userHasLeft()
             // and reset the local MUC state after we successfully left the MUC (or if an exception occurred).
             userHasLeft();
@@ -952,6 +959,8 @@ public class MultiUserChat {
         destroy(reason, alternateJID, null);
     }
 
+    private volatile boolean destroying;
+
     /**
      * Sends a request to the server to destroy the room. The sender of the request
      * should be the room's owner. If the sender of the destroy request is not the room's owner
@@ -977,22 +986,27 @@ public class MultiUserChat {
         Destroy destroy = new Destroy(alternateJID, password, reason);
         iq.setDestroy(destroy);
 
+        destroying = true;
         try {
-            connection.sendIqRequestAndWaitForResponse(iq);
-        }
-        catch (XMPPErrorException e) {
-            // Note that we do not call userHasLeft() here because an XMPPErrorException would usually indicate that the
-            // room was not destroyed and we therefore we also did not leave the room.
-            throw e;
-        }
-        catch (NoResponseException | NotConnectedException | InterruptedException e) {
+            try {
+                connection.sendIqRequestAndWaitForResponse(iq);
+            }
+            catch (XMPPErrorException e) {
+                // Note that we do not call userHasLeft() here because an XMPPErrorException would usually indicate that the
+                // room was not destroyed and we therefore we also did not leave the room.
+                throw e;
+            }
+            catch (NoResponseException | NotConnectedException | InterruptedException e) {
+                // Reset occupant information.
+                userHasLeft();
+                throw e;
+            }
+
             // Reset occupant information.
             userHasLeft();
-            throw e;
+        } finally {
+            destroying = false;
         }
-
-        // Reset occupant information.
-        userHasLeft();
     }
 
     /**

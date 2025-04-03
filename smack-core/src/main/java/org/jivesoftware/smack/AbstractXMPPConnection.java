@@ -1616,11 +1616,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             });
         }
 
-        // Loop through all collectors and notify the appropriate ones.
-        for (StanzaCollector collector : collectors) {
-            collector.processStanza(packet);
-        }
-
         listenersToNotify.clear();
         extractMatchingListeners(packet, recvListeners, listenersToNotify);
         final Semaphore listenerSemaphore = new Semaphore(1 - listenersToNotify.size());
@@ -1640,6 +1635,13 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             });
         }
         listenerSemaphore.acquireUninterruptibly();
+
+        // Notify collectors after we invoked the listeners. This allows the listeners to adjust their behavior on state
+        // changing operations, e.g., leaving a MUC, which are often based on collectors.
+        // Loop through all collectors and notify the appropriate ones.
+        for (StanzaCollector collector : collectors) {
+            collector.processStanza(packet);
+        }
 
         // Notify the receive listeners interested in the packet
         listenersToNotify.clear();
