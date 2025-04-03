@@ -112,7 +112,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             Path outsideTestLogFile = this.basePath.resolve("outsideTestLog");
             Path testsFile = this.basePath.resolve("tests");
             try {
-                boolean created = this.basePath.toFile().mkdir();
+                boolean created = this.basePath.toFile().mkdirs();
                 if (!created) {
                     throw new IOException("Could not create directory " + this.basePath);
                 }

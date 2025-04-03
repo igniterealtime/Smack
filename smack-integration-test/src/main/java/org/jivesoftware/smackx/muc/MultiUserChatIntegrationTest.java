@@ -36,6 +36,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MissingMucCreationAcknowledgeException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucAlreadyJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
 import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
@@ -271,6 +272,19 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             throw new TestNotPossibleException(e);
         } finally {
             tryDestroy(mucAsSeenByOne);
+        }
+    }
+
+    @SmackIntegrationTest
+    public void mucJoinLeaveCycleTest() throws XmppStringprepException, NotAMucServiceException, NoResponseException,
+                    XMPPErrorException, NotConnectedException, InterruptedException, MucNotJoinedException {
+        var mucAddress = getRandomRoom("muc-join-leave");
+        var muc = mucManagerOne.getMultiUserChat(mucAddress);
+        var nick = Resourcepart.from("one");
+
+        for (var i = 0; i < 100; i++) {
+            muc.join(nick);
+            muc.leave();
         }
     }
 }
