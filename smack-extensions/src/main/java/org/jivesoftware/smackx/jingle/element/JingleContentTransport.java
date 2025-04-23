@@ -29,7 +29,6 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  */
 public class JingleContentTransport extends AbstractXmlElement {
     public static final String ELEMENT = "transport";
-    private static Builder mBuilder;
 
     protected List<JingleContentTransportCandidate> candidates;
     protected JingleContentTransportInfo info;
@@ -52,7 +51,7 @@ public class JingleContentTransport extends AbstractXmlElement {
     }
 
     protected JingleContentTransport(List<JingleContentTransportCandidate> candidates, JingleContentTransportInfo info) {
-        super(mBuilder = getBuilder());
+        super(getBuilder());
         if (candidates != null) {
             this.candidates = Collections.unmodifiableList(candidates);
         }
@@ -61,7 +60,7 @@ public class JingleContentTransport extends AbstractXmlElement {
         }
         this.info = info;
 
-        mBuilder.addTransportCandidate(candidates)
+        ((Builder) mBuilder).addTransportCandidate(candidates)
                 .addTransportInfo(info)
                 .build();
     }

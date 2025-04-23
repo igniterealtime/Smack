@@ -62,7 +62,7 @@ public class AbstractXmlElement implements ExtensionElement {
     private final MultiMap<QName, ExtensionElement> elements;
 
     private XmlStringBuilder xmlCache;
-    private final Builder<?, ?> mBuilder;
+    protected final Builder<?, ?> mBuilder;
 
     /**
      * For sub-class element without a namespace; extends the class with the root namespace of the parent container
@@ -318,7 +318,9 @@ public class AbstractXmlElement implements ExtensionElement {
         if (xmlCache != null) {
             return xmlCache;
         }
-        XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        // XmlStringBuilder xml = new XmlStringBuilder(this, enclosingNamespace);
+        // Do not pass in enclosingNamespace; else the NS may not be included
+        XmlStringBuilder xml = new XmlStringBuilder(this);
         addExtraAttributes(xml);
 
         for (Map.Entry<String, String> entry : attributes.entrySet()) {

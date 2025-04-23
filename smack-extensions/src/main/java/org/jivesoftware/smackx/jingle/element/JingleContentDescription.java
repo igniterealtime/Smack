@@ -30,8 +30,6 @@ import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
  */
 public class JingleContentDescription extends AbstractXmlElement {
     public static final String ELEMENT = "description";
-    private static Builder mBuilder;
-
     private final List<ExtensionElement> payloads;
 
     public JingleContentDescription() {
@@ -49,13 +47,13 @@ public class JingleContentDescription extends AbstractXmlElement {
     }
 
     protected JingleContentDescription(List<? extends ExtensionElement> payloads) {
-        super(mBuilder = getBuilder());
+        super(getBuilder());
         if (payloads != null) {
             this.payloads = Collections.unmodifiableList(payloads);
         } else {
             this.payloads = Collections.emptyList();
         }
-        mBuilder.addPayload(payloads)
+        ((Builder) mBuilder).addPayload(payloads)
                 .build();
     }
 

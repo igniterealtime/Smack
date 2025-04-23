@@ -95,7 +95,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     private boolean isClosed = false;
 
     /* flag to indicate if session is already closed by peer */
-    private boolean closedByPeer = false;
+    private volatile boolean closedByPeer = false;
 
     /**
      * Constructor.
