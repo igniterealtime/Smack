@@ -130,7 +130,7 @@ public final class JetManager extends Manager implements JingleDescriptionManage
                 = new JingleContentImpl(mConnection, JingleContent.Creator.initiator, JingleContent.Senders.initiator);
         session.addContentImpl(content);
 
-        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(file, metadata);
+        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(session, file, metadata);
         content.setDescription(outgoingFileOffer);
 
         JingleTransportManager<?> transportManager = JingleTransportMethodManager.getBestAvailableTransportManager(mConnection);
@@ -156,7 +156,7 @@ public final class JetManager extends Manager implements JingleDescriptionManage
                 = new JingleContentImpl(mConnection, JingleContent.Creator.initiator, JingleContent.Senders.initiator);
         session.addContentImpl(content);
 
-        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(inputStream, metadata);
+        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(session, inputStream, metadata);
         content.setDescription(outgoingFileOffer);
 
         JingleTransportManager<?> transportManager = JingleTransportMethodManager.getBestAvailableTransportManager(mConnection);

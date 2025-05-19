@@ -30,6 +30,7 @@ import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.JingleTransportMethodManager;
 import org.jivesoftware.smackx.jingle.JingleUtil;
 import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
@@ -57,7 +58,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     private final JingleContent.Creator creator;
     private final String name;
     private final String disposition;
-    private JingleSessionImpl parent;
+    private JingleSessionImpl mJingleSession;
     private JingleContent.Senders senders;
     private JingleDescription<?> description;
     private JingleTransport<?> transport;
@@ -87,7 +88,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         this.senders = senders;
     }
 
-    public static JingleContentImpl fromElement(XMPPConnection connection, JingleContent content) {
+    public static JingleContentImpl fromElement(XMPPConnection connection, JingleSession jingleSession, JingleContent content) {
         JingleDescription<?> description = null;
         JingleTransport<?> transport = null;
         JingleSecurity<?> security = null;
@@ -97,7 +98,8 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
             JingleDescriptionAdapter<?> descriptionAdapter
                     = JingleContentProviderManager.getJingleDescriptionAdapter(contentDescription.getNamespace());
             if (descriptionAdapter != null) {
-                description = descriptionAdapter.descriptionFromElement(content.getCreator(), content.getSenders(), content.getName(), content.getDisposition(), contentDescription);
+                // description = descriptionAdapter.descriptionFromElement(content.getCreator(), content.getSenders(), content.getName(), content.getDisposition(), contentDescription);
+                description = descriptionAdapter.descriptionFromElement(jingleSession, content);
             }
             else {
                 throw new AssertionError("Unsupported Description: " + contentDescription.getNamespace());
@@ -276,7 +278,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
         final JingleSessionImpl session = getParent();
         final JingleContentTransport transportElement = contentElement.getTransport();
 
-        JingleTransportMethodManager jtmManager = JingleTransportMethodManager.getInstanceFor(parent.getConnection());
+        JingleTransportMethodManager jtmManager = JingleTransportMethodManager.getInstanceFor(mJingleSession.getConnection());
         JingleTransportManager<?> jtManager = jtmManager.getTransportManager(transportElement.getNamespace());
 
         // Unsupported/Blacklisted transport -> reject.
@@ -351,13 +353,13 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
     }
 
     public void setParent(JingleSessionImpl session) {
-        if (!session.equals(parent)) {
-            this.parent = session;
+        if (!session.equals(mJingleSession)) {
+            this.mJingleSession = session;
         }
     }
 
     public JingleSessionImpl getParent() {
-        return parent;
+        return mJingleSession;
     }
 
     public JingleDescription<?> getDescription() {
@@ -435,7 +437,7 @@ public class JingleContentImpl implements JingleTransportCallback, JingleSecurit
 
     @Override
     public void onTransportReady(BytestreamSession bytestreamSession) {
-        LOGGER.info("TransportReady: " + (isReceiving() ? "Receive" : "Send"));
+        LOGGER.info("TransportReady: " + (isReceiving() ? "Receive: " : "Send: ") + bytestreamSession);
         if (bytestreamSession == null) {
             throw new AssertionError("bytestreamSession MUST NOT be null at this point.");
         }

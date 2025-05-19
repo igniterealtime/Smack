@@ -358,10 +358,10 @@ public final class HttpFileUploadManager extends Manager {
      * then uploaded to the server.
      * The URL that is returned has a modified scheme (aesgcm:// instead of https://) and has the IV and key attached
      * as ref part.
-     *
+     * <p>
      * Note: The URL contains the used key and IV in plain text. Keep in mind to only share this URL though a secured
      * channel (i.e. end-to-end encrypted message), as anybody who can read the URL can also decrypt the file.
-     *
+     * <p>
      * Note: This method uses a IV of length 16 instead of 12. Although not specified in the ProtoXEP, 16 byte IVs are
      * currently used by most implementations. This implementation also supports 12 byte IVs when decrypting.
      *
@@ -425,7 +425,7 @@ public final class HttpFileUploadManager extends Manager {
 
     /**
      * Request a new upload slot with optional content type from default upload service (if discovered).
-     *
+     * <p>
      * When you get slot you should upload file to PUT URL and share GET URL.
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *
@@ -448,7 +448,7 @@ public final class HttpFileUploadManager extends Manager {
 
     /**
      * Request a new upload slot with optional content type from custom upload service.
-     *
+     * <p>
      * When you get slot you should upload file to PUT URL and share GET URL.
      * Note that this is a synchronous call -- Smack must wait for the server response.
      *

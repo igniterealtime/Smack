@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.jingle.transports.jingle_s5b;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -45,7 +46,6 @@ import org.jivesoftware.smackx.jingle.exception.FailedTransportException;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransport;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportCandidate;
 import org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements.JingleS5BTransportInfo;
-
 import org.jxmpp.jid.FullJid;
 
 /**
@@ -220,7 +220,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             mode = Bytestream.Mode.tcp;
         }
 
-        if (getOurCandidates().size() == 0) {
+        if (getOurCandidates().isEmpty()) {
             List<JingleTransportCandidate<?>> candidates = JingleS5BTransportManager.getInstanceFor(connection).collectCandidates();
             for (JingleTransportCandidate<?> c : candidates) {
                 addOurCandidate(c);
@@ -266,21 +266,25 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
     @SuppressWarnings("ReferenceEquality")
     private JingleS5BTransportCandidateImpl connectToCandidates(int timeout) {
-
-        if (getTheirCandidates().size() == 0) {
+        // fix ConcurrentModificationException
+        ArrayList<JingleTransportCandidate<?>> theirCandidates = new ArrayList<>(getTheirCandidates());
+        if (theirCandidates.isEmpty()) {
             LOGGER.log(Level.INFO, "They provided 0 candidates.");
             return CANDIDATE_FAILURE;
         }
 
-        int _timeout = timeout / getTheirCandidates().size(); // so timeout is per candidate
-        for (JingleTransportCandidate<?> c : getTheirCandidates()) {
+        // Use timeout for each candidate instead.
+        // int _timeout = timeout / getTheirCandidates().size();
+        for (JingleTransportCandidate<?> c : theirCandidates) {
             JingleS5BTransportCandidateImpl candidate = (JingleS5BTransportCandidateImpl) c;
             try {
-                return candidate.connect(_timeout, true);
+                return candidate.connect(timeout, true);
             } catch (IOException | TimeoutException | InterruptedException | SmackException | XMPPException e) {
-                LOGGER.log(Level.WARNING, "Establishing connection failed: " + e.getMessage());
+                LOGGER.log(Level.WARNING, "Establishing connection candidate failed: " + candidate.getCandidateId()
+                        + " (" + candidate.getStreamHost() + ") " + e.getMessage());
             }
         }
+        LOGGER.log(Level.WARNING, "Establishing connection candidate failed all: " + theirCandidates.size());
 
         // Failed to connect to any candidate.
         return CANDIDATE_FAILURE;
@@ -310,15 +314,19 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
             if (ourSelectedCandidate.getPriority() > theirSelectedCandidate.getPriority()) {
                 nominated = ourSelectedCandidate;
-            } else if (ourSelectedCandidate.getPriority() < theirSelectedCandidate.getPriority()) {
+            }
+            else if (ourSelectedCandidate.getPriority() < theirSelectedCandidate.getPriority()) {
                 nominated = theirSelectedCandidate;
-            } else {
+            }
+            else {
                 nominated = getParent().getParent().isInitiator() ? ourSelectedCandidate : theirSelectedCandidate;
             }
 
-        } else if (ourSelectedCandidate != CANDIDATE_FAILURE) {
+        }
+        else if (ourSelectedCandidate != CANDIDATE_FAILURE) {
             nominated = ourSelectedCandidate;
-        } else {
+        }
+        else {
             nominated = theirSelectedCandidate;
         }
 
@@ -349,7 +357,8 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
                 try {
                     mConnection.createStanzaCollectorAndSend(candidateActivate).nextResultOrThrow();
-                } catch (InterruptedException | XMPPException.XMPPErrorException | SmackException.NotConnectedException | SmackException.NoResponseException e) {
+                } catch (InterruptedException | XMPPException.XMPPErrorException |
+                         SmackException.NotConnectedException | SmackException.NoResponseException e) {
                     LOGGER.log(Level.WARNING, "Could not send candidate activated", e);
                     callback.onTransportFailed(new S5BTransportException.ProxyError(e));
                     return;
@@ -357,18 +366,18 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
             }
 
             LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
-            this.mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), !isProxy);
-            callback.onTransportReady(this.mBytestreamSession);
-
+            mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), !isProxy);
+            callback.onTransportReady(mBytestreamSession);
         }
         // Our choice
         else {
             LOGGER.log(Level.INFO, "Our choice, so their candidate is used.");
             if (!isProxy) {
                 LOGGER.log(Level.INFO, "Start transmission on " + nominated.getCandidateId());
-                this.mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
-                callback.onTransportReady(this.mBytestreamSession);
-            } else {
+                mBytestreamSession = new Socks5BytestreamSession(nominated.getSocket(), true);
+                callback.onTransportReady(mBytestreamSession);
+            }
+            else {
                 LOGGER.log(Level.INFO, "Our choice was their external proxy. wait for candidate activated.");
             }
         }
@@ -386,28 +395,28 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
 
     @Override
     public IQ handleTransportInfo(JingleContentTransportInfo info, Jingle wrapping) {
-        switch (info.getElementName()) {
+        if (info != null) {
+            switch (info.getElementName()) {
+                case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
+                    handleCandidateUsed((JingleS5BTransportInfo) info, wrapping);
+                    break;
 
-            case JingleS5BTransportInfo.CandidateUsed.ELEMENT:
-                handleCandidateUsed((JingleS5BTransportInfo) info, wrapping);
-                break;
+                case JingleS5BTransportInfo.CandidateActivated.ELEMENT:
+                    handleCandidateActivate((JingleS5BTransportInfo) info);
+                    break;
 
-            case JingleS5BTransportInfo.CandidateActivated.ELEMENT:
-                handleCandidateActivate((JingleS5BTransportInfo) info);
-                break;
+                case JingleS5BTransportInfo.CandidateError.ELEMENT:
+                    handleCandidateError((JingleS5BTransportInfo) info);
+                    break;
 
-            case JingleS5BTransportInfo.CandidateError.ELEMENT:
-                handleCandidateError((JingleS5BTransportInfo) info);
-                break;
+                case JingleS5BTransportInfo.ProxyError.ELEMENT:
+                    handleProxyError((JingleS5BTransportInfo) info);
+                    break;
 
-            case JingleS5BTransportInfo.ProxyError.ELEMENT:
-                handleProxyError((JingleS5BTransportInfo) info);
-                break;
-
-            default:
-                throw new AssertionError("Unknown transport-info element: " + info.getElementName());
+                default:
+                    throw new AssertionError("Unknown transport-info element: " + info.getElementName());
+            }
         }
-
         return IQ.createResultIQ(wrapping);
     }
 
@@ -443,7 +452,7 @@ public class JingleS5BTransportImpl extends JingleTransport<JingleS5BTransport> 
         mInfo = info;
         this.mBytestreamSession = new Socks5BytestreamSession(ourSelectedCandidate.getSocket(),
                 ourSelectedCandidate.getStreamHost().getJID().asBareJid().equals(getParent().getParent().getRemote().asBareJid()));
-        callback.onTransportReady(this.mBytestreamSession);
+        callback.onTransportReady(mBytestreamSession);
     }
 
     private void handleCandidateError(JingleS5BTransportInfo info) {

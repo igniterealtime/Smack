@@ -35,6 +35,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+import org.jivesoftware.smackx.thumbnail.provider.ThumbnailProvider;
 import org.jxmpp.util.XmppDateTime;
 
 /**
@@ -47,7 +49,6 @@ public class JingleFileTransferProvider
     public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
-
 
         String elementName;
         while (true) {
@@ -91,6 +92,11 @@ public class JingleFileTransferProvider
                     case HashElement.ELEMENT:
                         HashElement hashElement = HashElementProvider.INSTANCE.parse(parser);
                         builder.setHash(hashElement);
+                        break;
+
+                    case Thumbnail.ELEMENT:
+                        Thumbnail thumbnail = ThumbnailProvider.INSTANCE.parse(parser);
+                        builder.setThumbnail(thumbnail);
                         break;
                 }
                 break;

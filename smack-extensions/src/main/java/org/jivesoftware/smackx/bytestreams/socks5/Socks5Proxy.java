@@ -158,8 +158,6 @@ public class Socks5Proxy {
         startServerThread();
     }
 
-
-
    /**
     * Returns true if the local Socks5 proxy should be started. Default is true.
     *
@@ -298,6 +296,9 @@ public class Socks5Proxy {
         }
         this.serverThread = null;
         this.serverSocket = null;
+
+        // Stop Sock5Proxy so a new localAddresses are retrieved on new authentication process.
+        socks5Server = null;
     }
 
     /**

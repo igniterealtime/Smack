@@ -20,11 +20,11 @@ import java.util.Date;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.StringUtils;
-
+import org.jivesoftware.smack.util.XmlStringBuilder;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
-import org.jxmpp.util.XmppDateTime;
 
 /**
  * The process by which two entities initiate a stream.
@@ -32,6 +32,12 @@ import org.jxmpp.util.XmppDateTime;
  * @author Alexander Wenckus
  */
 public class StreamInitiation extends IQ {
+    public static final String ATTR_DATE = "date";
+    public static final String ATTR_HASH = "hash";
+    public static final String ATTR_NAME = "name";
+    public static final String ATTR_SIZE = "size";
+    public static final String ELEM_DESC = "desc";
+    public static final String ELEM_RANGE = "range";
 
     public static final String ELEMENT = "si";
     public static final String NAMESPACE = "http://jabber.org/protocol/si";
@@ -195,7 +201,6 @@ public class StreamInitiation extends IQ {
      * @author Alexander Wenckus
      */
     public static class File implements ExtensionElement {
-
         private final String name;
 
         private final long size;
@@ -208,6 +213,8 @@ public class StreamInitiation extends IQ {
 
         private boolean isRanged;
 
+        private Thumbnail thumbnail;
+
         /**
          * Constructor providing the name of the file and its size.
          *
@@ -218,7 +225,6 @@ public class StreamInitiation extends IQ {
             if (name == null) {
                 throw new NullPointerException("name cannot be null");
             }
-
             this.name = name;
             this.size = size;
         }
@@ -316,6 +322,14 @@ public class StreamInitiation extends IQ {
             return isRanged;
         }
 
+        public void setThumbnail(final Thumbnail thumbnail) {
+            this.thumbnail = thumbnail;
+        }
+
+        public Thumbnail getThumbnail() {
+            return thumbnail;
+        }
+
         @Override
         public String getElementName() {
             return "file";
@@ -327,42 +341,28 @@ public class StreamInitiation extends IQ {
         }
 
         @Override
-        public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-            StringBuilder buffer = new StringBuilder();
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+            XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace);
 
-            buffer.append('<').append(getElementName()).append(" xmlns=\"")
-                    .append(getNamespace()).append("\" ");
+            sb.optAttribute(ATTR_NAME, StringUtils.escapeForXmlAttribute(getName()));
+            sb.optLongAttribute(ATTR_SIZE, getSize());
+            sb.optAttribute(ATTR_DATE, getDate());
+            sb.optAttribute(ATTR_HASH, getHash());
 
-            if (getName() != null) {
-                buffer.append("name=\"").append(StringUtils.escapeForXmlAttribute(getName())).append("\" ");
-            }
-
-            if (getSize() > 0) {
-                buffer.append("size=\"").append(getSize()).append("\" ");
-            }
-
-            if (getDate() != null) {
-                buffer.append("date=\"").append(XmppDateTime.formatXEP0082Date(date)).append("\" ");
-            }
-
-            if (getHash() != null) {
-                buffer.append("hash=\"").append(getHash()).append("\" ");
-            }
-
-            if ((desc != null && desc.length() > 0) || isRanged) {
-                buffer.append('>');
-                if (getDesc() != null && desc.length() > 0) {
-                    buffer.append("<desc>").append(StringUtils.escapeForXmlText(getDesc())).append("</desc>");
-                }
+            if (StringUtils.isNotEmpty(desc)
+                || isRanged() || (thumbnail != null)) {
+                sb.rightAngleBracket();
+                sb.optElement(ELEM_DESC, desc);
                 if (isRanged()) {
-                    buffer.append("<range/>");
+                    sb.emptyElement(ELEM_RANGE);
                 }
-                buffer.append("</").append(getElementName()).append('>');
+                sb.optElement(thumbnail);
+                sb.closeElement(this);
             }
             else {
-                buffer.append("/>");
+                sb.closeEmptyElement();
             }
-            return buffer.toString();
+            return sb;
         }
     }
 
@@ -407,8 +407,7 @@ public class StreamInitiation extends IQ {
         @Override
         public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
             StringBuilder buf = new StringBuilder();
-            buf
-                    .append("<feature xmlns=\"http://jabber.org/protocol/feature-neg\">");
+            buf.append("<feature xmlns=\"http://jabber.org/protocol/feature-neg\">");
             buf.append(data.toXML());
             buf.append("</feature>");
             return buf.toString();

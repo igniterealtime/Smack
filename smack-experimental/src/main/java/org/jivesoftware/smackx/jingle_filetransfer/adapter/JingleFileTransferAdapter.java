@@ -21,9 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
-import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleFileTransferImpl;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleIncomingFileOffer;
 import org.jivesoftware.smackx.jingle_filetransfer.component.JingleIncomingFileRequest;
@@ -40,21 +40,23 @@ public class JingleFileTransferAdapter implements JingleDescriptionAdapter<Jingl
     private static final Logger LOGGER = Logger.getLogger(JingleFileTransferAdapter.class.getName());
 
     @Override
-    public JingleFileTransferImpl descriptionFromElement(JingleContent.Creator creator, JingleContent.Senders senders,
-            String contentName, String contentDisposition, JingleContentDescription contentDescription) {
-        JingleFileTransfer description = (JingleFileTransfer) contentDescription;
+    public JingleFileTransferImpl descriptionFromElement(JingleSession jingleSession, JingleContent jingleContent) {
+        JingleFileTransfer description = (JingleFileTransfer) jingleContent.getDescription();
+        JingleContent.Senders senders = jingleContent.getSenders();
         List<ExtensionElement> children = description.getJingleContentDescriptionChildren();
         assert children.size() == 1;
         JingleFileTransferChild file = (JingleFileTransferChild) children.get(0);
 
         if (senders == JingleContent.Senders.initiator) {
-            return new JingleIncomingFileOffer(file);
-        } else if (senders == JingleContent.Senders.responder) {
-            return new JingleIncomingFileRequest(file);
-        } else {
+            return new JingleIncomingFileOffer(jingleSession, file);
+        }
+        else if (senders == JingleContent.Senders.responder) {
+            return new JingleIncomingFileRequest(jingleSession, file);
+        }
+        else {
             if (senders == null) {
                 LOGGER.log(Level.INFO, "Senders is null. Gajim workaround: assume 'initiator'.");
-                return new JingleIncomingFileOffer(file);
+                return new JingleIncomingFileOffer(jingleSession, file);
             }
             throw new AssertionError("Senders attribute MUST be either initiator or responder. Is: " + senders);
         }

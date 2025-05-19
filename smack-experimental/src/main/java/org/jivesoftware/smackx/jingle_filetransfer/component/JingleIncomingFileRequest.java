@@ -17,6 +17,8 @@
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
 import org.jivesoftware.smackx.bytestreams.BytestreamSession;
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.element.Jingle;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
 import org.jivesoftware.smackx.jingle_filetransfer.controller.IncomingFileRequestController;
@@ -31,8 +33,8 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChi
  */
 public class JingleIncomingFileRequest extends AbstractJingleFileRequest implements IncomingFileRequestController {
 
-    public JingleIncomingFileRequest(JingleFileTransferChild request) {
-        super(new JingleFile(request));
+    public JingleIncomingFileRequest(JingleSession jingleSession, JingleFileTransferChild request) {
+        super(jingleSession, new JingleFile(request));
     }
 
     @Override

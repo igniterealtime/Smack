@@ -188,7 +188,7 @@ public final class Jingle extends IQ {
 
     /**
      * Returns the XML string of this Jingle IQ's "section" sub-element.
-     *
+     * <p>
      * Extensions of this class must override this method.
      *
      * @return the child element section of the IQ XML.

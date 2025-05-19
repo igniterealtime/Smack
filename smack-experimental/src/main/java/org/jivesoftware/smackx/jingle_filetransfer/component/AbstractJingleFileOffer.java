@@ -16,6 +16,8 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
+
 /**
  * An abstract class extends JingleFileTransferImpl.
  *
@@ -23,7 +25,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.component;
  * @author Eng Chong Meng
  */
 public abstract class AbstractJingleFileOffer extends JingleFileTransferImpl {
-    AbstractJingleFileOffer(JingleFile fileTransferFile) {
-        super(fileTransferFile);
+    AbstractJingleFileOffer(JingleSession jingleSession, JingleFile fileTransferFile) {
+        super(jingleSession, fileTransferFile);
     }
 }

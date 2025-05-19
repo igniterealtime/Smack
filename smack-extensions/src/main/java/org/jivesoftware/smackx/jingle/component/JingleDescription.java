@@ -29,20 +29,20 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionInfo;
  */
 public abstract class JingleDescription<D extends JingleContentDescription> {
 
-    private JingleContentImpl parent;
+    private JingleContentImpl mParent;
 
     public abstract D getElement();
 
     public void setParent(JingleContentImpl parent) {
-        if (this.parent != parent) {
-            this.parent = parent;
+        if (mParent != parent) {
+            mParent = parent;
         }
     }
 
     public abstract Jingle handleDescriptionInfo(JingleContentDescriptionInfo info);
 
     public JingleContentImpl getParent() {
-        return parent;
+        return mParent;
     }
 
     public abstract void onBytestreamReady(BytestreamSession bytestreamSession);

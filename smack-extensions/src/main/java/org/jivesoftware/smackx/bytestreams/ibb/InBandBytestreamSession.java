@@ -86,7 +86,7 @@ public class InBandBytestreamSession implements BytestreamSession {
     private IBBOutputStream outputStream;
 
     /* JID of the remote peer */
-    private Jid remoteJID;
+    private final Jid remoteJID;
 
     /* flag to close both streams if one of them is closed */
     private boolean closeBothStreamsEnabled = false;
@@ -104,8 +104,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * @param byteStreamRequest the In-Band Bytestream open request for this session
      * @param remoteJID JID of the remote peer
      */
-    protected InBandBytestreamSession(XMPPConnection connection, Open byteStreamRequest,
-                    Jid remoteJID) {
+    protected InBandBytestreamSession(XMPPConnection connection, Open byteStreamRequest, Jid remoteJID) {
         this.connection = connection;
         this.byteStreamRequest = byteStreamRequest;
         this.remoteJID = remoteJID;
@@ -121,7 +120,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             this.outputStream = new MessageIBBOutputStream();
             break;
         }
-
     }
 
     @Override
@@ -163,8 +161,7 @@ public class InBandBytestreamSession implements BytestreamSession {
      * Default is <code>false</code>.
      *
      * @param closeBothStreamsEnabled <code>true</code> if both streams should be closed if one of
-     *        the streams is closed, <code>false</code> if both streams should be closed
-     *        independently
+     *        the streams is closed, <code>false</code> if both streams should be closed independently
      */
     public void setCloseBothStreamsEnabled(boolean closeBothStreamsEnabled) {
         this.closeBothStreamsEnabled = closeBothStreamsEnabled;
@@ -460,7 +457,6 @@ public class InBandBytestreamSession implements BytestreamSession {
         private void cleanup() {
             connection.removeSyncStanzaListener(this.dataPacketListener);
         }
-
     }
 
     /**
@@ -506,7 +502,6 @@ public class InBandBytestreamSession implements BytestreamSession {
                             LOGGER.log(Level.FINER, "Could not close session, because of IOException. Close reason: "
                                             + descriptiveEnTest);
                         }
-
                         return;
                     }
 
@@ -540,7 +535,6 @@ public class InBandBytestreamSession implements BytestreamSession {
              */
             return new AndFilter(new StanzaTypeFilter(Data.class), new IBBDataPacketFilter());
         }
-
     }
 
     /**
@@ -588,7 +582,6 @@ public class InBandBytestreamSession implements BytestreamSession {
              */
             return new AndFilter(new StanzaTypeFilter(Message.class), new IBBDataPacketFilter());
         }
-
     }
 
     /**
@@ -624,7 +617,6 @@ public class InBandBytestreamSession implements BytestreamSession {
 
             return true;
         }
-
     }
 
     /**
@@ -813,7 +805,6 @@ public class InBandBytestreamSession implements BytestreamSession {
                  */
             }
         }
-
     }
 
     /**
@@ -844,7 +835,6 @@ public class InBandBytestreamSession implements BytestreamSession {
             }
 
         }
-
     }
 
     /**
@@ -876,5 +866,4 @@ public class InBandBytestreamSession implements BytestreamSession {
     public void processIQPacket(Data data) throws NotConnectedException, InterruptedException, NotLoggedInException {
         inputStream.dataPacketListener.processStanza(data);
     }
-
 }

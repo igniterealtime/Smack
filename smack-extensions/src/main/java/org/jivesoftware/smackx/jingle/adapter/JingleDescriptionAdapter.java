@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle.adapter;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.component.JingleDescription;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
 import org.jivesoftware.smackx.jingle.element.JingleContent;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 
@@ -28,8 +30,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
  */
 public interface JingleDescriptionAdapter<D extends JingleDescription<?>> {
 
-    D descriptionFromElement(JingleContent.Creator creator, JingleContent.Senders senders,
-                             String contentName, String contentDisposition, JingleContentDescription contentDescription);
+    D descriptionFromElement(JingleSession jingleSession, JingleContent jingleContent);
 
     String getNamespace();
 }

@@ -16,6 +16,9 @@
  */
 package org.jivesoftware.smackx.jingle_filetransfer.component;
 
+import org.jivesoftware.smackx.jingle.JingleSession;
+import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
+
 /**
  * An abstract class implementation for JingleFileRequest.
  *
@@ -23,7 +26,7 @@ package org.jivesoftware.smackx.jingle_filetransfer.component;
  * @author Eng Chong Meng
  */
 public abstract class AbstractJingleFileRequest extends JingleFileTransferImpl {
-    AbstractJingleFileRequest(JingleFile fileTransferFile) {
-        super(fileTransferFile);
+    AbstractJingleFileRequest(JingleSession jingleSession, JingleFile fileTransferFile) {
+        super(jingleSession, fileTransferFile);
     }
 }

@@ -21,6 +21,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jivesoftware.smack.Manager;
@@ -97,14 +98,14 @@ public final class JingleManager extends Manager {
 
                             if (jingleDescriptionHandler == null) {
                                 // Unsupported Application
-                                LOGGER.warning("Unsupported Jingle application: (" + iqRequest.getStanzaId() + ") " + sid);
+                                LOGGER.log(Level.WARNING, "Unsupported Jingle application: (" + iqRequest.getStanzaId() + ") " + sid);
                                 return jutil.createSessionTerminateUnsupportedApplications(fullFrom, sid);
                             }
                             return jingleDescriptionHandler.handleJingleRequest(jingle);
                         }
 
                         // Unknown session
-                        LOGGER.warning("Unknown session: (" + iqRequest.getStanzaId() + ") " + sid);
+                        LOGGER.log(Level.WARNING, "Unknown session: (" + iqRequest.getStanzaId() + ") " + sid);
                         return jutil.createErrorUnknownSession(jingle);
                     }
                 });

@@ -24,13 +24,18 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.hashes.element.HashElement;
 import org.jivesoftware.smackx.jingle.element.JingleContentDescriptionChildElement;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
+
+import javax.xml.namespace.QName;
 
 /**
- * Content of type File.
+ * Content of type File with thumbnail element.
  */
 public class JingleFileTransferChild implements JingleContentDescriptionChildElement {
     public static final String ELEMENT = "file";
     public static final String NAMESPACE = JingleFileTransfer.NAMESPACE_V5;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     public static final String ELEM_DATE = "date";
     public static final String ELEM_DESC = "desc";
@@ -45,8 +50,9 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
     private final String name;
     private final int size;
     private final Range range;
+    private final Thumbnail thumbnail;
 
-    public JingleFileTransferChild(Date date, String desc, HashElement hash, String mediaType, String name, int size, Range range) {
+    public JingleFileTransferChild(Date date, String desc, HashElement hash, String mediaType, String name, int size, Range range, Thumbnail thumbnail) {
         this.date = date;
         this.desc = desc;
         this.hash = hash;
@@ -54,6 +60,7 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         this.name = name;
         this.size = size;
         this.range = range;
+        this.thumbnail = thumbnail;
     }
 
     public Date getDate() {
@@ -84,6 +91,10 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         return range;
     }
 
+    public Thumbnail getThumbnail() {
+        return thumbnail;
+    }
+
     @Override
     public String getElementName() {
         return ELEMENT;
@@ -103,11 +114,10 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         sb.optElement(ELEM_DESC, desc);
         sb.optElement(ELEM_MEDIA_TYPE, mediaType);
         sb.optElement(ELEM_NAME, name);
+        sb.optIntElement(ELEM_SIZE, size);
         sb.optElement(range);
-        if (size > 0) {
-            sb.element(ELEM_SIZE, Integer.toString(size));
-        }
         sb.optElement(hash);
+        sb.optElement(thumbnail);
         sb.closeElement(this);
         return sb;
     }
@@ -124,6 +134,7 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
         private String name;
         private int size;
         private Range range;
+        private Thumbnail thumbnail;
 
         private Builder() {
         }
@@ -163,8 +174,13 @@ public class JingleFileTransferChild implements JingleContentDescriptionChildEle
             return this;
         }
 
+        public Builder setThumbnail(Thumbnail thumbnail) {
+            this.thumbnail = thumbnail;
+            return this;
+        }
+
         public JingleFileTransferChild build() {
-            return new JingleFileTransferChild(date, desc, hash, mediaType, name, size, range);
+            return new JingleFileTransferChild(date, desc, hash, mediaType, name, size, range, thumbnail);
         }
 
         public Builder setFile(File file) {

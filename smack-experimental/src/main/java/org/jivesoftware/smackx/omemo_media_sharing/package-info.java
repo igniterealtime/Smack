@@ -16,9 +16,9 @@
  */
 
 /**
- * Smack's API for XEP-XXXX: OMEMO Media Sharing.
+ * Smack's API for XEP-0454: OMEMO Media sharing.
  *
  * @author Paul Schaub
- * @see <a href="https://xmpp.org/extensions/inbox/omemo-media-sharing.html">XEP-XXXX: OMEMO Media Sharing</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0454.html">XEP-0454: OMEMO Media sharing</a>
  */
 package org.jivesoftware.smackx.omemo_media_sharing;

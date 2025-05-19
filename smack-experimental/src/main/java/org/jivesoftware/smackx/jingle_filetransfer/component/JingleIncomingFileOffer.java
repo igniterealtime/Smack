@@ -51,8 +51,10 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
     private static final Logger LOGGER = Logger.getLogger(JingleIncomingFileOffer.class.getName());
     private OutputStream target;
 
-    public JingleIncomingFileOffer(JingleFileTransferChild offer) {
-        super(new JingleFile(offer));
+    private String fname = null;
+
+    public JingleIncomingFileOffer(JingleSession jingleSession, JingleFileTransferChild offer) {
+        super(jingleSession, new JingleFile(offer));
         mState = State.pending;
     }
 
@@ -77,7 +79,6 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             LOGGER.log(Level.INFO, "File offer had checksum: " + digest.toString());
         }
 
-        LOGGER.log(Level.INFO, "Receiving file");
         InputStream inputStream = null;
         try {
             inputStream = bytestreamSession.getInputStream();
@@ -89,15 +90,15 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             int length;
             int readByte = 0;
             long fileSize = metadata.getSize();
-            byte[] bufbuf = new byte[4096];
-            while ((length = inputStream.read(bufbuf)) >= 0) {
+            byte[] readBuf = new byte[4096];
+            while ((length = inputStream.read(readBuf)) >= 0) {
                 // User cancels incoming file transfer in active progress.
                 if (mState == State.cancelled) {
                     LOGGER.log(Level.INFO, "User canceled file offer in active transfer.");
                     break;
                 }
 
-                target.write(bufbuf, 0, length);
+                target.write(readBuf, 0, length);
                 readByte += length;
                 // LOGGER.log(Level.INFO, "Read " + readByte + " (" + length + ") of " + fileSize + " bytes.");
                 notifyProgressListeners(readByte);
@@ -105,10 +106,11 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                     break;
                 }
             }
-            LOGGER.log(Level.INFO, "Reading/Writing finished.");
+            LOGGER.log(Level.INFO, "Reading/Writing file finished: " + fname);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Cannot get InputStream from BytestreamSession: " + e, e);
-            notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
+            // will cause ConcurrentModificationException as progressListener will be removed onError.
+            // notifyProgressListenersOnError(JingleReason.Reason.connectivity_error, e.getMessage());
         } finally {
             mState = State.ended;
             if (inputStream != null) {
@@ -130,7 +132,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             }
         }
 
-        if (digest != null) {
+        if (digest != null && inputStream != null) {
             byte[] mDigest = ((DigestInputStream) inputStream).getMessageDigest().digest();
             if (!Arrays.equals(hashElement.getHash(), mDigest)) {
                 LOGGER.log(Level.WARNING, "CHECKSUM MISMATCH!");
@@ -138,7 +140,6 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
                 LOGGER.log(Level.INFO, "CHECKSUM MATCHED :)");
             }
         }
-
         notifyProgressListenersFinished();
         getParent().onContentFinished();
     }
@@ -163,6 +164,7 @@ public class JingleIncomingFileOffer extends AbstractJingleFileOffer implements 
             target.createNewFile();
         }
 
+        fname = target.getName();
         this.target = new FileOutputStream(target);
 
         JingleSessionImpl session = getParent().getParent();

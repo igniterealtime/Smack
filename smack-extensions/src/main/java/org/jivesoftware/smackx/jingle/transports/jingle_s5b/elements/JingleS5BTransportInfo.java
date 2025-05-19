@@ -18,8 +18,10 @@ package org.jivesoftware.smackx.jingle.transports.jingle_s5b.elements;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-
+import org.jivesoftware.smackx.jingle.element.JingleContentTransportCandidate;
 import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
+
+import javax.xml.namespace.QName;
 
 /**
  * Class representing possible SOCKS5 TransportInfo elements.
@@ -27,7 +29,10 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
  */
 public abstract class JingleS5BTransportInfo implements JingleContentTransportInfo {
 
+    public static final String ELEMENT = JingleContentTransportCandidate.ELEMENT;
     public static final String NAMESPACE = JingleS5BTransport.NAMESPACE_V1;
+
+    public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     @Override
     public final String getNamespace() {
@@ -111,7 +116,7 @@ public abstract class JingleS5BTransportInfo implements JingleContentTransportIn
         }
 
         @Override
-        public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+        public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.closeEmptyElement();
@@ -143,7 +148,7 @@ public abstract class JingleS5BTransportInfo implements JingleContentTransportIn
         }
 
         @Override
-        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+        public CharSequence toXML(XmlEnvironment enclosingNamespace) {
             XmlStringBuilder xml = new XmlStringBuilder();
             xml.halfOpenElement(this);
             xml.closeEmptyElement();

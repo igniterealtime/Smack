@@ -27,6 +27,13 @@ import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
 import org.jivesoftware.smackx.jingle.adapter.JingleTransportAdapter;
 import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
 
+/**
+ * Manager for JingleContentProvider (XEP-0234).
+ * @see <a href="https://xmpp.org/extensions/xep-0234.html">XEP-0234: Jingle File Transfer 0.19.1 (2019-06-19)</a>
+ *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
+ */
 public class JingleContentProviderManager {
 
     private static final Map<String, JingleContentDescriptionProvider<?>> jingleContentDescriptionProviders = new ConcurrentHashMap<>();

@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.filetransfer.FileTransferException.NoAcceptableTr
 import org.jivesoftware.smackx.filetransfer.FileTransferException.NoStreamMethodsOfferedException;
 import org.jivesoftware.smackx.formtypes.FormFieldRegistry;
 import org.jivesoftware.smackx.si.packet.StreamInitiation;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.ListSingleFormField;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
@@ -302,14 +303,15 @@ public final class FileTransferNegotiator extends Manager {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public StreamNegotiator negotiateOutgoingTransfer(final Jid userID,
-            final String streamID, final String fileName, final long size,
-            final String desc, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
+            final String streamID, final String fileName, final long size, final String desc,
+            final Thumbnail thumbnail, int responseTimeout) throws XMPPErrorException, NotConnectedException, NoResponseException, NoAcceptableTransferMechanisms, InterruptedException {
         StreamInitiation si = new StreamInitiation();
         si.setSessionID(streamID);
         si.setMimeType(URLConnection.guessContentTypeFromName(fileName));
 
         StreamInitiation.File siFile = new StreamInitiation.File(fileName, size);
         siFile.setDesc(desc);
+        siFile.setThumbnail(thumbnail);
         si.setFile(siFile);
 
         si.setFeatureNegotiationForm(createDefaultInitiationForm());
@@ -318,8 +320,7 @@ public final class FileTransferNegotiator extends Manager {
         si.setTo(userID);
         si.setType(IQ.Type.set);
 
-        Stanza siResponse = connection().createStanzaCollectorAndSend(si).nextResultOrThrow(
-                        responseTimeout);
+        Stanza siResponse = connection().createStanzaCollectorAndSend(si).nextResultOrThrow(responseTimeout);
 
         if (siResponse instanceof IQ) {
             IQ iqResponse = (IQ) siResponse;

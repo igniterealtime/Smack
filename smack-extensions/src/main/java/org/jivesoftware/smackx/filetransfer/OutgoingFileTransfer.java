@@ -30,6 +30,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.util.CloseableUtil;
+import org.jivesoftware.smackx.thumbnail.element.Thumbnail;
 
 import org.jxmpp.jid.Jid;
 
@@ -72,7 +73,7 @@ public class OutgoingFileTransfer extends FileTransfer {
 
     private OutputStream outputStream;
 
-    private Jid initiator;
+    private final Jid initiator;
 
     private Thread transferThread;
 
@@ -99,7 +100,8 @@ public class OutgoingFileTransfer extends FileTransfer {
     protected OutputStream getOutputStream() {
         if (getStatus().equals(FileTransfer.Status.negotiated)) {
             return outputStream;
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -125,7 +127,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public synchronized OutputStream sendFile(String fileName, long fileSize,
-            String description) throws XMPPException, SmackException, InterruptedException {
+            String description, Thumbnail thumbnail) throws XMPPException, SmackException, InterruptedException {
         if (isDone() || outputStream != null) {
             throw new IllegalStateException(
                     "The negotiation process has already"
@@ -133,7 +135,7 @@ public class OutgoingFileTransfer extends FileTransfer {
         }
         try {
             setFileInfo(fileName, fileSize);
-            this.outputStream = negotiateStream(fileName, fileSize, description);
+            this.outputStream = negotiateStream(fileName, fileSize, description, thumbnail);
         } catch (XMPPErrorException e) {
             handleXMPPException(e);
             throw e;
@@ -160,7 +162,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      *            is complete.
      */
     public synchronized void sendFile(final String fileName,
-            final long fileSize, final String description,
+            final long fileSize, final String description, final Thumbnail thumbnail,
             final NegotiationProgress progress) {
         if (progress == null) {
             throw new IllegalArgumentException("Callback progress cannot be null.");
@@ -177,14 +179,12 @@ public class OutgoingFileTransfer extends FileTransfer {
             @Override
             public void run() {
                 try {
-                    OutgoingFileTransfer.this.outputStream = negotiateStream(
-                            fileName, fileSize, description);
+                    OutgoingFileTransfer.this.outputStream
+                            = negotiateStream(fileName, fileSize, description, thumbnail);
                     progress.outputStreamEstablished(OutgoingFileTransfer.this.outputStream);
-                }
-                catch (XMPPErrorException e) {
+                } catch (XMPPErrorException e) {
                     handleXMPPException(e);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     setException(e);
                 }
             }
@@ -221,7 +221,8 @@ public class OutgoingFileTransfer extends FileTransfer {
         checkTransferThread();
         if (file == null || !file.exists() || !file.canRead()) {
             throw new IllegalArgumentException("Could not read file");
-        } else {
+        }
+        else {
             setFileInfo(file.getAbsolutePath(), file.getName(), file.length());
         }
 
@@ -229,13 +230,11 @@ public class OutgoingFileTransfer extends FileTransfer {
             @Override
             public void run() {
                 try {
-                    outputStream = negotiateStream(file.getName(), file
-                            .length(), description);
+                    outputStream = negotiateStream(file.getName(), file.length(), description, Thumbnail.fromFile(file));
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);
                     return;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     setException(e);
                 }
                 if (outputStream == null) {
@@ -262,7 +261,7 @@ public class OutgoingFileTransfer extends FileTransfer {
                     CloseableUtil.maybeClose(outputStream, LOGGER);
                 }
                 updateStatus(Status.in_progress, FileTransfer.Status.complete);
-                }
+            }
 
         }, "File Transfer " + streamID);
         transferThread.start();
@@ -284,7 +283,7 @@ public class OutgoingFileTransfer extends FileTransfer {
      * @param fileSize the size of the file that is transferred
      * @param description a description for the file to transfer.
      */
-    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description) {
+    public synchronized void sendStream(final InputStream in, final String fileName, final long fileSize, final String description, final Thumbnail thumbnail) {
         checkTransferThread();
 
         setFileInfo(fileName, fileSize);
@@ -293,12 +292,11 @@ public class OutgoingFileTransfer extends FileTransfer {
             public void run() {
                 // Create packet filter.
                 try {
-                    outputStream = negotiateStream(fileName, fileSize, description);
+                    outputStream = negotiateStream(fileName, fileSize, description, thumbnail);
                 } catch (XMPPErrorException e) {
                     handleXMPPException(e);
                     return;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     setException(e);
                 }
                 if (outputStream == null) {
@@ -318,7 +316,7 @@ public class OutgoingFileTransfer extends FileTransfer {
                     CloseableUtil.maybeClose(outputStream, LOGGER);
                 }
                 updateStatus(Status.in_progress, FileTransfer.Status.complete);
-                }
+            }
 
         }, "File Transfer " + streamID);
         transferThread.start();
@@ -332,15 +330,15 @@ public class OutgoingFileTransfer extends FileTransfer {
         StanzaError error = e.getStanzaError();
         if (error != null) {
             switch (error.getCondition()) {
-            case forbidden:
-                setStatus(Status.refused);
-                return;
-            case bad_request:
-                setStatus(Status.error);
-                setError(Error.not_acceptable);
-                break;
-            default:
-                setStatus(FileTransfer.Status.error);
+                case forbidden:
+                    setStatus(Status.refused);
+                    return;
+                case bad_request:
+                    setStatus(Status.error);
+                    setError(Error.not_acceptable);
+                    break;
+                default:
+                    setStatus(FileTransfer.Status.error);
             }
         }
 
@@ -363,14 +361,14 @@ public class OutgoingFileTransfer extends FileTransfer {
     }
 
     private OutputStream negotiateStream(String fileName, long fileSize,
-            String description) throws SmackException, XMPPException, InterruptedException {
+            String description, Thumbnail thumbnail) throws SmackException, XMPPException, InterruptedException {
         // Negotiate the file transfer profile
 
         if (!updateStatus(Status.initial, Status.negotiating_transfer)) {
             throw new IllegalStateChangeException();
         }
         StreamNegotiator streamNegotiator = negotiator.negotiateOutgoingTransfer(
-                getPeer(), streamID, fileName, fileSize, description,
+                getPeer(), streamID, fileName, fileSize, description, thumbnail,
                 RESPONSE_TIMEOUT);
 
         // Negotiate the stream

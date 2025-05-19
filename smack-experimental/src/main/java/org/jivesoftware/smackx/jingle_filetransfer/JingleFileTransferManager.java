@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2022 Paul Schaub
+ * Copyright 2017-2024 Eng Chong Meng
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
 import org.jivesoftware.smackx.jingle.JingleHandler;
 import org.jivesoftware.smackx.jingle.JingleManager;
+import org.jivesoftware.smackx.jingle.JingleSession;
 import org.jivesoftware.smackx.jingle.JingleTransportMethodManager;
 import org.jivesoftware.smackx.jingle.component.JingleContentImpl;
 import org.jivesoftware.smackx.jingle.component.JingleSessionImpl;
@@ -138,7 +139,7 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
                 = new JingleContentImpl(mConnection, JingleContent.Creator.initiator, JingleContent.Senders.initiator);
         session.addContentImpl(content);
 
-        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(file, metadata);
+        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(session, file, metadata);
         content.setDescription(outgoingFileOffer);
 
         JingleTransportManager<?> transportManager = JingleTransportMethodManager.getBestAvailableTransportManager(mConnection);
@@ -160,7 +161,7 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
                 = new JingleContentImpl(mConnection, JingleContent.Creator.initiator, JingleContent.Senders.initiator);
         session.addContentImpl(content);
 
-        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(inputStream, metadata);
+        JingleOutgoingFileOffer outgoingFileOffer = new JingleOutgoingFileOffer(session, inputStream, metadata);
         content.setDescription(outgoingFileOffer);
 
         JingleTransportManager<?> transportManager = JingleTransportMethodManager.getBestAvailableTransportManager(mConnection);
@@ -171,8 +172,8 @@ public final class JingleFileTransferManager extends Manager implements JingleDe
         return outgoingFileOffer;
     }
 
-    public OutgoingFileRequestController requestFile(JingleFile metadata, FullJid from) {
-        JingleOutgoingFileRequest request = new JingleOutgoingFileRequest(metadata);
+    public OutgoingFileRequestController requestFile(JingleSession jingleSession, JingleFile metadata, FullJid from) {
+        JingleOutgoingFileRequest request = new JingleOutgoingFileRequest(jingleSession, metadata);
 
         // TODO at some point.
         return request;

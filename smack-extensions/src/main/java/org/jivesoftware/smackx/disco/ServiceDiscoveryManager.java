@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018-2020 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2022 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.ExtendedAppendable;
 import org.jivesoftware.smack.util.Objects;
@@ -101,9 +102,9 @@ public final class ServiceDiscoveryManager extends Manager {
     private static final Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
     private final Set<String> features = new HashSet<>();
-    private List<DataForm> extendedInfos = new ArrayList<>(2);
+    private final List<DataForm> extendedInfos = new ArrayList<>(2);
     private final Map<String, NodeInformationProvider> nodeInformationProviders = new ConcurrentHashMap<>();
-
+    private final boolean isSendPresence;
     private volatile Presence presenceSend;
 
     // Create a new ServiceDiscoveryManager on every established connection
@@ -135,6 +136,7 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     private ServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
+        isSendPresence = ((XMPPTCPConnection) connection).getConfiguration().isSendPresence();
 
         addFeature(DiscoverInfo.NAMESPACE);
         addFeature(DiscoverItems.NAMESPACE);
@@ -933,6 +935,10 @@ public final class ServiceDiscoveryManager extends Manager {
      * Notify the {@link EntityCapabilitiesChangedListener} about changed capabilities.
      */
     private synchronized void renewEntityCapsVersion() {
+        if (entityCapabilitiesChangedListeners.isEmpty()) {
+            return;
+        }
+
         renewEntityCapsRequested++;
         if (renewEntityCapsScheduledAction != null) {
             boolean canceled = renewEntityCapsScheduledAction.cancel();
@@ -941,9 +947,12 @@ public final class ServiceDiscoveryManager extends Manager {
             }
         }
 
-        final XMPPConnection connection = connection();
-
         renewEntityCapsScheduledAction = scheduleBlocking(() -> {
+            final XMPPConnection connection = connection();
+            if (connection == null) {
+                return;
+            }
+
             renewEntityCapsPerformed.incrementAndGet();
 
             DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
@@ -961,7 +970,7 @@ public final class ServiceDiscoveryManager extends Manager {
             // We only send a presence packet if there was already one send
             // to respect ConnectionConfiguration.isSendPresence()
             final Presence presenceSend = this.presenceSend;
-            if (connection.isAuthenticated() && presenceSend != null) {
+            if (connection.isAuthenticated() && isSendPresence && presenceSend != null) {
                 Presence presence = presenceSend.asBuilder(connection).build();
                 try {
                     connection.sendStanza(presence);
@@ -1009,6 +1018,5 @@ public final class ServiceDiscoveryManager extends Manager {
             appendable.append("renew-entitycaps-performed: ").append(renewEntityCapsPerformed).append('\n');
             appendable.append("scheduled-renew-entitycaps-avoided: ").append(scheduledRenewEntityCapsAvoided).append('\n');
         }
-
     }
 }
