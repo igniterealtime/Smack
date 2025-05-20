@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2024 Florian Schmaus
+ * Copyright 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,14 @@
 package org.jivesoftware.smack.util;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.NamedElement;
@@ -33,6 +36,8 @@ import org.jxmpp.util.XmppDateTime;
 
 public class XmlStringBuilder implements Appendable, CharSequence, Element {
     public static final String RIGHT_ANGLE_BRACKET = Character.toString('>');
+
+    private static final Logger LOGGER = Logger.getLogger(XmlStringBuilder.class.getName());
 
     private final LazyStringBuilder sb;
 
@@ -670,7 +675,18 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
 
     @Override
     public String toString() {
-        return sb.toString();
+        // toString() and write() should match, otherwise we're not
+        // logging exactly what we send on the wire. Hence, we use
+        // write here, with the additional benefit that it's faster
+        // then just sb.toString().
+        var sw = new StringWriter();
+        try {
+            write(sw, XmlEnvironment.EMPTY);
+            return sw.toString();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Unexpected exception in XmlStringBuilder.toString(), using fallback", e);
+            return sb.toString();
+        }
     }
 
     @Override
