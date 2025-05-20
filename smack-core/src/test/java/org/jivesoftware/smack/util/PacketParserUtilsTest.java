@@ -837,7 +837,7 @@ public class PacketParserUtilsTest {
         final String errorXml = XMLBuilder
                 .create(StanzaError.ERROR).a("type", "cancel").up()
                 .element("internal-server-error", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).up()
-                .element("text", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).t(text).up()
+                .element("text").t(text).up()
                 .asString();
         assertXmlSimilar(errorXml, error.toXML(StreamOpen.CLIENT_NAMESPACE));
     }

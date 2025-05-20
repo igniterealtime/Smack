@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -668,9 +669,18 @@ public class XmlStringBuilder implements Appendable, CharSequence, Element {
         return sb.subSequence(start, end);
     }
 
+    /**
+     * toString() and write() should match, otherwise we're not logging exactly what we send on the wire.
+     */
     @Override
     public String toString() {
-        return sb.toString();
+        try {
+            StringWriter sw = new StringWriter();
+            write(sw, XmlEnvironment.EMPTY);
+            return sw.toString();
+        } catch (IOException e) {
+            return sb.toString();
+        }
     }
 
     @Override
