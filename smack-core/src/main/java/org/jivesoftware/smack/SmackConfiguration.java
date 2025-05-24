@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2018-2022 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2018-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,7 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModuleDescr
 import org.jivesoftware.smack.compression.XMPPInputOutputStream;
 import org.jivesoftware.smack.debugger.ReflectionDebuggerFactory;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
-import org.jivesoftware.smack.parsing.ExceptionThrowingCallback;
-import org.jivesoftware.smack.parsing.ExceptionThrowingCallbackWithHint;
+import org.jivesoftware.smack.parsing.ExceptionLoggingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.Objects;
 
@@ -95,10 +94,10 @@ public final class SmackConfiguration {
     private static SmackDebuggerFactory DEFAULT_DEBUGGER_FACTORY = ReflectionDebuggerFactory.INSTANCE;
 
     /**
-     * The default parsing exception callback is {@link ExceptionThrowingCallback} which will
-     * throw an exception and therefore disconnect the active connection.
+     * The default parsing exception callback is {@link ExceptionLoggingCallback} which will
+     * log the parsing exception.
      */
-    private static ParsingExceptionCallback defaultCallback = new ExceptionThrowingCallbackWithHint();
+    private static ParsingExceptionCallback defaultCallback = new ExceptionLoggingCallback();
 
     private static HostnameVerifier defaultHostnameVerififer;
 
