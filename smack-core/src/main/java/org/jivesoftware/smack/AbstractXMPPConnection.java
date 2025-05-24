@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2009 Jive Software, 2018-2022 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -137,11 +137,8 @@ import org.jxmpp.util.XmppStringUtils;
  * <p>
  * In case a Smack parser (Provider) throws those exceptions are handled over to the {@link ParsingExceptionCallback}. A
  * common cause for a provider throwing is illegal input, for example a non-numeric String where only Integers are
- * allowed. Smack's <em>default behavior</em> follows the <b>"fail-hard per default"</b> principle leading to a
- * termination of the connection on parsing exceptions. This default was chosen to make users eventually aware that they
- * should configure their own callback and handle those exceptions to prevent the disconnect. Handle a parsing exception
- * could be as simple as using a non-throwing no-op callback, which would cause the faulty stream element to be taken
- * out of the stream, i.e., Smack behaves like that element was never received.
+ * allowed. Smack's <em>default behavior</em> is to take the stanza out of the stream in this case,
+ * i.e., Smack behaves like that stream element was never received.
  * </p>
  * <p>
  * If the parsing exception is because Smack received illegal input, then please consider informing the authors of the
@@ -150,9 +147,8 @@ import org.jxmpp.util.XmppStringUtils;
  * </p>
  * <h3>Managing the parsing exception callback</h3>
  * <p>
- * The "fail-hard per default" behavior is achieved by using the
- * {@link org.jivesoftware.smack.parsing.ExceptionThrowingCallbackWithHint} as default parsing exception callback. You
- * can change the behavior using {@link #setParsingExceptionCallback(ParsingExceptionCallback)} to set a new callback.
+ * You
+ * can change the behavior using {@link #setParsingExceptionCallback(ParsingExceptionCallback)} to set a custom callback.
  * Use {@link org.jivesoftware.smack.SmackConfiguration#setDefaultParsingExceptionCallback(ParsingExceptionCallback)} to
  * set the default callback.
  * </p>
