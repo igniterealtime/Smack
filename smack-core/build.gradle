@@ -1,5 +1,6 @@
 plugins {
 	id 'org.igniterealtime.smack.java-common-conventions'
+	id 'org.igniterealtime.smack.jmh-conventions'
 	id 'org.igniterealtime.smack.android-conventions'
 }
 

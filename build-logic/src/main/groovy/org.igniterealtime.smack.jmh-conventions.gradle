@@ -1,0 +1,7 @@
+plugins {
+	id "me.champeau.jmh"
+}
+
+jmh {
+	jmhVersion = '1.37'
+}

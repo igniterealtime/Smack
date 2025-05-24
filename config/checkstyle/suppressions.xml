@@ -10,4 +10,5 @@ it disabled until gradle uses a checkstyle version where this is fixed
 			  files="Protocol.java" />
 	<!-- Suppress JavadocPackage in the test packages -->
 	<suppress checks="JavadocPackage" files="[\\/]test(Fixtures)?[\\/]"/>
+	<suppress checks="JavadocPackage" files="[\\/]jmh[\\/]"/>
 </suppressions>

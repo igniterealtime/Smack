@@ -28,3 +28,7 @@ javadocAll:
 .PHONY: show-dependency-updates
 show-dependency-updates:
 	$(GRADLE) dependencyUpdates
+
+.PHONY: jmh
+jmh:
+	$(GRADLE) smack-core:jmh
