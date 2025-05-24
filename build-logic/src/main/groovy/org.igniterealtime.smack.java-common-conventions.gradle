@@ -40,7 +40,7 @@ ext {
 	commonsIoVersion = '2.17.0'
 	bouncyCastleVersion = '1.73'
 	guavaVersion = '33.3.1-jre'
-	mockitoVersion = '5.14.2'
+	mockitoVersion = '5.18.0'
 	orgReflectionsVersion = '0.10.2'
 
 	if (project.hasProperty("useSonatype")) {
