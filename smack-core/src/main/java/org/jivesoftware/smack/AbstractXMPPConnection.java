@@ -1221,7 +1221,6 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     }
                     catch (Exception e) {
                         LOGGER.log(Level.WARNING, "Sending listener threw exception", e);
-                        continue;
                     }
                 }
             }

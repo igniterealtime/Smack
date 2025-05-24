@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2024 Florian Schmaus
+ * Copyright 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -468,7 +468,6 @@ public class SmackIntegrationTestFramework {
                     DisabledTest disabledTest = new DisabledTest(method, "Skipping test method " + methodName + " because it is disabled");
                     testRunResult.disabledTests.add(disabledTest);
                     it.remove();
-                    continue;
                 }
             }
 
