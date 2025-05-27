@@ -1452,6 +1452,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Parsing exception callback threw itself exception", e);
             }
+        } else {
+            LOGGER.log(Level.WARNING, "Unhandled parsing exception. Consider adding a parsing exception callback",
+                            exception);
         }
     }
 
