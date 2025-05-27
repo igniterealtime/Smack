@@ -48,17 +48,25 @@ public class ParserUtils {
      */
     public static final String JID = "jid";
 
-    public static void assertAtStartTag(XmlPullParser parser) throws XmlPullParserException {
-        assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
+    public static void assertAtStartTag(XmlPullParser parser) {
+        try {
+            assert parser.getEventType() == XmlPullParser.Event.START_ELEMENT;
+        } catch (XmlPullParserException e) {
+            throw new AssertionError(e);
+        }
     }
 
-    public static void assertAtStartTag(XmlPullParser parser, String name) throws XmlPullParserException {
+    public static void assertAtStartTag(XmlPullParser parser, String name) {
         assertAtStartTag(parser);
         assert name.equals(parser.getName());
     }
 
-    public static void assertAtEndTag(XmlPullParser parser) throws XmlPullParserException {
-        assert parser.getEventType() == XmlPullParser.Event.END_ELEMENT;
+    public static void assertAtEndTag(XmlPullParser parser) {
+        try {
+            assert parser.getEventType() == XmlPullParser.Event.END_ELEMENT;
+        } catch (XmlPullParserException e) {
+            throw new AssertionError(e);
+        }
     }
 
     public static void forwardToStartElement(XmlPullParser parser) throws XmlPullParserException, IOException {
