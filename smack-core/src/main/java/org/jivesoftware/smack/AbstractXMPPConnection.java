@@ -1436,8 +1436,27 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         }
     }
 
+    private void handleParsingException(Exception exception, XmlPullParser parser, int parserDepth) {
+        CharSequence content;
+        try {
+            content = PacketParserUtils.parseContentDepth(parser, parserDepth);
+        } catch (XmlPullParserException | IOException e) {
+            LOGGER.log(Level.WARNING, "Exception while parsing remaining content of unparsable stanza", e);
+            content = "[Could not parse: " + e.getMessage() + "]";
+        }
+        UnparseableStanza message = new UnparseableStanza(content, exception);
+        ParsingExceptionCallback callback = getParsingExceptionCallback();
+        if (callback != null) {
+            try {
+                callback.handleUnparsableStanza(message);
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Parsing exception callback threw itself exception", e);
+            }
+        }
+    }
+
     protected void parseAndProcessStanza(XmlPullParser parser)
-                    throws XmlPullParserException, IOException, InterruptedException {
+                    throws InterruptedException {
         ParserUtils.assertAtStartTag(parser);
         int parserDepth = parser.getDepth();
         Stanza stanza = null;
@@ -1451,14 +1470,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 throw new IOException(message, e);
             }
         }
+        catch (XmlPullParserException | SmackParsingException | IOException | IllegalArgumentException e) {
+            handleParsingException(e, parser, parserDepth);
+        }
         catch (Exception e) {
-            CharSequence content = PacketParserUtils.parseContentDepth(parser,
-                            parserDepth);
-            UnparseableStanza message = new UnparseableStanza(content, e);
-            ParsingExceptionCallback callback = getParsingExceptionCallback();
-            if (callback != null) {
-                callback.handleUnparsableStanza(message);
-            }
+            LOGGER.log(Level.SEVERE, "Unexpected parsing exception. Please report this at " + Smack.BUG_REPORT_URL, e);
+            handleParsingException(e, parser, parserDepth);
         }
         ParserUtils.assertAtEndTag(parser);
         if (stanza != null) {
