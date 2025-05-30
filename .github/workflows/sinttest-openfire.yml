@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  merge_group:
+
+jobs:
+  build:
+    name: Run Smack's integration tests against openfire
+
+    runs-on: ubuntu-24.04
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged --shm-size=2g
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+    strategy:
+      matrix:
+        java:
+          - 17
+          - 21
+    env:
+      PRIMARY_JAVA_VERSION: 21
+
+    steps:
+      - name: CI Setup
+        uses: './.github/actions/setup'
+        with:
+          java-major-version: ${{ matrix.java }}
+
+      - name: Set up Docker
+        uses: docker/setup-docker-action@v4
+        
+      - name: 
+        run: |
+          docker run ghcr.io/igniterealtime/openfire:main
