@@ -17,15 +17,12 @@
 
 package org.jivesoftware.smack;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -1270,10 +1267,8 @@ public abstract class ConnectionConfiguration {
             PasswordCallback pcb = null;
 
             if ("PKCS11".equals(keystoreType)) {
-                    Constructor<?> c = Class.forName("sun.security.pkcs11.SunPKCS11").getConstructor(InputStream.class);
-                    String pkcs11Config = "name = SmartCard\nlibrary = " + pkcs11Library;
-                    ByteArrayInputStream config = new ByteArrayInputStream(pkcs11Config.getBytes(StandardCharsets.UTF_8));
-                    Provider p = (Provider) c.newInstance(config);
+                    String pkcs11Config = "name=SmartCard\nlibrary=" + pkcs11Library;
+                    Provider p = Security.getProvider("SunPKCS11").configure(pkcs11Config);
                     Security.addProvider(p);
                     ks = KeyStore.getInstance("PKCS11", p);
                     pcb = new PasswordCallback("PKCS11 Password: ", false);
