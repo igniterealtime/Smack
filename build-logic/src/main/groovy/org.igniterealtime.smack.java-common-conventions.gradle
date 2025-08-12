@@ -29,8 +29,8 @@ ext {
 	isReleaseVersion = !isSnapshot
 	isContinuousIntegrationEnvironment = Boolean.parseBoolean(System.getenv('CI'))
 	signingRequired = !(isSnapshot || isContinuousIntegrationEnvironment)
-	sonatypeSnapshotUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
-	sonatypeStagingUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+	sonatypeSnapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
+	sonatypeStagingUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
 	builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 	oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 
