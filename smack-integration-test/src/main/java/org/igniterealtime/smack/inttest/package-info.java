@@ -129,7 +129,7 @@
  * </tr>
  * <tr>
  * <td>debugger</td>
- * <td>'standard' for the standard debugger, ‘console’ for console debugger, ‘enhanced’ for the enhanced debugger, or the name of a class that implements SinttesDebuggerMetaFactory for a custom debugger</td>
+ * <td>'standard' for the standard debugger, ‘console’ for console debugger, ‘enhanced’ for the enhanced debugger, or the name of a class that implements SinttestDebuggerMetaFactory for a custom debugger</td>
  * </tr>
  * <tr>
  * <td>enabledTests</td>
