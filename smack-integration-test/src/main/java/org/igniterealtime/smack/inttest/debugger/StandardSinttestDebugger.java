@@ -112,9 +112,11 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             Path outsideTestLogFile = this.basePath.resolve("outsideTestLog");
             Path testsFile = this.basePath.resolve("tests");
             try {
-                boolean created = this.basePath.toFile().mkdirs();
-                if (!created) {
-                    throw new IOException("Could not create directory " + this.basePath);
+                if (!this.basePath.toFile().exists()) {
+                    boolean created = this.basePath.toFile().mkdirs();
+                    if (!created) {
+                        throw new IOException("Could not create directory " + this.basePath);
+                    }
                 }
 
                 completeWriter = Files.newBufferedWriter(completeLogFile);
@@ -184,9 +186,11 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
         currentTestMethodDirectory = testClassDirectory.resolve(testName.toString());
 
-        boolean created = currentTestMethodDirectory.toFile().mkdirs();
-        if (!created) {
-            throw new IOException("Could not create directory " + currentTestMethodDirectory);
+        if (!currentTestMethodDirectory.toFile().exists()) {
+            boolean created = currentTestMethodDirectory.toFile().mkdirs();
+            if (!created) {
+                throw new IOException("Could not create directory " + currentTestMethodDirectory);
+            }
         }
 
         Path logFile = currentTestMethodDirectory.resolve("log");
