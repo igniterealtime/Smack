@@ -406,7 +406,7 @@ public final class Configuration {
                 break;
             default:
                 try {
-                    debuggerFactory = Class.forName(debuggerString)
+                    debuggerFactory = Class.forName(debugger)
                                     .asSubclass(SinttestDebuggerMetaFactory.class)
                                     .getDeclaredConstructor().newInstance()
                                     .create(debuggerOptions);
