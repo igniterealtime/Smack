@@ -19,8 +19,8 @@
  * Smack's API for XMPP extensions.
  * <p>
  * The XMPP protocol includes a base protocol and many optional extensions typically documented as "XEPs". Smack
- * provides the {@link org.jivesoftware.smack} package for the core XMPP protocol and the {@link org.jivesoftware.smackx
- * package} for many of the protocol extensions.
+ * provides the org.jivesoftware.smack package for the core XMPP protocol and the org.jivesoftware.smackx
+ * package for many of the protocol extensions.
  * </p>
  * <table>
  * <caption>XEPs supported by Smack</caption> <thead>
@@ -52,7 +52,7 @@
  * <tr>
  * <td>Privacy Lists</td>
  * <td><a href="https://xmpp.org/extensions/xep-0016.html">XEP-0016</a></td>
- * <td>{@link org.jivesoftware.smackx.privacy}</td>
+ * <td>org.jivesoftware.smackx.privacy</td>
  * <td>Enabling or disabling communication with other entities.</td>
  * </tr>
  * <tr>
@@ -76,7 +76,7 @@
  * <tr>
  * <td>Multi User Chat</td>
  * <td><a href="https://xmpp.org/extensions/xep-0045.html">XEP-0045</a></td>
- * <td>{@link org.jivesoftware.smackx.muc}</td>
+ * <td>org.jivesoftware.smackx.muc</td>
  * <td>Allows configuration of, participation in, and administration of individual text-based conference rooms.</td>
  * </tr>
  * <tr>
@@ -208,7 +208,7 @@
  * <tr>
  * <td>URL Address Information</td>
  * <td><a href="https://xmpp.org/extensions/xep-0103.html">XEP-0103</a></td>
- * <td>{@link org.jivesoftware.smackx.urldata.element}</td>
+ * <td>org.jivesoftware.smackx.urldata.element</td>
  * <td>Provide information about an Uniform Resource Locator (URL), and a protocol signaling retrieval states.</td>
  * </tr>
  * <tr>
@@ -372,13 +372,13 @@
  * <tr>
  * <td>Jingle Content Thumbnails</td>
  * <td><a href="https://xmpp.org/extensions/xep-0264.html">XEP-0264</a></td>
- * <td>{@link org.jivesoftware.smackx.thumbnails.element}</td>
+ * <td>org.jivesoftware.smackx.thumbnails.element</td>
  * <td>Defines a way for a client to supply a preview image for Jingle content.</td>
  * </tr>
  * <tr>
  * <td>Message Carbons</td>
  * <td><a href="https://xmpp.org/extensions/xep-0280.html">XEP-0280</a></td>
- * <td>{@link org.jivesoftware.smackx.carbons}</td>
+ * <td>org.jivesoftware.smackx.carbons</td>
  * <td>Keep all IM clients for a user engaged in a conversation, by carbon-copy outbound messages to all interested
  * resources.</td>
  * </tr>
@@ -446,7 +446,7 @@
  * <tr>
  * <td>HTTP over XMPP transport</td>
  * <td><a href="https://xmpp.org/extensions/xep-0332.html">XEP-0332</a></td>
- * <td>{@link org.jivesoftware.smackx.hoxt}</td>
+ * <td>org.jivesoftware.smackx.hoxt</td>
  * <td>Allows to transport HTTP communication over XMPP peer-to-peer networks.</td>
  * </tr>
  * <tr>
@@ -554,7 +554,7 @@
  * <tr>
  * <td>Message Markup</td>
  * <td><a href="https://xmpp.org/extensions/xep-0394.html">XEP-0394</a></td>
- * <td>{@link org.jivesoftware.smackx.message_markup.element}</td>
+ * <td>org.jivesoftware.smackx.message_markup.element</td>
  * <td>Style message bodies while keeping body and markup information separated.</td>
  * </tr>
  * <tr>
@@ -591,7 +591,7 @@
  * <tr>
  * <td>File metadata element</td>
  * <td><a href="https://xmpp.org/extensions/xep-0446.html">XEP-0446</a></td>
- * <td>{@link org.jivesoftware.smackx.file_metadata.element}</td>
+ * <td>org.jivesoftware.smackx.file_metadata.element</td>
  * <td>Defines a generic file metadata element to be used in other specifications.</td>
  * </tr>
  * <tr>
