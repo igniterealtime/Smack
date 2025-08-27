@@ -12,4 +12,5 @@ dependencies {
 	implementation "net.ltgt.gradle:gradle-errorprone-plugin:4.2.0"
 	implementation "ru.vyarus:gradle-animalsniffer-plugin:2.0.1"
 	implementation "com.github.ben-manes:gradle-versions-plugin:0.51.0"
+	implementation "com.vanniktech.maven.publish:com.vanniktech.maven.publish.gradle.plugin:0.34.0"
 }

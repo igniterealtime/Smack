@@ -7,10 +7,10 @@ plugins {
 	id 'java'
 	id 'java-library'
 	id 'java-test-fixtures'
-	id 'maven-publish'
 	id 'net.ltgt.errorprone'
 	id 'signing'
 	id 'com.github.ben-manes.versions'
+	id 'com.vanniktech.maven.publish'
 
 	id 'jacoco-report-aggregation'
 	id 'test-report-aggregation'
@@ -25,12 +25,9 @@ ext {
 	isSnapshot = version.endsWith('-SNAPSHOT')
 	gitCommit = getGitCommit()
 	rootConfigDir = new File(rootDir, 'config')
-	sonatypeCredentialsAvailable = project.hasProperty('sonatypeUsername') && project.hasProperty('sonatypePassword')
 	isReleaseVersion = !isSnapshot
 	isContinuousIntegrationEnvironment = Boolean.parseBoolean(System.getenv('CI'))
 	signingRequired = !(isSnapshot || isContinuousIntegrationEnvironment)
-	sonatypeSnapshotUrl = 'https://central.sonatype.com/repository/maven-snapshots/'
-	sonatypeStagingUrl = 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
 	builtDate = (new java.text.SimpleDateFormat("yyyy-MM-dd")).format(new Date())
 	oneLineDesc = 'An Open Source XMPP (Jabber) client library'
 
@@ -187,82 +184,53 @@ artifacts {
 	testRuntime testsJar
 }
 
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-			artifact sourcesJar
-			artifact javadocJar
-			artifact testsJar
-			pom {
-				name = 'Smack'
-				packaging = 'jar'
-				inceptionYear = '2003'
-				url = 'http://www.igniterealtime.org/projects/jxmpp/'
-				afterEvaluate {
-					description = project.description
-				}
 
-				issueManagement {
-					system = 'JIRA'
-					url = 'http://issues.igniterealtime.org/browse/SMACK'
-				}
+mavenPublishing {
+	publishToMavenCentral()
 
-				scm {
-					url = 'https://github.com/igniterealtime/Smack'
-					connection = 'scm:git:https://github.com/igniterealtime/Smack.git'
-					developerConnection = 'scm:git:https://github.com/igniterealtime/Smack.git'
-				}
+	signAllPublications()
 
-				licenses {
-					if (project in gplLicensedProjects) {
-						license {
-							name = 'GNU General Public License, version 3 or any later version'
-							url = 'https://www.gnu.org/licenses/gpl.txt'
-							distribution = 'repo'
-						}
-					} else {
-						license {
-							name = 'The Apache Software License, Version 2.0'
-							url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-							distribution = 'repo'
-						}
-					}
-				}
+	pom {
+		name = 'Smack'
+		packaging = 'jar'
+		inceptionYear = '2003'
+		url = 'http://www.igniterealtime.org/projects/jxmpp/'
+		afterEvaluate {
+			description = project.description
+		}
 
-				developers {
-					developer {
-						id = 'flow'
-						name = 'Florian Schmaus'
-						email = 'flow@igniterealtime.org'
-					}
+		issueManagement {
+			system = 'JIRA'
+			url = 'http://issues.igniterealtime.org/browse/SMACK'
+		}
+
+		scm {
+			url = 'https://github.com/igniterealtime/Smack'
+			connection = 'scm:git:https://github.com/igniterealtime/Smack.git'
+			developerConnection = 'scm:git:https://github.com/igniterealtime/Smack.git'
+		}
+
+		licenses {
+			if (project in gplLicensedProjects) {
+				license {
+					name = 'GNU General Public License, version 3 or any later version'
+					url = 'https://www.gnu.org/licenses/gpl.txt'
+					distribution = 'repo'
+				}
+			} else {
+				license {
+					name = 'The Apache Software License, Version 2.0'
+					url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					distribution = 'repo'
 				}
 			}
 		}
-	}
-	repositories {
-		if (sonatypeCredentialsAvailable && useSonatype) {
-			maven {
-				url isSnapshot ? sonatypeSnapshotUrl : sonatypeStagingUrl
-				credentials {
-					username = sonatypeUsername
-					password = sonatypePassword
-				}
-			}
-		}
-		// Use
-		// gradle publish -P customRepoUrl=https://www.igniterealtime.org/archiva/repository/maven -P customRepoUsername=bamboo -P customRepoPassword=hidden -P useSonatype=false
-		// to deploy to this repo.
-		if (project.hasProperty("customRepoUrl")) {
-			maven {
-				name 'customRepo'
-				url customRepoUrl
-				if (project.hasProperty("customRepoUsername")) {
-					credentials {
-						username customRepoUsername
-						password customRepoPassword
-					}
-				}
+
+		developers {
+			developer {
+				id = 'flow'
+				name = 'Florian Schmaus'
+				email = 'flow@igniterealtime.org'
 			}
 		}
 	}
@@ -279,7 +247,6 @@ tasks.withType(Sign) {
 signing {
 	required { signingRequired }
 	useGpgCmd()
-	sign publishing.publications.mavenJava
 }
 
 tasks.withType(JavaCompile) {
