@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.util.CollectionUtil;
@@ -47,6 +48,7 @@ import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smack.util.TLSUtils;
 
 import org.igniterealtime.smack.inttest.debugger.EnhancedSinttestDebugger;
 import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
@@ -84,6 +86,8 @@ public final class Configuration {
     public final DomainBareJid service;
 
     public final String host;
+
+    public final boolean acceptAllCertificates;
 
     public final String serviceTlsPin;
 
@@ -156,9 +160,18 @@ public final class Configuration {
         service = Objects.requireNonNull(builder.service,
                         "'service' must be set. Either via 'properties' files or via system property 'sinttest.service'.");
         host = builder.host;
+        acceptAllCertificates = builder.acceptAllCertificates;
         serviceTlsPin = builder.serviceTlsPin;
+        if (serviceTlsPin != null && acceptAllCertificates) {
+            throw new IllegalArgumentException("TLS Pin specified while accept all TLS certificates is also set");
+        }
+
         if (serviceTlsPin != null) {
             SSLContext sslContext = Java7Pinning.forPin(serviceTlsPin);
+            sslContextFactory = () -> sslContext;
+        } else if (acceptAllCertificates) {
+            var sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null,  new TrustManager[] { TLSUtils.ACCEPT_ALL_TRUST_MANAGER }, null);
             sslContextFactory = () -> sslContext;
         } else {
             sslContextFactory = null;
@@ -214,6 +227,10 @@ public final class Configuration {
             if (sslContextFactory != null) {
                 b.setSslContextFactory(sslContextFactory);
             }
+            if (acceptAllCertificates) {
+                TLSUtils.acceptAllCertificates(b);
+                TLSUtils.disableHostnameVerificationForTlsCertificates(b);
+            }
             b.setSecurityMode(securityMode);
             b.setXmppDomain(service);
             if (host != null) {
@@ -242,6 +259,8 @@ public final class Configuration {
         private DomainBareJid service;
 
         private String host;
+
+        public boolean acceptAllCertificates;
 
         private String serviceTlsPin;
 
@@ -352,6 +371,24 @@ public final class Configuration {
             this.accountTwoPassword = StringUtils.requireNotNullNorEmpty(accountTwoPassword, "accountTwoPassword must not be null nor empty");
             this.accountThreeUsername = StringUtils.requireNotNullNorEmpty(accountThreeUsername, "accountThreeUsername must not be null nor empty");
             this.accountThreePassword = StringUtils.requireNotNullNorEmpty(accountThreePassword, "accountThreePassword must not be null nor empty");
+            return this;
+        }
+
+        public Builder setAcceptAllCertificates(String acceptAllCertificatesBooleanString) {
+            if (acceptAllCertificatesBooleanString == null) {
+                return this;
+            }
+
+            boolean acceptAllCertificates = ParserUtils.parseXmlBoolean(acceptAllCertificatesBooleanString);
+            return setAcceptAllCertificates(acceptAllCertificates);
+        }
+
+        public Builder setAcceptAllCertificates() {
+            return setAcceptAllCertificates(true);
+        }
+
+        public Builder setAcceptAllCertificates(boolean acceptAllCertificates) {
+            this.acceptAllCertificates = acceptAllCertificates;
             return this;
         }
 
@@ -607,6 +644,7 @@ public final class Configuration {
         Builder builder = builder();
         builder.setService(properties.getProperty("service"));
         builder.setHost(properties.getProperty("host"));
+        builder.setAcceptAllCertificates(properties.getProperty("acceptAllCertificates"));
         builder.setServiceTlsPin(properties.getProperty("serviceTlsPin"));
         builder.setSecurityMode(properties.getProperty("securityMode"));
         builder.setReplyTimeout(properties.getProperty("replyTimeout", "47000"));
