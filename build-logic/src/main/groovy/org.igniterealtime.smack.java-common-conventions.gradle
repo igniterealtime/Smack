@@ -194,7 +194,7 @@ mavenPublishing {
 		name = 'Smack'
 		packaging = 'jar'
 		inceptionYear = '2003'
-		url = 'http://www.igniterealtime.org/projects/jxmpp/'
+		url = 'http://www.igniterealtime.org/projects/smack/'
 		afterEvaluate {
 			description = project.description
 		}
