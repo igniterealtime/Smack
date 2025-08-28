@@ -309,7 +309,8 @@ public class SmackIntegrationTestFramework {
         List<PreparedTest> tests = new ArrayList<>(classes.size());
         int numberOfAvailableTests = 0;
 
-        for (Class<? extends AbstractSmackIntTest> testClass : classes) {
+        List<Class<? extends AbstractSmackIntTest>> possiblySorted = config.sortTestClasses(classes);
+        for (Class<? extends AbstractSmackIntTest> testClass : possiblySorted) {
             final String testClassName = testClass.getName();
 
             // TODO: Move the whole "skipping section" below one layer up?
@@ -478,7 +479,9 @@ public class SmackIntegrationTestFramework {
 
             List<ConcreteTest> concreteTests = new ArrayList<>(smackIntegrationTestMethods.size());
 
-            for (Method testMethod : smackIntegrationTestMethods) {
+            final List<Method> possiblySortedMethods = config.sortTestMethods(smackIntegrationTestMethods);
+
+            for (Method testMethod : possiblySortedMethods) {
                 switch (testType) {
                 case Normal: {
                     ConcreteTest.Executor concreteTestExecutor = () -> {

@@ -176,6 +176,10 @@
  * <td>One of ‘minidns’, ‘javax’ or ‘dnsjava’. Defaults to ‘minidns’.</td>
  * </tr>
  * <tr>
+ * <td>executionOrder</td>
+ * <td>Causes tests to be executed in an order defined by their declaring class and method name. One of ‘alphabetical’ or ‘reversed’. When not set, no explicit order is applied.</td>
+ * </tr>
+ * <tr>
  * <td>testRunResultProcessors</td>
  * <td>List of class names for generating test run output. Defaults to 'org.igniterealtime.smack.inttest.SmackIntegrationTestFramework$ConsoleTestRunResultProcessor'</td>
  * </tr>

@@ -25,7 +25,9 @@ import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -66,6 +68,11 @@ public final class Configuration {
         disabled,
         inBandRegistration,
         serviceAdministration,
+    }
+
+    public enum ExecutionOrder {
+        alphabetic,
+        reversed
     }
 
     public enum DnsResolver {
@@ -113,6 +120,8 @@ public final class Configuration {
     public final Set<String> disabledTests;
 
     private final Map<String, Set<String>> disabledTestsMap;
+
+    public final ExecutionOrder executionOrder;
 
     public final Set<String> enabledSpecifications;
 
@@ -193,6 +202,7 @@ public final class Configuration {
         this.enabledTestsMap = convertTestsToMap(enabledTests);
         this.disabledTests =  CollectionUtil.nullSafeUnmodifiableSet(builder.disabledTests);
         this.disabledTestsMap = convertTestsToMap(disabledTests);
+        this.executionOrder = builder.executionOrder;
         this.enabledSpecifications = CollectionUtil.nullSafeUnmodifiableSet(builder.enabledSpecifications);
         this.disabledSpecifications = CollectionUtil.nullSafeUnmodifiableSet(builder.disabledSpecifications);
         this.defaultConnectionNickname = builder.defaultConnectionNickname;
@@ -260,6 +270,8 @@ public final class Configuration {
         private Set<String> enabledTests;
 
         private Set<String> disabledTests;
+
+        private ExecutionOrder executionOrder;
 
         private Set<String> enabledSpecifications;
 
@@ -442,6 +454,20 @@ public final class Configuration {
             return this;
         }
 
+        public Builder setExecutionOrder(ExecutionOrder executionOrder) {
+            this.executionOrder = executionOrder;
+            return this;
+        }
+
+        public Builder setExecutionOrder(String executionOrderString) {
+            if (executionOrderString == null) {
+                return this;
+            }
+
+            ExecutionOrder executionOrder = ExecutionOrder.valueOf(executionOrderString);
+            return setExecutionOrder(executionOrder);
+        }
+
         public Builder setDefaultConnection(String defaultConnectionNickname) {
             this.defaultConnectionNickname = defaultConnectionNickname;
             return this;
@@ -611,6 +637,7 @@ public final class Configuration {
         builder.setDebugger(properties.getProperty("debugger"));
         builder.setEnabledTests(properties.getProperty("enabledTests"));
         builder.setDisabledTests(properties.getProperty("disabledTests"));
+        builder.setExecutionOrder(properties.getProperty("executionOrder"));
         builder.setEnabledSpecifications(properties.getProperty("enabledSpecifications"));
         builder.setDisabledSpecifications(properties.getProperty("disabledSpecifications"));
         builder.setDefaultConnection(properties.getProperty("defaultConnection"));
@@ -805,6 +832,32 @@ public final class Configuration {
         }
 
         return contains(method, disabledTestsMap);
+    }
+
+    public List<Class<? extends AbstractSmackIntTest>> sortTestClasses(Collection<Class<? extends AbstractSmackIntTest>> classes) {
+        return sort(classes, Comparator.comparing(Class::getName));
+    }
+
+    public List<Method> sortTestMethods(Collection<Method> methods) {
+        return sort(methods, Comparator.comparing(Method::getName));
+    }
+
+    private <T> List<T> sort(Collection<T> collection, Comparator<T> comparator) {
+        final List<T> result = new ArrayList<>(collection);
+        if (executionOrder == null) {
+            return result;
+        }
+
+        switch (executionOrder) {
+            case alphabetic:
+                result.sort(comparator);
+                break;
+
+            case reversed:
+                result.sort(Collections.reverseOrder(comparator));
+                break;
+        }
+        return result;
     }
 
     public boolean isSpecificationEnabled(String specification) {
