@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus
+ * Copyright 2021-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,17 @@
  */
 package org.jivesoftware.smack.websocket.java11;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
+import java.net.URISyntaxException;
 
-import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
+import org.jivesoftware.smack.websocket.test.WebSocketFactoryServiceTestUtil;
+
+import org.junit.jupiter.api.Test;
 
 public class Java11WebSocketFactoryTest {
 
-    public void returnsNotNullTest() {
-        WebSocketRemoteConnectionEndpoint endpoint = mock(WebSocketRemoteConnectionEndpoint.class);
-        ModularXmppClientToServerConnectionInternal connectionInternal = mock(ModularXmppClientToServerConnectionInternal.class);
-
-        Java11WebSocket java11WebSocket = Java11WebSocketFactory.INSTANCE.create(endpoint, connectionInternal);
-        assertNotNull(java11WebSocket);
+    @Test
+    public void returnsNotNullTest() throws URISyntaxException {
+        WebSocketFactoryServiceTestUtil.createWebSocketTest(Java11WebSocket.class);
     }
+
 }
