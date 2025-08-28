@@ -24,7 +24,7 @@
  * </p>
  *
  * <pre>
- * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org
+ * $ gradle sinttest -Dsinttest.service=my.xmppservice.org
  * </pre>
  * <p>
  * Note that the service needs to have In-Band Registration (IBR) enabled.
@@ -35,9 +35,9 @@
  * </p>
  *
  * <pre>
- * $ ./gradlew integrationTest -Dsinttest.service=my.xmppservice.org \
- *                             -Dsinttest.adminAccountUsername=admin \
- *                             -Dsinttest.adminAccountPassword=aeR0Wuub
+ * $ ./gradlew sinttest -Dsinttest.service=my.xmppservice.org \
+ *                      -Dsinttest.adminAccountUsername=admin \
+ *                      -Dsinttest.adminAccountPassword=aeR0Wuub
  * </pre>
  * <p>
  * to run Smack's integration test framework against my.xmppservice.org with an admin account named 'admin' and
@@ -195,14 +195,14 @@
  * </p>
  *
  * <pre>
- * $ gradle integrationTest -Dsinttest.enabledTests=SoftwareInfoIntegrationTest.test
+ * $ gradle sinttest -Dsinttest.enabledTests=SoftwareInfoIntegrationTest.test
  * </pre>
  * <p>
  * will only run the <code>test()</code> method of <code>SoftwareInfoIntegrationTest</code>, whereas
  * </p>
  *
  * <pre>
- * $ gradle integrationTest -Dsinttest.enabledTests=SoftwareInfoIntegrationTest
+ * $ gradle sinttest -Dsinttest.enabledTests=SoftwareInfoIntegrationTest
  * </pre>
  * <p>
  * would run all tests defined in the <code>SoftwareInfoIntegrationTest</code> class.
@@ -216,7 +216,7 @@
  * </p>
  *
  * <pre>
- * $ gradle integrationTest -Dsinttest.enabledSpecifications=XEP-0045
+ * $ gradle sinttest -Dsinttest.enabledSpecifications=XEP-0045
  * </pre>
  * <p>
  * would run all tests that are annotated to verify functionality specified in XEP-0045: "Multi-User Chat".
@@ -267,7 +267,7 @@
  * </p>
  *
  * <pre>{@code
- * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org
+ * $ gradle sinttest -Dsinttest.service=my.xmppservice.org
  * }</pre>
  * <p>
  * If one of <code>accountOneUsername</code>, <code>accountOnePassword</code>, <code>accountTwoUsername</code> or
@@ -328,13 +328,13 @@
  * </p>
  *
  * <pre>{@code
- * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.debugger="org.example.MyDebugger$Factory"
+ * $ gradle sinttest -Dsinttest.service=my.xmppservice.org -Dsinttest.debugger="org.example.MyDebugger$Factory"
  * }</pre>
  * <h3>Debugging in the IDE</h3>
  * <p>
  * If the output isn't enough, you may need to debug and inspect running code within the IDE. Depending on the IDE, in
  * order to get execution to pause at your breakpoints, you may need to switch your configuration. Instead of running
- * `gradle integrationTest`, instead run the `SmackIntegrationTestFramework` class directly with the same command-line
+ * `gradle sinttest`, instead run the `SmackIntegrationTestFramework` class directly with the same command-line
  * options.
  * </p>
  * <h2>Running Your Own Integration Tests</h2>
@@ -348,7 +348,7 @@
  * </p>
  *
  * <pre>{@code
- * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.testPackages=org.mypackage,org.otherpackage
+ * $ gradle sinttest -Dsinttest.service=my.xmppservice.org -Dsinttest.testPackages=org.mypackage,org.otherpackage
  * }</pre>
  * <h2>Generating test run reports</h2>
  * <p>
@@ -361,7 +361,7 @@
  * Example:
  * </p>
  * <pre>{@code
- * $ gradle integrationTest -Dsinttest.service=my.xmppservice.org -Dsinttest.testRunResultProcessor=org.igniterealtime.smack.inttest.SmackIntegrationTestFramework$ConsoleTestRunResultProcessor
+ * $ gradle sinttest -Dsinttest.service=my.xmppservice.org -Dsinttest.testRunResultProcessor=org.igniterealtime.smack.inttest.SmackIntegrationTestFramework$ConsoleTestRunResultProcessor
  * }</pre>
  */
 package org.igniterealtime.smack.inttest;
