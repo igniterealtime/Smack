@@ -19,6 +19,18 @@ tasks.withType(Javadoc) {
 	options.addStringOption('-release', javaMajor)
 }
 
+// Workaround for gradle-maven-publish-plugin bug
+// https://github.com/vanniktech/gradle-maven-publish-plugin/issues/1132
+// provided by Björn Kautler in
+// https://discuss.gradle.org/t/partly-undo-the-configuration-performed-on-a-task-by-a-plugin/51533/3?u=flow
+afterEvaluate {
+    tasks.withType(Javadoc) {
+		// This actually unsets "-Xdoclint:none" which is
+		// unfortunately unconditionally added by gradle-maven-publish-plugin.
+        options.addStringOption("Xdoclint:none")
+    }
+}
+
 tasks.withType(Javadoc) {
 	options.charSet = "UTF-8"
 }
