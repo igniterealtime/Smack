@@ -238,7 +238,6 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
-        // if (!resumed)
         try {
             Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
             if (!socks5Proxy.isRunning()) {

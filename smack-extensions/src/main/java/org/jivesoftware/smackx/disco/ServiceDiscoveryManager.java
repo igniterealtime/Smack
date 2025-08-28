@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -51,18 +52,15 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.ExtendedAppendable;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
-
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo.Identity;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
-
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
@@ -136,7 +134,8 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     private ServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
-        isSendPresence = ((XMPPTCPConnection) connection).getConfiguration().isSendPresence();
+        // Must use AbstractXMPPConnection; base class for XMPPTCPConnection and XMPPBOSHConnection
+        isSendPresence = ((AbstractXMPPConnection) connection).getConfiguration().isSendPresence();
 
         addFeature(DiscoverInfo.NAMESPACE);
         addFeature(DiscoverItems.NAMESPACE);
