@@ -21,8 +21,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionConfiguration.DnssecMode;
@@ -165,6 +168,19 @@ public class RemoteXmppTcpConnectionEndpoints {
         return resolveDomain(domain, DomainType.server, lookupFailures, dnssecMode, dnsResolver);
     }
 
+    private static final DnsName LOCALHOST = DnsName.from("localhost");
+    // https://datatracker.ietf.org/doc/html/rfc6761#section-6.5
+    private static final Set<DnsName> EXAMPLE_DOMAINS = Stream.of("example", "example.com", "example.net", "example.org").map(n -> DnsName.from(n)).collect(Collectors.toSet());
+
+    private static boolean shouldEmitDnsSrvHint(DnsName domain) {
+        if (domain.equals(LOCALHOST)) return false;
+        for (var d : EXAMPLE_DOMAINS) {
+            if (domain.isChildOf(d)) return false;
+        }
+
+        return true;
+    }
+
     /**
      *
      * @param domain the domain.
@@ -199,7 +215,7 @@ public class RemoteXmppTcpConnectionEndpoints {
                     endpoints.add(endpoint);
                 }
             }
-        } else {
+        } else if (shouldEmitDnsSrvHint(domain)) {
             LOGGER.info("Could not resolve DNS SRV resource records " + srvDomain + " for " + domain + ". Consider adding those.");
         }
 
