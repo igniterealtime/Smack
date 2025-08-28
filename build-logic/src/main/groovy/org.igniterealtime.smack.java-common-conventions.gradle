@@ -19,7 +19,7 @@ plugins {
 	id 'org.igniterealtime.smack.javadoc-conventions'
 }
 
-version readVersionFile()
+version = readVersionFile()
 
 ext {
 	isSnapshot = version.endsWith('-SNAPSHOT')
@@ -130,7 +130,7 @@ test {
 	// for CI environments.
 	testLogging {
 		events "failed"
-		exceptionFormat "full"
+		exceptionFormat = "full"
 	}
 }
 
@@ -245,7 +245,7 @@ tasks.withType(Sign) {
 	}
 }
 signing {
-	required { signingRequired }
+	required  = signingRequired
 	useGpgCmd()
 }
 
