@@ -200,7 +200,7 @@ public class RemoteXmppTcpConnectionEndpoints {
                 }
             }
         } else {
-            LOGGER.info("Could not resolve DNS SRV resource records for " + srvDomain + ". Consider adding those.");
+            LOGGER.info("Could not resolve DNS SRV resource records " + srvDomain + " for " + domain + ". Consider adding those.");
         }
 
         UInt16 defaultPort;
