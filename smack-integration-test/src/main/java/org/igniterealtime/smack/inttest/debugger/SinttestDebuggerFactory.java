@@ -16,9 +16,11 @@
  */
 package org.igniterealtime.smack.inttest.debugger;
 
-@FunctionalInterface
-public interface SinttesDebuggerMetaFactory {
+import java.time.ZonedDateTime;
 
-    SinttesDebuggerFactory create(String debuggerOptions);
+@FunctionalInterface
+public interface SinttestDebuggerFactory {
+
+    SinttestDebugger create(ZonedDateTime testRunStart, String testRunId);
 
 }

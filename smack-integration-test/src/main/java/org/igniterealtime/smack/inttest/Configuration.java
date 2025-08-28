@@ -47,9 +47,9 @@ import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.igniterealtime.smack.inttest.debugger.EnhancedSinttestDebugger;
-import org.igniterealtime.smack.inttest.debugger.SinttesDebuggerFactory;
-import org.igniterealtime.smack.inttest.debugger.SinttesDebuggerMetaFactory;
 import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
+import org.igniterealtime.smack.inttest.debugger.SinttestDebuggerFactory;
+import org.igniterealtime.smack.inttest.debugger.SinttestDebuggerMetaFactory;
 import org.igniterealtime.smack.inttest.debugger.StandardSinttestDebugger;
 
 import eu.geekplace.javapinning.java7.Java7Pinning;
@@ -104,7 +104,7 @@ public final class Configuration {
 
     public final String accountThreePassword;
 
-    private final SinttesDebuggerFactory debuggerFactory;
+    private final SinttestDebuggerFactory debuggerFactory;
 
     public final Set<String> enabledTests;
 
@@ -255,7 +255,7 @@ public final class Configuration {
 
         public String accountThreePassword;
 
-        private SinttesDebuggerFactory debuggerFactory;
+        private SinttestDebuggerFactory debuggerFactory;
 
         private Set<String> enabledTests;
 
@@ -407,7 +407,7 @@ public final class Configuration {
             default:
                 try {
                     debuggerFactory = Class.forName(debuggerString)
-                                    .asSubclass(SinttesDebuggerMetaFactory.class)
+                                    .asSubclass(SinttestDebuggerMetaFactory.class)
                                     .getDeclaredConstructor().newInstance()
                                     .create(debuggerOptions);
                 } catch (Exception e) {
@@ -417,7 +417,7 @@ public final class Configuration {
             return this;
         }
 
-        public Builder setDebugger(SinttesDebuggerFactory factory) {
+        public Builder setDebugger(SinttestDebuggerFactory factory) {
             debuggerFactory = factory;
             return this;
         }
