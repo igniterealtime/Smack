@@ -544,21 +544,12 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     //    public synchronized void sendContentInfo(ContentInfo ci) {
     //        sendStanza(new Jingle(new JingleContentInfo(ci)));
     //    }
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#hashCode()
-     */
+
     @Override
     public int hashCode() {
         return Jingle.getSessionHash(getSid(), getInitiator());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

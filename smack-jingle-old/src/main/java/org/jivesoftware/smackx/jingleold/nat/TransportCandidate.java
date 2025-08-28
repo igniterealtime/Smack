@@ -297,11 +297,6 @@ public abstract class TransportCandidate {
         this.name = name;
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see java.lang.Object#equals(java.lang.Object)
-      */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

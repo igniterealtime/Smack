@@ -650,7 +650,7 @@ public final class AdHocCommandManager extends Manager {
             this.factory = factory;
         }
 
-        public AdHocCommandHandler getCommandInstance() throws InstantiationException,
+        AdHocCommandHandler getCommandInstance() throws InstantiationException,
                 IllegalAccessException, IllegalArgumentException, InvocationTargetException {
             AdHocCommandHandler handler;
             AtomicBoolean isNew = new AtomicBoolean();
@@ -688,11 +688,11 @@ public final class AdHocCommandManager extends Manager {
             return handler;
         }
 
-        public String getName() {
+        String getName() {
             return name;
         }
 
-        public String getNode() {
+        String getNode() {
             return node;
         }
 

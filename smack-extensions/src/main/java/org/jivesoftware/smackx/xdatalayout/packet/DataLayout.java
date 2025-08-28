@@ -69,28 +69,16 @@ public class DataLayout implements ExtensionElement {
         return label;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
-     */
     @Override
     public String getElementName() {
         return ELEMENT;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
-     */
     @Override
     public String getNamespace() {
         return NAMESPACE;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
-     */
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         XmlStringBuilder buf = new XmlStringBuilder(this);

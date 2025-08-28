@@ -126,7 +126,7 @@ public final class DnsOverXmppMiniDnsResolverTest {
 
         private static class TestDnsQueryResult extends DnsQueryResult {
 
-            protected TestDnsQueryResult(DnsMessage query) {
+            TestDnsQueryResult(DnsMessage query) {
                 super(QueryMethod.testWorld, query, createNxDomainAnswerFor(query));
             }
 

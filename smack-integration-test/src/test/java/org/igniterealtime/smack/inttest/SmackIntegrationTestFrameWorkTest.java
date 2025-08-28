@@ -32,26 +32,26 @@ public class SmackIntegrationTestFrameWorkTest {
 
     private static final class ValidLowLevelList {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
-        public void test(List<AbstractXMPPConnection> connections) {
+        void test(List<AbstractXMPPConnection> connections) {
         }
     }
 
     private static final class InvalidLowLevelList {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
-        public void test(List<AbstractXMPPConnection> connections, boolean invalid) {
+        void test(List<AbstractXMPPConnection> connections, boolean invalid) {
         }
     }
 
     private static final class ValidLowLevelVarargs {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
-        public void test(AbstractXMPPConnection connectionOne, AbstractXMPPConnection connectionTwo,
+        void test(AbstractXMPPConnection connectionOne, AbstractXMPPConnection connectionTwo,
                         AbstractXMPPConnection connectionThree) {
         }
     }
 
     private static final class InvalidLowLevelVarargs {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
-        public void test(AbstractXMPPConnection connectionOne, Integer invalid, AbstractXMPPConnection connectionTwo,
+        void test(AbstractXMPPConnection connectionOne, Integer invalid, AbstractXMPPConnection connectionTwo,
                         AbstractXMPPConnection connectionThree) {
         }
     }
@@ -98,7 +98,7 @@ public class SmackIntegrationTestFrameWorkTest {
 
     private static final class ValidUnconnectedConnectionSource {
         @SuppressWarnings({"unused", "MethodCanBeStatic"})
-        public void test(AbstractSmackLowLevelIntegrationTest.UnconnectedConnectionSource source) {
+        void test(AbstractSmackLowLevelIntegrationTest.UnconnectedConnectionSource source) {
         }
     }
 

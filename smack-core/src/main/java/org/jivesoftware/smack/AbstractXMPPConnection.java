@@ -1850,7 +1850,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return stanzaFilter == null || stanzaFilter.test(stanza);
         }
 
-        public Consumer<MPB> getInterceptor() {
+        private Consumer<MPB> getInterceptor() {
             return stanzaInterceptor;
         }
     }

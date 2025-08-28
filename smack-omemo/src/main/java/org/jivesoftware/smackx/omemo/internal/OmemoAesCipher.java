@@ -57,7 +57,7 @@ public class OmemoAesCipher {
         decrypt(Cipher.DECRYPT_MODE),
         ;
 
-        public final int opmodeInt;
+        final int opmodeInt;
 
         CipherOpmode(int opmodeInt) {
             this.opmodeInt = opmodeInt;

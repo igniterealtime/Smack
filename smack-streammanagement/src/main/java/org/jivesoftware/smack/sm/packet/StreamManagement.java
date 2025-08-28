@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2021 Florian Schmaus
+ * Copyright © 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,16 +58,16 @@ public class StreamManagement {
         }
     }
 
-    private abstract static class AbstractEnable implements Nonza {
+    public abstract static class AbstractEnable implements Nonza {
 
         /**
          * Preferred maximum resumption time in seconds (optional).
          */
-        protected int max = -1;
+        int max = -1;
 
-        protected boolean resume = false;
+        boolean resume = false;
 
-        protected void maybeAddResumeAttributeTo(XmlStringBuilder xml) {
+        void maybeAddResumeAttributeTo(XmlStringBuilder xml) {
             if (resume) {
                 // XEP 198 never mentions the case where resume='false', it's either set to true or
                 // not set at all. We reflect this in this code part
@@ -75,21 +75,20 @@ public class StreamManagement {
             }
         }
 
-        protected void maybeAddMaxAttributeTo(XmlStringBuilder xml) {
+        void maybeAddMaxAttributeTo(XmlStringBuilder xml) {
             if (max > 0) {
                 xml.attribute("max", Integer.toString(max));
             }
         }
 
-        public boolean isResumeSet() {
+        public final boolean isResumeSet() {
             return resume;
         }
 
-        /**
+        /*
          * Return the max resumption time in seconds.
-         * @return the max resumption time in seconds
          */
-        public int getMaxResumptionTime() {
+        public final int getMaxResumptionTime() {
             return max;
         }
 
@@ -131,29 +130,23 @@ public class StreamManagement {
         }
     }
 
-    /**
+    /*
      * A Stream Management 'enabled' element.
-     * <p>
      * Here is a full example, all attributes besides 'xmlns' are optional.
-     * </p>
-     * <pre>
-     * {@code
      * <enabled xmlns='urn:xmpp:sm:3'
      *      id='some-long-sm-id'
      *      location='[2001:41D0:1:A49b::1]:9222'
      *      resume='true'/>
-     * }
-     * </pre>
      */
     public static class Enabled extends AbstractEnable {
         public static final String ELEMENT = "enabled";
 
-        /**
+        /*
          * The stream id ("SM-ID")
          */
         private final String id;
 
-        /**
+        /*
          * The location where the server prefers reconnection.
          */
         private final String location;
@@ -253,7 +246,7 @@ public class StreamManagement {
 
     }
 
-    private abstract static class AbstractResume implements Nonza {
+    public abstract static class AbstractResume implements Nonza {
 
         private final long handledCount;
         private final String previd;

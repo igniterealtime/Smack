@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2023 Florian Schmaus
+ * Copyright 2019-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public abstract class InternetAddress implements CharSequence {
         private final InetAddress inetAddress;
         private final String raw;
 
-        protected InetAddressInternetAddress(String originalString, String raw, InetAddress inetAddress) {
+        private InetAddressInternetAddress(String originalString, String raw, InetAddress inetAddress) {
             super(originalString);
             this.raw = raw;
             this.inetAddress = inetAddress;
@@ -186,7 +186,7 @@ public abstract class InternetAddress implements CharSequence {
         private boolean attemptedToResolveInetAddress;
         private InetAddress inetAddress;
 
-        protected NonNumericInternetAddress(String originalString) {
+        private NonNumericInternetAddress(String originalString) {
             super(originalString);
         }
 

@@ -711,7 +711,7 @@ public class RosterTest extends InitSmackIm {
          *
          * @return the Throwable exception or error that occurred.
          */
-        public Throwable getException() {
+        Throwable getException() {
             return exception;
         }
     }

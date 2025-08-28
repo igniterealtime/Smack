@@ -42,13 +42,13 @@ public class AbstractOmemoMessageListener implements OmemoMessageListener {
     }
 
     private static class SyncPointListener extends AbstractOmemoMessageListener {
-        protected final ResultSyncPoint<?, ?> syncPoint;
+        final ResultSyncPoint<?, ?> syncPoint;
 
         SyncPointListener(ResultSyncPoint<?, ?> syncPoint) {
             this.syncPoint = syncPoint;
         }
 
-        public ResultSyncPoint<?, ?> getSyncPoint() {
+        ResultSyncPoint<?, ?> getSyncPoint() {
             return syncPoint;
         }
     }

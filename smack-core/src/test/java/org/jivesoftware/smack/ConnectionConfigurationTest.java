@@ -57,7 +57,7 @@ public class ConnectionConfigurationTest {
             super(builder);
         }
 
-        public static Builder builder() {
+        static Builder builder() {
             return new Builder();
         }
 

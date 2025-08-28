@@ -259,7 +259,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         private final StanzaListener dataPacketListener;
 
         /* queue containing received In-Band Bytestream data packets */
-        protected final BlockingQueue<DataPacketExtension> dataQueue = new LinkedBlockingQueue<DataPacketExtension>();
+        final BlockingQueue<DataPacketExtension> dataQueue = new LinkedBlockingQueue<DataPacketExtension>();
 
         /* buffer containing the data from one data packet */
         private byte[] buffer;
@@ -282,7 +282,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         /**
          * Constructor.
          */
-        protected IBBInputStream() {
+        IBBInputStream() {
             // add data packet listener to connection
             this.dataPacketListener = getDataPacketListener();
             connection.addSyncStanzaListener(this.dataPacketListener, getDataPacketFilter());
@@ -293,14 +293,14 @@ public class InBandBytestreamSession implements BytestreamSession {
          *
          * @return the data stanza listener
          */
-        protected abstract StanzaListener getDataPacketListener();
+        abstract StanzaListener getDataPacketListener();
 
         /**
          * Returns the stanza filter that accepts In-Band Bytestream data packets.
          *
          * @return the data stanza filter
          */
-        protected abstract StanzaFilter getDataPacketFilter();
+        abstract StanzaFilter getDataPacketFilter();
 
         @Override
         public synchronized int read() throws IOException {
@@ -628,16 +628,16 @@ public class InBandBytestreamSession implements BytestreamSession {
     private abstract class IBBOutputStream extends OutputStream {
 
         /* buffer with the size of this sessions block size */
-        protected final byte[] buffer;
+        private final byte[] buffer;
 
         /* pointer to next byte to write to buffer */
-        protected int bufferPointer = 0;
+        private int bufferPointer = 0;
 
         /* data packet sequence (range from 0 to 65535) */
-        protected UInt16 seq = UInt16.from(0);
+        private UInt16 seq = UInt16.from(0);
 
         /* flag to indicate if output stream is closed */
-        protected boolean isClosed = false;
+        boolean isClosed = false;
 
         /**
          * Constructor.
@@ -654,7 +654,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          * @throws NotConnectedException if the XMPP connection is not connected.
          * @throws InterruptedException if the calling thread was interrupted.
          */
-        protected abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException, InterruptedException;
+        abstract void writeToXML(DataPacketExtension data) throws IOException, NotConnectedException, InterruptedException;
 
         @Override
         public synchronized void write(int b) throws IOException {
@@ -789,7 +789,7 @@ public class InBandBytestreamSession implements BytestreamSession {
          *
          * @param flush if <code>true</code> flushes the stream
          */
-        protected void closeInternal(boolean flush) {
+        void closeInternal(boolean flush) {
             if (this.isClosed) {
                 return;
             }

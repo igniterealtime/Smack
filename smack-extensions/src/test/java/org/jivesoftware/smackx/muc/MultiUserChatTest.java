@@ -269,7 +269,7 @@ public class MultiUserChatTest extends SmackTestSuite {
      * This class can be used to simulate the server response for invoke directly request.
      */
     private abstract class InvokeDirectlyResponder extends Thread {
-        protected Throwable exception;
+        Throwable exception;
         abstract void verifyRequest(Message updateRequest);
 
         @Override
@@ -303,8 +303,8 @@ public class MultiUserChatTest extends SmackTestSuite {
      * This class can be used to simulate receiving an invitation.
      */
     private abstract static class GroupInvitationListener extends WaitForPacketListener implements InvitationListener {
-        protected volatile Throwable exception;
-        public abstract void verifyInvitation(XMPPConnection conn, MultiUserChat room, EntityJid inviter,
+        volatile Throwable exception;
+        abstract void verifyInvitation(XMPPConnection conn, MultiUserChat room, EntityJid inviter,
                                        String reason, String password, Message message, MUCUser.Invite invitation);
 
         @Override
@@ -314,11 +314,11 @@ public class MultiUserChatTest extends SmackTestSuite {
             reportInvoked();
         }
 
-        public synchronized Throwable getError() {
+        synchronized Throwable getError() {
             return exception;
         }
 
-        public synchronized void setError(Throwable e) {
+        synchronized void setError(Throwable e) {
             exception = e;
         }
     }

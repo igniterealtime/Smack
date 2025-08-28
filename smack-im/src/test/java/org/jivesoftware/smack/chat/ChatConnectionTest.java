@@ -407,11 +407,11 @@ public class ChatConnectionTest {
         }
 
         @SuppressWarnings("unused")
-        public Chat getChat() {
+        Chat getChat() {
             return msgChat;
         }
 
-        public int getNumMessages() {
+        int getNumMessages() {
             return counter;
         }
     }

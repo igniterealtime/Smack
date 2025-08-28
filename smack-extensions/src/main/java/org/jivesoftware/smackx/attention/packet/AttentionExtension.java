@@ -48,31 +48,16 @@ public class AttentionExtension implements ExtensionElement {
 
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT_NAME);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#getElementName()
-     */
     @Override
     public String getElementName() {
         return QNAME.getLocalPart();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#getNamespace()
-     */
     @Override
     public String getNamespace() {
         return QNAME.getNamespaceURI();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.jivesoftware.smack.packet.PacketExtension#toXML()
-     */
     @Override
     public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
         return new XmlStringBuilder(this).closeEmptyElement();
