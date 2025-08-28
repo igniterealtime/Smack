@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-	implementation "biz.aQute.bnd:biz.aQute.bnd.gradle:7.0.0"
+	implementation "biz.aQute.bnd:biz.aQute.bnd.gradle:7.1.0"
 	implementation "me.champeau.jmh:jmh-gradle-plugin:0.7.3"
 	implementation "net.ltgt.gradle:gradle-errorprone-plugin:4.2.0"
 	implementation "ru.vyarus:gradle-animalsniffer-plugin:2.0.1"
