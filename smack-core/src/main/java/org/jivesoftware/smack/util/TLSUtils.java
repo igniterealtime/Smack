@@ -80,7 +80,7 @@ public class TLSUtils {
      * @param <B> Type of the ConnectionConfiguration builder.
      * @return the given builder.
      */
-    public static <B extends ConnectionConfiguration.Builder<B, ?>> B acceptAllCertificates(B builder) {
+    public static <B extends ConnectionConfiguration.Builder<?, ?>> B acceptAllCertificates(B builder) {
         builder.setCustomX509TrustManager(new AcceptAllTrustManager());
         return builder;
     }
