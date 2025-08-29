@@ -546,7 +546,11 @@ public class SmackIntegrationTestFramework {
         }
 
         if (numberOfAvailableTests == 0) {
-            throw new IllegalArgumentException("No integration tests selected.");
+            var message = new StringBuilder("No integration tests selected");
+            if (!testRunResult.impossibleTestClasses.isEmpty()) {
+                message.append(". The following tests are not possible to execute: " + testRunResult.impossibleTestClasses);
+            }
+            throw new IllegalArgumentException(message.toString());
         }
 
         sb.append("Available tests: ").append(numberOfAvailableTests);
