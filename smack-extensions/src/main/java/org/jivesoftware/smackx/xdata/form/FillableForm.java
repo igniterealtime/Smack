@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020-2024 Florian Schmaus
+ * Copyright 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,6 +76,10 @@ public class FillableForm extends FilledForm {
         for (FormField field : requiredFieldsWithDefaultValue) {
             write(field);
         }
+    }
+
+    public Set<String> getMissingRequiredFields() {
+        return new HashSet<>(missingRequiredFields);
     }
 
     protected void writeListMulti(String fieldName, List<? extends CharSequence> values) {
