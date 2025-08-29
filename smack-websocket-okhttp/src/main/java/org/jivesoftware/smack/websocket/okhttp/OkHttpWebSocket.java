@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Aditya Borikar, 2020-2021 Florian Schmaus
+ * Copyright 2020 Aditya Borikar, 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,13 +32,29 @@ import okhttp3.WebSocketListener;
 
 public final class OkHttpWebSocket extends AbstractWebSocket {
 
-    private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient();
-
     private final WebSocket okHttpWebSocket;
 
     OkHttpWebSocket(WebSocketRemoteConnectionEndpoint endpoint,
                     ModularXmppClientToServerConnectionInternal connectionInternal) {
         super(endpoint, connectionInternal);
+
+        var okHttpClientBuilder = new OkHttpClient.Builder();
+        var tlsContext = connectionInternal.getSmackTlsContext();
+        if (tlsContext != null) {
+            var customTrustManager = tlsContext.customTrustManager;
+            if (customTrustManager != null) {
+                okHttpClientBuilder.sslSocketFactory(tlsContext.sslContext.getSocketFactory(), customTrustManager);
+            }
+        }
+        // Checking if connection is not null is only necessary since we use mocked objects where it may be null in test
+        // cases. Otherwise, the 'connection' field will always be non-null.
+        if (connectionInternal.connection != null) {
+            var customHostnameVerifier = connectionInternal.connection.getConfiguration().getHostnameVerifier();
+            if (customHostnameVerifier != null) {
+                okHttpClientBuilder.hostnameVerifier(customHostnameVerifier);
+            }
+        }
+        var okHttpClient = okHttpClientBuilder.build();
 
         final String url = endpoint.getRawString();
         Request request = new Request.Builder()
@@ -46,7 +62,7 @@ public final class OkHttpWebSocket extends AbstractWebSocket {
                               .header(SEC_WEBSOCKET_PROTOCOL_HEADER_FILED_NAME, SEC_WEBSOCKET_PROTOCOL_HEADER_FILED_VALUE_XMPP)
                               .build();
 
-        okHttpWebSocket = OK_HTTP_CLIENT.newWebSocket(request, listener);
+        okHttpWebSocket = okHttpClient.newWebSocket(request, listener);
     }
 
     private final WebSocketListener listener = new WebSocketListener() {
