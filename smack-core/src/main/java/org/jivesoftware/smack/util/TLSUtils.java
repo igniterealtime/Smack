@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2024 Florian Schmaus
+ * Copyright 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ public class TLSUtils {
      * @return the given builder.
      */
     public static <B extends ConnectionConfiguration.Builder<?, ?>> B acceptAllCertificates(B builder) {
-        builder.setCustomX509TrustManager(new AcceptAllTrustManager());
+        builder.setCustomX509TrustManager(ACCEPT_ALL_TRUST_MANAGER);
         return builder;
     }
 
@@ -182,15 +182,8 @@ public class TLSUtils {
         return messageDigest.digest();
     }
 
-    /**
-     * A {@link X509TrustManager} that <b>doesn't validate</b> X.509 certificates.
-     * <p>
-     * Connections that use this TrustManager will just be encrypted, without any guarantee that the
-     * counter part is actually the intended one. Man-in-the-Middle attacks will be possible, since
-     * any certificate presented by the attacker will be considered valid.
-     * </p>
-     */
-    public static class AcceptAllTrustManager implements X509TrustManager {
+
+    private static final class AcceptAllTrustManager implements X509TrustManager {
 
         @Override
         public void checkClientTrusted(X509Certificate[] arg0, String arg1)
@@ -209,6 +202,16 @@ public class TLSUtils {
             return new X509Certificate[0];
         }
     }
+
+    /**
+     * A {@link X509TrustManager} that <b>doesn't validate</b> X.509 certificates.
+     * <p>
+     * Connections that use this TrustManager will just be encrypted, without any guarantee that the
+     * counter part is actually the intended one. Man-in-the-Middle attacks will be possible, since
+     * any certificate presented by the attacker will be considered valid.
+     * </p>
+     */
+    public static final X509TrustManager ACCEPT_ALL_TRUST_MANAGER = new AcceptAllTrustManager();
 
     private static final File DEFAULT_TRUSTSTORE_PATH;
 
