@@ -299,7 +299,7 @@ public abstract class ConnectionConfiguration {
             context.init(keyManagers, trustManagers, secureRandom);
         }
 
-        return new SmackTlsContext(context, daneVerifier);
+        return new SmackTlsContext(context, daneVerifier, trustManager);
     }
 
     public String getHostString() {

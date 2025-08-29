@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,19 @@
 package org.jivesoftware.smack.internal;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
 
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
 public final class SmackTlsContext {
     public final SSLContext sslContext;
     public final SmackDaneVerifier daneVerifier;
+    public final X509TrustManager customTrustManager;
 
-    public SmackTlsContext(SSLContext sslContext, SmackDaneVerifier daneVerifier) {
+    public SmackTlsContext(SSLContext sslContext, SmackDaneVerifier daneVerifier, X509TrustManager customTrustManager) {
         assert sslContext != null;
         this.sslContext = sslContext;
         this.daneVerifier = daneVerifier;
+        this.customTrustManager = customTrustManager;
     }
 }
