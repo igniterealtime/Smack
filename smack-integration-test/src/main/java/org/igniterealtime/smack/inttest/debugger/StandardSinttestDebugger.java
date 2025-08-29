@@ -279,6 +279,13 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         completeWriter.close();
         testsWriter.close();
 
+        var failedTestsFile = this.basePath.resolve("tests-failed");
+        try (var failedTestsWriter = Files.newBufferedWriter(failedTestsFile)) {
+            for (var failed : testRunResult.getFailedTests()) {
+                failedTestsWriter.append(failed.concreteTest.toString()).append(" ✗ [FAILED: ").append(failed.failureReason.getClass().getSimpleName()).append("]\n");
+            }
+        }
+
         LOGGER.info("Test data file://" + basePath);
     }
 }
