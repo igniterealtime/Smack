@@ -50,6 +50,7 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.security.auth.callback.Callback;
@@ -385,6 +386,10 @@ public abstract class ConnectionConfiguration {
      */
     public String[] getEnabledSSLCiphers() {
         return enabledSSLCiphers;
+    }
+
+    public SSLSocketFactory getSSLSocketFactory() {
+        return smackTlsContext.sslContext.getSocketFactory();
     }
 
     /**
