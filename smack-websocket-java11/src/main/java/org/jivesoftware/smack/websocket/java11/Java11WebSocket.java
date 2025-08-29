@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021-2023 Florian Schmaus
+ * Copyright 2021-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ import org.jivesoftware.smack.websocket.impl.AbstractWebSocket;
 import org.jivesoftware.smack.websocket.rce.WebSocketRemoteConnectionEndpoint;
 
 public final class Java11WebSocket extends AbstractWebSocket {
-
-    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder().build();
 
     private WebSocket webSocket;
 
@@ -109,8 +107,15 @@ public final class Java11WebSocket extends AbstractWebSocket {
             }
         };
 
+        var httpClientBuilder = HttpClient.newBuilder();
+        var smackTlsContext = connectionInternal.getSmackTlsContext();
+        if (smackTlsContext != null) {
+            httpClientBuilder.sslContext(smackTlsContext.sslContext);
+        }
+
         final URI uri = endpoint.getUri();
-        CompletionStage<WebSocket> webSocketFuture = HTTP_CLIENT.newWebSocketBuilder()
+        var httpClient = httpClientBuilder.build();
+        CompletionStage<WebSocket> webSocketFuture = httpClient.newWebSocketBuilder()
                         .subprotocols(SEC_WEBSOCKET_PROTOCOL_HEADER_FILED_VALUE_XMPP)
                         .buildAsync(uri, listener);
 
