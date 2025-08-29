@@ -19,10 +19,12 @@ package org.jivesoftware.smack.fsm;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
 import org.jivesoftware.smack.fsm.StateDescriptorGraph.GraphVertex;
+import org.jivesoftware.smack.util.StringUtils;
 
 public abstract class StateMachineException extends SmackException {
 
@@ -75,9 +77,14 @@ public abstract class StateMachineException extends SmackException {
         }
 
         public static SmackStateGraphDeadEndException from(WalkStateGraphContext walkStateGraphContext, GraphVertex<State> stateVertex) {
-            String message = stateVertex + " has no successor vertexes";
+            var sb = new StringBuilder(stateVertex.getElement().getStateDescriptor() + " can not proceed. Walk: ");
+            StringUtils.appendTo(walkStateGraphContext.getWalk().stream().map(s -> s.getStateDescriptor()).collect(
+                            Collectors.toList()), " → ", sb);
+            for (var entry : walkStateGraphContext.getFailedStates().entrySet()) {
+                sb.append(". ").append(entry.getKey()).append(" failed with: ").append(entry.getValue());
+            }
 
-            return new SmackStateGraphDeadEndException(message, walkStateGraphContext, stateVertex);
+            return new SmackStateGraphDeadEndException(sb.toString(), walkStateGraphContext, stateVertex);
         }
     }
 }
