@@ -32,10 +32,12 @@ import org.jivesoftware.smackx.iot.discovery.element.Tag;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTRegisterProvider extends IqProvider<IoTRegister> {
 
     @Override
-    public IoTRegister parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public IoTRegister parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         boolean selfOwned = ParserUtils.getBooleanAttribute(parser, "selfOwned", false);
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         List<Tag> tags = new ArrayList<>();

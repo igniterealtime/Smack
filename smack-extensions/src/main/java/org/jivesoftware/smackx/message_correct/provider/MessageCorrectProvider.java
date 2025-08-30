@@ -22,6 +22,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * A ExtensionElementProvider for the MessageCorrectExtension. As
  * MessageCorrection elements have only the ID of the message to replace.
@@ -31,7 +33,7 @@ import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 public class MessageCorrectProvider extends ExtensionElementProvider<MessageCorrectExtension> {
 
     @Override
-    public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public MessageCorrectExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String idMessageToReplace = parser.getAttributeValue("", MessageCorrectExtension.ID_TAG);
         return new MessageCorrectExtension(idMessageToReplace);
     }

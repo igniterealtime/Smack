@@ -27,6 +27,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -37,9 +38,9 @@ import org.jxmpp.jid.Jid;
 public class OfferRevokeProvider extends IqProvider<IQ> {
 
     @Override
-    public OfferRevokePacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public OfferRevokePacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         // The parser will be positioned on the opening IQ tag, so get the JID attribute.
-        Jid userJID = ParserUtils.getJidAttribute(parser);
+        Jid userJID = ParserUtils.getJidAttribute(parser, jxmppContext);
         // Default the userID to the JID.
         Jid userID = userJID;
         String reason = null;
@@ -58,7 +59,7 @@ public class OfferRevokeProvider extends IqProvider<IQ> {
             }
             else if ((eventType == XmlPullParser.Event.START_ELEMENT)
                          && parser.getName().equals(UserID.ELEMENT_NAME)) {
-                userID = ParserUtils.getJidAttribute(parser, "id");
+                userID = ParserUtils.getJidAttribute(parser, "id", jxmppContext);
             }
             else if ((eventType == XmlPullParser.Event.END_ELEMENT) && parser.getName().equals(
                     "offer-revoke")) {

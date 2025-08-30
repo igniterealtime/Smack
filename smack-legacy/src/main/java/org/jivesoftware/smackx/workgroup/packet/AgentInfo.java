@@ -26,6 +26,8 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * IQ stanza for retrieving and changing the Agent personal information.
  */
@@ -108,7 +110,7 @@ public class AgentInfo extends IQ {
     public static class Provider extends IqProvider<AgentInfo> {
 
         @Override
-        public AgentInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public AgentInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             AgentInfo answer = new AgentInfo();
 
             boolean done = false;

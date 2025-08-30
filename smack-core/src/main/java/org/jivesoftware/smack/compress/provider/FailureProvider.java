@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public final class FailureProvider extends NonzaProvider<Failure> {
 
     private static final Logger LOGGER = Logger.getLogger(FailureProvider.class.getName());
@@ -39,7 +41,7 @@ public final class FailureProvider extends NonzaProvider<Failure> {
     }
 
     @Override
-    public Failure parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public Failure parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         Failure.CompressFailureError compressFailureError = null;
         StanzaError stanzaError = null;
         XmlEnvironment failureXmlEnvironment = XmlEnvironment.from(parser, xmlEnvironment);
@@ -61,7 +63,7 @@ public final class FailureProvider extends NonzaProvider<Failure> {
                 case StreamOpen.SERVER_NAMESPACE:
                     switch (name) {
                         case StanzaError.ERROR:
-                            stanzaError = PacketParserUtils.parseError(parser, failureXmlEnvironment);
+                            stanzaError = PacketParserUtils.parseError(parser, failureXmlEnvironment, jxmppContext);
                             break;
                         default:
                             LOGGER.warning("Unknown element in " + namespace + ": " + name);

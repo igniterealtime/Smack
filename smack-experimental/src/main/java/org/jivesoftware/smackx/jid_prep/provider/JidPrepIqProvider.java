@@ -27,10 +27,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jid_prep.element.JidPrepIq;
 
+import org.jxmpp.JxmppContext;
+
 public class JidPrepIqProvider extends IqProvider<JidPrepIq> {
 
     @Override
-    public JidPrepIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public JidPrepIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String jid = parser.nextText();
 

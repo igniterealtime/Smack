@@ -35,6 +35,7 @@ import org.jivesoftware.smackx.jingleold.packet.JingleContentInfo;
 import org.jivesoftware.smackx.jingleold.packet.JingleDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -51,7 +52,7 @@ public class JingleProvider extends IqProvider<Jingle> {
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     @Override
-    public Jingle parse(XmlPullParser parser, int intialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {
+    public Jingle parse(XmlPullParser parser, int intialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException, XmlPullParserException, SmackParsingException {
 
         Jingle jingle = new Jingle();
         String sid;
@@ -74,8 +75,8 @@ public class JingleProvider extends IqProvider<Jingle> {
         // Get some attributes for the <jingle> element
         sid = parser.getAttributeValue("", "sid");
         action = JingleActionEnum.getAction(parser.getAttributeValue("", "action"));
-        initiator = ParserUtils.getJidAttribute(parser, "initiator");
-        responder = ParserUtils.getJidAttribute(parser, "responder");
+        initiator = ParserUtils.getJidAttribute(parser, "initiator", jxmppContext);
+        responder = ParserUtils.getJidAttribute(parser, "responder", jxmppContext);
 
         jingle.setSid(sid);
         jingle.setAction(action);

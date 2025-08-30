@@ -22,10 +22,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 
+import org.jxmpp.JxmppContext;
+
 public class RegistrationStreamFeatureProvider extends ExtensionElementProvider<Registration.Feature> {
 
     @Override
-    public Registration.Feature parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public Registration.Feature parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return Registration.Feature.INSTANCE;
     }
 

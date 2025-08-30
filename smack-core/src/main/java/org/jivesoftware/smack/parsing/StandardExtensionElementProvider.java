@@ -28,6 +28,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * The parser for {@link StandardExtensionElement}s.
  *
@@ -39,7 +41,7 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
     public static StandardExtensionElementProvider INSTANCE = new StandardExtensionElementProvider();
 
     @Override
-    public StandardExtensionElement parse(final XmlPullParser parser, final int initialDepth, XmlEnvironment xmlEnvironment)
+    public StandardExtensionElement parse(final XmlPullParser parser, final int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         // Unlike most (all?) other providers, we don't know the name and namespace of the element
         // we are parsing here.
@@ -79,7 +81,8 @@ public class StandardExtensionElementProvider extends ExtensionElementProvider<S
             XmlPullParser.Event event = parser.next();
             switch (event) {
             case START_ELEMENT:
-                builder.addElement(parse(parser, parser.getDepth(), xmlEnvironment));
+                var element = parse(parser, parser.getDepth(), xmlEnvironment, jxmppContext);
+                builder.addElement(element);
                 break;
             case TEXT_CHARACTERS:
                 builder.setText(parser.getText());

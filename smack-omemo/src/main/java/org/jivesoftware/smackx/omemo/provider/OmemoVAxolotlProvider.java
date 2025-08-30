@@ -32,6 +32,8 @@ import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement;
 import org.jivesoftware.smackx.omemo.element.OmemoHeaderElement_VAxolotl;
 import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Smack ExtensionProvider that parses incoming OMEMO Message element into OmemoMessageElement objects.
  *
@@ -40,7 +42,7 @@ import org.jivesoftware.smackx.omemo.element.OmemoKeyElement;
 public class OmemoVAxolotlProvider extends ExtensionElementProvider<OmemoElement_VAxolotl> {
 
     @Override
-    public OmemoElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public OmemoElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         int sid = -1;
         ArrayList<OmemoKeyElement> keys = new ArrayList<>();
         byte[] iv = null;

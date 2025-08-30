@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2019 Florian Schmaus
+ * Copyright © 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.Test;
+import org.jxmpp.JxmppContext;
 
 public class ProviderManagerTest {
 
@@ -41,7 +42,7 @@ public class ProviderManagerTest {
     public static class TestIQProvider extends IqProvider<IQ> {
 
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
             return null;
         }
 

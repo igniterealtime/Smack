@@ -31,6 +31,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -115,14 +116,15 @@ public class AgentStatusRequest extends IQ {
     public static class Provider extends IqProvider<AgentStatusRequest> {
 
         @Override
-        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public AgentStatusRequest parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             AgentStatusRequest statusRequest = new AgentStatusRequest();
 
             boolean done = false;
             while (!done) {
                 XmlPullParser.Event eventType = parser.next();
                 if (eventType == XmlPullParser.Event.START_ELEMENT && "agent".equals(parser.getName())) {
-                    statusRequest.agents.add(parseAgent(parser));
+                    var agent =  parseAgent(parser, jxmppContext);
+                    statusRequest.agents.add(agent);
                 }
                 else if (eventType == XmlPullParser.Event.END_ELEMENT &&
                         "agent-status-request".equals(parser.getName())) {
@@ -132,10 +134,10 @@ public class AgentStatusRequest extends IQ {
             return statusRequest;
         }
 
-        private static Item parseAgent(XmlPullParser parser) throws XmlPullParserException, IOException {
+        private static Item parseAgent(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
 
             boolean done = false;
-            EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
+            EntityBareJid jid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
             String type = parser.getAttributeValue("", "type");
             String name = null;
             while (!done) {

@@ -34,6 +34,7 @@ import org.jivesoftware.smackx.si.packet.StreamInitiation.File;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.util.XmppDateTime;
 
 /**
@@ -47,7 +48,7 @@ public class StreamInitiationProvider extends IqProvider<StreamInitiation> {
 
     @SuppressWarnings("JavaUtilDate")
     @Override
-    public StreamInitiation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public StreamInitiation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         // si
         String id = parser.getAttributeValue("", "id");
         String mimeType = parser.getAttributeValue("", "mime-type");

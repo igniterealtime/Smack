@@ -28,10 +28,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.iqversion.packet.Version;
 import org.jivesoftware.smackx.iqversion.packet.VersionBuilder;
 
+import org.jxmpp.JxmppContext;
+
 public class VersionProvider extends IqProvider<Version> {
 
     @Override
-    public Version parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public Version parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         VersionBuilder versionBuilder = Version.builder(iqData);
 

@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ;
 import org.jivesoftware.smackx.mam.element.MamPrefsIQ.DefaultBehavior;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -46,7 +47,7 @@ public class MamPrefsIQProvider extends IqProvider<MamPrefsIQ> {
     public static final MamPrefsIQProvider INSTANCE = new MamPrefsIQProvider();
 
     @Override
-    public MamPrefsIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public MamPrefsIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         MamElementFactory elementFactory =  MamElementFactory.forParser(parser);
         String defaultBehaviorString = parser.getAttributeValue("", "default");
         DefaultBehavior defaultBehavior = null;

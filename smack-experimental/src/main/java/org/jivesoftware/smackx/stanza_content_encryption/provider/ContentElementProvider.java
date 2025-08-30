@@ -37,13 +37,14 @@ import org.jivesoftware.smackx.stanza_content_encryption.element.RandomPaddingAf
 import org.jivesoftware.smackx.stanza_content_encryption.element.TimestampAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.ToAffixElement;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class ContentElementProvider extends ExtensionElementProvider<ContentElement> {
 
     @Override
-    public ContentElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public ContentElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, ParseException, SmackParsingException {
         ContentElement.Builder builder = ContentElement.builder();
 
@@ -69,11 +70,11 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
                         break;
 
                     case PayloadElement.ELEMENT:
-                        parsePayload(parser, xmlEnvironment, builder);
+                        parsePayload(parser, xmlEnvironment, jxmppContext, builder);
                         break;
 
                     default:
-                        parseCustomAffix(parser, xmlEnvironment, builder);
+                        parseCustomAffix(parser, xmlEnvironment, jxmppContext, builder);
                         break;
                 }
             } else if (tag == XmlPullParser.Event.END_ELEMENT) {
@@ -85,16 +86,16 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
         return builder.build();
     }
 
-    private static void parseCustomAffix(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, ContentElement.Builder builder)
+    private static void parseCustomAffix(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext, ContentElement.Builder builder)
             throws XmlPullParserException, IOException, SmackParsingException {
         String name = parser.getName();
         String namespace = parser.getNamespace();
 
-        AffixElement element = (AffixElement) PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment);
+        AffixElement element = (AffixElement) PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment, jxmppContext);
         builder.addFurtherAffixElement(element);
     }
 
-    private static void parsePayload(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, ContentElement.Builder builder)
+    private static void parsePayload(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext, ContentElement.Builder builder)
             throws IOException, XmlPullParserException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         while (true) {
@@ -103,7 +104,7 @@ public class ContentElementProvider extends ExtensionElementProvider<ContentElem
             if (tag == XmlPullParser.Event.START_ELEMENT) {
                 String name = parser.getName();
                 String namespace = parser.getNamespace();
-                XmlElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment);
+                XmlElement element = PacketParserUtils.parseExtensionElement(name, namespace, parser, outerXmlEnvironment, jxmppContext);
                 builder.addPayloadItem(element);
             }
 

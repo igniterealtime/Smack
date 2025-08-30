@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2024 Florian Schmaus, 2018 Paul Schaub.
+ * Copyright 2017-2025 Florian Schmaus, 2018 Paul Schaub.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ import org.jivesoftware.smackx.ox.element.OpenPgpContentElement;
 import org.jivesoftware.smackx.ox.element.SignElement;
 import org.jivesoftware.smackx.ox.element.SigncryptElement;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -79,7 +80,7 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
     }
 
     @Override
-    public abstract O parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public abstract O parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
     protected static OpenPgpContentElementData parseOpenPgpContentElementData(XmlPullParser parser, int initialDepth)

@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream;
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.Mode;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -38,7 +39,7 @@ import org.jxmpp.jid.Jid;
 public class BytestreamsProvider extends IqProvider<Bytestream> {
 
     @Override
-    public Bytestream parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public Bytestream parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         boolean done = false;
 
@@ -59,15 +60,17 @@ public class BytestreamsProvider extends IqProvider<Bytestream> {
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 elementName = parser.getName();
                 if (elementName.equals(Bytestream.StreamHost.ELEMENT)) {
-                    JID = ParserUtils.getJidAttribute(parser);
+                    JID = ParserUtils.getJidAttribute(parser, jxmppContext);
                     host = parser.getAttributeValue("", "host");
                     port = parser.getAttributeValue("", "port");
                 }
                 else if (elementName.equals(Bytestream.StreamHostUsed.ELEMENT)) {
-                    toReturn.setUsedHost(ParserUtils.getJidAttribute(parser));
+                    var usedHost = ParserUtils.getJidAttribute(parser, jxmppContext);
+                    toReturn.setUsedHost(usedHost);
                 }
                 else if (elementName.equals(Bytestream.Activate.ELEMENT)) {
-                    toReturn.setToActivate(ParserUtils.getJidAttribute(parser));
+                    var toActivate = ParserUtils.getJidAttribute(parser, jxmppContext);
+                    toReturn.setToActivate(toActivate);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {

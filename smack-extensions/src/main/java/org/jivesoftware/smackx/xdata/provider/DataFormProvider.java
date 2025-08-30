@@ -54,6 +54,8 @@ import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdatalayout.packet.DataLayout;
 import org.jivesoftware.smackx.xdatalayout.provider.DataLayoutProvider;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * The DataFormProvider parses DataForm packets.
  *
@@ -66,7 +68,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
     public static final DataFormProvider INSTANCE = new DataFormProvider();
 
     @Override
-    public DataForm parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public DataForm parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         DataForm.Type dataFormType = DataForm.Type.fromString(parser.getAttributeValue("", "type"));
         DataForm.Builder dataForm = DataForm.builder(dataFormType);
 
@@ -90,7 +92,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 case "field":
                     // Note that we parse this form field without any potential reportedData. We only use reportedData
                     // to lookup form field types of fields under <item/>.
-                    FormField formField = parseField(parser, elementXmlEnvironment, formType);
+                    FormField formField = parseField(parser, elementXmlEnvironment, jxmppContext, formType);
 
                     TextSingleFormField hiddenFormTypeField = formField.asHiddenFormTypeFieldIfPossible();
                     if (hiddenFormTypeField != null) {
@@ -103,14 +105,14 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                     dataForm.addField(formField);
                     break;
                 case "item":
-                    DataForm.Item item = parseItem(parser, elementXmlEnvironment, formType, reportedData);
+                    DataForm.Item item = parseItem(parser, elementXmlEnvironment, jxmppContext, formType, reportedData);
                     dataForm.addItem(item);
                     break;
                 case "reported":
                     if (reportedData != null) {
                         throw new SmackParsingException("Data form with multiple <reported/> elements");
                     }
-                    reportedData = parseReported(parser, elementXmlEnvironment, formType);
+                    reportedData = parseReported(parser, elementXmlEnvironment, jxmppContext, formType);
                     dataForm.setReportedData(reportedData);
                     break;
                 // See XEP-133 Example 32 for a corner case where the data form contains this extension.
@@ -140,9 +142,9 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return dataForm.build();
     }
 
-    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType)
+    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext, String formType)
                     throws XmlPullParserException, IOException, SmackParsingException {
-        return parseField(parser, xmlEnvironment, formType, null);
+        return parseField(parser, xmlEnvironment, jxmppContext, formType, null);
     }
 
     private static final class FieldNameAndFormType {
@@ -176,7 +178,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
 
     private static final Set<FieldNameAndFormType> UNKNOWN_FIELDS = new CopyOnWriteArraySet<>();
 
-    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType, DataForm.ReportedData reportedData)
+    private static FormField parseField(XmlPullParser parser, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext, String formType, DataForm.ReportedData reportedData)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
 
@@ -216,7 +218,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                         continue;
                     }
                     FormFieldChildElement formFieldChildElement = provider.parse(parser,
-                                    XmlEnvironment.from(parser, xmlEnvironment));
+                                    XmlEnvironment.from(parser, xmlEnvironment), jxmppContext);
                     childElements.add(formFieldChildElement);
                 }
                 break;
@@ -370,7 +372,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return builder;
     }
 
-    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType,
+    private static DataForm.Item parseItem(XmlPullParser parser, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext, String formType,
                     DataForm.ReportedData reportedData)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
@@ -382,7 +384,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), formType,
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), jxmppContext, formType,
                                     reportedData);
                     fields.add(field);
                     break;
@@ -398,7 +400,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
         return new DataForm.Item(fields);
     }
 
-    private static DataForm.ReportedData parseReported(XmlPullParser parser, XmlEnvironment xmlEnvironment, String formType)
+    private static DataForm.ReportedData parseReported(XmlPullParser parser, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext, String formType)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<FormField> fields = new ArrayList<>();
@@ -409,7 +411,7 @@ public class DataFormProvider extends ExtensionElementProvider<DataForm> {
                 String name = parser.getName();
                 switch (name) {
                 case "field":
-                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), formType);
+                    FormField field = parseField(parser, XmlEnvironment.from(parser, xmlEnvironment), jxmppContext, formType);
                     fields.add(field);
                     break;
                 }

@@ -25,6 +25,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Stanza provider for base64 binary chunks.
  *
@@ -34,7 +36,7 @@ import org.jivesoftware.smackx.hoxt.packet.Base64BinaryChunk;
 public class Base64BinaryChunkProvider extends ExtensionElementProvider<Base64BinaryChunk> {
 
     @Override
-    public Base64BinaryChunk parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Base64BinaryChunk parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String streamId = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_STREAM_ID);
         String nrString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_NR);
         String lastString = parser.getAttributeValue("", Base64BinaryChunk.ATTRIBUTE_LAST);

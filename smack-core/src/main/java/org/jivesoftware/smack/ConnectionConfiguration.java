@@ -77,6 +77,7 @@ import org.jivesoftware.smack.util.TLSUtils;
 import org.jivesoftware.smack.util.dns.SmackDaneProvider;
 import org.jivesoftware.smack.util.dns.SmackDaneVerifier;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
@@ -188,6 +189,8 @@ public abstract class ConnectionConfiguration {
 
     private final StanzaIdSourceFactory stanzaIdSourceFactory;
 
+    private final JxmppContext jxmppContext;
+
     protected ConnectionConfiguration(Builder<?, ?> builder) {
         try {
             smackTlsContext = getSmackTlsContext(builder.dnssecMode, builder.sslContextFactory,
@@ -249,6 +252,8 @@ public abstract class ConnectionConfiguration {
 
         stanzaIdSourceFactory = builder.stanzaIdSourceFactory;
 
+        jxmppContext = builder.jxmppContext;
+
         // If the enabledSaslMechanisms are set, then they must not be empty
         assert enabledSaslMechanisms == null || !enabledSaslMechanisms.isEmpty();
     }
@@ -303,6 +308,10 @@ public abstract class ConnectionConfiguration {
         return new SmackTlsContext(context, daneVerifier, trustManager);
     }
 
+    protected static JxmppContext getDefaultJxmppContext() {
+        return SmackConfiguration.getDefaultJxmppContext();
+    }
+
     public String getHostString() {
         if (hostAddress != null) {
             return hostAddress.toString();
@@ -354,6 +363,10 @@ public abstract class ConnectionConfiguration {
      */
     public DnsName getXmppServiceDomainAsDnsNameIfPossible() {
         return xmppServiceDomainDnsName;
+    }
+
+    public JxmppContext getJxmppContext() {
+        return jxmppContext;
     }
 
     /**
@@ -645,6 +658,7 @@ public abstract class ConnectionConfiguration {
      * @param <C> the resulting connection configuration type parameter.
      */
     public abstract static class Builder<B extends Builder<B, C>, C extends ConnectionConfiguration> {
+        private final JxmppContext jxmppContext;
         private SecurityMode securityMode = SecurityMode.required;
         private DnssecMode dnssecMode = DnssecMode.disabled;
         private KeyManager[] keyManagers;
@@ -678,7 +692,8 @@ public abstract class ConnectionConfiguration {
         private StanzaIdSourceFactory stanzaIdSourceFactory = new StandardStanzaIdSource.Factory();
 
         @SuppressWarnings("this-escape")
-        protected Builder() {
+        protected Builder(JxmppContext jxmppContext) {
+            this.jxmppContext = jxmppContext;
             if (SmackConfiguration.DEBUG) {
                 enableDefaultDebugger();
             }
@@ -695,7 +710,7 @@ public abstract class ConnectionConfiguration {
          * @since 4.4.0
          */
         public B setXmppAddressAndPassword(CharSequence jid, String password) throws XmppStringprepException {
-            return setXmppAddressAndPassword(JidCreate.entityBareFrom(jid), password);
+            return setXmppAddressAndPassword(JidCreate.entityBareFrom(jid.toString(), jxmppContext), password);
         }
 
         /**
@@ -765,7 +780,7 @@ public abstract class ConnectionConfiguration {
          * @throws XmppStringprepException if the given string is not a domain bare JID.
          */
         public B setXmppDomain(String xmppServiceDomain) throws XmppStringprepException {
-            this.xmppServiceDomain = JidCreate.domainBareFrom(xmppServiceDomain);
+            this.xmppServiceDomain = JidCreate.domainBareFrom(xmppServiceDomain, jxmppContext);
             return getThis();
         }
 

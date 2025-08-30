@@ -43,6 +43,8 @@ import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateDataIQ;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Manages private data, which is a mechanism to allow users to store arbitrary XML
  * data on an XMPP server. Each private data chunk is defined by a element name and
@@ -238,7 +240,7 @@ public final class PrivateDataManager extends Manager {
     public static class PrivateDataIQProvider extends IqProvider<PrivateDataIQ> {
 
         @Override
-        public PrivateDataIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+        public PrivateDataIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException {
             PrivateData privateData = null;
             boolean done = false;
@@ -251,7 +253,7 @@ public final class PrivateDataManager extends Manager {
                     PrivateDataProvider provider = getPrivateDataProvider(elementName, namespace);
                     // If there is a registered provider, use it.
                     if (provider != null) {
-                        privateData = provider.parsePrivateData(parser);
+                        privateData = provider.parsePrivateData(parser, jxmppContext);
                     }
                     // Otherwise, use a DefaultPrivateData instance to store the private data.
                     else {

@@ -34,6 +34,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects.
  *
@@ -41,7 +43,7 @@ import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
  */
 public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
     @Override
-    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public OmemoBundleElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         boolean inPreKeys = false;
 
         int signedPreKeyId = -1;

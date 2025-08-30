@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2019 Florian Schmaus.
+ * Copyright 2017-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.OpenPgpElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * {@link ExtensionElementProvider} implementation for the {@link OpenPgpElement}.
  */
@@ -33,7 +35,7 @@ public class OpenPgpElementProvider extends ExtensionElementProvider<OpenPgpElem
     public static final OpenPgpElementProvider TEST_INSTANCE = new OpenPgpElementProvider();
 
     @Override
-    public OpenPgpElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public OpenPgpElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String base64EncodedOpenPgpMessage = parser.nextText();
         return new OpenPgpElement(base64EncodedOpenPgpMessage);
     }

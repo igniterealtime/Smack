@@ -26,10 +26,12 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class BodyElementProvider extends ExtensionElementProvider<Message.Body> {
 
     @Override
-    public Message.Body parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Message.Body parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String xmlLang = ParserUtils.getXmlLang(parser);
         String body = parseElementText(parser);
 

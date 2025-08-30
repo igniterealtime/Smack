@@ -27,6 +27,8 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class SessionID implements ExtensionElement {
 
     /**
@@ -75,7 +77,7 @@ public class SessionID implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<SessionID> {
 
         @Override
-        public SessionID parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public SessionID parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException {
             String sessionID = parser.getAttributeValue("", "id");
 

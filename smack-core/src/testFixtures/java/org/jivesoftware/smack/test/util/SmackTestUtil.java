@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2022 Florian Schmaus
+ * Copyright 2019-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smack.xml.XmlPullParserFactory;
 import org.jivesoftware.smack.xml.stax.StaxXmlPullParserFactory;
 import org.jivesoftware.smack.xml.xpp3.Xpp3XmlPullParserFactory;
+
+import org.jxmpp.JxmppContext;
 
 public class SmackTestUtil {
 
@@ -103,7 +105,7 @@ public class SmackTestUtil {
             Provider<E> provider = (Provider<E>) abstractProvider;
             element = provider.parse(parser);
         } else if (abstractProvider instanceof IqProvider) {
-            IqData iqData = PacketParserUtils.parseIqData(parser);
+            IqData iqData = PacketParserUtils.parseIqData(parser, JxmppContext.getDefaultContext());
             parser.next();
             ParserUtils.forwardToStartElement(parser);
             IqProvider<?> iqProvider = (IqProvider<?>) abstractProvider;

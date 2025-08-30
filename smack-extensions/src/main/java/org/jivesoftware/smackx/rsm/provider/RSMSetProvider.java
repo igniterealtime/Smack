@@ -26,12 +26,14 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
+import org.jxmpp.JxmppContext;
+
 public class RSMSetProvider extends ExtensionElementProvider<RSMSet> {
 
     public static final RSMSetProvider INSTANCE = new RSMSetProvider();
 
     @Override
-    public RSMSet parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public RSMSet parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         String after = null;
         String before = null;

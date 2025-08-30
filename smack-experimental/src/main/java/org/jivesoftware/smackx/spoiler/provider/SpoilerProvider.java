@@ -26,12 +26,14 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.spoiler.element.SpoilerElement;
 
+import org.jxmpp.JxmppContext;
+
 public class SpoilerProvider extends ExtensionElementProvider<SpoilerElement> {
 
     public static SpoilerProvider INSTANCE = new SpoilerProvider();
 
     @Override
-    public SpoilerElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public SpoilerElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String lang = ParserUtils.getXmlLang(parser);
         String hint = null;
 

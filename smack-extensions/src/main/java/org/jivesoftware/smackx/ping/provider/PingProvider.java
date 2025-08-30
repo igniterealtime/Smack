@@ -26,10 +26,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ping.packet.Ping;
 
+import org.jxmpp.JxmppContext;
+
 public class PingProvider extends IqProvider<Ping> {
 
     @Override
-    public Ping parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Ping parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         // No need to use the ping constructor with arguments. IQ will already
         // have filled out all relevant fields ('from', 'to', 'id').
         return new Ping();

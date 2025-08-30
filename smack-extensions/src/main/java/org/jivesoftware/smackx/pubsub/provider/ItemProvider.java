@@ -33,6 +33,8 @@ import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.SimplePayload;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parses an <b>item</b> element as is defined in both the {@link PubSubNamespace#basic} and
  * {@link PubSubNamespace#event} namespaces. To parse the item contents, it will use whatever
@@ -43,7 +45,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
  */
 public class ItemProvider extends ExtensionElementProvider<Item>  {
     @Override
-    public Item parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Item parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String id = parser.getAttributeValue(null, "id");
         String node = parser.getAttributeValue(null, "node");

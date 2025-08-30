@@ -27,10 +27,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.dox.element.DnsIq;
 
+import org.jxmpp.JxmppContext;
+
 public class DnsIqProvider extends IqProvider<DnsIq> {
 
     @Override
-    public DnsIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public DnsIq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException {
         String base64DnsMessage = parser.nextText();
         return new DnsIq(base64DnsMessage);

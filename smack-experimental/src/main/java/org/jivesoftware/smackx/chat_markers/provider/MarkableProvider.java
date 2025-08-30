@@ -22,6 +22,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.MarkableExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Markable extension provider class (XEP-0333).
  *
@@ -33,7 +35,7 @@ import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.Markable
 public class MarkableProvider extends ExtensionElementProvider<MarkableExtension> {
 
     @Override
-    public MarkableExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public MarkableExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return MarkableExtension.INSTANCE;
     }
 

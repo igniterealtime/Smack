@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2015 the original author or authors, 2020-2024 Florian Schmaus
+ * Copyright 2013-2015 the original author or authors, 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -189,7 +190,7 @@ public final class DirectoryRosterStore implements RosterStore {
 
         try {
             XmlPullParser parser = PacketParserUtils.getParserFor(reader);
-            Item item = RosterPacketProvider.parseItem(parser);
+            Item item = RosterPacketProvider.parseItem(parser, JxmppContext.getDefaultContext());
             reader.close();
             return item;
         } catch (XmlPullParserException | IOException | IllegalArgumentException e) {

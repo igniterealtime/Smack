@@ -22,6 +22,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.AcknowledgedExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Acknowledged extension provider class (XEP-0333).
  *
@@ -33,7 +35,7 @@ import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.Acknowle
 public class AcknowledgedProvider extends ExtensionElementProvider<AcknowledgedExtension> {
 
     @Override
-    public AcknowledgedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public AcknowledgedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String id = parser.getAttributeValue("", "id");
         return new AcknowledgedExtension(id);
     }

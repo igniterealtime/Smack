@@ -29,6 +29,7 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 
@@ -65,7 +66,7 @@ public class OfferConfirmation extends SimpleIQ {
     public static class Provider extends IqProvider<OfferConfirmation> {
 
         @Override
-        public OfferConfirmation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+        public OfferConfirmation parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException {
             final OfferConfirmation confirmation = new OfferConfirmation();
 

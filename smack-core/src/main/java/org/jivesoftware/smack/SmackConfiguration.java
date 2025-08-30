@@ -38,6 +38,8 @@ import org.jivesoftware.smack.parsing.ExceptionLoggingCallback;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.util.Objects;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Represents the configuration of Smack. The configuration is used for:
  * <ul>
@@ -70,6 +72,8 @@ public final class SmackConfiguration {
     private static int packetCollectorSize = 5000;
 
     private static List<String> defaultMechs = new ArrayList<>();
+
+    private static JxmppContext defaultJxmppContext = JxmppContext.getDefaultContext();
 
     static Set<String> disabledSmackClasses = new HashSet<>();
 
@@ -138,6 +142,14 @@ public final class SmackConfiguration {
             throw new IllegalArgumentException();
         }
         defaultPacketReplyTimeout = timeout;
+    }
+
+    public static JxmppContext getDefaultJxmppContext() {
+        return defaultJxmppContext;
+    }
+
+    public static void setDefaultJxmppContext(JxmppContext jxmppContext) {
+        defaultJxmppContext = Objects.requireNonNull(jxmppContext);
     }
 
     public static void setDefaultSmackDebuggerFactory(SmackDebuggerFactory debuggerFactory) {

@@ -31,12 +31,14 @@ import org.jivesoftware.smackx.message_fastening.MessageFasteningManager;
 import org.jivesoftware.smackx.message_fastening.element.ExternalElement;
 import org.jivesoftware.smackx.message_fastening.element.FasteningElement;
 
+import org.jxmpp.JxmppContext;
+
 public class FasteningElementProvider extends ExtensionElementProvider<FasteningElement> {
 
     public static final FasteningElementProvider TEST_INSTANCE = new FasteningElementProvider();
 
     @Override
-    public FasteningElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public FasteningElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         FasteningElement.Builder builder = FasteningElement.builder();
         builder.setOriginId(parser.getAttributeValue("", FasteningElement.ATTR_ID));
         if (ParserUtils.getBooleanAttribute(parser, FasteningElement.ATTR_CLEAR, false)) {
@@ -63,7 +65,7 @@ public class FasteningElementProvider extends ExtensionElementProvider<Fastening
                     }
 
                     // Parse wrapped payload
-                    XmlElement wrappedPayload = PacketParserUtils.parseExtensionElement(name, namespace, parser, xmlEnvironment);
+                    XmlElement wrappedPayload = PacketParserUtils.parseExtensionElement(name, namespace, parser, xmlEnvironment, jxmppContext);
                     builder.addWrappedPayload(wrappedPayload);
                     break;
 

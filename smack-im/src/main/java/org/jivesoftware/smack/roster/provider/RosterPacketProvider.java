@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2003-2007 Jive Software, 2014-2019 Florian Schmaus
+ * Copyright © 2003-2007 Jive Software, 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,16 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.BareJid;
-import org.jxmpp.jid.impl.JidCreate;
 
 public class RosterPacketProvider extends IqProvider<RosterPacket> {
 
     public static final RosterPacketProvider INSTANCE = new RosterPacketProvider();
 
     @Override
-    public RosterPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public RosterPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment,
+                    JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         RosterPacket roster = new RosterPacket();
         String version = parser.getAttributeValue("", "ver");
         roster.setVersion(version);
@@ -47,7 +48,7 @@ public class RosterPacketProvider extends IqProvider<RosterPacket> {
                 String startTag = parser.getName();
                 switch (startTag) {
                 case "item":
-                    RosterPacket.Item item = parseItem(parser);
+                    RosterPacket.Item item = parseItem(parser, jxmppContext);
                     roster.addRosterItem(item);
                     break;
                 }
@@ -69,12 +70,11 @@ public class RosterPacketProvider extends IqProvider<RosterPacket> {
         return roster;
     }
 
-    public static RosterPacket.Item parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+    public static RosterPacket.Item parseItem(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         ParserUtils.assertAtStartTag(parser, RosterPacket.Item.ELEMENT);
         final int initialDepth = parser.getDepth();
-        String jidString = parser.getAttributeValue("", "jid");
         String itemName = parser.getAttributeValue("", "name");
-        BareJid jid = JidCreate.bareFrom(jidString);
+        BareJid jid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
 
         // Create item.
         RosterPacket.Item item = new RosterPacket.Item(jid, itemName);

@@ -38,6 +38,8 @@ import org.jivesoftware.smackx.commands.packet.AdHocCommandDataBuilder;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * The AdHocCommandDataProvider parses AdHocCommandData packets.
  *
@@ -46,7 +48,7 @@ import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 public class AdHocCommandDataProvider extends IqProvider<AdHocCommandData> {
 
     @Override
-    public AdHocCommandData parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public AdHocCommandData parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         String commandNode = parser.getAttributeValue("node");
         AdHocCommandDataBuilder builder = AdHocCommandData.builder(commandNode, iqData);
         DataFormProvider dataFormProvider = new DataFormProvider();
@@ -142,42 +144,42 @@ public class AdHocCommandDataProvider extends IqProvider<AdHocCommandData> {
 
     public static class BadActionError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)  {
             return new AdHocCommandData.SpecificError(SpecificErrorCondition.badAction);
         }
     }
 
     public static class MalformedActionError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)  {
             return new AdHocCommandData.SpecificError(SpecificErrorCondition.malformedAction);
         }
     }
 
     public static class BadLocaleError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)  {
             return new AdHocCommandData.SpecificError(SpecificErrorCondition.badLocale);
         }
     }
 
     public static class BadPayloadError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)  {
             return new AdHocCommandData.SpecificError(SpecificErrorCondition.badPayload);
         }
     }
 
     public static class BadSessionIDError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)  {
             return new AdHocCommandData.SpecificError(SpecificErrorCondition.badSessionid);
         }
     }
 
     public static class SessionExpiredError extends ExtensionElementProvider<AdHocCommandData.SpecificError> {
         @Override
-        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)  {
+        public AdHocCommandData.SpecificError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)  {
             return new AdHocCommandData.SpecificError(SpecificErrorCondition.sessionExpired);
         }
     }

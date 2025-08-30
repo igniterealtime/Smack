@@ -25,10 +25,12 @@ import org.jivesoftware.smackx.iot.discovery.element.IoTRemoved;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTRemovedProvider extends IqProvider<IoTRemoved> {
 
     @Override
-    public IoTRemoved parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+    public IoTRemoved parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTRemoved(nodeInfo);
     }

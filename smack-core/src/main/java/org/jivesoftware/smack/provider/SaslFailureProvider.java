@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019 Florian Schmaus
+ * Copyright 2019-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public final class SaslFailureProvider extends NonzaProvider<SASLFailure> {
 
     public static final SaslFailureProvider INSTANCE = new SaslFailureProvider();
@@ -33,7 +35,8 @@ public final class SaslFailureProvider extends NonzaProvider<SASLFailure> {
     }
 
     @Override
-    public SASLFailure parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public SASLFailure parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment,
+                    JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String condition = null;
         Map<String, String> descriptiveTexts = null;
         outerloop: while (true) {

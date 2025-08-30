@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationsChangeExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * MUC Light configurations change provider class.
  *
@@ -35,7 +37,7 @@ import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationsC
 public class MUCLightConfigurationsChangeProvider extends ExtensionElementProvider<ConfigurationsChangeExtension> {
 
     @Override
-    public ConfigurationsChangeExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public ConfigurationsChangeExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String prevVersion = null;
         String version = null;
         String roomName = null;

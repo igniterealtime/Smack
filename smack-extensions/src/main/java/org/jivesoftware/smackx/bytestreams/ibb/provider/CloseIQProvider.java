@@ -23,6 +23,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parses a close In-Band Bytestream packet.
  *
@@ -31,7 +33,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Close;
 public class CloseIQProvider extends IqProvider<Close> {
 
     @Override
-    public Close parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+    public Close parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String sid = parser.getAttributeValue("", "sid");
         return new Close(sid);
     }

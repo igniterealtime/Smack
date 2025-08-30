@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2020 Paul Schaub, 2022-2023 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2020 Paul Schaub, 2022-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,16 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muc.packet.GroupChatInvitation;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 
 public class GroupChatInvitationProvider extends ExtensionElementProvider<GroupChatInvitation> {
 
     @Override
-    public GroupChatInvitation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public GroupChatInvitation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException {
 
-        EntityBareJid roomJid = ParserUtils.getBareJidAttribute(parser);
+        EntityBareJid roomJid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
         String password = parser.getAttributeValue(ATTR_PASSWORD);
         String reason = parser.getAttributeValue(ATTR_REASON);
         boolean isContinue = ParserUtils.getBooleanAttribute(parser, ATTR_CONTINUE, false);

@@ -27,6 +27,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muc.packet.MUCUser;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
 
@@ -47,17 +48,19 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
      * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
-    public MUCUser parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public MUCUser parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         MUCUser mucUser = new MUCUser();
         outerloop: while (true) {
             switch (parser.next()) {
             case START_ELEMENT:
                 switch (parser.getName()) {
                 case "invite":
-                    mucUser.setInvite(parseInvite(parser));
+                    var invite = parseInvite(parser, jxmppContext);
+                    mucUser.setInvite(invite);
                     break;
                 case "item":
-                    mucUser.setItem(MUCParserUtils.parseItem(parser));
+                    var item = MUCParserUtils.parseItem(parser, jxmppContext);
+                    mucUser.setItem(item);
                     break;
                 case "password":
                     mucUser.setPassword(parser.nextText());
@@ -67,10 +70,12 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
                     mucUser.addStatusCode(MUCUser.Status.create(statusString));
                     break;
                 case "decline":
-                    mucUser.setDecline(parseDecline(parser));
+                    var decline = parseDecline(parser, jxmppContext);
+                    mucUser.setDecline(decline);
                     break;
                 case "destroy":
-                    mucUser.setDestroy(MUCParserUtils.parseDestroy(parser));
+                    var destroy = MUCParserUtils.parseDestroy(parser, jxmppContext);
+                    mucUser.setDestroy(destroy);
                     break;
                 }
                 break;
@@ -88,10 +93,10 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
         return mucUser;
     }
 
-    private static MUCUser.Invite parseInvite(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static MUCUser.Invite parseInvite(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String reason = null;
-        EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to");
-        EntityJid from = ParserUtils.getEntityJidAttribute(parser, "from");
+        EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to", jxmppContext);
+        EntityJid from = ParserUtils.getEntityJidAttribute(parser, "from", jxmppContext);
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -109,10 +114,10 @@ public class MUCUserProvider extends ExtensionElementProvider<MUCUser> {
         return new MUCUser.Invite(reason, from, to);
     }
 
-    private static MUCUser.Decline parseDecline(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static MUCUser.Decline parseDecline(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String reason = null;
-        EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to");
-        EntityBareJid from = ParserUtils.getBareJidAttribute(parser, "from");
+        EntityBareJid to = ParserUtils.getBareJidAttribute(parser, "to", jxmppContext);
+        EntityBareJid from = ParserUtils.getBareJidAttribute(parser, "from", jxmppContext);
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();

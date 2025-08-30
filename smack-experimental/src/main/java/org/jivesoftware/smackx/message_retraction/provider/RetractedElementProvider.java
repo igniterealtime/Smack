@@ -32,10 +32,12 @@ import org.jivesoftware.smackx.sid.StableUniqueStanzaIdManager;
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.sid.provider.OriginIdProvider;
 
+import org.jxmpp.JxmppContext;
+
 public class RetractedElementProvider extends ExtensionElementProvider<RetractedElement> {
 
     @Override
-    public RetractedElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public RetractedElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         Date date = ParserUtils.getDateFromXep82String(parser.getAttributeValue("", RetractedElement.ATTR_STAMP));
 

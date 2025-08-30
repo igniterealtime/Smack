@@ -27,6 +27,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class OfflineSettings extends SimpleIQ {
     private String redirectURL;
 
@@ -108,7 +110,7 @@ public class OfflineSettings extends SimpleIQ {
     public static class InternalProvider extends IqProvider<OfflineSettings> {
 
         @Override
-        public OfflineSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public OfflineSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             OfflineSettings offlineSettings = new OfflineSettings();
 
             boolean done = false;

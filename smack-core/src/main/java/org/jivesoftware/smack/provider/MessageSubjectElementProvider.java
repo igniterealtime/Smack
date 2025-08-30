@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,12 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class MessageSubjectElementProvider extends ExtensionElementProvider<Message.Subject> {
 
     @Override
-    public Message.Subject parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Message.Subject parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String xmlLangSubject = ParserUtils.getXmlLang(parser);
         String subject = parser.nextText();

@@ -29,6 +29,8 @@ import org.jivesoftware.smackx.bob.BoBData;
 import org.jivesoftware.smackx.bob.ContentId;
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Bits of Binary IQ provider class.
  *
@@ -39,7 +41,7 @@ import org.jivesoftware.smackx.bob.element.BoBIQ;
 public class BoBIQProvider extends IqProvider<BoBIQ> {
 
     @Override
-    public BoBIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public BoBIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         Pair<ContentId, BoBData> parserResult = BoBProviderUtil.parseContentIdAndBobData(parser, initialDepth,
                         xmlEnvironment);
 

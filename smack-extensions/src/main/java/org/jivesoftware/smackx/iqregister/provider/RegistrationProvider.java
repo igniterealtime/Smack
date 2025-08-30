@@ -34,10 +34,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqregister.packet.Registration;
 
+import org.jxmpp.JxmppContext;
+
 public class RegistrationProvider extends IqProvider<Registration> {
 
     @Override
-    public Registration parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public Registration parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         String instruction = null;
         Map<String, String> fields = new HashMap<>();
         List<XmlElement> packetExtensions = new ArrayList<>();
@@ -64,7 +66,7 @@ public class RegistrationProvider extends IqProvider<Registration> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    PacketParserUtils.addExtensionElement(packetExtensions, parser, xmlEnvironment);
+                    PacketParserUtils.addExtensionElement(packetExtensions, parser, xmlEnvironment, jxmppContext);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {

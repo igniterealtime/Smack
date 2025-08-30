@@ -28,6 +28,8 @@ import org.jivesoftware.smackx.jingleold.nat.TransportCandidate;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport;
 import org.jivesoftware.smackx.jingleold.packet.JingleTransport.JingleTransportCandidate;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Provider for a Jingle transport element.
  *
@@ -53,7 +55,7 @@ public abstract class JingleTransportProvider extends ExtensionElementProvider<J
      * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
-    public JingleTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException  {
+    public JingleTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException  {
         JingleTransport trans = getInstance();
 
         outerloop: while (true) {

@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -40,7 +41,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class MUCLightAffiliationsIQProvider extends IqProvider<MUCLightAffiliationsIQ> {
 
     @Override
-    public MUCLightAffiliationsIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public MUCLightAffiliationsIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String version = null;
         HashMap<Jid, MUCLightAffiliation> occupants = new HashMap<>();
 

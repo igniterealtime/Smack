@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014 Florian Schmaus
+ * Copyright © 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,13 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.sm.packet.StreamManagement.StreamManagementFeature;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
+import org.jxmpp.JxmppContext;
+
 public class StreamManagementStreamFeatureProvider extends ExtensionElementProvider<StreamManagementFeature> {
 
     @Override
     public StreamManagementFeature parse(XmlPullParser parser,
-                    int initialDepth, XmlEnvironment xmlEnvironment) {
+                    int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return StreamManagementFeature.INSTANCE;
     }
 

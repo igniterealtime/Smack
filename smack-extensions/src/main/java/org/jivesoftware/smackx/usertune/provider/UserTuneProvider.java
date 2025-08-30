@@ -28,6 +28,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * This is the Provider Class for {@link UserTuneElement}.
  */
@@ -36,7 +38,7 @@ public class UserTuneProvider extends ExtensionElementProvider<UserTuneElement> 
     public static final UserTuneProvider INSTANCE = new UserTuneProvider();
 
     @Override
-    public UserTuneElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public UserTuneElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException {
 
         UserTuneElement.Builder builder = UserTuneElement.getBuilder();

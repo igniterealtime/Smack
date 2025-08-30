@@ -31,6 +31,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
+import org.jxmpp.JxmppContext;
+
 public class ChatMetadata extends IQ {
 
     /**
@@ -85,7 +87,7 @@ public class ChatMetadata extends IQ {
     public static class Provider extends IqProvider<ChatMetadata> {
 
         @Override
-        public ChatMetadata parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+        public ChatMetadata parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException {
             final ChatMetadata chatM = new ChatMetadata();
 

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2021 Florian Schmaus.
+ * Copyright 2017-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.CryptElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * {@link org.jivesoftware.smack.provider.ExtensionElementProvider} implementation for the {@link CryptElement}.
  */
@@ -34,7 +36,7 @@ public class CryptElementProvider extends OpenPgpContentElementProvider<CryptEle
     public static final CryptElementProvider INSTANCE = new CryptElementProvider();
 
     @Override
-    public CryptElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public CryptElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
 

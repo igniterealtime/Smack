@@ -30,6 +30,7 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -96,7 +97,7 @@ public class AgentChatHistory extends IQ {
     public static class InternalProvider extends IqProvider<AgentChatHistory> {
 
         @Override
-        public AgentChatHistory parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public AgentChatHistory parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             if (parser.getEventType() != XmlPullParser.Event.START_ELEMENT) {
                 throw new IllegalStateException("Parser not in proper position, or bad XML.");
             }

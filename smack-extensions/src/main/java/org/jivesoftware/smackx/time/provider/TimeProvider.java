@@ -28,10 +28,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.time.packet.Time;
 import org.jivesoftware.smackx.time.packet.TimeBuilder;
 
+import org.jxmpp.JxmppContext;
+
 public class TimeProvider extends IqProvider<Time> {
 
     @Override
-    public Time parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public Time parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, ParseException {
         String utc = null, tzo = null;
         TimeBuilder timeBuilder = Time.builder(iqData);

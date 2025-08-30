@@ -25,6 +25,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.last_interaction.element.IdleElement;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.util.XmppDateTime;
 
 public class IdleProvider extends ExtensionElementProvider<IdleElement> {
@@ -32,7 +33,7 @@ public class IdleProvider extends ExtensionElementProvider<IdleElement> {
     public static final IdleProvider TEST_INSTANCE = new IdleProvider();
 
     @Override
-    public IdleElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws ParseException {
+    public IdleElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws ParseException {
         String dateString = parser.getAttributeValue(null, IdleElement.ATTR_SINCE);
         Date since = XmppDateTime.parseXEP0082Date(dateString);
         return new IdleElement(since);

@@ -28,6 +28,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 public class UserID implements ExtensionElement {
@@ -78,9 +79,9 @@ public class UserID implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<UserID> {
 
         @Override
-        public UserID parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public UserID parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException {
-            Jid userID = ParserUtils.getJidAttribute(parser, "id");
+            Jid userID = ParserUtils.getJidAttribute(parser, "id", jxmppContext);
 
             // Advance to end of extension.
             parser.next();

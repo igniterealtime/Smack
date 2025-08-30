@@ -42,6 +42,7 @@ import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.XmppElementUtil;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityFullJid;
 
@@ -713,4 +714,9 @@ public interface XMPPConnection {
      * @return the timestamp in milliseconds
      */
     long getLastStanzaReceived();
+
+    default JxmppContext getJxmppContext() {
+        return JxmppContext.getDefaultContext();
+    };
+
 }

@@ -36,6 +36,7 @@ import org.jivesoftware.smackx.iot.data.element.TimestampElement;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.util.XmppDateTime;
 
 public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFieldsExtension> {
@@ -43,7 +44,7 @@ public class IoTFieldsExtensionProvider extends ExtensionElementProvider<IoTFiel
     private static final Logger LOGGER = Logger.getLogger(IoTFieldsExtensionProvider.class.getName());
 
     @Override
-    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public IoTFieldsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws IOException, XmlPullParserException, ParseException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request <accepted/> without sequence number");
         boolean done = ParserUtils.getBooleanAttribute(parser, "done", false);

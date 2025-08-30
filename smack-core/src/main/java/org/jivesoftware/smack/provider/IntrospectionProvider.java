@@ -27,6 +27,8 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parsing with introspection poses a security threat and results in mutable classes and is therefore discouraged.
  * @deprecated use a proper parser.
@@ -52,7 +54,7 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             try {
                 return (I) parseWithIntrospection(elementClass, parser, initialDepth);
             }
@@ -79,7 +81,7 @@ public class IntrospectionProvider{
 
         @SuppressWarnings("unchecked")
         @Override
-        public PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             try {
                 return (PE) parseWithIntrospection(elementClass, parser, initialDepth);
             }

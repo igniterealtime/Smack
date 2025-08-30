@@ -26,6 +26,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.pubsub.Subscription;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -36,9 +37,9 @@ import org.jxmpp.jid.Jid;
  */
 public class SubscriptionProvider extends ExtensionElementProvider<Subscription> {
     @Override
-    public Subscription parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Subscription parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
-        Jid jid = ParserUtils.getJidAttribute(parser);
+        Jid jid = ParserUtils.getJidAttribute(parser, jxmppContext);
         String nodeId = parser.getAttributeValue(null, "node");
         String subId = parser.getAttributeValue(null, "subid");
         String state = parser.getAttributeValue(null, "subscription");

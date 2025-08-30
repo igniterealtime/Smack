@@ -25,10 +25,12 @@ import org.jivesoftware.smackx.iot.discovery.element.IoTUnregister;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTUnregisterProvider extends IqProvider<IoTUnregister> {
 
     @Override
-    public IoTUnregister parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+    public IoTUnregister parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTUnregister(nodeInfo);
     }

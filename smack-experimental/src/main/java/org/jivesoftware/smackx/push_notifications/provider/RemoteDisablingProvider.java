@@ -25,6 +25,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.push_notifications.element.PushNotificationsElements.RemoteDisablingExtension;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -38,7 +39,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class RemoteDisablingProvider extends ExtensionElementProvider<RemoteDisablingExtension> {
 
     @Override
-    public RemoteDisablingExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public RemoteDisablingExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         Jid userJid = null;
         String node = parser.getAttributeValue("", "node");
 

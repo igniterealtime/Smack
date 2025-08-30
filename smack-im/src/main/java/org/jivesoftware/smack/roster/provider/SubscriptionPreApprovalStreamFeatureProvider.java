@@ -21,10 +21,12 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.roster.packet.SubscriptionPreApproval;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
+import org.jxmpp.JxmppContext;
+
 public class SubscriptionPreApprovalStreamFeatureProvider extends ExtensionElementProvider<SubscriptionPreApproval> {
 
     @Override
-    public SubscriptionPreApproval parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public SubscriptionPreApproval parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return SubscriptionPreApproval.INSTANCE;
     }
 

@@ -41,7 +41,7 @@ public class XHTMLExtensionProviderTest {
         XmlPullParser parser = PacketParserUtils.getParserFor(inputStream);
 
         XHTMLExtensionProvider provider = new XHTMLExtensionProvider();
-        ExtensionElement extension = provider.parse(parser, parser.getDepth(), null);
+        ExtensionElement extension = provider.parse(parser, parser.getDepth(), null, null);
 
         assertThat(extension, instanceOf(XHTMLExtension.class));
         XHTMLExtension attachmentsInfo = (XHTMLExtension) extension;

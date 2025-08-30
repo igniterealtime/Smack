@@ -27,11 +27,13 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.delay.packet.DelayInformation;
 
+import org.jxmpp.JxmppContext;
+
 public abstract class AbstractDelayInformationProvider extends ExtensionElementProvider<DelayInformation> {
 
     @Override
     public final DelayInformation parse(XmlPullParser parser,
-                    int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                    int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                     IOException, ParseException {
         String stampString = parser.getAttributeValue("", "stamp");
         String from = parser.getAttributeValue("", "from");

@@ -22,10 +22,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.jingle.element.JingleError;
 
+import org.jxmpp.JxmppContext;
+
 public class JingleErrorProvider extends ExtensionElementProvider<JingleError> {
 
     @Override
-    public JingleError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public JingleError parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String errorName = parser.getName();
         return JingleError.fromString(errorName);
     }

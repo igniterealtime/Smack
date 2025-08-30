@@ -29,6 +29,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.offline.OfflineMessageManager;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * OfflineMessageInfo is an extension included in the retrieved offline messages requested by
  * the {@link org.jivesoftware.smackx.offline.OfflineMessageManager}. This extension includes a stamp
@@ -110,7 +112,7 @@ public class OfflineMessageInfo implements ExtensionElement {
          */
         @Override
         public OfflineMessageInfo parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException {
             OfflineMessageInfo info = new OfflineMessageInfo();
             boolean done = false;

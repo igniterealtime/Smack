@@ -33,6 +33,8 @@ import org.jivesoftware.smackx.delay.packet.DelayInformation;
 import org.jivesoftware.smackx.delay.provider.DelayInformationProvider;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
  * forwarded messages from a packet.  It will return a {@link Forwarded} stanza extension.
@@ -46,7 +48,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
     private static final Logger LOGGER = Logger.getLogger(ForwardedProvider.class.getName());
 
     @Override
-    public Forwarded<?> parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Forwarded<?> parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         DelayInformation di = null;
         Stanza packet = null;
@@ -60,7 +62,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
                 switch (name) {
                 case DelayInformation.ELEMENT:
                     if (DelayInformation.NAMESPACE.equals(namespace)) {
-                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth(), null);
+                        di = DelayInformationProvider.INSTANCE.parse(parser, parser.getDepth(), null, null);
                     } else {
                         LOGGER.warning("Namespace '" + namespace + "' does not match expected namespace '"
                                         + DelayInformation.NAMESPACE + "'");
@@ -100,7 +102,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
     public static Forwarded<Message> parseForwardedMessage(XmlPullParser parser, int initialDepth,
                     XmlEnvironment xmlEnvironment)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        Forwarded<?> forwarded = INSTANCE.parse(parser, initialDepth, xmlEnvironment);
+        Forwarded<?> forwarded = INSTANCE.parse(parser, initialDepth, xmlEnvironment, null);
         if (!forwarded.isForwarded(Message.class)) {
             throw new SmackParsingException("Expecting a forwarded message, but got " + forwarded);
         }

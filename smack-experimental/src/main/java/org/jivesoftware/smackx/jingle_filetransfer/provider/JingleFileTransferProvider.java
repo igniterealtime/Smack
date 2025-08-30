@@ -35,6 +35,7 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransfer;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.util.XmppDateTime;
 
 /**
@@ -44,7 +45,7 @@ public class JingleFileTransferProvider
         extends JingleContentDescriptionProvider<JingleFileTransfer> {
 
     @Override
-    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
+    public JingleFileTransfer parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         ArrayList<JingleContentDescriptionChildElement> payloads = new ArrayList<>();
         JingleFileTransferChild.Builder builder = JingleFileTransferChild.getBuilder();
 

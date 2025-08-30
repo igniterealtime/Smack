@@ -25,6 +25,8 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class MonitorPacket extends IQ {
 
     private String sessionID;
@@ -79,7 +81,7 @@ public class MonitorPacket extends IQ {
     public static class InternalProvider extends IqProvider<MonitorPacket> {
 
         @Override
-        public MonitorPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public MonitorPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             MonitorPacket packet = new MonitorPacket();
 
             boolean done = false;

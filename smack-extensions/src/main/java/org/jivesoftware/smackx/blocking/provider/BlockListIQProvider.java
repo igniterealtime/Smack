@@ -30,6 +30,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -42,7 +43,7 @@ import org.jxmpp.jid.Jid;
 public class BlockListIQProvider extends IqProvider<BlockListIQ> {
 
     @Override
-    public BlockListIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public BlockListIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         List<Jid> jids = null;
 
         outerloop: while (true) {
@@ -53,7 +54,7 @@ public class BlockListIQProvider extends IqProvider<BlockListIQ> {
                     if (jids == null) {
                         jids = new ArrayList<>();
                     }
-                    Jid jid = ParserUtils.getJidAttribute(parser);
+                    Jid jid = ParserUtils.getJidAttribute(parser, jxmppContext);
                     jids.add(jid);
                 }
                 break;

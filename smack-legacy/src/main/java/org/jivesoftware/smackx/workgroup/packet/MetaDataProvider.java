@@ -29,6 +29,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.workgroup.MetaData;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * This provider parses meta data if it's not contained already in a larger extension provider.
  *
@@ -42,7 +44,7 @@ public class MetaDataProvider extends ExtensionElementProvider<MetaData> {
      * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
-    public MetaData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public MetaData parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         Map<String, List<String>> metaData = MetaDataUtils.parseMetaData(parser);
 
         return new MetaData(metaData);

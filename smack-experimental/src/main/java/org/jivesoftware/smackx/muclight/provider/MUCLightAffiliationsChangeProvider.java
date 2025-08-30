@@ -27,6 +27,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.AffiliationsChangeExtension;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -39,7 +40,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class MUCLightAffiliationsChangeProvider extends ExtensionElementProvider<AffiliationsChangeExtension> {
 
     @Override
-    public AffiliationsChangeExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public AffiliationsChangeExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         HashMap<Jid, MUCLightAffiliation> affiliations = new HashMap<>();
         String prevVersion = null;
         String version = null;

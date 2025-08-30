@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 import org.jivesoftware.smackx.iqprivate.provider.PrivateDataProvider;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -219,7 +220,7 @@ public class Bookmarks implements PrivateData {
         }
 
         @Override
-        public PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException {
+        public PrivateData parsePrivateData(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             Bookmarks storage = new Bookmarks();
 
             boolean done = false;
@@ -233,7 +234,7 @@ public class Bookmarks implements PrivateData {
                 }
                 else if (eventType == XmlPullParser.Event.START_ELEMENT &&
                         "conference".equals(parser.getName())) {
-                    final BookmarkedConference conference = getConferenceStorage(parser);
+                    final BookmarkedConference conference = getConferenceStorage(parser, jxmppContext);
                     storage.addBookmarkedConference(conference);
                 }
                 else if (eventType == XmlPullParser.Event.END_ELEMENT && "storage".equals(parser.getName())) {
@@ -267,10 +268,10 @@ public class Bookmarks implements PrivateData {
         return urlStore;
     }
 
-    private static BookmarkedConference getConferenceStorage(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private static BookmarkedConference getConferenceStorage(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue("", "name");
         boolean autojoin = ParserUtils.getBooleanAttribute(parser, "autojoin", false);
-        EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
+        EntityBareJid jid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
 
         BookmarkedConference conf = new BookmarkedConference(jid);
         conf.setName(name);

@@ -28,6 +28,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.SignElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * {@link org.jivesoftware.smack.provider.ExtensionElementProvider} implementation for the {@link SignElement}.
  */
@@ -37,7 +39,7 @@ public class SignElementProvider extends OpenPgpContentElementProvider<SignEleme
     public static final SignElementProvider INSTANCE = new SignElementProvider();
 
     @Override
-    public SignElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public SignElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         OpenPgpContentElementData data = parseOpenPgpContentElementData(parser, initialDepth);
 

@@ -28,6 +28,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -88,9 +89,9 @@ public class WorkgroupInformation implements ExtensionElement {
          */
         @Override
         public WorkgroupInformation parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException {
-            EntityBareJid workgroupJID = ParserUtils.getBareJidAttribute(parser);
+            EntityBareJid workgroupJID = ParserUtils.getBareJidAttribute(parser, jxmppContext);
 
             // since this is a start and end tag, and we arrive on the start, this should guarantee
             //      we leave on the end

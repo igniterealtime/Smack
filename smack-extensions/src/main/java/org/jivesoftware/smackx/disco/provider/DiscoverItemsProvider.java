@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -38,7 +39,7 @@ import org.jxmpp.jid.Jid;
 public class DiscoverItemsProvider extends IqProvider<DiscoverItems> {
 
     @Override
-    public DiscoverItems parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public DiscoverItems parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         DiscoverItems discoverItems = new DiscoverItems();
         boolean done = false;
@@ -53,7 +54,7 @@ public class DiscoverItemsProvider extends IqProvider<DiscoverItems> {
 
             if (eventType == XmlPullParser.Event.START_ELEMENT && "item".equals(parser.getName())) {
                 // Initialize the variables from the parsed XML
-                jid = ParserUtils.getJidAttribute(parser);
+                jid = ParserUtils.getJidAttribute(parser, jxmppContext);
                 name = parser.getAttributeValue("", "name");
                 node = parser.getAttributeValue("", "node");
                 action = parser.getAttributeValue("", "action");

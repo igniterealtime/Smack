@@ -33,6 +33,8 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Stanza used for requesting information about occupants of a room or for retrieving information
  * such information.
@@ -136,7 +138,7 @@ public class OccupantsInfo extends IQ {
     public static class Provider extends IqProvider<OccupantsInfo> {
 
         @Override
-        public OccupantsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+        public OccupantsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException, ParseException {
             OccupantsInfo occupantsInfo = new OccupantsInfo(parser.getAttributeValue("", "roomID"));
 

@@ -30,6 +30,8 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Stanza extension for {@link org.jivesoftware.smackx.workgroup.agent.TransferRequest}.
  *
@@ -169,7 +171,7 @@ public class RoomTransfer implements ExtensionElement {
 
         @Override
         public RoomTransfer parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException {
             final RoomTransfer invitation = new RoomTransfer();
             invitation.type = RoomTransfer.Type.valueOf(parser.getAttributeValue("", "type"));

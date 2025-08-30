@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017 Paul Schaub, 2021 Florian Schmaus
+ * Copyright 2017 Paul Schaub, 2021-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Smack ExtensionProvider that parses OMEMO device list element into OmemoDeviceListElement objects.
  *
@@ -38,7 +40,7 @@ import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
 public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<OmemoDeviceListElement_VAxolotl> {
 
     @Override
-    public OmemoDeviceListElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public OmemoDeviceListElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         Set<Integer> deviceListIds = new HashSet<>();
         outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();

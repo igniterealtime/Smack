@@ -32,6 +32,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.workgroup.agent.WorkgroupQueue;
 
+import org.jxmpp.JxmppContext;
+
 public class QueueOverview implements ExtensionElement {
 
     /**
@@ -128,7 +130,7 @@ public class QueueOverview implements ExtensionElement {
 
         @Override
         public QueueOverview parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException, TextParseException, ParseException {
             QueueOverview queueOverview = new QueueOverview();
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

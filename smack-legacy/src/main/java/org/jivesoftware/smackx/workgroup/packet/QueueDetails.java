@@ -36,6 +36,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.workgroup.QueueUser;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Queue details stanza extension, which contains details about the users
  * currently in a queue.
@@ -148,7 +150,7 @@ public final class QueueDetails implements ExtensionElement {
         @SuppressWarnings("JavaUtilDate")
         @Override
         public QueueDetails parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException, TextParseException, ParseException {
 
             SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

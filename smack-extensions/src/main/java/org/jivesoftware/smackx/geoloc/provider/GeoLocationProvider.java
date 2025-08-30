@@ -32,12 +32,14 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProvider;
 
+import org.jxmpp.JxmppContext;
+
 public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
 
     public static final GeoLocationProvider INSTANCE = new GeoLocationProvider();
 
     @Override
-    public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException,
+    public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException,
                     SmackUriSyntaxParsingException, ParseException {
 
         GeoLocation.Builder builder = GeoLocation.builder();
@@ -152,9 +154,9 @@ public class GeoLocationProvider extends ExtensionElementProvider<GeoLocation> {
         }
 
         @Override
-        public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public GeoLocation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-            return GeoLocationProvider.INSTANCE.parse(parser, initialDepth, xmlEnvironment);
+            return GeoLocationProvider.INSTANCE.parse(parser, initialDepth, xmlEnvironment, null);
         }
 
     }
