@@ -30,6 +30,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityJid;
 import org.jxmpp.jid.Jid;
@@ -174,7 +175,7 @@ public class RoomInvitation implements ExtensionElement {
 
         @Override
         public RoomInvitation parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException {
             final RoomInvitation invitation = new RoomInvitation();
             invitation.type = Type.valueOf(parser.getAttributeValue("", "type"));

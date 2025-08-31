@@ -27,6 +27,8 @@ import org.jivesoftware.smackx.jingleold.media.PayloadType;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentDescription;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentDescription.JinglePayloadType;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parser for a Jingle description.
  *
@@ -64,7 +66,7 @@ public abstract class JingleContentDescriptionProvider extends ExtensionElementP
      */
     @Override
     public JingleContentDescription parse(XmlPullParser parser,
-                    int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                    int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                     IOException {
         JingleContentDescription desc = getInstance();
 

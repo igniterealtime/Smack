@@ -35,6 +35,7 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
@@ -242,11 +243,11 @@ public class AgentStatus implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<AgentStatus> {
 
         @Override
-        public AgentStatus parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public AgentStatus parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException, ParseException {
             AgentStatus agentStatus = new AgentStatus();
 
-            agentStatus.workgroupJID = ParserUtils.getBareJidAttribute(parser);
+            agentStatus.workgroupJID = ParserUtils.getBareJidAttribute(parser, jxmppContext);
 
             boolean done = false;
             while (!done) {

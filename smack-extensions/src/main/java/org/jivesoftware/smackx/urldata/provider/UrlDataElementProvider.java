@@ -36,10 +36,12 @@ import org.jivesoftware.smackx.urldata.http.element.CookieElement;
 import org.jivesoftware.smackx.urldata.http.element.HeaderElement;
 import org.jivesoftware.smackx.urldata.http.element.HttpAuthElement;
 
+import org.jxmpp.JxmppContext;
+
 public class UrlDataElementProvider extends ExtensionElementProvider<UrlDataElement> {
 
     @Override
-    public UrlDataElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public UrlDataElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         String target = parser.getAttributeValue(ATTR_TARGET);
         String sid = parser.getAttributeValue(ATTR_SID);
         List<HttpAuthElement> authElements = new ArrayList<>();

@@ -34,6 +34,8 @@ import org.jivesoftware.smack.fsm.StateDescriptorGraph;
 import org.jivesoftware.smack.fsm.StateDescriptorGraph.GraphVertex;
 import org.jivesoftware.smack.util.CollectionUtil;
 
+import org.jxmpp.JxmppContext;
+
 public final class ModularXmppClientToServerConnectionConfiguration extends ConnectionConfiguration {
 
     final Set<ModularXmppClientToServerConnectionModuleDescriptor> moduleDescriptors;
@@ -83,7 +85,11 @@ public final class ModularXmppClientToServerConnectionConfiguration extends Conn
     }
 
     public static Builder builder() {
-        return new Builder();
+        return builder(getDefaultJxmppContext());
+    }
+
+    public static Builder builder(JxmppContext jxmppContext) {
+        return new Builder(jxmppContext);
     }
 
     public static final class Builder
@@ -93,7 +99,8 @@ public final class ModularXmppClientToServerConnectionConfiguration extends Conn
 
         private boolean failOnUnknownStates;
 
-        private Builder() {
+        private Builder(JxmppContext jxmppContext) {
+            super(jxmppContext);
             SmackConfiguration.addAllKnownModulesTo(this);
         }
 

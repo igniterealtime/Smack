@@ -29,6 +29,8 @@ import org.jivesoftware.smackx.amp.AMPExpireAtCondition;
 import org.jivesoftware.smackx.amp.AMPMatchResourceCondition;
 import org.jivesoftware.smackx.amp.packet.AMPExtension;
 
+import org.jxmpp.JxmppContext;
+
 
 public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension> {
     private static final Logger LOGGER = Logger.getLogger(AMPExtensionProvider.class.getName());
@@ -42,7 +44,7 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
      * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
-    public AMPExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public AMPExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         final String from = parser.getAttributeValue(null, "from");
         final String to = parser.getAttributeValue(null, "to");

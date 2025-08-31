@@ -22,6 +22,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.DisplayedExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Displayed extension provider class (XEP-0333).
  *
@@ -33,7 +35,7 @@ import org.jivesoftware.smackx.chat_markers.element.ChatMarkersElements.Displaye
 public class DisplayedProvider extends ExtensionElementProvider<DisplayedExtension> {
 
     @Override
-    public DisplayedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public DisplayedExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String id = parser.getAttributeValue("", "id");
         return new DisplayedExtension(id);
     }

@@ -29,6 +29,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -41,7 +42,7 @@ import org.jxmpp.jid.Jid;
 public class BlockContactsIQProvider extends IqProvider<BlockContactsIQ> {
 
     @Override
-    public BlockContactsIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public BlockContactsIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         List<Jid> jids = new ArrayList<>();
 
         outerloop: while (true) {
@@ -49,7 +50,7 @@ public class BlockContactsIQProvider extends IqProvider<BlockContactsIQ> {
             switch (eventType) {
             case START_ELEMENT:
                 if (parser.getName().equals("item")) {
-                    Jid jid = ParserUtils.getJidAttribute(parser);
+                    Jid jid = ParserUtils.getJidAttribute(parser, jxmppContext);
                     jids.add(jid);
                 }
                 break;

@@ -31,12 +31,14 @@ import org.jivesoftware.smackx.jingle_filetransfer.element.Checksum;
 import org.jivesoftware.smackx.jingle_filetransfer.element.JingleFileTransferChild;
 import org.jivesoftware.smackx.jingle_filetransfer.element.Range;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Provider for the Checksum element.
  */
 public class ChecksumProvider extends ExtensionElementProvider<Checksum> {
     @Override
-    public Checksum parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public Checksum parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         JingleContent.Creator creator = null;
         String creatorString = parser.getAttributeValue(null, Checksum.ATTR_CREATOR);
         if (creatorString != null) {

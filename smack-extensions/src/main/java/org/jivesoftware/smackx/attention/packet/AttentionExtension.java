@@ -24,6 +24,8 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * A PacketExtension that implements XEP-0224: Attention
  *
@@ -74,7 +76,7 @@ s     */
     public static class Provider extends ExtensionElementProvider<AttentionExtension> {
 
         @Override
-        public AttentionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+        public AttentionExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
             return new AttentionExtension();
         }
     }

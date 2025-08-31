@@ -29,6 +29,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class GenericSettings extends IQ {
 
     private Map<String, String> map = new HashMap<>();
@@ -81,7 +83,7 @@ public class GenericSettings extends IQ {
     public static class InternalProvider extends IqProvider<GenericSettings> {
 
         @Override
-        public GenericSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public GenericSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             GenericSettings setting = new GenericSettings();
 
             boolean done = false;

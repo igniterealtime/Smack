@@ -29,6 +29,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.xroster.RemoteRosterEntry;
 import org.jivesoftware.smackx.xroster.packet.RosterExchange;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -48,7 +49,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
      * @throws XmlPullParserException if an error in the XML parser occurred.
      */
     @Override
-    public RosterExchange parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public RosterExchange parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         RosterExchange rosterExchange = new RosterExchange();
         boolean done = false;
@@ -63,7 +64,7 @@ public class RosterExchangeProvider extends ExtensionElementProvider<RosterExcha
                     // Reset this variable since they are optional for each item
                     groupsName = new ArrayList<>();
                     // Initialize the variables from the parsed XML
-                    jid = ParserUtils.getJidAttribute(parser);
+                    jid = ParserUtils.getJidAttribute(parser, jxmppContext);
                     name = parser.getAttributeValue("", "name");
                 }
                 if (parser.getName().equals("group")) {

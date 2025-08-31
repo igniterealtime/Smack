@@ -24,6 +24,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.iqprivate.packet.PrivateData;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * An interface for parsing custom private data. Each PrivateDataProvider must
  * be registered with the PrivateDataManager class for it to be used. Every implementation
@@ -40,9 +42,10 @@ public interface PrivateDataProvider {
      * <b>must</b> be positioned on the closing tag of the child element.
      *
      * @param parser an XML parser.
+     * @param jxmppContext TODO
      * @return a new PrivateData instance.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws IOException if an I/O error occurred.
      */
-    PrivateData parsePrivateData(XmlPullParser parser) throws XmlPullParserException, IOException;
+    PrivateData parsePrivateData(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException;
 }

@@ -28,6 +28,8 @@ import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * <p>
  * <b>Deprecation Notice:</b> This class is deprecated, use {@link IqProvider} instead.
@@ -62,7 +64,7 @@ public abstract class LegacyIQProvider<I extends IQ> extends IqProvider<I> {
     }
 
     @Override
-    public final I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public final I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         // Old-style IQ parsers do not need IqData.
         return parse(parser, initialDepth, xmlEnvironment);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014 Florian Schmaus
+ * Copyright 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.jivesoftware.smack.tcp;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+
+import org.jxmpp.JxmppContext;
 
 /**
  * A connection configuration for XMPP connections over TCP (the common case).
@@ -61,7 +63,11 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
     }
 
     public static Builder builder() {
-        return new Builder();
+        return builder(getDefaultJxmppContext());
+    }
+
+    public static Builder builder(JxmppContext jxmppContext) {
+        return new Builder(jxmppContext);
     }
 
     /**
@@ -71,7 +77,8 @@ public final class XMPPTCPConnectionConfiguration extends ConnectionConfiguratio
     public static final class Builder extends ConnectionConfiguration.Builder<Builder, XMPPTCPConnectionConfiguration> {
         private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
-        private Builder() {
+        private Builder(JxmppContext jxmppContext) {
+            super(jxmppContext);
         }
 
         /**

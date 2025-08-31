@@ -32,6 +32,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.mediaelement.element.MediaElement;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProvider;
 
+import org.jxmpp.JxmppContext;
+
 public class MediaElementProvider extends FormFieldChildElementProvider<MediaElement> {
 
     private static final Logger LOGGER = Logger.getLogger(MediaElementProvider.class.getName());
@@ -42,7 +44,7 @@ public class MediaElementProvider extends FormFieldChildElementProvider<MediaEle
     }
 
     @Override
-    public MediaElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackUriSyntaxParsingException {
+    public MediaElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException, XmlPullParserException, SmackUriSyntaxParsingException {
         UInt16 height = ParserUtils.getUInt16Attribute(parser, "height");
         UInt16 width = ParserUtils.getUInt16Attribute(parser, "width");
 

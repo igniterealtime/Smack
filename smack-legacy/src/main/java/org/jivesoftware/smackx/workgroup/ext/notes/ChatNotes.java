@@ -26,6 +26,8 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * IQ stanza for retrieving and adding Chat Notes.
  */
@@ -85,7 +87,7 @@ public class ChatNotes extends IQ {
     public static class Provider extends IqProvider<ChatNotes> {
 
         @Override
-        public ChatNotes parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public ChatNotes parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             ChatNotes chatNotes = new ChatNotes();
 
             boolean done = false;

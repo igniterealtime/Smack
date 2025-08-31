@@ -27,6 +27,8 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class SoundSettings extends SimpleIQ {
     private String outgoingSound;
     private String incomingSound;
@@ -69,7 +71,7 @@ public class SoundSettings extends SimpleIQ {
     public static class InternalProvider extends IqProvider<SoundSettings> {
 
         @Override
-        public SoundSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public SoundSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             SoundSettings soundSettings = new SoundSettings();
 
             boolean done = false;

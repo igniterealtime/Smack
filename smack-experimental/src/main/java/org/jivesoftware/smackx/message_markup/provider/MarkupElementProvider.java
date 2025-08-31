@@ -35,10 +35,12 @@ import org.jivesoftware.smackx.message_markup.element.MarkupElement;
 import org.jivesoftware.smackx.message_markup.element.MarkupElement.MarkupChildElement;
 import org.jivesoftware.smackx.message_markup.element.SpanElement;
 
+import org.jxmpp.JxmppContext;
+
 public class MarkupElementProvider extends ExtensionElementProvider<MarkupElement> {
 
     @Override
-    public MarkupElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException {
+    public MarkupElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException, XmlPullParserException {
 
         MarkupElement.Builder markup = MarkupElement.getBuilder();
 

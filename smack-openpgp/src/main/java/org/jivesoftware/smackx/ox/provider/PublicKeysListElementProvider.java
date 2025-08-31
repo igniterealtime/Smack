@@ -28,6 +28,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.PublicKeysListElement;
 
+import org.jxmpp.JxmppContext;
 import org.pgpainless.key.OpenPgpV4Fingerprint;
 
 public final class PublicKeysListElementProvider extends ExtensionElementProvider<PublicKeysListElement> {
@@ -35,7 +36,7 @@ public final class PublicKeysListElementProvider extends ExtensionElementProvide
     public static final PublicKeysListElementProvider TEST_INSTANCE = new PublicKeysListElementProvider();
 
     @Override
-    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public PublicKeysListElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, ParseException {
 
         PublicKeysListElement.Builder builder = PublicKeysListElement.builder();

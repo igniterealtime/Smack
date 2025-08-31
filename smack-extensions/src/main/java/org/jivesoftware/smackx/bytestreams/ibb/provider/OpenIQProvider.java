@@ -28,6 +28,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.bytestreams.ibb.InBandBytestreamManager.StanzaType;
 import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parses an In-Band Bytestream open packet.
  *
@@ -36,7 +38,7 @@ import org.jivesoftware.smackx.bytestreams.ibb.packet.Open;
 public class OpenIQProvider extends IqProvider<Open> {
 
     @Override
-    public Open parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Open parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String sessionID = parser.getAttributeValue("", "sid");
         int blockSize = Integer.parseInt(parser.getAttributeValue("", "block-size"));
 

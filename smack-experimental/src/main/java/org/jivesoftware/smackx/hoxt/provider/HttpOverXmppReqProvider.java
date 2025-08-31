@@ -28,6 +28,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.hoxt.packet.HttpMethod;
 import org.jivesoftware.smackx.hoxt.packet.HttpOverXmppReq;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Req stanza provider.
  *
@@ -41,7 +43,7 @@ public class HttpOverXmppReqProvider extends AbstractHttpOverXmppProvider<HttpOv
     private static final String ATTRIBUTE_MAX_CHUNK_SIZE = "maxChunkSize";
 
     @Override
-    public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException, SmackParsingException {
+    public HttpOverXmppReq parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException, XmlPullParserException, SmackParsingException {
         HttpOverXmppReq.Builder builder = HttpOverXmppReq.builder();
         builder.setResource(parser.getAttributeValue("", ATTRIBUTE_RESOURCE));
         builder.setVersion(parser.getAttributeValue("", ATTRIBUTE_VERSION));

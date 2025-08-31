@@ -24,6 +24,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Simple {@link MoodConcretisationProvider} implementation, suitable for really simple {@link MoodConcretisation}s,
  * that only consist of name and namespace. In such a case it is sufficient to just return an instance of the element
@@ -34,7 +36,7 @@ import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 public abstract class SimpleMoodConcretisationProvider<C extends MoodConcretisation> extends MoodConcretisationProvider<C> {
 
     @Override
-    public C parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException {
+    public C parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException, XmlPullParserException {
         // Since the elements name and namespace is known, we can just return an instance of the MoodConcretisation.
         return simpleExtension();
     }

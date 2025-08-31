@@ -26,6 +26,7 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -106,7 +107,7 @@ public class LastActivity extends IQ {
     public static class Provider extends IqProvider<LastActivity> {
 
         @Override
-        public LastActivity parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public LastActivity parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             LastActivity lastActivity = new LastActivity();
             String seconds = parser.getAttributeValue("", "seconds");
             if (seconds != null) {

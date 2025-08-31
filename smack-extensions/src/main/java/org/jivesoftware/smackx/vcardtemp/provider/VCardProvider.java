@@ -27,6 +27,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * vCard provider.
  *
@@ -69,7 +71,7 @@ public class VCardProvider extends IqProvider<VCard> {
     // @formatter:on
 
     @Override
-    public VCard parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public VCard parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         VCard vCard = new VCard();
         String name = null;
 

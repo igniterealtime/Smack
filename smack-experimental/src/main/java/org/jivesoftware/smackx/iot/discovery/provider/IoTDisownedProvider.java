@@ -25,10 +25,12 @@ import org.jivesoftware.smackx.iot.discovery.element.IoTDisowned;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTDisownedProvider extends IqProvider<IoTDisowned> {
 
     @Override
-    public IoTDisowned parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+    public IoTDisowned parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTDisowned(nodeInfo);
     }

@@ -24,6 +24,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
 import org.jivesoftware.smackx.jingleold.packet.JingleContentInfo;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Jingle Audio jmf-info provider.
  *
@@ -59,7 +61,7 @@ public class JingleContentInfoProvider {
          * Parse a JingleDescription.Audio extension.
          */
         @Override
-        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
             ExtensionElement result = null;
 
             if (audioInfo != null) {

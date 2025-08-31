@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import org.jivesoftware.smack.packet.TlsProceed;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
+import org.jxmpp.JxmppContext;
+
 public final class TlsFailureProvider extends NonzaProvider<TlsProceed> {
 
     public static final TlsFailureProvider INSTANCE = new TlsFailureProvider();
@@ -28,7 +30,7 @@ public final class TlsFailureProvider extends NonzaProvider<TlsProceed> {
     }
 
     @Override
-    public TlsProceed parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public TlsProceed parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return TlsProceed.INSTANCE;
     }
 

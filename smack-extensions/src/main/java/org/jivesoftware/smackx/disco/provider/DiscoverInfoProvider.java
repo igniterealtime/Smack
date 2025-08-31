@@ -31,6 +31,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
 import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 
+import org.jxmpp.JxmppContext;
+
 /**
 * The DiscoverInfoProvider parses Service Discovery information packets.
 *
@@ -39,7 +41,7 @@ import org.jivesoftware.smackx.disco.packet.DiscoverInfoBuilder;
 public class DiscoverInfoProvider extends IqProvider<DiscoverInfo> {
 
     @Override
-    public DiscoverInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public DiscoverInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException {
         DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder(iqData);
 
@@ -69,7 +71,7 @@ public class DiscoverInfoProvider extends IqProvider<DiscoverInfo> {
                 }
                 // Otherwise, it must be a packet extension.
                 else {
-                    PacketParserUtils.addExtensionElement(discoverInfoBuilder, parser, xmlEnvironment);
+                    PacketParserUtils.addExtensionElement(discoverInfoBuilder, parser, xmlEnvironment, jxmppContext);
                 }
             } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getDepth() == initialDepth) {

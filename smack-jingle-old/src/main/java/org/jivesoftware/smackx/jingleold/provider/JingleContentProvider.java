@@ -22,6 +22,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.jingleold.packet.JingleContent;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Jingle &lt;content&gt; provider.
  *
@@ -33,7 +35,7 @@ public class JingleContentProvider extends ExtensionElementProvider<JingleConten
      * Parse a JingleContent extension.
      */
     @Override
-    public JingleContent parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public JingleContent parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String creator = parser.getAttributeValue("", JingleContent.CREATOR);
         String name = parser.getAttributeValue("", JingleContent.NAME);
 

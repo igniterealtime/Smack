@@ -31,6 +31,8 @@ import org.jivesoftware.smackx.carbons.packet.CarbonExtension.Direction;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * This class implements the {@link ExtensionElementProvider} to parse
  * carbon copied messages from a packet.  It will return a {@link CarbonExtension} stanza extension.
@@ -41,7 +43,7 @@ import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtension> {
 
     @Override
-    public CarbonExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public CarbonExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         Direction dir = Direction.valueOf(parser.getName());
         Forwarded<Message> fwd = null;

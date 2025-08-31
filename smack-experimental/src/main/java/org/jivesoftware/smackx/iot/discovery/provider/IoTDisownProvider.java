@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016-2019 Florian Schmaus
+ * Copyright 2016-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,15 @@ import org.jivesoftware.smackx.iot.discovery.element.IoTDisown;
 import org.jivesoftware.smackx.iot.element.NodeInfo;
 import org.jivesoftware.smackx.iot.parser.NodeInfoParser;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class IoTDisownProvider extends IqProvider<IoTDisown> {
 
     @Override
-    public IoTDisown parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
-        Jid jid = ParserUtils.getJidAttribute(parser);
+    public IoTDisown parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmppStringprepException {
+        Jid jid = ParserUtils.getJidAttribute(parser, jxmppContext);
         NodeInfo nodeInfo = NodeInfoParser.parse(parser);
         return new IoTDisown(jid, nodeInfo);
     }

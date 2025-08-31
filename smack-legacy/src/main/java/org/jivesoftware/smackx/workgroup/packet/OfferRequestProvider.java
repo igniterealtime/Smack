@@ -39,6 +39,7 @@ import org.jivesoftware.smackx.workgroup.agent.TransferRequest;
 import org.jivesoftware.smackx.workgroup.agent.UserRequest;
 import org.jivesoftware.smackx.workgroup.util.MetaDataUtils;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 
 /**
@@ -53,7 +54,7 @@ public class OfferRequestProvider extends IqProvider<IQ> {
     // happen anytime soon.
 
     @Override
-    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public OfferRequestPacket parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         XmlPullParser.Event eventType = parser.getEventType();
         String sessionID = null;
         int timeout = -1;
@@ -65,7 +66,7 @@ public class OfferRequestProvider extends IqProvider<IQ> {
             // throw exception
         }
 
-        Jid userJID = ParserUtils.getJidAttribute(parser);
+        Jid userJID = ParserUtils.getJidAttribute(parser, jxmppContext);
         // Default userID to the JID.
         Jid userID = userJID;
 
@@ -85,20 +86,20 @@ public class OfferRequestProvider extends IqProvider<IQ> {
                    sessionID = parser.getAttributeValue("", "id");
                 }
                 else if (UserID.ELEMENT_NAME.equals(elemName)) {
-                    userID = ParserUtils.getJidAttribute(parser, "id");
+                    userID = ParserUtils.getJidAttribute(parser, "id", jxmppContext);
                 }
                 else if ("user-request".equals(elemName)) {
                     content = UserRequest.getInstance();
                 }
                 else if (RoomInvitation.ELEMENT_NAME.equals(elemName)) {
                     RoomInvitation invitation = (RoomInvitation) PacketParserUtils
-                            .parseExtensionElement(RoomInvitation.ELEMENT_NAME, RoomInvitation.NAMESPACE, parser, xmlEnvironment);
+                            .parseExtensionElement(RoomInvitation.ELEMENT_NAME, RoomInvitation.NAMESPACE, parser, xmlEnvironment, jxmppContext);
                     content = new InvitationRequest(invitation.getInviter(), invitation.getRoom(),
                             invitation.getReason());
                 }
                 else if (RoomTransfer.ELEMENT_NAME.equals(elemName)) {
                     RoomTransfer transfer = (RoomTransfer) PacketParserUtils
-                            .parseExtensionElement(RoomTransfer.ELEMENT_NAME, RoomTransfer.NAMESPACE, parser, xmlEnvironment);
+                            .parseExtensionElement(RoomTransfer.ELEMENT_NAME, RoomTransfer.NAMESPACE, parser, xmlEnvironment, jxmppContext);
                     content = new TransferRequest(transfer.getInviter(), transfer.getRoom(), transfer.getReason());
                 }
             }

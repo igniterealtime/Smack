@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus.
+ * Copyright 2021-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,13 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.junit.jupiter.api.Test;
+import org.jxmpp.JxmppContext;
 
 public class AbstractProviderTest {
 
     private static final ExtensionElementProvider<ExtensionElement> NUMBER_FORMAT_THROWING_PROVIDER = new ExtensionElementProvider<ExtensionElement>() {
         @Override
-        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException, SmackParsingException, ParseException {
             throw new NumberFormatException();
         }
@@ -45,7 +46,7 @@ public class AbstractProviderTest {
     private static final int VALUE = 14768234;
     private static final ExtensionElementProvider<ExtensionElement> PARSE_EXCEPTION_THROWING_PROVIDER = new ExtensionElementProvider<ExtensionElement>() {
         @Override
-        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException, SmackParsingException, ParseException {
             throw new ParseException(MESSAGE, VALUE);
         }

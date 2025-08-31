@@ -31,13 +31,15 @@ import org.jivesoftware.smackx.mood.Mood;
 import org.jivesoftware.smackx.mood.element.MoodConcretisation;
 import org.jivesoftware.smackx.mood.element.MoodElement;
 
+import org.jxmpp.JxmppContext;
+
 public class MoodProvider extends ExtensionElementProvider<MoodElement> {
 
     private static final Logger LOGGER = Logger.getLogger(MoodProvider.class.getName());
     public static final MoodProvider INSTANCE = new MoodProvider();
 
     @Override
-    public MoodElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public MoodElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String text = null;
         Mood mood = null;

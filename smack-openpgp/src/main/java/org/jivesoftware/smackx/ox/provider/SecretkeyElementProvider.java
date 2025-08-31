@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.SecretkeyElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * {@link ExtensionElementProvider} implementation for the {@link SecretkeyElement}.
  */
@@ -34,7 +36,7 @@ public class SecretkeyElementProvider extends ExtensionElementProvider<Secretkey
     public static final SecretkeyElementProvider TEST_INSTANCE = new SecretkeyElementProvider();
 
     @Override
-    public SecretkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public SecretkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String data = parser.nextText();
         return new SecretkeyElement(data.getBytes(Charset.forName("UTF-8")));
     }

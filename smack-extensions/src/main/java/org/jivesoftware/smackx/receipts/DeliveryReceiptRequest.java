@@ -29,6 +29,8 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Represents a <b>message delivery receipt request</b> entry as specified by
  * <a href="http://xmpp.org/extensions/xep-0184.html">Message Delivery Receipts</a>.
@@ -114,7 +116,7 @@ public class DeliveryReceiptRequest implements ExtensionElement {
     public static class Provider extends ExtensionElementProvider<DeliveryReceiptRequest> {
         @Override
         public DeliveryReceiptRequest parse(XmlPullParser parser,
-                        int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException {
             return new DeliveryReceiptRequest();
         }

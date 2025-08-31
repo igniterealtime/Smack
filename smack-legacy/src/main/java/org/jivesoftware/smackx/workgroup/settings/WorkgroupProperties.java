@@ -27,6 +27,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class WorkgroupProperties extends IQ {
 
     private boolean authRequired;
@@ -96,7 +98,7 @@ public class WorkgroupProperties extends IQ {
     public static class InternalProvider extends IqProvider<WorkgroupProperties> {
 
         @Override
-        public WorkgroupProperties parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public WorkgroupProperties parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             WorkgroupProperties props = new WorkgroupProperties();
 
             boolean done = false;

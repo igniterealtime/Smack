@@ -27,6 +27,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * The XHTMLExtensionProvider parses XHTML packets.
  *
@@ -35,7 +37,7 @@ import org.jivesoftware.smackx.xhtmlim.packet.XHTMLExtension;
 public class XHTMLExtensionProvider extends ExtensionElementProvider<XHTMLExtension> {
 
     @Override
-    public XHTMLExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException {
+    public XHTMLExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException, XmlPullParserException {
         XHTMLExtension xhtmlExtension = new XHTMLExtension();
 
         while (true) {

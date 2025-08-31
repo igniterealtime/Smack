@@ -22,10 +22,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.eme.element.ExplicitMessageEncryptionElement;
 
+import org.jxmpp.JxmppContext;
+
 public class ExplicitMessageEncryptionProvider extends ExtensionElementProvider<ExplicitMessageEncryptionElement> {
 
     @Override
-    public ExplicitMessageEncryptionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public ExplicitMessageEncryptionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String namespace = parser.getAttributeValue(null, "namespace");
         String name = parser.getAttributeValue(null, "name");
         return new ExplicitMessageEncryptionElement(namespace, name);

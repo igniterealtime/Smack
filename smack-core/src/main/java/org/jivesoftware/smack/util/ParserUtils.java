@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2014-2024 Florian Schmaus
+ * Copyright © 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import org.jivesoftware.smack.parsing.SmackParsingException.SmackUriSyntaxParsin
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.EntityJid;
@@ -89,48 +90,48 @@ public class ParserUtils {
         }
     }
 
-    public static Jid getJidAttribute(XmlPullParser parser) throws XmppStringprepException {
-        return getJidAttribute(parser, JID);
+    public static Jid getJidAttribute(XmlPullParser parser, JxmppContext jxmppContext) throws XmppStringprepException {
+        return getJidAttribute(parser, JID, jxmppContext);
     }
 
-    public static Jid getJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+    public static Jid getJidAttribute(XmlPullParser parser, String name, JxmppContext jxmppContext) throws XmppStringprepException {
         final String jidString = parser.getAttributeValue("", name);
         if (jidString == null) {
             return null;
         }
-        return JidCreate.from(jidString);
+        return JidCreate.from(jidString, jxmppContext);
     }
 
-    public static EntityBareJid getBareJidAttribute(XmlPullParser parser) throws XmppStringprepException {
-        return getBareJidAttribute(parser, JID);
+    public static EntityBareJid getBareJidAttribute(XmlPullParser parser, JxmppContext jxmppContext) throws XmppStringprepException {
+        return getBareJidAttribute(parser, JID, jxmppContext);
     }
 
-    public static EntityBareJid getBareJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+    public static EntityBareJid getBareJidAttribute(XmlPullParser parser, String name, JxmppContext jxmppContext) throws XmppStringprepException {
         final String jidString = parser.getAttributeValue("", name);
         if (jidString == null) {
             return null;
         }
-        return JidCreate.entityBareFrom(jidString);
+        return JidCreate.entityBareFrom(jidString, jxmppContext);
     }
 
-    public static EntityFullJid getFullJidAttribute(XmlPullParser parser) throws XmppStringprepException {
-        return getFullJidAttribute(parser, JID);
+    public static EntityFullJid getFullJidAttribute(XmlPullParser parser, JxmppContext jxmppContext) throws XmppStringprepException {
+        return getFullJidAttribute(parser, JID, jxmppContext);
     }
 
-    public static EntityFullJid getFullJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+    public static EntityFullJid getFullJidAttribute(XmlPullParser parser, String name, JxmppContext jxmppContext) throws XmppStringprepException {
         final String jidString = parser.getAttributeValue("", name);
         if (jidString == null) {
             return null;
         }
-        return JidCreate.entityFullFrom(jidString);
+        return JidCreate.entityFullFrom(jidString, jxmppContext);
     }
 
-    public static EntityJid getEntityJidAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+    public static EntityJid getEntityJidAttribute(XmlPullParser parser, String name, JxmppContext jxmppContext) throws XmppStringprepException {
         final String jidString = parser.getAttributeValue("", name);
         if (jidString == null) {
             return null;
         }
-        Jid jid = JidCreate.from(jidString);
+        Jid jid = JidCreate.from(jidString, jxmppContext);
 
         if (!jid.hasLocalpart()) return null;
 
@@ -143,12 +144,12 @@ public class ParserUtils {
         return bareJid;
     }
 
-    public static Resourcepart getResourcepartAttribute(XmlPullParser parser, String name) throws XmppStringprepException {
+    public static Resourcepart getResourcepartAttribute(XmlPullParser parser, String name, JxmppContext jxmppContext) throws XmppStringprepException {
         final String resourcepartString = parser.getAttributeValue("", name);
         if (resourcepartString == null) {
             return null;
         }
-        return Resourcepart.from(resourcepartString);
+        return Resourcepart.from(resourcepartString, jxmppContext);
     }
 
     /**

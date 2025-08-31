@@ -26,10 +26,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.data.element.IoTDataReadOutAccepted;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTDataReadOutAcceptedProvider extends IqProvider<IoTDataReadOutAccepted> {
 
     @Override
-    public IoTDataReadOutAccepted parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws IOException {
+    public IoTDataReadOutAccepted parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException {
         int seqNr = ParserUtils.getIntegerAttributeOrThrow(parser, "seqnr", "IoT data request <accepted/> without sequence number");
         boolean queued = ParserUtils.getBooleanAttribute(parser, "queued", false);
         return new IoTDataReadOutAccepted(seqNr, queued);

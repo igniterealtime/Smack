@@ -34,6 +34,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
+import org.jxmpp.JxmppContext;
+
 public class JivePropertiesExtensionProvider extends ExtensionElementProvider<JivePropertiesExtension> {
 
     private static final DoOnce LOG_OBJECT_NOT_ENABLED = new DoOnce();
@@ -57,7 +59,7 @@ public class JivePropertiesExtensionProvider extends ExtensionElementProvider<Ji
     @SuppressWarnings("BanSerializableRead")
     @Override
     public JivePropertiesExtension parse(XmlPullParser parser,
-                    int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                    int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                     IOException {
         Map<String, Object> properties = new HashMap<>();
         while (true) {

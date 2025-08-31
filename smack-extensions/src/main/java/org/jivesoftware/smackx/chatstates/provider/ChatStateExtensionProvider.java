@@ -23,10 +23,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.chatstates.ChatState;
 import org.jivesoftware.smackx.chatstates.packet.ChatStateExtension;
 
+import org.jxmpp.JxmppContext;
+
 public class ChatStateExtensionProvider extends ExtensionElementProvider<ChatStateExtension> {
 
     @Override
-    public ChatStateExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public ChatStateExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String chatStateString = parser.getName();
         ChatState state = ChatState.valueOf(chatStateString);
 

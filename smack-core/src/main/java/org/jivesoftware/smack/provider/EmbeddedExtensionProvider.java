@@ -29,6 +29,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  *
  * This class simplifies parsing of embedded elements by using the
@@ -86,7 +88,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 public abstract class EmbeddedExtensionProvider<PE extends XmlElement> extends ExtensionElementProvider<PE> {
 
     @Override
-    public final PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public final PE parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         final String namespace = parser.getNamespace();
         final String name = parser.getName();
         final int attributeCount = parser.getAttributeCount();
@@ -102,7 +104,7 @@ public abstract class EmbeddedExtensionProvider<PE extends XmlElement> extends E
             event = parser.next();
 
             if (event == XmlPullParser.Event.START_ELEMENT)
-                PacketParserUtils.addExtensionElement(extensions, parser, xmlEnvironment);
+                PacketParserUtils.addExtensionElement(extensions, parser, xmlEnvironment, jxmppContext);
         }
         while (!(event == XmlPullParser.Event.END_ELEMENT && parser.getDepth() == initialDepth));
 

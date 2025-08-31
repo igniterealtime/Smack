@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2010 Jive Software, 2022-2024 Florian Schmaus.
+ * Copyright 2010 Jive Software, 2022-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
@@ -229,14 +230,19 @@ public class DummyConnection extends AbstractXMPPConnection {
         }
 
         public static Builder builder() {
-            return new Builder();
+            return builder(getDefaultJxmppContext());
+        }
+
+        public static Builder builder(JxmppContext jxmppContext) {
+            return new Builder(jxmppContext);
         }
 
         public static final class Builder
                         extends
                         ConnectionConfiguration.Builder<Builder, DummyConnectionConfiguration> {
 
-            private Builder() {
+            private Builder(JxmppContext jxmppContext) {
+                super(jxmppContext);
                 setSecurityMode(SecurityMode.disabled);
             }
 

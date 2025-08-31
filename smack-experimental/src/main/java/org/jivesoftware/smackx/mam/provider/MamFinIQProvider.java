@@ -31,6 +31,8 @@ import org.jivesoftware.smackx.mam.element.MamFinIQ;
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 import org.jivesoftware.smackx.rsm.provider.RSMSetProvider;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * MAM Fin IQ Provider class.
  *
@@ -42,7 +44,7 @@ import org.jivesoftware.smackx.rsm.provider.RSMSetProvider;
 public class MamFinIQProvider extends IqProvider<MamFinIQ> {
 
     @Override
-    public MamFinIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public MamFinIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         MamElementFactory elementFactory = MamElementFactory.forParser(parser);
         String queryId = parser.getAttributeValue("", "queryid");
         boolean complete = ParserUtils.getBooleanAttribute(parser, "complete", false);

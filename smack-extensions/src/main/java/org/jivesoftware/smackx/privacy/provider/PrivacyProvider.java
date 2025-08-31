@@ -30,6 +30,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * The PrivacyProvider parses {@link Privacy} packets. {@link Privacy}
  * Parses the <code>query</code> sub-document and creates an instance of {@link Privacy}.
@@ -41,7 +43,7 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
 public class PrivacyProvider extends IqProvider<Privacy> {
 
     @Override
-    public Privacy parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public Privacy parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         Privacy privacy = new Privacy();
         boolean done = false;

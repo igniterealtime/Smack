@@ -27,6 +27,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.jxmpp.JxmppContext;
 
 public class ProviderConfigTest {
 
@@ -64,7 +65,7 @@ public class ProviderConfigTest {
     public static class TestIQProvider extends IqProvider<IQ> {
 
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
             return null;
         }
 

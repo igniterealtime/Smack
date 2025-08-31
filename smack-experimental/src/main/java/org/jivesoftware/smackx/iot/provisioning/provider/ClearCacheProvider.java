@@ -23,10 +23,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.provisioning.element.ClearCache;
 
+import org.jxmpp.JxmppContext;
+
 public class ClearCacheProvider extends IqProvider<ClearCache> {
 
     @Override
-    public ClearCache parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+    public ClearCache parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return new ClearCache();
     }
 

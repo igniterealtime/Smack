@@ -32,6 +32,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.jxmpp.JxmppContext;
 
 public class ParsingExceptionTest {
 
@@ -80,7 +81,7 @@ public class ParsingExceptionTest {
         public static final String NAMESPACE = "http://smack.jivesoftware.org/exception";
 
         @Override
-        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
+        public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException {
             throw new IOException("Test Exception");
         }
 

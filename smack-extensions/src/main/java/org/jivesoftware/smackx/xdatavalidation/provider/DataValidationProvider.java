@@ -35,6 +35,8 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.OpenValida
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RangeValidateElement;
 import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement.RegexValidateElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Extension Provider for Data validation of forms.
  *
@@ -45,7 +47,7 @@ public class DataValidationProvider extends FormFieldChildElementProvider<Valida
     private static final Logger LOGGER = Logger.getLogger(DataValidationProvider.class.getName());
 
     @Override
-    public ValidateElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public ValidateElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         final String dataType = parser.getAttributeValue("", "datatype");
         ValidateElement dataValidation = null;

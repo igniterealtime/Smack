@@ -31,6 +31,8 @@ import org.jivesoftware.smackx.forward.provider.ForwardedProvider;
 import org.jivesoftware.smackx.mam.element.MamElementFactory;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * MAM Result Provider class.
  *
@@ -42,7 +44,7 @@ import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 public class MamResultProvider extends ExtensionElementProvider<MamResultExtension> {
 
     @Override
-    public MamResultExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public MamResultExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         MamElementFactory elementFactory = MamElementFactory.forParser(parser);
         Forwarded<Message> forwarded = null;

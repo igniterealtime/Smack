@@ -595,7 +595,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                         }
                         break;
                     case "error":
-                        StreamError streamError = PacketParserUtils.parseStreamError(parser, null);
+                        StreamError streamError = PacketParserUtils.parseStreamError(parser, null, getJxmppContext());
                         StreamErrorException streamErrorException = new StreamErrorException(streamError);
                         setCurrentConnectionExceptionAndNotify(streamErrorException);
                         throw streamErrorException;

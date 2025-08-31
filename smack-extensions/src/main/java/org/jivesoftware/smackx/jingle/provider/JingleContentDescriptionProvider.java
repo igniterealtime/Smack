@@ -27,11 +27,13 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.jingle.element.JingleContentDescription;
 
+import org.jxmpp.JxmppContext;
+
 public abstract class JingleContentDescriptionProvider<D extends JingleContentDescription>
                 extends ExtensionElementProvider<D> {
 
     @Override
-    public abstract D parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public abstract D parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
 }

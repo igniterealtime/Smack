@@ -29,6 +29,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -42,7 +43,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class MUCLightBlockingIQProvider extends IqProvider<MUCLightBlockingIQ> {
 
     @Override
-    public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public MUCLightBlockingIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         Map<Jid, Boolean> rooms = null;
         Map<Jid, Boolean> users = null;
 

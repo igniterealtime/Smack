@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2019 Florian Schmaus.
+ * Copyright 2018-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.jivesoftware.smack;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.JidTestUtil;
 
 public class ConnectionConfigurationTest {
@@ -58,11 +59,19 @@ public class ConnectionConfigurationTest {
         }
 
         static Builder builder() {
-            return new Builder();
+            return builder(getDefaultJxmppContext());
+        }
+
+        static Builder builder(JxmppContext jxmppContext) {
+            return new Builder(jxmppContext);
         }
 
         private static final class Builder
                         extends ConnectionConfiguration.Builder<Builder, DummyConnectionConfiguration> {
+
+            private Builder(JxmppContext jxmppContext) {
+                        super(jxmppContext);
+            }
 
             @Override
             public DummyConnectionConfiguration build() {

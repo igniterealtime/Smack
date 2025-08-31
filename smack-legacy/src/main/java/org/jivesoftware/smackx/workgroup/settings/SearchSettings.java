@@ -26,6 +26,8 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class SearchSettings extends SimpleIQ {
     private String forumsLocation;
     private String kbLocation;
@@ -79,7 +81,7 @@ public class SearchSettings extends SimpleIQ {
     public static class InternalProvider extends IqProvider<SearchSettings> {
 
         @Override
-        public SearchSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public SearchSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             SearchSettings settings = new SearchSettings();
 
             boolean done = false;

@@ -25,10 +25,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.csi.packet.ClientStateIndication;
 
+import org.jxmpp.JxmppContext;
+
 public class ClientStateIndicationFeatureProvider extends ExtensionElementProvider<ClientStateIndication.Feature> {
 
     @Override
-    public ClientStateIndication.Feature parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public ClientStateIndication.Feature parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         return ClientStateIndication.Feature.INSTANCE;
     }

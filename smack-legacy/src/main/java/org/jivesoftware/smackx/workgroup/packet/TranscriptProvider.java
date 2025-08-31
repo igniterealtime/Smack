@@ -30,6 +30,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * An IQProvider for transcripts.
  *
@@ -38,7 +40,7 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 public class TranscriptProvider extends IqProvider<Transcript> {
 
     @Override
-    public Transcript parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public Transcript parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         String sessionID = parser.getAttributeValue("", "sessionID");
         List<Stanza> packets = new ArrayList<>();
 

@@ -35,6 +35,8 @@ import org.jivesoftware.smackx.httpfileupload.UploadService;
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Provider for Slot.
  *
@@ -44,7 +46,7 @@ import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
 public class SlotProvider extends IqProvider<Slot> {
 
     @Override
-    public Slot parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackUriSyntaxParsingException {
+    public Slot parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackUriSyntaxParsingException {
         final String namespace = parser.getNamespace();
 
         final UploadService.Version version = HttpFileUploadManager.namespaceToVersion(namespace);

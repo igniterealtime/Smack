@@ -120,6 +120,7 @@ import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.DomainBareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.EntityFullJid;
@@ -317,6 +318,8 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
      */
     protected final ConnectionConfiguration config;
 
+    private final JxmppContext jxmppContext;
+
     /**
      * Defines how the from attribute of outgoing stanzas should be handled.
      */
@@ -387,6 +390,9 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected AbstractXMPPConnection(ConnectionConfiguration configuration) {
         saslAuthentication = new SASLAuthentication(this, configuration);
         config = configuration;
+
+        jxmppContext = configuration.getJxmppContext();
+        assert jxmppContext != null;
 
         // Install the SASL Nonza callbacks.
         buildNonzaCallback()
@@ -1427,7 +1433,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
             return;
         }
 
-        Nonza nonza = nonzaProvider.parse(parser, incomingStreamXmlEnvironment);
+        Nonza nonza = nonzaProvider.parse(parser, incomingStreamXmlEnvironment, getJxmppContext());
 
         maybeNotifyDebuggerAboutIncoming(nonza);
 
@@ -1465,7 +1471,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         Stanza stanza = null;
         try {
             try {
-                stanza = PacketParserUtils.parseStanza(parser, incomingStreamXmlEnvironment);
+                stanza = PacketParserUtils.parseStanza(parser, incomingStreamXmlEnvironment, getJxmppContext());
             } catch (NullPointerException e) {
                 // Those exceptions should probably be wrapped into a SmackParsingException and therefore likely constitute a missing verification in the throwing parser.
                 String message = "Smack parser throw unexpected exception '" + e.getMessage() + "', please report this at " + Smack.BUG_REPORT_URL;
@@ -1899,7 +1905,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                 default:
                     ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getStreamFeatureProvider(name, namespace);
                     if (provider != null) {
-                        streamFeature = provider.parse(parser, incomingStreamXmlEnvironment);
+                        streamFeature = provider.parse(parser, incomingStreamXmlEnvironment, getJxmppContext());
                     }
                     break;
                 }
@@ -2146,6 +2152,11 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return lastStanzaReceived;
     }
 
+    @Override
+    public JxmppContext getJxmppContext() {
+        return jxmppContext;
+    }
+
     /**
      * Get the timestamp when the connection was the first time authenticated, i.e., when the first successful login was
      * performed. Note that this value is not reset on disconnect, so it represents the timestamp from the last
@@ -2293,7 +2304,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         if (reportedServerDomainString != null) {
             DomainBareJid reportedServerDomain;
             try {
-                reportedServerDomain = JidCreate.domainBareFrom(reportedServerDomainString);
+                reportedServerDomain = JidCreate.domainBareFrom(reportedServerDomainString, getJxmppContext());
                 DomainBareJid configuredXmppServiceDomain = config.getXMPPServiceDomain();
                 if (!configuredXmppServiceDomain.equals(reportedServerDomain)) {
                     LOGGER.warning("Domain reported by server '" + reportedServerDomain

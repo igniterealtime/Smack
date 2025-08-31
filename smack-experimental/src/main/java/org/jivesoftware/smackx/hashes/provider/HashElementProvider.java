@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.hashes.HashManager;
 import org.jivesoftware.smackx.hashes.element.HashElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Provider for HashElements.
  */
@@ -34,7 +36,7 @@ public class HashElementProvider extends ExtensionElementProvider<HashElement> {
     public static final HashElementProvider INSTANCE = new HashElementProvider();
 
     @Override
-    public HashElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public HashElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String algo = parser.getAttributeValue(null, HashElement.ATTR_ALGO);
         String hashB64 = parser.nextText();
         return new HashElement(HashManager.ALGORITHM.valueOfName(algo), hashB64);

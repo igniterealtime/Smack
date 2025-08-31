@@ -30,6 +30,8 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class ChatSettings extends IQ {
 
     /**
@@ -128,7 +130,7 @@ public class ChatSettings extends IQ {
     public static class InternalProvider extends IqProvider<ChatSettings> {
 
         @Override
-        public ChatSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+        public ChatSettings parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
             if (parser.getEventType() != XmlPullParser.Event.START_ELEMENT) {
                 throw new IllegalStateException("Parser not in proper position, or bad XML.");
             }

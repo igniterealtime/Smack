@@ -23,10 +23,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.control.element.IoTSetResponse;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTSetResponseProvider extends IqProvider<IoTSetResponse> {
 
     @Override
-    public IoTSetResponse parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) {
+    public IoTSetResponse parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return new IoTSetResponse();
     }
 

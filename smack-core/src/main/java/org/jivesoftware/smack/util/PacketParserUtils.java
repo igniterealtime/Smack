@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2019-2024 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ import org.jivesoftware.smack.xml.SmackXmlParser;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
@@ -86,9 +87,10 @@ public class PacketParserUtils {
         return parser;
     }
 
+    // TODO: This should be part of test code, not smack's public API
     @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
     public static <S extends Stanza> S parseStanza(String stanza) throws XmlPullParserException, SmackParsingException, IOException {
-        return (S) parseStanza(getParserFor(stanza), XmlEnvironment.EMPTY);
+        return (S) parseStanza(getParserFor(stanza), XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
     }
 
     /**
@@ -98,21 +100,23 @@ public class PacketParserUtils {
      *
      * @param parser TODO javadoc me please
      * @param outerXmlEnvironment the outer XML environment (optional).
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return a stanza which is either a Message, IQ or Presence.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      * @throws IOException if an I/O error occurred.
      */
-    public static Stanza parseStanza(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, SmackParsingException, IOException {
+    public static Stanza parseStanza(XmlPullParser parser, XmlEnvironment outerXmlEnvironment,
+                    JxmppContext jxmppContext) throws XmlPullParserException, SmackParsingException, IOException {
         ParserUtils.assertAtStartTag(parser);
         final String name = parser.getName();
         switch (name) {
         case Message.ELEMENT:
-            return parseMessage(parser, outerXmlEnvironment);
+            return parseMessage(parser, outerXmlEnvironment, jxmppContext);
         case IQ.IQ_ELEMENT:
-            return parseIQ(parser, outerXmlEnvironment);
+            return parseIQ(parser, outerXmlEnvironment, jxmppContext);
         case Presence.ELEMENT:
-            return parsePresence(parser, outerXmlEnvironment);
+            return parsePresence(parser, outerXmlEnvironment, jxmppContext);
         default:
             throw new IllegalArgumentException("Can only parse message, iq or presence, not " + name);
         }
@@ -122,15 +126,17 @@ public class PacketParserUtils {
         SB get(String stanzaId);
     }
 
-    private static <SB extends StanzaBuilder<?>> SB parseCommonStanzaAttributes(StanzaBuilderSupplier<SB> stanzaBuilderSupplier, XmlPullParser parser, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
+    private static <SB extends StanzaBuilder<?>> SB parseCommonStanzaAttributes(
+                    StanzaBuilderSupplier<SB> stanzaBuilderSupplier, XmlPullParser parser,
+                    XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmppStringprepException {
         String id = parser.getAttributeValue("id");
 
         SB stanzaBuilder = stanzaBuilderSupplier.get(id);
 
-        Jid to = ParserUtils.getJidAttribute(parser, "to");
+        Jid to = ParserUtils.getJidAttribute(parser, "to", jxmppContext);
         stanzaBuilder.to(to);
 
-        Jid from = ParserUtils.getJidAttribute(parser, "from");
+        Jid from = ParserUtils.getJidAttribute(parser, "from", jxmppContext);
         stanzaBuilder.from(from);
 
         String language = ParserUtils.getXmlLang(parser, xmlEnvironment);
@@ -139,8 +145,9 @@ public class PacketParserUtils {
         return stanzaBuilder;
     }
 
+    // TODO: This should be part of test code, not smack's public API
     public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseMessage(parser, XmlEnvironment.EMPTY);
+        return parseMessage(parser, XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
     }
 
     /**
@@ -148,12 +155,13 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of a message packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return a Message packet.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws IOException if an I/O error occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
-    public static Message parseMessage(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public static Message parseMessage(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         assert parser.getName().equals(Message.ELEMENT);
 
@@ -162,7 +170,7 @@ public class PacketParserUtils {
 
         MessageBuilder message = parseCommonStanzaAttributes(id -> {
             return StanzaBuilder.buildMessage(id);
-        }, parser, outerXmlEnvironment);
+        }, parser, outerXmlEnvironment, jxmppContext);
 
         String typeString = parser.getAttributeValue("", "type");
         if (typeString != null) {
@@ -180,10 +188,11 @@ public class PacketParserUtils {
                 String namespace = parser.getNamespace();
                 switch (elementName) {
                 case "error":
-                    message.setError(parseError(parser, messageXmlEnvironment));
+                    var error = parseError(parser, messageXmlEnvironment, jxmppContext);
+                    message.setError(error);
                     break;
                  default:
-                     XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, messageXmlEnvironment);
+                     XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, messageXmlEnvironment, jxmppContext);
                     message.addExtension(extensionElement);
                     break;
                 }
@@ -408,8 +417,9 @@ public class PacketParserUtils {
         return sb;
     }
 
+    // TODO: This should be part of test code, not smack's public API
     public static Presence parsePresence(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parsePresence(parser, XmlEnvironment.EMPTY);
+        return parsePresence(parser, XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
     }
 
     /**
@@ -417,18 +427,20 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of a presence packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return a Presence packet.
      * @throws IOException if an I/O error occurred.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
-    public static Presence parsePresence(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public static Presence parsePresence(XmlPullParser parser, XmlEnvironment outerXmlEnvironment,
+                    JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         XmlEnvironment presenceXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
 
         PresenceBuilder presence = parseCommonStanzaAttributes(
-                        stanzaId -> StanzaBuilder.buildPresence(stanzaId), parser, outerXmlEnvironment);
+                        stanzaId -> StanzaBuilder.buildPresence(stanzaId), parser, outerXmlEnvironment, jxmppContext);
 
         Presence.Type type = Presence.Type.available;
         String typeString = parser.getAttributeValue("", "type");
@@ -467,14 +479,15 @@ public class PacketParserUtils {
                     }
                     break;
                 case "error":
-                    presence.setError(parseError(parser, presenceXmlEnvironment));
+                    var error = parseError(parser, presenceXmlEnvironment, jxmppContext);
+                    presence.setError(error);
                     break;
                 default:
                 // Otherwise, it must be a packet extension.
                     // Be extra robust: Skip PacketExtensions that cause Exceptions, instead of
                     // failing completely here. See SMACK-390 for more information.
                     try {
-                        XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, presenceXmlEnvironment);
+                        XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, presenceXmlEnvironment, jxmppContext);
                         presence.addExtension(extensionElement);
                     } catch (Exception e) {
                         LOGGER.log(Level.WARNING, "Failed to parse extension element in Presence stanza: " + presence, e);
@@ -496,18 +509,19 @@ public class PacketParserUtils {
         return presence.build();
     }
 
+    // TODO: This should be part of test code, not smack's public API
     public static IQ parseIQ(XmlPullParser parser) throws Exception {
-        return parseIQ(parser, null);
+        return parseIQ(parser, null, JxmppContext.getDefaultContext());
     }
 
-    public static IqData parseIqData(XmlPullParser parser) throws XmppStringprepException {
+    public static IqData parseIqData(XmlPullParser parser, JxmppContext jxmppContext) throws XmppStringprepException {
         final String id = parser.getAttributeValue("", "id");
         IqData iqData = StanzaBuilder.buildIqData(id);
 
-        final Jid to = ParserUtils.getJidAttribute(parser, "to");
+        final Jid to = ParserUtils.getJidAttribute(parser, "to", jxmppContext);
         iqData.to(to);
 
-        final Jid from = ParserUtils.getJidAttribute(parser, "from");
+        final Jid from = ParserUtils.getJidAttribute(parser, "from", jxmppContext);
         iqData.from(from);
 
         String typeString = parser.getAttributeValue("", "type");
@@ -522,19 +536,21 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser, positioned at the start of an IQ packet.
      * @param outerXmlEnvironment the outer XML environment (optional).
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return an IQ object.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws XmppStringprepException if the provided string is invalid.
      * @throws IOException if an I/O error occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
-    public static IQ parseIQ(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, XmppStringprepException, IOException, SmackParsingException {
+    public static IQ parseIQ(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext)
+                    throws XmlPullParserException, XmppStringprepException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         final int initialDepth = parser.getDepth();
         XmlEnvironment iqXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
         IQ iqPacket = null;
         StanzaError error = null;
-        IqData iqData = parseIqData(parser);
+        IqData iqData = parseIqData(parser, jxmppContext);
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -545,14 +561,14 @@ public class PacketParserUtils {
                 String namespace = parser.getNamespace();
                 switch (elementName) {
                 case "error":
-                    error = PacketParserUtils.parseError(parser, iqXmlEnvironment);
+                    error = PacketParserUtils.parseError(parser, iqXmlEnvironment, jxmppContext);
                     break;
                 // Otherwise, see if there is a registered provider for
                 // this element name and namespace.
                 default:
                     IqProvider<IQ> provider = ProviderManager.getIQProvider(elementName, namespace);
                     if (provider != null) {
-                            iqPacket = provider.parse(parser, iqData, outerXmlEnvironment);
+                            iqPacket = provider.parse(parser, iqData, outerXmlEnvironment, jxmppContext);
                     }
                     // Note that if we reach this code, it is guaranteed that the result IQ contained a child element
                     // (RFC 6120 § 8.2.3 6) because otherwise we would have reached the END_ELEMENT first.
@@ -692,8 +708,9 @@ public class PacketParserUtils {
         return descriptiveTexts;
     }
 
+    // TODO: This should be part of test code, not smack's public API
     public static StreamError parseStreamError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseStreamError(parser, null);
+        return parseStreamError(parser, null, JxmppContext.getDefaultContext());
     }
 
     /**
@@ -701,12 +718,13 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @param outerXmlEnvironment the outer XML environment (optional).
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return an stream error packet.
      * @throws IOException if an I/O error occurred.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
-    public static StreamError parseStreamError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public static StreamError parseStreamError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         List<XmlElement> extensions = new ArrayList<>();
         Map<String, String> descriptiveTexts = null;
@@ -737,7 +755,7 @@ public class PacketParserUtils {
                     }
                     break;
                 default:
-                    PacketParserUtils.addExtensionElement(extensions, parser, name, namespace, streamErrorXmlEnvironment);
+                    PacketParserUtils.addExtensionElement(extensions, parser, name, namespace, streamErrorXmlEnvironment, jxmppContext);
                     break;
                 }
                 break;
@@ -754,8 +772,9 @@ public class PacketParserUtils {
         return new StreamError(condition, conditionText, descriptiveTexts, extensions);
     }
 
+    // TODO: This should be part of test code, not smack's public API
     public static StanzaError parseError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseError(parser, null);
+        return parseError(parser, null, JxmppContext.getDefaultContext());
     }
 
     /**
@@ -763,12 +782,13 @@ public class PacketParserUtils {
      *
      * @param parser the XML parser.
      * @param outerXmlEnvironment the outer XML environment (optional).
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return an error sub-packet.
      * @throws IOException if an I/O error occurred.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
-    public static StanzaError parseError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public static StanzaError parseError(XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         Map<String, String> descriptiveTexts = null;
         XmlEnvironment stanzaErrorXmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
@@ -801,7 +821,7 @@ public class PacketParserUtils {
                     }
                     break;
                 default:
-                    PacketParserUtils.addExtensionElement(extensions, parser, name, namespace, stanzaErrorXmlEnvironment);
+                    PacketParserUtils.addExtensionElement(extensions, parser, name, namespace, stanzaErrorXmlEnvironment, jxmppContext);
                 }
                 break;
             case END_ELEMENT:
@@ -826,23 +846,23 @@ public class PacketParserUtils {
      * @param namespace the XML namespace of the stanza extension.
      * @param parser the XML parser, positioned at the starting element of the extension.
      * @param outerXmlEnvironment the outer XML environment (optional).
-     *
+     * @param jxmppContext the JXMPP context used when creating JIDs.
      * @return an extension element.
      * @throws XmlPullParserException if an error in the XML parser occurred.
      * @throws IOException if an I/O error occurred.
      * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     public static XmlElement parseExtensionElement(String elementName, String namespace,
-                    XmlPullParser parser, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+                    XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         // See if a provider is registered to handle the extension.
         ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
-                return provider.parse(parser, outerXmlEnvironment);
+                return provider.parse(parser, outerXmlEnvironment, jxmppContext);
         }
 
         // No providers registered, so use a default extension.
-        return StandardExtensionElementProvider.INSTANCE.parse(parser, outerXmlEnvironment);
+        return StandardExtensionElementProvider.INSTANCE.parse(parser, outerXmlEnvironment, jxmppContext);
     }
 
     public static StartTls parseStartTlsFeature(XmlPullParser parser)
@@ -906,38 +926,38 @@ public class PacketParserUtils {
         return new Session.Feature(optional);
     }
 
-    public static void addExtensionElement(StanzaBuilder<?> stanzaBuilder, XmlPullParser parser, XmlEnvironment outerXmlEnvironment)
+    public static void addExtensionElement(StanzaBuilder<?> stanzaBuilder, XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
-        addExtensionElement(stanzaBuilder, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment);
+        addExtensionElement(stanzaBuilder, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment, jxmppContext);
     }
 
     public static void addExtensionElement(StanzaBuilder<?> stanzaBuilder, XmlPullParser parser, String elementName,
-            String namespace, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment);
+            String namespace, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
+        XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment, jxmppContext);
         stanzaBuilder.addExtension(extensionElement);
     }
 
-    public static void addExtensionElement(Stanza packet, XmlPullParser parser, XmlEnvironment outerXmlEnvironment)
+    public static void addExtensionElement(Stanza packet, XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
-        addExtensionElement(packet, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment);
+        addExtensionElement(packet, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment, jxmppContext);
     }
 
     public static void addExtensionElement(Stanza packet, XmlPullParser parser, String elementName,
-            String namespace, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        XmlElement packetExtension = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment);
+            String namespace, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
+        XmlElement packetExtension = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment, jxmppContext);
         packet.addExtension(packetExtension);
     }
 
-    public static void addExtensionElement(Collection<XmlElement> collection, XmlPullParser parser, XmlEnvironment outerXmlEnvironment)
+    public static void addExtensionElement(Collection<XmlElement> collection, XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
-        addExtensionElement(collection, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment);
+        addExtensionElement(collection, parser, parser.getName(), parser.getNamespace(), outerXmlEnvironment, jxmppContext);
     }
 
     public static void addExtensionElement(Collection<XmlElement> collection, XmlPullParser parser,
-                    String elementName, String namespace, XmlEnvironment outerXmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
-        XmlElement packetExtension = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment);
+                    String elementName, String namespace, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
+        XmlElement packetExtension = parseExtensionElement(elementName, namespace, parser, outerXmlEnvironment, jxmppContext);
         collection.add(packetExtension);
     }
 }

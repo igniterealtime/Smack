@@ -27,6 +27,8 @@ import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * IQ stanza used for discovering the user's shared groups and for getting the answer back
  * from the server.<p>
@@ -71,7 +73,7 @@ public class SharedGroupsInfo extends IQ {
     public static class Provider extends IqProvider<SharedGroupsInfo> {
 
         @Override
-        public SharedGroupsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+        public SharedGroupsInfo parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                         throws XmlPullParserException, IOException {
             SharedGroupsInfo groupsInfo = new SharedGroupsInfo();
 

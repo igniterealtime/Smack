@@ -27,17 +27,18 @@ import org.jivesoftware.smackx.muc.MUCRole;
 import org.jivesoftware.smackx.muc.packet.Destroy;
 import org.jivesoftware.smackx.muc.packet.MUCItem;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.parts.Resourcepart;
 
 public class MUCParserUtils {
-    public static MUCItem parseItem(XmlPullParser parser) throws XmlPullParserException, IOException {
+    public static MUCItem parseItem(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         int initialDepth = parser.getDepth();
         MUCAffiliation affiliation = MUCAffiliation.fromString(parser.getAttributeValue("", "affiliation"));
-        Resourcepart nick = ParserUtils.getResourcepartAttribute(parser, "nick");
+        Resourcepart nick = ParserUtils.getResourcepartAttribute(parser, "nick", jxmppContext);
         MUCRole role = MUCRole.fromString(parser.getAttributeValue("", "role"));
-        Jid jid = ParserUtils.getJidAttribute(parser);
+        Jid jid = ParserUtils.getJidAttribute(parser, jxmppContext);
         Jid actor = null;
         Resourcepart actorNick = null;
         String reason = null;
@@ -48,7 +49,7 @@ public class MUCParserUtils {
                 String name = parser.getName();
                 switch (name) {
                 case "actor":
-                    actor = ParserUtils.getJidAttribute(parser);
+                    actor = ParserUtils.getJidAttribute(parser, jxmppContext);
                     // TODO change to
                     // actorNick = Resourcepart.from(parser.getAttributeValue("", "nick"));
                     // once a newer version of JXMPP is used that supports from(null).
@@ -75,9 +76,9 @@ public class MUCParserUtils {
         return new MUCItem(affiliation, role, actor, reason, jid, nick, actorNick);
     }
 
-    public static Destroy parseDestroy(XmlPullParser parser) throws XmlPullParserException, IOException {
+    public static Destroy parseDestroy(XmlPullParser parser, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         final int initialDepth = parser.getDepth();
-        final EntityBareJid jid = ParserUtils.getBareJidAttribute(parser);
+        final EntityBareJid jid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
         String reason = null;
         String password = null;
         outerloop: while (true) {

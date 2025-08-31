@@ -31,6 +31,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.offline.OfflineMessageManager;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Represents a request to get some or all the offline messages of a user. This class can also
  * be used for deleting some or all the offline messages of a user.
@@ -202,7 +204,7 @@ public class OfflineMessageRequest extends IQ {
 
         @Override
         public OfflineMessageRequest parse(XmlPullParser parser,
-                        int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+                        int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                         IOException {
             OfflineMessageRequest request = new OfflineMessageRequest();
             boolean done = false;

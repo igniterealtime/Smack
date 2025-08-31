@@ -28,6 +28,8 @@ import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Implements the protocol currently used to search information repositories on the Jabber network. To date, the jabber:iq:search protocol
  * has been used mainly to search for people who have registered with user directories (e.g., the "Jabber User Directory" hosted at users.jabber.org).
@@ -57,7 +59,7 @@ public class UserSearch extends SimpleIQ {
 
         // FIXME this provider does return two different types of IQs
         @Override
-        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+        public IQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
             UserSearch search = null;
             SimpleUserSearch simpleUserSearch = new SimpleUserSearch();
 
@@ -71,7 +73,7 @@ public class UserSearch extends SimpleIQ {
                 else if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getNamespace().equals("jabber:x:data")) {
                     // Otherwise, it must be a packet extension.
                     search = new UserSearch();
-                    PacketParserUtils.addExtensionElement(search, parser, xmlEnvironment);
+                    PacketParserUtils.addExtensionElement(search, parser, xmlEnvironment, jxmppContext);
                 }
                 else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                     if (parser.getName().equals("query")) {

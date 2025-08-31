@@ -26,10 +26,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.FormField;
 
+import org.jxmpp.JxmppContext;
+
 public class DescriptionProvider extends FormFieldChildElementProvider<FormField.Description> {
 
     @Override
-    public FormField.Description parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public FormField.Description parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException {
         String description = parser.nextText();
         return new FormField.Description(description);

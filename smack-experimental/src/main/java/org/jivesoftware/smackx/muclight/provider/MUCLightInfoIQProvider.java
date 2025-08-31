@@ -30,6 +30,7 @@ import org.jivesoftware.smackx.muclight.MUCLightAffiliation;
 import org.jivesoftware.smackx.muclight.MUCLightRoomConfiguration;
 import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 
@@ -42,7 +43,7 @@ import org.jxmpp.jid.impl.JidCreate;
 public class MUCLightInfoIQProvider extends IqProvider<MUCLightInfoIQ> {
 
     @Override
-    public MUCLightInfoIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public MUCLightInfoIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String version = null;
         String roomName = null;
         String subject = null;

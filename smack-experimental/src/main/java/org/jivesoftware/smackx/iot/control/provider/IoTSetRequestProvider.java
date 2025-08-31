@@ -33,10 +33,12 @@ import org.jivesoftware.smackx.iot.control.element.SetDoubleData;
 import org.jivesoftware.smackx.iot.control.element.SetIntData;
 import org.jivesoftware.smackx.iot.control.element.SetLongData;
 
+import org.jxmpp.JxmppContext;
+
 public class IoTSetRequestProvider extends IqProvider<IoTSetRequest> {
 
     @Override
-    public IoTSetRequest parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public IoTSetRequest parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         List<SetData> data = new ArrayList<>(4);
         outerloop: while (true) {
             final XmlPullParser.Event eventType = parser.next();

@@ -26,10 +26,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.json.packet.AbstractJsonPacketExtension;
 
+import org.jxmpp.JxmppContext;
+
 public abstract class AbstractJsonExtensionProvider<J extends AbstractJsonPacketExtension> extends ExtensionElementProvider<J> {
 
     @Override
-    public J parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException,
+    public J parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException,
                     IOException {
         String json = PacketParserUtils.parseElementText(parser);
         return from(json);

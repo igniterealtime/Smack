@@ -28,9 +28,11 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 
+import org.jxmpp.JxmppContext;
+
 public class ThumbnailElementProvider extends ExtensionElementProvider<ThumbnailElement> {
     @Override
-    public ThumbnailElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public ThumbnailElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String uri = parser.getAttributeValue(ThumbnailElement.ELEM_URI);
         String mediaType = parser.getAttributeValue(ThumbnailElement.ELEM_MEDIA_TYPE);

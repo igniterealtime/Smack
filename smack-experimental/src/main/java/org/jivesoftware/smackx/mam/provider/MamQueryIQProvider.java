@@ -30,6 +30,8 @@ import org.jivesoftware.smackx.mam.element.MamQueryIQ;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * MAM Query IQ Provider class.
  *
@@ -41,7 +43,7 @@ import org.jivesoftware.smackx.xdata.provider.DataFormProvider;
 public class MamQueryIQProvider extends IqProvider<MamQueryIQ> {
 
     @Override
-    public MamQueryIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public MamQueryIQ parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         MamElementFactory elementFactory = MamElementFactory.forParser(parser);
         DataForm dataForm = null;

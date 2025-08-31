@@ -26,6 +26,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.jingleold.media.ContentInfo;
 
+import org.jxmpp.JxmppContext;
+
 public class JingleError implements ExtensionElement {
 
     public static String NAMESPACE = "urn:xmpp:tmp:jingle:errors";
@@ -145,7 +147,7 @@ public class JingleError implements ExtensionElement {
             * Parse a JingleDescription.Audio extension.
             */
            @Override
-           public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+           public ExtensionElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
                ExtensionElement result = null;
 
                if (audioInfo != null) {

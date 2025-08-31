@@ -22,12 +22,14 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.jingle.provider.JingleContentTransportProvider;
 import org.jivesoftware.smackx.jingle.transports.jingle_ibb.element.JingleIBBTransport;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parse JingleByteStreamTransport elements.
  */
 public class JingleIBBTransportProvider extends JingleContentTransportProvider<JingleIBBTransport> {
     @Override
-    public JingleIBBTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public JingleIBBTransport parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         String blockSizeString = parser.getAttributeValue(null, JingleIBBTransport.ATTR_BLOCK_SIZE);
         String sid = parser.getAttributeValue(null, JingleIBBTransport.ATTR_SID);
 

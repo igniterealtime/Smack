@@ -25,6 +25,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.shim.packet.Header;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Parses the header element as defined in <a href="http://xmpp.org/extensions/xep-0131">Stanza Headers and Internet Metadata (SHIM)</a>.
  *
@@ -32,7 +34,7 @@ import org.jivesoftware.smackx.shim.packet.Header;
  */
 public class HeaderProvider extends ExtensionElementProvider<Header> {
     @Override
-    public Header parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public Header parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String name = parser.getAttributeValue(null, "name");
         String value = null;
 

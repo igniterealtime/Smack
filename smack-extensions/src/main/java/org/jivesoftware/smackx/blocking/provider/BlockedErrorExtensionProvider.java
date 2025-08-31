@@ -22,6 +22,8 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.blocking.element.BlockedErrorExtension;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * Blocked error extension class.
  *
@@ -32,7 +34,7 @@ import org.jivesoftware.smackx.blocking.element.BlockedErrorExtension;
 public class BlockedErrorExtensionProvider extends ExtensionElementProvider<BlockedErrorExtension> {
 
     @Override
-    public BlockedErrorExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public BlockedErrorExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return new BlockedErrorExtension();
     }
 

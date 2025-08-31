@@ -28,6 +28,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ox.element.PubkeyElement;
 
+import org.jxmpp.JxmppContext;
+
 /**
  * {@link ExtensionElementProvider} implementation for the {@link PubkeyElement}.
  */
@@ -36,7 +38,7 @@ public class PubkeyElementProvider extends ExtensionElementProvider<PubkeyElemen
     public static final PubkeyElementProvider INSTANCE = new PubkeyElementProvider();
 
     @Override
-    public PubkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public PubkeyElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, ParseException {
         String dateString = parser.getAttributeValue(null, PubkeyElement.ATTR_DATE);
         Date date = ParserUtils.getDateFromOptionalXep82String(dateString);

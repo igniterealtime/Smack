@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2016 Florian Schmaus
+ * Copyright © 2016-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,15 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.iot.provisioning.element.Friend;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 public class FriendProvider extends ExtensionElementProvider<Friend> {
 
     @Override
-    public Friend parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmppStringprepException {
-        BareJid jid = ParserUtils.getBareJidAttribute(parser);
+    public Friend parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmppStringprepException {
+        BareJid jid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
         return new Friend(jid);
     }
 

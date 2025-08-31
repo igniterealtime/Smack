@@ -26,10 +26,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.caps.EntityCapsManager;
 import org.jivesoftware.smackx.caps.packet.CapsExtension;
 
+import org.jxmpp.JxmppContext;
+
 public class CapsExtensionProvider extends ExtensionElementProvider<CapsExtension> {
 
     @Override
-    public CapsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException {
+    public CapsExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         String hash, version, node;
         if (parser.getEventType() == XmlPullParser.Event.START_ELEMENT
                 && parser.getName().equalsIgnoreCase(EntityCapsManager.ELEMENT)) {

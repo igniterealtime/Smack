@@ -22,10 +22,12 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.hints.element.MessageProcessingHint;
 
+import org.jxmpp.JxmppContext;
+
 public abstract class MessageProcessingHintProvider<H extends MessageProcessingHint> extends ExtensionElementProvider<H> {
 
     @Override
-    public H parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) {
+    public H parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) {
         return getHint();
     }
 

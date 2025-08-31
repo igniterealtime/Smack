@@ -26,10 +26,12 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.message_retraction.element.RetractElement;
 
+import org.jxmpp.JxmppContext;
+
 public class RetractElementProvider extends ExtensionElementProvider<RetractElement> {
 
     @Override
-    public RetractElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public RetractElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         return new RetractElement();
     }
 }

@@ -31,12 +31,14 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.reference.element.ReferenceElement;
 
+import org.jxmpp.JxmppContext;
+
 public class ReferenceProvider extends ExtensionElementProvider<ReferenceElement> {
 
     public static final ReferenceProvider TEST_PROVIDER = new ReferenceProvider();
 
     @Override
-    public ReferenceElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws XmlPullParserException, IOException, SmackParsingException {
+    public ReferenceElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         Integer begin = ParserUtils.getIntegerAttribute(parser, ReferenceElement.ATTR_BEGIN);
         Integer end =   ParserUtils.getIntegerAttribute(parser, ReferenceElement.ATTR_END);
         String typeString = parser.getAttributeValue(null, ReferenceElement.ATTR_TYPE);

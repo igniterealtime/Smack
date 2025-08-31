@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2022 Florian Schmaus
+ * Copyright 2019-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jxmpp.JxmppContext;
 
 /**
  * An abstract class for parsing custom {@link IQ} packets. Each IqProvider must be registered with the {@link
@@ -94,22 +96,22 @@ public abstract class IqProvider<I extends IQ> extends AbstractProvider<I> {
 
     public final I parse(XmlPullParser parser, IqData iqCommon)
                     throws XmlPullParserException, IOException, SmackParsingException {
-        return parse(parser, iqCommon, null);
+        return parse(parser, iqCommon, null, JxmppContext.getDefaultContext());
     }
 
-    public final I parse(XmlPullParser parser, IqData iqData, XmlEnvironment outerXmlEnvironment)
+    public final I parse(XmlPullParser parser, IqData iqData, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         final int initialDepth = parser.getDepth();
         final XmlEnvironment xmlEnvironment = XmlEnvironment.from(parser, outerXmlEnvironment);
 
-        I i = wrapExceptions(() -> parse(parser, initialDepth, iqData, xmlEnvironment));
+        I i = wrapExceptions(() -> parse(parser, initialDepth, iqData, xmlEnvironment, jxmppContext));
 
         // Parser should be at end tag of the consumed/parsed element
         ParserUtils.forwardToEndTagOfDepth(parser, initialDepth);
         return i;
     }
 
-    public abstract I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment)
+    public abstract I parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException;
 
 }

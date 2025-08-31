@@ -26,6 +26,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smackx.pubsub.Affiliation;
 import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 
+import org.jxmpp.JxmppContext;
 import org.jxmpp.jid.BareJid;
 
 /**
@@ -37,9 +38,9 @@ import org.jxmpp.jid.BareJid;
 public class AffiliationProvider extends ExtensionElementProvider<Affiliation> {
 
     @Override
-    public Affiliation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException {
+    public Affiliation parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws IOException {
         String node = parser.getAttributeValue(null, "node");
-        BareJid jid = ParserUtils.getBareJidAttribute(parser);
+        BareJid jid = ParserUtils.getBareJidAttribute(parser, jxmppContext);
         String namespaceString = parser.getNamespace();
         AffiliationNamespace namespace = AffiliationNamespace.fromXmlns(namespaceString);
 

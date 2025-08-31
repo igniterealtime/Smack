@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020 Florian Schmaus
+ * Copyright 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,12 @@ import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jxmpp.JxmppContext;
+
 public class MessageThreadElementProvider extends ExtensionElementProvider<Message.Thread> {
 
     @Override
-    public Message.Thread parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public Message.Thread parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException {
         String parent = parser.getAttributeValue(Message.Thread.PARENT_ATTRIBUTE_NAME);
         String thread = parser.nextText();

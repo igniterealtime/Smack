@@ -32,10 +32,12 @@ import org.jivesoftware.smackx.hashes.provider.HashElementProvider;
 import org.jivesoftware.smackx.thumbnails.element.ThumbnailElement;
 import org.jivesoftware.smackx.thumbnails.provider.ThumbnailElementProvider;
 
+import org.jxmpp.JxmppContext;
+
 public class FileMetadataElementProvider extends ExtensionElementProvider<FileMetadataElement> {
 
     @Override
-    public FileMetadataElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public FileMetadataElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
             throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         FileMetadataElement.Builder builder = FileMetadataElement.builder();
 
@@ -83,11 +85,11 @@ public class FileMetadataElementProvider extends ExtensionElementProvider<FileMe
                         builder.setSize(Long.parseLong(ParserUtils.getRequiredNextText(parser)));
                         break;
                     case HashElement.ELEMENT:
-                        builder.addHash(HashElementProvider.INSTANCE.parse(parser, parser.getDepth(), xmlEnvironment));
+                        builder.addHash(HashElementProvider.INSTANCE.parse(parser, parser.getDepth(), xmlEnvironment, null));
                         break;
                     case ThumbnailElement.ELEMENT:
                         ThumbnailElementProvider provider = new ThumbnailElementProvider();
-                        builder.addThumbnail(provider.parse(parser, parser.getDepth(), xmlEnvironment));
+                        builder.addThumbnail(provider.parse(parser, parser.getDepth(), xmlEnvironment, null));
                 }
                 break;
             case END_ELEMENT:

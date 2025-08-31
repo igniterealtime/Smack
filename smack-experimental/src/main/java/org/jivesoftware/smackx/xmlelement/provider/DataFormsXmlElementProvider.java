@@ -30,6 +30,8 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.xdata.provider.FormFieldChildElementProvider;
 import org.jivesoftware.smackx.xmlelement.element.DataFormsXmlElement;
 
+import org.jxmpp.JxmppContext;
+
 public class DataFormsXmlElementProvider extends FormFieldChildElementProvider<DataFormsXmlElement> {
 
     @Override
@@ -38,7 +40,7 @@ public class DataFormsXmlElementProvider extends FormFieldChildElementProvider<D
     }
 
     @Override
-    public DataFormsXmlElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment)
+    public DataFormsXmlElement parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws IOException, XmlPullParserException, SmackParsingException {
         XmlPullParser.TagEvent tagEvent = parser.nextTag();
 
