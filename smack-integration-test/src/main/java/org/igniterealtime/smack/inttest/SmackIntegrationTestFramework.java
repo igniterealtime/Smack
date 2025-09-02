@@ -114,11 +114,7 @@ public class SmackIntegrationTestFramework {
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
 
-        int exitStatus = testRunResult.failedIntegrationTests.isEmpty() ? 0 : 2;
-        if (config.failOnImpossibleTest && (!testRunResult.impossibleTestClasses.isEmpty() || !testRunResult.impossibleIntegrationTests.isEmpty())) {
-            exitStatus += 4;
-        }
-        System.exit(exitStatus);
+        System.exit(testRunResult.getExitStatus());
     }
 
     public static class JulTestRunResultProcessor implements TestRunResultProcessor {
@@ -214,7 +210,7 @@ public class SmackIntegrationTestFramework {
             break;
         }
 
-        testRunResult = new TestRunResult();
+        testRunResult = new TestRunResult(config);
         sinttestDebugger = config.createSinttestDebugger(testRunResult.testRunStart, testRunResult.testRunId);
         // Create a connection manager *after* we created the testRunId (in testRunResult).
         this.connectionManager = new XmppConnectionManager(this);
@@ -744,6 +740,8 @@ public class SmackIntegrationTestFramework {
 
         public final ZonedDateTime testRunStart = ZonedDateTime.now();
 
+        private final Configuration config;
+
         private final List<SuccessfulTest> successfulIntegrationTests = Collections.synchronizedList(new ArrayList<SuccessfulTest>());
         private final List<FailedTest> failedIntegrationTests = Collections.synchronizedList(new ArrayList<FailedTest>());
         private final List<TestNotPossible> impossibleIntegrationTests = Collections.synchronizedList(new ArrayList<TestNotPossible>());
@@ -755,7 +753,8 @@ public class SmackIntegrationTestFramework {
 
         private final Map<Class<? extends AbstractSmackIntTest>, Throwable> impossibleTestClasses = new HashMap<>();
 
-        TestRunResult() {
+        TestRunResult(Configuration config) {
+            this.config = config;
         }
 
         public String getTestRunId() {
@@ -780,6 +779,15 @@ public class SmackIntegrationTestFramework {
 
         public Map<Class<? extends AbstractSmackIntTest>, Throwable> getImpossibleTestClasses() {
             return Collections.unmodifiableMap(impossibleTestClasses);
+        }
+
+        public int getExitStatus() {
+          int exitStatus = failedIntegrationTests.isEmpty() ? 0 : 2;
+          if (config.failOnImpossibleTest && (!impossibleTestClasses.isEmpty() || !impossibleIntegrationTests.isEmpty())) {
+              exitStatus += 4;
+          }
+
+          return exitStatus;
         }
     }
 

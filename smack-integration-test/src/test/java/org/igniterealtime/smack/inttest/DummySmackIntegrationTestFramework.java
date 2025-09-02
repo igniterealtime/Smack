@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2024 Florian Schmaus
+ * Copyright 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class DummySmackIntegrationTestFramework extends SmackIntegrationTestFram
             InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchAlgorithmException, SmackException, IOException, XMPPException, InterruptedException {
         super(configuration);
-        testRunResult = new TestRunResult();
+        testRunResult = new TestRunResult(configuration);
     }
 
     @Override
