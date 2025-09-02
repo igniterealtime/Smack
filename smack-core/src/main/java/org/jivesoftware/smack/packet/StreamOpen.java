@@ -17,6 +17,8 @@
 
 package org.jivesoftware.smack.packet;
 
+import javax.xml.namespace.QName;
+
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
@@ -26,6 +28,8 @@ public final class StreamOpen extends AbstractStreamOpen {
     public static final String UNPREFIXED_ELEMENT = "stream";
 
     public static final String ELEMENT = "stream:" + UNPREFIXED_ELEMENT;
+
+    public static final QName QNAME = new QName(ETHERX_JABBER_STREAMS_NAMESPACE, UNPREFIXED_ELEMENT);
 
     public StreamOpen(CharSequence to) {
        this(to, null, null, null, StreamContentNamespace.client);
