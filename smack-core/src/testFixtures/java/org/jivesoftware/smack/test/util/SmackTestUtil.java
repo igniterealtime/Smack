@@ -23,12 +23,17 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 import javax.xml.namespace.QName;
 
 import org.jivesoftware.smack.packet.Element;
 import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.packet.TopLevelStreamElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.AbstractProvider;
 import org.jivesoftware.smack.provider.IqProvider;
@@ -115,6 +120,34 @@ public class SmackTestUtil {
         }
 
         return element;
+    }
+
+    public static List<TopLevelStreamElement> parseStanzas(CharSequence cs, XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        var stringReader = new StringReader(cs.toString());
+        return parseStanzas(stringReader, parserKind);
+    }
+
+    public static List<TopLevelStreamElement> parseStanzas(Reader reader, XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        var parser = PacketParserUtils.getParserFor(reader);
+        ParserUtils.forwardToStartElement(parser);
+
+        // Check if we have a <stream> open tag and create the outer XmlEnvironment from it
+        XmlEnvironment streamXmlEnvironment = XmlEnvironment.EMPTY;
+        if (parser.getQName().equals(StreamOpen.QNAME)) {
+            streamXmlEnvironment = XmlEnvironment.from(parser);
+            parser.next();
+        }
+
+        var res = new ArrayList<TopLevelStreamElement>();
+        // Parse all top level stream elements and add them to the result.
+        do {
+            var stanza = PacketParserUtils.parseStanza(parser, streamXmlEnvironment, JxmppContext.getDefaultContext());
+            res.add(stanza);
+        } while (!(parser.next() == XmlPullParser.Event.END_ELEMENT && parser.getQName().equals(StreamOpen.QNAME)));
+
+        return res;
     }
 
     public static XmlPullParser getParserFor(String xml, XmlPullParserKind parserKind) throws XmlPullParserException, IOException {
