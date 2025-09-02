@@ -231,11 +231,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                 connection.sendIqRequestAndWaitForResponse(close);
             }
             catch (Exception e) {
-                // Sadly we are unable to use the IOException(Throwable) constructor because this
-                // constructor is only supported from Android API 9 on.
-                IOException ioException = new IOException();
-                ioException.initCause(e);
-                throw ioException;
+                throw new IOException(e);
             }
 
             this.inputStream.cleanup();
@@ -829,11 +825,7 @@ public class InBandBytestreamSession implements BytestreamSession {
                 // close session unless it is already closed
                 if (!this.isClosed) {
                     InBandBytestreamSession.this.close();
-                    // Sadly we are unable to use the IOException(Throwable) constructor because this
-                    // constructor is only supported from Android API 9 on.
-                    IOException ioException = new IOException();
-                    ioException.initCause(e);
-                    throw ioException;
+                    throw new IOException(e);
                 }
             }
 
