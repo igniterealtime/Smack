@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -62,7 +63,6 @@ import org.jivesoftware.smack.packet.MessageView;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.Objects;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;

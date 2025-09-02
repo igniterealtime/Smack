@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2016-2024 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2016-2025 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**

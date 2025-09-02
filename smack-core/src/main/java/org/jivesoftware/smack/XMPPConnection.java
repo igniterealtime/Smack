@@ -18,6 +18,7 @@ package org.jivesoftware.smack;
 
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import javax.xml.namespace.QName;
@@ -39,7 +40,6 @@ import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaFactory;
 import org.jivesoftware.smack.packet.XmlElement;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.XmppElementUtil;
 
 import org.jxmpp.JxmppContext;

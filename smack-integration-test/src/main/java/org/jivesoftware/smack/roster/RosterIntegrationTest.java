@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2024 Florian Schmaus, 2022-2024 Guus der Kinderen
+ * Copyright 2015-2025 Florian Schmaus, 2022-2024 Guus der Kinderen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 import org.jivesoftware.smack.StanzaListener;
 import org.jivesoftware.smack.filter.AndFilter;
@@ -30,7 +31,6 @@ import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;

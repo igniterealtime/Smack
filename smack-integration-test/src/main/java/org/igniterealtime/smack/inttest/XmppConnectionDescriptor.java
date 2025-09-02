@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018-2024 Florian Schmaus
+ * Copyright 2018-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -30,7 +31,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModuleDescriptor;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.websocket.XmppWebSocketTransportModuleDescriptor;
 import org.jivesoftware.smack.websocket.impl.WebSocketFactory;
 

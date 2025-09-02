@@ -28,10 +28,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.DisconnectedStateDescriptor;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.MultiMap;
 
 /**
