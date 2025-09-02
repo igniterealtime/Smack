@@ -114,7 +114,10 @@ public class SmackIntegrationTestFramework {
         SmackIntegrationTestFramework sinttest = new SmackIntegrationTestFramework(config);
         TestRunResult testRunResult = sinttest.run();
 
-        final int exitStatus = testRunResult.failedIntegrationTests.isEmpty() ? 0 : 2;
+        int exitStatus = testRunResult.failedIntegrationTests.isEmpty() ? 0 : 2;
+        if (config.failOnImpossibleTest && (!testRunResult.impossibleTestClasses.isEmpty() || !testRunResult.impossibleIntegrationTests.isEmpty())) {
+            exitStatus += 4;
+        }
         System.exit(exitStatus);
     }
 
@@ -138,6 +141,10 @@ public class SmackIntegrationTestFramework {
             final int availableTests = testRunResult.getNumberOfAvailableTests();
             LOGGER.info("SmackIntegrationTestFramework[" + testRunResult.testRunId + ']' + " finished: "
                 + successfulTests + '/' + availableTests + " [" + failedTests + " failed]");
+
+            if (!testRunResult.impossibleTestClasses.isEmpty() || !testRunResult.impossibleIntegrationTests.isEmpty()) {
+                LOGGER.info("It was not possible to run all Smack Integration tests.");
+            }
 
             if (failedTests == 0) {
                 LOGGER.info("All possible Smack Integration Tests completed successfully. \\o/");
