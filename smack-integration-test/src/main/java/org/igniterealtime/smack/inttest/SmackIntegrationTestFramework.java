@@ -356,6 +356,11 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
+            if (!config.isAccountRegistrationPossible() && AbstractSmackLowLevelIntegrationTest.class.isAssignableFrom(testClass)) {
+                testRunResult.impossibleTestClasses.put(testClass, new IllegalStateException("This is a low-level test. These cannot run without account registration."));
+                continue;
+            }
+
             final String specification;
             if (testClass.isAnnotationPresent(SpecificationReference.class)) {
                 final SpecificationReference specificationReferenceAnnotation = testClass.getAnnotation(SpecificationReference.class);
