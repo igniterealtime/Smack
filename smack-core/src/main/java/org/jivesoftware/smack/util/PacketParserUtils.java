@@ -71,9 +71,8 @@ import org.jxmpp.stringprep.XmppStringprepException;
 public class PacketParserUtils {
     private static final Logger LOGGER = Logger.getLogger(PacketParserUtils.class.getName());
 
-    // TODO: Rename argument name from 'stanza' to 'element'.
-    public static XmlPullParser getParserFor(String stanza) throws XmlPullParserException, IOException {
-        return getParserFor(new StringReader(stanza));
+    public static XmlPullParser getParserFor(String element) throws XmlPullParserException, IOException {
+        return getParserFor(new StringReader(element));
     }
 
     public static XmlPullParser getParserFor(InputStream inputStream) throws XmlPullParserException, IOException {
