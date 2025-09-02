@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020-2024 Florian Schmaus
+ * Copyright 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.util.ListIterator;
 import java.util.Queue;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jivesoftware.smack.SmackException;
@@ -41,7 +42,6 @@ import org.jivesoftware.smack.internal.SmackTlsContext;
 import org.jivesoftware.smack.packet.Nonza;
 import org.jivesoftware.smack.packet.TopLevelStreamElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;

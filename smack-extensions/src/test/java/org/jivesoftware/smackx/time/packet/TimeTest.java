@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2014-2021 Florian Schmaus
+ * Copyright 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package org.jivesoftware.smackx.time.packet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.IQ;
@@ -31,16 +31,17 @@ public class TimeTest extends SmackTestSuite {
 
     @Test
     public void parseCurrentTimeTest() {
-        Calendar calendar = Calendar.getInstance();
+        var zonedDateTime = ZonedDateTime.parse("2006-12-19T11:58:35-06:00");
         Time time = Time.builder("dummy")
                         .ofType(IQ.Type.result)
-                        .setTime(calendar)
+                        .set(zonedDateTime)
                         .build();
 
-        Date date = time.getTime();
-        Date calendarDate = calendar.getTime();
+        var utc = time.getUtc();
+        var tzo = time.getTzo();
 
-        assertEquals(calendarDate, date);
+        assertEquals("2006-12-19T17:58:35Z", utc);
+        assertEquals("-06:00", tzo);
     }
 
     @Test
@@ -52,7 +53,7 @@ public class TimeTest extends SmackTestSuite {
                         .setTime(calendar)
                         .build();
 
-        assertEquals("-8:30", time.getTzo());
+        assertEquals("-08:30", time.getTzo());
     }
 
     @Test
@@ -64,6 +65,6 @@ public class TimeTest extends SmackTestSuite {
                         .setTime(calendar)
                         .build();
 
-        assertEquals("+8:30", time.getTzo());
+        assertEquals("+08:30", time.getTzo());
     }
 }

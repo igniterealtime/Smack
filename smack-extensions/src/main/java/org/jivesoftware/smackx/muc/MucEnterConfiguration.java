@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2024 Florian Schmaus
+ * Copyright 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 package org.jivesoftware.smackx.muc;
 
 import java.util.Date;
+import java.util.function.Consumer;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.PresenceBuilder;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.Objects;
 
 import org.jivesoftware.smackx.muc.packet.MUCInitialPresence;

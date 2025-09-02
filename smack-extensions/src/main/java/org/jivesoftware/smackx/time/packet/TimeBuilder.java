@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2021 Florian Schmaus
+ * Copyright 2021-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@
 package org.jivesoftware.smackx.time.packet;
 
 import java.text.ParseException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IqBuilder;
 import org.jivesoftware.smack.packet.IqData;
-import org.jivesoftware.smack.util.StringUtils;
 
 import org.jxmpp.util.XmppDateTime;
 
-// TODO: Use java.time.ZonedDataTime once Smack's minimum Android SDK API level is 26 or higher.
 public class TimeBuilder extends IqBuilder<TimeBuilder, Time> implements TimeView {
 
-    private String utc;
-    private String tzo;
+    private ZonedDateTime zonedDateTime;
 
     TimeBuilder(IqData iqCommon) {
         super(iqCommon);
@@ -44,6 +43,16 @@ public class TimeBuilder extends IqBuilder<TimeBuilder, Time> implements TimeVie
         super(stanzaId);
     }
 
+    @Override
+    public ZonedDateTime getZonedDateTime() {
+        return zonedDateTime;
+    }
+
+    public TimeBuilder set(ZonedDateTime zonedDateTime) {
+        this.zonedDateTime = zonedDateTime;
+        return getThis();
+    }
+
     /**
      * Sets the time using UTC formatted String, in the format CCYY-MM-DDThh:mm:ssZ, and the provided timezone
      * definition in the format (+|-)hh:mm.
@@ -55,31 +64,18 @@ public class TimeBuilder extends IqBuilder<TimeBuilder, Time> implements TimeVie
      *         format).
      */
     public TimeBuilder setUtcAndTzo(String utc, String tzo) throws ParseException {
-        this.utc = StringUtils.requireNotNullNorEmpty(utc, "Must provide utc argument");
-        // Sanity check the provided string.
-        XmppDateTime.parseDate(utc);
+        var instant = XmppDateTime.parseDate(utc).toInstant();
+        var zoneId = ZoneId.of(tzo);
 
-        this.tzo = StringUtils.requireNotNullNorEmpty(tzo, "Must provide tzo argument");
+        zonedDateTime = instant.atZone(zoneId);
 
         return getThis();
     }
 
     public TimeBuilder setTime(Calendar calendar) {
-        // Convert local time to the UTC time.
-        utc = XmppDateTime.formatXEP0082Date(calendar.getTime());
-        tzo = XmppDateTime.asString(calendar.getTimeZone());
+        zonedDateTime = ZonedDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
 
         return getThis();
-    }
-
-    @Override
-    public String getUtc() {
-        return utc;
-    }
-
-    @Override
-    public String getTzo() {
-        return tzo;
     }
 
     @Override

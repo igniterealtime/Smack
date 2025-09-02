@@ -16,7 +16,14 @@
  */
 package org.jivesoftware.smack.util;
 
-// TODO: Replace with java.util.function.Consumer once Smack's minimum Android SDK level is 24 or higher.
+/**
+ * Deprecated, use {@link java.util.function.Consumer} instead.
+ *
+ * @param <T> the type of the input to the operation
+ * @deprecated use {@link java.util.function.Consumer} instead.
+ */
+// TODO: Remove in Smack 4.6
+@Deprecated
 public interface Consumer<T> {
 
     void accept(T t);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2015-2024 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -204,16 +204,8 @@ public final class PepManager extends Manager {
                         extensionElementType, pepEventListener);
 
         synchronized (pepEventListeners) {
-            if (listenerToCouplingMap.containsKey(pepEventListener)) {
-                return false;
-            }
-            listenerToCouplingMap.put(pepEventListener, pepEventListenerCoupling);
-            /*
-             * TODO: Replace the above with the below using putIfAbsent() if Smack's minimum required Android SDK level
-             * is 24 or higher. PepEventListenerCoupling<?> currentPepEventListenerCoupling =
-             * listenerToCouplingMap.putIfAbsent(pepEventListener, pepEventListenerCoupling); if
-             * (currentPepEventListenerCoupling != null) { return false; }
-             */
+            var currentPepEventListenerCoupling = listenerToCouplingMap.putIfAbsent(pepEventListener, pepEventListenerCoupling);
+            if (currentPepEventListenerCoupling != null) return false;
 
             boolean listenerForNodeExisted = pepEventListeners.put(node, pepEventListenerCoupling);
             if (!listenerForNodeExisted) {

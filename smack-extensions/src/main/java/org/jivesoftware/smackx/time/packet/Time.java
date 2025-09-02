@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2003-2007 Jive Software, 2014-2024 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,14 @@
  */
 package org.jivesoftware.smackx.time.packet;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
-import org.jivesoftware.smack.util.StringUtils;
-
-import org.jxmpp.util.XmppDateTime;
+import org.jivesoftware.smack.util.Objects;
 
 /**
  * A Time IQ packet, which is used by XMPP clients to exchange their respective local
@@ -41,30 +38,22 @@ public class Time extends IQ implements TimeView {
     public static final String NAMESPACE = "urn:xmpp:time";
     public static final String ELEMENT = "time";
 
-    private static final Logger LOGGER = Logger.getLogger(Time.class.getName());
-
-    private final String utc;
-    private final String tzo;
+    private final ZonedDateTime zonedDateTime;
 
     @SuppressWarnings("this-escape")
     public Time(TimeBuilder timeBuilder) {
         super(timeBuilder, ELEMENT, NAMESPACE);
-        utc = timeBuilder.getUtc();
-        tzo = timeBuilder.getTzo();
+        zonedDateTime = timeBuilder.getZonedDateTime();
 
         Type type = getType();
         switch (type) {
         case get:
-            if (utc != null) {
-                throw new IllegalArgumentException("Time requests must not have utc set");
-            }
-            if (tzo != null) {
-                throw new IllegalArgumentException("Time requests must not have tzo set");
+            if (zonedDateTime != null) {
+                throw new IllegalArgumentException("Time requests must not have time set");
             }
             break;
         case result:
-            StringUtils.requireNotNullNorEmpty(utc, "Must have set a utc value");
-            StringUtils.requireNotNullNorEmpty(tzo, "Must have set a tzo value");
+            Objects.requireNonNull(zonedDateTime, "Must have set a time value");
             break;
         case error:
             // Nothing to check.
@@ -74,41 +63,31 @@ public class Time extends IQ implements TimeView {
         }
     }
 
+    @Override
+    public ZonedDateTime getZonedDateTime() {
+        return zonedDateTime;
+    }
+
     /**
      * Returns the local time or <code>null</code> if the time hasn't been set.
      *
      * @return the local time.
+     * @deprecated use {@link #getZonedDateTime()} instead.
      */
+    // TODO: Remove in Smack 4.6
+    @Deprecated
     public Date getTime() {
-        if (utc == null) {
-            return null;
-        }
-        Date date = null;
-        try {
-            date = XmppDateTime.parseDate(utc);
-        }
-        catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error getting local time", e);
-        }
-        return date;
-    }
+        if (zonedDateTime == null) return null;
 
-    @Override
-    public String getUtc() {
-        return utc;
-    }
-
-    @Override
-    public String getTzo() {
-        return tzo;
+        return Date.from(zonedDateTime.toInstant());
     }
 
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder buf) {
-        if (utc != null) {
+        if (zonedDateTime != null) {
             buf.rightAngleBracket();
-            buf.element("utc", utc);
-            buf.element("tzo", tzo);
+            buf.element("utc", getUtc());
+            buf.element("tzo", getTzo());
         } else {
             buf.setEmptyElement();
         }

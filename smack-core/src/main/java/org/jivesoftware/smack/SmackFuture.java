@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2017-2021 Florian Schmaus
+ * Copyright 2017-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +34,6 @@ import javax.net.SocketFactory;
 
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.util.CallbackRecipient;
-import org.jivesoftware.smack.util.Consumer;
 import org.jivesoftware.smack.util.ExceptionCallback;
 import org.jivesoftware.smack.util.SuccessCallback;
 
