@@ -191,7 +191,7 @@ public class PacketParserUtils {
                     message.setError(error);
                     break;
                  default:
-                     XmlElement extensionElement = parseExtensionElement(elementName, namespace, parser, messageXmlEnvironment, jxmppContext);
+                    var extensionElement = parseExtensionElement(elementName, namespace, parser, messageXmlEnvironment, jxmppContext);
                     message.addExtension(extensionElement);
                     break;
                 }
