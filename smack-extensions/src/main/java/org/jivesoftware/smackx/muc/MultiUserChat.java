@@ -261,7 +261,7 @@ public class MultiUserChat {
                     Set<Status> status = mucUser.getStatus();
                     if (mucUser != null && !status.isEmpty()) {
                         if (isUserStatusModification && !status.contains(MUCUser.Status.NEW_NICKNAME_303)
-                                        && !leaving) {
+                                        && !leaving && !destroying) {
                             userHasLeft();
                         }
                         // Fire events according to the received presence code
