@@ -168,6 +168,10 @@
  * <td>List of packages with tests</td>
  * </tr>
  * <tr>
+ * <td>failOnImpossibleTest</td>
+ * <td>If <code>true</code> the exit code of the process will be non-zero when a test was impossible to run.</td>
+ * </tr>
+ * <tr>
  * <td>failFast</td>
  * <td>If <code>true</code> exit immediatly on the first failure.</td>
  * </tr>

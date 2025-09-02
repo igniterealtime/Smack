@@ -141,6 +141,8 @@ public final class Configuration {
 
     public final ConnectionConfigurationBuilderApplier configurationApplier;
 
+    public final boolean failOnImpossibleTest;
+
     public final boolean failFast;
 
     public final boolean verbose;
@@ -238,6 +240,7 @@ public final class Configuration {
             }
         };
 
+        this.failOnImpossibleTest = builder.failOnImpossibleTest;
         this.failFast = builder.failFast;
         this.verbose = builder.verbose;
 
@@ -303,6 +306,8 @@ public final class Configuration {
         private Set<String> disabledConnections;
 
         private Set<String> testPackages;
+
+        private boolean failOnImpossibleTest;
 
         private boolean failFast;
 
@@ -546,6 +551,20 @@ public final class Configuration {
             return this;
         }
 
+        public Builder setFailOnImpossibleTest(boolean failOnImpossibleTest) {
+            this.failOnImpossibleTest = failOnImpossibleTest;
+            return this;
+        }
+
+        public Builder setFailOnImpossibleTest(String failOnImpossibleTestBooleanString) {
+            if (failOnImpossibleTestBooleanString == null) {
+                return this;
+            }
+
+            boolean failOnImpossibleTest = ParserUtils.parseXmlBoolean(failOnImpossibleTestBooleanString);
+            return setFailOnImpossibleTest(failOnImpossibleTest);
+        }
+
         public Builder setFailFast(boolean failFast) {
             this.failFast = failFast;
             return this;
@@ -685,6 +704,7 @@ public final class Configuration {
         builder.addTestPackages(properties.getProperty("testPackages"));
         builder.addTestPackages(testPackages);
 
+        builder.setFailOnImpossibleTest(properties.getProperty("failOnImpossibleTest"));
         builder.setFailFast(properties.getProperty("failFast"));
         builder.setVerbose(properties.getProperty("verbose"));
 
