@@ -19,13 +19,22 @@ package org.jivesoftware.smack.packet;
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
+import org.jivesoftware.smack.xml.XmlPullParserException;
+
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.xml.sax.SAXException;
 
 public class MessageTest {
@@ -218,5 +227,67 @@ public class MessageTest {
         Message.Body body = new Message.Body(null, theFive);
 
         assertEquals("<body xmlns='jabber:client'>\"'&lt;>&amp;</body>", body.toXML().toString());
+    }
+
+    @Test
+    public void getBodyReturnsNoBodyTest() {
+        var message = StanzaBuilder.buildMessage()
+            .addBody("de", "Hallo, wie geht es dir?")
+            .addBody("en", "Hello, how are you?")
+            .build();
+        assertNull(message.getBody());
+
+        var deBody = message.getBody("de");
+        assertEquals("Hallo, wie geht es dir?", deBody);
+    }
+
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void getBodyReturnsBodyViaStreamLangTest(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        // @formatter:off
+        String streamWithMessage =
+                        "<stream:stream xmlns:stream='http://etherx.jabber.org/streams' xml:lang='en' from='foo.im' id='my-stream-id' version='1.0' xmlns='jabber:client'>"
+                        + "<message to='recipient@foo.im' from='sender@foo.im/res'>"
+                        + "<body xml:lang='de'>Hallo, wie geht es dir?</body>"
+                        + "<body xml:lang='en'>Hello, how are you?</body>"
+                        + "</message>"
+                        + "</stream:stream>"
+                        ;
+        // @formatter:on
+        var stanzas = SmackTestUtil.parseStanzas(streamWithMessage, parserKind);
+        assertEquals(1, stanzas.size());
+
+        var message = assertInstanceOf(Message.class, stanzas.get(0));
+        var body = message.getBody();
+        assertNotNull(body);
+        assertEquals("Hello, how are you?", body);
+    }
+
+    /*
+     * Same as getBodyReturnsBodyViaStreamLangTest() but without xml:lang on <stream/>.
+     */
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void getBodyReturnsBody(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException {
+        // @formatter:off
+        String streamWithMessage =
+                        "<stream:stream xmlns:stream='http://etherx.jabber.org/streams' from='foo.im' id='my-stream-id' version='1.0' xmlns='jabber:client'>"
+                        + "<message to='recipient@foo.im' from='sender@foo.im/res'>"
+                        + "<body xml:lang='de'>Hallo, wie geht es dir?</body>"
+                        + "<body xml:lang='en'>Hello, how are you?</body>"
+                        + "</message>"
+                        + "</stream:stream>"
+                        ;
+        // @formatter:on
+        var stanzas = SmackTestUtil.parseStanzas(streamWithMessage, parserKind);
+        assertEquals(1, stanzas.size());
+
+        var message = assertInstanceOf(Message.class, stanzas.get(0));
+        // In this case, no xml:lang on the stream or the message and no explicit language argument provided to
+        // getBody(), it is anbiguous which body we should return.
+        var body = message.getBody();
+        assertNull(body);
     }
 }
