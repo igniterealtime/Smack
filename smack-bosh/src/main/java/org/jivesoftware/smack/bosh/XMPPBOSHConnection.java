@@ -289,7 +289,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         done = true;
         authenticated = false;
         connected = false;
-        isFirstInitialization = false;
+        isFirstInitialization = true;
 
         // Close down the readers and writers.
         CloseableUtil.maybeClose(readerPipe, LOGGER);
