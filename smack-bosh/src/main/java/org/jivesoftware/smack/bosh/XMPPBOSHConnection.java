@@ -352,7 +352,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
         done = true;
         authenticated = false;
         connected = false;
-        isFirstInitialization = false;
+        isFirstInitialization = true;
         client = null;
 
         // Close down the readers and writers.
