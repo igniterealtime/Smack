@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.ConfigurationsChangeExtension;
 
@@ -44,7 +44,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
 
     @Test
     public void checkSubjectChangeExtension() throws Exception {
-        Message configurationsMessage = PacketParserUtils.parseStanza(messageWithSubjectChangeExample);
+        Message configurationsMessage = ElementParserUtils.parseStanza(messageWithSubjectChangeExample);
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
@@ -58,7 +58,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
 
     @Test
     public void checkRoomNameChangeExtension() throws Exception {
-        Message configurationsMessage = PacketParserUtils.parseStanza(messageWithRoomNameChangeExample);
+        Message configurationsMessage = ElementParserUtils.parseStanza(messageWithRoomNameChangeExample);
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 
@@ -72,7 +72,7 @@ public class MUCLightConfigurationsChangeExtensionTest {
 
     @Test
     public void checkConfigsChangeExtension() throws Exception {
-        Message configurationsMessage = PacketParserUtils.parseStanza(messageWithConfigsChangeExample);
+        Message configurationsMessage = ElementParserUtils.parseStanza(messageWithConfigsChangeExample);
         ConfigurationsChangeExtension configurationsChangeExtension = ConfigurationsChangeExtension
                 .from(configurationsMessage);
 

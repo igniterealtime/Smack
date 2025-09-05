@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightGetInfoIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightInfoIQ;
@@ -60,7 +60,7 @@ public class MUCLightInfoTest {
 
     @Test
     public void checkMUCLightInfoResult() throws Exception {
-        IQ iqInfoResult = PacketParserUtils.parseStanza(exampleInfoResult);
+        IQ iqInfoResult = ElementParserUtils.parseStanza(exampleInfoResult);
         MUCLightInfoIQ mucLightInfoResponseIQ = (MUCLightInfoIQ) iqInfoResult;
         assertEquals(mucLightInfoResponseIQ.getVersion(), "123456");
         assertEquals(mucLightInfoResponseIQ.getConfiguration().getRoomName(), "test");

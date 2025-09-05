@@ -23,14 +23,16 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 import org.jivesoftware.smackx.mam.element.MamElements.MamResultExtension;
 import org.jivesoftware.smackx.mam.provider.MamResultProvider;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class MamResultProviderTest {
 
@@ -47,10 +49,10 @@ public class MamResultProviderTest {
             + "<message xmlns='jabber:client' from='witch@shakespeare.lit' to='macbeth@shakespeare.lit'>"
             + "<body>Hail to thee</body>" + "</message>" + "</forwarded>" + "</result>" + "</message>";
 
-    @Test
-    public void checkMamResultProvider() throws Exception {
-        XmlPullParser parser = PacketParserUtils.getParserFor(exampleMamResultXml);
-        MamResultExtension mamResultExtension = new MamResultProvider().parse(parser);
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void checkMamResultProvider(SmackTestUtil.XmlPullParserKind parserKind) throws Exception {
+        MamResultExtension mamResultExtension = SmackTestUtil.parse(exampleMamResultXml, MamResultProvider.class, parserKind);
 
         assertEquals(mamResultExtension.getQueryId(), "f27");
         assertEquals(mamResultExtension.getId(), "28482-98726-73623");
@@ -71,7 +73,7 @@ public class MamResultProviderTest {
 
     @Test
     public void checkResultsParse() throws Exception {
-        Message message = PacketParserUtils.parseStanza(exampleResultMessage);
+        Message message = ElementParserUtils.parseStanza(exampleResultMessage);
         MamResultExtension mamResultExtension = MamResultExtension.from(message);
 
         assertEquals(mamResultExtension.getQueryId(), "f27");

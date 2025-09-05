@@ -23,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.privacy.packet.Privacy;
 import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
@@ -49,7 +49,7 @@ public class PrivacyProviderTest extends SmackTestSuite {
           + "</query>"
           + "</iq>";
         // @formatter:on
-        IQ iqPrivacyList = PacketParserUtils.parseStanza(xmlPrivacyList);
+        IQ iqPrivacyList = ElementParserUtils.parseStanza(xmlPrivacyList);
         assertTrue(iqPrivacyList instanceof Privacy);
 
         Privacy privacyList = (Privacy) iqPrivacyList;
@@ -85,7 +85,7 @@ public class PrivacyProviderTest extends SmackTestSuite {
           + "</query>"
           + "</iq>";
         // @formatter:on
-        IQ iqPrivacyList = PacketParserUtils.parseStanza(xmlPrivacyList);
+        IQ iqPrivacyList = ElementParserUtils.parseStanza(xmlPrivacyList);
         assertTrue(iqPrivacyList instanceof Privacy);
 
         Privacy privacyList = (Privacy) iqPrivacyList;

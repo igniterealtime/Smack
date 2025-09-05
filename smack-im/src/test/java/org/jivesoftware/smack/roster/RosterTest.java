@@ -41,9 +41,9 @@ import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.roster.packet.RosterPacket;
 import org.jivesoftware.smack.roster.packet.RosterPacket.Item;
 import org.jivesoftware.smack.roster.packet.RosterPacket.ItemType;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.test.util.WaitForPacketListener;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.After;
@@ -347,7 +347,7 @@ public class RosterTest extends InitSmackIm {
                 .append("</query>")
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
-        final IQ rosterPush = PacketParserUtils.parseIQ(parser);
+        final IQ rosterPush = ElementParserUtils.parseIQ(parser);
         initRoster();
         rosterListener.reset();
 
@@ -491,7 +491,7 @@ public class RosterTest extends InitSmackIm {
                 .append("</query>")
                 .append("</iq>");
         final XmlPullParser parser = TestUtils.getIQParser(sb.toString());
-        final IQ rosterPush = PacketParserUtils.parseIQ(parser);
+        final IQ rosterPush = ElementParserUtils.parseIQ(parser);
         initRoster();
         rosterListener.reset();
 

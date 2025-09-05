@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockListIQ;
 
@@ -48,13 +48,13 @@ public class GetBlockingListTest {
 
     @Test
     public void checkBlockListIQ() throws Exception {
-        IQ iq = PacketParserUtils.parseStanza(blockListIQExample);
+        IQ iq = ElementParserUtils.parseStanza(blockListIQExample);
         BlockListIQ blockListIQ = (BlockListIQ) iq;
         assertEquals(2, blockListIQ.getBlockedJids().size());
         assertEquals(JidCreate.from("romeo@montague.net"), blockListIQ.getBlockedJids().get(0));
         assertEquals(JidCreate.from("iago@shakespeare.lit"), blockListIQ.getBlockedJids().get(1));
 
-        IQ iq2 = PacketParserUtils.parseStanza(emptyBlockListIQExample);
+        IQ iq2 = ElementParserUtils.parseStanza(emptyBlockListIQExample);
         BlockListIQ emptyBlockListIQ = (BlockListIQ) iq2;
         assertEquals(0, emptyBlockListIQ.getBlockedJids().size());
     }

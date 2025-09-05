@@ -23,7 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.httpfileupload.element.Slot;
 import org.jivesoftware.smackx.httpfileupload.element.Slot_V0_2;
@@ -65,7 +65,7 @@ public class SlotProviderTest {
 
     @Test
     public void checkSlotProvider() throws Exception {
-        Slot slot = PacketParserUtils.parseStanza(SLOT_IQ);
+        Slot slot = ElementParserUtils.parseStanza(SLOT_IQ);
 
         checkUrls(slot);
 
@@ -85,7 +85,7 @@ public class SlotProviderTest {
 
     @Test
     public void checkSlotV0_2Provider() throws Exception {
-        Slot_V0_2 slot = PacketParserUtils.parseStanza(SLOT_V0_2_IQ);
+        Slot_V0_2 slot = ElementParserUtils.parseStanza(SLOT_V0_2_IQ);
 
         checkUrls(slot);
 
@@ -109,7 +109,7 @@ public class SlotProviderTest {
 
     @Test
     public void checkSlotWithHeaders() throws Exception {
-        Slot slot = PacketParserUtils.parseStanza(SLOT_WITH_HEADERS_IQ);
+        Slot slot = ElementParserUtils.parseStanza(SLOT_WITH_HEADERS_IQ);
 
         checkUrls(slot);
 

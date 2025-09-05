@@ -39,6 +39,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -78,7 +79,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        Message message = PacketParserUtils
+        Message message = ElementParserUtils
                         .parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertEquals(defaultLanguage, message.getBody());
@@ -99,7 +100,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
+        message = ElementParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertEquals(otherLanguage, message.getBody());
         assertTrue(message.getBodyLanguages().isEmpty());
@@ -118,7 +119,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
+        message = ElementParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertEquals(defaultLanguage, message.getBody());
         assertTrue(message.getBodyLanguages().isEmpty());
@@ -138,7 +139,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
+        message = ElementParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertNull(message.getBody());
         assertFalse(message.getBodyLanguages().isEmpty());
@@ -159,7 +160,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message =  PacketParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
+        message =  ElementParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertNull(message.getBody());
         assertFalse(message.getBodyLanguages().isEmpty());
@@ -181,7 +182,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
+        message = ElementParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertNull(message.getBody());
         assertFalse(message.getBodyLanguages().isEmpty());
@@ -203,7 +204,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
+        message = ElementParserUtils.parseMessage(SmackTestUtil.getParserFor(control, parserKind));
 
         assertNull(message.getBody());
         assertFalse(message.getBodyLanguages().isEmpty());
@@ -233,7 +234,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        Message message = PacketParserUtils
+        Message message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getSubject());
@@ -254,7 +255,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        message = ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(otherLanguage, message.getSubject());
         assertTrue(message.getSubjectLanguages().isEmpty());
@@ -273,7 +274,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        message = ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getSubject());
         assertTrue(message.getSubjectLanguages().isEmpty());
@@ -293,7 +294,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        message = ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertFalse(message.getSubjectLanguages().isEmpty());
         assertEquals(defaultLanguage, message.getSubject(defaultLanguage));
@@ -313,7 +314,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        message = ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertNull(message.getSubject());
         assertFalse(message.getSubjectLanguages().isEmpty());
@@ -335,7 +336,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        message = ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertNull(message.getSubject());
         assertFalse(message.getSubjectLanguages().isEmpty());
@@ -357,7 +358,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        message = ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
 
         assertNull(message.getSubject());
         assertFalse(message.getSubjectLanguages().isEmpty());
@@ -392,7 +393,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils
+        message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getBody());
@@ -418,7 +419,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils
+        message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(otherLanguage, message.getBody());
@@ -452,7 +453,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage + "2")
             .asString(outputProperties);
 
-        Message message = PacketParserUtils
+        Message message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getBody());
@@ -484,7 +485,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
+        ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(control));
     }
 
     @Test
@@ -509,7 +510,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        Message message = PacketParserUtils
+        Message message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getBody());
@@ -544,7 +545,7 @@ public class PacketParserUtilsTest {
                 .t(otherLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils
+        message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(defaultLanguage, message.getSubject());
@@ -570,7 +571,7 @@ public class PacketParserUtilsTest {
                 .t(defaultLanguage)
             .asString(outputProperties);
 
-        message = PacketParserUtils
+        message = ElementParserUtils
                         .parseMessage(PacketParserUtils.getParserFor(control));
 
         assertEquals(otherLanguage, message.getSubject());
@@ -676,7 +677,7 @@ public class PacketParserUtilsTest {
             .asString(outputProperties);
 
         assertThrows(XmlPullParserException.class, () ->
-            PacketParserUtils.parseMessage(TestUtils.getMessageParser(control))
+            ElementParserUtils.parseMessage(TestUtils.getMessageParser(control))
         );
     }
 
@@ -695,17 +696,17 @@ public class PacketParserUtilsTest {
 
         assertThrows(XmlPullParserException.class, () -> {
             String invalidControl = validControl.replace("Good Message Body", "Bad </span> Body");
-            PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
+            ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
         });
 
         assertThrows(XmlPullParserException.class, () -> {
             String invalidControl = validControl.replace("Good Message Body", "Bad </body> Body");
-            PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
+            ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
         });
 
         assertThrows(XmlPullParserException.class, () -> {
             String invalidControl = validControl.replace("Good Message Body", "Bad </message> Body");
-            PacketParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
+            ElementParserUtils.parseMessage(PacketParserUtils.getParserFor(invalidControl));
         });
     }
 
@@ -730,7 +731,7 @@ public class PacketParserUtilsTest {
                 .t("This is a test of the emergency broadcast system, 3.")
             .asString(outputProperties);
 
-        Stanza message = PacketParserUtils.parseStanza(control);
+        Stanza message = ElementParserUtils.parseStanza(control);
         assertXmlSimilar(control, message.toXML());
     }
 
@@ -738,7 +739,7 @@ public class PacketParserUtilsTest {
     public void validateSimplePresence() throws Exception {
         String stanza = "<presence from='juliet@example.com/balcony' to='romeo@example.net'/>";
 
-        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = ElementParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
         assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
     }
@@ -747,7 +748,7 @@ public class PacketParserUtilsTest {
     public void validatePresenceProbe() throws Exception {
         String stanza = "<presence from='mercutio@example.com' id='xv291f38' to='juliet@example.com' type='unsubscribed'/>";
 
-        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = ElementParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
         assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(Presence.Type.unsubscribed, presence.getType());
@@ -761,7 +762,7 @@ public class PacketParserUtilsTest {
                 + "<priority>1</priority>"
                 + "</presence>";
 
-        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = ElementParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
         assertXmlSimilar(stanza, presence.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
         assertEquals(Presence.Type.unsubscribed, presence.getType());
         assertEquals("dnd", presence.getMode().name());
@@ -851,7 +852,7 @@ public class PacketParserUtilsTest {
             .element("text", StanzaError.ERROR_CONDITION_AND_TEXT_NAMESPACE).t(text).up()
             .asString();
         XmlPullParser parser = TestUtils.getParser(errorXml);
-        StanzaError error = PacketParserUtils.parseError(parser);
+        StanzaError error = ElementParserUtils.parseError(parser);
         assertEquals(text, error.getDescriptiveText());
     }
 

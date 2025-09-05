@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightConfigurationIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetConfigsIQ;
@@ -56,7 +56,7 @@ public class MUCLightGetConfigsTest {
 
     @Test
     public void checkGetConfigsResponse() throws Exception {
-        IQ iqInfoResult = PacketParserUtils.parseStanza(getConfigsResponseExample);
+        IQ iqInfoResult = ElementParserUtils.parseStanza(getConfigsResponseExample);
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) iqInfoResult;
 
         assertEquals("123456", mucLightConfigurationIQ.getVersion());
@@ -67,7 +67,7 @@ public class MUCLightGetConfigsTest {
 
     @Test
     public void checkGetConfigsResponseWithCustomConfigs() throws Exception {
-        IQ iqInfoResult = PacketParserUtils.parseStanza(getConfigsResponseExampleWithCustomConfigs);
+        IQ iqInfoResult = ElementParserUtils.parseStanza(getConfigsResponseExampleWithCustomConfigs);
         MUCLightConfigurationIQ mucLightConfigurationIQ = (MUCLightConfigurationIQ) iqInfoResult;
 
         assertEquals("123456", mucLightConfigurationIQ.getVersion());

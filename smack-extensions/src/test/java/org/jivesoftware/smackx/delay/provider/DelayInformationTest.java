@@ -31,6 +31,7 @@ import java.util.TimeZone;
 import javax.xml.parsers.FactoryConfigurationError;
 
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -195,7 +196,7 @@ public class DelayInformationTest extends SmackTestSuite {
         String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
                 + "<delay xmlns='urn:xmpp:delay' stamp='2002-09-10T23:41:07Z'/></presence>";
 
-        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = ElementParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
 
         DelayInformation delay = DelayInformationManager.getXep203DelayInformation(presence);
         assertNotNull(delay);
@@ -208,7 +209,7 @@ public class DelayInformationTest extends SmackTestSuite {
         String stanza = "<presence from='mercutio@example.com' to='juliet@example.com'>"
                         + "<x xmlns='jabber:x:delay'/></presence>";
 
-        Presence presence = PacketParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
+        Presence presence = ElementParserUtils.parsePresence(PacketParserUtils.getParserFor(stanza));
         DelayInformation delay = DelayInformationManager.getXep203DelayInformation(presence);
         assertNull(delay);
     }

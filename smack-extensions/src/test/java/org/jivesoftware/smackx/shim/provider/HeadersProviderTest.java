@@ -19,8 +19,8 @@ package org.jivesoftware.smackx.shim.provider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.shim.packet.Header;
@@ -42,7 +42,7 @@ public class HeadersProviderTest {
           "</message>";
         // @formatter:on
         XmlPullParser parser = TestUtils.getMessageParser(messageStanza);
-        Message message = PacketParserUtils.parseMessage(parser);
+        Message message = ElementParserUtils.parseMessage(parser);
         HeadersExtension headers = HeadersExtension.from(message);
         Header header = headers.getHeaders().get(0);
         assertEquals("Urgency", header.getName());

@@ -33,8 +33,8 @@ import org.jivesoftware.smack.ThreadedDummyConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.ping.packet.Ping;
 
@@ -53,7 +53,7 @@ public class PingTest extends SmackTestSuite {
         con.connect();
         // Enable ping for this connection
         PingManager.getInstanceFor(con);
-        IQ pingRequest = PacketParserUtils.parseStanza(control);
+        IQ pingRequest = ElementParserUtils.parseStanza(control);
 
         assertTrue(pingRequest instanceof Ping);
 
@@ -132,7 +132,7 @@ public class PingTest extends SmackTestSuite {
                         "</error>" +
                  "</iq>";
         // @formatter:on
-        IQ serviceUnavailable = PacketParserUtils.parseStanza(reply);
+        IQ serviceUnavailable = ElementParserUtils.parseStanza(reply);
         threadedCon.addIQReply(serviceUnavailable);
 
         PingManager pinger = PingManager.getInstanceFor(threadedCon);
@@ -168,7 +168,7 @@ public class PingTest extends SmackTestSuite {
                         "</error>" +
                  "</iq>";
         // @formatter:on
-        IQ serviceUnavailable = PacketParserUtils.parseStanza(reply);
+        IQ serviceUnavailable = ElementParserUtils.parseStanza(reply);
         con.addIQReply(serviceUnavailable);
 
         PingManager pinger = PingManager.getInstanceFor(con);
@@ -198,7 +198,7 @@ public class PingTest extends SmackTestSuite {
                             "<feature var='urn:xmpp:ping'/>" +
                         "</query></iq>";
         // @formatter:on
-        IQ discoReply = PacketParserUtils.parseStanza(reply);
+        IQ discoReply = ElementParserUtils.parseStanza(reply);
         con.addIQReply(discoReply);
 
         PingManager pinger = PingManager.getInstanceFor(con);
@@ -218,7 +218,7 @@ public class PingTest extends SmackTestSuite {
                             "<feature var='urn:xmpp:noping'/>" +
                         "</query></iq>";
         // @formatter:on
-        IQ discoReply = PacketParserUtils.parseStanza(reply);
+        IQ discoReply = ElementParserUtils.parseStanza(reply);
         con.addIQReply(discoReply);
 
         PingManager pinger = PingManager.getInstanceFor(con);

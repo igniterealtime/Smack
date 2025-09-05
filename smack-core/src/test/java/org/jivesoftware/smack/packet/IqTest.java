@@ -18,8 +18,8 @@ package org.jivesoftware.smack.packet;
 
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.junit.jupiter.api.Test;
@@ -55,7 +55,7 @@ public class IqTest {
                         "</stream:stream>";
 
         XmlPullParser parser = SmackTestUtil.getParserFor(xml, "iq", parserKind);
-        IQ iq = PacketParserUtils.parseIQ(parser);
+        IQ iq = ElementParserUtils.parseIQ(parser);
         assertXmlSimilar(iqXml, iq.toXML());
     }
 
@@ -70,7 +70,7 @@ public class IqTest {
                          + "</iq>";
 
         XmlPullParser parser = SmackTestUtil.getParserFor(iqXml, "iq", parserKind);
-        IQ iq = PacketParserUtils.parseIQ(parser);
+        IQ iq = ElementParserUtils.parseIQ(parser);
         assertXmlSimilar(expected, iq.toXML());
     }
 }

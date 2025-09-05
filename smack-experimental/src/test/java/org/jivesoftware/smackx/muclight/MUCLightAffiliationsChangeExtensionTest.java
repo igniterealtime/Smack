@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Map;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightElements.AffiliationsChangeExtension;
 
@@ -51,7 +51,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
 
     @Test
     public void checkAffiliationsChangeExtension() throws Exception {
-        Message changeAffiliationsMessage = PacketParserUtils.parseStanza(exampleMessageStanza);
+        Message changeAffiliationsMessage = ElementParserUtils.parseStanza(exampleMessageStanza);
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
@@ -64,7 +64,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
 
     @Test
     public void checkAffiliationsChangeExtensionWithVersion() throws Exception {
-        Message changeAffiliationsMessage = PacketParserUtils.parseStanza(exampleMessageStanzaWithVersion);
+        Message changeAffiliationsMessage = ElementParserUtils.parseStanza(exampleMessageStanzaWithVersion);
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);
 
@@ -78,7 +78,7 @@ public class MUCLightAffiliationsChangeExtensionTest {
 
     @Test
     public void checkAffiliationsChangeExtensionWithPrevVersion() throws Exception {
-        Message changeAffiliationsMessage = PacketParserUtils
+        Message changeAffiliationsMessage = ElementParserUtils
                 .parseStanza(exampleMessageStanzaWithPrevVersion);
         AffiliationsChangeExtension affiliationsChangeExtension = AffiliationsChangeExtension
                 .from(changeAffiliationsMessage);

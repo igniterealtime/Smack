@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightAffiliationsIQ;
 import org.jivesoftware.smackx.muclight.element.MUCLightGetAffiliationsIQ;
@@ -52,7 +52,7 @@ public class MUCLightGetAffiliationsTest {
 
     @Test
     public void checkGetAffiliationsResponse() throws Exception {
-        IQ iqInfoResult = PacketParserUtils.parseStanza(getAffiliationsResponseExample);
+        IQ iqInfoResult = ElementParserUtils.parseStanza(getAffiliationsResponseExample);
         MUCLightAffiliationsIQ mucLightAffiliationsIQ = (MUCLightAffiliationsIQ) iqInfoResult;
 
         assertEquals("123456", mucLightAffiliationsIQ.getVersion());

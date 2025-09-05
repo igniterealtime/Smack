@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockContactsIQ;
 
@@ -53,7 +53,7 @@ public class BlockContactsIQTest {
 
     @Test
     public void checkBlockContactPushIQ() throws Exception {
-        IQ iq = PacketParserUtils.parseStanza(blockContactPushIQExample);
+        IQ iq = ElementParserUtils.parseStanza(blockContactPushIQExample);
         BlockContactsIQ blockContactIQ = (BlockContactsIQ) iq;
         assertEquals(JidCreate.from("romeo@montague.net"), blockContactIQ.getJids().get(0));
         assertEquals(JidCreate.from("pepe@montague.net"), blockContactIQ.getJids().get(1));

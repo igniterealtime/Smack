@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.push_notifications.element.PushNotificationsElements.RemoteDisablingExtension;
 
@@ -49,7 +49,7 @@ public class RemoteDisablingPushNotificationsTest {
 
     @Test
     public void checkRemoteDisablingPushNotificationsParse() throws Exception {
-        Message message = PacketParserUtils.parseStanza(remoteDisablingExample);
+        Message message = ElementParserUtils.parseStanza(remoteDisablingExample);
         RemoteDisablingExtension remoteDisablingExtension = RemoteDisablingExtension.from(message);
 
         assertEquals("yxs32uqsflafdk3iuqo", remoteDisablingExtension.getNode());
@@ -58,11 +58,11 @@ public class RemoteDisablingPushNotificationsTest {
 
     @Test
     public void checkWrongRemoteDisablighPushNotifications() throws Exception {
-        assertThrows(IOException.class, () -> PacketParserUtils.parseStanza(wrongRemoteDisabling1));
+        assertThrows(IOException.class, () -> ElementParserUtils.parseStanza(wrongRemoteDisabling1));
 
-        assertThrows(IOException.class, () -> PacketParserUtils.parseStanza(wrongRemoteDisabling2));
+        assertThrows(IOException.class, () -> ElementParserUtils.parseStanza(wrongRemoteDisabling2));
 
-        Message message3 = PacketParserUtils.parseStanza(wrongRemoteDisabling3);
+        Message message3 = ElementParserUtils.parseStanza(wrongRemoteDisabling3);
         assertNotNull(message3);
     }
 

@@ -52,7 +52,7 @@ public class CarbonManagerProvider extends ExtensionElementProvider<CarbonExtens
         while (!done) {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT && parser.getName().equals("forwarded")) {
-                fwd = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment);
+                fwd = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment, jxmppContext);
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT && dir == Direction.valueOf(parser.getName()))
                 done = true;

@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.UnblockContactsIQ;
 
@@ -61,7 +61,7 @@ public class UnblockContactsIQTest {
 
     @Test
     public void checkUnblockContactPushIQ() throws Exception {
-        IQ iq = PacketParserUtils.parseStanza(unblockContactPushIQExample);
+        IQ iq = ElementParserUtils.parseStanza(unblockContactPushIQExample);
         UnblockContactsIQ unblockContactIQ = (UnblockContactsIQ) iq;
         assertEquals(JidCreate.from("romeo@montague.net"), unblockContactIQ.getJids().get(0));
         assertEquals(JidCreate.from("pepe@montague.net"), unblockContactIQ.getJids().get(1));
@@ -76,7 +76,7 @@ public class UnblockContactsIQTest {
 
     @Test
     public void checkUnblockAllPushIQ() throws Exception {
-        IQ iq = PacketParserUtils.parseStanza(unblockAllPushIQExample);
+        IQ iq = ElementParserUtils.parseStanza(unblockAllPushIQExample);
         UnblockContactsIQ unblockAllIQ = (UnblockContactsIQ) iq;
         assertNull(unblockAllIQ.getJids());
     }

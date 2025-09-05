@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.net.URI;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 
@@ -65,7 +65,7 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = ElementParserUtils.parseStanza(geoLocationString);
         assertNotNull(messageWithGeoLocation);
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
@@ -135,7 +135,7 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = ElementParserUtils.parseStanza(geoLocationString);
         assertNotNull(messageWithGeoLocation);
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
@@ -182,7 +182,7 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = ElementParserUtils.parseStanza(geoLocationString);
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
 
@@ -203,7 +203,7 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = ElementParserUtils.parseStanza(geoLocationString);
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
 
@@ -223,7 +223,7 @@ public class GeoLocationProviderTest extends SmackTestSuite {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationString);
+        Message messageWithGeoLocation = ElementParserUtils.parseStanza(geoLocationString);
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);
 

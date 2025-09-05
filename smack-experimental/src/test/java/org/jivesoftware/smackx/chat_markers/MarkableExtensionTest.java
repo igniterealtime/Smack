@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -55,7 +56,7 @@ public class MarkableExtensionTest {
         MarkableExtension markableExtension1 = new MarkableProvider().parse(parser);
         assertEquals(markableExtension, markableExtension1.toXML().toString());
 
-        Message message = PacketParserUtils.parseStanza(markableMessageStanza);
+        Message message = ElementParserUtils.parseStanza(markableMessageStanza);
         MarkableExtension markableExtension2 = MarkableExtension.from(message);
         assertEquals(markableExtension, markableExtension2.toXML().toString());
     }

@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.rsm.packet.RSMSet;
 
@@ -48,7 +48,7 @@ public class RSMSetProviderTest extends SmackTestSuite {
           + "</iq>";
         // @formatter:on
 
-        IQ iqWithRsm = PacketParserUtils.parseStanza(rsmset);
+        IQ iqWithRsm = ElementParserUtils.parseStanza(rsmset);
         RSMSet rsm = iqWithRsm.getExtension(RSMSet.class);
         assertNotNull(rsm);
         assertEquals("aftervalue", rsm.getAfter());

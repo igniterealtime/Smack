@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.time.packet.Time;
 
@@ -39,7 +39,7 @@ public class TimeProviderTest {
           + "<time xmlns='urn:xmpp:time'/>"
           + "</iq>";
         // @formatter:on
-        IQ iqRequest = PacketParserUtils.parseStanza(request);
+        IQ iqRequest = ElementParserUtils.parseStanza(request);
         assertTrue(iqRequest instanceof Time);
 
         // @formatter:off
@@ -54,7 +54,7 @@ public class TimeProviderTest {
           + "</time>"
           + "</iq>";
         // @formatter:on
-        IQ iqResponse = PacketParserUtils.parseStanza(response);
+        IQ iqResponse = ElementParserUtils.parseStanza(response);
         assertTrue(iqResponse instanceof Time);
         Time time = (Time) iqResponse;
         assertEquals("-06:00", time.getTzo());

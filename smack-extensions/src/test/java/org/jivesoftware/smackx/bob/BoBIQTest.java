@@ -22,8 +22,8 @@ import java.nio.charset.StandardCharsets;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.bob.element.BoBIQ;
 
@@ -53,7 +53,7 @@ public class BoBIQTest extends SmackTestSuite {
 
     @Test
     public void checkBoBIQResponse() throws Exception {
-        BoBIQ bobIQ = PacketParserUtils.parseStanza(sampleBoBIQResponse);
+        BoBIQ bobIQ = ElementParserUtils.parseStanza(sampleBoBIQResponse);
 
         ContentId bobHash = new ContentId("8f35fef110ffc5df08d579a50083ff9308fb6242", "sha1");
         BoBData bobData = new BoBData("image/png", "sarasade2354j2".getBytes(StandardCharsets.UTF_8), 86400);

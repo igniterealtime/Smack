@@ -24,8 +24,8 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.util.XmppDateTime;
@@ -116,7 +116,7 @@ public class GeoLocationTest extends SmackTestSuite {
         + "</message>";
         // @formatter:on
 
-        Message messageWithGeoLocation = PacketParserUtils.parseStanza(geoLocationMessageString);
+        Message messageWithGeoLocation = ElementParserUtils.parseStanza(geoLocationMessageString);
         assertNotNull(messageWithGeoLocation);
 
         GeoLocation geoLocation = messageWithGeoLocation.getExtension(GeoLocation.class);

@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.StreamOpen;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.muclight.element.MUCLightBlockingIQ;
 
@@ -67,7 +67,7 @@ public class MUCLightBlockingTest {
 
     @Test
     public void checkGetBlockingListResponse() throws Exception {
-        IQ iqInfoResult = PacketParserUtils.parseStanza(getBlockingListIQResponse);
+        IQ iqInfoResult = ElementParserUtils.parseStanza(getBlockingListIQResponse);
         MUCLightBlockingIQ mucLightBlockingIQ = (MUCLightBlockingIQ) iqInfoResult;
 
         assertEquals(2, mucLightBlockingIQ.getRooms().size());

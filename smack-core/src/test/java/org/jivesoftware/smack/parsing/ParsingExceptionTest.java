@@ -25,6 +25,7 @@ import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -69,7 +70,7 @@ public class ParsingExceptionTest {
         int parserDepth = parser.getDepth();
         CharSequence content = null;
         try {
-            PacketParserUtils.parseMessage(parser);
+            ElementParserUtils.parseMessage(parser);
         } catch (Exception e) {
             content = PacketParserUtils.parseContentDepth(parser, parserDepth, false);
         }

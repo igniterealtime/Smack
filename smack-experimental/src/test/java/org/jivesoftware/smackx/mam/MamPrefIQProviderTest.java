@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.parsing.SmackParsingException;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
 import org.jivesoftware.smack.test.util.SmackTestUtil.XmlPullParserKind;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -80,7 +80,7 @@ public class MamPrefIQProviderTest extends MamTest {
 
     @Test
     public void checkMamPrefResult() throws Exception {
-        IQ iq = PacketParserUtils.parseStanza(exampleMamPrefsResultIQ);
+        IQ iq = ElementParserUtils.parseStanza(exampleMamPrefsResultIQ);
 
         MamPrefsIQ mamPrefsIQ = (MamPrefsIQ) iq;
 

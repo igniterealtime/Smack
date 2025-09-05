@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.commands.packet.AdHocCommandData;
 
@@ -36,7 +36,7 @@ public class CommandsProviderTest {
                         + "</command>" + "<error type='cancel'>"
                         + "<bad-request xmlns='urn:ietf:params:xml:ns:xmpp-stanzas'/>" + "</error>" + "</iq>";
 
-        final Stanza requestStanza = PacketParserUtils.parseStanza(errorWithRequest);
+        final Stanza requestStanza = ElementParserUtils.parseStanza(errorWithRequest);
         final AdHocCommandData adHocIq = (AdHocCommandData) requestStanza;
 
         assertEquals(IQ.Type.error, adHocIq.getType());

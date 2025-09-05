@@ -24,8 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.iqversion.packet.Version;
 
@@ -45,7 +45,7 @@ public class VersionTest extends SmackTestSuite {
         // Enable version replys for this connection
         VersionManager.setAutoAppendSmackVersion(false);
         VersionManager.getInstanceFor(con).setVersion("Test", "0.23", "DummyOS");
-        IQ versionRequest = PacketParserUtils.parseStanza(control);
+        IQ versionRequest = ElementParserUtils.parseStanza(control);
 
         assertTrue(versionRequest instanceof Version);
 

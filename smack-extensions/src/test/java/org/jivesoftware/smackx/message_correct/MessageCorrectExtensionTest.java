@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.message_correct;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.message_correct.element.MessageCorrectExtension;
 
@@ -40,7 +40,7 @@ public class MessageCorrectExtensionTest {
 
     @Test
     public void checkStanzas() throws Exception {
-        Message initialMessage = PacketParserUtils.parseStanza(initialMessageXml);
+        Message initialMessage = ElementParserUtils.parseStanza(initialMessageXml);
         MessageCorrectExtension messageCorrectExtension = new MessageCorrectExtension(idInitialMessage);
 
         assertEquals(messageCorrectExtension.toXML().toString(), messageCorrectionXml.toString());

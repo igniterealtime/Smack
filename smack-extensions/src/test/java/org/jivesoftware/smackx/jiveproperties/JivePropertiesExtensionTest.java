@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.jiveproperties.packet.JivePropertiesExtension;
 
@@ -55,7 +55,7 @@ public class JivePropertiesExtensionTest extends SmackTestSuite {
                         + "</message>";
         // @formatter:on
 
-        Message message = PacketParserUtils.parseStanza(properties);
+        Message message = ElementParserUtils.parseStanza(properties);
         JivePropertiesExtension jpe = JivePropertiesExtension.from(message);
         assertNotNull(jpe);
 

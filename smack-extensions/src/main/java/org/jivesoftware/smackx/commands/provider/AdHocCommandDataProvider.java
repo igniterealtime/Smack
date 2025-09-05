@@ -123,7 +123,7 @@ public class AdHocCommandDataProvider extends IqProvider<AdHocCommandData> {
                     builder.addNote(new AdHocCommandNote(type, value));
                     break;
                 case "error":
-                    StanzaError error = PacketParserUtils.parseError(parser);
+                    StanzaError error = PacketParserUtils.parseError(parser, xmlEnvironment, jxmppContext);
                     builder.setError(error);
                     break;
                 }

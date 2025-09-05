@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
@@ -90,7 +90,7 @@ public class VCardTest extends SmackTestSuite {
             + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals("User", vCard.getFirstName());
         assertEquals("Name", vCard.getLastName());
@@ -139,7 +139,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals("foo@fee.www.bar", vCard.getEmailHome());
     }
@@ -154,7 +154,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals("3443233", vCard.getPhoneWork("FAX"));
     }
@@ -169,7 +169,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals("1234", vCard.getField("UNKNOWN"));
     }
@@ -184,7 +184,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals(null, vCard.getField("UNKNOWN"));
     }
@@ -199,7 +199,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
         assertEquals(null, vCard.getField("UNKNOWN"));
     }
 
@@ -213,7 +213,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
         assertEquals(null, vCard.getField("UNKNOWN"));
     }
 
@@ -227,7 +227,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals("Some street", vCard.getAddressFieldWork("STREET"));
         assertEquals("ddss", vCard.getAddressFieldWork("FF"));
@@ -244,7 +244,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         assertEquals("kir max", vCard.getField("FN"));
     }
@@ -263,7 +263,7 @@ public class VCardTest extends SmackTestSuite {
                         + "</iq>";
         // @formatter:on
 
-        VCard vCard = PacketParserUtils.parseStanza(request);
+        VCard vCard = ElementParserUtils.parseStanza(request);
 
         byte[] avatar = vCard.getAvatar();
         String mimeType = vCard.getAvatarMimeType();

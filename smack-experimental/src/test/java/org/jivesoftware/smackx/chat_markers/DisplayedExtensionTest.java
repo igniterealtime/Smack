@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.packet.StreamOpen;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -52,7 +53,7 @@ public class DisplayedExtensionTest {
         DisplayedExtension displayedExtension1 = new DisplayedProvider().parse(parser);
         assertEquals("message-1", displayedExtension1.getId());
 
-        Message message = PacketParserUtils.parseStanza(displayedMessageStanza);
+        Message message = ElementParserUtils.parseStanza(displayedMessageStanza);
         DisplayedExtension displayedExtension2 = DisplayedExtension.from(message);
         assertEquals("message-1", displayedExtension2.getId());
     }

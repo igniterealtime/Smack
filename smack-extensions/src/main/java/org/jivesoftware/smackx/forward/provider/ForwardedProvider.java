@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2013-2014 Georg Lukas, 2020-2021 Florian Schmaus
+ * Copyright 2013-2014 Georg Lukas, 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
                     }
                     break;
                 case Message.ELEMENT:
-                    packet = PacketParserUtils.parseMessage(parser);
+                    packet = PacketParserUtils.parseMessage(parser, xmlEnvironment, jxmppContext);
                     break;
                 default:
                     LOGGER.warning("Unsupported forwarded packet type: " + name);
@@ -93,16 +93,16 @@ public class ForwardedProvider extends ExtensionElementProvider<Forwarded<?>> {
         return new Forwarded<>(packet, di);
     }
 
-    public static Forwarded<Message> parseForwardedMessage(XmlPullParser parser, XmlEnvironment xmlEnvironment)
+    public static Forwarded<Message> parseForwardedMessage(XmlPullParser parser, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        return parseForwardedMessage(parser, parser.getDepth(), xmlEnvironment);
+        return parseForwardedMessage(parser, parser.getDepth(), xmlEnvironment, jxmppContext);
     }
 
     @SuppressWarnings("unchecked")
     public static Forwarded<Message> parseForwardedMessage(XmlPullParser parser, int initialDepth,
-                    XmlEnvironment xmlEnvironment)
+                    XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
                     throws XmlPullParserException, IOException, SmackParsingException, ParseException {
-        Forwarded<?> forwarded = INSTANCE.parse(parser, initialDepth, xmlEnvironment, null);
+        Forwarded<?> forwarded = INSTANCE.parse(parser, initialDepth, xmlEnvironment, jxmppContext);
         if (!forwarded.isForwarded(Message.class)) {
             throw new SmackParsingException("Expecting a forwarded message, but got " + forwarded);
         }

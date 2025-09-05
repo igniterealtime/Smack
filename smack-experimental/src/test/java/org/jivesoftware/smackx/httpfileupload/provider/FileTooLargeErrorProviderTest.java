@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.httpfileupload.provider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.jivesoftware.smack.packet.IQ;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.httpfileupload.element.FileTooLargeError;
 
@@ -51,7 +51,7 @@ public class FileTooLargeErrorProviderTest {
 
     @Test
     public void checkSlotErrorFileToLarge() throws Exception {
-        IQ fileTooLargeErrorIQ = PacketParserUtils.parseStanza(slotErrorFileToLarge);
+        IQ fileTooLargeErrorIQ = ElementParserUtils.parseStanza(slotErrorFileToLarge);
 
         assertEquals(IQ.Type.error, fileTooLargeErrorIQ.getType());
 

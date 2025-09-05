@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jivesoftware.smack.DummyConnection;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.iqlast.packet.LastActivity;
 
@@ -44,7 +44,7 @@ public class LastActivityTest extends SmackTestSuite {
 
         DummyConnection c = new DummyConnection();
         c.connect();
-        IQ lastRequest = PacketParserUtils.parseStanza(xml.asString());
+        IQ lastRequest = ElementParserUtils.parseStanza(xml.asString());
         assertTrue(lastRequest instanceof LastActivity);
 
         c.processStanza(lastRequest);

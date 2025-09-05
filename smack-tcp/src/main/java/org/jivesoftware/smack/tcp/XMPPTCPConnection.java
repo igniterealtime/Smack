@@ -995,7 +995,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             }
                             break;
                         case "error":
-                            StreamError streamError = PacketParserUtils.parseStreamError(parser);
+                            StreamError streamError = PacketParserUtils.parseStreamError(parser, null, getJxmppContext());
                             // Stream errors are non recoverable, throw this exceptions. Also note that this will set
                             // this exception as current connection exceptions and notify any waiting threads.
                             throw new StreamErrorException(streamError);

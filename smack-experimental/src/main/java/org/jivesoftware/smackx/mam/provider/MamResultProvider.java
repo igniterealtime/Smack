@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2016 Fernando Ramirez, 2020-2021 Florian Schmaus
+ * Copyright 2016 Fernando Ramirez, 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class MamResultProvider extends ExtensionElementProvider<MamResultExtensi
                 final String name = parser.getName();
                 switch (name) {
                 case Forwarded.ELEMENT:
-                    forwarded = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment);
+                    forwarded = ForwardedProvider.parseForwardedMessage(parser, xmlEnvironment, jxmppContext);
                     break;
                 }
                 break;

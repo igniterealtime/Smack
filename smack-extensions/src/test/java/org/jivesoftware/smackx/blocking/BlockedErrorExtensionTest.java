@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.util.PacketParserUtils;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 
 import org.jivesoftware.smackx.blocking.element.BlockedErrorExtension;
 
@@ -45,13 +45,13 @@ public class BlockedErrorExtensionTest {
 
     @Test
     public void checkErrorHasBlockedExtension() throws Exception {
-        Message message1 = PacketParserUtils.parseStanza(messageWithoutError);
+        Message message1 = ElementParserUtils.parseStanza(messageWithoutError);
         assertFalse(BlockedErrorExtension.isInside(message1));
 
-        Message message2 = PacketParserUtils.parseStanza(messageWithError);
+        Message message2 = ElementParserUtils.parseStanza(messageWithError);
         assertFalse(BlockedErrorExtension.isInside(message2));
 
-        Message message3 = PacketParserUtils.parseStanza(messageWithBlockedError);
+        Message message3 = ElementParserUtils.parseStanza(messageWithBlockedError);
         assertTrue(BlockedErrorExtension.isInside(message3));
     }
 

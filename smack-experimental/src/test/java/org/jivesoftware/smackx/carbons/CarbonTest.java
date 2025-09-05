@@ -19,13 +19,17 @@ package org.jivesoftware.smackx.carbons;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
 import java.util.Properties;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.test.util.SmackTestUtil;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.ExperimentalInitializerTest;
 import org.jivesoftware.smackx.carbons.packet.CarbonExtension;
@@ -33,7 +37,6 @@ import org.jivesoftware.smackx.carbons.provider.CarbonManagerProvider;
 import org.jivesoftware.smackx.forward.packet.Forwarded;
 
 import com.jamesmurty.utils.XMLBuilder;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
@@ -44,9 +47,11 @@ public class CarbonTest extends ExperimentalInitializerTest {
         outputProperties.put(javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION, "yes");
     }
 
-    @Test
-    public void carbonSentTest() throws Exception {
-        XmlPullParser parser;
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void carbonSentTest(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException, TransformerException,
+                    ParserConfigurationException, FactoryConfigurationError {
         String control;
         CarbonExtension cc;
         Forwarded<Message> fwd;
@@ -58,8 +63,7 @@ public class CarbonTest extends ExperimentalInitializerTest {
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
 
-        parser = PacketParserUtils.getParserFor(control);
-        cc = new CarbonManagerProvider().parse(parser);
+        cc = SmackTestUtil.parse(control, CarbonManagerProvider.class, parserKind);
         fwd = cc.getForwarded();
 
         // meta
@@ -70,15 +74,13 @@ public class CarbonTest extends ExperimentalInitializerTest {
 
         // check message
         assertEquals("romeo@montague.com", fwd.getForwardedStanza().getFrom().toString());
-
-        // check end of tag
-        assertEquals(XmlPullParser.Event.END_ELEMENT, parser.getEventType());
-        assertEquals("sent", parser.getName());
     }
 
-    @Test
-    public void carbonReceivedTest() throws Exception {
-        XmlPullParser parser;
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void carbonReceivedTest(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws XmlPullParserException, IOException, SmackParsingException, TransformerException,
+                    ParserConfigurationException, FactoryConfigurationError {
         String control;
         CarbonExtension cc;
 
@@ -89,14 +91,9 @@ public class CarbonTest extends ExperimentalInitializerTest {
                     .a("from", "romeo@montague.com")
             .asString(outputProperties);
 
-        parser = PacketParserUtils.getParserFor(control);
-        cc = new CarbonManagerProvider().parse(parser);
+        cc = SmackTestUtil.parse(control, CarbonManagerProvider.class, parserKind);
 
         assertEquals(CarbonExtension.Direction.received, cc.getDirection());
-
-        // check end of tag
-        assertEquals(XmlPullParser.Event.END_ELEMENT, parser.getEventType());
-        assertEquals("received", parser.getName());
     }
 
     @ParameterizedTest

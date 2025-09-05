@@ -1,6 +1,6 @@
 /**
  *
- * Copyright © 2011-2019 Florian Schmaus
+ * Copyright © 2011-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@ import org.jivesoftware.smack.util.stringencoder.Base32;
 import org.jivesoftware.smack.util.stringencoder.StringEncoder;
 
 import org.jivesoftware.smackx.disco.packet.DiscoverInfo;
+
+import org.jxmpp.JxmppContext;
 
 /**
  * Simple implementation of an EntityCapsPersistentCache that uses a directory
@@ -150,6 +152,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
         if (fileContent == null) {
             return null;
         }
-        return PacketParserUtils.parseStanza(fileContent);
+        var parser = PacketParserUtils.getParserFor(fileContent);
+        return (DiscoverInfo) PacketParserUtils.parseIQ(parser, null, JxmppContext.getDefaultContext());
     }
 }

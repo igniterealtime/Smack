@@ -594,9 +594,10 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
                             case "error":
                                 // Some BOSH error isn't stream error.
                                 if ("urn:ietf:params:xml:ns:xmpp-streams".equals(parser.getNamespace(null))) {
-                                    throw new StreamErrorException(PacketParserUtils.parseStreamError(parser));
+                                    var error = PacketParserUtils.parseStreamError(parser, null, getJxmppContext());
+                                    throw new StreamErrorException(error);
                                 } else {
-                                    StanzaError stanzaError = PacketParserUtils.parseError(parser);
+                                    StanzaError stanzaError = PacketParserUtils.parseError(parser, null, getJxmppContext());
                                     throw new XMPPException.XMPPErrorException(null, stanzaError);
                                 }
                             default:

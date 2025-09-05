@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.PacketParserUtils;
 
 import org.jivesoftware.smackx.sid.element.OriginIdElement;
 import org.jivesoftware.smackx.sid.element.StanzaIdElement;
@@ -97,7 +97,7 @@ public class StableUniqueStanzaIdTest extends SmackTestSuite {
                           "<stanza-id by='e4aec989-3e20-4846-83bf-f50df89b5d07@muclight.example.com' id='B0KK24ETVC81' xmlns='urn:xmpp:sid:0'/>" +
                           "<stanza-id by='user1@example.com' id='B0KK24EV89G1' xmlns='urn:xmpp:sid:0'/>" +
                         "</message>";
-        Message messageStanza = PacketParserUtils.parseStanza(message);
+        Message messageStanza = ElementParserUtils.parseStanza(message);
 
         assertTrue(StanzaIdElement.hasStanzaId(messageStanza));
     }

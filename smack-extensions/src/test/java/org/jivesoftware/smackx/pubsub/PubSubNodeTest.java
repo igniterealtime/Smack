@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2018 Timothy Pitt, 2018-2021 Florian Schmaus
+ * Copyright 2018 Timothy Pitt, 2018-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,24 +28,27 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
-import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.PacketParserUtils;
-import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.test.util.SmackTestUtil;
 
 import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 import org.jivesoftware.smackx.pubsub.packet.PubSub;
 import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+import org.jivesoftware.smackx.pubsub.provider.PubSubProvider;
 
 import org.jivesoftware.util.ConnectionUtils;
 import org.jivesoftware.util.Protocol;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.jxmpp.jid.JidTestUtil;
 import org.jxmpp.jid.impl.JidCreate;
 
 public class PubSubNodeTest extends SmackTestSuite {
 
-    @Test
-    public void modifySubscriptionsAsOwnerTest() throws InterruptedException, SmackException, IOException, XMPPException, Exception {
+    @ParameterizedTest
+    @EnumSource(SmackTestUtil.XmlPullParserKind.class)
+    public void modifySubscriptionsAsOwnerTest(SmackTestUtil.XmlPullParserKind parserKind)
+                    throws InterruptedException, SmackException, IOException, XMPPException, Exception {
         ThreadedDummyConnection con = ThreadedDummyConnection.newInstance();
         PubSubManager mgr = new PubSubManager(con, JidTestUtil.PUBSUB_EXAMPLE_ORG);
         Node testNode = new LeafNode(mgr, "princely_musings");
@@ -61,8 +64,7 @@ public class PubSubNodeTest extends SmackTestSuite {
         assertEquals("http://jabber.org/protocol/pubsub#owner", request.getChildElementNamespace());
         assertEquals("pubsub", request.getChildElementName());
 
-        XmlPullParser parser = TestUtils.getIQParser(request.toXML().toString());
-        PubSub pubsubResult = (PubSub) PacketParserUtils.parseIQ(parser);
+        PubSub pubsubResult = SmackTestUtil.parse(request.toXML(), PubSubProvider.class, parserKind);
         SubscriptionsExtension subElem = pubsubResult.getExtension(PubSubElementType.SUBSCRIPTIONS_OWNER);
         List<Subscription> subscriptions = subElem.getSubscriptions();
         assertEquals(2, subscriptions.size());

@@ -86,12 +86,6 @@ public class PacketParserUtils {
         return parser;
     }
 
-    // TODO: This should be part of test code, not smack's public API
-    @SuppressWarnings({"unchecked", "TypeParameterUnusedInFormals"})
-    public static <S extends Stanza> S parseStanza(String stanza) throws XmlPullParserException, SmackParsingException, IOException {
-        return (S) parseStanza(getParserFor(stanza), XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
-    }
-
     /**
      * Tries to parse and return either a Message, IQ or Presence stanza.
      *
@@ -142,11 +136,6 @@ public class PacketParserUtils {
         stanzaBuilder.setLanguage(language);
 
         return stanzaBuilder;
-    }
-
-    // TODO: This should be part of test code, not smack's public API
-    public static Message parseMessage(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseMessage(parser, XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
     }
 
     /**
@@ -416,11 +405,6 @@ public class PacketParserUtils {
         return sb;
     }
 
-    // TODO: This should be part of test code, not smack's public API
-    public static Presence parsePresence(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parsePresence(parser, XmlEnvironment.EMPTY, JxmppContext.getDefaultContext());
-    }
-
     /**
      * Parses a presence packet.
      *
@@ -506,11 +490,6 @@ public class PacketParserUtils {
         }
 
         return presence.build();
-    }
-
-    // TODO: This should be part of test code, not smack's public API
-    public static IQ parseIQ(XmlPullParser parser) throws Exception {
-        return parseIQ(parser, null, JxmppContext.getDefaultContext());
     }
 
     public static IqData parseIqData(XmlPullParser parser, JxmppContext jxmppContext) throws XmppStringprepException {
@@ -707,11 +686,6 @@ public class PacketParserUtils {
         return descriptiveTexts;
     }
 
-    // TODO: This should be part of test code, not smack's public API
-    public static StreamError parseStreamError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseStreamError(parser, null, JxmppContext.getDefaultContext());
-    }
-
     /**
      * Parses stream error packets.
      *
@@ -769,11 +743,6 @@ public class PacketParserUtils {
             }
         }
         return new StreamError(condition, conditionText, descriptiveTexts, extensions);
-    }
-
-    // TODO: This should be part of test code, not smack's public API
-    public static StanzaError parseError(XmlPullParser parser) throws XmlPullParserException, IOException, SmackParsingException {
-        return parseError(parser, null, JxmppContext.getDefaultContext());
     }
 
     /**

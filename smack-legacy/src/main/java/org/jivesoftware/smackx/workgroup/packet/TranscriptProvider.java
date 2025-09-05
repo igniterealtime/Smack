@@ -49,10 +49,12 @@ public class TranscriptProvider extends IqProvider<Transcript> {
             XmlPullParser.Event eventType = parser.next();
             if (eventType == XmlPullParser.Event.START_ELEMENT) {
                 if (parser.getName().equals("message")) {
-                    packets.add(PacketParserUtils.parseMessage(parser));
+                    var message = PacketParserUtils.parseMessage(parser, xmlEnvironment, jxmppContext);
+                    packets.add(message);
                 }
                 else if (parser.getName().equals("presence")) {
-                    packets.add(PacketParserUtils.parsePresence(parser));
+                    var presence = PacketParserUtils.parsePresence(parser, xmlEnvironment, jxmppContext);
+                    packets.add(presence);
                 }
             }
             else if (eventType == XmlPullParser.Event.END_ELEMENT) {

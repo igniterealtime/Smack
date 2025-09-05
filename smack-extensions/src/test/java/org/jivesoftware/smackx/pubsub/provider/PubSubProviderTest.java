@@ -22,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.TestUtils;
-import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
 import org.jivesoftware.smackx.pubsub.PubSubElementType;
@@ -49,7 +49,7 @@ public class PubSubProviderTest {
           "</iq>";
         // @formatter:on
         XmlPullParser parser = TestUtils.getIQParser(resultStanza);
-        PubSub pubsubResult = (PubSub) PacketParserUtils.parseIQ(parser);
+        PubSub pubsubResult = (PubSub) ElementParserUtils.parseIQ(parser);
         SubscriptionsExtension subElem = pubsubResult.getExtension(PubSubElementType.SUBSCRIPTIONS_OWNER);
         List<Subscription> subscriptions = subElem.getSubscriptions();
         assertEquals(2, subscriptions.size());
