@@ -190,10 +190,14 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
      * semi-anonymous (a value of "moderators"), or fully anonymous (a value of "none", not shown here).
      * </blockquote>
      */
-    static void createNonAnonymousMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+    static void createNonAnonymousMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, TestNotPossibleException {
         muc.create(resourceName);
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
+
+        if (!answerForm.hasField("muc#roomconfig_whois")) {
+            throw new TestNotPossibleException(new MultiUserChatException.MucConfigurationNotSupportedException("muc#roomconfig_whois"));
+        }
         answerForm.setAnswer("muc#roomconfig_whois", "anyone");
         muc.sendConfigurationForm(answerForm);
     }
@@ -207,10 +211,13 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
      * semi-anonymous (a value of "moderators"), or fully anonymous (a value of "none", not shown here).
      * </blockquote>
      */
-    static void createSemiAnonymousMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+    static void createSemiAnonymousMuc(MultiUserChat muc, Resourcepart resourceName) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, TestNotPossibleException {
         muc.create(resourceName);
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
+        if (!answerForm.hasField("muc#roomconfig_whois")) {
+            throw new TestNotPossibleException(new MultiUserChatException.MucConfigurationNotSupportedException("muc#roomconfig_whois"));
+        }
         answerForm.setAnswer("muc#roomconfig_whois", "moderators");
         muc.sendConfigurationForm(answerForm);
     }
@@ -218,18 +225,28 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
     /**
      * Creates a password-protected room.
      */
-    static void createPasswordProtectedMuc(MultiUserChat muc, Resourcepart resourceName, String password) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException {
+    static void createPasswordProtectedMuc(MultiUserChat muc, Resourcepart resourceName, String password) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, MultiUserChatException.MucAlreadyJoinedException, SmackException.NotConnectedException, MultiUserChatException.MissingMucCreationAcknowledgeException, MultiUserChatException.NotAMucServiceException, TestNotPossibleException {
         muc.create(resourceName);
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
-        answerForm.setAnswer("muc#roomconfig_passwordprotectedroom", true);
+
+        if (answerForm.hasField("muc#roomconfig_passwordprotectedroom")) {
+            // Prosody doesn't seem to use this field. Setting a room secret is likely 'enough'.
+            answerForm.setAnswer("muc#roomconfig_passwordprotectedroom", true);
+        }
+        if (!answerForm.hasField("muc#roomconfig_roomsecret")) {
+            throw new TestNotPossibleException(new MultiUserChatException.MucConfigurationNotSupportedException("muc#roomconfig_roomsecret"));
+        }
         answerForm.setAnswer("muc#roomconfig_roomsecret", password);
         muc.sendConfigurationForm(answerForm);
     }
 
-    static void setMaxUsers(MultiUserChat muc, int maxUsers) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException {
+    static void setMaxUsers(MultiUserChat muc, int maxUsers) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException, SmackException.NotConnectedException, TestNotPossibleException {
         Form configForm = muc.getConfigurationForm();
         FillableForm answerForm = configForm.getFillableForm();
+        if (!answerForm.hasField("muc#roomconfig_maxusers")) {
+            throw new TestNotPossibleException(new MultiUserChatException.MucConfigurationNotSupportedException("muc#roomconfig_maxusers"));
+        }
         answerForm.setAnswer("muc#roomconfig_maxusers", maxUsers);
         muc.sendConfigurationForm(answerForm);
     }
