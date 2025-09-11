@@ -50,6 +50,8 @@ import org.jivesoftware.smack.util.SslContextFactory;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.TLSUtils;
 
+import org.jivesoftware.smackx.iqregister.AccountManager;
+
 import org.igniterealtime.smack.inttest.debugger.EnhancedSinttestDebugger;
 import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
 import org.igniterealtime.smack.inttest.debugger.SinttestDebuggerFactory;
@@ -179,6 +181,7 @@ public final class Configuration {
             sslContextFactory = null;
         }
         securityMode = builder.securityMode;
+        AccountManager.sensitiveOperationOverInsecureConnectionDefault(securityMode == SecurityMode.disabled);
         if (builder.replyTimeout > 0) {
             replyTimeout = builder.replyTimeout;
         } else {
