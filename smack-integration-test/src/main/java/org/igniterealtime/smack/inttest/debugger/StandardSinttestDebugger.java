@@ -152,7 +152,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
                     currentWriter.append(logMessage).append('\n');
                 }
 
-                completeWriter.append(logMessage + "\n");
+                completeWriter.append(logMessage).append('\n');
             } catch (IOException e) {
                 LOGGER.log(Level.WARNING, e + " while appending log message", e);
             }
