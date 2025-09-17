@@ -19,6 +19,7 @@ package org.igniterealtime.smack.inttest.debugger;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,6 +33,7 @@ import org.jivesoftware.smack.debugger.SimpleAbstractDebugger;
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.util.ExceptionUtil;
 
+import org.igniterealtime.smack.inttest.AbstractSmackIntTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.ConcreteTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResult;
 import org.igniterealtime.smack.inttest.util.ResultSyncPoint.ResultSyncPointTimeoutException;
@@ -164,6 +166,24 @@ public class StandardSinttestDebugger implements SinttestDebugger {
     public SmackDebuggerFactory getSmackDebuggerFactory() {
         return c -> new StandardSinttestSmackDebugger(c);
     }
+
+    @Override
+    public void onTestClassConstruction(Constructor<? extends AbstractSmackIntTest> constructor) throws IOException {
+        if (basePath == null) {
+            return;
+        }
+
+        Path testClassDirectory = basePath.resolve(constructor.getDeclaringClass().getSimpleName());
+        mkdirs(testClassDirectory);
+
+        Path logFile = testClassDirectory.resolve("log");
+        Writer newWriter = Files.newBufferedWriter(logFile);
+        synchronized (currentWriterLock) {
+            currentWriter = newWriter;
+        }
+
+        completeWriter.append("Constructing: " + constructor.getDeclaringClass() + "\n");
+    };
 
     @Override
     public void onTestStart(ConcreteTest test, ZonedDateTime startTime) throws IOException {
