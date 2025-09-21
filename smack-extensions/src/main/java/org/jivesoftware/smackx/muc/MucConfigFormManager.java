@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.muc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -112,6 +113,8 @@ public class MucConfigFormManager {
     public static final String MUC_ROOMCONFIG_CHANGE_SUBJECT = "muc#roomconfig_changesubject";
 
     public static final String MUC_ROOMCONFIG_WHOIS = "muc#roomconfig_whois";
+
+    public static final String MUC_ROOMCONFIG_MAXUSERS = "muc#roomconfig_maxusers";
 
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
@@ -470,6 +473,32 @@ public class MucConfigFormManager {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_WHOIS);
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_WHOIS, whoisAllowedBy.name());
+        return this;
+    }
+
+    public boolean supportsMaxUsers() {
+        return answerForm.hasField(MUC_ROOMCONFIG_MAXUSERS);
+    }
+
+    public List<Integer> getPossibleMaxUsersValues() throws MucConfigurationNotSupportedException {
+        if (!supportsMaxUsers()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MAXUSERS);
+        }
+        return answerForm.getField(MUC_ROOMCONFIG_MAXUSERS)
+                        .getValuesAsString()
+                        .stream()
+                        .map(s -> Integer.valueOf(s))
+                        .collect(Collectors.toList());
+    }
+
+    public MucConfigFormManager setMaxUsers(int maxUsers) throws MucConfigurationNotSupportedException {
+        if (!supportsMaxUsers()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MAXUSERS);
+        }
+        if (maxUsers < 1) {
+            throw new IllegalArgumentException();
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_MAXUSERS, maxUsers);
         return this;
     }
 
