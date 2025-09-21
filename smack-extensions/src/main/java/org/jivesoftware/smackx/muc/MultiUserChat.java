@@ -2634,6 +2634,16 @@ public class MultiUserChat {
         return connection;
     }
 
+    public boolean supports(MucFeature feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return supports(feature.getName());
+    }
+
+    public boolean supports(String feature) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        var sdm = ServiceDiscoveryManager.getInstanceFor(connection);
+        var info = sdm.discoverInfo(myRoomJid);
+        return info.containsFeature(feature);
+    }
+
     public boolean serviceSupportsStableIds() {
         return DiscoverInfo.nullSafeContainsFeature(mucServiceDiscoInfo, MultiUserChatConstants.STABLE_ID_FEATURE);
     }
