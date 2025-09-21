@@ -94,24 +94,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-
-        createMuc(mucAsSeenByOne, nicknameOne);
-        mucAsSeenByOne.changeSubject(mucSubject); // Blocks until confirmed.
-
-        // Send and wait for the message to have been reflected, so that we can be sure it's part of the MUC history.
-        final SimpleResultSyncPoint messageReflectionSyncPoint = new SimpleResultSyncPoint();
-        mucAsSeenByOne.addMessageListener(message -> {
-            String body = message.getBody();
-            if (body == null) return;
-
-            if (body.equals(mucMessage)) {
-                messageReflectionSyncPoint.signal();
-            }
-        });
-
-        mucAsSeenByOne.sendMessage(mucMessage);
-        messageReflectionSyncPoint.waitForResult(timeout);
-
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
         final List<Stanza> results = new ArrayList<>();
         final StanzaListener stanzaListener = stanza -> {
@@ -125,9 +107,27 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
                 }
             }
         };
-        conTwo.addStanzaListener(stanzaListener, FromMatchesFilter.createStrictChildOf(mucAddress));
 
+        createMuc(mucAsSeenByOne, nicknameOne);
         try {
+            mucAsSeenByOne.changeSubject(mucSubject); // Blocks until confirmed.
+
+            // Send and wait for the message to have been reflected, so that we can be sure it's part of the MUC history.
+            final SimpleResultSyncPoint messageReflectionSyncPoint = new SimpleResultSyncPoint();
+            mucAsSeenByOne.addMessageListener(message -> {
+                String body = message.getBody();
+                if (body == null) return;
+
+                if (body.equals(mucMessage)) {
+                    messageReflectionSyncPoint.signal();
+                }
+            });
+
+            mucAsSeenByOne.sendMessage(mucMessage);
+            messageReflectionSyncPoint.waitForResult(timeout);
+
+            conTwo.addStanzaListener(stanzaListener, FromMatchesFilter.createStrictChildOf(mucAddress));
+
             mucAsSeenByTwo.join(nicknameTwo);
 
             subjectResultSyncPoint.waitForResult(timeout); // Wait for subject, as it should be 4th (last)
@@ -174,15 +174,14 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
-
-        ResultSyncPoint<Message, Exception> errorMessageResultSyncPoint = new ResultSyncPoint<>();
-        conTwo.addStanzaListener(packet -> errorMessageResultSyncPoint.signal((Message) packet), ForEveryMessage.INSTANCE);
-
-        ResultSyncPoint<Message, Exception> distributedMessageResultSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addMessageListener(distributedMessageResultSyncPoint::signal);
-
+        createMuc(mucAsSeenByOne, "one-" + randomString);
         try {
+            ResultSyncPoint<Message, Exception> errorMessageResultSyncPoint = new ResultSyncPoint<>();
+            conTwo.addStanzaListener(packet -> errorMessageResultSyncPoint.signal((Message) packet), ForEveryMessage.INSTANCE);
+
+            ResultSyncPoint<Message, Exception> distributedMessageResultSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByOne.addMessageListener(distributedMessageResultSyncPoint::signal);
+
             mucAsSeenByTwo.sendMessage("Message without Joining");
             Message response = assertResult(errorMessageResultSyncPoint, "Expected an error to be returned to '" + conTwo.getUser() + "' after it sent a message to room '" + mucAddress + "' without joining it first (but no error was returned).");
             assertEquals(StanzaError.Condition.not_acceptable, response.getError().getCondition(), "Unexpected error condition in the (expected) error that was returned to '" + conTwo.getUser() + "' after it sent a message to room '" + mucAddress + "' without joining it first.");
@@ -220,20 +219,20 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        SimpleResultSyncPoint oneSeesTwo = new SimpleResultSyncPoint();
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                oneSeesTwo.signal();
-            }
-        });
-        mucAsSeenByTwo.join(nicknameTwo);
-        oneSeesTwo.waitForResult(timeout);
-        mucAsSeenByOne.grantModerator(nicknameTwo);
-
-        List<Presence> results = new ArrayList<>();
-        mucAsSeenByThree.addParticipantListener(results::add);
-
         try {
+            SimpleResultSyncPoint oneSeesTwo = new SimpleResultSyncPoint();
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    oneSeesTwo.signal();
+                }
+            });
+            mucAsSeenByTwo.join(nicknameTwo);
+            oneSeesTwo.waitForResult(timeout);
+            mucAsSeenByOne.grantModerator(nicknameTwo);
+
+            List<Presence> results = new ArrayList<>();
+            mucAsSeenByThree.addParticipantListener(results::add);
+
             // Will block until all self-presence is received, prior to which all others presences will have been received.
             mucAsSeenByThree.join(nicknameThree);
 
@@ -279,23 +278,23 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        final MultiResultSyncPoint<Presence, Exception> syncPoint = new MultiResultSyncPoint<>(2);
-
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                syncPoint.signal(presence);
-            }
-        });
-
-        mucAsSeenByTwo.addParticipantListener(presence -> {
-            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                syncPoint.signal(presence);
-            }
-        });
-
         try {
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            final MultiResultSyncPoint<Presence, Exception> syncPoint = new MultiResultSyncPoint<>(2);
+
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    syncPoint.signal(presence);
+                }
+            });
+
+            mucAsSeenByTwo.addParticipantListener(presence -> {
+                if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    syncPoint.signal(presence);
+                }
+            });
+
             mucAsSeenByThree.join(nicknameThree);
 
             List<Presence> results = assertResult(syncPoint, "Expected all occupants of room '" + mucAddress + "' to be notified of '" + conThree.getUser() + "' using nickname '" + nicknameThree + "' joining the room (but one or more did not get notified)");
@@ -335,23 +334,22 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
-        createNonAnonymousMuc(mucAsSeenByOne, nicknameOne);
-
-        final ResultSyncPoint<Presence, ?> participantOneSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSyncPoint.signal(presence);
-            }
-        });
-
-        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByTwo.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantTwoSyncPoint.signal(presence);
-            }
-        });
-
+        createMucNonAnonymous(mucAsSeenByOne, nicknameOne);
         try {
+            final ResultSyncPoint<Presence, ?> participantOneSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSyncPoint.signal(presence);
+                }
+            });
+
+            final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByTwo.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantTwoSyncPoint.signal(presence);
+                }
+            });
+
             mucAsSeenByTwo.join(nicknameTwo);
             Presence presenceReceivedByOne = assertResult(participantOneSyncPoint, "Expected '" + conOne.getUser() + "' to receive a presence stanza after '" + conTwo.getUser() + "' joined room '" + mucAddress + "' (but did not).");
             Presence presenceReceivedByTwo = assertResult(participantTwoSyncPoint, "Expected '" + conTwo.getUser() + "' to receive a presence stanza after they themselves joined room '" + mucAddress + "' (but did not).");
@@ -394,19 +392,18 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        createSemiAnonymousMuc(mucAsSeenByOne, nicknameOne);
-
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        // First pass: participant two is not a moderator yet
-        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByTwo.addParticipantListener(presence -> {
-            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantTwoSyncPoint.signal(presence);
-            }
-        });
-
+        createMucSemiAnonymous(mucAsSeenByOne, nicknameOne);
         try {
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            // First pass: participant two is not a moderator yet
+            final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByTwo.addParticipantListener(presence -> {
+                if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantTwoSyncPoint.signal(presence);
+                }
+            });
+
             mucAsSeenByThree.join(nicknameThree);
             Presence presenceReceivedByTwo = assertResult(participantTwoSyncPoint, "Expected '" + conTwo.getUser() + "' to receive presence when '" + conThree.getUser() + "' joined room '" + mucAddress + "' (but did not).");
 
@@ -440,19 +437,19 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
-        // Second pass: participant two is now a moderator
-        createSemiAnonymousMuc(mucAsSeenByOne, nicknameOne);
-        mucAsSeenByTwo.join(nicknameTwo);
-
-        mucAsSeenByOne.grantModerator(nicknameTwo);
-        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByTwo.addParticipantListener(presence -> {
-            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantTwoSyncPoint.signal(presence);
-            }
-        });
-
+        createMucSemiAnonymous(mucAsSeenByOne, nicknameOne);
         try {
+            // Second pass: participant two is now a moderator
+            mucAsSeenByTwo.join(nicknameTwo);
+
+            mucAsSeenByOne.grantModerator(nicknameTwo);
+            final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByTwo.addParticipantListener(presence -> {
+                if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantTwoSyncPoint.signal(presence);
+                }
+            });
+
             mucAsSeenByThree.join(nicknameThree);
             Presence presenceReceivedByTwo = assertResult(participantTwoSyncPoint, "Expected '" + conTwo.getUser() + "' to receive presence when '" + conThree.getUser() + "' joined room '" + mucAddress + "' (but did not).");
 
@@ -484,9 +481,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final String correctPassword = StringUtils.insecureRandomString(8);
 
-        createPasswordProtectedMuc(mucAsSeenByOne, nicknameOne, correctPassword);
-
+        createMuc(mucAsSeenByOne, nicknameOne);
         try {
+            setMucPasswordProtected(mucAsSeenByOne, correctPassword);
+
             // First try: no password
             XMPPException.XMPPErrorException noPasswordErrorException = assertThrows(
                             XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo),
@@ -520,9 +518,10 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final String correctPassword = StringUtils.insecureRandomString(8);
 
-        createPasswordProtectedMuc(mucAsSeenByOne, nicknameOne, correctPassword);
-
+        createMuc(mucAsSeenByOne, nicknameOne);
         try {
+            setMucPasswordProtected(mucAsSeenByOne, correctPassword);
+
             // Second try: wrong password
             XMPPException.XMPPErrorException wrongPasswordErrorException = assertThrows(
                 XMPPException.XMPPErrorException.class,
@@ -557,17 +556,18 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final String correctPassword = StringUtils.insecureRandomString(8);
 
-        createPasswordProtectedMuc(mucAsSeenByOne, nicknameOne, correctPassword);
-
-        // Set up to receive presence responses on successful join
-        final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByTwo.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantTwoSyncPoint.signal(presence);
-            }
-        });
-
+        createMuc(mucAsSeenByOne, nicknameOne);
         try {
+            setMucPasswordProtected(mucAsSeenByOne, correctPassword);
+
+            // Set up to receive presence responses on successful join
+            final ResultSyncPoint<Presence, ?> participantTwoSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByTwo.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantTwoSyncPoint.signal(presence);
+                }
+            });
+
             // Third try: correct password
             mucAsSeenByTwo.join(nicknameTwo, correctPassword);
             Presence presenceCorrectPassword = assertResult(participantTwoSyncPoint, "Expected '" + conTwo.getUser() + "' to be able to join password-protected room '" + mucAddress + "' using the correct password (but no join-presence was received).");
@@ -597,9 +597,9 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
-        createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
-
         try {
+            createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
+
             XMPPException.XMPPErrorException registrationRequiredErrorException = assertThrows(
                             XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo),
                 "Expected an error to be returned when non-member '" + conTwo.getUser() + "' tries to join member-online room '" + mucAddress + "' (but an error was not returned).");
@@ -635,11 +635,11 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne);
-
-        mucAsSeenByOne.banUser(conTwo.getUser().asBareJid(), "Insufficient witchcraft");
-
         try {
+            createMuc(mucAsSeenByOne, nicknameOne);
+
+            mucAsSeenByOne.banUser(conTwo.getUser().asBareJid(), "Insufficient witchcraft");
+
             XMPPException.XMPPErrorException forbiddenErrorException = assertThrows(
                             XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameTwo),
                 "Expected an error to be returned when outcast '" + conTwo.getUser() + "' tries to join room '" + mucAddress + "' (but an error was not returned).");
@@ -670,9 +670,9 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
 
-        createMuc(mucAsSeenByOne, nicknameOne);
-
         try {
+            createMuc(mucAsSeenByOne, nicknameOne);
+
             XMPPException.XMPPErrorException conflictErrorException = assertThrows(
                             XMPPException.XMPPErrorException.class, () -> mucAsSeenByTwo.join(nicknameOne),
                 "Expected an error to be returned when '" + conTwo.getUser() + "' tried to join room '" + mucAddress + "' using the nickname '" + nicknameOne + "' that was already in used by another occupant of the room (but an error was not returned).");
@@ -708,25 +708,26 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        setMaxUsers(mucAsSeenByOne, 2);
-
-        // Set up for participant 1 to receive presence responses on join of participant 2
-        final ResultSyncPoint<Presence, ?> participantOneSeesTwoSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSeesTwoSyncPoint.signal(presence);
-            }
-        });
-
-        // Set up for participant 3 to receive presence responses on join of participant 3
-        final ResultSyncPoint<Presence, ?> participantThreeSeesThreeSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByThree.addParticipantListener(presence -> {
-            if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantThreeSeesThreeSyncPoint.signal(presence);
-            }
-        });
-
         try {
+            setMaxUsers(mucAsSeenByOne, 2);
+
+            // Set up for participant 1 to receive presence responses on join of participant 2
+            final ResultSyncPoint<Presence, ?> participantOneSeesTwoSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSeesTwoSyncPoint.signal(presence);
+                }
+            });
+
+            // Set up for participant 3 to receive presence responses on join of participant 3
+            final ResultSyncPoint<Presence, ?> participantThreeSeesThreeSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByThree.addParticipantListener(presence -> {
+                if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantThreeSeesThreeSyncPoint.signal(presence);
+                }
+            });
+
+
             mucAsSeenByTwo.join(nicknameTwo);
             participantOneSeesTwoSyncPoint.waitForResult(timeout);
 
@@ -787,21 +788,21 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        setMaxUsers(mucAsSeenByOne, 2);
-
-        // Set up for participant 1 to receive presence responses on join of participant 2
-        // Set up for participant 1 to receive presence responses on join of participant 3
-        final ResultSyncPoint<Presence, ?> participantOneSeesTwoSyncPoint = new ResultSyncPoint<>();
-        final ResultSyncPoint<Presence, ?> participantOneSeesThreeSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSeesTwoSyncPoint.signal(presence);
-            } else if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSeesThreeSyncPoint.signal(presence);
-            }
-        });
-
         try {
+            setMaxUsers(mucAsSeenByOne, 2);
+
+            // Set up for participant 1 to receive presence responses on join of participant 2
+            // Set up for participant 1 to receive presence responses on join of participant 3
+            final ResultSyncPoint<Presence, ?> participantOneSeesTwoSyncPoint = new ResultSyncPoint<>();
+            final ResultSyncPoint<Presence, ?> participantOneSeesThreeSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSeesTwoSyncPoint.signal(presence);
+                } else if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSeesThreeSyncPoint.signal(presence);
+                }
+            });
+
             mucAsSeenByTwo.join(nicknameTwo);
             participantOneSeesTwoSyncPoint.waitForResult(timeout);
 
@@ -839,21 +840,21 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
-        setMaxUsers(mucAsSeenByOne, 2);
-
-        // Set up for participant 1 to receive presence responses on join of participant 2
-        // Set up for participant 1 to receive presence responses on join of participant 3
-        final ResultSyncPoint<Presence, ?> participantOneSeesTwoSyncPoint = new ResultSyncPoint<>();
-        final ResultSyncPoint<Presence, ?> participantOneSeesThreeSyncPoint = new ResultSyncPoint<>();
-        mucAsSeenByOne.addParticipantListener(presence -> {
-            if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSeesTwoSyncPoint.signal(presence);
-            } else if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
-                participantOneSeesThreeSyncPoint.signal(presence);
-            }
-        });
-
         try {
+            setMaxUsers(mucAsSeenByOne, 2);
+
+            // Set up for participant 1 to receive presence responses on join of participant 2
+            // Set up for participant 1 to receive presence responses on join of participant 3
+            final ResultSyncPoint<Presence, ?> participantOneSeesTwoSyncPoint = new ResultSyncPoint<>();
+            final ResultSyncPoint<Presence, ?> participantOneSeesThreeSyncPoint = new ResultSyncPoint<>();
+            mucAsSeenByOne.addParticipantListener(presence -> {
+                if (nicknameTwo.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSeesTwoSyncPoint.signal(presence);
+                } else if (nicknameThree.equals(presence.getFrom().getResourceOrEmpty())) {
+                    participantOneSeesThreeSyncPoint.signal(presence);
+                }
+            });
+
             mucAsSeenByTwo.join(nicknameTwo);
             participantOneSeesTwoSyncPoint.waitForResult(timeout);
 
