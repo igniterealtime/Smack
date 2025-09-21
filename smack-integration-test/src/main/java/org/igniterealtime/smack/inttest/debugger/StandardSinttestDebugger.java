@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2024 Florian Schmaus
+ * Copyright 2024-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,12 +112,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             Path outsideTestLogFile = this.basePath.resolve("outsideTestLog");
             Path testsFile = this.basePath.resolve("tests");
             try {
-                if (!this.basePath.toFile().exists()) {
-                    boolean created = this.basePath.toFile().mkdirs();
-                    if (!created) {
-                        throw new IOException("Could not create directory " + this.basePath);
-                    }
-                }
+                mkdirs(this.basePath);
 
                 completeWriter = Files.newBufferedWriter(completeLogFile);
                 outsideTestWriter = currentWriter = Files.newBufferedWriter(outsideTestLogFile);
@@ -186,12 +181,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
         currentTestMethodDirectory = testClassDirectory.resolve(testName.toString());
 
-        if (!currentTestMethodDirectory.toFile().exists()) {
-            boolean created = currentTestMethodDirectory.toFile().mkdirs();
-            if (!created) {
-                throw new IOException("Could not create directory " + currentTestMethodDirectory);
-            }
-        }
+        mkdirs(currentTestMethodDirectory);
 
         Path logFile = currentTestMethodDirectory.resolve("log");
         Writer newWriter = Files.newBufferedWriter(logFile);
@@ -287,5 +277,15 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
 
         LOGGER.info("Test data file://" + basePath);
+    }
+
+    private static void mkdirs(Path path) throws IOException {
+        var dir = path.toFile();
+        if (dir.exists())
+            return;
+
+        boolean created = dir.mkdirs();
+        if (!created)
+            throw new IOException("Could not create directory " + path);
     }
 }
