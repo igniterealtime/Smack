@@ -111,6 +111,8 @@ public class MucConfigFormManager {
      */
     public static final String MUC_ROOMCONFIG_CHANGE_SUBJECT = "muc#roomconfig_changesubject";
 
+    public static final String MUC_ROOMCONFIG_WHOIS = "muc#roomconfig_whois";
+
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
     private final List<Jid> owners;
@@ -451,6 +453,24 @@ public class MucConfigFormManager {
 
     public MucConfigFormManager disallowOccupantsToChangeSubject() throws MucConfigurationNotSupportedException {
         return setChangeSubjectByOccupant(false);
+    }
+
+    enum WhoisAllowedBy {
+        moderators,
+        anyone,
+    }
+
+    public boolean supportsWhoisAllowedBy() {
+        return answerForm.hasField(MUC_ROOMCONFIG_WHOIS);
+    }
+
+    public MucConfigFormManager setWhoisAllowedBy(WhoisAllowedBy whoisAllowedBy)
+                    throws MucConfigurationNotSupportedException {
+        if (!supportsWhoisAllowedBy()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_WHOIS);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_WHOIS, whoisAllowedBy.name());
+        return this;
     }
 
     /**
