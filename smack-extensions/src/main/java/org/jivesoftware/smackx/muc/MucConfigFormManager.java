@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2024 Florian Schmaus
+ * Copyright 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package org.jivesoftware.smackx.muc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -53,6 +55,8 @@ import org.jxmpp.jid.util.JidUtil;
 public class MucConfigFormManager {
 
     private static final String HASH_ROOMCONFIG = "#roomconfig";
+
+    private static final Logger LOGGER = Logger.getLogger(MucConfigFormManager.class.getName());
 
     public static final String FORM_TYPE = MultiUserChatConstants.NAMESPACE + HASH_ROOMCONFIG;
 
@@ -519,5 +523,33 @@ public class MucConfigFormManager {
             answerForm.setAnswer(MUC_ROOMCONFIG_ROOMADMINS, JidUtil.toStringList(admins));
         }
         multiUserChat.sendConfigurationForm(answerForm);
+    }
+
+    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        var cancelForm = FillableForm.newCancelForm();
+        multiUserChat.sendConfigurationForm(cancelForm);
+    }
+
+    public interface MucConfigApplier {
+        void apply(MucConfigFormManager manager)
+                        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucConfigurationNotSupportedException;
+    }
+
+    public MultiUserChat applyAndSubmit(MucConfigApplier applier)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucConfigurationNotSupportedException {
+        try {
+            applier.apply(this);
+            submitConfigurationForm();
+        } catch (XMPPErrorException | InterruptedException | MucConfigurationNotSupportedException e) {
+            try {
+                cancel();
+            } catch (NoResponseException | XMPPErrorException | NotConnectedException
+                            | InterruptedException cancelException) {
+                LOGGER.log(Level.SEVERE, "Exception while canceling MUC configuration for " + multiUserChat, e);
+            }
+            throw e;
+        }
+
+        return multiUserChat;
     }
 }
