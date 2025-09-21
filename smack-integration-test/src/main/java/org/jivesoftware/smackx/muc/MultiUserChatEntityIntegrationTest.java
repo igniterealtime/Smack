@@ -130,7 +130,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     public void mucTestForDiscoveringRoomInfo() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("discoinfo");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
-        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
+        createMuc(mucAsSeenByOne, nicknameOne);
 
         DiscoverInfo discoInfo;
         try {
@@ -157,7 +157,7 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     public void mucTestForDiscoveringRoomItems() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("discoitems");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
-        createMuc(mucAsSeenByOne, Resourcepart.from("one-" + randomString));
+        createMuc(mucAsSeenByOne, nicknameOne);
 
         DiscoverItems roomItems;
         try {
@@ -181,7 +181,6 @@ public class MultiUserChatEntityIntegrationTest extends AbstractMultiUserChatInt
     public void mucTestForRejectingDiscoOnRoomOccupantByNonOccupant() throws Exception {
         EntityBareJid mucAddress = getRandomRoom("discoitems");
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         createMuc(mucAsSeenByOne, nicknameOne);
         final EntityFullJid mucAsSeenByOneUserJid = mucAsSeenByOne.getMyRoomJid();
         // Ensure that we do not invoke discoverItems() with null below. This should not happen, as the room JID should

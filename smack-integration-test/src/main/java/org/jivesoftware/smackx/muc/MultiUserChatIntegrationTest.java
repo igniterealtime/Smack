@@ -78,8 +78,8 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
             }
         });
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
-        mucAsSeenByTwo.join(Resourcepart.from("two-" + randomString));
+        createMuc(mucAsSeenByOne, nicknameOne);
+        mucAsSeenByTwo.join(nicknameTwo);
         mucAsSeenByOne.sendMessage(mucMessage);
 
         try {
@@ -104,7 +104,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         EntityBareJid mucAddress = getRandomRoom("destroy-owner");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
-        createMuc(muc, Resourcepart.from("one-" + randomString));
+        createMuc(muc, nicknameOne);
 
         // These would be a test implementation bug, not assertion failure.
         if (!mucManagerOne.getJoinedRooms().contains(mucAddress)) {
@@ -152,10 +152,10 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
 
         MultiUserChat mucAsSeenByOwner = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByParticipant = mucManagerTwo.getMultiUserChat(mucAddress);
-        createMuc(mucAsSeenByOwner, Resourcepart.from("one-" + randomString));
+        createMuc(mucAsSeenByOwner, nicknameOne);
 
         // These would be a test implementation bug, not assertion failure.
-        mucAsSeenByParticipant.join(Resourcepart.from("two-" + randomString));
+        mucAsSeenByParticipant.join(nicknameTwo);
         if (!mucManagerTwo.getJoinedRooms().contains(mucAddress)) {
             tryDestroy(mucAsSeenByOwner);
             throw new IllegalStateException("Expected user to have joined a room '" + mucAddress + "' (but does not appear to have done so).");
@@ -195,7 +195,7 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         EntityBareJid mucAddress = getRandomRoom("muc-name-change");
 
         MultiUserChat muc = mucManagerOne.getMultiUserChat(mucAddress);
-        createMuc(muc, Resourcepart.from("one-" + randomString));
+        createMuc(muc, nicknameOne);
 
         final String newRoomName = "New Room Name (" + randomString + ")";
 
@@ -220,9 +220,6 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         final EntityBareJid mucAddress = getRandomRoom("visitor-change-subject");
         final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
@@ -255,7 +252,6 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
                     XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
         final EntityBareJid mucAddress = getRandomRoom("change-room-name");
         final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
         try {

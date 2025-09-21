@@ -92,8 +92,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
         final ResultSyncPoint<String, Exception> subjectResultSyncPoint = new ResultSyncPoint<>();
         final List<Stanza> results = new ArrayList<>();
         final StanzaListener stanzaListener = stanza -> {
@@ -174,7 +172,7 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        createMuc(mucAsSeenByOne, "one-" + randomString);
+        createMuc(mucAsSeenByOne, nicknameOne);
         try {
             ResultSyncPoint<Message, Exception> errorMessageResultSyncPoint = new ResultSyncPoint<>();
             conTwo.addStanzaListener(packet -> errorMessageResultSyncPoint.signal((Message) packet), ForEveryMessage.INSTANCE);
@@ -213,10 +211,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
@@ -273,10 +267,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
             mucAsSeenByTwo.join(nicknameTwo);
@@ -330,9 +320,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         createMucNonAnonymous(mucAsSeenByOne, nicknameOne);
         try {
@@ -388,10 +375,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-
         createMucSemiAnonymous(mucAsSeenByOne, nicknameOne);
         try {
             mucAsSeenByTwo.join(nicknameTwo);
@@ -433,10 +416,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-
         createMucSemiAnonymous(mucAsSeenByOne, nicknameOne);
         try {
             // Second pass: participant two is now a moderator
@@ -476,9 +455,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-
         final String correctPassword = StringUtils.insecureRandomString(8);
 
         createMuc(mucAsSeenByOne, nicknameOne);
@@ -512,9 +488,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         final String correctPassword = StringUtils.insecureRandomString(8);
 
@@ -550,9 +523,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         final String correctPassword = StringUtils.insecureRandomString(8);
 
@@ -594,9 +564,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-
         try {
             createMembersOnlyMuc(mucAsSeenByOne, nicknameOne);
 
@@ -632,9 +599,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-
         try {
             createMuc(mucAsSeenByOne, nicknameOne);
 
@@ -668,8 +632,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-
         try {
             createMuc(mucAsSeenByOne, nicknameOne);
 
@@ -702,10 +664,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
@@ -783,10 +741,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
-
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
             setMaxUsers(mucAsSeenByOne, 2);
@@ -834,10 +788,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByThree = mucManagerThree.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-        final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
@@ -891,9 +841,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-
         // Note the absence of handle.makeInstant() here. The room is still being created at this point, until a
         // configuration is set.
         mucAsSeenByOne.create(nicknameOne);
@@ -927,9 +874,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
 
         final MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         final MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
-
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-        final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);
 
@@ -969,7 +913,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwoOriginal = Resourcepart.from("two-original-" + randomString);
         final Resourcepart nicknameTwoNew = Resourcepart.from("two-new-" + randomString);
 
@@ -1064,7 +1007,6 @@ public class MultiUserChatOccupantIntegrationTest extends AbstractMultiUserChatI
         MultiUserChat mucAsSeenByOne = mucManagerOne.getMultiUserChat(mucAddress);
         MultiUserChat mucAsSeenByTwo = mucManagerTwo.getMultiUserChat(mucAddress);
 
-        final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
         final Resourcepart nicknameTwoOriginal = Resourcepart.from("two-original-" + randomString);
 
         createMuc(mucAsSeenByOne, nicknameOne);

@@ -56,6 +56,10 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
     final MultiUserChatManager mucManagerThree;
     final DomainBareJid mucService;
 
+    final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+    final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+    final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+
     public AbstractMultiUserChatIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
             InterruptedException, TestNotPossibleException, MucAlreadyJoinedException, MissingMucCreationAcknowledgeException, NotAMucServiceException, XmppStringprepException {
@@ -77,7 +81,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
                 EntityBareJid mucAddress = JidCreate.entityBareFrom(Localpart.from(roomNameLocal), service.getDomain());
                 multiUserChat = mucManagerOne.getMultiUserChat(mucAddress);
 
-                createMuc(multiUserChat, "test");
+                createMuc(multiUserChat, nicknameOne);
 
                 needle = service;
                 break;
@@ -140,6 +144,11 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         muc.create(resourceName).makeInstant();
     }
 
+    /**
+     * @deprecated use {@link #createMuc(MultiUserChat, Resourcepart)} instead.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.6
     static void createMuc(MultiUserChat muc, String nickname) throws
             XmppStringprepException, MultiUserChatException.MucAlreadyJoinedException,
             XMPPException.XMPPErrorException, SmackException.NotConnectedException,
