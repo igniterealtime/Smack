@@ -124,6 +124,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         if (muc == null) {
             return;
         }
+        // TODO: check if the muc exists before trying to destroy it.
         muc.destroy("test fixture teardown", null);
     }
 
