@@ -411,6 +411,9 @@ public class SmackIntegrationTestFramework {
                 continue;
             }
 
+            if (sinttestDebugger != null) {
+                sinttestDebugger.onTestClassConstruction(cons);
+            }
             final AbstractSmackIntTest test;
             try {
                 test = cons.newInstance(environment);

@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2015-2024 Florian Schmaus
+ * Copyright 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ package org.jivesoftware.smackx.muc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
@@ -52,6 +55,8 @@ import org.jxmpp.jid.util.JidUtil;
 public class MucConfigFormManager {
 
     private static final String HASH_ROOMCONFIG = "#roomconfig";
+
+    private static final Logger LOGGER = Logger.getLogger(MucConfigFormManager.class.getName());
 
     public static final String FORM_TYPE = MultiUserChatConstants.NAMESPACE + HASH_ROOMCONFIG;
 
@@ -110,6 +115,10 @@ public class MucConfigFormManager {
      * The constant String {@value}.
      */
     public static final String MUC_ROOMCONFIG_CHANGE_SUBJECT = "muc#roomconfig_changesubject";
+
+    public static final String MUC_ROOMCONFIG_WHOIS = "muc#roomconfig_whois";
+
+    public static final String MUC_ROOMCONFIG_MAXUSERS = "muc#roomconfig_maxusers";
 
     private final MultiUserChat multiUserChat;
     private final FillableForm answerForm;
@@ -453,6 +462,50 @@ public class MucConfigFormManager {
         return setChangeSubjectByOccupant(false);
     }
 
+    enum WhoisAllowedBy {
+        moderators,
+        anyone,
+    }
+
+    public boolean supportsWhoisAllowedBy() {
+        return answerForm.hasField(MUC_ROOMCONFIG_WHOIS);
+    }
+
+    public MucConfigFormManager setWhoisAllowedBy(WhoisAllowedBy whoisAllowedBy)
+                    throws MucConfigurationNotSupportedException {
+        if (!supportsWhoisAllowedBy()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_WHOIS);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_WHOIS, whoisAllowedBy.name());
+        return this;
+    }
+
+    public boolean supportsMaxUsers() {
+        return answerForm.hasField(MUC_ROOMCONFIG_MAXUSERS);
+    }
+
+    public List<Integer> getPossibleMaxUsersValues() throws MucConfigurationNotSupportedException {
+        if (!supportsMaxUsers()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MAXUSERS);
+        }
+        return answerForm.getField(MUC_ROOMCONFIG_MAXUSERS)
+                        .getValuesAsString()
+                        .stream()
+                        .map(s -> Integer.valueOf(s))
+                        .collect(Collectors.toList());
+    }
+
+    public MucConfigFormManager setMaxUsers(int maxUsers) throws MucConfigurationNotSupportedException {
+        if (!supportsMaxUsers()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_MAXUSERS);
+        }
+        if (maxUsers < 1) {
+            throw new IllegalArgumentException();
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_MAXUSERS, maxUsers);
+        return this;
+    }
+
     /**
      * Submit the configuration as {@link FilledForm} to the room.
      *
@@ -470,5 +523,33 @@ public class MucConfigFormManager {
             answerForm.setAnswer(MUC_ROOMCONFIG_ROOMADMINS, JidUtil.toStringList(admins));
         }
         multiUserChat.sendConfigurationForm(answerForm);
+    }
+
+    public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        var cancelForm = FillableForm.newCancelForm();
+        multiUserChat.sendConfigurationForm(cancelForm);
+    }
+
+    public interface MucConfigApplier {
+        void apply(MucConfigFormManager manager)
+                        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucConfigurationNotSupportedException;
+    }
+
+    public MultiUserChat applyAndSubmit(MucConfigApplier applier)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, MucConfigurationNotSupportedException {
+        try {
+            applier.apply(this);
+            submitConfigurationForm();
+        } catch (XMPPErrorException | InterruptedException | MucConfigurationNotSupportedException e) {
+            try {
+                cancel();
+            } catch (NoResponseException | XMPPErrorException | NotConnectedException
+                            | InterruptedException cancelException) {
+                LOGGER.log(Level.SEVERE, "Exception while canceling MUC configuration for " + multiUserChat, e);
+            }
+            throw e;
+        }
+
+        return multiUserChat;
     }
 }

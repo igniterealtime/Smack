@@ -17,10 +17,12 @@
 package org.igniterealtime.smack.inttest.debugger;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.time.ZonedDateTime;
 
 import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 
+import org.igniterealtime.smack.inttest.AbstractSmackIntTest;
 import org.igniterealtime.smack.inttest.ConnectionConfigurationBuilderApplier;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.ConcreteTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunResult;
@@ -28,6 +30,8 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestFramework.TestRunRes
 public interface SinttestDebugger {
 
     SmackDebuggerFactory getSmackDebuggerFactory();
+
+    default void onTestClassConstruction(Constructor<? extends AbstractSmackIntTest> cons) throws IOException { };
 
     default void onTestStart(ConcreteTest test, ZonedDateTime testStart) throws IOException { };
 
