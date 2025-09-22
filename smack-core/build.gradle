@@ -69,6 +69,7 @@ jar {
 	bundle {
 		bnd(
 				'DynamicImport-Package': '*',
+				'Import-Package': '!sun.security.pkcs11, *'
 		)
 	}
 }
