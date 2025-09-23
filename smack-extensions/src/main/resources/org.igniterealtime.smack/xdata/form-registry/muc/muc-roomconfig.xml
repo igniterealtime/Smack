@@ -1,0 +1,93 @@
+<!-- https://xmpp.org/extensions/xep-0045.html#registrar-formtype-owner -->
+<form_type>
+  <name>http://jabber.org/protocol/muc#roomconfig</name>
+  <doc>XEP-0045</doc>
+  <desc>
+    Forms enabling creation and configuration of
+    a Multi-User Chat (MUC) room.
+  </desc>
+  <field
+      var='muc#maxhistoryfetch'
+      type='text-single'
+      label='Maximum Number of History Messages Returned by Room'/>
+  <field
+      var='muc#roomconfig_allowpm'
+      type='list-single'
+      label='Roles that May Send Private Messages'/>
+  <field
+      var='muc#roomconfig_allowinvites'
+      type='boolean'
+      label='Whether to Allow Occupants to Invite Others'/>
+  <field
+      var='muc#roomconfig_changesubject'
+      type='boolean'
+      label='Whether to Allow Occupants to Change Subject'/>
+  <field
+      var='muc#roomconfig_enablelogging'
+      type='boolean'
+      label='Whether to Enable Public Logging of Room Conversations'/>
+  <field
+      var='muc#roomconfig_getmemberlist'
+      type='list-multi'
+      label='Roles and Affiliations that May Retrieve Member List'/>
+  <field
+      var='muc#roomconfig_lang'
+      type='text-single'
+      label='Natural Language for Room Discussions'/>
+  <field
+      var='muc#roomconfig_pubsub'
+      type='text-single'
+      label='XMPP URI of Associated Publish-Subscribe Node'/>
+  <field
+      var='muc#roomconfig_maxusers'
+      type='list-single'
+      label='Maximum Number of Room Occupants'/>
+  <field
+      var='muc#roomconfig_membersonly'
+      type='boolean'
+      label='Whether to Make Room Members-Only'/>
+  <field
+      var='muc#roomconfig_moderatedroom'
+      type='boolean'
+      label='Whether to Make Room Moderated'/>
+  <field
+      var='muc#roomconfig_passwordprotectedroom'
+      type='boolean'
+      label='Whether a Password is Required to Enter'/>
+  <field
+      var='muc#roomconfig_persistentroom'
+      type='boolean'
+      label='Whether to Make Room Persistent'/>
+  <field
+      var='muc#roomconfig_presencebroadcast'
+      type='list-multi'
+      label='Roles for which Presence is Broadcasted'/>
+  <field
+      var='muc#roomconfig_publicroom'
+      type='boolean'
+      label='Whether to Allow Public Searching for Room'/>
+  <field
+      var='muc#roomconfig_roomadmins'
+      type='jid-multi'
+      label='Full List of Room Admins'/>
+  <field
+      var='muc#roomconfig_roomdesc'
+      type='text-single'
+      label='Short Description of Room'/>
+  <field
+      var='muc#roomconfig_roomname'
+      type='text-single'
+      label='Natural-Language Room Name'/>
+  <field
+      var='muc#roomconfig_roomowners'
+      type='jid-multi'
+      label='Full List of Room Owners'/>
+  <field
+      var='muc#roomconfig_roomsecret'
+      type='text-single'
+      label='The Room Password'/>
+  <field
+      var='muc#roomconfig_whois'
+      type='list-single'
+      label='Affiliations that May Discover Real JIDs of Occupants'/>
+</form_type>
