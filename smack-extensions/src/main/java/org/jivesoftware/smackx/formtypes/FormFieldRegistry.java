@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2020-2021 Florian Schmaus
+ * Copyright 2020-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,30 @@
  */
 package org.jivesoftware.smackx.formtypes;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarFile;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlUtil;
+import org.jivesoftware.smack.xml.SmackXmlParser;
+import org.jivesoftware.smack.xml.XmlPullParser;
+import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
+import org.jivesoftware.smackx.xdata.XDataManager;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 public class FormFieldRegistry {
@@ -38,6 +51,102 @@ public class FormFieldRegistry {
     private static final Map<String, FormField.Type> CLARK_NOTATION_FIELD_REGISTRY = new ConcurrentHashMap<>();
 
     private static final Map<String, FormField.Type> LOOKASIDE_FIELD_REGISTRY = new ConcurrentHashMap<>();
+
+    static {
+        try {
+            loadFormFieldRegistryEntries();
+        } catch (IOException | IllegalStateException | XmlPullParserException | URISyntaxException e) {
+            LOGGER.log(Level.SEVERE, "Failed to load form field registry entries", e);
+        }
+    }
+
+    private static int loadedFieldEntries;
+
+    static int getLoadedFieldEntires() {
+        return loadedFieldEntries;
+    }
+
+    private static void loadFormFieldRegistryEntry(InputStream inputStream, String source) throws XmlPullParserException, IOException {
+        var parser = SmackXmlParser.newXmlParser(inputStream);
+        if (parser.nextTag() != XmlPullParser.TagEvent.START_ELEMENT) throw new IllegalStateException();
+        var elementName = parser.getName();
+        if (!elementName.equals("form_type"))
+            throw new IllegalStateException(
+                            source + " does not start with 'form_type' element but with " + elementName);
+
+        String formType = null;
+        outerloop: while (true) {
+            XmlPullParser.Event eventType = parser.next();
+            switch (eventType) {
+            case START_ELEMENT:
+                var name = parser.getName();
+                switch (name) {
+                case "name":
+                    formType = parser.nextText();
+                    if (formType.isEmpty()) throw new IllegalStateException();
+                    break;
+                case "field":
+                    var fieldName = parser.getAttributeValue("var");
+                    var typeString = parser.getAttributeValue("type");
+                    var type = FormField.Type.fromString(typeString);
+                    if (formType == null) throw new IllegalStateException();
+
+                    FormFieldRegistry.register(formType, fieldName, type);
+                    loadedFieldEntries++;
+                    LOGGER.finer("Registered " + fieldName + " for form " + formType + " with type " + type + " [" + source + "]");
+                    break;
+                }
+                break;
+            case END_DOCUMENT:
+                break outerloop;
+            default:
+                // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                break;
+            }
+        }
+    }
+    private static void loadFormFieldRegistryEntries() throws IOException, IllegalStateException, XmlPullParserException, URISyntaxException {
+        var url = XDataManager.class.getProtectionDomain().getCodeSource().getLocation();
+        if (url == null) throw new IllegalStateException();
+
+        if (url.getProtocol().equals("file") && !url.getPath().endsWith(".jar")) {
+            var path = Paths.get(url.toURI());
+            if (!Files.isDirectory(path)) throw new IllegalStateException("Code source location " + url + " is not a directory");
+            var prefix = path.toString() + File.separator + "org.igniterealtime.smack" + File.separator + "xdata"
+                            + File.separator + "form-registry" + File.separator;
+
+            try (var walk = Files.walk(path)) {
+                var files = walk.filter(Files::isRegularFile)
+                                .filter(f -> f.toString().startsWith(prefix))
+                                .collect(Collectors.toList());
+                for (var file : files) {
+                    var inputStream = Files.newInputStream(file);
+                    try {
+                        loadFormFieldRegistryEntry(inputStream, file.toString());
+                    } finally {
+                        inputStream.close();
+                    }
+                }
+            }
+            return;
+        }
+
+        if (!url.toString().endsWith(".jar")) throw new IllegalStateException("Code source location " + url + " is not a jar");
+        try (var jar = new JarFile(url.getFile())) {
+            var files = jar.stream()
+                .filter(e -> !e.isDirectory())
+                .filter(e -> e.getName().startsWith("org.igniterealtime.smack/xdata/form-registry/"))
+                .collect(Collectors.toList());
+            for (var file : files) {
+                var inputStream = jar.getInputStream(file);
+                try {
+                    loadFormFieldRegistryEntry(inputStream, file.toString());
+                } finally {
+                    inputStream.close();
+                }
+            }
+        }
+    }
 
     @SuppressWarnings("ReferenceEquality")
     public static void register(DataForm dataForm) {

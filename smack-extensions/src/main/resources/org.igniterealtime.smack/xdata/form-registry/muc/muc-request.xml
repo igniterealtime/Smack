@@ -1,0 +1,22 @@
+<!-- https://xmpp.org/extensions/xep-0045.html#registrar-formtype-request -->
+<form_type>
+  <name>http://jabber.org/protocol/muc#request</name>
+  <doc>XEP-0045</doc>
+  <desc>
+    Forms enabling voice requests in a
+    Multi-User Chat (MUC) room or admin
+    approval of such requests.
+  </desc>
+  <field var='muc#role'
+         type='list-single'
+         label='Requested role'/>
+  <field var='muc#jid'
+         type='jid-single'
+         label='User ID'/>
+  <field var='muc#roomnick'
+         type='text-single'
+         label='Room Nickname'/>
+  <field var='muc#request_allow'
+         type='boolean'
+         label='Whether to grant voice'/>
+</form_type>
