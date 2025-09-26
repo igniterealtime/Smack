@@ -298,6 +298,9 @@ public class Socks5Proxy {
         }
         this.serverThread = null;
         this.serverSocket = null;
+
+        // Stop Sock5Proxy so a new localAddresses are retrieved on new authentication process.
+        socks5Server = null;
     }
 
     /**
