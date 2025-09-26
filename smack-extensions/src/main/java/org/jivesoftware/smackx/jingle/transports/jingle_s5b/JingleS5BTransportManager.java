@@ -45,7 +45,7 @@ import org.jxmpp.jid.FullJid;
 import org.jxmpp.jid.Jid;
 
 /**
- * Manager for Jingle SOCKS5 Bytestream transports (XEP-0261).
+ * Manager for Jingle SOCKS5 Bytestream transports (XEP-0260).
  */
 public final class JingleS5BTransportManager extends JingleTransportManager<JingleS5BTransport> {
 
@@ -133,7 +133,7 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
 
     @Override
     public void authenticated(XMPPConnection connection, boolean resumed) {
-        if (!resumed) try {
+        try {
             Socks5Proxy socks5Proxy = Socks5Proxy.getSocks5Proxy();
             if (!socks5Proxy.isRunning()) {
                 socks5Proxy.start();
@@ -143,6 +143,19 @@ public final class JingleS5BTransportManager extends JingleTransportManager<Jing
         } catch (InterruptedException | SmackException.NoResponseException | SmackException.NotConnectedException | XMPPException.XMPPErrorException e) {
             LOGGER.log(Level.WARNING, "Could not query available StreamHosts: " + e, e);
         }
+    }
+
+    @Override
+    public void connectionClosed() {
+        Socks5Proxy proxy = Socks5Proxy.getSocks5Proxy();
+        if (proxy.isRunning()) {
+            Socks5Proxy.getSocks5Proxy().stop();
+        }
+    }
+
+    @Override
+    public void connectionClosedOnError(Exception e) {
+        connectionClosed();
     }
 
     public Jingle createCandidateUsed(FullJid recipient, FullJid initiator, String sessionId, JingleContent.Senders contentSenders,
