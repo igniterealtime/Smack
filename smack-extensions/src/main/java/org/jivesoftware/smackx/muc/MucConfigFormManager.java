@@ -23,11 +23,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.jivesoftware.smack.packet.IQ;
+
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.muc.MultiUserChatException.MucConfigurationNotSupportedException;
+import org.jivesoftware.smackx.muc.packet.MUCOwner;
 import org.jivesoftware.smackx.xdata.BooleanFormField;
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
@@ -527,7 +530,11 @@ public class MucConfigFormManager {
 
     public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         var cancelForm = FillableForm.newCancelForm();
-        multiUserChat.sendConfigurationForm(cancelForm);
+        var iq = new MUCOwner();
+        iq.setTo(multiUserChat.getRoom());
+        iq.setType(IQ.Type.set);
+        iq.addExtension(cancelForm);
+        multiUserChat.getXmppConnection().sendIqRequestAndWaitForResponse(iq);
     }
 
     public interface MucConfigApplier {
