@@ -84,7 +84,7 @@
       label='Full List of Room Owners'/>
   <field
       var='muc#roomconfig_roomsecret'
-      type='text-single'
+      type='text-private'
       label='The Room Password'/>
   <field
       var='muc#roomconfig_whois'
