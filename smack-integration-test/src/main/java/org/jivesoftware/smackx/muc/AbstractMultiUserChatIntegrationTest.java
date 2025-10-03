@@ -171,7 +171,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         try {
             configManager.applyAndSubmit(applier);
         } catch (MultiUserChatException.MucConfigurationNotSupportedException e) {
-            throw new TestNotPossibleException("todo", e);
+            throw new TestNotPossibleException("Unable to modify MUC room: " + e.getMessage(), e);
         }
     }
 
