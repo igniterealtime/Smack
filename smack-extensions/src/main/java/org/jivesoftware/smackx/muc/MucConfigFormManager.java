@@ -33,6 +33,7 @@ import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.form.FillableForm;
 import org.jivesoftware.smackx.xdata.form.FilledForm;
 import org.jivesoftware.smackx.xdata.form.Form;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.util.JidUtil;
@@ -526,8 +527,8 @@ public class MucConfigFormManager {
     }
 
     public void cancel() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        var cancelForm = FillableForm.newCancelForm();
-        multiUserChat.sendConfigurationForm(cancelForm);
+        var cancelDataForm = DataForm.builder(DataForm.Type.cancel).build();
+        multiUserChat.sendAsMucOwner(cancelDataForm);
     }
 
     public interface MucConfigApplier {

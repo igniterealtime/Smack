@@ -862,6 +862,10 @@ public class MultiUserChat {
             dataForm = DataForm.builder().build();
         }
 
+        sendAsMucOwner(dataForm);
+    }
+
+    void sendAsMucOwner(DataForm dataForm) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         MUCOwner iq = new MUCOwner();
         iq.setTo(room);
         iq.setType(IQ.Type.set);

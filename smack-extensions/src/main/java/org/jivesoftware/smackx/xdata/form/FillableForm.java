@@ -296,8 +296,4 @@ public class FillableForm extends FilledForm {
         return new SubmitForm(form);
     }
 
-    public static FillableForm newCancelForm() {
-        var cancelDataForm = DataForm.builder(DataForm.Type.cancel).build();
-        return new FillableForm(cancelDataForm);
-    }
 }
