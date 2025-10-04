@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
@@ -217,8 +218,8 @@ public class TLSUtils {
 
     static {
         String javaHome = System.getProperty("java.home");
-        String defaultTruststorePath = javaHome + File.separator + "lib" + File.separator + "security" + File.separator + "cacerts";
-        DEFAULT_TRUSTSTORE_PATH = new File(defaultTruststorePath);
+        var defaultTruststorePath = Paths.get(javaHome, "lib", "security", "cacerts");
+        DEFAULT_TRUSTSTORE_PATH = defaultTruststorePath.toFile();
     }
 
     public static FileInputStream getDefaultTruststoreStreamIfPossible() {
