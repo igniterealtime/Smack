@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.formtypes;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -112,8 +111,7 @@ public class FormFieldRegistry {
         if (url.getProtocol().equals("file") && !url.getPath().endsWith(".jar")) {
             var path = Paths.get(url.toURI());
             if (!Files.isDirectory(path)) throw new IllegalStateException("Code source location " + url + " is not a directory");
-            var prefix = path.toString() + File.separator + "org.igniterealtime.smack" + File.separator + "xdata"
-                            + File.separator + "form-registry" + File.separator;
+            var prefix = Paths.get(path.toString(),  "org.igniterealtime.smack", "xdata", "form-registry").toString();
 
             try (var walk = Files.walk(path)) {
                 var files = walk.filter(Files::isRegularFile)
