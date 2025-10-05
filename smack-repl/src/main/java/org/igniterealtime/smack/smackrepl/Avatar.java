@@ -69,6 +69,7 @@ public class Avatar {
             @Override
             public void onAvatarUpdateReceived(EntityBareJid user, MetadataExtension metadata) {
                 Async.go(() -> {
+                    LOGGER.log(Level.INFO, "User updated avatar " + user);
                     File userDirectory = new File(avatarDownloadDirectory, user.asUrlEncodedString());
                     userDirectory.mkdirs();
                     MetadataInfo avatarInfo = metadata.getInfoElements().get(0);
@@ -93,11 +94,15 @@ public class Avatar {
         avatarManager.enable();
 
         connection.connect().login();
-
+        if (!avatarManager.isSupportedByServer()) {
+            LOGGER.log(Level.SEVERE, "Avatars aren't supported by the server");
+        }
+        System.out.println("Waiting for a contact to upload an avatar");
+        System.out.println("Type /quit to exit");
+        System.out.println();
         Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
         while (true) {
-            String line = input.nextLine();
-
+            String line = input.nextLine().trim();
             if (line.equals("/quit")) {
                 connection.disconnect();
                 System.exit(0);
