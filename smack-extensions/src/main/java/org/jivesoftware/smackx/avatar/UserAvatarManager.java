@@ -16,13 +16,10 @@
  */
 package org.jivesoftware.smackx.avatar;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -111,7 +108,6 @@ public final class UserAvatarManager extends Manager {
      */
     public static synchronized UserAvatarManager getInstanceFor(XMPPConnection connection) {
         UserAvatarManager userAvatarManager = INSTANCES.get(connection);
-
         if (userAvatarManager == null) {
             userAvatarManager = new UserAvatarManager(connection);
             INSTANCES.put(connection, userAvatarManager);
@@ -275,16 +271,9 @@ public final class UserAvatarManager extends Manager {
     public void publishPNGAvatar(File pngFile, int height, int width)
             throws IOException, XMPPErrorException, PubSubException.NotALeafNodeException, NotConnectedException,
             InterruptedException, NoResponseException {
-        try (ByteArrayOutputStream out = new ByteArrayOutputStream((int) pngFile.length());
-             InputStream in = new BufferedInputStream(new FileInputStream(pngFile))) {
-            byte[] buffer = new byte[4096];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            byte[] bytes = out.toByteArray();
-            publishPNGAvatar(bytes, height, width);
-        }
+
+        byte[] bytes = Files.readAllBytes(pngFile.toPath());
+        publishPNGAvatar(bytes, height, width);
     }
 
     /**
