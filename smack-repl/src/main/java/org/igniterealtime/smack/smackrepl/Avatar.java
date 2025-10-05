@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.Async;
 import org.jivesoftware.smackx.avatar.MemoryAvatarMetadataStore;
 import org.jivesoftware.smackx.avatar.MetadataInfo;
@@ -58,7 +59,12 @@ public class Avatar {
             throw new IllegalArgumentException("Usage: java Avatar <jid> <password>");
         }
 
-        XMPPTCPConnection connection = new XMPPTCPConnection(args[0], args[1]);
+        XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder()
+                .setXmppAddressAndPassword(args[0], args[1])
+//                .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
+                ;
+        XMPPTCPConnectionConfiguration build = builder.build();
+        XMPPTCPConnection connection = new XMPPTCPConnection(build);
 
         UserAvatarManager avatarManager = UserAvatarManager.getInstanceFor(connection);
         avatarManager.setAvatarMetadataStore(new MemoryAvatarMetadataStore());
@@ -98,15 +104,28 @@ public class Avatar {
             LOGGER.log(Level.SEVERE, "Avatars aren't supported by the server");
         }
         System.out.println("Waiting for a contact to upload an avatar");
-        System.out.println("Type /quit to exit");
+        System.out.println("Type /quit to exit or /help to see usage");
         System.out.println();
         Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
         while (true) {
             String line = input.nextLine().trim();
-            if (line.equals("/quit")) {
-                connection.disconnect();
-                System.exit(0);
-                break;
+            String[] cmd = line.split(" ");
+            switch (cmd[0]) {
+                case "/quit":
+                    connection.disconnect();
+                    System.exit(0);
+                    break;
+                case "/publish":
+                    avatarManager.publishPNGAvatar(new File(cmd[1]));
+                    break;
+                case "/unpublish":
+                    avatarManager.unpublishAvatar();
+                    break;
+                case "/help":
+                    System.out.println("/quit to exit");
+                    System.out.println("/publish /path/to/avatar.png to upload new avatar for your account");
+                    System.out.println("/unpublish to remove avatar from your account");
+                    break;
             }
         }
     }
