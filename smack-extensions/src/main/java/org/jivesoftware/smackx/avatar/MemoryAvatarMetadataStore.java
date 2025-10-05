@@ -19,66 +19,22 @@ package org.jivesoftware.smackx.avatar;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.jivesoftware.smack.util.HashCode;
-import org.jivesoftware.smack.util.Objects;
-
+import org.jivesoftware.smack.util.Pair;
 import org.jxmpp.jid.EntityBareJid;
 
 public class MemoryAvatarMetadataStore implements AvatarMetadataStore {
 
-    private Map<Tuple<EntityBareJid, String>, Boolean> availabilityMap = new ConcurrentHashMap<>();
+    private final Map<Pair<EntityBareJid, String>, Boolean> availabilityMap = new ConcurrentHashMap<>();
 
     @Override
     public boolean hasAvatarAvailable(EntityBareJid jid, String itemId) {
-        Boolean available = availabilityMap.get(new Tuple<>(jid, itemId));
+        Boolean available = availabilityMap.get(Pair.create(jid, itemId));
         return available != null && available;
     }
 
     @Override
     public void setAvatarAvailable(EntityBareJid jid, String itemId) {
-        availabilityMap.put(new Tuple<>(jid, itemId), Boolean.TRUE);
+        availabilityMap.put(Pair.create(jid, itemId), true);
     }
 
-    private static class Tuple<A, B> {
-        private final A first;
-        private final B second;
-
-        Tuple(A first, B second) {
-            this.first = first;
-            this.second = second;
-        }
-
-        public A getFirst() {
-            return first;
-        }
-
-        public B getSecond() {
-            return second;
-        }
-
-        @Override
-        public int hashCode() {
-            return HashCode.builder()
-                    .append(first)
-                    .append(second)
-                    .build();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (obj == this) {
-                return true;
-            }
-            if (!(obj instanceof Tuple)) {
-                return false;
-            }
-
-            @SuppressWarnings("unchecked") Tuple<A, B> other = (Tuple<A, B>) obj;
-            return Objects.equals(getFirst(), other.getFirst())
-                    && Objects.equals(getSecond(), other.getSecond());
-        }
-    }
 }
