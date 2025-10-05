@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,14 +36,12 @@ import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.util.Async;
-import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smackx.avatar.MemoryAvatarMetadataStore;
 import org.jivesoftware.smackx.avatar.MetadataInfo;
 import org.jivesoftware.smackx.avatar.UserAvatarManager;
 import org.jivesoftware.smackx.avatar.element.MetadataExtension;
 import org.jivesoftware.smackx.avatar.listener.AvatarListener;
 
-import org.apache.commons.io.FileUtils;
 import org.bouncycastle.util.io.Streams;
 import org.jxmpp.jid.EntityBareJid;
 
@@ -64,8 +63,7 @@ public class Avatar {
         UserAvatarManager avatarManager = UserAvatarManager.getInstanceFor(connection);
         avatarManager.setAvatarMetadataStore(new MemoryAvatarMetadataStore());
 
-        File avatarDownloadDirectory = new File(FileUtils.getTempDirectory(), "avatarTest" + StringUtils.randomString(6));
-        createDownloadDirectory(avatarDownloadDirectory);
+        File avatarDownloadDirectory = Files.createTempDirectory("avatarTest").toFile();
 
         avatarManager.addAvatarListener(new AvatarListener() {
             @Override
@@ -96,7 +94,7 @@ public class Avatar {
 
         connection.connect().login();
 
-        Scanner input = new Scanner(System.in, StandardCharsets.UTF_8.name());
+        Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
         while (true) {
             String line = input.nextLine();
 
@@ -105,14 +103,6 @@ public class Avatar {
                 System.exit(0);
                 break;
             }
-        }
-    }
-
-    private static void createDownloadDirectory(File avatarDownloadDirectory) throws IOException {
-        if (!avatarDownloadDirectory.mkdirs()) {
-            throw new IOException("Cannot create temp directory '" + avatarDownloadDirectory.getAbsolutePath() + "'");
-        } else {
-            LOGGER.info("Created temporary avatar download directory '" + avatarDownloadDirectory.getAbsolutePath() + "'");
         }
     }
 
