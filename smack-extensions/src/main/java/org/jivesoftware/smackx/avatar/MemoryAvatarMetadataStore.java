@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jivesoftware.smack.util.Pair;
+
 import org.jxmpp.jid.EntityBareJid;
 
 public class MemoryAvatarMetadataStore implements AvatarMetadataStore {

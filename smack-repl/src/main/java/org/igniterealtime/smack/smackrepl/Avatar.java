@@ -37,6 +37,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smack.util.Async;
+
 import org.jivesoftware.smackx.avatar.MemoryAvatarMetadataStore;
 import org.jivesoftware.smackx.avatar.MetadataInfo;
 import org.jivesoftware.smackx.avatar.UserAvatarManager;
@@ -60,9 +61,7 @@ public class Avatar {
         }
 
         XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder()
-                .setXmppAddressAndPassword(args[0], args[1])
-//                .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
-                ;
+                .setXmppAddressAndPassword(args[0], args[1]);
         XMPPTCPConnectionConfiguration build = builder.build();
         XMPPTCPConnection connection = new XMPPTCPConnection(build);
 
@@ -103,9 +102,11 @@ public class Avatar {
         if (!avatarManager.isSupportedByServer()) {
             LOGGER.log(Level.SEVERE, "Avatars aren't supported by the server");
         }
+        // CHECKSTYLE:OFF
         System.out.println("Waiting for a contact to upload an avatar");
         System.out.println("Type /quit to exit or /help to see usage");
         System.out.println();
+        // CHECKSTYLE:ON
         Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
         while (true) {
             String line = input.nextLine().trim();
@@ -122,9 +123,11 @@ public class Avatar {
                     avatarManager.unpublishAvatar();
                     break;
                 case "/help":
+                    // CHECKSTYLE:OFF
                     System.out.println("/quit to exit");
                     System.out.println("/publish /path/to/avatar.png to upload new avatar for your account");
                     System.out.println("/unpublish to remove avatar from your account");
+                    // CHECKSTYLE:ON
                     break;
             }
         }

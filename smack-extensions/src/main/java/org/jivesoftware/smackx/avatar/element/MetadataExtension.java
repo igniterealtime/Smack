@@ -23,6 +23,7 @@ import java.util.Map;
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.avatar.MetadataInfo;
 import org.jivesoftware.smackx.avatar.MetadataPointer;
 import org.jivesoftware.smackx.avatar.UserAvatarManager;

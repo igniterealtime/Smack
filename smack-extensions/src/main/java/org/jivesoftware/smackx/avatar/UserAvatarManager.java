@@ -35,6 +35,7 @@ import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.stringencoder.Base64;
+
 import org.jivesoftware.smackx.avatar.element.DataExtension;
 import org.jivesoftware.smackx.avatar.element.MetadataExtension;
 import org.jivesoftware.smackx.avatar.listener.AvatarListener;
@@ -49,7 +50,8 @@ import org.jivesoftware.smackx.pubsub.PubSubManager;
 import org.jxmpp.jid.EntityBareJid;
 
 /**
- * <h1>User Avatar manager class.</h1>
+ * User Avatar manager class.
+ * <p>
  * This manager allows publication of user avatar images via PubSub, as well as publication of
  * {@link MetadataExtension MetadataExtensions} containing {@link MetadataInfo} elements for avatars
  * available via PubSub, HTTP or external third-party services via {@link MetadataPointer} elements.
