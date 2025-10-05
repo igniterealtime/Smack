@@ -42,7 +42,9 @@ public enum PubSubFeature implements CharSequence {
     create_nodes(Support.recommended),
     delete_items(Support.recommended),
     delete_nodes(Support.recommended),
+    filtered_notifications(Support.recommended),
     get_pending(Support.optional),
+    instant_nodes(Support.recommended),
     item_ids(Support.recommended),
     last_published(Support.recommended),
     leased_subscription(Support.optional),
@@ -51,6 +53,7 @@ public enum PubSubFeature implements CharSequence {
     meta_data(Support.recommended),
     modify_affiliations(Support.optional),
     multi_collection(Support.optional),
+    multi_items(Support.optional),
     multi_subscribe(Support.optional),
     outcast_affiliation(Support.recommended),
     persistent_items(Support.recommended),
@@ -60,6 +63,7 @@ public enum PubSubFeature implements CharSequence {
     publish_options(Support.optional),
     publish_only_affiliation(Support.optional),
     publisher_affiliation(Support.recommended),
+    publish_node_full(Support.optional),
     purge_nodes(Support.optional),
     retract_items(Support.optional),
     retrieve_affiliations(Support.recommended),
@@ -70,8 +74,6 @@ public enum PubSubFeature implements CharSequence {
     subscribe(Support.required),
     subscription_options(Support.optional),
     subscriptions_notifications(Support.optional),
-    instant_nodes(Support.recommended),
-    filtered_notifications(Support.recommended),
     ;
 
     private final String feature;
