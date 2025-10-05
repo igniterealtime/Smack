@@ -17,13 +17,16 @@
 package org.jivesoftware.smackx.avatar.provider;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.element.DataExtension;
+import org.jxmpp.JxmppContext;
 
 /**
  * User Avatar data provider class.
@@ -34,8 +37,8 @@ import org.jivesoftware.smackx.avatar.element.DataExtension;
 public class DataProvider extends ExtensionElementProvider<DataExtension> {
 
     @Override
-    public DataExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment environment)
-            throws IOException, XmlPullParserException {
+    public DataExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
+            throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         byte[] data = Base64.decode(parser.nextText());
         return new DataExtension(data);
     }

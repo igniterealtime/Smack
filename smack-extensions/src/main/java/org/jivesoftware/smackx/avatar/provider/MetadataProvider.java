@@ -19,17 +19,20 @@ package org.jivesoftware.smackx.avatar.provider;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 import org.jivesoftware.smackx.avatar.MetadataInfo;
 import org.jivesoftware.smackx.avatar.MetadataPointer;
 import org.jivesoftware.smackx.avatar.element.MetadataExtension;
+import org.jxmpp.JxmppContext;
 
 /**
  * User Avatar metadata provider class.
@@ -41,7 +44,7 @@ import org.jivesoftware.smackx.avatar.element.MetadataExtension;
 public class MetadataProvider extends ExtensionElementProvider<MetadataExtension> {
 
     @Override
-    public MetadataExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment) throws IOException, XmlPullParserException {
+      public MetadataExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         List<MetadataInfo> metadataInfos = null;
         List<MetadataPointer> pointers = null;
 
