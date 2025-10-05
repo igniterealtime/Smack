@@ -73,7 +73,7 @@ public enum PubSubFeature implements CharSequence {
     retrieve_subscriptions(Support.recommended),
     subscribe(Support.required),
     subscription_options(Support.optional),
-    subscriptions_notifications(Support.optional),
+    subscription_notifications(Support.optional),
     ;
 
     private final String feature;
