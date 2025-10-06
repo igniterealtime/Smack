@@ -648,8 +648,7 @@ public final class PubSubManager extends Manager {
 
     /**
      * Get the "default" PubSub service for a given XMPP connection. The default PubSub service is
-     * simply an arbitrary XMPP service with the PubSub#subscribe feature and an identity of category "pubsub"
-     * and type "service".
+     * simply an arbitrary XMPP service with an identity of category "pubsub" and type "service".
      *
      * @param connection TODO javadoc me please
      * @return the default PubSub service or <code>null</code>.
@@ -663,7 +662,6 @@ public final class PubSubManager extends Manager {
     public static DomainBareJid getPubSubService(XMPPConnection connection)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).findService(PubSub.NAMESPACE + "#" + PubSubElementType.SUBSCRIBE.getElementName(),
-                        true, "pubsub", "service");
+        return ServiceDiscoveryManager.getInstanceFor(connection).findService("pubsub", "service");
     }
 }

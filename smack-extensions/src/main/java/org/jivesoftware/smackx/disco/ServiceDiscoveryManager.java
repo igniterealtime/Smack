@@ -882,6 +882,25 @@ public final class ServiceDiscoveryManager extends Manager {
         return findService(feature, useCache, null, null);
     }
 
+    public DomainBareJid findService(String category, String type)
+        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        DomainBareJid serviceName = connection().getXMPPServiceDomain();
+        DiscoverInfo info = discoverInfo(serviceName);
+        if (info.hasIdentity(category, type)) {
+            return info.getFrom().asDomainBareJid();
+        }
+
+        // Get the disco items and send the disco packet to each server item
+        DiscoverItems items = discoverItems(serviceName);
+        for (DiscoverItems.Item item : items.getItems()) {
+            info = discoverInfo(item.getEntityID());
+            if (info.hasIdentity(category, type)) {
+                return info.getFrom().asDomainBareJid();
+            }
+        }
+        return null;
+    }
+
     public boolean addEntityCapabilitiesChangedListener(EntityCapabilitiesChangedListener entityCapabilitiesChangedListener) {
         return entityCapabilitiesChangedListeners.add(entityCapabilitiesChangedListener);
     }
