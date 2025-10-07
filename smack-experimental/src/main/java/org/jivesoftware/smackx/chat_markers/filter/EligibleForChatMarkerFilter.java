@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2018 Miguel Hincapie.
  *

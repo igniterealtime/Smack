@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2013-2014 Georg Lukas, 2020 Florian Schmaus
  *

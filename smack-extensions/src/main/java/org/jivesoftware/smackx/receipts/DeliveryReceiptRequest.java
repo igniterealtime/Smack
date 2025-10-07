@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2013-2014 the original author or authors
  *

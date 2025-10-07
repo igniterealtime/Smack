@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright Paul Schaub
  *

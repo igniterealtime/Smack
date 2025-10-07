@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2015-2025 Florian Schmaus, 2022-2024 Guus der Kinderen
  *

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2014 Vyacheslav Blinov, 2017-2019 Florian Schmaus
  *

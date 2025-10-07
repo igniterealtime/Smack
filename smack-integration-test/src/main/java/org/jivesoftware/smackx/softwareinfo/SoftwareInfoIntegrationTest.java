@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2020 Aditya Borikar
  *
@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smackx.softwareInfo;
+package org.jivesoftware.smackx.softwareinfo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -27,7 +27,6 @@ import org.jivesoftware.smack.util.Async.ThrowingRunnable;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.mediaelement.element.MediaElement;
-import org.jivesoftware.smackx.softwareinfo.SoftwareInfoManager;
 import org.jivesoftware.smackx.softwareinfo.form.SoftwareInfoForm;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;

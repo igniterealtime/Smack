@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 20XX the original author or authors
  *

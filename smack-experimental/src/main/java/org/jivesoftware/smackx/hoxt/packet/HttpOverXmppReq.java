@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2014 Andriy Tsykholyas, 2015 Florian Schmaus
  *

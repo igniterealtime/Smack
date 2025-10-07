@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2021-2024 Guus der Kinderen
  *

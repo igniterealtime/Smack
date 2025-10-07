@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2016-2017 Fernando Ramirez, 2016-2022 Florian Schmaus
  *

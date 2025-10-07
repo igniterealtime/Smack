@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2009 Jive Software, 2018-2025 Florian Schmaus.
  *
