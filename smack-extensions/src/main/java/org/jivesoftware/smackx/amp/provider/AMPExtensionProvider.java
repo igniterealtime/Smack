@@ -17,10 +17,11 @@
 package org.jivesoftware.smackx.amp.provider;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
+import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
@@ -33,7 +34,6 @@ import org.jxmpp.JxmppContext;
 
 
 public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension> {
-    private static final Logger LOGGER = Logger.getLogger(AMPExtensionProvider.class.getName());
 
     /**
      * Parses a AMPExtension stanza (extension sub-packet).
@@ -42,10 +42,11 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
      * @return a PacketExtension.
      * @throws IOException if an I/O error occurred.
      * @throws XmlPullParserException if an error in the XML parser occurred.
+     * @throws SmackParsingException if the Smack parser (provider) encountered invalid input.
      */
     @Override
     public AMPExtension parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext)
-                    throws XmlPullParserException, IOException {
+                    throws XmlPullParserException, IOException, SmackParsingException {
         final String from = parser.getAttributeValue(null, "from");
         final String to = parser.getAttributeValue(null, "to");
         final String statusString = parser.getAttributeValue(null, "status");
@@ -54,7 +55,7 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
             try {
                 status = AMPExtension.Status.valueOf(statusString);
             } catch (IllegalArgumentException ex) {
-                LOGGER.severe("Found invalid amp status " + statusString);
+                throw new SmackParsingException("Invalid AMP status: " + statusString, ex);
             }
         }
 
@@ -81,16 +82,12 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
                         try {
                             action = AMPExtension.Action.valueOf(actionString);
                         } catch (IllegalArgumentException ex) {
-                            LOGGER.severe("Found invalid rule action value " + actionString);
+                            throw new SmackParsingException("Found invalid rule action value " + actionString, ex);
                         }
                     }
 
-                    if (action == null || condition == null) {
-                        LOGGER.severe("Rule is skipped because either it's action or it's condition is invalid");
-                    } else {
-                        AMPExtension.Rule rule = new AMPExtension.Rule(action, condition);
-                        ampExtension.addRule(rule);
-                    }
+                    AMPExtension.Rule rule = new AMPExtension.Rule(action, condition);
+                    ampExtension.addRule(rule);
                 }
             } else if (eventType == XmlPullParser.Event.END_ELEMENT) {
                 if (parser.getName().equals(AMPExtension.ELEMENT)) {
@@ -102,19 +99,19 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
         return ampExtension;
     }
 
-    private static AMPExtension.Condition createCondition(String name, String value) {
-        if (name == null || value == null) {
-            LOGGER.severe("Can't create rule condition from null name and/or value");
-            return null;
+    private static AMPExtension.Condition createCondition(String name, String value) throws SmackParsingException {
+        if (StringUtils.isNullOrEmpty(name)) {
+            throw new SmackParsingException("Can't have a condition without a name");
         }
-
+        if (StringUtils.isNullOrEmpty(value)) {
+            throw new SmackParsingException("Can't have a condition " + name + " without value");
+        }
 
         if (AMPDeliverCondition.NAME.equals(name)) {
             try {
                 return new AMPDeliverCondition(AMPDeliverCondition.Value.valueOf(value));
             } catch (IllegalArgumentException ex) {
-                LOGGER.severe("Found invalid rule delivery condition value " + value);
-                return null;
+                throw new SmackParsingException("Found invalid rule delivery condition value " + value, ex);
             }
         } else if (AMPExpireAtCondition.NAME.equals(name)) {
             return new AMPExpireAtCondition(value);
@@ -122,12 +119,10 @@ public class AMPExtensionProvider extends ExtensionElementProvider<AMPExtension>
             try {
                 return new AMPMatchResourceCondition(AMPMatchResourceCondition.Value.valueOf(value));
             } catch (IllegalArgumentException ex) {
-                LOGGER.severe("Found invalid rule match-resource condition value " + value);
-                return null;
+                throw new SmackParsingException("Found invalid rule match-resource condition value " + value, ex);
             }
         } else {
-            LOGGER.severe("Found unknown rule condition name " + name);
-            return null;
+            throw new SmackParsingException("Found unknown rule condition name " + name);
         }
     }
 }

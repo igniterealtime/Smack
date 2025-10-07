@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.amp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 
@@ -69,14 +71,7 @@ public class AMPExtensionTest {
 
         assertEquals(AMPExtension.ELEMENT, parser.getName());
 
-        ExtensionElement extension = ampProvider.parse(parser);
-        assertTrue(extension instanceof AMPExtension);
-        AMPExtension amp = (AMPExtension) extension;
-
-        assertEquals(0, amp.getRulesCount());
-        assertEquals(AMPExtension.Status.alert, amp.getStatus());
-        assertEquals("bernardo@hamlet.lit/elsinore", amp.getFrom());
-        assertEquals("francisco@hamlet.lit", amp.getTo());
+        assertThrows(SmackParsingException.class, () -> ampProvider.parse(parser));
     }
 
     @Test
