@@ -19,8 +19,6 @@ plugins {
 	id 'org.igniterealtime.smack.javadoc-conventions'
 }
 
-version = readVersionFile()
-
 ext {
 	isSnapshot = version.endsWith('-SNAPSHOT')
 	gitCommit = getGitCommit()
@@ -290,15 +288,4 @@ def getGitCommit() {
 	def gitCommit = proc.text.trim()
 	assert !gitCommit.isEmpty()
 	gitCommit
-}
-
-def readVersionFile() {
-	def versionFile = new File(rootDir, 'version')
-	if (!versionFile.isFile()) {
-		throw new Exception("Could not find version file")
-	}
-	if (versionFile.text.isEmpty()) {
-		throw new Exception("Version file does not contain a version")
-	}
-	versionFile.text.trim()
 }
