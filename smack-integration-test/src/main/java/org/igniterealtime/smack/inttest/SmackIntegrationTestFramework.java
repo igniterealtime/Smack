@@ -32,6 +32,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +48,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
@@ -79,6 +82,9 @@ public class SmackIntegrationTestFramework {
 
     static {
         TLSUtils.setDefaultTrustStoreTypeToJksIfRequired();
+        if (Security.getProvider("BC") == null) {
+            Security.insertProviderAt(new BouncyCastleProvider(), 0);
+        }
     }
 
     private static final Logger LOGGER = Logger.getLogger(SmackIntegrationTestFramework.class.getName());
