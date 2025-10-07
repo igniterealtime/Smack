@@ -17,17 +17,24 @@
 package org.jivesoftware.smackx.bytestreams.socks5;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.SmackMessageException;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.test.util.NetworkUtil;
 
 import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
@@ -74,6 +81,7 @@ public class Socks5ClientTest {
     @Test
     public void shouldCloseSocketIfServerDoesNotAcceptAuthenticationMethod() throws Exception {
 
+        var exception = new AtomicReference<Exception>();
         // start thread to connect to SOCKS5 proxy
         Thread serverThread = new Thread() {
 
@@ -84,17 +92,11 @@ public class Socks5ClientTest {
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
 
                 try {
-
                     socks5Client.getSocket(10000);
-
-                    fail("exception should be thrown");
-                }
-                catch (SmackException e) {
-                    assertTrue(e.getMessage().contains(
-                                    "SOCKS5 negotiation failed"));
+                    // should not reach this, exception should be thrown
                 }
                 catch (Exception e) {
-                    fail(e.getMessage());
+                    exception.set(e);
                 }
 
             }
@@ -119,6 +121,9 @@ public class Socks5ClientTest {
         // wait for client to shutdown
         serverThread.join();
 
+        var ioException = assertInstanceOf(IOException.class, exception.get());
+        assertEquals("Remote SOCKS5 server responded with unexpected version: 5 -1. Should be 0x05 0x00.", ioException.getMessage());
+
         // assert socket is closed
         assertEquals(-1, in.read());
 
@@ -132,6 +137,7 @@ public class Socks5ClientTest {
     @Test
     public void shouldCloseSocketIfServerRepliesInUnsupportedWay() throws Exception {
 
+        var exception = new AtomicReference<Exception>();
         // start thread to connect to SOCKS5 proxy
         Thread serverThread = new Thread() {
 
@@ -142,15 +148,10 @@ public class Socks5ClientTest {
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
                 try {
                     socks5Client.getSocket(10000);
-
-                    fail("exception should be thrown");
-                }
-                catch (SmackException e) {
-                    assertTrue(e.getMessage().contains(
-                                    "Unsupported SOCKS5 address type"));
+                    // should not reach this, exception should be thrown
                 }
                 catch (Exception e) {
-                    fail(e.getMessage());
+                    exception.set(e);
                 }
 
             }
@@ -181,6 +182,9 @@ public class Socks5ClientTest {
         // wait for client to shutdown
         serverThread.join();
 
+        var ioException = assertInstanceOf(IOException.class, exception.get());
+        assertEquals("Unsupported SOCKS5 address type: 1 (expected: 0x03)", ioException.getMessage());
+
         // assert socket is closed
         assertEquals(-1, in.read());
 
@@ -194,6 +198,7 @@ public class Socks5ClientTest {
     @Test
     public void shouldCloseSocketIfServerRepliesWithError() throws Exception {
 
+        var exception = new AtomicReference<Exception>();
         // start thread to connect to SOCKS5 proxy
         Thread serverThread = new Thread() {
 
@@ -204,15 +209,10 @@ public class Socks5ClientTest {
                 Socks5Client socks5Client = new Socks5Client(streamHost, digest);
                 try {
                     socks5Client.getSocket(10000);
-
-                    fail("exception should be thrown");
-                }
-                catch (SmackException e) {
-                    assertTrue(e.getMessage().contains(
-                                    "SOCKS5 negotiation failed"));
+                    // should not reach this, exception should be thrown
                 }
                 catch (Exception e) {
-                    fail(e.getMessage());
+                    exception.set(e);
                 }
 
             }
@@ -247,6 +247,9 @@ public class Socks5ClientTest {
         // wait for client to shutdown
         serverThread.join();
 
+        var ioException = assertInstanceOf(IOException.class, exception.get());
+        assertEquals("Connection request does not equal connection response. Response: [5, 1, 0, 3, 6, 100, 105, 103, 101, 115, 116, 0, 0]. Request: [5, 0, 0, 3, 6, 100, 105, 103, 101, 115, 116, 0, 0]", ioException.getMessage());
+
         // assert socket is closed
         assertEquals(-1, in.read());
 
@@ -260,6 +263,7 @@ public class Socks5ClientTest {
     @Test
     public void shouldSuccessfullyConnectToSocks5Server() throws Exception {
 
+        var clientFinished = new AtomicBoolean();
         // start thread to connect to SOCKS5 proxy
         Thread serverThread = new Thread() {
 
@@ -275,10 +279,11 @@ public class Socks5ClientTest {
                     socket.getOutputStream().write(123);
                     socket.close();
                 }
-                catch (Exception e) {
-                    fail(e.getMessage());
+                catch (IOException | SmackMessageException | NotConnectedException | NoResponseException
+                                | InterruptedException | TimeoutException | XMPPException e) {
+                    throw new AssertionError(e);
                 }
-
+                clientFinished.set(true);
             }
 
         };
@@ -319,6 +324,8 @@ public class Socks5ClientTest {
 
         // wait for client to shutdown
         serverThread.join();
+
+        assertTrue(clientFinished.get());
 
         // verify data sent from client
         assertEquals(123, in.read());
