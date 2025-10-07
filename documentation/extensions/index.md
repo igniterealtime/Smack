@@ -127,6 +127,7 @@ Experimental Smack Extensions and currently supported XEPs of smack-experimental
 | Message Fastening                                         | [XEP-0422](https://xmpp.org/extensions/xep-0422.html)  | 0.1.1     | Mark payloads on a message to be logistically fastened to a previous message. |
 | Message Retraction                                        | [XEP-0424](https://xmpp.org/extensions/xep-0424.html)  | 0.2.0     | Mark messages as retracted. |
 | Fallback Indication                                       | [XEP-0428](https://xmpp.org/extensions/xep-0428.html)  | 0.1.0     | Declare body elements of a message as ignorable fallback for naive legacy clients. |
+| OMEMO Media Sharing                                       | [XEP-0454](https://xmpp.org/extensions/xep-0454.html)  | 0.1.0     | Share files via HTTP File Upload in an encrypted fashion. |
 
 Unofficial XMPP Extensions
 --------------------------
