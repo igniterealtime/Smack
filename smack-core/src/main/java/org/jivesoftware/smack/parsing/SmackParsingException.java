@@ -1,6 +1,6 @@
 /**
  *
- * Copyright 2019-2021 Florian Schmaus
+ * Copyright 2019-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ public class SmackParsingException extends Exception {
 
     public SmackParsingException(String message) {
         super(message);
+    }
+
+    public SmackParsingException(String message, Exception exception) {
+        super(message, exception);
     }
 
     /**
