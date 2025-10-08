@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2006 Jerry Huxtable
  *

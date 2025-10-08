@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2022 Micha Kurvers
  *

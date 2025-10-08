@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2010 Jive Software.
  *

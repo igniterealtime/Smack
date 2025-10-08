@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2009 Robin Collier.
  *

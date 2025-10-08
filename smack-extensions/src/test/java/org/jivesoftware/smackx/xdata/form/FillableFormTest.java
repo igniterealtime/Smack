@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2024 Florian Schmaus.
  *

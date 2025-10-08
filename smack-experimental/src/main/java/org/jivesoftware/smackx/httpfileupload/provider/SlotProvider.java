@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright © 2017 Grigory Fedorov, 2017-2024 Florian Schmaus
  *

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2018 Timothy Pitt, 2018-2025 Florian Schmaus
  *

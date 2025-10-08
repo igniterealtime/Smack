@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright © 2016 Florian Schmaus and Fernando Ramirez
  *

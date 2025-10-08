@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2013-2015 the original author or authors, 2020-2025 Florian Schmaus
  *

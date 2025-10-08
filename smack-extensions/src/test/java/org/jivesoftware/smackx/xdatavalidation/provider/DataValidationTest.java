@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2014 Anno van Vliet, 2018-2019 Florian Schmaus
  *

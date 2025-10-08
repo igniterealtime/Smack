@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2020 Aditya Borikar
  *
@@ -13,5 +13,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+/**
+ * WebSocket support via OkHTTP.
  */
 package org.jivesoftware.smack.websocket.okhttp;

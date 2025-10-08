@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2018-2020 Paul Schaub, 2017-2020 Florian Schmaus.
  *

@@ -7,6 +7,22 @@ pluginManagement {
 // name of the root directory
 rootProject.name = 'Smack'
 
+def readVersionFile() {
+	def versionFile = new File(rootDir, 'version')
+	if (!versionFile.isFile()) {
+		throw new Exception("Could not find version file")
+	}
+	if (versionFile.text.isEmpty()) {
+		throw new Exception("Version file does not contain a version")
+	}
+	versionFile.text.trim()
+}
+def version = readVersionFile()
+gradle.ext.set('version', version)
+gradle.beforeProject { project ->
+    project.version = gradle.ext.version
+}
+
 include 'smack-core',
 		'smack-im',
 		'smack-tcp',

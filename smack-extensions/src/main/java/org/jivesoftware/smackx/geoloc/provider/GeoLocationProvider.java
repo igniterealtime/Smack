@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright 2015-2017 Ishan Khanna, Fernando Ramirez, 2019-2021 Florian Schmaus
  *
