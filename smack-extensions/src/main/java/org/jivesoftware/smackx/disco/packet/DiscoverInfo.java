@@ -463,9 +463,15 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
 
         @Override
         public boolean equals(Object obj) {
-            return EqualsUtil.equals(this, obj, (e, o) -> {
-                e.append(variable, o.variable);
-            });
+            if (obj instanceof Feature) {
+                var otherFeature = (Feature) obj;
+                return variable.equals(otherFeature.variable);
+            }
+            if (obj instanceof CharSequence) {
+                var otherFeature = obj.toString();
+                return variable.equals(otherFeature);
+            }
+            return false;
         }
 
         @Override
