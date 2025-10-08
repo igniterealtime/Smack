@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -38,6 +39,7 @@ import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaError;
 import org.jivesoftware.smack.packet.StanzaError.Condition;
 import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.util.CollectionUtil;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -646,6 +648,11 @@ public final class PubSubManager extends Manager {
         return (PubSub) resultIQ;
     }
 
+    private static final Set<String> PUBLIC_AND_SUBSCRIBE_FEATURES = CollectionUtil.setOf(
+                    PubSubFeature.subscribe.toString(),
+                    PubSubFeature.publish.toString()
+    );
+
     /**
      * Get the "default" PubSub service for a given XMPP connection. The default PubSub service is
      * simply an arbitrary XMPP service with the PubSub feature and an identity of category "pubsub"
@@ -663,7 +670,7 @@ public final class PubSubManager extends Manager {
     public static DomainBareJid getPubSubService(XMPPConnection connection)
                     throws NoResponseException, XMPPErrorException, NotConnectedException,
                     InterruptedException {
-        return ServiceDiscoveryManager.getInstanceFor(connection).findService(PubSub.NAMESPACE,
+        return ServiceDiscoveryManager.getInstanceFor(connection).findService(PUBLIC_AND_SUBSCRIBE_FEATURES,
                         true, "pubsub", "service");
     }
 }
