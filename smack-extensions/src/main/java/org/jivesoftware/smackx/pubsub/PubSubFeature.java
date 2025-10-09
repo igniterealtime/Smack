@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2015 Florian Schmaus
+ * Copyright 2015-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public enum PubSubFeature implements CharSequence {
     persistent_items(Support.recommended),
     presence_notifications(Support.optional),
     presence_subscribe(Support.recommended),
-    publish(Support.required),
+    publish(Support.recommended),
     publish_options(Support.optional),
     publish_only_affiliation(Support.optional),
     publisher_affiliation(Support.recommended),
@@ -67,7 +67,7 @@ public enum PubSubFeature implements CharSequence {
     retrieve_default_sub(Support.optional),
     retrieve_items(Support.recommended),
     retrieve_subscriptions(Support.recommended),
-    subscribe(Support.required),
+    subscribe(Support.recommended),
     subscription_options(Support.optional),
     subscriptions_notifications(Support.optional),
     instant_nodes(Support.recommended),

@@ -17,10 +17,12 @@
 package org.jivesoftware.smackx.disco.packet;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.IQ;
@@ -153,6 +155,13 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
      */
     public boolean containsFeature(CharSequence feature) {
         return features.contains(new Feature(feature));
+    }
+
+    public boolean containsFeatures(Collection<? extends CharSequence> features) {
+        return this.features.stream()
+                        .map(f -> f.toString())
+                        .collect(Collectors.toList())
+                        .containsAll(features.stream().map(f -> f.toString()).collect(Collectors.toList()));
     }
 
     public static boolean nullSafeContainsFeature(DiscoverInfo discoverInfo, CharSequence feature) {
@@ -454,9 +463,15 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
 
         @Override
         public boolean equals(Object obj) {
-            return EqualsUtil.equals(this, obj, (e, o) -> {
-                e.append(variable, o.variable);
-            });
+            if (obj instanceof Feature) {
+                var otherFeature = (Feature) obj;
+                return variable.equals(otherFeature.variable);
+            }
+            if (obj instanceof CharSequence) {
+                var otherFeature = obj.toString();
+                return variable.equals(otherFeature);
+            }
+            return false;
         }
 
         @Override
