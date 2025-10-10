@@ -159,7 +159,7 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
 
     public boolean containsFeatures(Collection<? extends CharSequence> features) {
         return this.features.stream()
-                        .map(f -> f.toString())
+                        .map(f -> f.getVar())
                         .collect(Collectors.toList())
                         .containsAll(features.stream().map(f -> f.toString()).collect(Collectors.toList()));
     }
