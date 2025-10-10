@@ -104,6 +104,7 @@ public class FormFieldRegistry {
             }
         }
     }
+
     private static void loadFormFieldRegistryEntries() throws IOException, IllegalStateException, XmlPullParserException, URISyntaxException {
         var url = XDataManager.class.getProtectionDomain().getCodeSource().getLocation();
         if (url == null) throw new IllegalStateException();
@@ -118,11 +119,8 @@ public class FormFieldRegistry {
                                 .filter(f -> f.toString().startsWith(prefix))
                                 .collect(Collectors.toList());
                 for (var file : files) {
-                    var inputStream = Files.newInputStream(file);
-                    try {
+                    try (var inputStream = Files.newInputStream(file)) {
                         loadFormFieldRegistryEntry(inputStream, file.toString());
-                    } finally {
-                        inputStream.close();
                     }
                 }
             }
@@ -136,11 +134,8 @@ public class FormFieldRegistry {
                 .filter(e -> e.getName().startsWith("org.igniterealtime.smack/xdata/form-registry/"))
                 .collect(Collectors.toList());
             for (var file : files) {
-                var inputStream = jar.getInputStream(file);
-                try {
+                try (var inputStream = jar.getInputStream(file)) {
                     loadFormFieldRegistryEntry(inputStream, file.toString());
-                } finally {
-                    inputStream.close();
                 }
             }
         }
