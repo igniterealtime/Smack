@@ -41,7 +41,7 @@ public class UserSearchManagerIntegrationTest extends AbstractSmackIntegrationTe
 
         var searchServices = UserSearchManager.getSearchServices(conOne);
         if (searchServices.isEmpty()) {
-            throw new TestNotPossibleException("No user seearch services (XEP-0055) found");
+            throw new TestNotPossibleException("No user search services (XEP-0055) found");
         }
 
         // Since we are only performing a very primitive test, where we don't expect actual results from the service,
