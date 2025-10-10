@@ -746,6 +746,23 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Find all services under the users service that provide a given feature.
      *
+     * @param feature the feature to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache)
+        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return findServicesDiscoverInfo(CollectionUtil.setOf(feature), stopOnFirst, useCache);
+    }
+
+    /**
+     * Find all services under the users service that provide given features.
+     *
      * @param features the features to search for
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
@@ -754,6 +771,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.5.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(Set<? extends CharSequence> features, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -763,7 +781,7 @@ public final class ServiceDiscoveryManager extends Manager {
     /**
      * Find all services under the users service that provide a given feature.
      *
-     * @param features the feature to search for
+     * @param feature the feature to search for
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
@@ -773,6 +791,25 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.2.2
+     */
+    public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
+        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return findServicesDiscoverInfo(CollectionUtil.setOf(feature), stopOnFirst, useCache, encounteredExceptions);
+    }
+
+    /**
+     * Find all services under the users service that provide given features.
+     *
+     * @param features the features to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.5.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(Set<? extends CharSequence> features, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
@@ -784,7 +821,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Find all services under a given service that provide a given feature.
      *
      * @param serviceName the service to query
-     * @param features the feature to search for
+     * @param feature the feature to search for
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
@@ -794,6 +831,27 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @since 4.3.0
+     */
+    public List<DiscoverInfo> findServicesDiscoverInfo(DomainBareJid serviceName, String feature, boolean stopOnFirst,
+                   boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return findServicesDiscoverInfo(serviceName, CollectionUtil.setOf(feature), stopOnFirst, useCache, encounteredExceptions);
+    }
+
+    /**
+     * Find all services under a given service that provide given features.
+     *
+     * @param serviceName the service to query
+     * @param features the features to search for
+     * @param stopOnFirst if true, stop searching after the first service was found
+     * @param useCache if true, query a cache first to avoid network I/O
+     * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     * @return a possible empty list of services providing the given feature
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.5.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(DomainBareJid serviceName, Set<? extends CharSequence> features, boolean stopOnFirst,
                     boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
@@ -883,6 +941,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
+     * @since 4.5.0
      */
     public List<DomainBareJid> findServices(Set<? extends CharSequence> features, boolean stopOnFirst, boolean useCache)
                     throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
