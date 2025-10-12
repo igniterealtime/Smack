@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.disco.packet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -155,6 +156,11 @@ public class DiscoverInfo extends IQ implements DiscoverInfoView {
      */
     public boolean containsFeature(CharSequence feature) {
         return features.contains(new Feature(feature));
+    }
+
+    public boolean containsFeatures(String... features) {
+        var featuresList = Arrays.asList(features);
+        return containsFeatures(featuresList);
     }
 
     public boolean containsFeatures(Collection<? extends CharSequence> features) {
