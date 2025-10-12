@@ -1,0 +1,1 @@
+../../../../../../../main/java/org/jivesoftware/smackx/disco/packet/package-info.java
