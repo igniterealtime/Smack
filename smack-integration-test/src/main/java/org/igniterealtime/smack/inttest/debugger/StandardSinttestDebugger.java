@@ -16,13 +16,13 @@
  */
 package org.igniterealtime.smack.inttest.debugger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
@@ -61,12 +61,11 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             // We don't want to fill up the memory.
             tmpdir = "/var/tmp";
         }
-        String basePath = tmpdir
-                        + File.separator
-                        + "sinttest-" + System.getProperty("user.name")
-                        + File.separator
-                        + DATE_TIME_FORMATTER.format(restRunStart) + "-" + testRunId
-                        ;
+        Path basePath = Paths.get(
+                tmpdir,
+                "sinttest-" + System.getProperty("user.name"),
+                DATE_TIME_FORMATTER.format(restRunStart) + "-" + testRunId
+        );
         boolean console = true;
 
         if (options != null) {
@@ -98,7 +97,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
                         basePath = null;
                         break;
                     default:
-                        basePath = value;
+                        basePath = Path.of(value);
                         break;
                     }
                     break;
@@ -109,7 +108,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
 
         if (basePath != null) {
-            this.basePath = Path.of(basePath);
+            this.basePath = basePath;
             Path completeLogFile = this.basePath.resolve("completeLog");
             Path outsideTestLogFile = this.basePath.resolve("outsideTestLog");
             Path testsFile = this.basePath.resolve("tests");

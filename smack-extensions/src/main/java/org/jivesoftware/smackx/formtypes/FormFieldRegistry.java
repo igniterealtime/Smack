@@ -16,7 +16,6 @@
  */
 package org.jivesoftware.smackx.formtypes;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -105,6 +104,7 @@ public class FormFieldRegistry {
             }
         }
     }
+
     private static void loadFormFieldRegistryEntries() throws IOException, IllegalStateException, XmlPullParserException, URISyntaxException {
         var url = XDataManager.class.getProtectionDomain().getCodeSource().getLocation();
         if (url == null) throw new IllegalStateException();
@@ -112,19 +112,15 @@ public class FormFieldRegistry {
         if (url.getProtocol().equals("file") && !url.getPath().endsWith(".jar")) {
             var path = Paths.get(url.toURI());
             if (!Files.isDirectory(path)) throw new IllegalStateException("Code source location " + url + " is not a directory");
-            var prefix = path.toString() + File.separator + "org.igniterealtime.smack" + File.separator + "xdata"
-                            + File.separator + "form-registry" + File.separator;
+            var prefix = Paths.get(path.toString(),  "org.igniterealtime.smack", "xdata", "form-registry").toString();
 
             try (var walk = Files.walk(path)) {
                 var files = walk.filter(Files::isRegularFile)
                                 .filter(f -> f.toString().startsWith(prefix))
                                 .collect(Collectors.toList());
                 for (var file : files) {
-                    var inputStream = Files.newInputStream(file);
-                    try {
+                    try (var inputStream = Files.newInputStream(file)) {
                         loadFormFieldRegistryEntry(inputStream, file.toString());
-                    } finally {
-                        inputStream.close();
                     }
                 }
             }
@@ -138,11 +134,8 @@ public class FormFieldRegistry {
                 .filter(e -> e.getName().startsWith("org.igniterealtime.smack/xdata/form-registry/"))
                 .collect(Collectors.toList());
             for (var file : files) {
-                var inputStream = jar.getInputStream(file);
-                try {
+                try (var inputStream = jar.getInputStream(file)) {
                     loadFormFieldRegistryEntry(inputStream, file.toString());
-                } finally {
-                    inputStream.close();
                 }
             }
         }
