@@ -29,6 +29,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPConnection;
 
@@ -37,6 +41,7 @@ import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 
+import org.jivesoftware.smack.XMPPException;
 import org.jxmpp.jid.Jid;
 
 @SpecificationReference(document = "XEP-0199", version = "2.0.1")
@@ -50,6 +55,21 @@ public class PingIntegrationTest extends AbstractSmackIntegrationTest {
     public void pingServer() throws NotConnectedException, InterruptedException {
         PingManager pingManager = PingManager.getInstanceFor(connection);
         assertTrue(pingManager.pingMyServer());
+    }
+
+    @BeforeClass
+    public void subscribe() throws Exception {
+        // RFC6120 10.5.4 and RFC 6121 8.5.3.1 are at odds with each-other in regard to full-JID IQ delivery. Best possible chance of that happening is with mutual subscription.
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conThree, timeout);
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conTwo, conThree, timeout);
+    }
+
+    @AfterClass
+    public void unsubscribe() throws SmackException.NotLoggedInException, SmackException.NoResponseException, XMPPException.XMPPErrorException, NotConnectedException, InterruptedException {
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conThree);
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conTwo, conThree);
     }
 
     private static final class Pinger implements Runnable {
