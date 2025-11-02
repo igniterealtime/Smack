@@ -54,6 +54,10 @@ public final class FileUtils {
         }
     }
 
+    public static InputStream getStreamForClasspathFile(String path) throws IOException {
+        return getStreamForClasspathFile(path, null);
+    }
+
     public static InputStream getStreamForClasspathFile(String path, ClassLoader loader) throws IOException {
         // Get an array of class loaders to try loading the providers files from.
         List<ClassLoader> classLoaders = getClassLoaders();
