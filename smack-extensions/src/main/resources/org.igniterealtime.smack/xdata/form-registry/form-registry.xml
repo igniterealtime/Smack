@@ -1,0 +1,8 @@
+<form-registry xmlns="https://igniterealtime.org/projects/smack">
+	<registry-path path="org.igniterealtime.smack/xdata/form-registry/muc">
+		<registry-file name="muc-register.xml"/>
+		<registry-file name="muc-request.xml"/>
+		<registry-file name="muc-roomconfig.xml"/>
+		<registry-file name="muc-roominfo.xml"/>
+	</registry-path>
+</form-registry>

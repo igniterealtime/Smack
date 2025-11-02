@@ -18,17 +18,17 @@ package org.jivesoftware.smackx.formtypes;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
+import javax.xml.namespace.QName;
+
+import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlUtil;
@@ -38,7 +38,6 @@ import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jivesoftware.smackx.xdata.FormField;
 import org.jivesoftware.smackx.xdata.TextSingleFormField;
-import org.jivesoftware.smackx.xdata.XDataManager;
 import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 public class FormFieldRegistry {
@@ -105,37 +104,61 @@ public class FormFieldRegistry {
         }
     }
 
-    private static void loadFormFieldRegistryEntries() throws IOException, IllegalStateException, XmlPullParserException, URISyntaxException {
-        var url = XDataManager.class.getProtectionDomain().getCodeSource().getLocation();
-        if (url == null) throw new IllegalStateException();
-
-        if (url.getProtocol().equals("file") && !url.getPath().endsWith(".jar")) {
-            var path = Paths.get(url.toURI());
-            if (!Files.isDirectory(path)) throw new IllegalStateException("Code source location " + url + " is not a directory");
-            var prefix = Paths.get(path.toString(),  "org.igniterealtime.smack", "xdata", "form-registry").toString();
-
-            try (var walk = Files.walk(path)) {
-                var files = walk.filter(Files::isRegularFile)
-                                .filter(f -> f.toString().startsWith(prefix))
-                                .collect(Collectors.toList());
-                for (var file : files) {
-                    try (var inputStream = Files.newInputStream(file)) {
-                        loadFormFieldRegistryEntry(inputStream, file.toString());
+    @SuppressWarnings("incomplete-switch")
+    private static void parseRegistryPath(XmlPullParser parser) throws IOException, XmlPullParserException {
+        var path = parser.getAttributeValue("path");
+        if (path == null) throw new IllegalStateException();
+        int depth = parser.getDepth();
+        outerloop: while (true) {
+            var eventType = parser.next();
+            switch (eventType) {
+            case START_ELEMENT:
+                var name = parser.getName();
+                switch (name) {
+                case "registry-file":
+                    var filename = parser.getAttributeValue("name");
+                    if (filename == null) throw new IllegalStateException();
+                    var filepath = path + "/" + filename;
+                    try (var inputStream = FileUtils.getStreamForClasspathFile(filepath)) {
+                        loadFormFieldRegistryEntry(inputStream, filepath);
+                    } catch (IOException e) {
+                        LOGGER.log(Level.SEVERE, "Could not load " + filepath, e);
                     }
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected element: " + name);
+                }
+                break;
+            case END_ELEMENT:
+                if (parser.getDepth() == depth) {
+                    break outerloop;
                 }
             }
-            return;
         }
+    }
 
-        if (!url.toString().endsWith(".jar")) throw new IllegalStateException("Code source location " + url + " is not a jar");
-        try (var jar = new JarFile(url.getFile())) {
-            var files = jar.stream()
-                .filter(e -> !e.isDirectory())
-                .filter(e -> e.getName().startsWith("org.igniterealtime.smack/xdata/form-registry/"))
-                .collect(Collectors.toList());
-            for (var file : files) {
-                try (var inputStream = jar.getInputStream(file)) {
-                    loadFormFieldRegistryEntry(inputStream, file.toString());
+    @SuppressWarnings("incomplete-switch")
+    private static void loadFormFieldRegistryEntries() throws IOException, IllegalStateException, XmlPullParserException, URISyntaxException {
+        var formRegistryUrl = URI.create("classpath:org.igniterealtime.smack/xdata/form-registry/form-registry.xml");
+        try (var inputStream = FileUtils.getStreamForUri(formRegistryUrl, FormFieldRegistry.class.getClassLoader())) {
+            var parser = SmackXmlParser.newXmlParser(inputStream);
+            if (parser.nextTag() != XmlPullParser.TagEvent.START_ELEMENT) throw new IllegalStateException();
+            if (!parser.getQName().equals(new QName("https://igniterealtime.org/projects/smack", "form-registry"))) throw new IllegalStateException();
+            outerloop: while (true) {
+                var eventType = parser.next();
+                switch (eventType) {
+                case START_ELEMENT:
+                    var name = parser.getName();
+                    switch (name) {
+                    case "registry-path":
+                        parseRegistryPath(parser);
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected element: " + name);
+                    }
+                    break;
+                case END_DOCUMENT:
+                    break outerloop;
                 }
             }
         }
