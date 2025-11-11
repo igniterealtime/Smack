@@ -49,16 +49,16 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmackIntegrationTest {
 
-    final String randomString = StringUtils.insecureRandomString(6);
+    protected final String randomString = StringUtils.insecureRandomString(6);
 
-    final MultiUserChatManager mucManagerOne;
-    final MultiUserChatManager mucManagerTwo;
-    final MultiUserChatManager mucManagerThree;
-    final DomainBareJid mucService;
+    protected final MultiUserChatManager mucManagerOne;
+    protected final MultiUserChatManager mucManagerTwo;
+    protected final MultiUserChatManager mucManagerThree;
+    protected final DomainBareJid mucService;
 
-    final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
-    final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
-    final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
+    protected final Resourcepart nicknameOne = Resourcepart.from("one-" + randomString);
+    protected final Resourcepart nicknameTwo = Resourcepart.from("two-" + randomString);
+    protected final Resourcepart nicknameThree = Resourcepart.from("three-" + randomString);
 
     public AbstractMultiUserChatIntegrationTest(SmackIntegrationTestEnvironment environment)
             throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException,
@@ -99,7 +99,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         mucService = needle;
     }
 
-    static void mucCreationDisallowedOrThrow(XMPPException.XMPPErrorException e) throws XMPPErrorException {
+    public static void mucCreationDisallowedOrThrow(XMPPException.XMPPErrorException e) throws XMPPErrorException {
         StanzaError.Condition condition = e.getStanzaError().getCondition();
         if (condition == StanzaError.Condition.not_allowed)
             return;
@@ -127,7 +127,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
      * @throws XMPPException.XMPPErrorException if there was an XMPP error returned.
      * @throws SmackException.NoResponseException if there was no response from the remote entity.
      */
-    static void tryDestroy(final MultiUserChat muc) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException {
+    public static void tryDestroy(final MultiUserChat muc) throws SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException {
         if (muc == null) {
             return;
         }
@@ -135,7 +135,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         muc.destroy("test fixture teardown", null);
     }
 
-    static void createMuc(MultiUserChat muc, Resourcepart resourceName) throws
+    public static void createMuc(MultiUserChat muc, Resourcepart resourceName) throws
             SmackException.NoResponseException, XMPPException.XMPPErrorException,
             InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
             SmackException.NotConnectedException,
@@ -158,7 +158,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         createMuc(muc, Resourcepart.from(nickname));
     }
 
-    static void createMuc(MultiUserChat muc, Resourcepart nickname, MucConfigApplier applier)
+    public static void createMuc(MultiUserChat muc, Resourcepart nickname, MucConfigApplier applier)
                     throws MucAlreadyJoinedException, MissingMucCreationAcknowledgeException, NotAMucServiceException,
                     NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
                     TestNotPossibleException {
@@ -166,7 +166,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         modifyMuc(muc, applier);
     }
 
-    static void modifyMuc(MultiUserChat muc, MucConfigApplier applier) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
+    public static void modifyMuc(MultiUserChat muc, MucConfigApplier applier) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException, TestNotPossibleException {
         var configManager = muc.getConfigFormManager();
         try {
             configManager.applyAndSubmit(applier);
@@ -175,7 +175,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         }
     }
 
-    static void createMembersOnlyMuc(MultiUserChat muc, Resourcepart nickname) throws
+    public static void createMembersOnlyMuc(MultiUserChat muc, Resourcepart nickname) throws
             SmackException.NoResponseException, XMPPException.XMPPErrorException,
             InterruptedException, MultiUserChatException.MucAlreadyJoinedException,
             SmackException.NotConnectedException,
@@ -185,7 +185,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         createMuc(muc, nickname, a -> a.makeMembersOnly());
     }
 
-    static void createModeratedMuc(MultiUserChat muc, Resourcepart nickname)
+    public static void createModeratedMuc(MultiUserChat muc, Resourcepart nickname)
                     throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException,
                     MucAlreadyJoinedException, NotConnectedException,
                     MissingMucCreationAcknowledgeException,
@@ -194,7 +194,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
         createMuc(muc, nickname, a -> a.makeModerated());
     }
 
-    static void createHiddenMuc(MultiUserChat muc, Resourcepart nickname)
+    public static void createHiddenMuc(MultiUserChat muc, Resourcepart nickname)
                     throws SmackException.NoResponseException, XMPPErrorException, InterruptedException,
                     MucAlreadyJoinedException, NotConnectedException,
                     MissingMucCreationAcknowledgeException, NotAMucServiceException, XmppStringprepException,
@@ -211,7 +211,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
      * semi-anonymous (a value of "moderators"), or fully anonymous (a value of "none", not shown here).
      * </blockquote>
      */
-    static void createMucNonAnonymous(MultiUserChat muc, Resourcepart nickname) throws NoResponseException,
+    public static void createMucNonAnonymous(MultiUserChat muc, Resourcepart nickname) throws NoResponseException,
                     XMPPErrorException, NotConnectedException, InterruptedException, MucAlreadyJoinedException,
                     MissingMucCreationAcknowledgeException, NotAMucServiceException, TestNotPossibleException {
         createMuc(muc, nickname, a -> a.setWhoisAllowedBy(WhoisAllowedBy.anyone));
@@ -226,7 +226,7 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
      * semi-anonymous (a value of "moderators"), or fully anonymous (a value of "none", not shown here).
      * </blockquote>
      */
-    static void createMucSemiAnonymous(MultiUserChat muc, Resourcepart nickname)
+    public static void createMucSemiAnonymous(MultiUserChat muc, Resourcepart nickname)
                     throws NoResponseException, XMPPErrorException, InterruptedException, MucAlreadyJoinedException,
                     SmackException.NotConnectedException, MissingMucCreationAcknowledgeException,
                     NotAMucServiceException, TestNotPossibleException {
@@ -236,14 +236,14 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
     /**
      * Creates a password-protected room.
      */
-    static void setMucPasswordProtected(MultiUserChat muc, String password)
+    public static void setMucPasswordProtected(MultiUserChat muc, String password)
                     throws SmackException.NoResponseException, XMPPException.XMPPErrorException, InterruptedException,
                     MucAlreadyJoinedException, NotConnectedException, MissingMucCreationAcknowledgeException,
                     NotAMucServiceException, TestNotPossibleException {
         modifyMuc(muc, a -> a.setAndEnablePassword(password));
     }
 
-    static void setMaxUsers(MultiUserChat muc, int maxUsers) throws NoResponseException, XMPPErrorException,
+    public static void setMaxUsers(MultiUserChat muc, int maxUsers) throws NoResponseException, XMPPErrorException,
                     InterruptedException, NotConnectedException, TestNotPossibleException {
         modifyMuc(muc, a -> a.setMaxUsers(maxUsers));
     }
