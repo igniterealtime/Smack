@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.mood;
 
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
@@ -44,10 +45,14 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
         mm2 = MoodManager.getInstanceFor(conTwo);
     }
 
+    @BeforeClass
+    public void subscribe() throws Exception {
+        // RFC6120 10.5.4 and RFC 6121 8.5.3.1 are at odds with each-other in regard to full-JID IQ delivery. Best possible chance of that happening is with mutual subscription.
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+    }
+
     @AfterClass
-    public void unsubscribe()
-            throws SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
+    public void unsubscribe() throws SmackException.NotLoggedInException, SmackException.NoResponseException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, InterruptedException {
         IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
     }
 
