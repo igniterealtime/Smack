@@ -11,7 +11,7 @@ dependencies {
 	api project(":smack-im")
 	api project(":smack-extensions")
 	api project(":smack-omemo")
-	implementation 'org.whispersystems:signal-protocol-java:2.8.1'
+	implementation 'org.signal:libsignal-client:0.26.0'
 
 	// TODO: Migrate Junit4 tests to Junit5.
 	testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"
