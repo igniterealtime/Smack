@@ -399,5 +399,11 @@
         <className>org.jivesoftware.smackx.gcm.provider.GcmExtensionProvider</className>
     </extensionProvider>
 
+    <!-- XEP-0444 Message Reactions -->
+    <extensionProvider>
+          <elementName>reactions</elementName>
+          <namespace>urn:xmpp:reactions:0</namespace>
+          <className>org.jivesoftware.smackx.reactions.provider.ReactionsElementProvider</className>
+    </extensionProvider>
 
 </smackProviders>
