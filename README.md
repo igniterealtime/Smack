@@ -71,10 +71,11 @@ Resources
 ---------
 
 - Current Readme: https://igniterealtime.org/projects/smack/readme
+- Developers Wiki: https://github.com/igniterealtime/Smack/wiki/
 - Bug Tracker: https://issues.igniterealtime.org/browse/SMACK
-- JaCoCo Coverage Reports: https://www.igniterealtime.org/builds/smack/dailybuilds/jacoco/html/
-- Nightly Javadoc: http://www.igniterealtime.org/builds/smack/dailybuilds/javadoc/
-- Nightly Documentation: http://www.igniterealtime.org/builds/smack/dailybuilds/documentation/
+- JaCoCo Coverage Reports: https://download.igniterealtime.org/smack/dailybuilds/jacoco/html/
+- Nightly Javadoc: https://download.igniterealtime.org/smack/dailybuilds/javadoc/
+- Nightly Documentation: https://download.igniterealtime.org/smack/dailybuilds/documentation/
 - User Forum: https://discourse.igniterealtime.org/c/smack/smack-support
 - Dev Forum: https://discourse.igniterealtime.org/c/smack/smack-dev
 - Maven Releases: https://oss.sonatype.org/content/repositories/releases/org/igniterealtime/smack/
