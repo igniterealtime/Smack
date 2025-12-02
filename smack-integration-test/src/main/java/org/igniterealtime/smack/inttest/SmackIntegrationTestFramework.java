@@ -215,11 +215,13 @@ public class SmackIntegrationTestFramework {
         }
 
         testRunResult = new TestRunResult(config);
+
+        info("Starting\nSmack version: " + Smack.getVersion());
+
         sinttestDebugger = config.createSinttestDebugger(testRunResult.testRunStart, testRunResult.testRunId);
         // Create a connection manager *after* we created the testRunId (in testRunResult).
         this.connectionManager = new XmppConnectionManager(this);
 
-        info("Starting\nSmack version: " + Smack.getVersion());
         if (sinttestDebugger != null) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
