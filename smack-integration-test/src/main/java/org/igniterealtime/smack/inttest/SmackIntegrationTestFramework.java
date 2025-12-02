@@ -189,6 +189,10 @@ public class SmackIntegrationTestFramework {
         return line;
     }
 
+    protected void info(String message) {
+        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": " + message);
+    }
+
     public SmackIntegrationTestFramework(Configuration configuration) {
         this.config = configuration;
     }
@@ -215,7 +219,7 @@ public class SmackIntegrationTestFramework {
         // Create a connection manager *after* we created the testRunId (in testRunResult).
         this.connectionManager = new XmppConnectionManager(this);
 
-        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId + ']' + ": Starting\nSmack version: " + Smack.getVersion());
+        info("Starting\nSmack version: " + Smack.getVersion());
         if (sinttestDebugger != null) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
@@ -264,8 +268,7 @@ public class SmackIntegrationTestFramework {
             throw new IllegalStateException("No test classes in " + Arrays.toString(testPackages) + " found");
         }
 
-        LOGGER.info("SmackIntegrationTestFramework [" + testRunResult.testRunId
-                        + "]: Finished scanning for tests, preparing environment\n"
+        info("Finished scanning for tests, preparing environment\n"
                         + "\tJava SE Platform version: " + Runtime.version());
         environment = prepareEnvironment();
 
