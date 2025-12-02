@@ -219,9 +219,6 @@ public class SmackIntegrationTestFramework {
         info("Starting\nSmack version: " + Smack.getVersion());
 
         sinttestDebugger = config.createSinttestDebugger(testRunResult.testRunStart, testRunResult.testRunId);
-        // Create a connection manager *after* we created the testRunId (in testRunResult).
-        this.connectionManager = new XmppConnectionManager(this);
-
         if (sinttestDebugger != null) {
             // JUL Debugger will not print any information until configured to print log messages of
             // level FINE
@@ -236,6 +233,9 @@ public class SmackIntegrationTestFramework {
             AccountManager.sensitiveOperationOverInsecureConnectionDefault(true);
         }
         // TODO print effective configuration
+
+        // Create a connection manager *after* we created the testRunId (in testRunResult).
+        this.connectionManager = new XmppConnectionManager(this);
 
         String[] testPackages;
         if (config.testPackages == null || config.testPackages.isEmpty()) {
