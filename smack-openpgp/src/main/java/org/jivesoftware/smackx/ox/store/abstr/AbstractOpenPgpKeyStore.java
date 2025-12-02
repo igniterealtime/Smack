@@ -167,7 +167,7 @@ public abstract class AbstractOpenPgpKeyStore implements OpenPgpKeyStore {
                 secretKeyRings = new PGPSecretKeyRingCollection(Collections.singleton(secretKeys));
             }
         } catch (IllegalArgumentException e) {
-            LOGGER.log(Level.INFO, "Skipping secret key ring " + Long.toHexString(secretKeys.getPublicKey().getKeyID()) +
+            LOGGER.log(Level.FINE, "Skipping secret key ring " + Long.toHexString(secretKeys.getPublicKey().getKeyID()) +
                     " as it is already in the key ring of " + owner.toString());
         }
         this.secretKeyRingCollections.put(owner, secretKeyRings);
