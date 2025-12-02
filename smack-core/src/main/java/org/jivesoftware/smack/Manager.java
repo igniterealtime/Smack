@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2014-2018 Florian Schmaus
+ * Copyright 2014-2025 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,10 @@ package org.jivesoftware.smack;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.util.Objects;
 
@@ -26,6 +29,8 @@ import org.jivesoftware.smack.util.Objects;
  * Managers provide the high-level API of certain functionality (often standardized by XMPP Extension Protocols).
  */
 public abstract class Manager {
+
+    private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
 
     final WeakReference<XMPPConnection> weakConnection;
 
@@ -63,5 +68,22 @@ public abstract class Manager {
 
     protected static final ScheduledAction schedule(Runnable runnable, long delay, TimeUnit unit, ScheduledAction.Kind scheduledActionKind) {
         return AbstractXMPPConnection.SMACK_REACTOR.schedule(runnable, delay, unit, scheduledActionKind);
+    }
+
+    protected interface WithConnection {
+        void run(XMPPConnection connection) throws NotConnectedException, InterruptedException;
+    }
+
+    protected void ignoreDisconnected(WithConnection withConnection) throws InterruptedException {
+        var connection = connection();
+
+        // Early return to avoid potential expensive withConnection closures.
+        if (!connection.isConnected()) return;
+
+        try {
+            withConnection.run(connection);
+        } catch (NotConnectedException e) {
+            LOGGER.log(Level.FINER, "Ignoring " + e, e);
+        }
     }
 }
