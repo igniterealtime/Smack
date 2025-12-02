@@ -244,6 +244,7 @@ public class SmackIntegrationTestFramework {
         else {
             testPackages = config.testPackages.toArray(new String[config.testPackages.size()]);
         }
+        info("Scanning " + StringUtils.collectionToString(List.of(testPackages)) + " for Smack integration tests (you can configure the searched packages)");
         Reflections reflections = new Reflections(testPackages, Scanners.SubTypes,
                         Scanners.TypesAnnotated, Scanners.MethodsAnnotated, Scanners.MethodsParameter);
         Set<Class<? extends AbstractSmackIntegrationTest>> inttestClasses = reflections.getSubTypesOf(AbstractSmackIntegrationTest.class);
