@@ -114,6 +114,7 @@ dependencies {
 	// test, so we use API here.
 	testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
 
+	testImplementation 'org.slf4j:slf4j-simple:2.0.17'
 	testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.3'
 
 	errorprone 'com.google.errorprone:error_prone_core:2.41.0'
