@@ -129,7 +129,7 @@ test {
 	testLogging {
 		events "failed"
 		exceptionFormat = "full"
-		showStandardStreams = true
+		showStandardStreams = System.getenv("GRADLE_TEST_SHOW_STANDARD_STREAMS")
 	}
 }
 
