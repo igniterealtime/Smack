@@ -44,13 +44,13 @@ public class MessageTest {
         Message.Type type = Message.Type.chat;
         Message.Type type2 = Message.Type.headline;
 
-        StringBuilder controlBuilder = new StringBuilder();
-        controlBuilder.append("<message")
-                .append(" type=\"")
-                .append(type)
-                .append("\">")
-                .append("</message>");
-        String control = controlBuilder.toString();
+        // @formatter:off
+        String control = "<message" +
+                " type=\"" +
+                type +
+                "\">" +
+                "</message>";
+        // @formatter:on
 
         Message messageBuildWithBuilder = StanzaBuilder.buildMessage()
                         .ofType(Message.Type.chat)
@@ -59,13 +59,13 @@ public class MessageTest {
         assertEquals(type, messageBuildWithBuilder.getType());
         assertXmlSimilar(control, messageBuildWithBuilder.toXML(StreamOpen.CLIENT_NAMESPACE).toString());
 
-        controlBuilder = new StringBuilder();
-        controlBuilder.append("<message")
-                .append(" type=\"")
-                .append(type2)
-                .append("\">")
-                .append("</message>");
-        control = controlBuilder.toString();
+        // @formatter:off
+        control = "<message" +
+                " type=\"" +
+                type2 +
+                "\">" +
+                "</message>";
+        // @formatter:on
 
         Message messageTypeSet = StanzaBuilder.buildMessage()
                         .ofType(type2)
@@ -85,13 +85,13 @@ public class MessageTest {
     public void setMessageSubjectTest() throws IOException, SAXException {
         final String messageSubject = "This is a test of the emergency broadcast system.";
 
-        StringBuilder controlBuilder = new StringBuilder();
-        controlBuilder.append("<message>")
-                .append("<subject>")
-                .append(messageSubject)
-                .append("</subject>")
-                .append("</message>");
-        String control = controlBuilder.toString();
+        // @formatter:off
+        String control = "<message>" +
+                "<subject>" +
+                messageSubject +
+                "</subject>" +
+                "</message>";
+        // @formatter:on
 
         Message message = StanzaBuilder.buildMessage()
                         .setSubject(messageSubject)
@@ -104,13 +104,13 @@ public class MessageTest {
     public void oneMessageBodyTest() throws IOException, SAXException {
         final String messageBody = "This is a test of the emergency broadcast system.";
 
-        StringBuilder controlBuilder = new StringBuilder();
-        controlBuilder.append("<message>")
-                .append("<body>")
-                .append(messageBody)
-                .append("</body>")
-                .append("</message>");
-        String control = controlBuilder.toString();
+        // @formatter:off
+        String control = "<message>" +
+                "<body>" +
+                messageBody +
+                "</body>" +
+                "</message>";
+        // @formatter:on
 
         Message message = StanzaBuilder.buildMessage()
                         .setBody(messageBody)
@@ -127,23 +127,23 @@ public class MessageTest {
         final String lang3 = "sp";
         final String messageBody3 = "This is a test of the emergency broadcast system, 3.";
 
-        StringBuilder controlBuilder = new StringBuilder();
-        controlBuilder.append("<message>")
-                .append("<body>")
-                .append(messageBody1)
-                .append("</body>")
-                .append("<body xml:lang=\"")
-                .append(lang2)
-                .append("\">")
-                .append(messageBody2)
-                .append("</body>")
-                .append("<body xml:lang=\"")
-                .append(lang3)
-                .append("\">")
-                .append(messageBody3)
-                .append("</body>")
-                .append("</message>");
-        String control = controlBuilder.toString();
+        // @formatter:off
+        String control = "<message>" +
+                "<body>" +
+                messageBody1 +
+                "</body>" +
+                "<body xml:lang=\"" +
+                lang2 +
+                "\">" +
+                messageBody2 +
+                "</body>" +
+                "<body xml:lang=\"" +
+                lang3 +
+                "\">" +
+                messageBody3 +
+                "</body>" +
+                "</message>";
+        // @formatter:on
 
         Message message = StanzaBuilder.buildMessage()
                         .addBody(null, messageBody1)
@@ -157,7 +157,7 @@ public class MessageTest {
         controlLanguages.add(lang2);
         controlLanguages.add(lang3);
         controlLanguages.removeAll(languages);
-        assertTrue(controlLanguages.size() == 0);
+        assertTrue(controlLanguages.isEmpty());
     }
 
     @Test
@@ -165,29 +165,29 @@ public class MessageTest {
         Message message = StanzaBuilder.buildMessage()
                         .setBody("test")
                         .build();
-        assertTrue(message.getBodies().size() == 1);
+        assertEquals(1, message.getBodies().size());
 
         message = StanzaBuilder.buildMessage().build();
-        assertTrue(message.getBodies().size() == 0);
+        assertEquals(0, message.getBodies().size());
 
 
         message = StanzaBuilder.buildMessage()
                         .addBody("es", "test")
                         .build();
-        assertTrue(message.getBodies().size() == 1);
+        assertEquals(1, message.getBodies().size());
     }
 
     @Test
     public void setMessageThreadTest() throws IOException, SAXException {
         final String messageThread = "1234";
 
-        StringBuilder controlBuilder = new StringBuilder();
-        controlBuilder.append("<message>")
-                .append("<thread>")
-                .append(messageThread)
-                .append("</thread>")
-                .append("</message>");
-        String control = controlBuilder.toString();
+        // @formatter:off
+        String control = "<message>" +
+                "<thread>" +
+                messageThread +
+                "</thread>" +
+                "</message>";
+        // @formatter:on
 
         Message message = StanzaBuilder.buildMessage()
                         .setThread(messageThread)
@@ -201,13 +201,13 @@ public class MessageTest {
     public void messageXmlLangTest() throws IOException, SAXException {
         final String lang = "sp";
 
-        StringBuilder controlBuilder = new StringBuilder();
-        controlBuilder.append("<message")
-                .append(" xml:lang=\"")
-                .append(lang)
-                .append("\">")
-                .append("</message>");
-        String control = controlBuilder.toString();
+        // @formatter:off
+        String control = "<message" +
+                " xml:lang=\"" +
+                lang +
+                "\">" +
+                "</message>";
+        // @formatter:on
 
         Message message = StanzaBuilder.buildMessage()
                         .setLanguage(lang)
@@ -286,7 +286,7 @@ public class MessageTest {
 
         var message = assertInstanceOf(Message.class, stanzas.get(0));
         // In this case, no xml:lang on the stream or the message and no explicit language argument provided to
-        // getBody(), it is anbiguous which body we should return.
+        // getBody(), it is ambiguous which body we should return.
         var body = message.getBody();
         assertNull(body);
     }
