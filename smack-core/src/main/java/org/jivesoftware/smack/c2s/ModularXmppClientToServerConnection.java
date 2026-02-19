@@ -133,7 +133,7 @@ import org.jxmpp.util.XmppStringUtils;
  * Instantiated once a modular connection is instantiated.
  * </p>
  */
-public final class ModularXmppClientToServerConnection extends AbstractXMPPConnection {
+public class ModularXmppClientToServerConnection extends AbstractXMPPConnection {
 
     private static final Logger LOGGER = Logger.getLogger(
                     ModularXmppClientToServerConnectionConfiguration.class.getName());
