@@ -497,26 +497,6 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     }
 
     /**
-     *  @param inJingle TODO javadoc me please
-     *  @param inAction TODO javadoc me please
-     */
-    //    private void sendUnknownStateAction(Jingle inJingle, JingleActionEnum inAction) {
-    //
-    //        if (inAction == JingleActionEnum.SESSION_INITIATE) {
-    //            // Prepare to receive and act on response packets.
-    //            updatePacketListener();
-    //
-    //            // Send the actual packet.
-    //            sendStanza(inJingle);
-    //
-    //            // Change to the PENDING state.
-    //            setSessionState(JingleSessionStateEnum.PENDING);
-    //        } else {
-    //            throw new IllegalStateException("Only session-initiate allowed in the UNKNOWN state.");
-    //        }
-    //    }
-
-    /**
      * Acknowledge a IQ packet.
      *
      * @param iq The IQ to acknowledge.
@@ -930,18 +910,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
         close();
     }
 
-    /**
-     * Trigger a session established event.
-     */
-    //    protected void triggerSessionEstablished() {
-    //        List<JingleListener> listeners = getListenersList();
-    //        for (JingleListener li : listeners) {
-    //            if (li instanceof JingleSessionListener) {
-    //                JingleSessionListener sli = (JingleSessionListener) li;
-    //                sli.sessionEstablished(this);
-    //            }
-    //        }
-    //    }
+
     /**
      * Trigger a media received event.
      *
@@ -957,34 +926,6 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
         }
     }
 
-    /**
-     * Trigger a session redirect event.
-     */
-    //    protected void triggerSessionRedirect(String arg) {
-    //        List<JingleListener> listeners = getListenersList();
-    //        for (JingleListener li : listeners) {
-    //            if (li instanceof JingleSessionListener) {
-    //                JingleSessionListener sli = (JingleSessionListener) li;
-    //                sli.sessionRedirected(arg, this);
-    //            }
-    //        }
-    //    }
-    /**
-     * Trigger a session decline event.
-     */
-    //    protected void triggerSessionDeclined(String reason) {
-    //        List<JingleListener> listeners = getListenersList();
-    //        for (JingleListener li : listeners) {
-    //            if (li instanceof JingleSessionListener) {
-    //                JingleSessionListener sli = (JingleSessionListener) li;
-    //                sli.sessionDeclined(reason, this);
-    //            }
-    //        }
-    //        for (ContentNegotiator contentNegotiator : contentNegotiators) {
-    //            for (TransportCandidate candidate : contentNegotiator.getTransportNegotiator().getOfferedCandidates())
-    //                candidate.removeCandidateEcho();
-    //        }
-    //    }
     /**
      * Terminates the session with default reason.
      *
