@@ -15,6 +15,7 @@ jobs:
         java:
           - 17
           - 21
+          - 25
     env:
       PRIMARY_JAVA_VERSION: 21
 
