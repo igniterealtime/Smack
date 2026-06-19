@@ -424,45 +424,6 @@ public class MediaNegotiator extends JingleNegotiator {
         }
     }
 
-//    /**
-//    * Create an offer for the list of audio payload types.
-//    *
-//    * @return a new Jingle packet with the list of audio Payload Types
-//    */
-//    private Jingle createAudioPayloadTypesOffer() {
-//
-//        JingleContent jingleContent = new JingleContent(parentNegotiator.getCreator(), parentNegotiator.getName());
-//        JingleDescription audioDescr = new JingleDescription.Audio();
-//
-//        // Add the list of payloads for audio and create a
-//        // JingleDescription
-//        // where we announce our payloads...
-//        audioDescr.addAudioPayloadTypes(localAudioPts);
-//        jingleContent.setDescription(audioDescr);
-//
-//        Jingle jingle = new Jingle(JingleActionEnum.CONTENT_ACCEPT);
-//        jingle.addContent(jingleContent);
-//
-//        return jingle;
-//    }
-
-    // Predefined messages and Errors
-
-    /**
-     * Create an IQ "accept" message.
-     */
-//    private Jingle createAcceptMessage() {
-//        Jingle jout = null;
-//
-//        // If we have a common best codec, send an accept right now...
-//        jout = new Jingle(JingleActionEnum.CONTENT_ACCEPT);
-//        JingleContent content = new JingleContent(parentNegotiator.getCreator(), parentNegotiator.getName());
-//        content.setDescription(new JingleDescription.Audio(bestCommonAudioPt));
-//        jout.addContent(content);
-//
-//        return jout;
-//    }
-
     // Payloads
 
     /**

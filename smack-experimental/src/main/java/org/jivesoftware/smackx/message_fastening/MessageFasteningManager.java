@@ -42,7 +42,7 @@ import org.jivesoftware.smackx.message_fastening.element.FasteningElement;
  * and external payloads using {@link FasteningElement.Builder#addExternalPayloads(List)}.
  *
  * If you fastened some payloads onto the message previously and now want to replace the previous fastening, call
- * {@link FasteningElement.Builder#isRemovingElement()}.
+ * {@link FasteningElement.Builder#setClear()}.
  * Once you are finished, build the {@link FasteningElement} using {@link FasteningElement.Builder#build()} and add it to
  * a stanza by calling {@link FasteningElement#applyTo(MessageBuilder)}.
  *

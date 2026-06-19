@@ -528,17 +528,6 @@ public class JingleManager implements JingleSessionListener {
     }
 
     /**
-     * Creates an Jingle session to start a communication with another user.
-     *
-     * @param responder the fully qualified jabber ID with resource of the other
-     *                  user.
-     * @return the session on which the negotiation can be run.
-     */
-    //    public OutgoingJingleSession createOutgoingJingleSession(String responder) throws XMPPException {
-    //        if (this.getMediaManagers() == null) return null;
-    //        return createOutgoingJingleSession(responder, this.getMediaManagers());
-    //    }
-    /**
      * When the session request is acceptable, this method should be invoked. It
      * will create an JingleSession which allows the negotiation to proceed.
      *
@@ -558,23 +547,6 @@ public class JingleManager implements JingleSessionListener {
         return session;
     }
 
-    /**
-     * When the session request is acceptable, this method should be invoked. It
-     * will create an JingleSession which allows the negotiation to proceed.
-     * This method use JingleMediaManager to select the supported Payload types.
-     *
-     * @param request the remote request that is being accepted.
-     * @return the session which manages the rest of the negotiation.
-     */
-    //    IncomingJingleSession createIncomingJingleSession(JingleSessionRequest request) throws XMPPException {
-    //        if (request == null) {
-    //            throw new NullPointerException("JingleMediaManager is not defined");
-    //        }
-    //        if (jingleMediaManager != null)
-    //            return createIncomingJingleSession(request, jingleMediaManager.getPayloads());
-    //
-    //        return createIncomingJingleSession(request, null);
-    //    }
     /**
      * Get a session with the informed JID. If no session is found, return null.
      *

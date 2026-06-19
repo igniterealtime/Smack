@@ -90,25 +90,6 @@ public class JingleSessionRequest {
     /**
      * Accepts this request and creates the incoming Jingle session.
      *
-     * @param pts list of supported Payload Types
-     * @return Returns the <b><i>IncomingJingleSession</b></i> on which the
-     *         negotiation can be carried out.
-     */
-//    public synchronized JingleSession accept(List<PayloadType> pts) throws XMPPException {
-//        JingleSession session = null;
-//        synchronized (manager) {
-//            session = manager.createIncomingJingleSession(this, pts);
-//            // Acknowledge the IQ reception
-//            session.setSid(this.getSessionID());
-//            //session.sendAck(this.getJingle());
-//            //session.respond(this.getJingle());
-//        }
-//        return session;
-//    }
-
-    /**
-     * Accepts this request and creates the incoming Jingle session.
-     *
      * @return Returns the IncomingJingleSession on which the
      *         negotiation can be carried out.
      * @throws XMPPException if an XMPP protocol error was received.
