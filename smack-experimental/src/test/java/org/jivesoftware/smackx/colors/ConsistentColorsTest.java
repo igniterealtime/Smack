@@ -45,84 +45,92 @@ public class ConsistentColorsTest extends SmackTestSuite {
     @Test
     public void romeoNoDeficiencyTest() {
         float[] rgb = new float[] {0.865f, 0.000f, 0.686f};
-        assertRGBEquals(rgb, ConsistentColor.RGBFrom(romeo), EPS);
+        assertRGBEquals(rgb, ConsistentColor.RGBFrom(romeo));
     }
 
     @Test
     public void romeoRedGreenBlindnessTest() {
-        float[] expected = new float[] {0.865f, 0.000f, 0.686f};
+        float[] expected = new float[] {0.865f, 0.000f, 0.68620354f};
         float[] actual = ConsistentColor.RGBFrom(romeo, redGreenDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void romeoBlueBlindnessTest() {
         float[] expected = new float[] {0.000f, 0.535f, 0.350f};
         float[] actual = ConsistentColor.RGBFrom(romeo, blueBlindnessDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
+    }
+
+    @Test
+    public void julietNickTest() {
+        // may have a negative Red
+        float[] expected = new float[] {0f, 0.5226505f, 0.50349814f};
+        float[] actual = ConsistentColor.RGBFrom("juliet");
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void julietNoDeficiencyTest() {
         float[] expected = new float[] {0.000f, 0.515f, 0.573f};
         float[] actual = ConsistentColor.RGBFrom(juliet, noDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void julietRedGreenBlindnessTest() {
         float[] expected = new float[] {0.742f, 0.359f, 0.000f};
         float[] actual = ConsistentColor.RGBFrom(juliet, redGreenDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void julietBlueBlindnessTest() {
         float[] expected = new float[] {0.742f, 0.359f, 0.000f};
         float[] actual = ConsistentColor.RGBFrom(juliet, blueBlindnessDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void emojiNoDeficiencyTest() {
         float[] expected = new float[] {0.872f, 0.000f, 0.659f};
         float[] actual = ConsistentColor.RGBFrom(emoji, noDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void emojiRedGreenBlindnessTest() {
         float[] expected = new float[] {0.872f, 0.000f, 0.659f};
         float[] actual = ConsistentColor.RGBFrom(emoji, redGreenDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void emojiBlueBlindnessTest() {
         float[] expected = new float[] {0.000f, 0.533f, 0.373f};
         float[] actual = ConsistentColor.RGBFrom(emoji, blueBlindnessDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void councilNoDeficiencyTest() {
         float[] expected = new float[] {0.918f, 0.000f, 0.394f};
         float[] actual = ConsistentColor.RGBFrom(council, noDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void councilRedGreenBlindnessTest() {
         float[] expected = new float[] {0.918f, 0.000f, 0.394f};
         float[] actual = ConsistentColor.RGBFrom(council, redGreenDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     @Test
     public void councilBlueBlindnessTest() {
         float[] expected = new float[] {0.000f, 0.524f, 0.485f};
         float[] actual = ConsistentColor.RGBFrom(council, blueBlindnessDeficiency);
-        assertRGBEquals(expected, actual, EPS);
+        assertRGBEquals(expected, actual);
     }
 
     /**
@@ -130,14 +138,13 @@ public class ConsistentColorsTest extends SmackTestSuite {
      *
      * @param expected expected values
      * @param actual actual values
-     * @param eps allowed error
      */
-    private static void assertRGBEquals(float[] expected, float[] actual, float eps) {
+    private static void assertRGBEquals(float[] expected, float[] actual) {
         assertEquals(3, expected.length);
         assertEquals(3, actual.length);
 
-        for (int i = 0; i < actual.length; i++) {
-            assertEquals(expected[i], actual[i], eps);
-        }
+        assertEquals(expected[0], actual[0], EPS);
+        assertEquals(expected[1], actual[1], EPS);
+        assertEquals(expected[2], actual[2], EPS);
     }
 }

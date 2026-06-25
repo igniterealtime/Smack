@@ -13,7 +13,7 @@ dependencies {
 	api project(':smack-core')
 	api project(':smack-extensions')
 
-	implementation "org.hsluv:hsluv:0.2"
+	implementation "org.hsluv:hsluv:1.0"
 
 	testFixturesApi(testFixtures(project(":smack-extensions")))
 }

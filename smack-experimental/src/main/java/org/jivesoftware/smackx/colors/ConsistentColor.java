@@ -16,10 +16,12 @@
  */
 package org.jivesoftware.smackx.colors;
 
+import static java.lang.Byte.toUnsignedInt;
+
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.SHA1;
 
-import org.hsluv.HUSLColorConverter;
+import org.hsluv.HsluvColorConverter;
 
 /**
  * Smack API for Consistent Color Generation (XEP-0392).
@@ -68,7 +70,7 @@ public class ConsistentColor {
      */
     private static double createAngle(CharSequence input) {
         byte[] h = SHA1.bytes(input.toString());
-        double v = u(h[0]) + (256 * u(h[1]));
+        double v = toUnsignedInt(h[0]) + (256 * toUnsignedInt(h[1]));
         double d = v / 65536;
         return d * 360;
     }
@@ -107,41 +109,23 @@ public class ConsistentColor {
      *
      * @see <a href="https://xmpp.org/extensions/xep-0392.html#algorithm-rgb">XEP-0392 §5.4: RGB generation</a>
      */
-    private static double[] hsluvToRgb(double hue) {
-        return hsluvToRgb(hue, 100, 50);
+    private static float[] hsluvToRgb(double hue) {
+        HsluvColorConverter conv = new HsluvColorConverter();
+        conv.hsluv_h = hue;
+        conv.hsluv_s = 100;
+        conv.hsluv_l = 50;
+        conv.hsluvToRgb();
+        // avoid negative values
+        conv.rgb_r = Math.max(0, conv.rgb_r);
+        conv.rgb_g = Math.max(0, conv.rgb_g);
+        conv.rgb_b = Math.max(0, conv.rgb_b);
+        return new float[] {(float) conv.rgb_r, (float) conv.rgb_g, (float) conv.rgb_b};
     }
 
-    /**
-     * Converting a HSLuv angle to RGB.
-     *
-     * @param hue angle 0 <= hue < 360
-     * @param saturation saturation 0 <= saturation <= 100
-     * @param lightness lightness 0 <= lightness <= 100
-     * @return rbg array with values 0 <= (r,g,b) <= 1
-     *
-     * @see <a href="https://www.rapidtables.com/convert/color/hsl-to-rgb.html">HSL to RGB conversion</a>
-     */
-    private static double[] hsluvToRgb(double hue, double saturation, double lightness) {
-        return HUSLColorConverter.hsluvToRgb(new double[] {hue, saturation, lightness});
-    }
-
-    private static double[] mixWithBackground(double[] rgbi, float[] rgbb) {
-        return new double[] {
-                0.2 * (1 - rgbb[0]) + 0.8 * rgbi[0],
-                0.2 * (1 - rgbb[1]) + 0.8 * rgbi[1],
-                0.2 * (1 - rgbb[2]) + 0.8 * rgbi[2]
-        };
-    }
-
-    /**
-     * Treat a signed java byte as unsigned to get its numerical value.
-     *
-     * @param b signed java byte
-     * @return integer value of its unsigned representation
-     */
-    private static int u(byte b) {
-        // Get unsigned value of signed byte as an integer.
-        return b & 0xFF;
+    private static void mixWithBackground(float[] rgbi, float[] rgbb) {
+        rgbi[0] = 0.2f * (1 - rgbb[0]) + 0.8f * rgbi[0];
+        rgbi[1] = 0.2f * (1 - rgbb[1]) + 0.8f * rgbi[1];
+        rgbi[2] = 0.2f * (1 - rgbb[2]) + 0.8f * rgbi[2];
     }
 
     /**
@@ -167,12 +151,12 @@ public class ConsistentColor {
     public static float[] RGBFrom(CharSequence input, ConsistentColorSettings settings) {
         double angle = createAngle(input);
         double correctedAngle = applyColorDeficiencyCorrection(angle, settings.getDeficiency());
-        double[] rgb = hsluvToRgb(correctedAngle);
+        float[] rgb = hsluvToRgb(correctedAngle);
         if (settings.backgroundRGB != null) {
-            rgb = mixWithBackground(rgb, settings.backgroundRGB);
+            mixWithBackground(rgb, settings.backgroundRGB);
         }
 
-        return new float[] {(float) rgb[0], (float) rgb[1], (float) rgb[2]};
+        return rgb;
     }
 
     public static int[] floatRgbToInts(float[] floats) {
