@@ -16,57 +16,79 @@
  */
 
 package org.jivesoftware.smackx.iqregister.packet;
-
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.XmlElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
+
+import org.jivesoftware.smackx.bob.element.BoBDataExtension;
+import org.jivesoftware.smackx.xdata.packet.DataForm;
 
 /**
+ * XEP-0077: In-Band Registration Implementation with fields elements and DataForm
  * Represents registration packets. An empty GET query will cause the server to return information
- * about it's registration support. SET queries can be used to create accounts or update
- * existing account information. XMPP servers may require a number of attributes to be set
- * when creating a new account. The standard account attributes are as follows:
+ * about its registration support and requirements. SET queries can be used to create accounts or
+ * update existing account information. XMPP servers will require a number of parameters to be
+ * set; presented in the form of attributes fields and/or DataForm. The entity should only
+ * return either one of them but not both.
+ * when creating a new account. The standard account parameters either given in field or
+ * DataForm are as follows:
  * <ul>
- *      <li>name -- the user's name.
- *      <li>first -- the user's first name.
- *      <li>last -- the user's last name.
- *      <li>email -- the user's email address.
- *      <li>city -- the user's city.
- *      <li>state -- the user's state.
- *      <li>zip -- the user's ZIP code.
- *      <li>phone -- the user's phone number.
- *      <li>url -- the user's website.
- *      <li>date -- the date the registration took place.
- *      <li>misc -- other miscellaneous information to associate with the account.
- *      <li>text -- textual information to associate with the account.
- *      <li>remove -- empty flag to remove account.
+ *      <li>username -- Account name associated with the user (Required).
+ *      <li>password -- Password or secret for the user (Required).
+ *      <li>nick     -- Familiar name of the user.
+ *      <li>name     -- Full name of the user.
+ *      <li>first    -- Given name of the user.
+ *      <li>last     -- Family name of the user.
+ *      <li>email    -- Email address of the user.
+ *      <li>address  -- Street portion of a physical or mailing address.
+ *      <li>city     -- Locality portion of a physical or mailing address.
+ *      <li>state    -- Region portion of a physical or mailing address.
+ *      <li>zip      -- Postal code portion of a physical or mailing address.
+ *      <li>phone    -- Telephone number of the user.
+ *      <li>url      -- URL to web page describing the user.
+ *      <li>date     -- Some date (e.g., birth date, hire date, sign-up date).
+ *      <li>remove   -- empty flag to remove account.
  * </ul>
  *
+ * The Registration can supported via DataForm with Captcha protection
+ *
  * @author Matt Tucker
+ * @author Eng Chong Meng
  */
 public class Registration extends IQ {
 
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:register";
+    public static final String ELEMENT_REGISTERED = "registered";
 
     private final String instructions;
     private final Map<String, String> attributes;
 
+    private final DataForm mDataForm;
+    private boolean hasRegistered = false;
+    private BoBDataExtension mBoB = null;
+
     public Registration() {
-        this(null);
+        this(null, null, null);
     }
 
     public Registration(Map<String, String> attributes) {
-        this(null, attributes);
+        this(null, attributes, null);
     }
 
-    public Registration(String instructions, Map<String, String> attributes) {
+    public Registration(DataForm dataForm) {
+        this(null, null, dataForm);
+    }
+
+    public Registration(String instructions, Map<String, String> attributes, DataForm dataForm) {
         super(ELEMENT, NAMESPACE);
         this.instructions = instructions;
         this.attributes = attributes;
+        this.mDataForm = dataForm;
     }
 
     /**
@@ -89,23 +111,64 @@ public class Registration extends IQ {
         return attributes;
     }
 
+    /**
+     * return the account registration status.
+     *
+     * @return the account registration status.
+     * <code>true</code> account has already registered
+     */
+    public boolean isRegistered() {
+        return hasRegistered;
+    }
+
+    public void setRegistrationStatus(boolean isRegistered) {
+         hasRegistered = isRegistered;
+    }
+
+    /**
+     * Returns the DataForm in the registration.
+     *
+     * @return the DataForm in the registration.
+     */
+    public DataForm getDataForm() {
+        return mDataForm;
+    }
+
+    /**
+     * Returns the BoBExt in the registration.
+     *
+     * @return the BoBExt in the registration.
+     */
+    public BoBDataExtension getBoB() {
+        return mBoB;
+    }
+
+    public void setBoB(BoBDataExtension bob) {
+        mBoB = bob;
+    }
+
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
         xml.rightAngleBracket();
         xml.optElement("instructions", instructions);
-        if (attributes != null && attributes.size() > 0) {
+
+        // attributes and mDataForm are mutually exclusive in account registration
+        if (attributes != null && !attributes.isEmpty()) {
             for (String name : attributes.keySet()) {
                 String value = attributes.get(name);
-                xml.element(name, value);
+                xml.optElement(name, value);
             }
+        }
+        else if (mDataForm != null) {
+            xml.append(mDataForm.toXML(XmlEnvironment.EMPTY));
         }
         return xml;
     }
 
-    public static final class Feature implements ExtensionElement {
-
+    public static final class Feature implements XmlElement {
         public static final String ELEMENT = "register";
         public static final String NAMESPACE = "http://jabber.org/features/iq-register";
+
         public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
         public static final Feature INSTANCE = new Registration.Feature();
@@ -119,7 +182,7 @@ public class Registration extends IQ {
         }
 
         @Override
-        public CharSequence toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
+        public CharSequence toXML(XmlEnvironment xmlEnvironment) {
             return '<' + ELEMENT + " xmlns='" + NAMESPACE + "'/>";
         }
 
@@ -127,6 +190,5 @@ public class Registration extends IQ {
         public String getNamespace() {
             return NAMESPACE;
         }
-
     }
 }

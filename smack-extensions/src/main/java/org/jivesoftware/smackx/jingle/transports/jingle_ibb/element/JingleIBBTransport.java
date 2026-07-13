@@ -18,7 +18,7 @@ package org.jivesoftware.smackx.jingle.transports.jingle_ibb.element;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -27,7 +27,7 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransport;
 /**
  * Transport Element for JingleInBandBytestream transports.
  */
-public class JingleIBBTransport extends JingleContentTransport implements ExtensionElement {
+public class JingleIBBTransport extends JingleContentTransport implements XmlElement {
     public static final String NAMESPACE_V1 = "urn:xmpp:jingle:transports:ibb:1";
     public static final QName QNAME = new QName(NAMESPACE_V1, ELEMENT);
 
@@ -52,7 +52,7 @@ public class JingleIBBTransport extends JingleContentTransport implements Extens
     }
 
     public JingleIBBTransport(short blockSize, String sid) {
-        super(null);
+        super();
         if (blockSize > 0) {
             this.blockSize = blockSize;
         } else {
@@ -82,7 +82,7 @@ public class JingleIBBTransport extends JingleContentTransport implements Extens
 
     @Override
     public boolean equals(Object other) {
-        if (other == null || !(other instanceof JingleIBBTransport)) {
+        if (!(other instanceof JingleIBBTransport)) {
             return false;
         }
 

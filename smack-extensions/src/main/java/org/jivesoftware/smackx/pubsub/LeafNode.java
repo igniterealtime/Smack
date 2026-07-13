@@ -48,6 +48,7 @@ public class LeafNode extends Node {
      * {@link DiscoverItems} format.
      *
      * @return The item details in {@link DiscoverItems} format
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -64,7 +65,9 @@ public class LeafNode extends Node {
      * Get the current items stored in the node.
      *
      * @param <T> type of the items.
+     *
      * @return List of {@link Item} in the node
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -84,6 +87,7 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return List of {@link Item} in the node
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -105,6 +109,7 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return The list of {@link Item} with payload
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -127,6 +132,7 @@ public class LeafNode extends Node {
      * @param <T> type of the items.
      *
      * @return List of {@link Item}
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -166,34 +172,35 @@ public class LeafNode extends Node {
      * </p>
      *
      * @param additionalExtensions additional {@code PacketExtensions} to be added to the request.
-     *        This is an optional argument, if provided as null no extensions will be added.
+     * This is an optional argument, if provided as null no extensions will be added.
      * @param returnedExtensions a collection that will be filled with the returned packet
-     *        extensions. This is an optional argument, if provided as null it won't be populated.
+     * extensions. This is an optional argument, if provided as null it won't be populated.
      * @param <T> type of the items.
      *
      * @return List of {@link Item}
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public <T extends Item> List<T> getItems(List<XmlElement> additionalExtensions,
-                    List<XmlElement> returnedExtensions) throws NoResponseException,
-                    XMPPErrorException, NotConnectedException, InterruptedException {
+            List<XmlElement> returnedExtensions) throws NoResponseException,
+            XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub request = createPubsubPacket(IQ.Type.get, new GetItemsRequest(getId()));
         request.addExtensions(additionalExtensions);
         return getItems(request, returnedExtensions);
     }
 
     private <T extends Item> List<T> getItems(PubSub request) throws NoResponseException,
-                    XMPPErrorException, NotConnectedException, InterruptedException {
+            XMPPErrorException, NotConnectedException, InterruptedException {
         return getItems(request, null);
     }
 
     @SuppressWarnings("unchecked")
     private <T extends Item> List<T> getItems(PubSub request,
-                    List<XmlElement> returnedExtensions) throws NoResponseException,
-                    XMPPErrorException, NotConnectedException, InterruptedException {
+            List<XmlElement> returnedExtensions) throws NoResponseException,
+            XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub result = pubSubManager.getConnection().sendIqRequestAndWaitForResponse(request);
         ItemsExtension itemsElem = result.getExtension(PubSubElementType.ITEMS);
         if (returnedExtensions != null) {
@@ -273,7 +280,6 @@ public class LeafNode extends Node {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     *
      */
     public void publish() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(IQ.Type.set, new NodeExtension(PubSubElementType.PUBLISH, getId()));
@@ -300,13 +306,19 @@ public class LeafNode extends Node {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     *
      */
     @SuppressWarnings("unchecked")
     public <T extends Item> void publish(T item) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         Collection<T> items = new ArrayList<>(1);
         items.add(item == null ? (T) new Item() : item);
         publish(items);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Item> void publish(T item, NodeExtension nodeExtensions) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        Collection<T> items = new ArrayList<>(1);
+        items.add(item == null ? (T) new Item() : item);
+        publish(items, nodeExtensions);
     }
 
     /**
@@ -317,17 +329,24 @@ public class LeafNode extends Node {
      *
      * @param items - The collection of {@link Item} objects being sent
      * @param <T> type of the items.
+     * @param nodeExtension NodeExtension to be added
      *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     *
      */
-    public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+    public <T extends Item> void publish(Collection<T> items, NodeExtension nodeExtension) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub packet = createPubsubPacket(IQ.Type.set, new PublishItem<>(getId(), items));
 
+        if (nodeExtension != null) {
+            packet.addExtension(nodeExtension);
+        }
         pubSubManager.getConnection().sendIqRequestAndWaitForResponse(packet);
+    }
+
+    public <T extends Item> void publish(Collection<T> items) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        publish(items, null);
     }
 
     /**
@@ -335,6 +354,7 @@ public class LeafNode extends Node {
      *
      * <p>Note: Some implementations may keep the last item
      * sent.
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -350,6 +370,7 @@ public class LeafNode extends Node {
      * Delete the item with the specified id from the node.
      *
      * @param itemId The id of the item
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -365,6 +386,7 @@ public class LeafNode extends Node {
      * Delete the items with the specified id's from the node.
      *
      * @param itemIds The list of id's of items to delete
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -374,7 +396,7 @@ public class LeafNode extends Node {
         List<Item> items = new ArrayList<>(itemIds.size());
 
         for (String id : itemIds) {
-             items.add(new Item(id));
+            items.add(new Item(id));
         }
         PubSub request = createPubsubPacket(IQ.Type.set, new ItemsExtension(ItemsExtension.ItemsElementType.retract, getId(), items));
         pubSubManager.getConnection().sendIqRequestAndWaitForResponse(request);

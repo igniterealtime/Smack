@@ -29,10 +29,13 @@ import org.junit.jupiter.api.Test;
 public class RoomInfoTest {
     @Test
     public void validateRoomWithEmptyForm() {
+        // Received warning if missing identity: "DiscoverInfo does not contain any Identity: ...."
+        DiscoverInfo.Identity identity = new DiscoverInfo.Identity("conference", "Play-Specific Chatrooms", "text");
         DataForm dataForm = DataForm.builder(DataForm.Type.result).build();
 
         DiscoverInfo discoInfo = DiscoverInfo.builder("disco1")
                 .addExtension(dataForm)
+                .addIdentity(identity)
                 .build();
         RoomInfo roomInfo = new RoomInfo(discoInfo);
         assertTrue(roomInfo.getDescription().isEmpty());
@@ -42,8 +45,10 @@ public class RoomInfoTest {
 
     @Test
     public void validateRoomWithForm() {
-        DataForm.Builder dataForm = DataForm.builder(DataForm.Type.result);
+        // Received warning if missing identity: "DiscoverInfo does not contain any Identity: ...."
+        DiscoverInfo.Identity identity = new DiscoverInfo.Identity("conference", "Play-Specific Chatrooms", "text");
 
+        DataForm.Builder dataForm = DataForm.builder(DataForm.Type.result);
         TextSingleFormField.Builder desc = FormField.builder("muc#roominfo_description");
         desc.setValue("The place for all good witches!");
         dataForm.addField(desc.build());
@@ -58,6 +63,7 @@ public class RoomInfoTest {
 
         DiscoverInfo discoInfo = DiscoverInfo.builder("disco1")
                 .addExtension(dataForm.build())
+                .addIdentity(identity)
                 .build();
         RoomInfo roomInfo = new RoomInfo(discoInfo);
         assertEquals("The place for all good witches!", roomInfo.getDescription());

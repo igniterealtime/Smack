@@ -58,7 +58,7 @@ public class XmlUtil {
             transformer.transform(source, result);
         }
         catch (TransformerException | IllegalArgumentException e) {
-            LOGGER.log(Level.SEVERE, "Transformer error", e);
+            LOGGER.log(Level.SEVERE, "Transformer error: " + xml, e);
             return xmlString;
         }
 

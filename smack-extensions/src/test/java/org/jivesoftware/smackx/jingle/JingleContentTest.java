@@ -74,8 +74,8 @@ public class JingleContentTest extends SmackTestSuite {
         assertNotSame(content.toXML().toString(), content1.toXML().toString());
         assertEquals(content1.toXML().toString(), builder.build().toXML().toString());
 
-        String xml =
-                "<content xmlns='urn:xmpp:jingle:1' creator='initiator' disposition='session' name='A name' senders='both'/>";
+        // String xml = "<content xmlns='urn:xmpp:jingle:1' creator='initiator' disposition='session' name='A name' senders='both'/>";
+        String xml = "<content xmlns='urn:xmpp:jingle:1' creator='initiator' name='A name' senders='both' disposition='session'/>";
         assertEquals(xml, content1.toXML().toString());
     }
 }

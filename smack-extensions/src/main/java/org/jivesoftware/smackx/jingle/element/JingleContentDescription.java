@@ -19,27 +19,43 @@ package org.jivesoftware.smackx.jingle.element;
 import java.util.Collections;
 import java.util.List;
 
-import org.jivesoftware.smack.packet.NamedElement;
 import org.jivesoftware.smack.packet.XmlElement;
-import org.jivesoftware.smack.util.XmlStringBuilder;
+
+import org.jivesoftware.smackx.jingle_rtp.AbstractXmlElement;
 
 /**
  * Jingle content description.
  *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
-public abstract class JingleContentDescription implements XmlElement {
-
+public class JingleContentDescription extends AbstractXmlElement {
     public static final String ELEMENT = "description";
+    private final List<XmlElement> payloads;
 
-    private final List<NamedElement> payloads;
+    public JingleContentDescription() {
+        this(getBuilder());
+    }
 
-    protected JingleContentDescription(List<? extends NamedElement> payloads) {
+    /**
+     * Creates a new <code>RtpDescription</code>.
+     *
+     * @param builder Builder instance
+     */
+    public JingleContentDescription(Builder builder) {
+        super(builder);
+        this.payloads = Collections.emptyList();
+    }
+
+    protected JingleContentDescription(List<? extends XmlElement> payloads) {
+        super(getBuilder());
         if (payloads != null) {
             this.payloads = Collections.unmodifiableList(payloads);
-        }
-        else {
+        } else {
             this.payloads = Collections.emptyList();
         }
+        ((Builder) mBuilder).addPayload(payloads)
+                .build();
     }
 
     @Override
@@ -47,24 +63,35 @@ public abstract class JingleContentDescription implements XmlElement {
         return ELEMENT;
     }
 
-    public List<NamedElement> getJingleContentDescriptionChildren() {
+    public List<XmlElement> getJingleContentDescriptionChildren() {
         return payloads;
     }
 
-    protected void addExtraAttributes(XmlStringBuilder xml) {
-
+    public static Builder getBuilder() {
+        return new Builder(ELEMENT, null);
     }
 
-    @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder xml = new XmlStringBuilder(this);
-        addExtraAttributes(xml);
-        xml.rightAngleBracket();
+    /**
+     * Builder for JingleContentDescription. Use {@link AbstractXmlElement.Builder#Builder(String, String)}
+     * to obtain a new instance and {@link #build} to build the RtpDescription.
+     */
+    public static class Builder extends AbstractXmlElement.Builder<Builder, JingleContentDescription> {
+        protected Builder(String element, String namespace) {
+            super(element, namespace);
+        }
 
-        xml.append(payloads);
+        public Builder addPayload(List<? extends XmlElement> payloads) {
+            return addChildElements(payloads);
+        }
 
-        xml.closeElement(this);
-        return xml;
+        @Override
+        public JingleContentDescription build() {
+            return new JingleContentDescription(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
     }
-
 }

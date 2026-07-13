@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jivesoftware.smackx.jingle.element;
 
 import java.util.ArrayList;
@@ -28,6 +27,8 @@ import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.id.StandardStanzaIdSource;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.StringUtils;
+
+import org.jivesoftware.smackx.jingle_rtp.element.SessionInfo;
 
 import org.jxmpp.jid.FullJid;
 
@@ -101,18 +102,18 @@ import org.jxmpp.jid.FullJid;
  * }</pre>
  *
  * @author Florian Schmaus
+ * @author Eng Chong Meng
  */
 public final class Jingle extends IQ {
-
     public static final String NAMESPACE = "urn:xmpp:jingle:1";
 
-    public static final String ACTION_ATTRIBUTE_NAME = "action";
+    public static final String ATTR_ACTION = "action";
 
-    public static final String INITIATOR_ATTRIBUTE_NAME = "initiator";
+    public static final String ATTR_INITIATOR = "initiator";
 
-    public static final String RESPONDER_ATTRIBUTE_NAME = "responder";
+    public static final String ATTR_RESPONDER = "responder";
 
-    public static final String SESSION_ID_ATTRIBUTE_NAME = "sid";
+    public static final String ATTR_SESSION_ID = "sid";
 
     public static final String ELEMENT = "jingle";
 
@@ -127,24 +128,44 @@ public final class Jingle extends IQ {
      */
     private final JingleAction action;
 
-    private final FullJid initiator;
+    // need set by aTalk
+    private FullJid initiator;
 
+    /**
+     * The full Jid of the entity that replies to a Jingle initiation. The <code>responder</code> can be
+     * different from the 'to' address on the IQ-set. Only present when the <code>JingleAction</code> is
+     * <code>session-accept</code>.
+     */
     private final FullJid responder;
 
+    /**
+     * The <code>reason</code> extension in a <code>jingle</code> IQ providers machine and possibly
+     * human-readable information about the reason for the action.
+     */
     private final JingleReason reason;
 
-    private final List<JingleContent> contents;
+    // need set by aTalk
+    private List<JingleContent> contents;
 
-    private Jingle(Builder builder, String sessionId, JingleAction action, FullJid initiator, FullJid responder, JingleReason reason,
-                    List<JingleContent> contents) {
+    /**
+     * Any session info extensions that this packet may contain.
+     */
+    private final SessionInfo sessionInfo;
+
+    private Jingle(Builder builder, String sessionId, JingleAction action, FullJid initiator, FullJid responder,
+            JingleReason reason, SessionInfo sessionInfo, List<JingleContent> contents) {
         super(builder, ELEMENT, NAMESPACE);
         this.sessionId = StringUtils.requireNotNullNorEmpty(sessionId, "Jingle session ID must not be null");
         this.action = Objects.requireNonNull(action, "Jingle action must not be null");
         this.initiator = initiator;
         this.responder = responder;
         this.reason = reason;
+        this.sessionInfo = sessionInfo;
+
         if (contents != null) {
-            this.contents = Collections.unmodifiableList(contents);
+            // aTalk needs a modifiableList contents
+            // this.contents = Collections.unmodifiableList(contents);
+            this.contents = contents;
         }
         else {
             this.contents = Collections.emptyList();
@@ -197,6 +218,15 @@ public final class Jingle extends IQ {
     }
 
     /**
+     * Returns a {@link SessionInfo} if this <code>Jingle</code> contains one and <code>null</code> otherwise.
+     *
+     * @return a {@link SessionInfo} if this <code>Jingle</code> contains one and <code>null</code> otherwise.
+     */
+    public SessionInfo getSessionInfo() {
+        return this.sessionInfo;
+    }
+
+    /**
      * Get a List of the contents.
      *
      * @return the contents.
@@ -224,19 +254,52 @@ public final class Jingle extends IQ {
         return contents.get(0);
     }
 
+    /**
+     * Returns the XML string of this Jingle IQ's "section" sub-element.
+     * <p>
+     * Extensions of this class must override this method.
+     *
+     * @return the child element section of the IQ XML.
+     */
     @Override
     protected IQChildElementXmlStringBuilder getIQChildElementBuilder(IQChildElementXmlStringBuilder xml) {
-        xml.optAttribute(INITIATOR_ATTRIBUTE_NAME, getInitiator());
-        xml.optAttribute(RESPONDER_ATTRIBUTE_NAME, getResponder());
-        xml.optAttribute(ACTION_ATTRIBUTE_NAME, getAction());
-        xml.optAttribute(SESSION_ID_ATTRIBUTE_NAME, getSid());
+        xml.optAttribute(ATTR_INITIATOR, getInitiator());
+        xml.optAttribute(ATTR_RESPONDER, getResponder());
+        xml.optAttribute(ATTR_ACTION, getAction());
+        xml.optAttribute(ATTR_SESSION_ID, getSid());
         xml.rightAngleBracket();
 
         xml.optElement(reason);
-
+        xml.optElement(sessionInfo);
         xml.append(contents);
 
         return xml;
+    }
+
+    /**
+     * Sets the full Jid of the entity that has initiated the session flow. Only present when the
+     * <code>JingleAction</code> is <code>session-accept</code>.
+     *
+     * @param initiator the full JID of the initiator.
+     */
+    public void setInitiator(FullJid initiator) {
+        this.initiator = initiator;
+    }
+
+    /**
+     * Add <code>contentPacket</code> to this Jingle IQ's content list. Use to build up the full Jingle stanza that has
+     * both the <code>description</code> and <code>transport</code> elements before the actual processing of the Jingle
+     * <code>session_initiate</code> or <code>session-accept</code>.
+     *
+     * @param content the content packet extension we'd like to add to this element's content list.
+     */
+    public void addJingleContent(JingleContent content) {
+        if (contents == null) {
+            contents = new ArrayList<>(1);
+        }
+        // synchronized (contents) {
+        contents.add(content);
+        // }
     }
 
     /**
@@ -274,6 +337,8 @@ public final class Jingle extends IQ {
 
         private JingleReason reason;
 
+        private SessionInfo sessionInfo;
+
         private List<JingleContent> contents;
 
         Builder(IqData iqCommon) {
@@ -299,8 +364,15 @@ public final class Jingle extends IQ {
             return this;
         }
 
-        public Builder setInitiator(FullJid initator) {
-            this.initiator = initator;
+        /**
+         * Sets the full JID of the entity that has initiated the session flow. Only present when the
+         * <code>JingleAction</code> is <code>session-accept</code>.
+         *
+         * @param initiator the full JID of the initiator.
+         * @return builder instance
+         */
+        public Builder setInitiator(FullJid initiator) {
+            this.initiator = initiator;
             return this;
         }
 
@@ -309,6 +381,12 @@ public final class Jingle extends IQ {
             return this;
         }
 
+        /**
+         * Adds <code>contentPacket</code> to this IQ's content list.
+         *
+         * @param content the content packet extension we'd like to add to this element's content list.
+         * @return builder instance
+         */
         public Builder addJingleContent(JingleContent content) {
             if (contents == null) {
                 contents = new ArrayList<>(1);
@@ -317,19 +395,44 @@ public final class Jingle extends IQ {
             return this;
         }
 
+        /**
+         * Specifies this IQ's <code>reason</code> extension. The <code>reason</code> extension in a <code>jingle</code> IQ
+         * provides machine and possibly human -readable information about the reason for the action.
+         *
+         * @param reason this IQ's <code>reason</code> extension.
+         * @return builder instance
+         */
         public Builder setReason(JingleReason.Reason reason) {
             this.reason = new JingleReason(reason);
             return this;
         }
 
+        /**
+         * Specifies this IQ's <code>JingleReason</code> extension. The <code>JingleReason</code> extension in a <code>jingle</code> IQ
+         * provides machine and possibly human -readable information about the reason for the action.
+         *
+         * @param reason this IQ's <code>JingleReason</code> extension.
+         * @return builder instance
+         */
         public Builder setReason(JingleReason reason) {
             this.reason = reason;
             return this;
         }
 
+        /**
+         * Sets <code>si</code> as the session info extension for this packet.
+         *
+         * @param si a {@link SessionInfo} that we'd like to add here.
+         * @return builder instance
+         */
+        public Builder setSessionInfo(SessionInfo si) {
+            this.sessionInfo = si;
+            return this;
+        }
+
         @Override
         public Jingle build() {
-            return new Jingle(this, sid, action, initiator, responder, reason, contents);
+            return new Jingle(this, sid, action, initiator, responder, reason, sessionInfo, contents);
         }
 
         @Override

@@ -34,6 +34,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.Manager;
@@ -103,9 +105,9 @@ public final class ServiceDiscoveryManager extends Manager {
     private static final Map<XMPPConnection, ServiceDiscoveryManager> instances = new WeakHashMap<>();
 
     private final Set<String> features = new HashSet<>();
-    private List<DataForm> extendedInfos = new ArrayList<>(2);
+    private final List<DataForm> extendedInfos = new ArrayList<>(2);
     private final Map<String, NodeInformationProvider> nodeInformationProviders = new ConcurrentHashMap<>();
-
+    private boolean isSendPresence = true;
     private volatile Presence presenceSend;
 
     // Create a new ServiceDiscoveryManager on every established connection
@@ -137,6 +139,11 @@ public final class ServiceDiscoveryManager extends Manager {
      */
     private ServiceDiscoveryManager(XMPPConnection connection) {
         super(connection);
+        // Must use AbstractXMPPConnection; base class for XMPPTCPConnection and XMPPBOSHConnection
+        if (connection instanceof AbstractXMPPConnection) {
+            ConnectionConfiguration config = ((AbstractXMPPConnection) connection).getConfiguration();
+            isSendPresence = config == null || config.isSendPresence();
+        }
 
         addFeature(DiscoverInfo.NAMESPACE);
         addFeature(DiscoverItems.NAMESPACE);
@@ -160,7 +167,8 @@ public final class ServiceDiscoveryManager extends Manager {
                     response.addItems(nodeInformationProvider.getNodeItems());
                     // Add packet extensions
                     response.addExtensions(nodeInformationProvider.getNodePacketExtensions());
-                } else if (discoverItems.getNode() != null) {
+                }
+                else if (discoverItems.getNode() != null) {
                     // Return <item-not-found/> error since client doesn't contain
                     // the specified node
                     response.setType(IQ.Type.error);
@@ -185,7 +193,8 @@ public final class ServiceDiscoveryManager extends Manager {
                 // if the right node is chosen
                 if (discoverInfo.getNode() == null) {
                     addDiscoverInfoTo(responseBuilder);
-                } else {
+                }
+                else {
                     // Disco#info was sent to a node. Check if we have information of the
                     // specified node
                     NodeInformationProvider nodeInformationProvider = getNodeInformationProvider(discoverInfo.getNode());
@@ -196,7 +205,8 @@ public final class ServiceDiscoveryManager extends Manager {
                         responseBuilder.addIdentities(nodeInformationProvider.getNodeIdentities());
                         // Add packet extensions
                         responseBuilder.addOptExtensions(nodeInformationProvider.getNodePacketExtensions());
-                    } else {
+                    }
+                    else {
                         // Return <item-not-found/> error since specified node was not found
                         responseBuilder.ofType(IQ.Type.error);
                         responseBuilder.setError(StanzaError.getBuilder(StanzaError.Condition.item_not_found).build());
@@ -218,7 +228,7 @@ public final class ServiceDiscoveryManager extends Manager {
             }
         });
         connection.addStanzaSendingListener(p -> presenceSend = (Presence) p,
-                        PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
+                PresenceTypeFilter.OUTGOING_PRESENCE_BROADCAST);
     }
 
     /**
@@ -226,7 +236,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * in a disco request. The name could be any value you need to identity this client.
      *
      * @return the name of the client that will be returned when asked for the client identity
-     *          in a disco request.
+     * in a disco request.
      */
     public String getIdentityName() {
         return identity.getName();
@@ -259,7 +269,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * the possible types: <a href="https://xmpp.org/registrar/disco-categories.html">XMPP Registry for Service Discovery Identities</a>
      *
      * @return the type of client that will be returned when asked for the client identity in a
-     *          disco request.
+     * disco request.
      */
     public String getIdentityType() {
         return identity.getType();
@@ -282,6 +292,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * can not be removed.
      *
      * @param identity TODO javadoc me please
+     *
      * @return true, if successful. Otherwise the default identity was given.
      */
     public synchronized boolean removeIdentity(DiscoverInfo.Identity identity) {
@@ -309,6 +320,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Returns the ServiceDiscoveryManager instance associated with a given XMPPConnection.
      *
      * @param connection the connection used to look for the proper ServiceDiscoveryManager.
+     *
      * @return the ServiceDiscoveryManager associated with a given XMPPConnection.
      */
     public static synchronized ServiceDiscoveryManager getInstanceFor(XMPPConnection connection) {
@@ -348,6 +360,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * NodeInformationProvider will provide information about the rooms where the user has joined.
      *
      * @param node the node that contains items associated with an entity not addressable as a JID.
+     *
      * @return the NodeInformationProvider responsible for providing information related
      * to a given node.
      */
@@ -369,7 +382,7 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param node the node whose items will be provided by the NodeInformationProvider.
      * @param listener the NodeInformationProvider responsible for providing items related
-     *      to the node.
+     * to the node.
      */
     public void setNodeInformationProvider(String node, NodeInformationProvider listener) {
         nodeInformationProviders.put(node, listener);
@@ -438,6 +451,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Returns true if the specified feature is registered in the ServiceDiscoveryManager.
      *
      * @param feature the feature to look for.
+     *
      * @return a boolean indicating if the specified featured is registered or not.
      */
     public synchronized boolean includesFeature(String feature) {
@@ -456,7 +470,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * information is already available if it is required upon login.
      *
      * @param extendedInfo the data form that contains the extend service discovery information.
+     *
      * @return the old data form which got replaced (if any)
+     *
      * @since 4.4.0
      */
     public DataForm addExtendedInfo(DataForm extendedInfo) {
@@ -480,6 +496,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * Remove the extended discovery information of the given form type.
      *
      * @param formType the type of the data form with the extended discovery information to remove.
+     *
      * @since 4.4.0
      */
     public synchronized void removeExtendedInfo(String formType) {
@@ -521,7 +538,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * Use null as entityID to query the server
      *
      * @param entityID the address of the XMPP entity or null.
+     *
      * @return the discovered information.
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -556,7 +575,9 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param entityID the address of the XMPP entity.
      * @param node the optional attribute that supplements the 'jid' attribute.
+     *
      * @return the discovered information.
+     *
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -580,13 +601,15 @@ public final class ServiceDiscoveryManager extends Manager {
      * Returns the discovered items of a given XMPP entity addressed by its JID.
      *
      * @param entityID the address of the XMPP entity.
+     *
      * @return the discovered information.
+     *
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
-    public DiscoverItems discoverItems(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException  {
+    public DiscoverItems discoverItems(Jid entityID) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return discoverItems(entityID, null);
     }
 
@@ -597,7 +620,9 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param entityID the address of the XMPP entity.
      * @param node the optional attribute that supplements the 'jid' attribute.
+     *
      * @return the discovered items.
+     *
      * @throws XMPPErrorException if the operation failed for some reason.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -618,7 +643,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * Returns true if the server supports the given feature.
      *
      * @param feature TODO javadoc me please
+     *
      * @return true if the server supports the given feature.
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -626,18 +653,18 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.1
      */
     public boolean serverSupportsFeature(CharSequence feature) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException, InterruptedException {
+            NotConnectedException, InterruptedException {
         return serverSupportsFeatures(feature);
     }
 
     public boolean serverSupportsFeatures(CharSequence... features) throws NoResponseException,
-                    XMPPErrorException, NotConnectedException, InterruptedException {
+            XMPPErrorException, NotConnectedException, InterruptedException {
         return serverSupportsFeatures(Arrays.asList(features));
     }
 
     public boolean serverSupportsFeatures(Collection<? extends CharSequence> features)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException,
-                    InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException,
+            InterruptedException {
         return supportsFeatures(connection().getXMPPServiceDomain(), features);
     }
 
@@ -646,7 +673,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * lookup will be performed on the bare JID of the connection managed by this ServiceDiscoveryManager.
      *
      * @param features the features to check
+     *
      * @return <code>true</code> if all features are supported by the connection account, <code>false</code> otherwise
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -654,7 +683,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.2.2
      */
     public boolean accountSupportsFeatures(CharSequence... features)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return accountSupportsFeatures(Arrays.asList(features));
     }
 
@@ -663,7 +692,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * information lookup will be performed on the bare JID of the connection managed by this ServiceDiscoveryManager.
      *
      * @param features a collection of features
+     *
      * @return <code>true</code> if all features are supported by the connection account, <code>false</code> otherwise
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -671,7 +702,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.2.2
      */
     public boolean accountSupportsFeatures(Collection<? extends CharSequence> features)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         EntityBareJid accountJid = connection().getUser().asEntityBareJid();
         return supportsFeatures(accountJid, features);
     }
@@ -681,7 +712,9 @@ public final class ServiceDiscoveryManager extends Manager {
      *
      * @param jid the JID of the remote entity
      * @param feature TODO javadoc me please
+     *
      * @return true if the entity supports the feature, false otherwise
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -709,6 +742,7 @@ public final class ServiceDiscoveryManager extends Manager {
         private final DomainBareJid service;
         private final List<String> features;
         private final int hashCode;
+
         private ServiceAndFeatures(DomainBareJid service, Set<? extends CharSequence> features) {
             this.service = service;
             this.features = features.stream().map(f -> f.toString()).sorted().collect(Collectors.toList());
@@ -722,7 +756,7 @@ public final class ServiceDiscoveryManager extends Manager {
         @Override
         public boolean equals(Object other) {
             return EqualsUtil.equals(this, other,
-                            (e, o) -> e.append(service, o.service).append(features, o.features)
+                    (e, o) -> e.append(service, o.service).append(features, o.features)
             );
         }
 
@@ -731,15 +765,16 @@ public final class ServiceDiscoveryManager extends Manager {
             return hashCode;
         }
     }
+
     /**
      * Create a cache to hold the 25 most recently lookup services for a given feature for a period
      * of 24 hours.
      */
     private final Cache<ServiceAndFeatures, List<DiscoverInfo>> services = new ExpirationCache<>(25,
-                    24 * 60 * 60 * 1000);
+            24 * 60 * 60 * 1000);
 
     public List<DiscoverInfo> findServicesDiscoverInfo(CharSequence feature, boolean stopOnFirst, boolean useCache)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findServicesDiscoverInfo(CollectionUtil.setOf(feature), stopOnFirst, useCache, null);
     }
 
@@ -749,14 +784,16 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param feature the feature to search for
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache)
-        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findServicesDiscoverInfo(CollectionUtil.setOf(feature), stopOnFirst, useCache);
     }
 
@@ -766,7 +803,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param features the features to search for
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -774,7 +813,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.5.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(Set<? extends CharSequence> features, boolean stopOnFirst, boolean useCache)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findServicesDiscoverInfo(features, stopOnFirst, useCache, null);
     }
 
@@ -785,7 +824,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -793,7 +834,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.2.2
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(String feature, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
-        throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findServicesDiscoverInfo(CollectionUtil.setOf(feature), stopOnFirst, useCache, encounteredExceptions);
     }
 
@@ -804,7 +845,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -812,7 +855,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.5.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(Set<? extends CharSequence> features, boolean stopOnFirst, boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         DomainBareJid serviceName = connection().getXMPPServiceDomain();
         return findServicesDiscoverInfo(serviceName, features, stopOnFirst, useCache, encounteredExceptions);
     }
@@ -825,7 +868,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -833,7 +878,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.3.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(DomainBareJid serviceName, String feature, boolean stopOnFirst,
-                   boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
+            boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findServicesDiscoverInfo(serviceName, CollectionUtil.setOf(feature), stopOnFirst, useCache, encounteredExceptions);
     }
@@ -846,7 +891,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
      * @param encounteredExceptions an optional map which will be filled with the exceptions encountered
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -854,7 +901,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.5.0
      */
     public List<DiscoverInfo> findServicesDiscoverInfo(DomainBareJid serviceName, Set<? extends CharSequence> features, boolean stopOnFirst,
-                    boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
+            boolean useCache, Map<? super Jid, Exception> encounteredExceptions)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<DiscoverInfo> serviceDiscoInfo;
         ServiceAndFeatures serviceAndFeatures = null;
@@ -870,7 +917,8 @@ public final class ServiceDiscoveryManager extends Manager {
         DiscoverInfo info;
         try {
             info = discoverInfo(serviceName);
-        } catch (XMPPErrorException e) {
+        }
+        catch (XMPPErrorException e) {
             if (encounteredExceptions != null) {
                 encounteredExceptions.put(serviceName, e);
             }
@@ -891,7 +939,8 @@ public final class ServiceDiscoveryManager extends Manager {
         try {
             // Get the disco items and send the disco packet to each server item
             items = discoverItems(serviceName);
-        } catch (XMPPErrorException e) {
+        }
+        catch (XMPPErrorException e) {
             if (encounteredExceptions != null) {
                 encounteredExceptions.put(serviceName, e);
             }
@@ -926,7 +975,7 @@ public final class ServiceDiscoveryManager extends Manager {
     }
 
     public List<DomainBareJid> findServices(CharSequence feature, boolean stopOnFirst, boolean useCache)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findServices(CollectionUtil.setOf(feature), stopOnFirst, useCache);
     }
 
@@ -936,7 +985,9 @@ public final class ServiceDiscoveryManager extends Manager {
      * @param features the features to search for
      * @param stopOnFirst if true, stop searching after the first service was found
      * @param useCache if true, query a cache first to avoid network I/O
+     *
      * @return a possible empty list of services providing the given feature
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -944,7 +995,7 @@ public final class ServiceDiscoveryManager extends Manager {
      * @since 4.5.0
      */
     public List<DomainBareJid> findServices(Set<? extends CharSequence> features, boolean stopOnFirst, boolean useCache)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         List<DiscoverInfo> services = findServicesDiscoverInfo(features, stopOnFirst, useCache);
         List<DomainBareJid> res = new ArrayList<>(services.size());
         for (DiscoverInfo info : services) {
@@ -954,13 +1005,13 @@ public final class ServiceDiscoveryManager extends Manager {
     }
 
     public DomainBareJid findService(CharSequence feature, boolean useCache, String category, String type)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findService(CollectionUtil.setOf(feature), useCache, category, type);
     }
 
     public DomainBareJid findService(Set<? extends CharSequence> features, boolean useCache, String category, String type)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException,
-                    InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException,
+            InterruptedException {
         boolean noCategory = StringUtils.isNullOrEmpty(category);
         boolean noType = StringUtils.isNullOrEmpty(type);
         if (noType != noCategory) {
@@ -984,12 +1035,12 @@ public final class ServiceDiscoveryManager extends Manager {
     }
 
     public DomainBareJid findService(CharSequence feature, boolean useCache)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return findService(CollectionUtil.setOf(feature), useCache);
     }
 
     public DomainBareJid findService(Set<? extends CharSequence> features, boolean useCache) throws NoResponseException,
-                    XMPPErrorException, NotConnectedException, InterruptedException {
+            XMPPErrorException, NotConnectedException, InterruptedException {
         return findService(features, useCache, null, null);
     }
 
@@ -1034,7 +1085,7 @@ public final class ServiceDiscoveryManager extends Manager {
             renewEntityCapsPerformed.incrementAndGet();
 
             DiscoverInfoBuilder discoverInfoBuilder = DiscoverInfo.builder("synthetized-disco-info-response")
-                            .ofType(IQ.Type.result);
+                    .ofType(IQ.Type.result);
             addDiscoverInfoTo(discoverInfoBuilder);
             DiscoverInfo synthesizedDiscoveryInfo = discoverInfoBuilder.build();
 
@@ -1042,13 +1093,11 @@ public final class ServiceDiscoveryManager extends Manager {
                 entityCapabilitiesChangedListener.onEntityCapabilitiesChanged(synthesizedDiscoveryInfo);
             }
 
-            // Re-send the last sent presence, and let the stanza interceptor
-            // add a <c/> node to it.
-            // See http://xmpp.org/extensions/xep-0115.html#advertise
-            // We only send a presence packet if there was already one send
-            // to respect ConnectionConfiguration.isSendPresence()
+            // Re-send the last sent presence, and let the stanza interceptor add a <c/> node to it.
+            // See http://xmpp.org/extensions/xep-0115.html#advertise. We only send a presence packet
+            // if there was already one send to respect ConnectionConfiguration.isSendPresence()
             final Presence presenceSend = this.presenceSend;
-            if (connection.isAuthenticated() && presenceSend != null) {
+            if (connection.isAuthenticated() && isSendPresence && presenceSend != null) {
                 Presence presence = presenceSend.asBuilder(connection).build();
                 try {
                     connection.sendStanza(presence);
@@ -1096,6 +1145,5 @@ public final class ServiceDiscoveryManager extends Manager {
             appendable.append("renew-entitycaps-performed: ").append(renewEntityCapsPerformed).append('\n');
             appendable.append("scheduled-renew-entitycaps-avoided: ").append(scheduledRenewEntityCapsAvoided).append('\n');
         }
-
     }
 }

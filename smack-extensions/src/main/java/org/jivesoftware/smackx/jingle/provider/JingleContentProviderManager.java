@@ -17,29 +17,122 @@
 package org.jivesoftware.smackx.jingle.provider;
 
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.jivesoftware.smackx.jingle.JingleDescriptionManager;
+import org.jivesoftware.smackx.jingle.JingleSecurityManager;
+import org.jivesoftware.smackx.jingle.adapter.JingleDescriptionAdapter;
+import org.jivesoftware.smackx.jingle.adapter.JingleSecurityAdapter;
+import org.jivesoftware.smackx.jingle.adapter.JingleTransportAdapter;
+import org.jivesoftware.smackx.jingle.transports.JingleTransportManager;
+import org.jivesoftware.smackx.jingle_rtp.DefaultElementProvider;
+
+/**
+ * Manager for JingleContentProvider (XEP-0234).
+ * @see <a href="https://xmpp.org/extensions/xep-0234.html">XEP-0234: Jingle File Transfer 0.19.1 (2019-06-19)</a>
+ *
+ * @author Florian Schmaus
+ * @author Eng Chong Meng
+ */
 public class JingleContentProviderManager {
 
     private static final Map<String, JingleContentDescriptionProvider<?>> jingleContentDescriptionProviders = new ConcurrentHashMap<>();
-
     private static final Map<String, JingleContentTransportProvider<?>> jingleContentTransportProviders = new ConcurrentHashMap<>();
+    private static final Map<String, JingleContentSecurityProvider<?>> jingleContentSecurityProviders = new ConcurrentHashMap<>();
 
+    private static final Map<String, DefaultElementProvider<?>> jingleContentElementProviders = new ConcurrentHashMap<>();
+
+    private static final Map<String, JingleDescriptionAdapter<?>> descriptionAdapters = new WeakHashMap<>();
+    private static final Map<String, JingleTransportAdapter<?>> transportAdapters = new WeakHashMap<>();
+    private static final Map<String, JingleSecurityAdapter<?>> securityAdapters = new WeakHashMap<>();
+
+    private static final Map<String, JingleDescriptionManager> descriptionManagers = new WeakHashMap<>();
+    private static final Map<String, JingleTransportManager<?>> transportManagers = new WeakHashMap<>();
+    private static final Map<String, JingleSecurityManager> securityManagers = new WeakHashMap<>();
+
+    // JingleProvide find description Provider via jingleContentDescriptionProviders.
     public static JingleContentDescriptionProvider<?> addJingleContentDescriptionProvider(String namespace,
-                    JingleContentDescriptionProvider<?> provider) {
+            JingleContentDescriptionProvider<?> provider) {
         return jingleContentDescriptionProviders.put(namespace, provider);
     }
-
     public static JingleContentDescriptionProvider<?> getJingleContentDescriptionProvider(String namespace) {
         return jingleContentDescriptionProviders.get(namespace);
     }
 
+    // JingleProvide find transport Provider via jingleContentTransportProviders.
     public static JingleContentTransportProvider<?> addJingleContentTransportProvider(String namespace,
-                    JingleContentTransportProvider<?> provider) {
+            JingleContentTransportProvider<?> provider) {
         return jingleContentTransportProviders.put(namespace, provider);
     }
-
     public static JingleContentTransportProvider<?> getJingleContentTransportProvider(String namespace) {
         return jingleContentTransportProviders.get(namespace);
+    }
+
+    // JingleProvide find security Provider via jingleContentTransportProviders.
+    public static JingleContentSecurityProvider<?> addJingleContentSecurityProvider(String namespace,
+            JingleContentSecurityProvider<?> provider) {
+        return jingleContentSecurityProviders.put(namespace, provider);
+    }
+    public static JingleContentSecurityProvider<?> getJingleContentSecurityProvider(String namespace) {
+        return jingleContentSecurityProviders.get(namespace);
+    }
+
+    public static void addJingleDescriptionAdapter(JingleDescriptionAdapter<?> adapter) {
+        descriptionAdapters.put(adapter.getNamespace(), adapter);
+    }
+
+    public static JingleDescriptionAdapter<?> getJingleDescriptionAdapter(String namespace) {
+        return descriptionAdapters.get(namespace);
+    }
+
+    public static void addJingleTransportAdapter(JingleTransportAdapter<?> adapter) {
+        transportAdapters.put(adapter.getNamespace(), adapter);
+    }
+
+    public static JingleTransportAdapter<?> getJingleTransportAdapter(String namespace) {
+        return transportAdapters.get(namespace);
+    }
+
+    public static void addJingleSecurityAdapter(JingleSecurityAdapter<?> adapter) {
+        securityAdapters.put(adapter.getNamespace(), adapter);
+    }
+
+    public static JingleSecurityAdapter<?> getJingleSecurityAdapter(String namespace) {
+        return securityAdapters.get(namespace);
+    }
+
+    public static void addJingleDescriptionManager(JingleDescriptionManager manager) {
+        descriptionManagers.put(manager.getNamespace(), manager);
+    }
+
+    public static JingleDescriptionManager getDescriptionManager(String namespace) {
+        return descriptionManagers.get(namespace);
+    }
+
+    public static void addJingleTransportManager(JingleTransportManager<?> manager) {
+        transportManagers.put(manager.getNamespace(), manager);
+    }
+
+    public static JingleTransportManager<?> getTransportManager(String namespace) {
+        return transportManagers.get(namespace);
+    }
+
+    public static void addJingleSecurityManager(JingleSecurityManager manager) {
+        securityManagers.put(manager.getNamespace(), manager);
+    }
+
+    public static JingleSecurityManager getSecurityManager(String namespace) {
+        return securityManagers.get(namespace);
+    }
+
+    // Use by Jingle description and transport provider to pharse its child elements.
+    public static DefaultElementProvider<?> addJingleContentELementProvider(String elementName,
+            DefaultElementProvider<?> provider) {
+        return jingleContentElementProviders.put(elementName, provider);
+    }
+
+    public static DefaultElementProvider<?> getJingleContentElementProvider(String elementName) {
+        return jingleContentElementProviders.get(elementName);
     }
 }

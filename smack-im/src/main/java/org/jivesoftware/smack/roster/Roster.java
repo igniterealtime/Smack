@@ -1941,7 +1941,7 @@ public final class Roster extends Manager {
                                     + iqRequest);
                 } else if (!from.equals(ourBareJid)) {
                     LOGGER.warning("Ignoring roster push with a non matching 'from' ourJid='" + ourBareJid + "' from='"
-                            + from + "'");
+                            + from + "'" + iqRequest.toXML());
                     return IQ.createErrorResponse(iqRequest, Condition.service_unavailable);
                 }
             }

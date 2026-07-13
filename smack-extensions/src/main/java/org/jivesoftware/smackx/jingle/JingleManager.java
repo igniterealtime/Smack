@@ -29,6 +29,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.iqrequest.AbstractIqRequestHandler;
 import org.jivesoftware.smack.iqrequest.IQRequestHandler.Mode;
 import org.jivesoftware.smack.packet.IQ;
+import org.jivesoftware.smack.packet.id.UuidStanzaIdSource;
 import org.jivesoftware.smack.util.StringUtils;
 
 import org.jivesoftware.smackx.jingle.element.Jingle;
@@ -69,7 +70,6 @@ public final class JingleManager extends Manager {
 
     private JingleManager(XMPPConnection connection) {
         super(connection);
-
         jutil = new JingleUtil(connection);
 
         connection.registerIQRequestHandler(
@@ -89,22 +89,21 @@ public final class JingleManager extends Manager {
                         }
 
                         if (jingle.getAction() == JingleAction.session_initiate) {
-
                             JingleContent content = jingle.getContents().get(0);
                             JingleContentDescription description = content.getDescription();
-                            JingleHandler jingleDescriptionHandler = descriptionHandlers.get(
-                                    description.getNamespace());
+                            JingleHandler jingleDescriptionHandler
+                                    = descriptionHandlers.get(description.getNamespace());
 
                             if (jingleDescriptionHandler == null) {
                                 // Unsupported Application
-                                LOGGER.log(Level.WARNING, "Unsupported Jingle application.");
+                                LOGGER.log(Level.WARNING, "Unsupported Jingle application: (" + iqRequest.getStanzaId() + ") " + sid);
                                 return jutil.createSessionTerminateUnsupportedApplications(fullFrom, sid);
                             }
                             return jingleDescriptionHandler.handleJingleRequest(jingle);
                         }
 
                         // Unknown session
-                        LOGGER.log(Level.WARNING, "Unknown session.");
+                        LOGGER.log(Level.WARNING, "Unknown session: (" + iqRequest.getStanzaId() + ") " + sid);
                         return jutil.createErrorUnknownSession(jingle);
                     }
                 });
@@ -130,5 +129,9 @@ public final class JingleManager extends Manager {
 
     public static String randomId() {
         return StringUtils.randomString(24);
+    }
+
+    public static String randomUuid() {
+        return UuidStanzaIdSource.INSTANCE.getNewStanzaId();
     }
 }

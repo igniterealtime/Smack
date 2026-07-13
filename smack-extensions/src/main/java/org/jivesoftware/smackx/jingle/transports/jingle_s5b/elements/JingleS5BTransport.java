@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
@@ -32,8 +32,11 @@ import org.jivesoftware.smackx.jingle.element.JingleContentTransportInfo;
 
 /**
  * Socks5Bytestream transport element.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
-public class JingleS5BTransport extends JingleContentTransport implements ExtensionElement {
+public class JingleS5BTransport extends JingleContentTransport implements XmlElement {
     public static final String NAMESPACE_V1 = "urn:xmpp:jingle:transports:s5b:1";
     public static final String ATTR_DSTADDR = "dstaddr";
     public static final String ATTR_MODE = "mode";
@@ -92,15 +95,19 @@ public class JingleS5BTransport extends JingleContentTransport implements Extens
     }
 
     public static Builder getBuilder() {
-        return new Builder();
+        return new Builder(ELEMENT, NAMESPACE_V1);
     }
 
-    public static class Builder {
+    public static class Builder extends JingleContentTransport.Builder{
         private String streamId;
         private String dstAddr;
         private Bytestream.Mode mode;
         private final ArrayList<JingleContentTransportCandidate> candidates = new ArrayList<>();
         private JingleContentTransportInfo info;
+
+        protected Builder(String element, String namespace) {
+            super(element, namespace);
+        }
 
         public Builder setStreamId(String sid) {
             this.streamId = sid;
@@ -154,6 +161,7 @@ public class JingleS5BTransport extends JingleContentTransport implements Extens
             return setTransportInfo(JingleS5BTransportInfo.ProxyError.INSTANCE);
         }
 
+        @Override
         public JingleS5BTransport build() {
             return new JingleS5BTransport(candidates, info, streamId, dstAddr, mode);
         }

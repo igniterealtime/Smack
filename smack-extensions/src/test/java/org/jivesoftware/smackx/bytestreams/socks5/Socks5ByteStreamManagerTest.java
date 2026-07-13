@@ -1030,9 +1030,15 @@ public class Socks5ByteStreamManagerTest {
 
         List<StreamHost> localStreamHost = byteStreamManager.getLocalStreamHost();
 
+        /*
+         * The below test is not valid if atalk fix is implemented in Socks5Proxy#stop() i.e.
+         * Stop Sock5Proxy so a new localAddresses are retrieved on new authentication process. socks5Server = null;
+         */
         // must be only 1 stream host with XMPP local address IP
-        assertEquals(1, localStreamHost.size());
-        assertEquals("81.72.63.54", localStreamHost.get(0).getAddress().toString());
+        // assertEquals(1, localStreamHost.size());
+
+        // Invalid test after the above fix.
+        // assertEquals("81.72.63.54", localStreamHost.get(0).getAddress().toString());
         assertEquals(initiatorJID, localStreamHost.get(0).getJID());
     }
 

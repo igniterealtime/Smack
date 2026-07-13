@@ -48,6 +48,7 @@ import org.jivesoftware.smackx.pubsub.EventElement;
 import org.jivesoftware.smackx.pubsub.Item;
 import org.jivesoftware.smackx.pubsub.ItemsExtension;
 import org.jivesoftware.smackx.pubsub.LeafNode;
+import org.jivesoftware.smackx.pubsub.NodeExtension;
 import org.jivesoftware.smackx.pubsub.PayloadItem;
 import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.pubsub.PubSubFeature;
@@ -245,6 +246,7 @@ public final class PepManager extends Manager {
      *
      * @param nodeId the ID of the node to publish on.
      * @param item the item to publish.
+     * @param nodeExtension NodeExtension to be included.
      * @return the leaf node the item was published on.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -252,6 +254,12 @@ public final class PepManager extends Manager {
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      */
+    public LeafNode publish(String nodeId, Item item, NodeExtension nodeExtension) throws NotConnectedException, InterruptedException,
+            NoResponseException, XMPPErrorException, NotALeafNodeException {
+        // PEP nodes are auto created if not existent. Hence, use PubSubManager.tryToPublishAndPossibleAutoCreate() here.
+        return pepPubSubManager.tryToPublishAndPossibleAutoCreate(nodeId, item, nodeExtension);
+    }
+
     public LeafNode publish(String nodeId, Item item) throws NotConnectedException, InterruptedException,
                     NoResponseException, XMPPErrorException, NotALeafNodeException {
         // PEP nodes are auto created if not existent. Hence, use PubSubManager.tryToPublishAndPossibleAutoCreate() here.
