@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
 
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -37,6 +38,7 @@ import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jxmpp.util.XmppDateTime;
 
 @SpecificationReference(document = "XEP-0080", version = "1.9")
@@ -45,8 +47,11 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
     private final GeoLocationManager glm1;
     private final GeoLocationManager glm2;
 
-    public GeolocationIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public GeolocationIntegrationTest(SmackIntegrationTestEnvironment environment) throws TestNotPossibleException, XMPPErrorException, NotConnectedException, NoResponseException, InterruptedException {
         super(environment);
+        if (!PepManager.getInstanceFor(conOne).isSupported()) {
+            throw new TestNotPossibleException("Server does not advertise support for the required PEP features");
+        }
         glm1 = GeoLocationManager.getInstanceFor(conOne);
         glm2 = GeoLocationManager.getInstanceFor(conTwo);
     }

@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.usertune;
 
 import java.net.URI;
 
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException;
@@ -25,6 +26,7 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.pep.PepEventListener;
+import org.jivesoftware.smackx.pep.PepManager;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
 import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
@@ -43,8 +45,11 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
     private final UserTuneManager utm1;
     private final UserTuneManager utm2;
 
-    public UserTuneIntegrationTest(SmackIntegrationTestEnvironment environment) throws NotLoggedInException {
+    public UserTuneIntegrationTest(SmackIntegrationTestEnvironment environment) throws NotLoggedInException, XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException, InterruptedException, TestNotPossibleException {
         super(environment);
+        if (!PepManager.getInstanceFor(conOne).isSupported()) {
+            throw new TestNotPossibleException("Server does not advertise support the required PEP features");
+        }
         utm1 = UserTuneManager.getInstanceFor(conOne);
         utm2 = UserTuneManager.getInstanceFor(conTwo);
     }

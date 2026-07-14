@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smackx.mood;
 
+import org.igniterealtime.smack.inttest.TestNotPossibleException;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 
@@ -31,6 +32,7 @@ import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import org.jivesoftware.smackx.pep.PepManager;
 
 @SpecificationReference(document = "XEP-0107", version = "1.2.1")
 public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
@@ -38,8 +40,11 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
     private final MoodManager mm1;
     private final MoodManager mm2;
 
-    public MoodIntegrationTest(SmackIntegrationTestEnvironment environment) {
+    public MoodIntegrationTest(SmackIntegrationTestEnvironment environment) throws XMPPException.XMPPErrorException, SmackException.NotConnectedException, SmackException.NoResponseException, InterruptedException, TestNotPossibleException {
         super(environment);
+        if (!PepManager.getInstanceFor(conOne).isSupported()) {
+            throw new TestNotPossibleException("Server does not advertise support for the required PEP features");
+        }
         mm1 = MoodManager.getInstanceFor(conOne);
         mm2 = MoodManager.getInstanceFor(conTwo);
     }
