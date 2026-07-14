@@ -14,13 +14,13 @@ smack-extensions and smack-experimental."""
 // sourceSet.test of the core subproject
 dependencies {
 	implementation project(':smack-xmlparser-xpp3')
-	// Depend on minidns-android21 as optional dependency, even if may
+	// Depend on minidns-android23 as optional dependency, even if may
 	// not need it. Can't hurt to have it in the programm path with
 	// the correct MiniDNS version as it won't hurt even if the
-	// Android version is smaller then 21. Note that we deliberatly do
+	// Android version is smaller then 23. Note that we deliberately do
 	// not add this to smack-minidns, as this dependency may also be
 	// used in non-Android projects.
-	implementation "org.minidns:minidns-android21:$miniDnsVersion"
+	implementation "org.minidns:minidns-android23:$miniDnsVersion"
 
 	api project(':smack-core')
 	api project(':smack-im')

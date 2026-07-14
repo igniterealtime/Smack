@@ -3,6 +3,7 @@ plugins {
 	// have a ideaProject task, so let's add one.
 	id 'idea'
 
+	id 'org.igniterealtime.smack.java-common-conventions'
 	id 'org.igniterealtime.smack.javadoc-conventions'
 }
 
@@ -32,12 +33,10 @@ tasks.register('javadocAll', Javadoc) {
 	}
 
 	doFirst {
-		def staticJxmppVersion = getResolvedVersion('org.jxmpp:jxmpp-core')
-		def staticMiniDnsVersion = getResolvedVersion('org.minidns:minidns-core')
 		options.links = [
 			"https://docs.oracle.com/en/java/javase/${javaMajor}/docs/api/",
-			"https://jxmpp.org/releases/${staticJxmppVersion}/javadoc/",
-			"https://minidns.org/releases/${staticMiniDnsVersion}/javadoc/",
+			"https://jxmpp.org/releases/${jxmppVersion}/javadoc/",
+			"https://minidns.org/releases/${miniDnsVersion}/javadoc/",
 		] as String[]
 	}
 
@@ -93,25 +92,4 @@ task inttestFull {
 		sinttest,
 		omemoSignalIntTest,
 	]}
-}
-
-def getResolvedVersion(queriedProject = 'smack-core', component) {
-	def configuration = project(queriedProject)
-		.configurations
-		.compileClasspath
-
-	def artifact = configuration
-		.resolvedConfiguration
-		.resolvedArtifacts
-		.findAll {
-			// 'it' is of type ResolvedArtifact, 'id' of
-			// Component*Artifact*Identifier, and we check the
-			// ComponentIdentifier.
-			it.id.getComponentIdentifier() instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
-		}
-	    .find {
-			it.id.getComponentIdentifier().toString().startsWith(component + ':')
-		}
-
-	artifact.getModuleVersion().getId().getVersion()
 }
