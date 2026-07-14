@@ -18,6 +18,7 @@ package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
 
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
@@ -49,6 +50,12 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         super(environment);
         glm1 = GeoLocationManager.getInstanceFor(conOne);
         glm2 = GeoLocationManager.getInstanceFor(conTwo);
+    }
+
+    @BeforeClass
+    public void subscribe() throws Exception {
+        // RFC6120 10.5.4 and RFC 6121 8.5.3.1 are at odds with each-other in regard to full-JID IQ delivery. Best possible chance of that happening is with mutual subscription.
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
     }
 
     @AfterClass

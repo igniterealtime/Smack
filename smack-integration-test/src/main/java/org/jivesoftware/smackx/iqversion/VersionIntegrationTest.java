@@ -19,6 +19,10 @@ package org.jivesoftware.smackx.iqversion;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.igniterealtime.smack.inttest.annotations.AfterClass;
+import org.igniterealtime.smack.inttest.annotations.BeforeClass;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
+import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
@@ -37,11 +41,21 @@ public class VersionIntegrationTest extends AbstractSmackIntegrationTest {
         super(environment);
     }
 
-    @SmackIntegrationTest
-    public void testVersion() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        // TODO put into @BeforeClass method
+    @BeforeClass
+    public void subscribe() throws Exception {
         VersionManager.setAutoAppendSmackVersion(false);
 
+        // RFC6120 10.5.4 and RFC 6121 8.5.3.1 are at odds with each-other in regard to full-JID IQ delivery. Best possible chance of that happening is with mutual subscription.
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
+    }
+
+    @AfterClass
+    public void unsubscribe() throws SmackException.NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
+    }
+
+    @SmackIntegrationTest
+    public void testVersion() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         VersionManager versionManagerOne = VersionManager.getInstanceFor(conOne);
         VersionManager versionManagerTwo = VersionManager.getInstanceFor(conTwo);
         final String versionName = "Smack Integration Test " + testRunId;
