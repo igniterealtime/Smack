@@ -31,9 +31,9 @@ ext {
 
 	jxmppVersion = '[1.1.0, 1.1.999]'
 	miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
-	junitVersion = '5.12.2'
-	commonsIoVersion = '2.17.0'
-	bouncyCastleVersion = '1.73'
+	junitVersion = '5.14.4'
+	commonsIoVersion = '2.22.0'
+	bouncyCastleVersion = '1.84'
 	guavaVersion = '33.3.1-jre'
 	mockitoVersion = '5.18.0'
 	orgReflectionsVersion = '0.10.2'
