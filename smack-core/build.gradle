@@ -8,7 +8,7 @@ description = """\
 Smack core components."""
 
 ext {
-	xmlUnitVersion = '2.10.0'
+	xmlUnitVersion = '2.13.0'
 }
 
 dependencies {
