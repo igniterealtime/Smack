@@ -34,7 +34,7 @@ ext {
 	junitVersion = '5.12.2'
 	commonsIoVersion = '2.22.0'
 	bouncyCastleVersion = '1.85.2'
-	guavaVersion = '33.3.1-jre'
+	guavaVersion = '33.6.0-jre'
 	mockitoVersion = '5.18.0'
 	orgReflectionsVersion = '0.10.2'
 
