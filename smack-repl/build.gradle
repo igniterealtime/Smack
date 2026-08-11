@@ -17,7 +17,7 @@ dependencies {
     api project(':smack-examples')
 
     implementation "org.scala-lang:scala-library:$scalaVersion"
-    implementation "com.lihaoyi:ammonite_$scalaVersion:3.0.0-M1"
+    implementation "com.lihaoyi:ammonite_$scalaVersion:3.0.9"
 }
 
 scalastyle {
