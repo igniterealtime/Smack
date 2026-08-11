@@ -9,7 +9,7 @@ plugins {
 	id 'java-test-fixtures'
 	id 'net.ltgt.errorprone'
 	id 'signing'
-	id 'com.github.ben-manes.versions'
+	id 'io.github.ben-manes.versions'
 	id 'com.vanniktech.maven.publish'
 
 	id 'jacoco-report-aggregation'
