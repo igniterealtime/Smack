@@ -19,7 +19,7 @@ dependencies {
 	implementation "com.google.guava:guava:${guavaVersion}"
 	implementation "org.reflections:reflections:${orgReflectionsVersion}"
 	api 'eu.geekplace.javapinning:java-pinning-java11:1.3.0'
-	implementation group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
+	implementation "commons-io:commons-io:$commonsIoVersion"
 	api "org.junit.jupiter:junit-jupiter-api:$junitVersion"
 	testFixturesApi(testFixtures(project(":smack-core")))
 	testImplementation "org.jxmpp:jxmpp-jid:$jxmppVersion:tests"
