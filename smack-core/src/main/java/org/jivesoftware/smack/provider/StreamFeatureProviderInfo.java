@@ -28,7 +28,7 @@ public final class StreamFeatureProviderInfo extends AbstractProviderInfo {
      * @param extProvider The provider implementation.
      */
     public StreamFeatureProviderInfo(String elementName, String namespace,
-                    ExtensionElementProvider<ExtensionElement> extProvider) {
+                    ExtensionElementProvider<? extends ExtensionElement> extProvider) {
         super(elementName, namespace, extProvider);
     }
 

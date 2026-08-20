@@ -80,7 +80,6 @@ import org.jivesoftware.smack.iqrequest.IQRequestHandler;
 import org.jivesoftware.smack.packet.AbstractStreamOpen;
 import org.jivesoftware.smack.packet.Bind;
 import org.jivesoftware.smack.packet.ErrorIQ;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Mechanisms;
 import org.jivesoftware.smack.packet.Message;
@@ -103,7 +102,6 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.packet.id.StanzaIdSource;
 import org.jivesoftware.smack.parsing.ParsingExceptionCallback;
 import org.jivesoftware.smack.parsing.SmackParsingException;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.NonzaProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.sasl.SASLErrorException;
@@ -1903,7 +1901,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
                     streamFeature = PacketParserUtils.parseCompressionFeature(parser);
                     break;
                 default:
-                    ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getStreamFeatureProvider(name, namespace);
+                    var provider = ProviderManager.getStreamFeatureProvider(name, namespace);
                     if (provider != null) {
                         streamFeature = provider.parse(parser, incomingStreamXmlEnvironment, getJxmppContext());
                     }

@@ -114,9 +114,9 @@ import org.jivesoftware.smack.util.XmppElementUtil;
  */
 public final class ProviderManager {
 
-    private static final Map<QName, ExtensionElementProvider<ExtensionElement>> extensionProviders = new ConcurrentHashMap<>();
+    private static final Map<QName, ExtensionElementProvider<? extends ExtensionElement>> extensionProviders = new ConcurrentHashMap<>();
     private static final Map<QName, IqProvider<IQ>> iqProviders = new ConcurrentHashMap<>();
-    private static final Map<QName, ExtensionElementProvider<ExtensionElement>> streamFeatureProviders = new ConcurrentHashMap<>();
+    private static final Map<QName, ExtensionElementProvider<? extends ExtensionElement>> streamFeatureProviders = new ConcurrentHashMap<>();
     private static final Map<QName, NonzaProvider<? extends Nonza>> nonzaProviders = new ConcurrentHashMap<>();
 
     static {
@@ -243,12 +243,12 @@ public final class ProviderManager {
      * @param namespace namespace associated with extension provider.
      * @return the extension provider.
      */
-    public static ExtensionElementProvider<ExtensionElement> getExtensionProvider(String elementName, String namespace) {
+    public static ExtensionElementProvider<? extends ExtensionElement> getExtensionProvider(String elementName, String namespace) {
         QName key = getQName(elementName, namespace);
         return getExtensionProvider(key);
     }
 
-    public static ExtensionElementProvider<ExtensionElement> getExtensionProvider(QName qname) {
+    public static ExtensionElementProvider<? extends ExtensionElement> getExtensionProvider(QName qname) {
         return extensionProviders.get(qname);
     }
 
@@ -268,7 +268,7 @@ public final class ProviderManager {
         // First remove existing providers
         QName key = removeExtensionProvider(elementName, namespace);
         if (provider instanceof ExtensionElementProvider) {
-            extensionProviders.put(key, (ExtensionElementProvider<ExtensionElement>) provider);
+            extensionProviders.put(key, (ExtensionElementProvider<? extends ExtensionElement>) provider);
         } else {
             throw new IllegalArgumentException("Provider must be a PacketExtensionProvider");
         }
@@ -296,21 +296,26 @@ public final class ProviderManager {
      *
      * @return all PacketExtensionProvider instances.
      */
-    public static List<ExtensionElementProvider<ExtensionElement>> getExtensionProviders() {
-        List<ExtensionElementProvider<ExtensionElement>> providers = new ArrayList<>(extensionProviders.size());
+    public static List<ExtensionElementProvider<? extends ExtensionElement>> getExtensionProviders() {
+        var providers = new ArrayList<ExtensionElementProvider<? extends ExtensionElement>>(extensionProviders.size());
         providers.addAll(extensionProviders.values());
         return providers;
     }
 
-    public static ExtensionElementProvider<ExtensionElement> getStreamFeatureProvider(String elementName, String namespace) {
+    public static ExtensionElementProvider<? extends ExtensionElement> getStreamFeatureProvider(String elementName, String namespace) {
         QName key = getQName(elementName, namespace);
         return streamFeatureProviders.get(key);
     }
 
-    public static void addStreamFeatureProvider(String elementName, String namespace, ExtensionElementProvider<ExtensionElement> provider) {
-        validate(elementName, namespace);
+
+    public static void addStreamFeatureProvider(String elementName, String namespace, ExtensionElementProvider<? extends ExtensionElement> provider) {
         QName key = getQName(elementName, namespace);
-        streamFeatureProviders.put(key, provider);
+        addStreamFeatureProvider(key, provider);
+    }
+
+    public static void addStreamFeatureProvider(QName qname, ExtensionElementProvider<? extends ExtensionElement> provider) {
+        validate(qname.getLocalPart(), qname.getNamespaceURI());
+        streamFeatureProviders.put(qname, provider);
     }
 
     public static void removeStreamFeatureProvider(String elementName, String namespace) {

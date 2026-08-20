@@ -18,7 +18,6 @@ package org.jivesoftware.smackx.pubsub.provider;
 
 import java.io.IOException;
 
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -58,7 +57,7 @@ public class ItemProvider extends ExtensionElementProvider<Item>  {
                 String payloadElemName = parser.getName();
                 String payloadNS = parser.getNamespace();
 
-                final ExtensionElementProvider<ExtensionElement> extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
+                var extensionProvider = ProviderManager.getExtensionProvider(payloadElemName, payloadNS);
                 if (extensionProvider == null) {
                     // TODO: Should we use StandardExtensionElement in this case? And probably remove SimplePayload all together.
                     CharSequence payloadText = PacketParserUtils.parseElement(parser, true);
