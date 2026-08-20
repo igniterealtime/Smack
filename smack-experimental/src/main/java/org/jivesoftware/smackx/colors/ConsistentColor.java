@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.colors;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.SHA1;
 
-import org.hsluv.HUSLColorConverter;
+
 
 /**
  * Smack API for Consistent Color Generation (XEP-0392).
@@ -122,7 +122,12 @@ public class ConsistentColor {
      * @see <a href="https://www.rapidtables.com/convert/color/hsl-to-rgb.html">HSL to RGB conversion</a>
      */
     private static double[] hsluvToRgb(double hue, double saturation, double lightness) {
-        return HUSLColorConverter.hsluvToRgb(new double[] {hue, saturation, lightness});
+        org.hsluv.HsluvColorConverter converter = new org.hsluv.HsluvColorConverter();
+        converter.hsluv_h = hue;
+        converter.hsluv_s = saturation;
+        converter.hsluv_l = lightness;
+        converter.hsluvToRgb();
+        return new double[] {converter.rgb_r, converter.rgb_g, converter.rgb_b};
     }
 
     private static double[] mixWithBackground(double[] rgbi, float[] rgbb) {

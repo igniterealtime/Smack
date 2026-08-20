@@ -1,35 +1,33 @@
 plugins {
 	id 'org.igniterealtime.smack.java-common-conventions'
-	id "com.github.alisiikh.scalastyle" version "3.5.0"
+	id 'com.diffplug.spotless' version '6.25.0'
+	id 'io.github.cosmicsilence.scalafix' version '0.2.9'
 }
 
 description = """\
 A REPL (Read-Eval-Print-Loop) for Smack, or, in other words, a CLI (Command Line Interface) for Smack."""
 
 apply plugin: 'scala'
-apply plugin: 'com.github.alisiikh.scalastyle'
 
 ext {
-    scalaVersion = '2.13.13'
+    scalaVersion = '3.3.7'
 }
 
 dependencies {
     api project(':smack-examples')
 
-    implementation "org.scala-lang:scala-library:$scalaVersion"
-    implementation "com.lihaoyi:ammonite_$scalaVersion:3.0.0-M1"
+    implementation "org.scala-lang:scala3-library_3:$scalaVersion"
+    implementation "com.lihaoyi:ammonite_$scalaVersion:3.0.9"
 }
-
-scalastyle {
-	config = new File(rootConfigDir, 'scalaStyle.xml')
-	verbose = true
-	failOnWarning = true
-}
-
-check.dependsOn(scalastyleCheck)
 
 task printClasspath(dependsOn: assemble) {
     doLast {
         println sourceSets.main.runtimeClasspath.asPath
+    }
+}
+
+spotless {
+    scala {
+        scalafmt('3.7.17').configFile(rootProject.file('.scalafmt.conf'))
     }
 }

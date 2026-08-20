@@ -18,7 +18,7 @@ dependencies {
 	testImplementation "org.bouncycastle:bcprov-jdk18on:${bouncyCastleVersion}"
 
 	testFixturesApi(testFixtures(project(":smack-core")))
-	testImplementation group: 'commons-io', name: 'commons-io', version: "$commonsIoVersion"
+	testImplementation "commons-io:commons-io:$commonsIoVersion"
 
 	// TODO: Migrate Junit4 tests to Junit5.
 	testImplementation "org.junit.vintage:junit-vintage-engine:$junitVersion"

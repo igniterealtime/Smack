@@ -9,5 +9,5 @@ Use dnsjava for DNS SRV lookups."""
 
 dependencies {
 	api project(':smack-core')
-	implementation 'dnsjava:dnsjava:[3.0.0,3.0.9999]'
+	implementation 'dnsjava:dnsjava:[3.0.0,3.6.9999]'
 }

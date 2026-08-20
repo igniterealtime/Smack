@@ -31,16 +31,6 @@ tasks.register('javadocAll', Javadoc) {
 		overview = "$projectDir/resources/javadoc-overview.html"
 	}
 
-	doFirst {
-		def staticJxmppVersion = getResolvedVersion('org.jxmpp:jxmpp-core')
-		def staticMiniDnsVersion = getResolvedVersion('org.minidns:minidns-core')
-		options.links = [
-			"https://docs.oracle.com/en/java/javase/${javaMajor}/docs/api/",
-			"https://jxmpp.org/releases/${staticJxmppVersion}/javadoc/",
-			"https://minidns.org/releases/${staticMiniDnsVersion}/javadoc/",
-		] as String[]
-	}
-
 	def allJavadocTasksProvider = project.provider {
 		javadocAllProjects
 			.collect { it.tasks.named('javadoc', Javadoc).get() }
@@ -77,6 +67,21 @@ tasks.register('javadocAll', Javadoc) {
 	}
 }
 
+project.gradle.projectsEvaluated {
+	def smackCoreCompileClasspath = project(':smack-core').configurations.compileClasspath
+	tasks.named('javadocAll').configure {
+		doFirst {
+			def staticJxmppVersion = getResolvedVersion(smackCoreCompileClasspath, 'org.jxmpp:jxmpp-core')
+			def staticMiniDnsVersion = getResolvedVersion(smackCoreCompileClasspath, 'org.minidns:minidns-core')
+			options.links = [
+				"https://docs.oracle.com/en/java/javase/${javaMajor}/docs/api/",
+				"https://jxmpp.org/releases/${staticJxmppVersion}/javadoc/",
+				"https://minidns.org/releases/${staticMiniDnsVersion}/javadoc/",
+			] as String[]
+		}
+	}
+}
+
 task sinttest {
 	description = 'Verify correct functionality of Smack by running some integration tests.'
 	dependsOn 'smack-integration-test:run'
@@ -95,11 +100,7 @@ task inttestFull {
 	]}
 }
 
-def getResolvedVersion(queriedProject = 'smack-core', component) {
-	def configuration = project(queriedProject)
-		.configurations
-		.compileClasspath
-
+def getResolvedVersion(configuration, component) {
 	def artifact = configuration
 		.resolvedConfiguration
 		.resolvedArtifacts
