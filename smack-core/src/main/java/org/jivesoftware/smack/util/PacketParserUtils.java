@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2003-2007 Jive Software, 2019-2025 Florian Schmaus.
+ * Copyright 2003-2007 Jive Software, 2019-2026 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import org.jivesoftware.smack.compress.packet.Compress;
 import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
-import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
 import org.jivesoftware.smack.packet.Message;
@@ -51,7 +50,6 @@ import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.parsing.SmackParsingException;
 import org.jivesoftware.smack.parsing.StandardExtensionElementProvider;
-import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.provider.IqProvider;
 import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.xml.SmackXmlParser;
@@ -824,7 +822,7 @@ public class PacketParserUtils {
                     XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException, SmackParsingException {
         ParserUtils.assertAtStartTag(parser);
         // See if a provider is registered to handle the extension.
-        ExtensionElementProvider<ExtensionElement> provider = ProviderManager.getExtensionProvider(elementName, namespace);
+        var provider = ProviderManager.getExtensionProvider(elementName, namespace);
         if (provider != null) {
                 return provider.parse(parser, outerXmlEnvironment, jxmppContext);
         }

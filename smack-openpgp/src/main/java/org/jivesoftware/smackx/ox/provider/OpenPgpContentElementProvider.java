@@ -118,8 +118,7 @@ public abstract class OpenPgpContentElementProvider<O extends OpenPgpContentElem
                                 String pns = parser.getNamespace();
                                 switch (ptag) {
                                     case START_ELEMENT:
-                                        ExtensionElementProvider<ExtensionElement> provider =
-                                                ProviderManager.getExtensionProvider(pname, pns);
+                                        var provider = ProviderManager.getExtensionProvider(pname, pns);
                                         if (provider == null) {
                                             LOGGER.log(Level.INFO, "No provider found for " + pname + " " + pns);
                                             continue innerloop;
