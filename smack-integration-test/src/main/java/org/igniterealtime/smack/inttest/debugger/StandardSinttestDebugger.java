@@ -297,7 +297,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             }
         }
 
-        LOGGER.info("Test data file://" + basePath);
+        LOGGER.info("Test data and raw XMPP logs file://" + basePath);
     }
 
     private static void mkdirs(Path path) throws IOException {
