@@ -217,8 +217,8 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
 
         rosterTwo.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
 
-        // Modify the outbound 'subscribed' stanza, to be 'wrong' (addressed to a full rather than a bare JID), to test if the server overrides this.
-        final Consumer<PresenceBuilder> interceptor = (PresenceBuilder presenceBuilder) -> presenceBuilder.to(conOne.getUser()).build();
+        // Modify the outbound 'subscribed' stanza, to be 'wrong' (having a full rather than a bare JID in 'from'), to test if the server overrides this.
+        final Consumer<PresenceBuilder> interceptor = (PresenceBuilder presenceBuilder) -> presenceBuilder.from(conTwo.getUser()).build();
         conTwo.addPresenceInterceptor(interceptor, p -> p.getType() == Presence.Type.subscribed);
 
         final ResultSyncPoint<Presence, Exception> added = new ResultSyncPoint<>();
