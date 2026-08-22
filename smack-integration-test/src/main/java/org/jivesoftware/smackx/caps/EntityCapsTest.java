@@ -41,7 +41,6 @@ import org.jivesoftware.smack.filter.IQTypeFilter;
 import org.jivesoftware.smack.filter.PresenceTypeFilter;
 import org.jivesoftware.smack.filter.StanzaTypeFilter;
 import org.jivesoftware.smack.packet.Stanza;
-import org.jivesoftware.smack.roster.RosterUtil;
 import org.jivesoftware.smack.util.Async.ThrowingRunnable;
 
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
@@ -53,6 +52,7 @@ import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.BeforeClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
+import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 
 @SpecificationReference(document = "XEP-0115", version = "1.6.0")
 public class EntityCapsTest extends AbstractSmackIntegrationTest {
@@ -78,13 +78,13 @@ public class EntityCapsTest extends AbstractSmackIntegrationTest {
     }
 
     @BeforeClass
-    public void setUp() throws NotLoggedInException, NotConnectedException, InterruptedException, TimeoutException {
-        RosterUtil.ensureSubscribed(conOne, conTwo, timeout);
+    public void setUp() throws Exception {
+        IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
     }
 
     @AfterClass
-    public void tearDown() throws NotConnectedException, InterruptedException {
-        RosterUtil.ensureNotSubscribedToEachOther(conOne, conTwo);
+    public void tearDown() throws Exception {
+        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         ServiceDiscoveryManager[] sdms = new ServiceDiscoveryManager[] { sdmOne, sdmTwo };
         for (ServiceDiscoveryManager sdm : sdms) {
             for (String dummyFeature : dummyFeatures) {

@@ -49,7 +49,8 @@ public class IntegrationTestRosterUtil {
         final EntityFullJid presenceRequestReceiverAddress = presenceRequestReceiverConnection.getUser();
         final EntityFullJid presenceRequestingAddress = presenceRequestingConnection.getUser();
 
-        if (presenceRequestReceiverRoster.isSubscribedToMyPresence(presenceRequestingAddress)) {
+        if (presenceRequestReceiverRoster.isSubscribedToMyPresence(presenceRequestingAddress)
+                && presenceRequestingRoster.iAmSubscribedTo(presenceRequestReceiverAddress)) {
             return;
         }
 
