@@ -17,14 +17,23 @@
 package org.igniterealtime.smack.inttest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.lang.reflect.InvocationTargetException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
+import org.jivesoftware.smack.debugger.ReflectionDebuggerFactory;
+import org.jivesoftware.smack.debugger.SmackDebuggerFactory;
 import org.jivesoftware.smack.tcp.XmppTcpTransportModuleDescriptor;
+
+import org.igniterealtime.smack.inttest.debugger.SinttestDebugger;
 
 import org.junit.jupiter.api.Test;
 import org.jxmpp.stringprep.XmppStringprepException;
@@ -50,5 +59,37 @@ public class SmackIntegrationTestXmppConnectionManagerTest {
         ModularXmppClientToServerConnection connection = descriptor.construct(sinttestConfiguration);
 
         assertEquals("example.org", connection.getXMPPServiceDomain().toString());
+    }
+
+    @Test
+    public void debuggerFactoryAppliedViaApplierTest() throws Exception {
+        XmppConnectionDescriptor<
+            ModularXmppClientToServerConnection,
+            ModularXmppClientToServerConnectionConfiguration,
+            ModularXmppClientToServerConnectionConfiguration.Builder
+        > descriptor = XmppConnectionDescriptor.buildWith(
+                        ModularXmppClientToServerConnection.class,
+                        ModularXmppClientToServerConnectionConfiguration.class,
+                        ModularXmppClientToServerConnectionConfiguration.Builder.class)
+            .applyExtraConfiguration(b -> b.removeAllModules().addModule(XmppTcpTransportModuleDescriptor.class))
+            .build();
+
+        Configuration sinttestConfiguration = Configuration.builder()
+                .setService("example.org")
+                .setDebugger("standard")
+                .build();
+
+        SinttestDebugger sinttestDebugger = sinttestConfiguration.createSinttestDebugger(ZonedDateTime.now(), "test");
+        assertNotNull(sinttestDebugger);
+        SmackDebuggerFactory debuggerFactory = sinttestDebugger.getSmackDebuggerFactory();
+        assertNotNull(debuggerFactory);
+
+        ModularXmppClientToServerConnection connection = descriptor.construct(
+                sinttestConfiguration,
+                List.of(sinttestDebugger.getConnectionConfigurationBuilderApplier())
+        );
+
+        assertSame(debuggerFactory, connection.getConfiguration().getDebuggerFactory());
+        assertNotEquals(ReflectionDebuggerFactory.INSTANCE, connection.getConfiguration().getDebuggerFactory());
     }
 }

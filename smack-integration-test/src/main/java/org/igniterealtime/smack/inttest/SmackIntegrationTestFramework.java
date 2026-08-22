@@ -219,13 +219,6 @@ public class SmackIntegrationTestFramework {
         info("Starting\nSmack version: " + Smack.getVersion());
 
         sinttestDebugger = config.createSinttestDebugger(testRunResult.testRunStart, testRunResult.testRunId);
-        if (sinttestDebugger != null) {
-            // JUL Debugger will not print any information until configured to print log messages of
-            // level FINE
-            // TODO configure JUL for log?
-            SmackConfiguration.addDisabledSmackClass("org.jivesoftware.smack.debugger.JulDebugger");
-            SmackConfiguration.DEBUG = true;
-        }
         if (config.replyTimeout > 0) {
             SmackConfiguration.setDefaultReplyTimeout(config.replyTimeout);
         }

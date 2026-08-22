@@ -161,9 +161,11 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
     }
 
+    private final SmackDebuggerFactory smackDebuggerFactory = StandardSinttestSmackDebugger::new;
+
     @Override
     public SmackDebuggerFactory getSmackDebuggerFactory() {
-        return c -> new StandardSinttestSmackDebugger(c);
+        return smackDebuggerFactory;
     }
 
     @Override
