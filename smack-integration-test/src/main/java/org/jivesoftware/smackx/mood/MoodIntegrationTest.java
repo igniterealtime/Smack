@@ -16,15 +16,23 @@
  */
 package org.jivesoftware.smackx.mood;
 
+import java.util.concurrent.TimeoutException;
+
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
+
 import org.jivesoftware.smackx.mood.element.MoodElement;
 import org.jivesoftware.smackx.pep.AbstractPepIntegrationTest;
 import org.jivesoftware.smackx.pep.PepEventListener;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 
 @SpecificationReference(document = "XEP-0107", version = "1.2.1")
 public class MoodIntegrationTest extends AbstractPepIntegrationTest {
@@ -42,19 +50,26 @@ public class MoodIntegrationTest extends AbstractPepIntegrationTest {
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
      *
-     * @throws Exception if the test fails
+     * @throws NotLoggedInException if the connection is not logged in.
+     * @throws NotALeafNodeException if the PubSub node is not a leaf node.
+     * @throws NoResponseException if there was no response from the remote entity or server.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws XMPPErrorException if an XMPP error occurred.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws TimeoutException if a timeout occurred.
      */
     @SmackIntegrationTest
-    public void testNotification() throws Exception {
+    public void testNotification() throws NotLoggedInException, NotALeafNodeException, NoResponseException,
+            NotConnectedException, XMPPErrorException, InterruptedException, TimeoutException {
         Mood data = Mood.satisfied;
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
-        final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
+        final ResultSyncPoint<MoodElement, ?> moodReceived = new ResultSyncPoint<>();
 
         final PepEventListener<MoodElement> moodListener = (jid, moodElement, id, message) -> {
             if (moodElement.getMood().equals(data)) {
-                moodReceived.signal();
+                moodReceived.signal(moodElement);
             }
         };
 
@@ -77,19 +92,26 @@ public class MoodIntegrationTest extends AbstractPepIntegrationTest {
      * Verifies that a notification for a previously sent publication is received as soon as notification filtering
      * has been adjusted to allow for the notification to be delivered.
      *
-     * @throws Exception if the test fails
+     * @throws NotLoggedInException if the connection is not logged in.
+     * @throws NotALeafNodeException if the PubSub node is not a leaf node.
+     * @throws NoResponseException if there was no response from the remote entity or server.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws XMPPErrorException if an XMPP error occurred.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws TimeoutException if a timeout occurred.
      */
     @SmackIntegrationTest
-    public void testNotificationAfterFilterChange() throws Exception {
+    public void testNotificationAfterFilterChange() throws NotLoggedInException, NotALeafNodeException,
+            NoResponseException, NotConnectedException, XMPPErrorException, InterruptedException, TimeoutException {
         Mood data = Mood.cautious;
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
-        final SimpleResultSyncPoint moodReceived = new SimpleResultSyncPoint();
+        final ResultSyncPoint<MoodElement, ?> moodReceived = new ResultSyncPoint<>();
 
         final PepEventListener<MoodElement> moodListener = (jid, moodElement, id, message) -> {
             if (moodElement.getMood().equals(data)) {
-                moodReceived.signal();
+                moodReceived.signal(moodElement);
             }
         };
 

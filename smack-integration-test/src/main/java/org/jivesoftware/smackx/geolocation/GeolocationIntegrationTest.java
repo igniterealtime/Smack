@@ -17,17 +17,25 @@
 package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.util.concurrent.TimeoutException;
+
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
 import org.jivesoftware.smackx.pep.AbstractPepIntegrationTest;
 import org.jivesoftware.smackx.pep.PepEventListener;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 
 import org.jxmpp.util.XmppDateTime;
 
@@ -47,10 +55,18 @@ public class GeolocationIntegrationTest extends AbstractPepIntegrationTest {
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
      *
-     * @throws Exception if the test fails
+     * @throws NotLoggedInException if the connection is not logged in.
+     * @throws NotALeafNodeException if the PubSub node is not a leaf node.
+     * @throws NoResponseException if there was no response from the remote entity or server.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws XMPPErrorException if an XMPP error occurred.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws TimeoutException if a timeout occurred.
+     * @throws ParseException if date parsing fails.
      */
     @SmackIntegrationTest
-    public void testNotification() throws Exception {
+    public void testNotification() throws NotLoggedInException, NotALeafNodeException, NoResponseException,
+            NotConnectedException, XMPPErrorException, InterruptedException, TimeoutException, ParseException {
         GeoLocation.Builder builder = GeoLocation.builder();
         GeoLocation data = builder.setAccuracy(23d)
                                             .setAlt(1000d)
@@ -73,16 +89,16 @@ public class GeolocationIntegrationTest extends AbstractPepIntegrationTest {
                                             .setText("Unit Testing GeoLocation")
                                             .setTimestamp(XmppDateTime.parseDate("2004-02-19"))
                                             .setTzo("+5:30")
-                                            .setUri(new URI("http://xmpp.org"))
+                                            .setUri(URI.create("http://xmpp.org"))
                                             .build();
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
-        final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
+        final ResultSyncPoint<GeoLocation, ?> geoLocationReceived = new ResultSyncPoint<>();
 
         final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
             if (geoLocation.equals(data)) {
-                geoLocationReceived.signal();
+                geoLocationReceived.signal(geoLocation);
             }
         };
 
@@ -107,10 +123,18 @@ public class GeolocationIntegrationTest extends AbstractPepIntegrationTest {
      * Verifies that a notification for a previously sent publication is received as soon as notification filtering
      * has been adjusted to allow for the notification to be delivered.
      *
-     * @throws Exception if the test fails
+     * @throws NotLoggedInException if the connection is not logged in.
+     * @throws NotALeafNodeException if the PubSub node is not a leaf node.
+     * @throws NoResponseException if there was no response from the remote entity or server.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws XMPPErrorException if an XMPP error occurred.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws TimeoutException if a timeout occurred.
+     * @throws ParseException if date parsing fails.
      */
     @SmackIntegrationTest
-    public void testNotificationAfterFilterChange() throws Exception {
+    public void testNotificationAfterFilterChange() throws NotLoggedInException, NotALeafNodeException,
+            NoResponseException, NotConnectedException, XMPPErrorException, InterruptedException, TimeoutException, ParseException {
         GeoLocation.Builder builder = GeoLocation.builder();
         GeoLocation data = builder.setAccuracy(12d)
                 .setAlt(999d)
@@ -133,16 +157,16 @@ public class GeolocationIntegrationTest extends AbstractPepIntegrationTest {
                 .setText("Unit Testing GeoLocation 2")
                 .setTimestamp(XmppDateTime.parseDate("2007-02-19"))
                 .setTzo("+5:30")
-                .setUri(new URI("http://xmpp.org"))
+                .setUri(URI.create("http://xmpp.org"))
                 .build();
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
-        final SimpleResultSyncPoint geoLocationReceived = new SimpleResultSyncPoint();
+        final ResultSyncPoint<GeoLocation, ?> geoLocationReceived = new ResultSyncPoint<>();
 
         final PepEventListener<GeoLocation> geoLocationListener = (jid, geoLocation, id, message) -> {
             if (geoLocation.equals(data)) {
-                geoLocationReceived.signal();
+                geoLocationReceived.signal(geoLocation);
             }
         };
 

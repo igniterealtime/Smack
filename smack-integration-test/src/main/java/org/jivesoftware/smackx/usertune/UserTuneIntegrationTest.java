@@ -17,18 +17,23 @@
 package org.jivesoftware.smackx.usertune;
 
 import java.net.URI;
+import java.util.concurrent.TimeoutException;
 
+import org.jivesoftware.smack.SmackException.NoResponseException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
+import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 
 import org.jivesoftware.smackx.pep.AbstractPepIntegrationTest;
 import org.jivesoftware.smackx.pep.PepEventListener;
+import org.jivesoftware.smackx.pubsub.PubSubException.NotALeafNodeException;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
-import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
+import org.igniterealtime.smack.inttest.util.ResultSyncPoint;
 
 import org.junit.jupiter.api.Assertions;
 
@@ -48,11 +53,18 @@ public class UserTuneIntegrationTest extends AbstractPepIntegrationTest {
      * Verifies that a notification is sent when a publication is received, assuming that notification filtering
      * has been adjusted to allow for the notification to be delivered.
      *
-     * @throws Exception if the test fails
+     * @throws NotLoggedInException if the connection is not logged in.
+     * @throws NotALeafNodeException if the PubSub node is not a leaf node.
+     * @throws NoResponseException if there was no response from the remote entity or server.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws XMPPErrorException if an XMPP error occurred.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws TimeoutException if a timeout occurred.
      */
     @SmackIntegrationTest
-    public void testNotification() throws Exception {
-        URI uri = new URI("http://www.yesworld.com/lyrics/Fragile.html#9");
+    public void testNotification() throws NotLoggedInException, NotALeafNodeException, NoResponseException,
+            NotConnectedException, XMPPErrorException, InterruptedException, TimeoutException {
+        URI uri = URI.create("http://www.yesworld.com/lyrics/Fragile.html#9");
         UserTuneElement.Builder builder = UserTuneElement.getBuilder();
         UserTuneElement data = builder.setArtist("Yes")
                 .setLength(686)
@@ -65,11 +77,11 @@ public class UserTuneIntegrationTest extends AbstractPepIntegrationTest {
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
-        final SimpleResultSyncPoint userTuneReceived = new SimpleResultSyncPoint();
+        final ResultSyncPoint<UserTuneElement, ?> userTuneReceived = new ResultSyncPoint<>();
 
         final PepEventListener<UserTuneElement> userTuneListener = (jid, userTune, id, message) -> {
             if (userTune.equals(data)) {
-                userTuneReceived.signal();
+                userTuneReceived.signal(userTune);
             }
         };
 
@@ -81,7 +93,7 @@ public class UserTuneIntegrationTest extends AbstractPepIntegrationTest {
             utm1.publishUserTune(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
 
             // Wait for the data to be received.
-            Object result = userTuneReceived.waitForResult(timeout);
+            UserTuneElement result = assertResult(userTuneReceived, "Expected to receive a PEP notification, but did not.");
 
             // Explicitly assert the success case.
             Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
@@ -95,11 +107,18 @@ public class UserTuneIntegrationTest extends AbstractPepIntegrationTest {
      * Verifies that a notification for a previously sent publication is received as soon as notification filtering
      * has been adjusted to allow for the notification to be delivered.
      *
-     * @throws Exception if the test fails
+     * @throws NotLoggedInException if the connection is not logged in.
+     * @throws NotALeafNodeException if the PubSub node is not a leaf node.
+     * @throws NoResponseException if there was no response from the remote entity or server.
+     * @throws NotConnectedException if the connection is not connected.
+     * @throws XMPPErrorException if an XMPP error occurred.
+     * @throws InterruptedException if the calling thread was interrupted.
+     * @throws TimeoutException if a timeout occurred.
      */
     @SmackIntegrationTest
-    public void testNotificationAfterFilterChange() throws Exception {
-        URI uri = new URI("http://www.yesworld.com/lyrics/Fragile.html#8");
+    public void testNotificationAfterFilterChange() throws NotLoggedInException, NotALeafNodeException,
+            NoResponseException, NotConnectedException, XMPPErrorException, InterruptedException, TimeoutException {
+        URI uri = URI.create("http://www.yesworld.com/lyrics/Fragile.html#8");
         UserTuneElement.Builder builder = UserTuneElement.getBuilder();
         UserTuneElement data = builder.setArtist("No")
                 .setLength(306)
@@ -112,11 +131,11 @@ public class UserTuneIntegrationTest extends AbstractPepIntegrationTest {
 
         IntegrationTestRosterUtil.ensureBothAccountsAreSubscribedToEachOther(conOne, conTwo, timeout);
 
-        final SimpleResultSyncPoint userTuneReceived = new SimpleResultSyncPoint();
+        final ResultSyncPoint<UserTuneElement, ?> userTuneReceived = new ResultSyncPoint<>();
 
         final PepEventListener<UserTuneElement> userTuneListener = (jid, userTune, id, message) -> {
             if (userTune.equals(data)) {
-                userTuneReceived.signal();
+                userTuneReceived.signal(userTune);
             }
         };
 
