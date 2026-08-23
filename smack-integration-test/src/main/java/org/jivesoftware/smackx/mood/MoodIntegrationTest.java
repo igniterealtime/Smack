@@ -16,24 +16,18 @@
  */
 package org.jivesoftware.smackx.mood;
 
-import org.jivesoftware.smack.SmackException;
-import org.jivesoftware.smack.XMPPException;
-
-import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.mood.element.MoodElement;
+import org.jivesoftware.smackx.pep.AbstractPepIntegrationTest;
 import org.jivesoftware.smackx.pep.PepEventListener;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
 import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 
 @SpecificationReference(document = "XEP-0107", version = "1.2.1")
-public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
+public class MoodIntegrationTest extends AbstractPepIntegrationTest {
 
     private final MoodManager mm1;
     private final MoodManager mm2;
@@ -42,13 +36,6 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
         super(environment);
         mm1 = MoodManager.getInstanceFor(conOne);
         mm2 = MoodManager.getInstanceFor(conTwo);
-    }
-
-    @AfterClass
-    public void unsubscribe()
-            throws SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
-        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
     }
 
     /**
@@ -73,7 +60,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
 
         try {
             // Register ConTwo's interest in receiving mood notifications, and wait for that interest to have been propagated.
-            registerListenerAndWait(mm2, ServiceDiscoveryManager.getInstanceFor(conTwo), moodListener);
+            registerListenerAndWait(mm2::addMoodListener, moodListener);
 
             // Publish the data.
             mm1.setMood(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
@@ -81,7 +68,7 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
             // Wait for the data to be received.
             assertResult(moodReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification, but did not.");
         } finally {
-            unregisterListener(mm2, moodListener);
+            mm2.removeMoodListener(moodListener);
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
@@ -109,81 +96,16 @@ public class MoodIntegrationTest extends AbstractSmackIntegrationTest {
         // TODO Ensure that pre-existing filtering notification excludes mood.
         try {
             // Publish the data
-            publishAndWait(mm1, ServiceDiscoveryManager.getInstanceFor(conOne), data);
+            publishAndWait(mm1::addMoodListener, mm1::removeMoodListener, () -> mm1.setMood(data), moodElement -> moodElement.getMood().equals(data));
 
             // Adds listener, which implicitly publishes a disco/info filter for mood notification.
-            registerListenerAndWait(mm2, ServiceDiscoveryManager.getInstanceFor(conTwo), moodListener);
+            registerListenerAndWait(mm2::addMoodListener, moodListener);
 
             // Wait for the data to be received.
             assertResult(moodReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification, but did not.");
         } finally {
-            unregisterListener(mm2, moodListener);
+            mm2.removeMoodListener(moodListener);
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
-        }
-    }
-
-    /**
-     * Registers a listener for User Tune data. This implicitly publishes a CAPS update to include a notification
-     * filter for the mood node. This method blocks until the server has indicated that this update has been
-     * received.
-     *
-     * @param moodManager The MoodManager instance for the connection that is expected to receive data.
-     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
-     * @param listener A listener instance for Mood data that is to be registered.
-     *
-     * @throws Exception if the test fails
-     */
-    public void registerListenerAndWait(MoodManager moodManager, ServiceDiscoveryManager discoManager, PepEventListener<MoodElement> listener) throws Exception {
-        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
-        final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
-            if (info.containsFeature(MoodManager.MOOD_NODE + "+notify")) {
-                notificationFilterReceived.signal();
-            }
-        };
-
-        discoManager.addEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
-        try {
-            moodManager.addMoodListener(listener);
-            notificationFilterReceived.waitForResult(timeout);
-        } finally {
-            discoManager.removeEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
-        }
-    }
-
-    /**
-     * The functionally reverse of {@link #registerListenerAndWait(MoodManager, ServiceDiscoveryManager, PepEventListener)}
-     * with the difference of not being a blocking operation.
-     *
-     * @param moodManager The MoodManager instance for the connection that was expected to receive data.
-     * @param listener A listener instance for Mood data that is to be removed.
-     */
-    public void unregisterListener(MoodManager moodManager, PepEventListener<MoodElement> listener) {
-        // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
-        moodManager.removeMoodListener(listener);
-    }
-
-    /**
-     * Publish data using PEP, and block until the server has echoed the publication back to the publishing user.
-     *
-     * @param moodManager The MoodManager instance for the connection that is expected to publish data.
-     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
-     * @param data The data to be published.
-     *
-     * @throws Exception if the test fails
-     */
-    public void publishAndWait(MoodManager moodManager, ServiceDiscoveryManager discoManager, Mood data) throws Exception {
-        final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
-        final PepEventListener<MoodElement> publicationEchoListener = (jid, moodElement, id, message) -> {
-            if (moodElement.getMood().equals(data)) {
-                publicationEchoReceived.signal();
-            }
-        };
-        try {
-            registerListenerAndWait(moodManager, discoManager, publicationEchoListener);
-            moodManager.addMoodListener(publicationEchoListener);
-            moodManager.setMood(data);
-        } finally {
-            moodManager.removeMoodListener(publicationEchoListener);
         }
     }
 }

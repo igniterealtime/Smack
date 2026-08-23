@@ -18,20 +18,12 @@ package org.jivesoftware.smackx.geolocation;
 
 import java.net.URI;
 
-import org.jivesoftware.smack.SmackException.NoResponseException;
-import org.jivesoftware.smack.SmackException.NotConnectedException;
-import org.jivesoftware.smack.SmackException.NotLoggedInException;
-import org.jivesoftware.smack.XMPPException.XMPPErrorException;
-
-import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.geoloc.GeoLocationManager;
 import org.jivesoftware.smackx.geoloc.packet.GeoLocation;
+import org.jivesoftware.smackx.pep.AbstractPepIntegrationTest;
 import org.jivesoftware.smackx.pep.PepEventListener;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
@@ -40,7 +32,7 @@ import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.jxmpp.util.XmppDateTime;
 
 @SpecificationReference(document = "XEP-0080", version = "1.9")
-public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
+public class GeolocationIntegrationTest extends AbstractPepIntegrationTest {
 
     private final GeoLocationManager glm1;
     private final GeoLocationManager glm2;
@@ -49,11 +41,6 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         super(environment);
         glm1 = GeoLocationManager.getInstanceFor(conOne);
         glm2 = GeoLocationManager.getInstanceFor(conTwo);
-    }
-
-    @AfterClass
-    public void unsubscribe() throws NotLoggedInException, NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
-        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
     }
 
     /**
@@ -101,7 +88,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
 
         try {
             // Register ConTwo's interest in receiving geolocation notifications, and wait for that interest to have been propagated.
-            registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
+            registerListenerAndWait(glm2::addGeoLocationListener, geoLocationListener);
 
             // Publish the data.
             glm1.publishGeoLocation(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
@@ -111,7 +98,7 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() +
                 " that contained '" + data.toXML() + "', but did not.");
         } finally {
-            unregisterListener(glm2, geoLocationListener);
+            glm2.removeGeoLocationListener(geoLocationListener);
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
@@ -162,83 +149,18 @@ public class GeolocationIntegrationTest extends AbstractSmackIntegrationTest {
         // TODO Ensure that pre-existing filtering notification excludes geolocation.
         try {
             // Publish the data
-            publishAndWait(glm1, ServiceDiscoveryManager.getInstanceFor(conOne), data);
+            publishAndWait(glm1::addGeoLocationListener, glm1::removeGeoLocationListener, () -> glm1.publishGeoLocation(data), geoLocation -> geoLocation.equals(data));
 
             // Adds listener, which implicitly publishes a disco/info filter for geolocation notification.
-            registerListenerAndWait(glm2, ServiceDiscoveryManager.getInstanceFor(conTwo), geoLocationListener);
+            registerListenerAndWait(glm2::addGeoLocationListener, geoLocationListener);
 
             // Wait for the data to be received.
             assertResult(geoLocationReceived,
         "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() +
                 " that contained '" + data.toXML() + "', but did not.");
         } finally {
-            unregisterListener(glm2, geoLocationListener);
+            glm2.removeGeoLocationListener(geoLocationListener);
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
-        }
-    }
-
-    /**
-     * Registers a listener for GeoLocation data. This implicitly publishes a CAPS update to include a notification
-     * filter for the geolocation node. This method blocks until the server has indicated that this update has been
-     * received.
-     *
-     * @param geoManager The GeoLocationManager instance for the connection that is expected to receive data.
-     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
-     * @param listener A listener instance for GeoLocation data that is to be registered.
-     *
-     * @throws Exception if the test fails
-     */
-    public void registerListenerAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, PepEventListener<GeoLocation> listener) throws Exception {
-        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
-        final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
-            if (info.containsFeature(GeoLocationManager.GEOLOCATION_NODE + "+notify")) {
-                notificationFilterReceived.signal();
-            }
-        };
-
-        discoManager.addEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
-        try {
-            geoManager.addGeoLocationListener(listener);
-            notificationFilterReceived.waitForResult(timeout);
-        } finally {
-            discoManager.removeEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
-        }
-    }
-
-    /**
-     * The functionally reverse of {@link #registerListenerAndWait(GeoLocationManager, ServiceDiscoveryManager, PepEventListener)}
-     * with the difference of not being a blocking operation.
-     *
-     * @param geoManager The GeoLocationManager instance for the connection that was expected to receive data.
-     * @param listener A listener instance for GeoLocation data that is to be removed.
-     */
-    public void unregisterListener(GeoLocationManager geoManager, PepEventListener<GeoLocation> listener) {
-        // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
-        geoManager.removeGeoLocationListener(listener);
-    }
-
-    /**
-     * Publish data using PEP, and block until the server has echoed the publication back to the publishing user.
-     *
-     * @param geoManager The GeoLocationManager instance for the connection that is expected to publish data.
-     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
-     * @param data The data to be published.
-     *
-     * @throws Exception if the test fails
-     */
-    public void publishAndWait(GeoLocationManager geoManager, ServiceDiscoveryManager discoManager, GeoLocation data) throws Exception {
-        final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
-        final PepEventListener<GeoLocation> publicationEchoListener = (jid, geoLocation, id, message) -> {
-            if (geoLocation.equals(data)) {
-                publicationEchoReceived.signal();
-            }
-        };
-        try {
-            registerListenerAndWait(geoManager, discoManager, publicationEchoListener);
-            geoManager.addGeoLocationListener(publicationEchoListener);
-            geoManager.publishGeoLocation(data);
-        } finally {
-            geoManager.removeGeoLocationListener(publicationEchoListener);
         }
     }
 }

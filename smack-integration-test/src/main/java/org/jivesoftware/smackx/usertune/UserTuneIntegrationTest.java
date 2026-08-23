@@ -18,18 +18,13 @@ package org.jivesoftware.smackx.usertune;
 
 import java.net.URI;
 
-import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
-import org.jivesoftware.smack.XMPPException;
 
-import org.jivesoftware.smackx.disco.EntityCapabilitiesChangedListener;
-import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.pep.AbstractPepIntegrationTest;
 import org.jivesoftware.smackx.pep.PepEventListener;
 import org.jivesoftware.smackx.usertune.element.UserTuneElement;
 
-import org.igniterealtime.smack.inttest.AbstractSmackIntegrationTest;
 import org.igniterealtime.smack.inttest.SmackIntegrationTestEnvironment;
-import org.igniterealtime.smack.inttest.annotations.AfterClass;
 import org.igniterealtime.smack.inttest.annotations.SmackIntegrationTest;
 import org.igniterealtime.smack.inttest.annotations.SpecificationReference;
 import org.igniterealtime.smack.inttest.util.IntegrationTestRosterUtil;
@@ -38,7 +33,7 @@ import org.igniterealtime.smack.inttest.util.SimpleResultSyncPoint;
 import org.junit.jupiter.api.Assertions;
 
 @SpecificationReference(document = "XEP-0118", version = "1.3.0")
-public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
+public class UserTuneIntegrationTest extends AbstractPepIntegrationTest {
 
     private final UserTuneManager utm1;
     private final UserTuneManager utm2;
@@ -47,13 +42,6 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
         super(environment);
         utm1 = UserTuneManager.getInstanceFor(conOne);
         utm2 = UserTuneManager.getInstanceFor(conTwo);
-    }
-
-    @AfterClass
-    public void unsubscribe()
-            throws SmackException.NotLoggedInException, XMPPException.XMPPErrorException,
-            SmackException.NotConnectedException, InterruptedException, SmackException.NoResponseException {
-        IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
     }
 
     /**
@@ -87,7 +75,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
 
         try {
             // Register ConTwo's interest in receiving user tune notifications, and wait for that interest to have been propagated.
-            registerListenerAndWait(utm2, ServiceDiscoveryManager.getInstanceFor(conTwo), userTuneListener);
+            registerListenerAndWait(utm2::addUserTuneListener, userTuneListener);
 
             // Publish the data.
             utm1.publishUserTune(data); // for the purpose of this test, this needs not be blocking/use publishAndWait();
@@ -98,7 +86,7 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
             // Explicitly assert the success case.
             Assertions.assertNotNull(result, "Expected to receive a PEP notification, but did not.");
         } finally {
-            unregisterListener(utm2, userTuneListener);
+            utm2.removeUserTuneListener(userTuneListener);
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
@@ -135,81 +123,16 @@ public class UserTuneIntegrationTest extends AbstractSmackIntegrationTest {
         // TODO Ensure that pre-existing filtering notification excludes userTune.
         try {
             // Publish the data
-            publishAndWait(utm1, ServiceDiscoveryManager.getInstanceFor(conOne), data);
+            publishAndWait(utm1::addUserTuneListener, utm1::removeUserTuneListener, () -> utm1.publishUserTune(data), userTune -> userTune.equals(data));
 
             // Adds listener, which implicitly publishes a disco/info filter for userTune notification.
-            registerListenerAndWait(utm2, ServiceDiscoveryManager.getInstanceFor(conTwo), userTuneListener);
+            registerListenerAndWait(utm2::addUserTuneListener, userTuneListener);
 
             // Wait for the data to be received.
             assertResult(userTuneReceived, "Expected " + conTwo.getUser() + " to receive a PEP notification from " + conOne.getUser() + ", but did not.");
         } finally {
-            unregisterListener(utm2, userTuneListener);
+            utm2.removeUserTuneListener(userTuneListener);
             IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
-        }
-    }
-
-    /**
-     * Registers a listener for User Tune data. This implicitly publishes a CAPS update to include a notification
-     * filter for the usertune node. This method blocks until the server has indicated that this update has been
-     * received.
-     *
-     * @param userTuneManager The UserTuneManager instance for the connection that is expected to receive data.
-     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
-     * @param listener A listener instance for UserTune data that is to be registered.
-     *
-     * @throws Exception if the test fails
-     */
-    public void registerListenerAndWait(UserTuneManager userTuneManager, ServiceDiscoveryManager discoManager, PepEventListener<UserTuneElement> listener) throws Exception {
-        final SimpleResultSyncPoint notificationFilterReceived = new SimpleResultSyncPoint();
-        final EntityCapabilitiesChangedListener notificationFilterReceivedListener = info -> {
-            if (info.containsFeature(UserTuneManager.USERTUNE_NODE + "+notify")) {
-                notificationFilterReceived.signal();
-            }
-        };
-
-        discoManager.addEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
-        try {
-            userTuneManager.addUserTuneListener(listener);
-            notificationFilterReceived.waitForResult(timeout);
-        } finally {
-            discoManager.removeEntityCapabilitiesChangedListener(notificationFilterReceivedListener);
-        }
-    }
-
-    /**
-     * The functionally reverse of {@link #registerListenerAndWait(UserTuneManager, ServiceDiscoveryManager, PepEventListener)}
-     * with the difference of not being a blocking operation.
-     *
-     * @param userTuneManager The UserTuneManager instance for the connection that was expected to receive data.
-     * @param listener A listener instance for UserTune data that is to be removed.
-     */
-    public void unregisterListener(UserTuneManager userTuneManager, PepEventListener<UserTuneElement> listener) {
-        // Does it make sense to have a method implementation that's one line? This is provided to allow for symmetry in the API.
-        userTuneManager.removeUserTuneListener(listener);
-    }
-
-    /**
-     * Publish data using PEP, and block until the server has echoed the publication back to the publishing user.
-     *
-     * @param userTuneManager The UserTuneManager instance for the connection that is expected to publish data.
-     * @param discoManager The ServiceDiscoveryManager instance for the connection that is expected to publish data.
-     * @param data The data to be published.
-     *
-     * @throws Exception if the test fails
-     */
-    public void publishAndWait(UserTuneManager userTuneManager, ServiceDiscoveryManager discoManager, UserTuneElement data) throws Exception {
-        final SimpleResultSyncPoint publicationEchoReceived = new SimpleResultSyncPoint();
-        final PepEventListener<UserTuneElement> publicationEchoListener = (jid, userTune, id, message) -> {
-            if (userTune.equals(data)) {
-                publicationEchoReceived.signal();
-            }
-        };
-        try {
-            registerListenerAndWait(userTuneManager, discoManager, publicationEchoListener);
-            userTuneManager.addUserTuneListener(publicationEchoListener);
-            userTuneManager.publishUserTune(data);
-        } finally {
-            userTuneManager.removeUserTuneListener(publicationEchoListener);
         }
     }
 }
