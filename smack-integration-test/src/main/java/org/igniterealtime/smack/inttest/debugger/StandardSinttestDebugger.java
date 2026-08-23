@@ -161,9 +161,11 @@ public class StandardSinttestDebugger implements SinttestDebugger {
         }
     }
 
+    private final SmackDebuggerFactory smackDebuggerFactory = StandardSinttestSmackDebugger::new;
+
     @Override
     public SmackDebuggerFactory getSmackDebuggerFactory() {
-        return c -> new StandardSinttestSmackDebugger(c);
+        return smackDebuggerFactory;
     }
 
     @Override
@@ -295,7 +297,7 @@ public class StandardSinttestDebugger implements SinttestDebugger {
             }
         }
 
-        LOGGER.info("Test data file://" + basePath);
+        LOGGER.info("Test data and raw XMPP logs file://" + basePath);
     }
 
     private static void mkdirs(Path path) throws IOException {

@@ -188,7 +188,13 @@ public class XmppConnectionManager {
         switch (sinttestConfiguration.accountRegistration) {
         case serviceAdministration:
         case inBandRegistration:
-            accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration);
+            List<ConnectionConfigurationBuilderApplier> connectionConfigurationAppliers = new ArrayList<>();
+            SinttestDebugger sinttestDebugger = sinttestFramework.sinttestDebugger;
+            if (sinttestDebugger != null) {
+                var applier = sinttestDebugger.getConnectionConfigurationBuilderApplier();
+                connectionConfigurationAppliers.add(applier);
+            }
+            accountRegistrationConnection = defaultConnectionDescriptor.construct(sinttestConfiguration, connectionConfigurationAppliers);
             accountRegistrationConnection.connect();
 
             if (sinttestConfiguration.accountRegistration == AccountRegistration.inBandRegistration) {

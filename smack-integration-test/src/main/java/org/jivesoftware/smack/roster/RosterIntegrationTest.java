@@ -121,6 +121,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         finally {
             rosterTwo.removeSubscribeListener(subscribeListener);
             rosterOne.removeRosterListener(rosterListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -170,6 +171,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         } finally {
             rosterTwo.setSubscriptionMode(Roster.getDefaultSubscriptionMode());
             rosterOne.removeRosterListener(rosterListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -199,6 +201,8 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
             conOne.sendStanza(subscribe);
             final Presence received = assertResult(added, "Expected subscription request from '" + conOne.getUser() + "' to '" + conTwo.getUser().asBareJid() + "' to be delivered to " + conTwo.getUser() + " (but it did not).");
             assertEquals(Presence.Type.subscribe, received.getType(), "Unexpected presence type in presence stanza received by '" + conTwo.getUser() + "' after '" + conOne.getUser() + "' sent a presence subscription request.");
+        } finally {
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -217,8 +221,8 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
 
         rosterTwo.setSubscriptionMode(Roster.SubscriptionMode.accept_all);
 
-        // Modify the outbound 'subscribed' stanza, to be 'wrong' (addressed to a full rather than a bare JID), to test if the server overrides this.
-        final Consumer<PresenceBuilder> interceptor = (PresenceBuilder presenceBuilder) -> presenceBuilder.to(conOne.getUser()).build();
+        // Modify the outbound 'subscribed' stanza, to be 'wrong' (having a full rather than a bare JID in 'from'), to test if the server overrides this.
+        final Consumer<PresenceBuilder> interceptor = (PresenceBuilder presenceBuilder) -> presenceBuilder.from(conTwo.getUser()).build();
         conTwo.addPresenceInterceptor(interceptor, p -> p.getType() == Presence.Type.subscribed);
 
         final ResultSyncPoint<Presence, Exception> added = new ResultSyncPoint<>();
@@ -241,6 +245,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
             rosterTwo.setSubscriptionMode(Roster.getDefaultSubscriptionMode());
             conTwo.removePresenceInterceptor(interceptor);
             conOne.removeAsyncStanzaListener(stanzaListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -289,6 +294,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         } finally {
             rosterTwo.setSubscriptionMode(Roster.getDefaultSubscriptionMode());
             rosterTwo.removeRosterListener(rosterListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -383,6 +389,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         } finally {
             rosterTwo.setSubscriptionMode(Roster.getDefaultSubscriptionMode());
             rosterTwo.removeRosterListener(rosterListenerTwo);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
@@ -427,6 +434,7 @@ public class RosterIntegrationTest extends AbstractSmackIntegrationTest {
         } finally {
             rosterTwo.setSubscriptionMode(Roster.getDefaultSubscriptionMode());
             conOne.removeAsyncStanzaListener(stanzaListener);
+            IntegrationTestRosterUtil.ensureBothAccountsAreNotInEachOthersRoster(conOne, conTwo);
         }
     }
 
