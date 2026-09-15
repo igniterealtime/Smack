@@ -46,7 +46,7 @@
 
 [SMACK-943](https://igniterealtime.atlassian.net/browse/SMACK-943) InvitationListener invoked with incorrect JID
 
-[SMACK-944](https://igniterealtime.atlassian.net/browse/SMACK-944) Unordered usage of disco#info dataforms when calculating Caps 
+[SMACK-944](https://igniterealtime.atlassian.net/browse/SMACK-944) Unordered usage of disco#info dataforms when calculating Caps
 
 [SMACK-946](https://igniterealtime.atlassian.net/browse/SMACK-946) Allow Data Form field to be used to unset a value
 
