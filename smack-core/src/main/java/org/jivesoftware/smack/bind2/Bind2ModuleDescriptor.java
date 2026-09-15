@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2019-2020 Florian Schmaus
+ * Copyright 2019-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,20 @@ package org.jivesoftware.smack.bind2;
 import java.util.Collections;
 import java.util.Set;
 
+import org.jivesoftware.smack.bind2.element.Bind2Elements;
+import org.jivesoftware.smack.bind2.provider.Bind2Provider;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModuleDescriptor;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.fsm.StateDescriptor;
+import org.jivesoftware.smack.provider.ProviderManager;
 
 public class Bind2ModuleDescriptor extends ModularXmppClientToServerConnectionModuleDescriptor {
+
+    static {
+        ProviderManager.addExtensionProvider(Bind2Elements.Bind.ELEMENT, Bind2Elements.NAMESPACE, Bind2Provider.BindProvider.INSTANCE);
+        ProviderManager.addExtensionProvider(Bind2Elements.Bound.ELEMENT, Bind2Elements.NAMESPACE, Bind2Provider.BoundProvider.INSTANCE);
+    }
 
     private static final Bind2ModuleDescriptor INSTANCE = new Bind2ModuleDescriptor();
 

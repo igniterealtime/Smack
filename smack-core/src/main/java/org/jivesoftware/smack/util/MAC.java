@@ -25,12 +25,18 @@ import javax.crypto.spec.SecretKeySpec;
 public class MAC {
 
     public static final String HMACSHA1 = "HmacSHA1";
+    public static final String HMACSHA256 = "HmacSHA256";
+    public static final String HMACSHA512 = "HmacSHA512";
 
     private static Mac HMAC_SHA1;
+    private static Mac HMAC_SHA256;
+    private static Mac HMAC_SHA512;
 
     static {
         try {
             HMAC_SHA1 = Mac.getInstance(HMACSHA1);
+            HMAC_SHA256 = Mac.getInstance(HMACSHA256);
+            HMAC_SHA512 = Mac.getInstance(HMACSHA512);
         }
         catch (NoSuchAlgorithmException e) {
             // Smack won't be able to function normally if this exception is thrown, wrap it into
@@ -48,6 +54,26 @@ public class MAC {
     public static byte[] hmacsha1(byte[] keyBytes, byte[] input) throws InvalidKeyException {
         SecretKeySpec key = new SecretKeySpec(keyBytes, HMACSHA1);
         return hmacsha1(key, input);
+    }
+
+    public static synchronized byte[] hmacsha256(SecretKeySpec key, byte[] input) throws InvalidKeyException {
+        HMAC_SHA256.init(key);
+        return HMAC_SHA256.doFinal(input);
+    }
+
+    public static byte[] hmacsha256(byte[] keyBytes, byte[] input) throws InvalidKeyException {
+        SecretKeySpec key = new SecretKeySpec(keyBytes, HMACSHA256);
+        return hmacsha256(key, input);
+    }
+
+    public static synchronized byte[] hmacsha512(SecretKeySpec key, byte[] input) throws InvalidKeyException {
+        HMAC_SHA512.init(key);
+        return HMAC_SHA512.doFinal(input);
+    }
+
+    public static byte[] hmacsha512(byte[] keyBytes, byte[] input) throws InvalidKeyException {
+        SecretKeySpec key = new SecretKeySpec(keyBytes, HMACSHA512);
+        return hmacsha512(key, input);
     }
 
 

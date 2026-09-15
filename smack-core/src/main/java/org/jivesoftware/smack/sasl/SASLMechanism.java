@@ -172,6 +172,30 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected void authenticateInternal() throws SmackSaslException {
     }
 
+    public final byte[] getInitialResponse(String username, String host, DomainBareJid serviceName, String password,
+                    EntityBareJid authzid, SSLSession sslSession) throws SmackSaslException {
+        this.authenticationId = username;
+        this.host = host;
+        this.serviceName = serviceName;
+        this.password = password;
+        this.authorizationId = authzid;
+        this.sslSession = sslSession;
+        assert authorizationId == null || authzidSupported();
+        authenticateInternal();
+        return getAuthenticationText();
+    }
+
+    public final byte[] getInitialResponse(String host, DomainBareJid serviceName, CallbackHandler cbh,
+                    EntityBareJid authzid, SSLSession sslSession) throws SmackSaslException {
+        this.host = host;
+        this.serviceName = serviceName;
+        this.authorizationId = authzid;
+        this.sslSession = sslSession;
+        assert authorizationId == null || authzidSupported();
+        authenticateInternal(cbh);
+        return getAuthenticationText();
+    }
+
     /**
      * Builds and sends the <code>auth</code> stanza to the server. The callback handler will handle
      * any additional information, such as the authentication ID or realm, if it is needed.
@@ -237,8 +261,7 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      * @throws NotConnectedException if the XMPP connection is not connected.
      */
     public final void challengeReceived(String challengeString, boolean finalChallenge) throws SmackSaslException, InterruptedException, NotConnectedException {
-        byte[] challenge = Base64.decode((challengeString != null && challengeString.equals("=")) ? "" : challengeString);
-        byte[] response = evaluateChallenge(challenge);
+        byte[] response = evaluateChallengeString(challengeString);
         if (finalChallenge) {
             return;
         }
@@ -265,6 +288,15 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
      */
     protected byte[] evaluateChallenge(byte[] challenge) throws SmackSaslException {
         return null;
+    }
+
+    public final byte[] evaluateChallengeBytes(byte[] challenge) throws SmackSaslException {
+        return evaluateChallenge(challenge);
+    }
+
+    public final byte[] evaluateChallengeString(String challengeString) throws SmackSaslException {
+        byte[] challenge = Base64.decode((challengeString != null && challengeString.equals("=")) ? "" : challengeString);
+        return evaluateChallenge(challenge);
     }
 
     @Override

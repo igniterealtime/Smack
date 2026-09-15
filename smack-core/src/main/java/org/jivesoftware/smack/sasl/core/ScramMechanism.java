@@ -29,7 +29,6 @@ import javax.security.auth.callback.CallbackHandler;
 import org.jivesoftware.smack.SmackException.SmackSaslException;
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.ByteUtils;
-import org.jivesoftware.smack.util.SHA1;
 import org.jivesoftware.smack.util.StringUtils;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
@@ -193,7 +192,7 @@ public abstract class ScramMechanism extends SASLMechanism {
             serverSignature = hmac(serverKey, authMessage);
 
             // StoredKey := H(ClientKey)
-            byte[] storedKey = SHA1.bytes(clientKey);
+            byte[] storedKey = scramHmac.h(clientKey);
 
             // ClientSignature := HMAC(StoredKey, AuthMessage)
             byte[] clientSignature = hmac(storedKey, authMessage);

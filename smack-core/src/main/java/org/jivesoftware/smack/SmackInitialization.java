@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2003-2007 Jive Software, 2014-2024 Florian Schmaus
+ * Copyright 2003-2007 Jive Software, 2014-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,11 @@ import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.core.SASLXOauth2Mechanism;
 import org.jivesoftware.smack.sasl.core.SCRAMSHA1Mechanism;
 import org.jivesoftware.smack.sasl.core.ScramSha1PlusMechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha256Mechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha256PlusMechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha512Mechanism;
+import org.jivesoftware.smack.sasl.core.ScramSha512PlusMechanism;
+import org.jivesoftware.smack.sasl.sasl2.Sasl2ModuleDescriptor;
 import org.jivesoftware.smack.util.CloseableUtil;
 import org.jivesoftware.smack.util.FileUtils;
 import org.jivesoftware.smack.util.PacketParserUtils;
@@ -124,10 +129,23 @@ public final class SmackInitialization {
             LOGGER.log(Level.FINE, "Could not handle debugEnable property on Smack initialization", e);
         }
 
+        SASLAuthentication.registerSASLMechanism(new ScramSha512Mechanism());
+        SASLAuthentication.registerSASLMechanism(new ScramSha512PlusMechanism());
+        SASLAuthentication.registerSASLMechanism(new ScramSha256Mechanism());
+        SASLAuthentication.registerSASLMechanism(new ScramSha256PlusMechanism());
         SASLAuthentication.registerSASLMechanism(new SCRAMSHA1Mechanism());
         SASLAuthentication.registerSASLMechanism(new ScramSha1PlusMechanism());
         SASLAuthentication.registerSASLMechanism(new SASLXOauth2Mechanism());
         SASLAuthentication.registerSASLMechanism(new SASLAnonymous());
+
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha256EndpointMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha256NoneMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha512EndpointMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha512NoneMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha3_256EndpointMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha3_256NoneMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha3_512EndpointMechanism());
+        SASLAuthentication.registerSASLMechanism(new org.jivesoftware.smack.sasl.ht.HtSha3_512NoneMechanism());
 
         ProviderManager.addIQProvider(Bind.ELEMENT, Bind.NAMESPACE, new BindIQProvider());
         ProviderManager.addExtensionProvider(Message.Body.ELEMENT, Message.Body.NAMESPACE, new BodyElementProvider());
@@ -143,6 +161,8 @@ public final class SmackInitialization {
         ProviderManager.addNonzaProvider(FailureProvider.INSTANCE);
 
         SmackConfiguration.addModule(Bind2ModuleDescriptor.class);
+        SmackConfiguration.addModule(Sasl2ModuleDescriptor.class);
+        SmackConfiguration.addModule(org.jivesoftware.smack.fast.FastModuleDescriptor.class);
         SmackConfiguration.addModule(CompressionModuleDescriptor.class);
         SmackConfiguration.addModule(InstantStreamResumptionModuleDescriptor.class);
 

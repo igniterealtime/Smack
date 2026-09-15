@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018-2019 Florian Schmaus
+ * Copyright 2018-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 package org.jivesoftware.smack;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,35 +74,38 @@ public class NonzaCallback {
         private SN successNonza;
         private FN failedNonza;
 
-        private NonzaResponseCallback(Class<SN> successNonzaClass, Class<FN> failedNonzaClass,
+        @SuppressWarnings("unchecked")
+        private NonzaResponseCallback(Collection<Class<? extends SN>> successNonzaClasses, Class<FN> failedNonzaClass,
                         Builder builder) {
             super(builder);
 
-            final QName successNonzaKey = XmppElementUtil.getQNameFor(successNonzaClass);
-            final QName failedNonzaKey = XmppElementUtil.getQNameFor(failedNonzaClass);
+            for (Class<? extends SN> successNonzaClass : successNonzaClasses) {
+                final QName successNonzaKey = XmppElementUtil.getQNameFor(successNonzaClass);
+                final NonzaListener<SN> successListener = new NonzaListener<SN>() {
+                    @Override
+                    public void accept(SN successNonza) {
+                        NonzaResponseCallback.this.successNonza = successNonza;
+                        notifyResponse();
+                    }
+                };
+                final ClassAndConsumer<SN> successClassAndConsumer = new ClassAndConsumer<>((Class<SN>) successNonzaClass,
+                                successListener);
+                filterAndListeners.put(successNonzaKey, successClassAndConsumer);
+            }
 
-            final NonzaListener<SN> successListener = new NonzaListener<SN>() {
-                @Override
-                public void accept(SN successNonza) {
-                    NonzaResponseCallback.this.successNonza = successNonza;
-                    notifyResponse();
-                }
-            };
-            final ClassAndConsumer<SN> successClassAndConsumer = new ClassAndConsumer<>(successNonzaClass,
-                            successListener);
-
-            final NonzaListener<FN> failedListener = new NonzaListener<FN>() {
-                @Override
-                public void accept(FN failedNonza) {
-                    NonzaResponseCallback.this.failedNonza = failedNonza;
-                    notifyResponse();
-                }
-            };
-            final ClassAndConsumer<FN> failedClassAndConsumer = new ClassAndConsumer<>(failedNonzaClass,
-                            failedListener);
-
-            filterAndListeners.put(successNonzaKey, successClassAndConsumer);
-            filterAndListeners.put(failedNonzaKey, failedClassAndConsumer);
+            if (failedNonzaClass != null) {
+                final QName failedNonzaKey = XmppElementUtil.getQNameFor(failedNonzaClass);
+                final NonzaListener<FN> failedListener = new NonzaListener<FN>() {
+                    @Override
+                    public void accept(FN failedNonza) {
+                        NonzaResponseCallback.this.failedNonza = failedNonza;
+                        notifyResponse();
+                    }
+                };
+                final ClassAndConsumer<FN> failedClassAndConsumer = new ClassAndConsumer<>(failedNonzaClass,
+                                failedListener);
+                filterAndListeners.put(failedNonzaKey, failedClassAndConsumer);
+            }
 
             install();
         }
@@ -181,7 +186,13 @@ public class NonzaCallback {
     static <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(NonzaCallback.Builder builder, Nonza nonza, Class<SN> successNonzaClass,
                     Class<FN> failedNonzaClass)
                     throws NoResponseException, NotConnectedException, InterruptedException, FailedNonzaException {
-        NonzaResponseCallback<SN, FN> nonzaCallback = new NonzaResponseCallback<>(successNonzaClass,
+        return sendAndWaitForResponse(builder, nonza, Collections.singleton(successNonzaClass), failedNonzaClass);
+    }
+
+    static <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(NonzaCallback.Builder builder, Nonza nonza,
+                    Collection<Class<? extends SN>> successNonzaClasses, Class<FN> failedNonzaClass)
+                    throws NoResponseException, NotConnectedException, InterruptedException, FailedNonzaException {
+        NonzaResponseCallback<SN, FN> nonzaCallback = new NonzaResponseCallback<>(successNonzaClasses,
                         failedNonzaClass, builder);
 
         SN successNonza;

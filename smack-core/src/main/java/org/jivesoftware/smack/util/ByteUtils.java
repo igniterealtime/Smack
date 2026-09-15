@@ -34,4 +34,28 @@ public class ByteUtils {
         return res;
     }
 
+    /**
+     * Concatenate multiple byte arrays.
+     *
+     * @param arrays the input arrays.
+     * @return the concatenation of all input arrays.
+     */
+    public static byte[] concat(byte[]... arrays) {
+        int totalLength = 0;
+        for (byte[] array : arrays) {
+            if (array != null) {
+                totalLength += array.length;
+            }
+        }
+        byte[] res = new byte[totalLength];
+        int offset = 0;
+        for (byte[] array : arrays) {
+            if (array != null) {
+                System.arraycopy(array, 0, res, offset, array.length);
+                offset += array.length;
+            }
+        }
+        return res;
+    }
+
 }

@@ -111,9 +111,6 @@ public final class ModularXmppClientToServerConnectionConfiguration extends Conn
 
         public void addModule(ModularXmppClientToServerConnectionModuleDescriptor connectionModule) {
             Class<? extends ModularXmppClientToServerConnectionModuleDescriptor> moduleDescriptorClass = connectionModule.getClass();
-            if (modulesDescriptors.containsKey(moduleDescriptorClass)) {
-                throw new IllegalArgumentException("A connection module for " + moduleDescriptorClass + " is already configured");
-            }
             modulesDescriptors.put(moduleDescriptorClass, connectionModule);
         }
 

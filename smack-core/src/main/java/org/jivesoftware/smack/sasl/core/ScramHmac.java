@@ -32,4 +32,12 @@ public interface ScramHmac {
      */
     byte[] hmac(byte[] key, byte[] str) throws InvalidKeyException;
 
+    /**
+     * RFC 5802 § 2.2 H(str).
+     *
+     * @param str the input bytes
+     * @return the cryptographic hash of the input
+     */
+    byte[] h(byte[] str);
+
 }

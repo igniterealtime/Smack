@@ -17,6 +17,7 @@
 package org.jivesoftware.smack.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
@@ -87,6 +88,41 @@ public class XmppElementUtil {
             E e = castOrThrow(extensionElement, extensionElementClass);
             res.add(e);
         }
+        return res;
+    }
+
+    public static <E extends ExtensionElement> E from(Collection<? extends XmlElement> elements,
+                    Class<E> extensionElementClass) {
+        if (elements == null || elements.isEmpty()) {
+            return null;
+        }
+
+        QName qname = getQNameFor(extensionElementClass);
+        for (XmlElement element : elements) {
+            if (qname.equals(element.getQName())) {
+                return castOrThrow(element, extensionElementClass);
+            }
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("MixedMutabilityReturnType")
+    public static <E extends ExtensionElement> List<E> getElementsFrom(
+                    Collection<? extends XmlElement> elements, Class<E> extensionElementClass) {
+        if (elements == null || elements.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        QName qname = getQNameFor(extensionElementClass);
+        List<E> res = new ArrayList<>();
+        for (XmlElement element : elements) {
+            if (qname.equals(element.getQName())) {
+                E e = castOrThrow(element, extensionElementClass);
+                res.add(e);
+            }
+        }
+
         return res;
     }
 

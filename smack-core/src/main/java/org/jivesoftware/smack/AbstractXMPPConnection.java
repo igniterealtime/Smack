@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2009 Jive Software, 2018-2025 Florian Schmaus.
+ * Copyright 2009 Jive Software, 2018-2026 Florian Schmaus.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -823,7 +824,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
         return saslAuthentication.getNameOfLastUsedSaslMechansism();
     }
 
-    private DomainBareJid xmppServiceDomain;
+    protected DomainBareJid xmppServiceDomain;
 
     protected Lock getConnectionLock() {
         return connectionLock;
@@ -1393,8 +1394,14 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza, Class<SN> successNonzaClass,
                     Class<FN> failedNonzaClass)
                     throws NoResponseException, NotConnectedException, InterruptedException, FailedNonzaException {
+        return sendAndWaitForResponse(nonza, Collections.singleton(successNonzaClass), failedNonzaClass);
+    }
+
+    protected <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
+                    Collection<Class<? extends SN>> successNonzaClasses, Class<FN> failedNonzaClass)
+                    throws NoResponseException, NotConnectedException, InterruptedException, FailedNonzaException {
         NonzaCallback.Builder builder = buildNonzaCallback();
-        SN successNonza = NonzaCallback.sendAndWaitForResponse(builder, nonza, successNonzaClass, failedNonzaClass);
+        SN successNonza = NonzaCallback.sendAndWaitForResponse(builder, nonza, successNonzaClasses, failedNonzaClass);
         return successNonza;
     }
 

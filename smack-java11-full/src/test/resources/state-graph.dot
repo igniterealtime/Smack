@@ -3,20 +3,20 @@ digraph {
   "LookupRemoteConnectionEndpoints" -> "EstablishingTcpConnection" [xlabel="1"];
   "EstablishingTcpConnection" -> "EstablishTls (RFC 6120 § 5)" [xlabel="1"];
   "EstablishTls (RFC 6120 § 5)" -> "ConnectedButUnauthenticated";
-  "ConnectedButUnauthenticated" -> "Bind2 (XEP-0386)" [xlabel="1"];
-  "Bind2 (XEP-0386)" -> "AuthenticatedAndResourceBound";
+  "ConnectedButUnauthenticated" -> "InstantStreamResumption (XEP-0397)" [xlabel="1"];
+  "InstantStreamResumption (XEP-0397)" -> "AuthenticatedAndResourceBound";
   "AuthenticatedAndResourceBound" -> "Shutdown" [xlabel="1"];
   "Shutdown" -> "CloseConnection";
   "CloseConnection" -> "Disconnected";
   "AuthenticatedAndResourceBound" -> "InstantShutdown" [xlabel="2"];
   "InstantShutdown" -> "CloseConnection";
 "AuthenticatedAndResourceBound" [ style=filled ]
-"Bind2 (XEP-0386)" [ style=dashed ]
-  "ConnectedButUnauthenticated" -> "InstantStreamResumption (XEP-0397)" [xlabel="2"];
-  "InstantStreamResumption (XEP-0397)" -> "AuthenticatedAndResourceBound";
 "InstantStreamResumption (XEP-0397)" [ style=dashed ]
-  "ConnectedButUnauthenticated" -> "SaslAuthentication (RFC 6120 § 6)" [xlabel="3"];
-  "SaslAuthentication (RFC 6120 § 6)" -> "AuthenticatedButUnbound";
+  "ConnectedButUnauthenticated" -> "Sasl2Init (XEP-0388)" [xlabel="2"];
+  "Sasl2Init (XEP-0388)" -> "Bind2 (XEP-0386)" [xlabel="1"];
+  "Bind2 (XEP-0386)" -> "Fast (XEP-0484)" [xlabel="1"];
+  "Fast (XEP-0484)" -> "Sasl2Auth (XEP-0388)";
+  "Sasl2Auth (XEP-0388)" -> "AuthenticatedButUnbound" [xlabel="1"];
   "AuthenticatedButUnbound" -> "Compression (XEP-0138)" [xlabel="1"];
   "Compression (XEP-0138)" -> "AuthenticatedButUnbound";
   "AuthenticatedButUnbound" -> "ResumeStream (XEP-0198)" [xlabel="2"];
@@ -28,6 +28,11 @@ digraph {
 "EnableStreamManagement (XEP-0198)" [ style=dashed ]
   "ResourceBinding (RFC 6120 § 7)" -> "AuthenticatedAndResourceBound" [xlabel="2"];
 "AuthenticatedButUnbound" [ style=bold ]
+  "Sasl2Auth (XEP-0388)" -> "AuthenticatedAndResourceBound" [xlabel="2"];
+  "Bind2 (XEP-0386)" -> "Sasl2Auth (XEP-0388)" [xlabel="2"];
+  "Sasl2Init (XEP-0388)" -> "Sasl2Auth (XEP-0388)" [xlabel="2"];
+  "ConnectedButUnauthenticated" -> "SaslAuthentication (RFC 6120 § 6)" [xlabel="3"];
+  "SaslAuthentication (RFC 6120 § 6)" -> "AuthenticatedButUnbound";
   "ConnectedButUnauthenticated" -> "Shutdown" [xlabel="4"];
   "ConnectedButUnauthenticated" -> "InstantShutdown" [xlabel="5"];
 "ConnectedButUnauthenticated" [ style=filled ]

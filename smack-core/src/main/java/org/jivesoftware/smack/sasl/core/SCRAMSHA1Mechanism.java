@@ -20,6 +20,7 @@ import java.security.InvalidKeyException;
 
 import org.jivesoftware.smack.sasl.SASLMechanism;
 import org.jivesoftware.smack.util.MAC;
+import org.jivesoftware.smack.util.SHA1;
 
 public class SCRAMSHA1Mechanism extends ScramMechanism {
 
@@ -34,6 +35,10 @@ public class SCRAMSHA1Mechanism extends ScramMechanism {
             @Override
             public byte[] hmac(byte[] key, byte[] str) throws InvalidKeyException {
                 return MAC.hmacsha1(key, str);
+            }
+            @Override
+            public byte[] h(byte[] str) {
+                return SHA1.bytes(str);
             }
         };
         NAME = new SCRAMSHA1Mechanism().getName();

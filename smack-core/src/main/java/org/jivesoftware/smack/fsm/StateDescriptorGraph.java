@@ -215,9 +215,17 @@ public class StateDescriptorGraph {
                 inferredForwardEdges.put(predecessor, backwardsEdge);
             }
         }
-        // Ensure that the initial node has their successors inferred.
-        for (Class<? extends StateDescriptor> inferredSuccessorOfInitialStateDescriptor : inferredForwardEdges.getAll(initialStatedescriptorClass)) {
-            initialNode.getElement().addSuccessor(inferredSuccessorOfInitialStateDescriptor);
+        // Ensure that all existing vertices (initial node and backward edge nodes) have their successors inferred.
+        for (var predecessorClass : inferredForwardEdges.keySet()) {
+            var predecessorVertex = graphVertexes.get(predecessorClass);
+            // XXX: Null check required?
+            if (predecessorVertex == null) {
+                continue;
+            }
+
+            for (var inferredSuccessor : inferredForwardEdges.getAll(predecessorClass)) {
+                predecessorVertex.getElement().addSuccessor(inferredSuccessor);
+            }
         }
 
         HandleStateDescriptorGraphVertexContext context = new HandleStateDescriptorGraphVertexContext(graphVertexes, inferredForwardEdges);

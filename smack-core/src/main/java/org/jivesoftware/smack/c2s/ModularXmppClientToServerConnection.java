@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -85,6 +86,7 @@ import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
 import org.jxmpp.jid.DomainBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.util.XmppStringUtils;
 
@@ -246,10 +248,28 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
+            public SSLSession getSslSession() {
+                return ModularXmppClientToServerConnection.this.getSSLSession();
+            }
+
+            @Override
+            public void prepareToWaitForFeaturesReceived() {
+                ModularXmppClientToServerConnection.this.prepareToWaitForFeaturesReceived();
+            }
+
+            @Override
             public <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
                             Class<SN> successNonzaClass, Class<FN> failedNonzaClass) throws NoResponseException,
                             NotConnectedException, FailedNonzaException, InterruptedException {
                 return ModularXmppClientToServerConnection.this.sendAndWaitForResponse(nonza, successNonzaClass,
+                                failedNonzaClass);
+            }
+
+            @Override
+            public <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
+                            Collection<Class<? extends SN>> successNonzaClasses, Class<FN> failedNonzaClass) throws NoResponseException,
+                            NotConnectedException, FailedNonzaException, InterruptedException {
+                return ModularXmppClientToServerConnection.this.sendAndWaitForResponse(nonza, successNonzaClasses,
                                 failedNonzaClass);
             }
 
@@ -284,6 +304,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             public void notifyDataReceived() {
                 ModularXmppClientToServerConnection.this.notifyDataReceived();
             }
+
+            @Override
+            public void setUser(EntityFullJid user) {
+                ModularXmppClientToServerConnection.this.user = Objects.requireNonNull(user, "User JID must not be null");
+                ModularXmppClientToServerConnection.this.xmppServiceDomain = user.asDomainBareJid();
+            }
         };
 
         // Construct the modules from the module descriptor. We do this before constructing the state graph, as the
@@ -310,6 +336,17 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     public <CM extends ModularXmppClientToServerConnectionModule<? extends ModularXmppClientToServerConnectionModuleDescriptor>> CM getConnectionModuleFor(
                     Class<? extends ModularXmppClientToServerConnectionModuleDescriptor> descriptorClass) {
         return (CM) connectionModules.get(descriptorClass);
+    }
+
+    public <T> List<T> getConnectionModulesImplementing(Class<T> interfaceClass) {
+        // XXX: var und remove unmodifiable
+        List<T> res = new ArrayList<>();
+        for (ModularXmppClientToServerConnectionModule<?> module : connectionModules.values()) {
+            if (interfaceClass.isInstance(module)) {
+                res.add(interfaceClass.cast(module));
+            }
+        }
+        return Collections.unmodifiableList(res);
     }
 
     @Override
@@ -898,8 +935,31 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
     public static final class AuthenticatedButUnboundStateDescriptor extends StateDescriptor {
         private AuthenticatedButUnboundStateDescriptor() {
-            super(StateDescriptor.Property.multiVisitState);
+            super(AuthenticatedButUnboundState.class, StateDescriptor.Property.multiVisitState);
             addSuccessor(ResourceBindingStateDescriptor.class);
+        }
+    }
+
+    @SuppressWarnings("ClassCanBeStatic")
+    private final class AuthenticatedButUnboundState extends State {
+        // Invoked via reflection.
+        @SuppressWarnings("UnusedMethod")
+        private AuthenticatedButUnboundState(StateDescriptor stateDescriptor,
+                        ModularXmppClientToServerConnectionInternal connectionInternal) {
+            super(stateDescriptor, connectionInternal);
+        }
+
+        @Override
+        public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
+            if (getUser() != null) {
+                return new StateTransitionResult.TransitionImpossibleReason("Resource is already bound");
+            }
+            return null;
+        }
+
+        @Override
+        public StateTransitionResult.Success transitionInto(WalkStateGraphContext walkStateGraphContext) {
+            return StateTransitionResult.Success.EMPTY_INSTANCE;
         }
     }
 
@@ -975,6 +1035,14 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         private AuthenticatedAndResourceBoundState(StateDescriptor stateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
             super(stateDescriptor, connectionInternal);
+        }
+
+        @Override
+        public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
+            if (connectionInternal.connection.getUser() == null) {
+                return new StateTransitionResult.TransitionImpossibleReason("User is not set (resource not bound)");
+            }
+            return null;
         }
 
         @Override

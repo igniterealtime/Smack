@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javax.net.ssl.SSLSession;
@@ -87,6 +88,23 @@ public final class SASLAuthentication {
             REGISTERED_MECHANISMS.add(mechanism);
             Collections.sort(REGISTERED_MECHANISMS);
         }
+    }
+
+    public static List<SASLMechanism> getRegisteredSASLMechanisms() {
+        synchronized (REGISTERED_MECHANISMS) {
+            return new ArrayList<>(REGISTERED_MECHANISMS);
+        }
+    }
+
+    public static SASLMechanism getRegisteredSASLMechanism(String mechanismName) {
+        synchronized (REGISTERED_MECHANISMS) {
+            for (SASLMechanism mechanism : REGISTERED_MECHANISMS) {
+                if (mechanism.getName().equals(mechanismName)) {
+                    return mechanism;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -312,14 +330,28 @@ public final class SASLAuthentication {
         return lastUsedMech.getName();
     }
 
-    private SASLMechanism selectMechanism(EntityBareJid authzid, String password) throws SmackException.SmackSaslException {
-        final boolean passwordAvailable = StringUtils.isNotEmpty(password);
-
-        Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
+    private SASLMechanism selectMechanism(EntityBareJid authzid, String password)
+                    throws SmackException.SmackSaslException {
         final List<String> serverMechanisms = getServerMechanisms();
         if (serverMechanisms.isEmpty()) {
             LOGGER.warning("Server did not report any SASL mechanisms");
         }
+        return selectMechanism(authzid, password, serverMechanisms, connection, configuration);
+    }
+
+    public static SASLMechanism selectMechanism(EntityBareJid authzid, String password, List<String> serverMechanisms,
+                    AbstractXMPPConnection connection, ConnectionConfiguration configuration)
+                    throws SmackException.SmackSaslException {
+        return selectMechanism(authzid, password, serverMechanisms, connection, configuration, null);
+    }
+
+    public static SASLMechanism selectMechanism(EntityBareJid authzid, String password, List<String> serverMechanisms,
+                    AbstractXMPPConnection connection, ConnectionConfiguration configuration,
+                    Function<SASLMechanism, String> skipReasonProvider)
+                    throws SmackException.SmackSaslException {
+        final boolean passwordAvailable = StringUtils.isNotEmpty(password);
+
+        Iterator<SASLMechanism> it = REGISTERED_MECHANISMS.iterator();
 
         List<String> skipReasons = new ArrayList<>();
 
@@ -334,22 +366,32 @@ public final class SASLAuthentication {
 
             synchronized (BLACKLISTED_MECHANISMS) {
                 if (BLACKLISTED_MECHANISMS.contains(mechanismName)) {
+                    skipReasons.add("Skipping " + mechanismName + " because it is blacklisted by Smack");
                     continue;
                 }
             }
 
             if (!configuration.isEnabledSaslMechanism(mechanismName)) {
+                skipReasons.add("Skipping " + mechanismName + " because it is disabled in the connection configuration");
                 continue;
             }
 
             if (authzid != null && !mechanism.authzidSupported()) {
-                skipReasons.add("Skipping " + mechanism + " because authzid is required by not supported by this SASL mechanism");
+                skipReasons.add("Skipping " + mechanismName + " because authzid is required by connection configuration, but not supported by this SASL mechanism");
                 continue;
             }
 
             if (mechanism.requiresPassword() && !passwordAvailable) {
-                skipReasons.add("Skipping " + mechanism + " because a password is required for it, but none was provided to the connection configuration");
+                skipReasons.add("Skipping " + mechanismName + " because a password is required for it, but none was provided to the connection configuration");
                 continue;
+            }
+
+            if (skipReasonProvider != null) {
+                String skipReason = skipReasonProvider.apply(mechanism);
+                if (skipReason != null) {
+                    skipReasons.add("Skipping " + mechanismName + " because " + skipReason);
+                    continue;
+                }
             }
 
             // Create a new instance of the SASLMechanism for every authentication attempt.
@@ -366,7 +408,7 @@ public final class SASLAuthentication {
                             "Blacklisted SASL mechanisms: " + BLACKLISTED_MECHANISMS + ". " +
                             "Skip reasons: " + skipReasons
                             );
-            // @formatter;on
+            // @formatter:on
         }
     }
 

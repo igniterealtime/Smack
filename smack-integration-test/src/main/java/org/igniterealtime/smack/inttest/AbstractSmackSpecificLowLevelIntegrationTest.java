@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018-2021 Florian Schmaus
+ * Copyright 2018-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.igniterealtime.smack.inttest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
@@ -49,6 +50,18 @@ public abstract class AbstractSmackSpecificLowLevelIntegrationTest<C extends Abs
 
     protected C getSpecificUnconnectedConnection() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return environment.connectionManager.constructConnection(connectionDescriptor);
+    }
+
+    protected C getSpecificUnconnectedConnection(ConnectionConfigurationBuilderApplier customConnectionConfigurationApplier)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        var appliers = new ArrayList<>(List.of(customConnectionConfigurationApplier));
+        return getSpecificUnconnectedConnection(appliers);
+    }
+
+    protected C getSpecificUnconnectedConnection(
+                    Collection<ConnectionConfigurationBuilderApplier> customConnectionConfigurationAppliers)
+                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        return environment.connectionManager.constructConnection(connectionDescriptor, customConnectionConfigurationAppliers);
     }
 
     protected List<C> getSpecificUnconnectedConnections(int count)

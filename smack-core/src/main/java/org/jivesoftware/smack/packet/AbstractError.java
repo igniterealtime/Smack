@@ -99,6 +99,10 @@ public class AbstractError {
         return descriptiveTexts.get(xmllang);
     }
 
+    public Map<String, String> getDescriptiveTexts() {
+        return Collections.unmodifiableMap(descriptiveTexts);
+    }
+
     /**
      * Returns the first stanza extension that matches the specified element name and
      * namespace, or <code>null</code> if it doesn't exist.

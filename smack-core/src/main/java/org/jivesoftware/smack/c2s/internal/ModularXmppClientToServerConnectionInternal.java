@@ -20,10 +20,13 @@ import java.io.IOException;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
+import java.util.Collection;
 import java.util.ListIterator;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import javax.net.ssl.SSLSession;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -45,6 +48,8 @@ import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
+
+import org.jxmpp.jid.EntityFullJid;
 
 public abstract class ModularXmppClientToServerConnectionInternal {
 
@@ -115,6 +120,8 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract ListIterator<XmppInputOutputFilter> getXmppInputOutputFilterEndIterator();
 
+    public abstract void prepareToWaitForFeaturesReceived();
+
     public abstract void waitForFeaturesReceived(String waitFor) throws InterruptedException, SmackException, XMPPException;
 
     public abstract void newStreamOpenWaitForFeaturesSequence(String waitFor) throws InterruptedException,
@@ -122,9 +129,17 @@ public abstract class ModularXmppClientToServerConnectionInternal {
 
     public abstract SmackTlsContext getSmackTlsContext();
 
+    public abstract SSLSession getSslSession();
+
     public abstract <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
                     Class<SN> successNonzaClass, Class<FN> failedNonzaClass)
                     throws NoResponseException, NotConnectedException, FailedNonzaException, InterruptedException;
+
+    public abstract <SN extends Nonza, FN extends Nonza> SN sendAndWaitForResponse(Nonza nonza,
+                    Collection<Class<? extends SN>> successNonzaClasses, Class<FN> failedNonzaClass)
+                    throws NoResponseException, NotConnectedException, FailedNonzaException, InterruptedException;
+
+    public abstract void setUser(EntityFullJid user);
 
     public abstract void asyncGo(Runnable runnable);
 
