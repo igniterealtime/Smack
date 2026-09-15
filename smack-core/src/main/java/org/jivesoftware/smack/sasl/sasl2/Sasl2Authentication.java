@@ -63,7 +63,7 @@ public class Sasl2Authentication {
     private final List<Sasl2AuthenticationHook> hooks;
 
     public Sasl2Authentication(ModularXmppClientToServerConnectionInternal connectionInternal) {
-        this(connectionInternal, null);
+        this(connectionInternal, Collections.emptyList());
     }
 
     public Sasl2Authentication(ModularXmppClientToServerConnectionInternal connectionInternal,
@@ -71,17 +71,6 @@ public class Sasl2Authentication {
         this.connectionInternal = Objects.requireNonNull(connectionInternal, "connectionInternal must not be null");
         if (hooks != null) {
             this.hooks = new ArrayList<>(hooks);
-        } else if (connectionInternal.connection != null) {
-            List<Sasl2AuthenticationHook> detectedHooks = new ArrayList<>();
-            detectedHooks.addAll(connectionInternal.connection
-                            .getConnectionModulesImplementing(Sasl2AuthenticationHook.class));
-            for (var supplier : connectionInternal.connection.getConnectionModulesImplementing(Sasl2AuthenticationHookSupplier.class)) {
-                Sasl2AuthenticationHook hook = supplier.getSasl2AuthenticationHook();
-                if (hook != null) {
-                    detectedHooks.add(hook);
-                }
-            }
-            this.hooks = Collections.unmodifiableList(detectedHooks);
         } else {
             this.hooks = Collections.emptyList();
         }
@@ -175,13 +164,6 @@ public class Sasl2Authentication {
                     NoResponseException, InterruptedException, IOException, XMPPException {
         return authenticate(mechanism, loginContext.username, loginContext.password, loginContext.resource,
                         null, additionalSasl2Extensions);
-    }
-
-    public Sasl2AuthenticationResult authenticate(SASLMechanism mechanism, String username, String password,
-                    Resourcepart resource, Collection<? extends XmlElement> additionalSasl2Extensions)
-                    throws SmackException, SmackSaslException, SASLErrorException, FailedNonzaException, NotConnectedException,
-                    NoResponseException, InterruptedException, IOException, XMPPException {
-        return authenticate(mechanism, username, password, resource, null, additionalSasl2Extensions);
     }
 
     public Sasl2AuthenticationResult authenticate(SASLMechanism mechanism, String username, String password,
@@ -324,6 +306,7 @@ public class Sasl2Authentication {
             return boundResource;
         }
 
+        // XXX: This appears to be violate layering, sasl2 should be unaware of sm:3
         public boolean isStreamResumed() {
             return getSuccessExtension("resumed", "urn:xmpp:sm:3") != null;
         }

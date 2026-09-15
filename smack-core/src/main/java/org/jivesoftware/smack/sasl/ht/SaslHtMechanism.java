@@ -148,10 +148,6 @@ public abstract class SaslHtMechanism extends SASLMechanism implements SaslToken
         }
     }
 
-    public boolean isChannelBindingSupported(XMPPConnection connection) {
-        return getChannelBindingNotSupportedReason(connection) == null;
-    }
-
     @Override
     public SASLMechanism instanceForAuthentication(XMPPConnection connection, ConnectionConfiguration connectionConfiguration) {
         SaslHtMechanism htMechanism = (SaslHtMechanism) super.instanceForAuthentication(connection, connectionConfiguration);

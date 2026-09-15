@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl.sasl2;
+package org.jivesoftware.smack.fast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,10 +50,6 @@ import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModuleDescr
 import org.jivesoftware.smack.c2s.XmppClientToServerTransport;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
-import org.jivesoftware.smack.fast.FastModule;
-import org.jivesoftware.smack.fast.FastModuleDescriptor;
-import org.jivesoftware.smack.fast.FastToken;
-import org.jivesoftware.smack.fast.FastTokenListener;
 import org.jivesoftware.smack.fast.element.FastElements;
 import org.jivesoftware.smack.fsm.ConnectionStateEvent;
 import org.jivesoftware.smack.fsm.LoginContext;
@@ -69,7 +65,10 @@ import org.jivesoftware.smack.sasl.core.SASLAnonymous;
 import org.jivesoftware.smack.sasl.ht.HtSha256NoneMechanism;
 import org.jivesoftware.smack.sasl.packet.Sasl2Feature;
 import org.jivesoftware.smack.sasl.packet.Sasl2Nonza;
+import org.jivesoftware.smack.sasl.sasl2.Sasl2Authentication;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2Authentication.Sasl2AuthenticationResult;
+import org.jivesoftware.smack.sasl.sasl2.Sasl2Module;
+import org.jivesoftware.smack.sasl.sasl2.Sasl2ModuleDescriptor;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -88,6 +87,10 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         SmackConfiguration.addModule(Bind2ModuleDescriptor.class);
         SmackConfiguration.addModule(Sasl2ModuleDescriptor.class);
         SmackConfiguration.addModule(FastModuleDescriptor.class);
+    }
+
+    private static Sasl2Authentication createSasl2Authentication(MockConnectionInternal mockInternal, FastModule fastModule) {
+        return new Sasl2Authentication(mockInternal, Collections.singletonList(fastModule.getSasl2AuthenticationHook()));
     }
 
     private static final class MockConnectionInternal extends ModularXmppClientToServerConnectionInternal {
@@ -334,7 +337,8 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         List<org.jivesoftware.smack.packet.XmlElement> extensions = new ArrayList<>();
         extensions.add(new FastElements.RequestToken("HT-SHA-256-NONE"));
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
 
         assertNotNull(result);
@@ -343,7 +347,6 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         assertEquals("token-xyz-123", result.getSuccessExtension(FastElements.Token.class).getToken());
 
         // Verify token was stored in FastModule
-        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
         FastToken savedToken = fastModule.getFastToken();
         assertNotNull(savedToken);
         assertEquals("token-xyz-123", savedToken.getToken());
@@ -403,7 +406,7 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         long count = fastModule.incrementTokenCount();
         List<org.jivesoftware.smack.packet.XmlElement> extensions = Collections.singletonList(new FastElements.Fast(count, false));
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
 
         assertNotNull(result);
@@ -458,7 +461,7 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         List<org.jivesoftware.smack.packet.XmlElement> extensions = new ArrayList<>();
         extensions.add(new FastElements.Fast(count, false));
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         // Should NOT throw exception, but gracefully fall back!
         Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
 
@@ -513,7 +516,7 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         long count = fastModule.incrementTokenCount();
         List<org.jivesoftware.smack.packet.XmlElement> extensions = Collections.singletonList(new FastElements.Fast(count, false));
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
 
         assertNotNull(result);
@@ -594,7 +597,7 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         long count = fastModule.incrementTokenCount();
         List<org.jivesoftware.smack.packet.XmlElement> extensions = Collections.singletonList(new FastElements.Fast(count, false));
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
 
         assertNotNull(result);
@@ -622,8 +625,9 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
             Collections.emptyList()
         );
 
+        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
         LoginContext loginContext = new LoginContext("alice", "password", Resourcepart.from("res"));
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
 
         // Case 1: No token stored
         var e1 = org.junit.jupiter.api.Assertions.assertThrows(
@@ -633,7 +637,6 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         assertTrue(e1.getMessage().contains("no FAST token stored in FastModule"));
 
         // Case 2: Expired token stored
-        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
         FastToken expiredToken = new FastToken("tok", "HT-SHA-256-NONE", java.time.Instant.now().minusSeconds(60), 0);
         fastModule.setFastToken(expiredToken);
 
@@ -756,7 +759,7 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         long count = fastModule.incrementTokenCount();
         List<org.jivesoftware.smack.packet.XmlElement> extensions = Collections.singletonList(new FastElements.Fast(count, true));
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
 
         assertNotNull(result);
@@ -844,12 +847,13 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         Sasl2Module sasl2Module = connection.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
         assertNotNull(sasl2Module);
 
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
         // Invoke selectBestAdvertisedFastMechanism flow via extensions check
         FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
         assertNotNull(fastModule);
         FastToken token = fastModule.getFastToken();
         assertNotNull(token);
+
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
 
         // Transition with autoRequestToken enabled and ineligible token
         List<org.jivesoftware.smack.packet.XmlElement> extensions = new ArrayList<>();
@@ -920,7 +924,7 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         assertEquals("HT-SHA-256-ENDP", bestMech.getName());
 
         LoginContext loginContext = new LoginContext("alice", "secret", Resourcepart.from("res"));
-        Sasl2Authentication sasl2Auth = new Sasl2Authentication(mockInternal);
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
         List<org.jivesoftware.smack.packet.XmlElement> extensions = Collections.singletonList(
             new FastElements.RequestToken("HT-SHA-256-ENDP")
         );

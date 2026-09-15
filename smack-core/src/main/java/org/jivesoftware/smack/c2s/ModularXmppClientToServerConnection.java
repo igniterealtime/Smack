@@ -338,17 +338,6 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
         return (CM) connectionModules.get(descriptorClass);
     }
 
-    public <T> List<T> getConnectionModulesImplementing(Class<T> interfaceClass) {
-        // XXX: var und remove unmodifiable
-        List<T> res = new ArrayList<>();
-        for (ModularXmppClientToServerConnectionModule<?> module : connectionModules.values()) {
-            if (interfaceClass.isInstance(module)) {
-                res.add(interfaceClass.cast(module));
-            }
-        }
-        return Collections.unmodifiableList(res);
-    }
-
     @Override
     protected void loginInternal(String username, String password, Resourcepart resource)
                     throws XMPPException, SmackException, IOException, InterruptedException {

@@ -67,9 +67,6 @@ public final class FastToken implements Serializable {
         return new FastToken(token, mechanism, expiry, count + 1);
     }
 
-    public FastToken withCount(long newCount) {
-        return new FastToken(token, mechanism, expiry, newCount);
-    }
 
     @Override
     public boolean equals(Object o) {
