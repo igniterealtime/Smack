@@ -1,5 +1,57 @@
 # Smack Changelog
 
+# 4.5.0 -- 2026-09-15
+
+### Improvement
+
+[SMACK-893](https://igniterealtime.atlassian.net/browse/SMACK-893) Use gradle's release option
+
+[SMACK-924](https://igniterealtime.atlassian.net/browse/SMACK-924) Add API to set JXMPPContext on a per Connection and/or per Remote/Local base
+
+[SMACK-947](https://igniterealtime.atlassian.net/browse/SMACK-947) Allow MucConfigFormManager to be used for admins
+
+[SMACK-952](https://igniterealtime.atlassian.net/browse/SMACK-952) Correctly handle BCP 47 language tag creation from Locale for xml:lang
+
+[SMACK-953](https://igniterealtime.atlassian.net/browse/SMACK-953) Raise minimum required Java version to 11, rename smack-java8 projects to smack-java11
+
+[SMACK-957](https://igniterealtime.atlassian.net/browse/SMACK-957) Detection of Pub/Sub service based on required features
+
+### Task
+
+[SMACK-928](https://igniterealtime.atlassian.net/browse/SMACK-928) Migrate markdown documentation to javadoc
+
+[SMACK-951](https://igniterealtime.atlassian.net/browse/SMACK-951) Bump minimum Android API version to 26
+
+### New Feature
+
+[SMACK-835](https://igniterealtime.atlassian.net/browse/SMACK-835) Add support for RFC 7395: An Extensible Messaging and Presence Protocol \(XMPP\) Subprotocol for  WebSocket
+
+[SMACK-932](https://igniterealtime.atlassian.net/browse/SMACK-932) Add support for XEP-0249: Direct MUC Invitations
+
+[SMACK-950](https://igniterealtime.atlassian.net/browse/SMACK-950) Room Destroy request may contain alternate venue's password
+
+### Bug
+
+[SMACK-851](https://igniterealtime.atlassian.net/browse/SMACK-851) Message.getBody\(\) should not return \`null\` if all bodies have an xml:lang
+
+[SMACK-908](https://igniterealtime.atlassian.net/browse/SMACK-908) Bug in adding new tab to debugger
+
+[SMACK-933](https://igniterealtime.atlassian.net/browse/SMACK-933) Multi-stage ad-hoc commands cause an exception
+
+[SMACK-935](https://igniterealtime.atlassian.net/browse/SMACK-935) Websocket stream handling should handle non-collapsed open element
+
+[SMACK-938](https://igniterealtime.atlassian.net/browse/SMACK-938) Busy loop in SmackReactor
+
+[SMACK-942](https://igniterealtime.atlassian.net/browse/SMACK-942) MultiUserChat.changeNickname\(\) does always timeout
+
+[SMACK-943](https://igniterealtime.atlassian.net/browse/SMACK-943) InvitationListener invoked with incorrect JID
+
+[SMACK-944](https://igniterealtime.atlassian.net/browse/SMACK-944) Unordered usage of disco#info dataforms when calculating Caps 
+
+[SMACK-946](https://igniterealtime.atlassian.net/browse/SMACK-946) Allow Data Form field to be used to unset a value
+
+[SMACK-956](https://igniterealtime.atlassian.net/browse/SMACK-956) Reconnecting a BOSH connection hangs
+
 # 4.4.8 -- 2024-04-02
 
 ### Improvement
