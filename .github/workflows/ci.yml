@@ -47,8 +47,7 @@ jobs:
       - name: Cache Android SDK
         uses: actions/cache@v4
         with:
-          path: |
-            ~/.android/sdk
+          path: /usr/local/lib/android/sdk
           key: android-${{ hashFiles('build.gradle') }}
           restore-keys: |
             android-
