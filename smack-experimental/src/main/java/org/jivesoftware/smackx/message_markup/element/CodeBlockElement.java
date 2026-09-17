@@ -18,19 +18,29 @@ package org.jivesoftware.smackx.message_markup.element;
 
 import javax.xml.namespace.QName;
 
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 public class CodeBlockElement extends MarkupElement.BlockLevelMarkupElement {
 
     public static final String ELEMENT = "bcode";
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
+
+    private final String codeLanguage;
 
     /**
      * Create a new Code Block element.
      *
      * @param start start index
      * @param end end index
+     * @param codeLanguage programming language of the code block (e.g. "java")
      */
-    public CodeBlockElement(int start, int end) {
+    public CodeBlockElement(int start, int end, String codeLanguage) {
         super(start, end);
+        this.codeLanguage = codeLanguage;
+    }
+
+    public String getCodeLanguage() {
+        return codeLanguage;
     }
 
     @Override
@@ -38,4 +48,9 @@ public class CodeBlockElement extends MarkupElement.BlockLevelMarkupElement {
         return ELEMENT;
     }
 
+    @Override
+    protected void afterXmlPrelude(XmlStringBuilder xml) {
+        xml.attribute("language", codeLanguage);
+        super.afterXmlPrelude(xml);
+    }
 }

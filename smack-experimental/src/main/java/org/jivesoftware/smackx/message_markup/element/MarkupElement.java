@@ -96,7 +96,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder TODO javadoc me please
+         * @return builder to be used for chaining.
          */
         public Builder setDeleted(int start, int end) {
             return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.deleted));
@@ -107,10 +107,21 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder TODO javadoc me please
+         * @return builder to be used for chaining.
          */
         public Builder setEmphasis(int start, int end) {
             return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.emphasis));
+        }
+
+        /**
+         * Mark a section of a message as strongly emphasized (bold font).
+         *
+         * @param start start index
+         * @param end end index
+         * @return builder to be used for chaining.
+         */
+        public Builder setStrong(int start, int end) {
+            return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.strong));
         }
 
         /**
@@ -118,7 +129,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder TODO javadoc me please
+         * @return builder to be used for chaining.
          */
         public Builder setCode(int start, int end) {
             return addSpan(start, end, Collections.singleton(SpanElement.SpanStyle.code));
@@ -130,7 +141,7 @@ public class MarkupElement implements ExtensionElement {
          * @param start start index
          * @param end end index
          * @param styles list of text styles for that span
-         * @return builder TODO javadoc me please
+         * @return builder to be used for chaining.
          */
         public Builder addSpan(int start, int end, Set<SpanElement.SpanStyle> styles) {
             verifyStartEnd(start, end);
@@ -151,7 +162,7 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder TODO javadoc me please
+         * @return builder to be used for chaining.
          */
         public Builder setBlockQuote(int start, int end) {
             verifyStartEnd(start, end);
@@ -178,12 +189,13 @@ public class MarkupElement implements ExtensionElement {
          *
          * @param start start index
          * @param end end index
-         * @return builder TODO javadoc me please
+         * @param codeLanguage programming language of the code block (e.g. "java")
+         * @return builder to be used for chaining.
          */
-        public Builder setCodeBlock(int start, int end) {
+        public Builder setCodeBlock(int start, int end, String codeLanguage) {
             verifyStartEnd(start, end);
 
-            codes.add(new CodeBlockElement(start, end));
+            codes.add(new CodeBlockElement(start, end, codeLanguage));
             return this;
         }
 
@@ -199,6 +211,7 @@ public class MarkupElement implements ExtensionElement {
         public static final class ListBuilder {
             private final Builder markup;
             private final ArrayList<ListElement.ListEntryElement> entries = new ArrayList<>();
+            private boolean ordered;
             private int end = -1;
 
             private ListBuilder(Builder markup) {
@@ -228,15 +241,20 @@ public class MarkupElement implements ExtensionElement {
                 return this;
             }
 
+            public Builder.ListBuilder setOrdered(boolean ordered) {
+                this.ordered = ordered;
+                return this;
+            }
+
             /**
              * End the list.
              *
-             * @return builder TODO javadoc me please
+             * @return builder to be used for chaining.
              */
             public Builder endList() {
                 if (entries.size() > 0) {
                     ListElement.ListEntryElement first = entries.get(0);
-                    ListElement list = new ListElement(first.getStart(), end, entries);
+                    ListElement list = new ListElement(first.getStart(), end, entries, ordered);
                     markup.lists.add(list);
                 }
 
@@ -326,7 +344,7 @@ public class MarkupElement implements ExtensionElement {
         }
 
         @Override
-        protected final void afterXmlPrelude(XmlStringBuilder xml) {
+        protected void afterXmlPrelude(XmlStringBuilder xml) {
             xml.rightAngleBracket();
 
             appendInnerXml(xml);
@@ -348,7 +366,7 @@ public class MarkupElement implements ExtensionElement {
         }
 
         @Override
-        protected final void afterXmlPrelude(XmlStringBuilder xml) {
+        protected void afterXmlPrelude(XmlStringBuilder xml) {
             xml.closeEmptyElement();
         }
 

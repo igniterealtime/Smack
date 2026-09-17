@@ -36,13 +36,14 @@
  * <p>
  * Currently there are 3 styles available:
  * <ul>
- * <li>*emphasis*, which should be rendered by a client as *italic*, or **bold**</li>
+ * <li>*emphasis*, which should be rendered by a client as *italic*</li>
+ * <li>*strong*, which should be rendered by a client as **bold**</li>
  * <li>*code*, which should be rendered in `monospace`</li>
  * <li>*deleted*, which should be rendered as ~~strikethrough~~.</li>
  * </ul>
  * <p>
- * Those styles are available by calling `builder.setEmphasis(int start, int end)`, `builder.setDeleted(int start, int
- * end)` and `builder.setCode(int start, int end)`.
+ * Those styles are available by calling `builder.setEmphasis(int start, int end)`, `builder.setStrong(int start, int
+ * end)`, `builder.setDeleted(int start, int end)` and `builder.setCode(int start, int end)`.
  * </p>
  * <p>
  * If you want to apply multiple inline styles to a section, you can do the following:

@@ -19,6 +19,7 @@ package org.jivesoftware.smackx.message_markup;
 import static org.jivesoftware.smack.test.util.XmlAssertUtil.assertXmlSimilar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -59,6 +60,30 @@ public class MessageMarkupTest extends SmackTestSuite {
         assertEquals(15, spanElement.getEnd());
         assertEquals(1, spanElement.getStyles().size());
         assertEquals(SpanElement.SpanStyle.emphasis, spanElement.getStyles().iterator().next());
+    }
+
+    @Test
+    public void strongTest() throws Exception {
+        String xml =
+                "<markup xmlns='urn:xmpp:markup:0'>" +
+                    "<span start='9' end='15'>" +
+                        "<strong/>" +
+                    "</span>" +
+                "</markup>";
+        MarkupElement.Builder m = MarkupElement.getBuilder();
+        m.setStrong(9, 15);
+        assertXmlSimilar(xml, m.build().toXML().toString());
+
+        XmlPullParser parser = TestUtils.getParser(xml);
+        MarkupElement parsed = new MarkupElementProvider().parse(parser);
+        List<MarkupElement.MarkupChildElement> children = parsed.getChildElements();
+        assertEquals(1, children.size());
+
+        SpanElement spanElement = (SpanElement) children.get(0);
+        assertEquals(9, spanElement.getStart());
+        assertEquals(15, spanElement.getEnd());
+        assertEquals(1, spanElement.getStyles().size());
+        assertEquals(SpanElement.SpanStyle.strong, spanElement.getStyles().iterator().next());
     }
 
     @Test
@@ -127,10 +152,10 @@ public class MessageMarkupTest extends SmackTestSuite {
     public void codeBlockTest() throws Exception {
         String xml =
                 "<markup xmlns='urn:xmpp:markup:0'>" +
-                    "<bcode start='23' end='48'/>" +
+                    "<bcode start='23' end='48' language='bash' />" +
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
-        m.setCodeBlock(23, 48);
+        m.setCodeBlock(23, 48, "bash");
         assertXmlSimilar(xml, m.build().toXML().toString());
 
         XmlPullParser parser = TestUtils.getParser(xml);
@@ -141,13 +166,14 @@ public class MessageMarkupTest extends SmackTestSuite {
         CodeBlockElement codeBlock = (CodeBlockElement) children.get(0);
         assertEquals(23, codeBlock.getStart());
         assertEquals(48, codeBlock.getEnd());
+        assertEquals("bash", codeBlock.getCodeLanguage());
     }
 
     @Test
     public void listTest() throws Exception {
         String xml =
                 "<markup xmlns='urn:xmpp:markup:0'>" +
-                    "<list start='31' end='89'>" +
+                    "<list start='31' end='89' ordered='true'>" +
                         "<li start='31'/>" +
                         "<li start='47'/>" +
                         "<li start='61'/>" +
@@ -156,6 +182,7 @@ public class MessageMarkupTest extends SmackTestSuite {
                 "</markup>";
         MarkupElement.Builder m = MarkupElement.getBuilder();
         m = m.beginList()
+                .setOrdered(true)
                 .addEntry(31, 47)
                 .addEntry(47, 61)
                 .addEntry(61, 69)
@@ -171,6 +198,7 @@ public class MessageMarkupTest extends SmackTestSuite {
         ListElement list = (ListElement) children.get(0);
         assertEquals(31, list.getStart());
         assertEquals(89, list.getEnd());
+        assertTrue(list.isOrdered());
         assertEquals(4, list.getEntries().size());
         assertEquals(list.getStart(), list.getEntries().get(0).getStart());
         assertEquals(47, list.getEntries().get(1).getStart());
