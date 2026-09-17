@@ -57,7 +57,10 @@ jobs:
       - name: Install GraphViz
         run: sudo apt update && sudo apt install graphviz
       - name: Install Android SDK Manager
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: |
+            platform-tools
       - name: Install Android SDK
         run: |
           sdkmanager "platforms;android-26"
