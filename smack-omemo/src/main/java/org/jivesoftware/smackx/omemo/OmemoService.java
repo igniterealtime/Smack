@@ -468,6 +468,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         // Reset the message counter.
         omemoStore.storeOmemoMessageCounter(manager.getOwnDevice(), senderDevice, 0);
 
+        // Update the last received message date.
+        omemoStore.setDateOfLastReceivedMessage(manager.getOwnDevice(), senderDevice, new Date());
+
         if (omemoElement.isMessageElement()) {
             // Use symmetric message key to decrypt message payload.
             String plaintext = OmemoRatchet.decryptMessageElement(omemoElement, cipherAndAuthTag);
