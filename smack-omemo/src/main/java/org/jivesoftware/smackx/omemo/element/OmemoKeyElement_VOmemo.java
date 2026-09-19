@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
@@ -26,25 +23,18 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * Header element of the message for Axolotl. The header contains information about the sender
- * and the encrypted keys for the recipients, as well as the iv element for AES.
- *
- * @author Paul Schaub
- * @author Eng Chong Meng
+ * Small class to collect key (byte[]), its id and whether its a preKey or not for omemo:2 namespace.
  */
-public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElement_VAxolotl> {
-    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+public class OmemoKeyElement_VOmemo extends OmemoKeyElement {
+    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_OMEMO;
+    public static final String ATTR_PREKEY = "kex";
 
-    private final List<OmemoKeyElement_VAxolotl> keys;
-
-    public OmemoHeaderElement_VAxolotl(int sid, List<OmemoKeyElement_VAxolotl> keys, byte[] iv) {
-        super(sid, iv);
-        this.keys = keys;
+    public OmemoKeyElement_VOmemo(byte[] data, int id) {
+        this(data, id, false);
     }
 
-    @Override
-    public List<OmemoKeyElement_VAxolotl> getKeys() {
-        return new ArrayList<>(keys);
+    public OmemoKeyElement_VOmemo(byte[] data, int id, boolean preKey) {
+        super(data, id, preKey);
     }
 
     @Override
@@ -55,13 +45,15 @@ public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElem
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
         XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
-        sb.attribute(ATTR_SID, getSid()).rightAngleBracket();
 
-        for (OmemoKeyElement k : getKeys()) {
-            sb.append(k);
+        if (isPreKey()) {
+            sb.attribute(ATTR_PREKEY, true);
         }
 
-        sb.openElement(ATTR_IV).append(Base64.encodeToString(getIv())).closeElement(ATTR_IV);
-        return sb.closeElement(this);
+        sb.attribute(ATTR_RID, getId());
+        sb.rightAngleBracket();
+        sb.append(Base64.encodeToString(getData()));
+        sb.closeElement(this);
+        return sb;
     }
 }

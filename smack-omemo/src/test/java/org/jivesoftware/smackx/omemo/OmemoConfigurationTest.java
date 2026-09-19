@@ -34,15 +34,15 @@ public class OmemoConfigurationTest {
 
         // Body hint
         OmemoConfiguration.setAddOmemoHintBody(false);
-        assertEquals(false, OmemoConfiguration.getAddOmemoHintBody());
+        assertFalse(OmemoConfiguration.getAddOmemoHintBody());
         OmemoConfiguration.setAddOmemoHintBody(true);
-        assertEquals(true, OmemoConfiguration.getAddOmemoHintBody());
+        assertTrue(OmemoConfiguration.getAddOmemoHintBody());
 
         // Delete stale devices
         OmemoConfiguration.setDeleteStaleDevices(false);
-        assertEquals(false, OmemoConfiguration.getDeleteStaleDevices());
+        assertFalse(OmemoConfiguration.getDeleteStaleDevices());
         OmemoConfiguration.setDeleteStaleDevices(true);
-        assertEquals(true, OmemoConfiguration.getDeleteStaleDevices());
+        assertTrue(OmemoConfiguration.getDeleteStaleDevices());
         OmemoConfiguration.setDeleteStaleDevicesAfterHours(25);
         assertEquals(25, OmemoConfiguration.getDeleteStaleDevicesAfterHours());
         try {
@@ -54,9 +54,9 @@ public class OmemoConfigurationTest {
 
         // Renew signedPreKeys
         OmemoConfiguration.setRenewOldSignedPreKeys(false);
-        assertEquals(false, OmemoConfiguration.getRenewOldSignedPreKeys());
+        assertFalse(OmemoConfiguration.getRenewOldSignedPreKeys());
         OmemoConfiguration.setRenewOldSignedPreKeys(true);
-        assertEquals(true, OmemoConfiguration.getRenewOldSignedPreKeys());
+        assertTrue(OmemoConfiguration.getRenewOldSignedPreKeys());
         OmemoConfiguration.setRenewOldSignedPreKeysAfterHours(77);
         assertEquals(77, OmemoConfiguration.getRenewOldSignedPreKeysAfterHours());
         try {
@@ -86,4 +86,5 @@ public class OmemoConfigurationTest {
         OmemoConfiguration.setCompleteSessionWithEmptyMessage(true);
         assertTrue(OmemoConfiguration.getCompleteSessionWithEmptyMessage());
     }
+
 }

@@ -34,6 +34,6 @@ public class OmemoFingerprintTest {
         OmemoFingerprint second = new OmemoFingerprint("TOE");
 
         assertNotSame(first, second);
-        assertEquals(first, new OmemoFingerprint("FINGER"));
+        assertEquals(new OmemoFingerprint("FINGER"), first);
     }
 }

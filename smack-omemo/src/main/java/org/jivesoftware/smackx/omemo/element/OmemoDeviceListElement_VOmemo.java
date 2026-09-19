@@ -16,40 +16,39 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
-
 import java.util.Set;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * The OMEMO device list element with the legacy Axolotl namespace.
+ * The OMEMO devices element with the legacy omemo:2 namespace.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class OmemoDeviceListElement_VAxolotl extends OmemoDeviceListElement {
-    public static final String LIST = "list";
+public class OmemoDeviceListElement_VOmemo extends OmemoDeviceListElement {
+    public static final String DEVICES = "devices";
 
-    public OmemoDeviceListElement_VAxolotl(Set<OmemoDeviceElement> deviceIds) {
+    public OmemoDeviceListElement_VOmemo(Set<OmemoDeviceElement> deviceIds) {
         super(deviceIds);
     }
 
-    public OmemoDeviceListElement_VAxolotl(OmemoCachedDeviceList cachedList) {
+    public OmemoDeviceListElement_VOmemo(OmemoCachedDeviceList cachedList) {
         super(cachedList);
     }
 
     @Override
     public String getElementName() {
-        return LIST;
+        return DEVICES;
     }
 
     @Override
     public String getNamespace() {
-        return OMEMO_NAMESPACE_V_AXOLOTL;
+        return OmemoConstants.OMEMO_NAMESPACE_V_OMEMO;
     }
 
     @Override
@@ -59,6 +58,8 @@ public class OmemoDeviceListElement_VAxolotl extends OmemoDeviceListElement {
         for (OmemoDeviceElement id : deviceElements) {
             sb.halfOpenElement(OmemoDeviceElement.DEVICE);
             sb.attribute(OmemoDeviceElement.ATTR_ID, id.getId());
+            sb.optAttribute(OmemoDeviceElement.ATTR_LABEL, id.getLabel());
+            sb.optAttribute(OmemoDeviceElement.ATTR_LABELSIG, id.getLabelSig());
             sb.closeEmptyElement();
         }
 

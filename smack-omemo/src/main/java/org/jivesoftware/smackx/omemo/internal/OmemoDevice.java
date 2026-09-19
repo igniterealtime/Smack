@@ -24,6 +24,7 @@ import org.jxmpp.jid.BareJid;
  * Class that combines a BareJid and a deviceId.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class OmemoDevice {
     private final BareJid jid;
@@ -72,16 +73,19 @@ public class OmemoDevice {
 
     @Override
     public int hashCode() {
-        Integer i;
+        int i;
         i = jid.hashCode() + deviceId;
-        return i.hashCode();
+        return Integer.hashCode(i);
     }
 
     /**
      * Return the name of the PubSub {@link org.jivesoftware.smackx.pubsub.LeafNode} of this device.
+     *
+     * @param vOmemo2 omemo:2 option state.
+     *
      * @return node name.
      */
-    public String getBundleNodeName() {
-        return OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(getDeviceId());
+    public String getBundleNodeName(boolean vOmemo2) {
+        return OmemoConstants.PEP_NODE_BUNDLE_FROM_DEVICE_ID(getDeviceId(), vOmemo2);
     }
 }

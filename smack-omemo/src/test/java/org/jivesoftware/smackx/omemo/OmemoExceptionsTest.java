@@ -46,17 +46,17 @@ public class OmemoExceptionsTest {
 
         UndecidedOmemoIdentityException u = new UndecidedOmemoIdentityException(alice);
         assertTrue(u.getUndecidedDevices().contains(alice));
-        assertTrue(u.getUndecidedDevices().size() == 1);
+        assertEquals(1, u.getUndecidedDevices().size());
 
         UndecidedOmemoIdentityException v = new UndecidedOmemoIdentityException(bob);
         v.getUndecidedDevices().add(mallory);
-        assertTrue(v.getUndecidedDevices().size() == 2);
+        assertEquals(2, v.getUndecidedDevices().size());
         assertTrue(v.getUndecidedDevices().contains(bob));
         assertTrue(v.getUndecidedDevices().contains(mallory));
 
         u.getUndecidedDevices().add(bob);
         u.join(v);
-        assertTrue(u.getUndecidedDevices().size() == 3);
+        assertEquals(3, u.getUndecidedDevices().size());
     }
 
     @Test

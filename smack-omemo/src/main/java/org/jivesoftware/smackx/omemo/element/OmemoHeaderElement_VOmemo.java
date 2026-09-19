@@ -26,25 +26,34 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * Header element of the message for Axolotl. The header contains information about the sender
+ * Header element of the message for omemo:2. The header contains information about the sender
  * and the encrypted keys for the recipients, as well as the iv element for AES.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElement_VAxolotl> {
-    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+public class OmemoHeaderElement_VOmemo extends OmemoHeaderElement<OmemoKeyElement_VOmemo> {
+    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_OMEMO;
 
-    private final List<OmemoKeyElement_VAxolotl> keys;
+    private final List<OmemoKeysElement_VOmemo> keysElement;
+    // List contains all the key childElements.
+    private final List<OmemoKeyElement_VOmemo> keys = new ArrayList<>();
 
-    public OmemoHeaderElement_VAxolotl(int sid, List<OmemoKeyElement_VAxolotl> keys, byte[] iv) {
+    public OmemoHeaderElement_VOmemo(int sid, List<OmemoKeysElement_VOmemo> keysElement, byte[] iv) {
         super(sid, iv);
-        this.keys = keys;
+        this.keysElement = keysElement;
+        for (OmemoKeysElement_VOmemo keyi : keysElement) {
+            keys.addAll(keyi.getKeys());
+        }
     }
 
     @Override
-    public List<OmemoKeyElement_VAxolotl> getKeys() {
+    public List<OmemoKeyElement_VOmemo> getKeys() {
         return new ArrayList<>(keys);
+    }
+
+    public List<OmemoKeysElement_VOmemo> getKeysElement() {
+        return new ArrayList<>(keysElement);
     }
 
     @Override
@@ -57,7 +66,7 @@ public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElem
         XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
         sb.attribute(ATTR_SID, getSid()).rightAngleBracket();
 
-        for (OmemoKeyElement k : getKeys()) {
+        for (OmemoKeysElement_VOmemo k : getKeysElement()) {
             sb.append(k);
         }
 

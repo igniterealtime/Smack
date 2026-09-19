@@ -23,65 +23,44 @@ import java.util.Set;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.Objects;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 
 /**
- * A OMEMO device list update containing the IDs of all active devices of a contact.
+ * A OMEMO devices containing the OmemoDevice elements of all active devices of a contact.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public abstract class OmemoDeviceListElement implements ExtensionElement {
-
-    public static final String DEVICE = "device";
-    public static final String ID = "id";
-    public static final String LIST = "list";
-
     /**
      * Unmodifiable set of device IDs.
      */
-    private final Set<Integer> deviceIds;
+    protected final Set<OmemoDeviceElement> deviceElements;
 
-    public OmemoDeviceListElement(Set<Integer> deviceIds) {
+    public OmemoDeviceListElement(Set<OmemoDeviceElement> deviceIds) {
         deviceIds = Objects.requireNonNull(deviceIds);
-        this.deviceIds = Collections.unmodifiableSet(deviceIds);
+        deviceElements = Collections.unmodifiableSet(deviceIds);
     }
 
     public OmemoDeviceListElement(OmemoCachedDeviceList cachedList) {
-        this.deviceIds = Collections.unmodifiableSet(cachedList.getActiveDevices());
+        deviceElements = new HashSet<>();
+        deviceElements.addAll(cachedList.getActiveDevices());
     }
 
-    public Set<Integer> getDeviceIds() {
-        return deviceIds;
+    public Set<OmemoDeviceElement> getDevices() {
+        return deviceElements;
     }
 
-    public Set<Integer> copyDeviceIds() {
-        return new HashSet<>(deviceIds);
-    }
-
-    @Override
-    public String getElementName() {
-        return LIST;
-    }
-
-    @Override
-    public final XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this).rightAngleBracket();
-
-        for (Integer id : deviceIds) {
-            sb.halfOpenElement(DEVICE).attribute(ID, id).closeEmptyElement();
-        }
-
-        sb.closeElement(this);
-        return sb;
+    public Set<OmemoDeviceElement> copyDevices() {
+        return new HashSet<>(deviceElements);
     }
 
     @Override
     public final String toString() {
         StringBuilder sb = new StringBuilder("OmemoDeviceListElement[");
-        Iterator<Integer> iterator = deviceIds.iterator();
-        for (int i : deviceIds) {
+        Iterator<OmemoDeviceElement> iterator = deviceElements.iterator();
+        for (OmemoDeviceElement i : deviceElements) {
             sb.append(i);
             if (iterator.hasNext()) {
                 sb.append(',');

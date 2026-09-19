@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import org.jivesoftware.smack.util.ParserUtils;
+import org.jivesoftware.smack.util.StringUtils;
 
 /**
  * The DelayInformationProvider parses DelayInformation packets.
@@ -30,6 +31,9 @@ public class LegacyDelayInformationProvider extends AbstractDelayInformationProv
 
     @Override
     protected Date parseDate(String string) throws ParseException {
+        if (StringUtils.isNullOrEmpty(string))
+            throw new ParseException("Date string cannot be null or empty!", 0);
+
         return ParserUtils.getDateFromString(string);
     }
 

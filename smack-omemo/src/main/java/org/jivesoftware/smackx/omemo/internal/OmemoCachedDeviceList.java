@@ -20,30 +20,33 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
+
 /**
- * This class is used to represent device lists of contacts.
- * There are active devices (a set of device ids, which was published with the last device list update)
+ * This class is used to represent devices of contacts.
+ * There are active devices (a set of OmemoDevice elements, which was published with the last device list update)
  * and inactive devices (set of devices that once were active, but are not included in recent list updates).
  * Both kinds are cached by the client. When a device that was active in the last update is not included in
  * a new update, it becomes an inactive device. Vice versa, inactive devices can also become active again, by
  * being included in the latest device list update.
  * <p>
- * The client ensures, that his own device id is on the list of active devices, as soon as he gets online.
+ * The client ensures, that his own OmemoDevice elements is on the list of active devices, as soon as he gets online.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class OmemoCachedDeviceList implements Serializable {
     private static final long serialVersionUID = 3153579238321261203L;
 
-    private final Set<Integer> activeDevices;
-    private final Set<Integer> inactiveDevices;
+    private final Set<OmemoDeviceElement> activeDevices;
+    private final Set<OmemoDeviceElement> inactiveDevices;
 
     public OmemoCachedDeviceList() {
         this.activeDevices = new HashSet<>();
         this.inactiveDevices = new HashSet<>();
     }
 
-    public OmemoCachedDeviceList(Set<Integer> activeDevices, Set<Integer> inactiveDevices) {
+    public OmemoCachedDeviceList(Set<OmemoDeviceElement> activeDevices, Set<OmemoDeviceElement> inactiveDevices) {
         this();
         this.activeDevices.addAll(activeDevices);
         this.inactiveDevices.addAll(inactiveDevices);
@@ -59,7 +62,7 @@ public class OmemoCachedDeviceList implements Serializable {
      *
      * @return active devices
      */
-    public Set<Integer> getActiveDevices() {
+    public Set<OmemoDeviceElement> getActiveDevices() {
         return activeDevices;
     }
 
@@ -70,7 +73,7 @@ public class OmemoCachedDeviceList implements Serializable {
      *
      * @return inactive devices
      */
-    public Set<Integer> getInactiveDevices() {
+    public Set<OmemoDeviceElement> getInactiveDevices() {
         return inactiveDevices;
     }
 
@@ -79,8 +82,8 @@ public class OmemoCachedDeviceList implements Serializable {
      *
      * @return all devices
      */
-    public Set<Integer> getAllDevices() {
-        Set<Integer> all = new HashSet<>();
+    public Set<OmemoDeviceElement> getAllDevices() {
+        Set<OmemoDeviceElement> all = new HashSet<>();
         all.addAll(activeDevices);
         all.addAll(inactiveDevices);
         return all;
@@ -92,7 +95,7 @@ public class OmemoCachedDeviceList implements Serializable {
      *
      * @param deviceListUpdate received device list update
      */
-    public void merge(Set<Integer> deviceListUpdate) {
+    public void merge(Set<OmemoDeviceElement> deviceListUpdate) {
         inactiveDevices.addAll(activeDevices);
         activeDevices.clear();
         activeDevices.addAll(deviceListUpdate);
@@ -102,16 +105,16 @@ public class OmemoCachedDeviceList implements Serializable {
     /**
      * Add a device to the list of active devices and remove it from inactive.
      *
-     * @param deviceId deviceId that will be added
+     * @param device deviceId that will be added
      */
-    public void addDevice(int deviceId) {
-        activeDevices.add(deviceId);
-        inactiveDevices.remove(deviceId);
+    public void addDevice(OmemoDeviceElement device) {
+        activeDevices.add(device);
+        inactiveDevices.remove(device);
     }
 
-    public void addInactiveDevice(int deviceId) {
-        activeDevices.remove(deviceId);
-        inactiveDevices.add(deviceId);
+    public void addInactiveDevice(OmemoDeviceElement device) {
+        activeDevices.remove(device);
+        inactiveDevices.add(device);
     }
 
     /**
@@ -120,22 +123,22 @@ public class OmemoCachedDeviceList implements Serializable {
      * @param deviceId id
      * @return true or false
      */
-    public boolean contains(int deviceId) {
+    public boolean contains(OmemoDeviceElement deviceId) {
         return activeDevices.contains(deviceId) || inactiveDevices.contains(deviceId);
     }
 
-    public boolean isActive(int deviceId) {
+    public boolean isActive(OmemoDeviceElement deviceId) {
         return getActiveDevices().contains(deviceId);
     }
 
     @Override
     public String toString() {
         String out = "active: [";
-        for (int id : activeDevices) {
+        for (OmemoDeviceElement id : activeDevices) {
             out += id + " ";
         }
         out += "] inacitve: [";
-        for (int id : inactiveDevices) {
+        for (OmemoDeviceElement id : inactiveDevices) {
             out += id + " ";
         }
         out += "]";

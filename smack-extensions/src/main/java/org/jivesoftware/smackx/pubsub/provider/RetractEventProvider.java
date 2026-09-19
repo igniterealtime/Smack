@@ -34,7 +34,12 @@ import org.jivesoftware.smackx.pubsub.RetractItem;
 public class RetractEventProvider extends EmbeddedExtensionProvider<RetractItem> {
     @Override
     protected RetractItem createReturnExtension(String currentElement, String currentNamespace, Map<String, String> attributeMap, List<? extends XmlElement> content) {
-        return new RetractItem(attributeMap.get("id"));
+        for (XmlElement element : content) {
+            if (element instanceof RetractItem) {
+                String nodeId = ((RetractItem) element).getNode();
+                return new RetractItem(nodeId, attributeMap.get("id"));
+            }
+        }
+        return null;
     }
-
 }

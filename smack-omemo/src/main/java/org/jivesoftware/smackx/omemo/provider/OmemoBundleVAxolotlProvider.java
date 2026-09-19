@@ -16,16 +16,9 @@
  */
 package org.jivesoftware.smackx.omemo.provider;
 
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.IDENTITY_KEY;
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEYS;
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEY_ID;
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.PRE_KEY_PUB;
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_ID;
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_PUB;
-import static org.jivesoftware.smackx.omemo.element.OmemoBundleElement.SIGNED_PRE_KEY_SIG;
-
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.provider.ExtensionElementProvider;
@@ -37,9 +30,10 @@ import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
 import org.jxmpp.JxmppContext;
 
 /**
- * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects.
+ * Smack ExtensionProvider that parses OMEMO bundle element into OmemoBundleElement objects for Axolotl namespace.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoBundleElement_VAxolotl> {
     @Override
@@ -50,7 +44,8 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
         String signedPreKey = null;
         String signedPreKeySignature = null;
         String identityKey = null;
-        HashMap<Integer, String> preKeys = new HashMap<>();
+        // Preserve the order of the received preKeyPublic's in prekeys.
+        Map<Integer, String> preKeys = new LinkedHashMap<>();
 
         outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();
@@ -59,9 +54,9 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                     String name = parser.getName();
                     final int attributeCount = parser.getAttributeCount();
                     // <signedPreKeyPublic>
-                    if (name.equals(SIGNED_PRE_KEY_PUB)) {
+                    if (name.equals(OmemoBundleElement_VAxolotl.SIGNED_PRE_KEY_PUB)) {
                         for (int i = 0; i < attributeCount; i++) {
-                            if (parser.getAttributeName(i).equals(SIGNED_PRE_KEY_ID)) {
+                            if (parser.getAttributeName(i).equals(OmemoBundleElement_VAxolotl.SIGNED_PRE_KEY_ID)) {
                                 int id = Integer.parseInt(parser.getAttributeValue(i));
                                 signedPreKey = parser.nextText();
                                 signedPreKeyId = id;
@@ -69,21 +64,21 @@ public class OmemoBundleVAxolotlProvider extends ExtensionElementProvider<OmemoB
                         }
                     }
                     // <bundleGetSignedPreKeySignature>
-                    else if (name.equals(SIGNED_PRE_KEY_SIG)) {
+                    else if (name.equals(OmemoBundleElement_VAxolotl.SIGNED_PRE_KEY_SIG)) {
                         signedPreKeySignature = parser.nextText();
                     }
                     // <deserializeIdentityKey>
-                    else if (name.equals(IDENTITY_KEY)) {
+                    else if (name.equals(OmemoBundleElement_VAxolotl.IDENTITY_KEY)) {
                         identityKey = parser.nextText();
                     }
                     // <deserializeECPublicKeys>
-                    else if (name.equals(PRE_KEYS)) {
+                    else if (name.equals(OmemoBundleElement_VAxolotl.PRE_KEYS)) {
                         inPreKeys = true;
                     }
                     // <preKeyPublic preKeyId='424242'>
-                    else if (inPreKeys && name.equals(PRE_KEY_PUB)) {
+                    else if (inPreKeys && name.equals(OmemoBundleElement_VAxolotl.PRE_KEY_PUB)) {
                         for (int i = 0; i < attributeCount; i++) {
-                            if (parser.getAttributeName(i).equals(PRE_KEY_ID)) {
+                            if (parser.getAttributeName(i).equals(OmemoBundleElement_VAxolotl.PRE_KEY_ID)) {
                                 preKeys.put(Integer.parseInt(parser.getAttributeValue(i)),
                                         parser.nextText());
                             }

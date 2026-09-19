@@ -19,32 +19,47 @@ package org.jivesoftware.smackx.omemo.element;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.stringencoder.Base64;
 
 import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * Header element of the message for Axolotl. The header contains information about the sender
- * and the encrypted keys for the recipients, as well as the iv element for AES.
+ * Small class to collect key (byte[]), its id and whether its a preKey or not  for omemo:2 namespace.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElement_VAxolotl> {
-    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+public class OmemoKeysElement_VOmemo implements XmlElement {
+    public static final String ELEMENT = "keys";
+    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_OMEMO;
 
-    private final List<OmemoKeyElement_VAxolotl> keys;
+    public static final String ATTR_JID = "jid";
+    private final String jid;
+    private final List<OmemoKeyElement_VOmemo> keys;
 
-    public OmemoHeaderElement_VAxolotl(int sid, List<OmemoKeyElement_VAxolotl> keys, byte[] iv) {
-        super(sid, iv);
+    public OmemoKeysElement_VOmemo(String jid, List<OmemoKeyElement_VOmemo> keys) {
+        this.jid = jid;
         this.keys = keys;
     }
 
-    @Override
-    public List<OmemoKeyElement_VAxolotl> getKeys() {
+    /**
+     * Return the jid of the keys.
+     *
+     * @return jid of sender or recipient
+     */
+    public String getJid() {
+        return jid;
+    }
+
+    public List<OmemoKeyElement_VOmemo> getKeys() {
         return new ArrayList<>(keys);
+    }
+
+    @Override
+    public String getElementName() {
+        return ELEMENT;
     }
 
     @Override
@@ -55,13 +70,13 @@ public class OmemoHeaderElement_VAxolotl extends OmemoHeaderElement<OmemoKeyElem
     @Override
     public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
         XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
-        sb.attribute(ATTR_SID, getSid()).rightAngleBracket();
+        sb.attribute(ATTR_JID, jid);
+        sb.rightAngleBracket();
 
-        for (OmemoKeyElement k : getKeys()) {
+        for (OmemoKeyElement_VOmemo k : getKeys()) {
             sb.append(k);
         }
-
-        sb.openElement(ATTR_IV).append(Base64.encodeToString(getIv())).closeElement(ATTR_IV);
-        return sb.closeElement(this);
+        sb.closeElement(this);
+        return sb;
     }
 }

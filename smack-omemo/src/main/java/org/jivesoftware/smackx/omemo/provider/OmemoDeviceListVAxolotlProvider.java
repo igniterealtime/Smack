@@ -16,9 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo.provider;
 
-import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.DEVICE;
-import static org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement.ID;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,6 +25,7 @@ import org.jivesoftware.smack.provider.ExtensionElementProvider;
 import org.jivesoftware.smack.xml.XmlPullParser;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement_VAxolotl;
 
 import org.jxmpp.JxmppContext;
@@ -36,22 +34,23 @@ import org.jxmpp.JxmppContext;
  * Smack ExtensionProvider that parses OMEMO device list element into OmemoDeviceListElement objects.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class OmemoDeviceListVAxolotlProvider extends ExtensionElementProvider<OmemoDeviceListElement_VAxolotl> {
 
     @Override
     public OmemoDeviceListElement_VAxolotl parse(XmlPullParser parser, int initialDepth, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
-        Set<Integer> deviceListIds = new HashSet<>();
+        Set<OmemoDeviceElement> deviceListIds = new HashSet<>();
         outerloop: while (true) {
             XmlPullParser.Event tag = parser.next();
             switch (tag) {
                 case START_ELEMENT:
                     String name = parser.getName();
-                    if (name.equals(DEVICE)) {
+                    if (name.equals(OmemoDeviceElement.DEVICE)) {
                         for (int i = 0; i < parser.getAttributeCount(); i++) {
-                            if (parser.getAttributeName(i).equals(ID)) {
-                                Integer deviceId = Integer.parseInt(parser.getAttributeValue(i));
-                                deviceListIds.add(deviceId);
+                            if (parser.getAttributeName(i).equals(OmemoDeviceElement.ATTR_ID)) {
+                                int deviceId = Integer.parseInt(parser.getAttributeValue(i));
+                                deviceListIds.add(new OmemoDeviceElement(deviceId));
                             }
                         }
                     }

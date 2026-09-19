@@ -322,8 +322,8 @@
     <!-- XEP-0420: Stanza Content Encryption (SCE) -->
     <extensionProvider>
       <elementName>content</elementName>
-      <namespace>urn:xmpp:sce:0</namespace>
-      <className>org.jivesoftware.smackx.stanza_content_encryption.provider.ContentElementProvider</className>
+      <namespace>urn:xmpp:sce:1</namespace>
+      <className>org.jivesoftware.smackx.stanza_content_encryption.provider.EnvelopeElementProvider</className>
     </extensionProvider>
 
     <!-- XEP-0422: Message Fastening -->

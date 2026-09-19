@@ -17,6 +17,7 @@
 package org.jivesoftware.smackx.omemo.element;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.util.Objects;
 import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
@@ -25,6 +26,7 @@ import org.jivesoftware.smack.util.stringencoder.Base64;
  * Class that represents an OmemoElement.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public abstract class OmemoElement implements ExtensionElement {
 
@@ -34,8 +36,8 @@ public abstract class OmemoElement implements ExtensionElement {
     public static final String NAME_ENCRYPTED = "encrypted";
     public static final String ATTR_PAYLOAD = "payload";
 
-    private final OmemoHeaderElement header;
-    private final byte[] payload;
+    protected final OmemoHeaderElement<?> header;
+    protected final byte[] payload;
 
     /**
      * Create a new OmemoMessageElement from a header and a payload.
@@ -43,12 +45,12 @@ public abstract class OmemoElement implements ExtensionElement {
      * @param header  header of the message
      * @param payload payload
      */
-    public OmemoElement(OmemoHeaderElement header, byte[] payload) {
+    public OmemoElement(OmemoHeaderElement<?> header, byte[] payload) {
         this.header = Objects.requireNonNull(header);
         this.payload = payload;
     }
 
-    public OmemoHeaderElement getHeader() {
+    public OmemoHeaderElement<?> getHeader() {
         return header;
     }
 
@@ -73,9 +75,13 @@ public abstract class OmemoElement implements ExtensionElement {
     }
 
     @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace).rightAngleBracket();
+    public String getElementName() {
+        return NAME_ENCRYPTED;
+    }
 
+    @Override
+    public XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace).rightAngleBracket();
         sb.append(header);
 
         if (payload != null) {
@@ -84,10 +90,5 @@ public abstract class OmemoElement implements ExtensionElement {
 
         sb.closeElement(this);
         return sb;
-    }
-
-    @Override
-    public String getElementName() {
-        return NAME_ENCRYPTED;
     }
 }

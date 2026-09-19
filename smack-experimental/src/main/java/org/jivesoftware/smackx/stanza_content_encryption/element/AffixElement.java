@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.stanza_content_encryption.element;
 import org.jivesoftware.smack.packet.Element;
 
 /**
- * Interface that marks elements that may be used as affix elements inside a {@link ContentElement}.
+ * Interface that marks elements that may be used as affix elements inside a {@link EnvelopeElement}.
  *
  * @see <a href="https://xmpp.org/extensions/xep-0420.html#affix_elements">
  *     XEP-0420: Stanza Content Encryption - §4. Affix Elements</a>

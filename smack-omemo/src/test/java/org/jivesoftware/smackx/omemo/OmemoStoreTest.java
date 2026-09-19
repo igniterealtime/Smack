@@ -29,8 +29,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -166,7 +168,6 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
             keys.remove(keys.firstKey());
 
         }
-
         assertEquals("After deleting 49 keys, there must be no keys left.", 0, keys.size());
     }
 
@@ -271,11 +272,18 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
 
     @Test
     public void loadStoreCachedDeviceList() throws IOException {
-        Integer[] active = new Integer[] {1, 5, 999, 10};
-        Integer[] inactive = new Integer[] {6, 7, 8};
-        OmemoCachedDeviceList before = new OmemoCachedDeviceList(
-                new HashSet<>(Arrays.asList(active)),
-                new HashSet<>(Arrays.asList(inactive)));
+        Set<OmemoDeviceElement> active = new HashSet<>(Set.of(
+                new OmemoDeviceElement(1),
+                new OmemoDeviceElement(5),
+                new OmemoDeviceElement(999),
+                new OmemoDeviceElement(10)));
+
+        Set<OmemoDeviceElement> inactive = new HashSet<>(Set.of(
+                new OmemoDeviceElement(6),
+                new OmemoDeviceElement(7),
+                new OmemoDeviceElement(8)));
+
+        OmemoCachedDeviceList before = new OmemoCachedDeviceList(active, inactive);
 
         assertNotNull("Loading a non-existent cached deviceList must return an empty list.",
                 store.loadCachedDeviceList(alice, bob.getJid()));
@@ -284,16 +292,16 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
         OmemoCachedDeviceList after = store.loadCachedDeviceList(alice, bob.getJid());
         assertTrue("Loaded deviceList must not be empty", after.getAllDevices().size() != 0);
 
-        assertEquals("Number of entries in active devices must match.", active.length, after.getActiveDevices().size());
-        assertEquals("Number of entries in inactive devices must match.", inactive.length, after.getInactiveDevices().size());
-        assertEquals("Number of total entries must match.", active.length + inactive.length, after.getAllDevices().size());
+        assertEquals("Number of entries in active devices must match.", active.size(), after.getActiveDevices().size());
+        assertEquals("Number of entries in inactive devices must match.", inactive.size(), after.getInactiveDevices().size());
+        assertEquals("Number of total entries must match.", active.size() + inactive.size(), after.getAllDevices().size());
 
-        for (Integer a : active) {
+        for (OmemoDeviceElement a : active) {
             assertTrue(after.getActiveDevices().contains(a));
             assertTrue(after.getAllDevices().contains(a));
         }
 
-        for (Integer i : inactive) {
+        for (OmemoDeviceElement i : inactive) {
             assertTrue(after.getInactiveDevices().contains(i));
             assertTrue(after.getAllDevices().contains(i));
         }
@@ -339,8 +347,13 @@ public abstract class OmemoStoreTest<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey
 
     static TemporaryFolder initStaticTemp() {
         try {
-            return new TemporaryFolder() { { before(); } };
-        } catch (Throwable t) {
+            return new TemporaryFolder() {
+                {
+                    before();
+                }
+            };
+        }
+        catch (Throwable t) {
             throw new RuntimeException(t);
         }
     }

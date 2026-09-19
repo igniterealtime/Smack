@@ -17,22 +17,17 @@
 package org.jivesoftware.smackx.omemo.element;
 
 import org.jivesoftware.smack.packet.XmlElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.stringencoder.Base64;
-
-import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * Small class to collect key (byte[]), its id and whether its a preKey or not.
+ * Base class to collect key (byte[]), its id and whether its a preKey or not.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
-public class OmemoKeyElement implements XmlElement {
-
+public abstract class OmemoKeyElement implements XmlElement {
     public static final String ELEMENT = "key";
-    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
     public static final String ATTR_RID = "rid";
-    public static final String ATTR_PREKEY = "prekey";
 
     private final byte[] data;
     private final int id;
@@ -61,32 +56,12 @@ public class OmemoKeyElement implements XmlElement {
     }
 
     @Override
-    public String toString() {
-        return Integer.toString(id);
-    }
-
-    @Override
     public String getElementName() {
         return ELEMENT;
     }
 
     @Override
-    public String getNamespace() {
-        return NAMESPACE;
-    }
-
-    @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
-        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
-
-        if (isPreKey()) {
-            sb.attribute(ATTR_PREKEY, true);
-        }
-
-        sb.attribute(ATTR_RID, getId());
-        sb.rightAngleBracket();
-        sb.append(Base64.encodeToString(getData()));
-        sb.closeElement(this);
-        return sb;
+    public String toString() {
+        return Integer.toString(id);
     }
 }

@@ -16,17 +16,17 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * An OMEMO (PreKey) WhisperMessage element for Axolotl namespace.
+ * An OMEMO (PreKey) WhisperMessage element for omemo:2 namespace.
  *
  * @author Paul Schaub
  * @author Eng Chong Meng
  */
-public class OmemoElement_VAxolotl extends OmemoElement {
+public class OmemoElement_VOmemo extends OmemoElement {
 
-    public static final String NAMESPACE = OMEMO_NAMESPACE_V_AXOLOTL;
+    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_OMEMO;
 
     /**
      * Create a new OmemoMessageElement from a header and a payload.
@@ -34,7 +34,7 @@ public class OmemoElement_VAxolotl extends OmemoElement {
      * @param header  header of the message
      * @param payload payload
      */
-    public OmemoElement_VAxolotl(OmemoHeaderElement_VAxolotl header, byte[] payload) {
+    public OmemoElement_VOmemo(OmemoHeaderElement_VOmemo header, byte[] payload) {
         super(header, payload);
     }
 

@@ -16,35 +16,28 @@
  */
 package org.jivesoftware.smackx.omemo.element;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.smack.packet.XmlElement;
-import org.jivesoftware.smack.packet.XmlEnvironment;
-import org.jivesoftware.smack.util.XmlStringBuilder;
-import org.jivesoftware.smack.util.stringencoder.Base64;
-
-import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 /**
- * Header element of the message. The header contains information about the sender and the encrypted keys for
- * the recipients, as well as the iv element for AES.
+ * Header element of the message. The header contains information about the sender
+ * and the encrypted keys for the recipients, as well as the iv element for AES.
+ *
+ * @author Paul Schaub
+ * @author Eng Chong Meng
  */
-public abstract class OmemoHeaderElement implements XmlElement {
-
+public abstract class OmemoHeaderElement<T extends OmemoKeyElement> implements XmlElement {
     public static final String ELEMENT = "header";
-    public static final String NAMESPACE = OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
     public static final String ATTR_SID = "sid";
     public static final String ATTR_IV = "iv";
 
     private final int sid;
-    private final List<OmemoKeyElement> keys;
     private final byte[] iv;
 
-    public OmemoHeaderElement(int sid, List<OmemoKeyElement> keys, byte[] iv) {
+    public OmemoHeaderElement(int sid, byte[] iv) {
         this.sid = sid;
-        this.keys = keys;
         this.iv = iv;
     }
 
@@ -57,37 +50,14 @@ public abstract class OmemoHeaderElement implements XmlElement {
         return sid;
     }
 
-    public List<OmemoKeyElement> getKeys() {
-        return new ArrayList<>(keys);
-    }
-
     public byte[] getIv() {
         return iv != null ? iv.clone() : null;
     }
+
+    public abstract List<T> getKeys();
 
     @Override
     public String getElementName() {
         return ELEMENT;
     }
-
-    @Override
-    public String getNamespace() {
-        return NAMESPACE;
-    }
-
-    @Override
-    public XmlStringBuilder toXML(XmlEnvironment enclosingXmlEnvironment) {
-        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingXmlEnvironment);
-        sb.attribute(ATTR_SID, getSid()).rightAngleBracket();
-
-        for (OmemoKeyElement k : getKeys()) {
-            sb.append(k);
-        }
-
-        sb.openElement(ATTR_IV).append(Base64.encodeToString(getIv())).closeElement(ATTR_IV);
-
-        return sb.closeElement(this);
-    }
-
-
 }
