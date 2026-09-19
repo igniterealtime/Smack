@@ -144,18 +144,21 @@ public abstract class SmackFuture<V, E extends Exception> implements Future<V>, 
     public final synchronized V get(long timeout, TimeUnit unit)
                     throws InterruptedException, ExecutionException, TimeoutException {
         final long deadline = System.currentTimeMillis() + unit.toMillis(timeout);
-        while (result != null && exception != null) {
+        while (result == null && exception == null) {
             final long waitTimeRemaining = deadline - System.currentTimeMillis();
-            if (waitTimeRemaining > 0) {
-                futureWait(waitTimeRemaining);
+            if (waitTimeRemaining <= 0
+                    // this may be the case when the system time was changed meanwhile!
+                    && unit.toMillis(timeout) < waitTimeRemaining) {
+                break;
             }
+            futureWait(waitTimeRemaining);
         }
 
         if (cancelled) {
             throw new CancellationException();
         }
 
-        if (result == null || exception == null) {
+        if (result == null && exception == null) {
             throw new TimeoutException();
         }
 
