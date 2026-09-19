@@ -26,6 +26,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -67,7 +68,7 @@ import org.jxmpp.jid.EntityBareJid;
  * vCard.setOrganization("Jetbrains, s.r.o");
  * vCard.setNickName("KIR");
  *
- * vCard.setField("TITLE", "Mr");
+ * vCard.setTitle("Mr");
  * vCard.setAddressFieldHome("STREET", "Some street");
  * vCard.setAddressFieldWork("CTRY", "US");
  * vCard.setPhoneWork("FAX", "3443233");
@@ -100,7 +101,7 @@ public final class VCard extends IQ {
 
     /**
      * Address types:
-     * POSTAL?, PARCEL?, (DOM | INTL)?, PREF?, POBOX?, EXTADR?, STREET?, LOCALITY?,
+     * POSTAL?, PARCEL?, (DOM | INTL)?, PREF?, POBOX?, EXTADD?, STREET?, LOCALITY?,
      * REGION?, PCODE?, CTRY?
      */
     private final Map<String, String> homeAddr = new HashMap<>();
@@ -135,6 +136,13 @@ public final class VCard extends IQ {
 
     /**
      * Get the content of a generic VCard field.
+     * You should use more specific getters instead:
+     * {@link #getFullName()}
+     * {@link #getTitle()}
+     * {@link #getRole()}
+     * {@link #getBirthday()}
+     * {@link #getUrl()}
+     * {@link #getNote()}
      *
      * @param field value of field. Possible values: NICKNAME, PHOTO, BDAY, JABBERID, MAILER, TZ,
      *              GEO, TITLE, ROLE, LOGO, NOTE, PRODID, REV, SORT-STRING, SOUND, UID, URL, DESC.
@@ -146,6 +154,13 @@ public final class VCard extends IQ {
 
     /**
      * Set generic VCard field.
+     * You should use more specific setters instead:
+     * {@link #setFullName(String)}
+     * {@link #setTitle(String)}
+     * {@link #setRole(String)}
+     * {@link #setBirthday(LocalDate)}
+     * {@link #setUrl(String)}
+     * {@link #setNote(String)}
      *
      * @param value value of field
      * @param field field to set. See {@link #getField(String)}
@@ -220,12 +235,25 @@ public final class VCard extends IQ {
         updateFN();
     }
 
+    public String getFullName() {
+        return getField("FN");
+    }
+
+    /**
+     * Set the FN fields with a full name (i.e., first name + middle name + last name).
+     * NOTE: The FN will be overwritten on call of {@link #setFirstName(String)}, {@link #setLastName(String)} etc.
+     * @param fullName the full name for FN field.
+     */
+    public void setFullName(String fullName) {
+        setField("FN", fullName);
+    }
+
     public String getNickName() {
-        return otherSimpleFields.get("NICKNAME");
+        return getField("NICKNAME");
     }
 
     public void setNickName(String nickName) {
-        otherSimpleFields.put("NICKNAME", nickName);
+        setField("NICKNAME", nickName);
     }
 
     public String getEmailHome() {
@@ -245,11 +273,11 @@ public final class VCard extends IQ {
     }
 
     public String getJabberId() {
-        return otherSimpleFields.get("JABBERID");
+        return getField("JABBERID");
     }
 
     public void setJabberId(CharSequence jabberId) {
-        otherSimpleFields.put("JABBERID", jabberId.toString());
+        setField("JABBERID", jabberId.toString());
     }
 
     public String getOrganization() {
@@ -268,10 +296,56 @@ public final class VCard extends IQ {
         this.organizationUnit = organizationUnit;
     }
 
+    public String getTitle() {
+        return getField("TITLE");
+    }
+
+    public void setTitle(String title) {
+        setField("TITLE", title);
+    }
+
+    public String getRole() {
+        return getField("ROLE");
+    }
+
+    public void setRole(String role) {
+        setField("ROLE", role);
+    }
+
+    public LocalDate getBirthday() {
+        String dobStr = getField("BDAY");
+        return dobStr != null && !dobStr.isEmpty() ? LocalDate.parse(dobStr) : null;
+    }
+
+    public void setBirthday(LocalDate dob) {
+        String dobStr = dob != null ? dob.toString() : null;
+        setField("BDAY", dobStr);
+    }
+
+    public String getUrl() {
+        return getField("URL");
+    }
+
+    public void setUrl(String url) {
+        setField("URL", url);
+    }
+
+    /**
+     * Get the Note (Description) field. It used for bio.
+     * @return value of DESC field.
+     */
+    public String getNote() {
+        return getField("DESC");
+    }
+
+    public void setNote(String note) {
+        setField("DESC", note);
+    }
+
     /**
      * Get home address field.
      *
-     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
+     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADD, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
      * @return content of home address field.
      */
@@ -282,7 +356,7 @@ public final class VCard extends IQ {
     /**
      * Set home address field.
      *
-     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
+     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADD, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
      * @param value new value for the field.
      */
@@ -293,7 +367,7 @@ public final class VCard extends IQ {
     /**
      * Get work address field.
      *
-     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
+     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADD, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
      * @return content of work address field.
      */
@@ -304,7 +378,7 @@ public final class VCard extends IQ {
     /**
      * Set work address field.
      *
-     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADR, STREET,
+     * @param addrField one of POSTAL, PARCEL, (DOM | INTL), PREF, POBOX, EXTADD, STREET,
      *                  LOCALITY, REGION, PCODE, CTRY
      * @param value new value for the field.
      */
@@ -536,7 +610,7 @@ public final class VCard extends IQ {
         if (lastName != null) {
             sb.append(StringUtils.escapeForXml(lastName));
         }
-        setField("FN", sb.toString());
+        setFullName(sb.toString());
     }
 
     /**

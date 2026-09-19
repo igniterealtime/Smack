@@ -46,7 +46,7 @@ public class VCardProvider extends IqProvider<VCard> {
         "INTL",
         "PREF",
         "POBOX",
-        "EXTADR",
+        "EXTADD",
         "STREET",
         "LOCALITY",
         "REGION",
@@ -74,6 +74,7 @@ public class VCardProvider extends IqProvider<VCard> {
     public VCard parse(XmlPullParser parser, int initialDepth, IqData iqData, XmlEnvironment xmlEnvironment, JxmppContext jxmppContext) throws XmlPullParserException, IOException {
         VCard vCard = new VCard();
         String name = null;
+        String fullName = null;
 
         outerloop: while (true) {
             XmlPullParser.Event eventType = parser.next();
@@ -81,6 +82,9 @@ public class VCardProvider extends IqProvider<VCard> {
             case START_ELEMENT:
                 name = parser.getName();
                 switch (name) {
+                case "FN":
+                    fullName = parser.nextText();
+                    break;
                 case "N":
                     parseName(parser, vCard);
                     break;
@@ -123,6 +127,12 @@ public class VCardProvider extends IqProvider<VCard> {
             default:
                 break;
             }
+        }
+
+        // The FN field is generated on setFirstName, setLastName, setMiddleName, setPrefix, setSuffix.
+        // So we should set it manually at end.
+        if (fullName != null && !fullName.isEmpty()) {
+            vCard.setFullName(fullName);
         }
 
         return vCard;
