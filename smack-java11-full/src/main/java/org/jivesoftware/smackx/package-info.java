@@ -170,6 +170,12 @@
  * <td>Standardization of Date and Time representation in XMPP.</td>
  * </tr>
  * <tr>
+ * <td>User Avatar</td>
+ * <td><a href="https://xmpp.org/extensions/xep-0084.html">XEP-0084</a></td>
+ * <td></td>
+ * <td>Allows to exchange user avatars, which are small images or icons associated with human users.</td>
+ * </tr>
+ * <tr>
  * <td>Chat State Notifications</td>
  * <td><a href="https://xmpp.org/extensions/xep-0085.html">XEP-0085</a></td>
  * <td></td>

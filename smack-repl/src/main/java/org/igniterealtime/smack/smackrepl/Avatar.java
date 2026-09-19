@@ -1,0 +1,144 @@
+/*
+ *
+ * Copyright 2020 Paul Schaub
+ *
+ * This file is part of smack-repl.
+ *
+ * smack-repl is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+ */
+package org.igniterealtime.smack.smackrepl;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jivesoftware.smack.SmackException;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
+import org.jivesoftware.smack.util.Async;
+
+import org.jivesoftware.smackx.avatar.MemoryAvatarMetadataStore;
+import org.jivesoftware.smackx.avatar.MetadataInfo;
+import org.jivesoftware.smackx.avatar.UserAvatarManager;
+import org.jivesoftware.smackx.avatar.element.MetadataExtension;
+import org.jivesoftware.smackx.avatar.listener.AvatarListener;
+
+import org.bouncycastle.util.io.Streams;
+import org.jxmpp.jid.EntityBareJid;
+
+/**
+ * Connect to an XMPP account and download the avatars of all contacts.
+ * Shutdown with "/quit".
+ */
+public class Avatar {
+
+    private static final Logger LOGGER = Logger.getLogger("Avatar");
+
+    public static void main(String[] args) throws IOException, InterruptedException, XMPPException, SmackException {
+        if (args.length != 2) {
+            throw new IllegalArgumentException("Usage: java Avatar <jid> <password>");
+        }
+
+        XMPPTCPConnectionConfiguration.Builder builder = XMPPTCPConnectionConfiguration.builder()
+                .setXmppAddressAndPassword(args[0], args[1]);
+        XMPPTCPConnectionConfiguration build = builder.build();
+        XMPPTCPConnection connection = new XMPPTCPConnection(build);
+
+        UserAvatarManager avatarManager = UserAvatarManager.getInstanceFor(connection);
+        avatarManager.setAvatarMetadataStore(new MemoryAvatarMetadataStore());
+
+        File avatarDownloadDirectory = Files.createTempDirectory("avatarTest").toFile();
+
+        avatarManager.addAvatarListener(new AvatarListener() {
+            @Override
+            public void onAvatarUpdateReceived(EntityBareJid user, MetadataExtension metadata) {
+                Async.go(() -> {
+                    LOGGER.log(Level.INFO, "User updated avatar " + user);
+                    File userDirectory = new File(avatarDownloadDirectory, user.asUrlEncodedString());
+                    userDirectory.mkdirs();
+                    MetadataInfo avatarInfo = metadata.getInfoElements().get(0);
+                    File avatarFile = new File(userDirectory, avatarInfo.getId());
+
+                    try {
+                        if (avatarInfo.getUrl() == null) {
+                            LOGGER.log(Level.INFO, "Fetch avatar from pubsub for " + user.toString());
+                            byte[] bytes = avatarManager.fetchAvatarFromPubSub(user, avatarInfo);
+                            writeAvatar(avatarFile, new ByteArrayInputStream(bytes));
+                        } else {
+                            LOGGER.log(Level.INFO, "Fetch avatar from " + avatarInfo.getUrl().toString() + " for " + user.toString());
+                            writeAvatar(avatarFile, avatarInfo.getUrl().openStream());
+                        }
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, "Error downloading avatar", e);
+                    }
+                });
+            }
+        });
+
+        avatarManager.enable();
+
+        connection.connect().login();
+        if (!avatarManager.isSupportedByServer()) {
+            LOGGER.log(Level.SEVERE, "Avatars aren't supported by the server");
+        }
+        // CHECKSTYLE:OFF
+        System.out.println("Waiting for a contact to upload an avatar");
+        System.out.println("Type /quit to exit or /help to see usage");
+        System.out.println();
+        // CHECKSTYLE:ON
+        Scanner input = new Scanner(System.in, StandardCharsets.UTF_8);
+        while (true) {
+            String line = input.nextLine().trim();
+            String[] cmd = line.split(" ");
+            switch (cmd[0]) {
+                case "/quit":
+                    connection.disconnect();
+                    System.exit(0);
+                    break;
+                case "/publish":
+                    avatarManager.publishPNGAvatar(new File(cmd[1]));
+                    break;
+                case "/unpublish":
+                    avatarManager.unpublishAvatar();
+                    break;
+                case "/help":
+                    // CHECKSTYLE:OFF
+                    System.out.println("/quit to exit");
+                    System.out.println("/publish /path/to/avatar.png to upload new avatar for your account");
+                    System.out.println("/unpublish to remove avatar from your account");
+                    // CHECKSTYLE:ON
+                    break;
+            }
+        }
+    }
+
+    private static void writeAvatar(File file, InputStream inputStream) throws IOException {
+        file.createNewFile();
+        OutputStream outputStream = new FileOutputStream(file);
+        Streams.pipeAll(inputStream, outputStream);
+
+        inputStream.close();
+        outputStream.close();
+    }
+}

@@ -236,6 +236,14 @@
         </implements>
         <implements>
             <xmpp:SupportedXep>
+                <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0084.html"/>
+                <xmpp:status>complete</xmpp:status>
+                <xmpp:note>smack-extensions</xmpp:note>
+                <xmpp:version>4.5.0</xmpp:version>
+            </xmpp:SupportedXep>
+        </implements>
+        <implements>
+            <xmpp:SupportedXep>
                 <xmpp:xep rdf:resource="https://xmpp.org/extensions/xep-0085.html"/>
                 <xmpp:status>complete</xmpp:status>
                 <xmpp:note>smack-extensions</xmpp:note>
