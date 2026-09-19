@@ -37,8 +37,6 @@ import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
 import org.jivesoftware.smackx.pubsub.PubSubException;
 
-import com.google.common.collect.Maps;
-
 public class OmemoManagerSetupHelper {
 
 
@@ -77,7 +75,7 @@ public class OmemoManagerSetupHelper {
 
         Map<OmemoDevice, OmemoFingerprint> fps2 = alice.getActiveFingerprints(bob.getOwnJid());
         assertEquals(fps1.size(), fps2.size());
-        assertTrue(Maps.difference(fps1, fps2).areEqual());
+        assertEquals(fps1, fps2);
 
         assertAllDevicesAreDecided(alice, fps2);
         assertAllDevicesAreTrusted(alice, fps2);

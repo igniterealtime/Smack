@@ -16,7 +16,6 @@ dependencies {
 	api project(':smack-websocket-okhttp')
 	api project(':smack-resolver-dnsjava')
 	implementation project(':smack-websocket-java11')
-	implementation "com.google.guava:guava:${guavaVersion}"
 	implementation "org.reflections:reflections:${orgReflectionsVersion}"
 	api 'eu.geekplace.javapinning:java-pinning-java11:1.3.0'
 	implementation "commons-io:commons-io:$commonsIoVersion"

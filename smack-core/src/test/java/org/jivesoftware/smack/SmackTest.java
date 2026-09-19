@@ -23,19 +23,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 
 public class SmackTest {
 
     @Test
     public void getNoticeStreamTest() throws IOException {
-        Set<String> expectedStrings = Sets.newHashSet(
+        Set<String> expectedStrings = new HashSet<>(Set.of(
                         "Florian Schmaus"
                       , "Paul Schaub"
-        );
+        ));
         int maxLineLength = 0;
 
         try (InputStream inputStream = Smack.getNoticeStream()) {

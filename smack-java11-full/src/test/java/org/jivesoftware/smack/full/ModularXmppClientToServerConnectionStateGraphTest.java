@@ -31,7 +31,7 @@ import org.jivesoftware.smack.compression.CompressionModuleDescriptor;
 import org.jivesoftware.smack.util.EqualsUtil;
 import org.jivesoftware.smack.util.HashCode;
 
-import com.google.common.io.Resources;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedPseudograph;
 import org.jgrapht.io.DOTImporter;
@@ -43,8 +43,8 @@ public class ModularXmppClientToServerConnectionStateGraphTest {
 
     @Test
     public void testStateGraphDotOutput() throws IOException, ImportException {
-        URL stateGraphDotFileUrl = Resources.getResource("state-graph.dot");
-        String expectedStateGraphDot = Resources.toString(stateGraphDotFileUrl, StandardCharsets.UTF_8);
+        URL stateGraphDotFileUrl = ModularXmppClientToServerConnectionStateGraphTest.class.getClassLoader().getResource("state-graph.dot");
+        String expectedStateGraphDot = new String(stateGraphDotFileUrl.openStream().readAllBytes(), StandardCharsets.UTF_8);
 
         StringWriter sw = new StringWriter();
         PrintWriter pw  = new PrintWriter(sw);
