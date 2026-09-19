@@ -16,8 +16,6 @@
  */
 package org.jivesoftware.smackx.muc;
 
-import org.jivesoftware.smack.util.Objects;
-
 import org.jivesoftware.smackx.disco.packet.DiscoverItems;
 
 import org.jxmpp.jid.EntityBareJid;
@@ -40,8 +38,8 @@ public class HostedRoom {
     private final String name;
 
     public HostedRoom(DiscoverItems.Item item) {
-        jid = Objects.requireNonNull(item.getEntityID().asEntityBareJidIfPossible(),
-                        "The discovered item must be an entity bare JID");
+        // The discovered item must be an entity bare JID
+        jid = item.getEntityID().asEntityBareJidOrThrow();
         name = item.getName();
     }
 
