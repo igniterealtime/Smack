@@ -1,0 +1,44 @@
+<form_type>
+    <name>http://jabber.org/protocol/pubsub#meta-data</name>
+    <doc>XEP-0060</doc>
+    <desc>Forms enabling setting of metadata information about pubsub nodes</desc>
+    <field var='pubsub#contact'
+           type='jid-multi'
+           label='The JIDs of those to contact with questions'/>
+    <field var='pubsub#creation_date'
+           type='text-single'
+           label='The datetime when the node was created'/>
+    <field var='pubsub#creator'
+           type='jid-single'
+           label='The JID of the node creator'/>
+    <field var='pubsub#description'
+           type='text-single'
+           label='A description of the node'/>
+    <field var='pubsub#language'
+           type='list-single'
+           label='The default language of the node'/>
+    <field var='pubsub#access_model'
+           type='list-single'
+           label='Access model'/>
+    <field var='pubsub#publish_model'
+           type='list-single'
+           label='Publish model'/>
+    <field var='pubsub#num_subscribers'
+           type='text-single'
+           label='The number of subscribers to the node'/>
+    <field var='pubsub#owner'
+           type='jid-multi'
+           label='The JIDs of those with an affiliation of owner'/>
+    <field var='pubsub#publisher'
+           type='jid-multi'
+           label='The JIDs of those with an affiliation of publisher'/>
+    <field var='pubsub#title'
+           type='text-single'
+           label='The name of the node'/>
+    <field var='pubsub#type'
+           type='text-single'
+           label='Payload semantic type information'/>
+    <field var='pubsub#max_items'
+           type='text-single'
+           label='Max # of items to persist'/>
+</form_type>

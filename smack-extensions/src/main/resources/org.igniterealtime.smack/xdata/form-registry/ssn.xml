@@ -1,0 +1,101 @@
+<form_type>
+    <name>urn:xmpp:ssn</name>
+    <doc>XEP-0155</doc>
+    <desc>
+        Forms enabling negotation of a one-to-one
+        session between two entities.
+    </desc>
+    <field
+            var='accept'
+            type='boolean'
+            label='Whether to accept the invitation'/>
+    <field
+            var='continue'
+            type='text-single'
+            label='Another resource with which to continue the session'/>
+    <field
+            var="disclosure"
+            type="list-single"
+            label="Disclosure of content, decryption keys or identities">
+        <option label="Entities guarantee no disclosure features
+                   exist (not even disabled features)">
+            <value>never</value>
+        </option>
+        <option label="Entities MUST NOT disclose (except for those
+                   disclosures that are required by law)">
+            <value>disabled</value>
+        </option>
+        <option label="Entities MAY disclose">
+            <value>enabled</value>
+        </option>
+    </field>
+    <field
+            var='http://jabber.org/protocol/chatstates'
+            type='list-single'
+            label='Whether may send Chat State Notifications per XEP-0085'>
+        <option label='May Send'>
+            <value>may</value>
+        </option>
+        <option label='Must Not Send'>
+            <value>mustnot</value>
+        </option>
+    </field>
+    <field
+            var='http://jabber.org/protocol/xhtml-im'
+            type='list-single'
+            label='Whether allowed to use XHTML-IM formatting per XEP-0071'>
+        <option label='May Send'>
+            <value>may</value>
+        </option>
+        <option label='Must Not Send'>
+            <value>mustnot</value>
+        </option>
+    </field>
+    <field
+            var='language'
+            type='list-single'
+            label='Primary written language of the chat (each
+             value appears in order of preference and
+             conforms to RFC 4646 and the IANA registry)'/>
+    <field
+            var='logging'
+            type='list-single'
+            label='Whether allowed to log messages (i.e.,
+             whether Off-The-Record mode is required)'>
+        <option label='Allow Message Logging'>
+            <value>may</value>
+        </option>
+        <option label='Disallow All Message Logging (i.e., must
+                   disable absolutely all message
+                   logging including automatic archiving
+                   -- see XEP-0136'>
+            <value>mustnot</value>
+        </option>
+    </field>
+    <field
+            var='multisession'
+            type='boolean'
+            label='Whether to allow multiple concurrent sessions between the parties'/>
+    <field
+            var='renegotiate'
+            type='boolean'
+            label='Whether to renegotiate the session'/>
+    <field
+            var='security'
+            type='list-single'
+            label='Minimum security level'>
+        <option label='Secure connections not required'>
+            <value>none</value>
+        </option>
+        <option label='Both parties must be securely connected to their servers'>
+            <value>c2s</value>
+        </option>
+        <option label='Both parties must be securely connected to each other'>
+            <value>e2e</value>
+        </option>
+    </field>
+    <field
+            var='terminate'
+            type='boolean'
+            label='Whether to terminate the session'/>
+</form_type>

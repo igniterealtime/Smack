@@ -60,7 +60,7 @@ public class FormFieldRegistry {
 
     private static int loadedFieldEntries;
 
-    static int getLoadedFieldEntires() {
+    static int getLoadedFieldEntries() {
         return loadedFieldEntries;
     }
 

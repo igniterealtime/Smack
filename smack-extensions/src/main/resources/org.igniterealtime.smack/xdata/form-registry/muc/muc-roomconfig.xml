@@ -17,7 +17,7 @@
   <field
       var='muc#roomconfig_allowinvites'
       type='boolean'
-      label='Whether to Allow Occupants to Invite Others'/>
+      label='Whether to Allow Members to Invite Others'/>
   <field
       var='muc#roomconfig_changesubject'
       type='boolean'

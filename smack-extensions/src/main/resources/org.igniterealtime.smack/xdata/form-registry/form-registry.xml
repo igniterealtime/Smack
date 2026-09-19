@@ -5,4 +5,23 @@
 		<registry-file name="muc-roomconfig.xml"/>
 		<registry-file name="muc-roominfo.xml"/>
 	</registry-path>
+	<registry-path path="org.igniterealtime.smack/xdata/form-registry/pubsub">
+		<registry-file name="meta-data.xml"/>
+		<registry-file name="node_config.xml"/>
+		<registry-file name="publish-options.xml"/>
+		<registry-file name="subscribe_authorization.xml"/>
+		<registry-file name="subscribe_options.xml"/>
+	</registry-path>
+	<registry-path path="org.igniterealtime.smack/xdata/form-registry/register">
+		<registry-file name="cancel.xml"/>
+		<registry-file name="changepassword.xml"/>
+		<registry-file name="register.xml"/>
+	</registry-path>
+	<registry-path path="org.igniterealtime.smack/xdata/form-registry">
+		<registry-file name="admin.xml"/>
+		<registry-file name="captcha.xml"/>
+		<registry-file name="search.xml"/>
+		<registry-file name="serverinfo.xml"/>
+		<registry-file name="ssn.xml"/>
+	</registry-path>
 </form-registry>

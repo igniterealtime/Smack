@@ -1,0 +1,13 @@
+<form_type>
+    <name>jabber:iq:register:cancel</name>
+    <doc>XEP-0077</doc>
+    <desc>Standardization of fields related to a cancellation use case.</desc>
+    <field
+            var='password'
+            type='text-private'
+            label='Password or secret for the user'/>
+    <field
+            var='username'
+            type='text-single'
+            label='Account name associated with the user'/>
+</form_type>

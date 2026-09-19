@@ -1,0 +1,7 @@
+<form_type>
+    <name>http://jabber.org/protocol/pubsub#publish-options</name>
+    <desc>Forms enabling setting of metadata information about pubsub nodes</desc>
+    <field var='pubsub#access_model'
+           type='list-single'
+           label='Precondition: node configuration with the specified access model'/>
+</form_type>

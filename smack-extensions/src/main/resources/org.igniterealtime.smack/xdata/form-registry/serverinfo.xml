@@ -1,0 +1,37 @@
+<form_type>
+    <name>http://jabber.org/network/serverinfo</name>
+    <doc>XEP-0157</doc>
+    <desc>
+        Forms enabling the communication of contact addresses
+        and other server information.
+    </desc>
+    <field
+            var='abuse-addresses'
+            type='list-multi'
+            label='One or more addresses for communication related to abusive traffic'/>
+    <field
+            var='admin-addresses'
+            type='list-multi'
+            label='One or more addresses for communication with the service administrators'/>
+    <field
+            var='feedback-addresses'
+            type='list-multi'
+            label='One or more addresses for customer feedback'/>
+    <field
+            var='sales-addresses'
+            type='list-multi'
+            label='One or more addresses for communication related to sales and marketing'/>
+    <field
+            var='security-addresses'
+            type='list-multi'
+            label='One or more addresses for communication related to security concerns'/>
+    <field
+            var='status-addresses'
+            type='list-multi'
+            label='One or more addresses for service status'>
+    </field>
+    <field
+            var='support-addresses'
+            type='list-multi'
+            label='One or more addresses for customer support'/>
+</form_type>

@@ -1,0 +1,126 @@
+<form_type>
+    <name>jabber:iq:register</name>
+    <doc>XEP-0077</doc>
+    <desc>Standardization of fields related to a registration use case.</desc>
+    <field
+            var='username'
+            type='text-single'
+            label='Account name associated with the user'/>
+    <field
+            var='nick'
+            type='text-single'
+            label='Familiar name of the user'/>
+    <field
+            var='password'
+            type='text-private'
+            label='Password or secret for the user'/>
+    <field
+            var='name'
+            type='text-single'
+            label='Full name of the user'/>
+    <field
+            var='first'
+            type='text-single'
+            label='Given name of the user'/>
+    <field
+            var='last'
+            type='text-single'
+            label='Family name of the user'/>
+    <field
+            var='email'
+            type='text-single'
+            label='Email address of the user'/>
+    <field
+            var='address'
+            type='text-single'
+            label='Street portion of a physical or mailing address'/>
+    <field
+            var='city'
+            type='text-single'
+            label='Locality portion of a physical or mailing address'/>
+    <field
+            var='state'
+            type='text-single'
+            label='Region portion of a physical or mailing address'/>
+    <field
+            var='zip'
+            type='text-single'
+            label='Postal code portion of a physical or mailing address'/>
+    <field
+            var='phone'
+            type='text-single'
+            label='Telephone number of the user'/>
+    <field
+            var='url'
+            type='text-single'
+            label='URL to web page describing the user'/>
+    <field
+            var='date'
+            type='text-single'
+            label='Some date (e.g., birth date, hire date, sign-up date)'/>
+    <field
+            var='misc'
+            type='text-single'
+            label='Free-form text field (obsolete)'/>
+    <field
+            var='text'
+            type='text-single'
+            label='Free-form text field (obsolete)'/>
+    <field
+            var='key'
+            type='text-single'
+            label='Session key for transaction (obsolete)'/>
+    <!-- CAPTCHA fields https://xmpp.org/extensions/xep-0158.html#registrar-formtypes-register -->
+    <field
+            var='answers'
+            type='hidden'
+            label='number of answers required'/>
+    <field
+            var='audio_recog'
+            type='text-single'
+            label='text associated with a sound'/>
+    <field
+            var='challenge'
+            type='hidden'
+            label='challenge ID'/>
+    <field
+            var='ocr'
+            type='text-single'
+            label='code appearing in an image'/>
+    <field
+            var='picture_q'
+            type='text-single'
+            label='answer associated with a picture'/>
+    <field
+            var='picture_recog'
+            type='text-single'
+            label='text associated with a picture'/>
+    <field
+            var='qa'
+            type='text-single'
+            label='answer to a question'/>
+    <field
+            var='SHA-256'
+            type='text-single'
+            label='least significant bits of SHA-256 hash of text should equal hexadecimal label'/>
+    <field
+            var='sid'
+            type='hidden'
+            label='stanza ID'/>
+    <field
+            var='speech_q'
+            type='text-single'
+            label='answer associated with speech'/>
+    <field
+            var='speech_recog'
+            type='text-single'
+            label='text associated with speech'/>
+    <field
+            var='video_q'
+            type='text-single'
+            label='answer associated with a video'/>
+    <field
+            var='video_recog'
+            type='text-single'
+            label='text associated with a video'/>
+</form_type>

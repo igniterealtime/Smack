@@ -1,0 +1,21 @@
+<form_type>
+    <name>http://jabber.org/protocol/pubsub#subscribe_authorization</name>
+    <doc>XEP-0060</doc>
+    <desc>Forms enabling authorization of subscriptions to pubsub nodes</desc>
+    <field
+            var='pubsub#allow'
+            type='boolean'
+            label='Whether to allow the subscription'/>
+    <field
+            var='pubsub#node'
+            type='text-single'
+            label='The NodeID of the relevant node'/>
+    <field
+            var='pubsub#subscriber_jid'
+            type='jid-single'
+            label='The address (JID) of the subscriber'/>
+    <field
+            var='pubsub#subid'
+            type='text-single'
+            label='The subscription identifier associated with the subscription request'/>
+</form_type>

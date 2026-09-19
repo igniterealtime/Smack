@@ -1,0 +1,61 @@
+<form_type>
+    <name>urn:xmpp:captcha</name>
+    <doc>XEP-0158</doc>
+    <desc>Forms enabling the use of CAPTCHAs.</desc>
+    <field
+            var='answers'
+            type='hidden'
+            label='number of answers required'/>
+    <field
+            var='audio_recog'
+            type='text-single'
+            label='text associated with a sound'/>
+    <field
+            var='challenge'
+            type='hidden'
+            label='challenge ID'/>
+    <field
+            var='from'
+            type='hidden'
+            label='to attribute of stanza that triggered challenge'/>
+    <field
+            var='ocr'
+            type='text-single'
+            label='code appearing in an image'/>
+    <field
+            var='picture_q'
+            type='text-single'
+            label='answer associated with a picture'/>
+    <field
+            var='picture_recog'
+            type='text-single'
+            label='text associated with a picture'/>
+    <field
+            var='qa'
+            type='text-single'
+            label='answer to a question'/>
+    <field
+            var='SHA-256'
+            type='text-single'
+            label='least significant bits of SHA-256 hash of text should equal hexadecimal label'/>
+    <field
+            var='sid'
+            type='hidden'
+            label='stanza ID'/>
+    <field
+            var='speech_q'
+            type='text-single'
+            label='answer associated with speech'/>
+    <field
+            var='speech_recog'
+            type='text-single'
+            label='text associated with speech'/>
+    <field
+            var='video_q'
+            type='text-single'
+            label='answer associated with a video'/>
+    <field
+            var='video_recog'
+            type='text-single'
+            label='text associated with a video'/>
+</form_type>

@@ -1,0 +1,21 @@
+<form_type>
+    <name>jabber:iq:search</name>
+    <doc>XEP-0055</doc>
+    <desc>Forms enabling directory searches.</desc>
+    <field
+            var='first'
+            type='text-single'
+            label='Given Name'/>
+    <field
+            var='last'
+            type='text-single'
+            label='Family Name'/>
+    <field
+            var='nick'
+            type='text-single'
+            label='Nickname'/>
+    <field
+            var='email'
+            type='text-single'
+            label='Email Address'/>
+</form_type>
