@@ -62,7 +62,7 @@ import org.jxmpp.JxmppContext;
  * a {@link DefaultPrivateData} instance will be returned.<p>
  *
  * Warning: this is an non-standard protocol documented by
- * <a href="http://www.xmpp.org/extensions/jep-0049.html">XEP-49</a>. Because this is a
+ * <a href="https://xmpp.org/extensions/xep-0049.html">XEP-49</a>. Because this is a
  * non-standard protocol, it is subject to change.
  *
  * @author Matt Tucker

@@ -48,7 +48,7 @@ import org.jxmpp.jid.EntityBareJid;
  * <a href="http://www.jivesoftware.org/smack/" target="_blank">SMACK jabber library</a>.<p>
  *
  * You should refer to the
- * <a href="http://www.xmpp.org/extensions/jep-0054.html" target="_blank">XEP-54 documentation</a>.<p>
+ * <a href="https://xmpp.org/extensions/xep-0054.html" target="_blank">XEP-54 documentation</a>.<p>
  *
  * Please note that this class is incomplete but it does provide the most commonly found
  * information in vCards. Also remember that VCard transfer is not a standard, and the protocol

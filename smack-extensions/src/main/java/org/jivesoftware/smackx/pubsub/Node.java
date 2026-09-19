@@ -201,7 +201,7 @@ public abstract class Node {
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve">XEP-60 § 8.8.1 -
+     * @see <a href="https://xmpp.org/extensions/xep-0060.html#owner-subscriptions-retrieve">XEP-60 § 8.8.1 -
      *      Retrieve Subscriptions List</a>
      * @since 4.1
      */
@@ -321,7 +321,7 @@ public abstract class Node {
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-retrieve">XEP-60 § 8.9.1 Retrieve Affiliations List</a>
+     * @see <a href="https://xmpp.org/extensions/xep-0060.html#owner-affiliations-retrieve">XEP-60 § 8.9.1 Retrieve Affiliations List</a>
      * @since 4.2
      */
     public List<Affiliation> getAffiliationsAsOwner(List<XmlElement> additionalExtensions, Collection<XmlElement> returnedExtensions)
@@ -362,7 +362,7 @@ public abstract class Node {
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations-modify">XEP-60 § 8.9.2 Modify Affiliation</a>
+     * @see <a href="https://xmpp.org/extensions/xep-0060.html#owner-affiliations-modify">XEP-60 § 8.9.2 Modify Affiliation</a>
      * @since 4.2
      */
     public PubSub modifyAffiliationAsOwner(List<Affiliation> affiliations) throws NoResponseException,

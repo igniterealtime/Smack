@@ -28,7 +28,7 @@
  * <li>Receive roster entries</li>
  * </ul>
  * <p>
- * <strong>XEP related:</strong> <a href="http://www.xmpp.org/extensions/xep-0093.html">XEP-93</a>
+ * <strong>XEP related:</strong> <a href="https://xmpp.org/extensions/xep-0093.html">XEP-93</a>
  * </p>
  * <h2 id="send-a-entire-roster">Send a entire roster</h2>
  * <p>

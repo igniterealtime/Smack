@@ -580,7 +580,7 @@ public class MultiUserChat {
          * @throws XMPPErrorException if there was an XMPP error returned.
          * @throws NotConnectedException if the XMPP connection is not connected.
          * @throws InterruptedException if the calling thread was interrupted.
-         * @see <a href="http://www.xmpp.org/extensions/xep-0045.html#createroom-instant">XEP-45 § 10.1.2 Creating an
+         * @see <a href="https://xmpp.org/extensions/xep-0045.html#createroom-instant">XEP-45 § 10.1.2 Creating an
          *      Instant Room</a>
          */
         public void makeInstant() throws NoResponseException, XMPPErrorException, NotConnectedException,

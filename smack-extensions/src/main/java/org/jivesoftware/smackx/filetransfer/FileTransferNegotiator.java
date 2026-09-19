@@ -273,9 +273,9 @@ public final class FileTransferNegotiator extends Manager {
      * If they accept, the stanza will contain the other user's chosen stream
      * type to send the file across. The two choices this implementation
      * provides to the other user for file transfer are <a
-     * href="http://www.xmpp.org/extensions/jep-0065.html">SOCKS5 Bytestreams</a>,
+     * href="https://xmpp.org/extensions/xep-0065.html">SOCKS5 Bytestreams</a>,
      * which is the preferred method of transfer, and <a
-     * href="http://www.xmpp.org/extensions/jep-0047.html">In-Band Bytestreams</a>,
+     * href="https://xmpp.org/extensions/xep-0047.html">In-Band Bytestreams</a>,
      * which is the fallback mechanism.
      * </p>
      * <p>

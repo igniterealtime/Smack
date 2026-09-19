@@ -19,7 +19,7 @@ package org.jivesoftware.smackx.chatstates;
 
 /**
  * Represents the current state of a users interaction with another user. Implemented according to
- * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
+ * <a href="https://xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
  * @author Alexander Wenckus
  */
