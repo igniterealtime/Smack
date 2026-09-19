@@ -35,6 +35,7 @@ import org.jivesoftware.smack.packet.EmptyResultIQ;
 import org.jivesoftware.smack.packet.ErrorIQ;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.IqData;
+import org.jivesoftware.smack.packet.Limits;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.MessageBuilder;
 import org.jivesoftware.smack.packet.Presence;
@@ -890,6 +891,57 @@ public class PacketParserUtils {
         }
 
         return new Session.Feature(optional);
+    }
+
+
+    /**
+     * Parse the stream limits from XEP-0478: Stream Limits Advertisement.
+     *
+     * @param parser the XML parser, positioned at the start of the "limits" stanza.
+     * @return a collection of Stings with the mechanisms included in the mechanisms stanza.
+     * @throws IOException if an I/O error occurred.
+     * @throws XmlPullParserException if an error in the XML parser occurred.
+     */
+    public static Limits parseLimitsFeature(XmlPullParser parser)
+            throws XmlPullParserException, IOException {
+        ParserUtils.assertAtStartTag(parser);
+        final int initialDepth = parser.getDepth();
+        int maxBytes = 0;
+        int idleSeconds = 0;
+        outerloop: while (true) {
+            XmlPullParser.Event event = parser.next();
+            switch (event) {
+                case START_ELEMENT:
+                    String name = parser.getName();
+                    switch (name) {
+                        case "max-bytes":
+                            try {
+                                maxBytes = Integer.parseUnsignedInt(parser.nextText());
+                            } catch (NumberFormatException ignored) {
+                                // ignore
+                            }
+                            break;
+                        case "idle-seconds":
+                            try {
+                                idleSeconds = Integer.parseUnsignedInt(parser.nextText());
+                            } catch (NumberFormatException ignored) {
+                                // ignore
+                            }
+                            break;
+                    }
+                    break;
+                case END_ELEMENT:
+                    if (parser.getDepth() == initialDepth) {
+                        break outerloop;
+                    }
+                    break;
+                default:
+                    // Catch all for incomplete switch (MissingCasesInEnumSwitch) statement.
+                    break;
+            }
+        }
+
+        return new Limits(maxBytes, idleSeconds);
     }
 
     public static void addExtensionElement(StanzaBuilder<?> stanzaBuilder, XmlPullParser parser, XmlEnvironment outerXmlEnvironment, JxmppContext jxmppContext)
