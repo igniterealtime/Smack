@@ -107,7 +107,8 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      * equivalent to <code>getType() == Presence.Type.available</code>. Note that even
      * when the user is available, their presence mode may be {@link Mode#away away},
      * {@link Mode#xa extended away} or {@link Mode#dnd do not disturb}. Use
-     * {@link #isAway()} to determine if the user is away.
+     * {@link #isAway()} to determine if the user is away, or {@link #isActive()}
+     * to determine if user is available an not away.
      *
      * @return true if the presence type is available.
      */
@@ -127,6 +128,19 @@ public final class Presence extends MessageOrPresence<PresenceBuilder>
      */
     public boolean isAway() {
         return type == Type.available && (mode == Mode.away || mode == Mode.xa || mode == Mode.dnd);
+    }
+
+    /**
+     * Returns true if the presence signals availability ({@link #isAvailable()}) and no away mode ({@link #isAway()}). Otherwise, returns false.
+     * mode is {@link Mode#available available}, or {@link Mode#chat ready to chat}. False will be returned when the type or mode
+     * is any other value, including when the presence type is unavailable (offline).
+     * This is a convenience method equivalent to
+     * <code>isAvailable() &amp;&amp; !isAway()</code>.
+     *
+     * @return true if the presence type is available and the presence mode is available or chat.
+     */
+    public boolean isActive() {
+        return isAvailable() && !isAway();
     }
 
     @Override
