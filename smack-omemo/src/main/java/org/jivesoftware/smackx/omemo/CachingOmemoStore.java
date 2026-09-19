@@ -198,7 +198,7 @@ public class CachingOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Se
     public void setDateOfLastDeviceIdPublication(OmemoDevice userDevice, OmemoDevice contactsDevice, Date date) throws IOException {
         getCache(userDevice).lastDeviceIdPublicationDates.put(contactsDevice, date);
         if (persistent != null) {
-            persistent.setDateOfLastReceivedMessage(userDevice, contactsDevice, date);
+            persistent.setDateOfLastDeviceIdPublication(userDevice, contactsDevice, date);
         }
     }
 
