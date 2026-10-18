@@ -21,7 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -30,10 +35,12 @@ import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.bind2.Bind2ModuleDescriptor;
 import org.jivesoftware.smack.bind2.element.Bind2Elements;
+import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.AuthenticatedAndResourceBoundStateDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection.ResourceBindingStateDescriptor;
 import org.jivesoftware.smack.fast.FastModuleDescriptor;
 import org.jivesoftware.smack.fsm.ConnectionStateEvent;
 import org.jivesoftware.smack.fsm.ConnectionStateMachineListener;
+import org.jivesoftware.smack.fsm.StateDescriptor;
 import org.jivesoftware.smack.sasl.packet.Sasl2Feature;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2ModuleDescriptor;
 
@@ -66,7 +73,8 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
     }
 
     @SmackIntegrationTest
-    public void testReconnectWithLegacySasl() throws SmackException, IOException, XMPPException, InterruptedException {
+    public void testReconnectWithLegacySasl() throws SmackException, IOException, XMPPException, InterruptedException,
+                    ExecutionException, TimeoutException {
         ModularXmppClientToServerConnection connection = getSpecificUnconnectedConnection(builder -> {
             ((ModularXmppClientToServerConnectionConfiguration.Builder) builder)
                 .removeModule(FastModuleDescriptor.class)
@@ -79,7 +87,7 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
 
     @SmackIntegrationTest
     public void testReconnectWithSasl2WithoutBind2() throws SmackException, IOException, XMPPException,
-                    InterruptedException, TestNotPossibleException {
+                    InterruptedException, TestNotPossibleException, ExecutionException, TimeoutException {
         ModularXmppClientToServerConnection connection = getSpecificUnconnectedConnection(builder -> {
             ((ModularXmppClientToServerConnectionConfiguration.Builder) builder)
                 .removeModule(FastModuleDescriptor.class)
@@ -92,7 +100,7 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
 
     @SmackIntegrationTest
     public void testReconnectWithSasl2AndBind2() throws SmackException, IOException, XMPPException,
-                    InterruptedException, TestNotPossibleException {
+                    InterruptedException, TestNotPossibleException, ExecutionException, TimeoutException {
         ModularXmppClientToServerConnection connection = getSpecificUnconnectedConnection(builder -> {
             ((ModularXmppClientToServerConnectionConfiguration.Builder) builder)
                 .removeModule(FastModuleDescriptor.class);
@@ -129,19 +137,29 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
      */
     private static void assertLoginAfterReconnect(ModularXmppClientToServerConnection connection,
                     boolean expectRfc6120ResourceBinding)
-                    throws SmackException, IOException, XMPPException, InterruptedException {
+                    throws SmackException, IOException, XMPPException, InterruptedException, ExecutionException,
+                    TimeoutException {
+        // Connection state machine listeners are invoked asynchronously, but in order. Hence, once the final state of
+        // a login was reached, all events of that login have been delivered.
         AtomicBoolean rfc6120ResourceBindingPerformed = new AtomicBoolean();
+        AtomicReference<CompletableFuture<Boolean>> loginFinished = new AtomicReference<>();
         ConnectionStateMachineListener listener = (event, c) -> {
-            if (event instanceof ConnectionStateEvent.SuccessfullyTransitionedInto
-                            && event.getStateDescriptor() instanceof ResourceBindingStateDescriptor) {
+            if (!(event instanceof ConnectionStateEvent.SuccessfullyTransitionedInto)) {
+                return;
+            }
+            StateDescriptor stateDescriptor = event.getStateDescriptor();
+            if (stateDescriptor instanceof ResourceBindingStateDescriptor) {
                 rfc6120ResourceBindingPerformed.set(true);
+            } else if (stateDescriptor instanceof AuthenticatedAndResourceBoundStateDescriptor) {
+                loginFinished.get().complete(rfc6120ResourceBindingPerformed.getAndSet(false));
             }
         };
         connection.addConnectionStateMachineListener(listener);
 
         try {
             for (int i = 1; i <= 2; i++) {
-                rfc6120ResourceBindingPerformed.set(false);
+                CompletableFuture<Boolean> currentLoginFinished = new CompletableFuture<>();
+                loginFinished.set(currentLoginFinished);
                 try {
                     connection.connect();
                     connection.login();
@@ -150,7 +168,10 @@ public class ModularXmppClientToServerConnectionLowLevelIntegrationTest extends 
                     assertNotNull(connection.getUser(), "Expected connection to have a user JID after login #" + i);
                     assertNotNull(connection.getUser().getResourcepart(),
                                     "Expected connection user JID to have a resourcepart after login #" + i);
-                    assertEquals(expectRfc6120ResourceBinding, rfc6120ResourceBindingPerformed.get(),
+
+                    boolean resourceBindingPerformed = currentLoginFinished.get(connection.getReplyTimeout(),
+                                    TimeUnit.MILLISECONDS);
+                    assertEquals(expectRfc6120ResourceBinding, resourceBindingPerformed,
                                     "Unexpected RFC 6120 resource binding behavior on login #" + i);
                 } finally {
                     connection.disconnect();
