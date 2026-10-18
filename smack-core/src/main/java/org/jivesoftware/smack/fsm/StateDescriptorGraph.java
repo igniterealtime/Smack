@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018-2024 Florian Schmaus
+ * Copyright 2018-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,8 +218,10 @@ public class StateDescriptorGraph {
         // Ensure that all existing vertices (initial node and backward edge nodes) have their successors inferred.
         for (var predecessorClass : inferredForwardEdges.keySet()) {
             var predecessorVertex = graphVertexes.get(predecessorClass);
-            // XXX: Null check required?
             if (predecessorVertex == null) {
+                // The predecessor's vertex does not exist (yet). Either it will be constructed later, in which case
+                // getOrConstruct() adds the inferred successors, or the predecessor is never part of the graph, e.g.,
+                // because its module is not enabled.
                 continue;
             }
 

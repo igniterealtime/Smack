@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2020-2021 Florian Schmaus
+ * Copyright 2020-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,15 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.jivesoftware.smack.bind2.Bind2ModuleDescriptor;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.compression.CompressionModuleDescriptor;
 import org.jivesoftware.smack.util.EqualsUtil;
@@ -103,5 +111,66 @@ public class ModularXmppClientToServerConnectionStateGraphTest {
                 .failOnUnknownStates() // This is the actual option that enableds this test.
                 .build()
         );
+    }
+
+    private static final Pattern DOT_EDGE_PATTERN = Pattern.compile(
+                    "^\\s*\"(.+?)\" -> \"(.+?)\"(?: \\[xlabel=\"(\\d+)\"\\])?;$", Pattern.MULTILINE);
+
+    private static String getStateGraphDot(ModularXmppClientToServerConnectionConfiguration configuration) {
+        // Note that the state graph of a configuration can currently only be printed once, as printing marks the
+        // graph's vertices as visited.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        configuration.printStateGraphInDotFormat(pw, false);
+        pw.flush();
+        return sw.toString();
+    }
+
+    /**
+     * Get the successors of the given state in the order in which they are tried when walking the state graph.
+     *
+     * @param stateGraphDot the state graph in DOT format.
+     * @param stateName the name of the state.
+     * @return the names of the successor states in the order they are tried.
+     */
+    private static List<String> getOrderedSuccessors(String stateGraphDot, String stateName) {
+        SortedMap<Integer, String> successors = new TreeMap<>();
+        Matcher matcher = DOT_EDGE_PATTERN.matcher(stateGraphDot);
+        while (matcher.find()) {
+            if (!matcher.group(1).equals(stateName)) {
+                continue;
+            }
+            // Edges of states with only a single successor have no label.
+            String position = matcher.group(3);
+            successors.put(position == null ? 1 : Integer.parseInt(position), matcher.group(2));
+        }
+        return new ArrayList<>(successors.values());
+    }
+
+    @Test
+    public void testBind2IsTriedBeforeFast() throws XmppStringprepException {
+        var configuration = ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("user", "password")
+            .setXmppDomain("example.org")
+            .build();
+
+        String stateGraphDot = getStateGraphDot(configuration);
+        assertEquals(Arrays.asList("Bind2 (XEP-0386)", "Fast (XEP-0484)", "Sasl2Auth (XEP-0388)"),
+                        getOrderedSuccessors(stateGraphDot, "Sasl2Init (XEP-0388)"), stateGraphDot);
+        assertEquals(Arrays.asList("Fast (XEP-0484)", "Sasl2Auth (XEP-0388)"),
+                        getOrderedSuccessors(stateGraphDot, "Bind2 (XEP-0386)"), stateGraphDot);
+    }
+
+    @Test
+    public void testFastWithoutBind2() throws XmppStringprepException {
+        var configuration = ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("user", "password")
+            .setXmppDomain("example.org")
+            .removeModule(Bind2ModuleDescriptor.class)
+            .build();
+
+        String stateGraphDot = getStateGraphDot(configuration);
+        assertEquals(Arrays.asList("Fast (XEP-0484)", "Sasl2Auth (XEP-0388)"),
+                        getOrderedSuccessors(stateGraphDot, "Sasl2Init (XEP-0388)"), stateGraphDot);
     }
 }

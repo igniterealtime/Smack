@@ -20,6 +20,7 @@ import org.jivesoftware.smack.bind2.element.Bind2Elements;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModule;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
+import org.jivesoftware.smack.fast.FastModule.FastStateDescriptor;
 import org.jivesoftware.smack.fsm.LoginContext;
 import org.jivesoftware.smack.fsm.State;
 import org.jivesoftware.smack.fsm.StateDescriptor;
@@ -52,6 +53,9 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
             addPredeccessor(Sasl2InitStateDescriptor.class);
             addSuccessor(Sasl2AuthStateDescriptor.class);
             declarePrecedenceOver(Sasl2AuthStateDescriptor.class);
+            // FAST can be reached from Sasl2Init and from Bind2. As the walk does not backtrack and FAST's only
+            // successor is Sasl2Auth, Bind2 would be skipped if FAST was entered first.
+            declarePrecedenceOver(FastStateDescriptor.class);
         }
 
         @Override

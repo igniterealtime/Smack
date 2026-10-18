@@ -21,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.jivesoftware.smack.bind2.Bind2Module;
+import org.jivesoftware.smack.bind2.Bind2ModuleDescriptor;
+import org.jivesoftware.smack.bind2.element.Bind2Elements;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
 import org.jivesoftware.smack.fast.element.FastElements;
@@ -85,6 +88,7 @@ public class FastIntegrationTest extends AbstractSmackSpecificLowLevelIntegratio
         // Reconnect testConn1 using the stored FAST token for fast re-authentication
         try {
             testConn1.connect();
+            boolean bind2Supported = testConn1.getFeature(Sasl2Feature.class).hasInlineFeature(Bind2Elements.Bind.class);
             testConn1.login();
 
             assertTrue(testConn1.isAuthenticated(), "Connection should be authenticated using FAST");
@@ -93,8 +97,49 @@ public class FastIntegrationTest extends AbstractSmackSpecificLowLevelIntegratio
             assertNotNull(sasl2Module.getSasl2AuthenticationResult());
             assertTrue(sasl2Module.getSasl2AuthenticationResult().getUsedSaslMechanism() instanceof SaslHtMechanism,
                     "Expected FAST authentication to use SaslHtMechanism");
+
+            if (bind2Supported) {
+                Bind2Module bind2Module = testConn1.getConnectionModuleFor(Bind2ModuleDescriptor.class);
+                assertNotNull(bind2Module.getBind2SuccessResult(), "Expected Bind2 to be used together with FAST");
+            }
         } finally {
             testConn1.disconnect();
+        }
+    }
+
+    @SmackIntegrationTest
+    public void testFastWithoutBind2() throws Exception {
+        ModularXmppClientToServerConnection testConn = getSpecificUnconnectedConnection(builder -> {
+            ModularXmppClientToServerConnectionConfiguration.Builder modularBuilder =
+                (ModularXmppClientToServerConnectionConfiguration.Builder) builder;
+            modularBuilder.removeModule(Bind2ModuleDescriptor.class);
+            modularBuilder.with(FastModuleDescriptor.Builder.class)
+                .setAutoRequestToken(true)
+                .buildModule();
+        });
+
+        try {
+            testConn.connect();
+            testConn.login();
+
+            assertTrue(testConn.isAuthenticated(), "Connection should be authenticated");
+            FastModule fastModule = testConn.getConnectionModuleFor(FastModuleDescriptor.class);
+            assertNotNull(fastModule.getFastToken(), "FAST token should have been received without Bind2");
+        } finally {
+            testConn.disconnect();
+        }
+
+        try {
+            testConn.connect();
+            testConn.login();
+
+            assertTrue(testConn.isAuthenticated(), "Connection should be authenticated using FAST");
+            assertNotNull(testConn.getUser().getResourcepart(), "Expected a resource to be bound");
+            Sasl2Module sasl2Module = testConn.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
+            assertTrue(sasl2Module.getSasl2AuthenticationResult().getUsedSaslMechanism() instanceof SaslHtMechanism,
+                    "Expected FAST authentication to use SaslHtMechanism");
+        } finally {
+            testConn.disconnect();
         }
     }
 

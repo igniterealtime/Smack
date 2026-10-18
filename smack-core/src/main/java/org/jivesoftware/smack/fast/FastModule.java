@@ -45,6 +45,7 @@ import org.jivesoftware.smack.sasl.sasl2.Sasl2Authentication.Sasl2Authentication
 import org.jivesoftware.smack.sasl.sasl2.Sasl2AuthenticationHook;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2Fallback;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2Module.Sasl2AuthStateDescriptor;
+import org.jivesoftware.smack.sasl.sasl2.Sasl2Module.Sasl2InitStateDescriptor;
 import org.jivesoftware.smack.sasl.sasl2.internal.Sasl2AuthenticationContext;
 
 public class FastModule extends ModularXmppClientToServerConnectionModule<FastModuleDescriptor> {
@@ -364,6 +365,9 @@ public class FastModule extends ModularXmppClientToServerConnectionModule<FastMo
         private FastStateDescriptor() {
             super(FastState.class, 484);
 
+            // FAST only requires SASL2, but if Bind2 is used, then it is used together with Bind2. Note that
+            // Bind2StateDescriptor declares precedence over this state, so that Bind2 is not skipped.
+            addPredeccessor(Sasl2InitStateDescriptor.class);
             addPredeccessor(Bind2StateDescriptor.class);
             addSuccessor(Sasl2AuthStateDescriptor.class);
             declarePrecedenceOver(Sasl2AuthStateDescriptor.class);
