@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018-2024 Florian Schmaus
+ * Copyright 2018-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,6 +150,12 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
     private boolean featuresReceived;
 
     private boolean streamResumed;
+
+    /**
+     * Whether a resource has been bound on the current stream. Note that we can not use {@link #getUser()} for this,
+     * as the user is not reset when the connection gets disconnected.
+     */
+    private boolean resourceBound;
 
     private GraphVertex<State> currentStateVertex;
 
@@ -306,9 +312,10 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
             }
 
             @Override
-            public void setUser(EntityFullJid user) {
-                ModularXmppClientToServerConnection.this.user = Objects.requireNonNull(user, "User JID must not be null");
-                ModularXmppClientToServerConnection.this.xmppServiceDomain = user.asDomainBareJid();
+            public void setBoundUser(EntityFullJid boundUser) {
+                ModularXmppClientToServerConnection.this.user = Objects.requireNonNull(boundUser, "User JID must not be null");
+                ModularXmppClientToServerConnection.this.xmppServiceDomain = boundUser.asDomainBareJid();
+                ModularXmppClientToServerConnection.this.resourceBound = true;
             }
         };
 
@@ -867,6 +874,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
                 walkFromDisconnectToAuthenticated = walkStateGraphContext.getWalk();
             }
 
+            // This is a new stream, hence there is no resource bound (yet).
+            resourceBound = false;
             connected = true;
             return StateTransitionResult.Success.EMPTY_INSTANCE;
         }
@@ -940,7 +949,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
         @Override
         public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
-            if (getUser() != null) {
+            if (resourceBound) {
                 return new StateTransitionResult.TransitionImpossibleReason("Resource is already bound");
             }
             return null;
@@ -981,6 +990,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
             LoginContext loginContext = walkStateGraphContext.getLoginContext();
             Resourcepart resource = bindResourceAndEstablishSession(loginContext.resource);
+            resourceBound = true;
 
             // TODO: This should be a field in the Stream Management (SM) module. Here should be hook which the SM
             // module can use to set the field instead.
@@ -1028,8 +1038,8 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
         @Override
         public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
-            if (connectionInternal.connection.getUser() == null) {
-                return new StateTransitionResult.TransitionImpossibleReason("User is not set (resource not bound)");
+            if (!resourceBound) {
+                return new StateTransitionResult.TransitionImpossibleReason("Resource not bound");
             }
             return null;
         }

@@ -242,7 +242,7 @@ public class Sasl2Authentication {
                 boundFullJid = jid.asEntityFullJidIfPossible();
                 if (boundFullJid != null) {
                     boundResource = boundFullJid.getResourcepart();
-                    connectionInternal.setUser(boundFullJid);
+                    connectionInternal.setBoundUser(boundFullJid);
                 }
             }
         }

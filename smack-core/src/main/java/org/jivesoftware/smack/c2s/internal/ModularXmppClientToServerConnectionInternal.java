@@ -139,7 +139,13 @@ public abstract class ModularXmppClientToServerConnectionInternal {
                     Collection<Class<? extends SN>> successNonzaClasses, Class<FN> failedNonzaClass)
                     throws NoResponseException, NotConnectedException, FailedNonzaException, InterruptedException;
 
-    public abstract void setUser(EntityFullJid user);
+    /**
+     * Set the user's full JID as result of a resource binding performed by the server, e.g. via Bind 2 (XEP-0386).
+     * This also marks the resource as bound for the current stream.
+     *
+     * @param boundUser the full JID bound by the server.
+     */
+    public abstract void setBoundUser(EntityFullJid boundUser);
 
     public abstract void asyncGo(Runnable runnable);
 
