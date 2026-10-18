@@ -361,7 +361,7 @@ public final class ModularXmppClientToServerConnection extends AbstractXMPPConne
 
     /**
      * Unwind the state. This will revert the effects of the state by calling {@link State#resetState()} prior issuing a
-     * connection state event of {@link ConnectionStateEvent#StateRevertBackwardsWalk}.
+     * connection state event of {@link ConnectionStateEvent.StateRevertBackwardsWalk}.
      *
      * @param revertedState the state which is going to get reverted.
      */

@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -709,8 +710,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             os = compressionHandler.getOutputStream(os);
         }
         // OutputStreamWriter is already buffered, no need to wrap it into a BufferedWriter
-        writer = new OutputStreamWriter(os, "UTF-8");
-        reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
+        reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
         // If debugging is enabled, we open a window and write out all network traffic.
         initDebugger();

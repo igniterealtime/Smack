@@ -266,6 +266,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         }
     };
 
+    @SuppressWarnings("ReferenceEquality")
     private void onChannelSelected(SelectableChannel selectedChannel, SelectionKey selectedSelectionKey) {
         assert selectionKey == null || selectionKey == selectedSelectionKey;
         SocketChannel selectedSocketChannel = (SocketChannel) selectedChannel;

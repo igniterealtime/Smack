@@ -89,6 +89,7 @@ public class OpenPgpStoreTest extends SmackTestSuite {
                 });
     }
 
+    @SuppressWarnings("ReferenceEquality")
     public OpenPgpStoreTest(OpenPgpStore firstInstance, OpenPgpStore secondInstance) {
         if (firstInstance == secondInstance || !firstInstance.getClass().equals(secondInstance.getClass())) {
             throw new IllegalArgumentException("firstInstance must be another instance of the same class as secondInstance.");

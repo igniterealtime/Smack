@@ -53,7 +53,7 @@ public class Java7ZlibInputOutputStream extends XMPPInputOutputStream {
     @Override
     public InputStream getInputStream(InputStream inputStream) {
         return new InflaterInputStream(inputStream, new Inflater(), 512) {
-            /**
+            /*
              * Provide a more InputStream compatible version. A return value of 1 means that it is likely to read one
              * byte without blocking, 0 means that the system is known to block for more input.
              *
