@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smack.fast;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
@@ -115,6 +117,42 @@ public class FastIntegrationTest extends AbstractSmackSpecificLowLevelIntegratio
             assertTrue(testConn.isAuthenticated(), "Connection should be authenticated after graceful fallback");
         } finally {
             testConn.disconnect();
+        }
+    }
+
+    @SmackIntegrationTest
+    public void testFastMechanismsDisabledInConfiguration() throws Exception {
+        ModularXmppClientToServerConnection testConn = getSpecificUnconnectedConnection(builder -> {
+            ModularXmppClientToServerConnectionConfiguration.Builder modularBuilder =
+                (ModularXmppClientToServerConnectionConfiguration.Builder) builder;
+            modularBuilder.with(FastModuleDescriptor.Builder.class)
+                .setAutoRequestToken(true)
+                .buildModule();
+            // Only enable non-FAST mechanisms.
+            modularBuilder.addEnabledSaslMechanism("SCRAM-SHA-512-PLUS");
+            modularBuilder.addEnabledSaslMechanism("SCRAM-SHA-512");
+            modularBuilder.addEnabledSaslMechanism("SCRAM-SHA-256-PLUS");
+            modularBuilder.addEnabledSaslMechanism("SCRAM-SHA-256");
+            modularBuilder.addEnabledSaslMechanism("SCRAM-SHA-1");
+        });
+
+        // Login twice, as a FAST token received on the first login would be used on the second.
+        for (int i = 1; i <= 2; i++) {
+            try {
+                testConn.connect();
+                testConn.login();
+
+                assertTrue(testConn.isAuthenticated(), "Connection should be authenticated on login #" + i);
+                Sasl2Module sasl2Module = testConn.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
+                assertFalse(sasl2Module.getSasl2AuthenticationResult().getUsedSaslMechanism() instanceof SaslHtMechanism,
+                                "Expected a non-FAST mechanism to be used on login #" + i);
+
+                FastModule fastModule = testConn.getConnectionModuleFor(FastModuleDescriptor.class);
+                assertNull(fastModule.getFastToken(),
+                                "No FAST token should be requested for mechanisms disabled in the connection configuration");
+            } finally {
+                testConn.disconnect();
+            }
         }
     }
 }

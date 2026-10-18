@@ -933,4 +933,150 @@ public class Sasl2FastAuthenticationTest extends SmackTestSuite {
         assertEquals("ANONYMOUS", result.getUsedSaslMechanism().getName());
         assertEquals("token-for-endp", fastModule.getFastToken().getToken());
     }
+
+    private static List<org.jivesoftware.smack.packet.XmlElement> getAuthenticateExtensions(FastModule fastModule,
+                    Sasl2Feature sasl2Feature, LoginContext loginContext) throws Exception {
+        List<org.jivesoftware.smack.packet.XmlElement> extensions = new ArrayList<>();
+        fastModule.getSasl2AuthenticationHook().addAuthenticateExtensions(sasl2Feature, loginContext, extensions);
+        return extensions;
+    }
+
+    private static <E> E getExtension(Collection<? extends org.jivesoftware.smack.packet.XmlElement> extensions,
+                    Class<E> extensionClass) {
+        for (var extension : extensions) {
+            if (extensionClass.isInstance(extension)) {
+                return extensionClass.cast(extension);
+            }
+        }
+        return null;
+    }
+
+    @Test
+    public void testUsableTokenForDisabledMechanismFallsBackToEnabledMechanism() throws Exception {
+        var config = ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("alice", "secret")
+            .setXmppDomain("example.org")
+            .addEnabledSaslMechanism("ANONYMOUS")
+            .addModule(DummyTransportModuleDescriptor.class)
+            .with(FastModuleDescriptor.Builder.class)
+                .setFastToken(new FastToken("token-for-disabled-mechanism", "HT-SHA-256-NONE"))
+                .setPreferredFastMechanism("HT-SHA-256-NONE")
+                .setAutoRequestToken(true)
+                .buildModule()
+            .build();
+
+        var connection = new ModularXmppClientToServerConnection(config);
+        var mockInternal = new MockConnectionInternal(connection);
+        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
+
+        FastElements.Fast fastFeature = new FastElements.Fast(Collections.singletonList("HT-SHA-256-NONE"), true);
+        Sasl2Feature sasl2Feature = new Sasl2Feature(
+            Arrays.asList("HT-SHA-256-NONE", "ANONYMOUS"),
+            Collections.singletonList(fastFeature)
+        );
+
+        LoginContext loginContext = new LoginContext("alice", "secret", Resourcepart.from("res"));
+        var extensions = getAuthenticateExtensions(fastModule, sasl2Feature, loginContext);
+        // HT-SHA-256-NONE is not enabled, hence the token must not be used and no new token for it must be requested.
+        org.junit.jupiter.api.Assertions.assertNull(getExtension(extensions, FastElements.Fast.class));
+        org.junit.jupiter.api.Assertions.assertNull(getExtension(extensions, FastElements.RequestToken.class));
+
+        mockInternal.queueHandler(req -> {
+            Sasl2Nonza.Authenticate auth = (Sasl2Nonza.Authenticate) req;
+            assertEquals("ANONYMOUS", auth.getMechanism());
+            return new Sasl2Nonza.Success(null, "alice@example.org/res", Collections.emptyList());
+        });
+
+        Sasl2Authentication sasl2Auth = createSasl2Authentication(mockInternal, fastModule);
+        Sasl2AuthenticationResult result = sasl2Auth.authenticate(loginContext, sasl2Feature, extensions);
+        assertEquals("ANONYMOUS", result.getUsedSaslMechanism().getName());
+    }
+
+    @Test
+    public void testNoTokenRequestedForUnsupportedFastMechanism() throws Exception {
+        var config = ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("alice", "secret")
+            .setXmppDomain("example.org")
+            .addModule(DummyTransportModuleDescriptor.class)
+            .with(FastModuleDescriptor.Builder.class)
+                .setAutoRequestToken(true)
+                .buildModule()
+            .build();
+
+        var connection = new ModularXmppClientToServerConnection(config);
+        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
+
+        // Smack does not implement the 'tls-exporter' (EXPR) channel binding type.
+        FastElements.Fast fastFeature = new FastElements.Fast(Collections.singletonList("HT-SHA-256-EXPR"), true);
+        Sasl2Feature sasl2Feature = new Sasl2Feature(
+            Collections.singletonList("ANONYMOUS"),
+            Collections.singletonList(fastFeature)
+        );
+
+        LoginContext loginContext = new LoginContext("alice", "secret", Resourcepart.from("res"));
+        var extensions = getAuthenticateExtensions(fastModule, sasl2Feature, loginContext);
+        org.junit.jupiter.api.Assertions.assertNull(getExtension(extensions, FastElements.RequestToken.class));
+    }
+
+    @Test
+    public void testTokenRequestedOnlyForEnabledFastMechanism() throws Exception {
+        var config = ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("alice", "secret")
+            .setXmppDomain("example.org")
+            .addEnabledSaslMechanism(Arrays.asList("ANONYMOUS", "HT-SHA-256-NONE"))
+            .addModule(DummyTransportModuleDescriptor.class)
+            .with(FastModuleDescriptor.Builder.class)
+                .setPreferredFastMechanism("HT-SHA-256-ENDP")
+                .setAutoRequestToken(true)
+                .buildModule()
+            .build();
+
+        var connection = new ModularXmppClientToServerConnection(config);
+        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
+
+        FastElements.Fast fastFeature = new FastElements.Fast(Arrays.asList("HT-SHA-256-ENDP", "HT-SHA-256-NONE"), true);
+        Sasl2Feature sasl2Feature = new Sasl2Feature(
+            Collections.singletonList("ANONYMOUS"),
+            Collections.singletonList(fastFeature)
+        );
+
+        LoginContext loginContext = new LoginContext("alice", "secret", Resourcepart.from("res"));
+        var extensions = getAuthenticateExtensions(fastModule, sasl2Feature, loginContext);
+        FastElements.RequestToken requestToken = getExtension(extensions, FastElements.RequestToken.class);
+        assertNotNull(requestToken);
+        // The preferred mechanism HT-SHA-256-ENDP is not enabled in the connection configuration.
+        assertEquals("HT-SHA-256-NONE", requestToken.getMechanism());
+    }
+
+    @Test
+    public void testChannelBindingFastMechanismIsPreferred() throws Exception {
+        // Ensure that HT-SHA-512-NONE is registered, as it has a higher priority than HT-SHA-256-ENDP.
+        assertNotNull(SASLAuthentication.getRegisteredSASLMechanism("HT-SHA-512-NONE"));
+
+        var config = ModularXmppClientToServerConnectionConfiguration.builder()
+            .setUsernameAndPassword("alice", "secret")
+            .setXmppDomain("example.org")
+            .addModule(DummyTransportModuleDescriptor.class)
+            .with(FastModuleDescriptor.Builder.class)
+                .setPreferredFastMechanism("HT-SHA3-512-ENDP") // preferred not in server list
+                .setAutoRequestToken(true)
+                .buildModule()
+            .build();
+
+        var connection = new ModularXmppClientToServerConnection(config);
+        FastModule fastModule = connection.getConnectionModuleFor(FastModuleDescriptor.class);
+
+        FastElements.Fast fastFeature = new FastElements.Fast(Arrays.asList("HT-SHA-512-NONE", "HT-SHA-256-ENDP"), true);
+        Sasl2Feature sasl2Feature = new Sasl2Feature(
+            Collections.singletonList("ANONYMOUS"),
+            Collections.singletonList(fastFeature)
+        );
+
+        LoginContext loginContext = new LoginContext("alice", "secret", Resourcepart.from("res"));
+        var extensions = getAuthenticateExtensions(fastModule, sasl2Feature, loginContext);
+        FastElements.RequestToken requestToken = getExtension(extensions, FastElements.RequestToken.class);
+        assertNotNull(requestToken);
+        // XEP-0484 § 6: "Channel binding mechanisms […] MUST be preferred by the client."
+        assertEquals("HT-SHA-256-ENDP", requestToken.getMechanism());
+    }
 }

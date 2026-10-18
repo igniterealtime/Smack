@@ -143,10 +143,23 @@ public class FastModule extends ModularXmppClientToServerConnectionModule<FastMo
             return false;
         }
         SASLMechanism mech = SASLAuthentication.getRegisteredSASLMechanism(fastToken.getMechanism());
-        if (mech == null) {
+        if (!(mech instanceof SaslHtMechanism)) {
             return false;
         }
-        return getSkipReasonInternal(mech) == null;
+        return getConfigurationSkipReason(mech) == null && getSkipReasonInternal(mech) == null;
+    }
+
+    /**
+     * Get the reason why Smack will not select the given mechanism due to its blacklist or the connection
+     * configuration. FAST must not use, or request tokens for, such mechanisms, as the SASL2 authentication would
+     * otherwise end up without a selectable mechanism.
+     *
+     * @param mechanism the SASL mechanism.
+     * @return the reason why the mechanism will not be selected, or <code>null</code>.
+     */
+    private String getConfigurationSkipReason(SASLMechanism mechanism) {
+        ConnectionConfiguration configuration = connectionInternal.connection.getConfiguration();
+        return SASLAuthentication.getSkipReason(mechanism, configuration.getAuthzid(), configuration);
     }
 
     private String getSkipReasonInternal(SASLMechanism mechanism) {
@@ -177,21 +190,53 @@ public class FastModule extends ModularXmppClientToServerConnectionModule<FastMo
         return htMechanism.getChannelBindingNotSupportedReason(connectionInternal.connection);
     }
 
+    /**
+     * Select the FAST mechanism to request a token for. Only mechanisms that are advertised by the service and usable
+     * by Smack are considered. The preferred FAST mechanism is selected if possible. Otherwise, mechanisms with
+     * channel binding are selected over the ones without, as required by XEP-0484 § 6, followed by the SASL
+     * mechanism priority.
+     *
+     * @param sasl2Feature the announced SASL2 stream feature.
+     * @return the name of the selected FAST mechanism, or <code>null</code> if there is none.
+     */
     private String selectBestAdvertisedFastMechanism(Sasl2Feature sasl2Feature) {
         FastElements.Fast fastFeature = sasl2Feature.getInlineFeature(FastElements.Fast.class);
-        if (fastFeature == null || fastFeature.getMechanisms() == null || fastFeature.getMechanisms().isEmpty()) {
+        if (fastFeature == null || fastFeature.getMechanisms() == null) {
             return null;
         }
         List<String> serverMechanisms = fastFeature.getMechanisms();
-        if (preferredFastMechanism != null && serverMechanisms.contains(preferredFastMechanism)) {
-            return preferredFastMechanism;
-        }
+
+        String bestChannelBindingMechanism = null;
+        String bestMechanism = null;
+        // Iterate in SASL priority order over the registered mechanisms.
         for (SASLMechanism registeredMech : SASLAuthentication.getRegisteredSASLMechanisms()) {
-            if (registeredMech instanceof SaslHtMechanism && serverMechanisms.contains(registeredMech.getName())) {
-                return registeredMech.getName();
+            if (!(registeredMech instanceof SaslHtMechanism)) {
+                continue;
+            }
+            SaslHtMechanism htMechanism = (SaslHtMechanism) registeredMech;
+            String mechanismName = htMechanism.getName();
+            if (!serverMechanisms.contains(mechanismName)
+                            || getConfigurationSkipReason(htMechanism) != null
+                            || htMechanism.getChannelBindingNotSupportedReason(connectionInternal.connection) != null) {
+                continue;
+            }
+
+            if (mechanismName.equals(preferredFastMechanism)) {
+                return mechanismName;
+            }
+            if (bestMechanism == null) {
+                bestMechanism = mechanismName;
+            }
+            if (bestChannelBindingMechanism == null
+                            && htMechanism.getChannelBindingType() != SaslHtMechanism.ChannelBindingType.NONE) {
+                bestChannelBindingMechanism = mechanismName;
             }
         }
-        return serverMechanisms.get(0);
+
+        if (bestChannelBindingMechanism != null) {
+            return bestChannelBindingMechanism;
+        }
+        return bestMechanism;
     }
 
     private final class FastAuthenticationHook implements Sasl2AuthenticationHook {
@@ -230,7 +275,7 @@ public class FastModule extends ModularXmppClientToServerConnectionModule<FastMo
             if (isTokenUsable) {
                 long count = incrementTokenCount();
                 extensions.add(new FastElements.Fast(count > 0 ? count : null, isInvalidateToken()));
-            } else if (autoRequestToken && sasl2Feature.hasInlineFeature(FastElements.Fast.class)) {
+            } else if (autoRequestToken) {
                 String mechanismToRequest = selectBestAdvertisedFastMechanism(sasl2Feature);
                 if (mechanismToRequest != null) {
                     extensions.add(new FastElements.RequestToken(mechanismToRequest));
@@ -298,7 +343,7 @@ public class FastModule extends ModularXmppClientToServerConnectionModule<FastMo
                     }
                 }
 
-                if (autoRequestToken && sasl2Feature.hasInlineFeature(FastElements.Fast.class)) {
+                if (autoRequestToken) {
                     String mechanismToRequest = selectBestAdvertisedFastMechanism(sasl2Feature);
                     if (mechanismToRequest != null) {
                         fallbackExtensions.add(new FastElements.RequestToken(mechanismToRequest));
@@ -350,9 +395,9 @@ public class FastModule extends ModularXmppClientToServerConnectionModule<FastMo
             }
 
             boolean hasUsableToken = hasUsableToken(sasl2Feature);
-            boolean canRequestToken = isAutoRequestToken() && sasl2Feature.hasInlineFeature(FastElements.Fast.class);
+            boolean canRequestToken = isAutoRequestToken() && selectBestAdvertisedFastMechanism(sasl2Feature) != null;
             if (!hasUsableToken && !canRequestToken) {
-                return new StateTransitionResult.TransitionImpossibleReason("No usable FAST token nor server FAST token request support");
+                return new StateTransitionResult.TransitionImpossibleReason("No usable FAST token and no usable FAST mechanism to request a token for");
             }
 
             return null;
