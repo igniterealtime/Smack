@@ -98,7 +98,7 @@ public class JingleSessionStateActive extends JingleSessionState {
     }
 
     /**
-     * Receive and process the <session-terminate> action.
+     * Receive and process the {@code <session-terminate>} action.
      */
     private static IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
 

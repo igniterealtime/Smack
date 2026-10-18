@@ -46,13 +46,13 @@ public class Privacy extends IQ {
     public static final String ELEMENT = QUERY_ELEMENT;
     public static final String NAMESPACE = "jabber:iq:privacy";
 
-    /** declineActiveList is true when the user declines the use of the active list **/
+    /** declineActiveList is true when the user declines the use of the active list. **/
     private boolean declineActiveList = false;
-    /** activeName is the name associated with the active list set for the session **/
+    /** activeName is the name associated with the active list set for the session. **/
     private String activeName;
-    /** declineDefaultList is true when the user declines the use of the default list **/
+    /** declineDefaultList is true when the user declines the use of the default list. **/
     private boolean declineDefaultList = false;
-    /** defaultName is the name of the default list that applies to the user as a whole **/
+    /** defaultName is the name of the default list that applies to the user as a whole. **/
     private String defaultName;
     /** itemLists holds the set of privacy items classified in lists. It is a map where the
      * key is the name of the list and the value a collection with privacy items. **/

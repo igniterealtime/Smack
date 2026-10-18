@@ -31,11 +31,11 @@ ext {
 
 	jxmppVersion = '[1.1.0, 1.1.999]'
 	miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
-	junitVersion = '5.12.2'
+	junitVersion = '5.14.4'
 	commonsIoVersion = '2.22.0'
-	bouncyCastleVersion = '1.85.2'
-	guavaVersion = '33.6.0-jre'
-	mockitoVersion = '5.23.0'
+	bouncyCastleVersion = '1.86'
+	guavaVersion = '33.7.2-jre'
+	mockitoVersion = '5.24.0'
 	orgReflectionsVersion = '0.10.2'
 
 	if (project.hasProperty("useSonatype")) {
@@ -107,17 +107,17 @@ dependencies {
 	testImplementation "org.junit.jupiter:junit-jupiter-params:$junitVersion"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
 	// https://stackoverflow.com/a/77274251/194894
-	testImplementation "org.junit.platform:junit-platform-launcher:1.12.2"
+	testImplementation "org.junit.platform:junit-platform-launcher:1.14.4"
 
 	// The smack-extensions subproject uses mockito in its fest
 	// fixtures, and we want to have mockito also available in
 	// test, so we use API here.
 	testFixturesApi "org.mockito:mockito-core:${mockitoVersion}"
 
-	testImplementation 'org.slf4j:slf4j-simple:2.0.18'
+	testImplementation 'org.slf4j:slf4j-simple:2.0.20'
 	testImplementation 'com.jamesmurty.utils:java-xmlbuilder:1.3'
 
-	errorprone 'com.google.errorprone:error_prone_core:2.41.0'
+	errorprone 'com.google.errorprone:error_prone_core:2.50.0'
 }
 
 test {
@@ -154,7 +154,7 @@ jar {
 }
 
 checkstyle {
-	toolVersion = '10.18.2'
+	toolVersion = '14.3.0'
 
 	if (project in gplLicensedProjects) {
 		configProperties.checkstyleLicenseHeader = "${project.name}-gplv3-license-header"
@@ -265,6 +265,8 @@ tasks.withType(JavaCompile) {
 			'-Xep:StringSplitter:OFF',
 			'-Xep:JavaTimeDefaultTimeZone:OFF',
 			'-Xep:InlineMeSuggester:OFF',
+			// TODO: Enable ExposedPrivateType. Fixing its findings requires changes to the public API.
+			'-Xep:ExposedPrivateType:OFF',
 		]
 	}
 }

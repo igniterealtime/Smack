@@ -19,6 +19,7 @@ package org.jivesoftware.smack.fast;
 /**
  * A listener for FAST token lifecycle events.
  */
+// XXX: This is meant as persistence API, together with FastModule.setFastToken(). But should be reworked.
 public interface FastTokenListener {
 
     /**

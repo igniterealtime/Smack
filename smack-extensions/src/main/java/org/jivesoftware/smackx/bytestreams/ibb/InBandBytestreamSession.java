@@ -404,7 +404,7 @@ public class InBandBytestreamSession implements BytestreamSession {
         }
 
         /**
-         * Checks if this stream is closed and throws an IOException if necessary
+         * Checks if this stream is closed and throws an IOException if necessary.
          *
          * @throws IOException if stream is closed and no data should be read anymore
          */

@@ -307,7 +307,7 @@ public class RTPBridge extends IQ {
     }
 
     /**
-     * Get the Child Element XML of the Packet
+     * Get the Child Element XML of the Packet.
      *
      * @return the Child Element XML of the Packet
      */

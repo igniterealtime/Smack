@@ -16,6 +16,7 @@
  */
 package org.jivesoftware.smack.util;
 
+@SuppressWarnings("ReferenceEquality")
 public final class EqualsUtil {
 
     private EqualsUtil() {

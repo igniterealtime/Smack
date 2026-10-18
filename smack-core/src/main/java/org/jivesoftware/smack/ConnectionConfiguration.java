@@ -134,7 +134,7 @@ public abstract class ConnectionConfiguration {
     protected final UInt16 port;
 
     /**
-     * Used to get information from the user
+     * Used to get information from the user.
      */
     private final CallbackHandler callbackHandler;
 
@@ -155,7 +155,7 @@ public abstract class ConnectionConfiguration {
     private final EntityBareJid authzid;
 
     /**
-     * Initial presence as of RFC 6121 § 4.2
+     * Initial presence as of RFC 6121 § 4.2.
      * @see <a href="http://xmpp.org/rfcs/rfc6121.html#presence-initial">RFC 6121 § 4.2 Initial Presence</a>
      */
     private final boolean sendPresence;
@@ -166,14 +166,8 @@ public abstract class ConnectionConfiguration {
 
     private final DnssecMode dnssecMode;
 
-    /**
-     *
-     */
     private final String[] enabledSSLProtocols;
 
-    /**
-     *
-     */
     private final String[] enabledSSLCiphers;
 
     private final HostnameVerifier hostnameVerifier;

@@ -48,7 +48,7 @@ public class PacketWriterTest {
     /**
      * Make sure that stanza writer does block once the queue reaches
      * {@link PacketWriter#QUEUE_SIZE} and that
-     * {@link PacketWriter#sendStanza(org.jivesoftware.smack.tcp.packet.Packet)} does unblock after the
+     * {@link PacketWriter#sendStreamElement(org.jivesoftware.smack.packet.Element)} does unblock after the
      * interrupt.
      *
      * @throws InterruptedException if the calling thread was interrupted.

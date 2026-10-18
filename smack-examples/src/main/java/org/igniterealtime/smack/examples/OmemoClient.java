@@ -21,6 +21,7 @@
 package org.igniterealtime.smack.examples;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -68,7 +69,7 @@ public class OmemoClient {
 
     public static final Logger LOGGER = Logger.getLogger(OmemoClient.class.getName());
 
-    private static final Scanner scanner = new Scanner(System.in, "UTF-8");
+    private static final Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8);
     private final XMPPTCPConnection connection;
     private final OmemoManager omemoManager;
 

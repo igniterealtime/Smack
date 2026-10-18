@@ -61,8 +61,9 @@ public final class DirectoryRosterStore implements RosterStore {
     }
 
     /**
-     * @param baseDir TODO javadoc me please
-     *            will be the directory where all roster entries are stored. One
+     * Creates a new roster store backed by the given directory.
+     *
+     * @param baseDir will be the directory where all roster entries are stored. One
      *            file for each entry, such that file.name = entry.username.
      *            There is also one special file '__version__' that contains the
      *            current version string.

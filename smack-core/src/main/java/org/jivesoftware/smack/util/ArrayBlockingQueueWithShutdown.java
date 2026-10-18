@@ -534,6 +534,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    @SuppressWarnings("ReferenceEquality")
     @Override
     public int drainTo(Collection<? super E> c) {
         checkNotNull(c);
@@ -562,6 +563,7 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
         }
     }
 
+    @SuppressWarnings("ReferenceEquality")
     @Override
     public int drainTo(Collection<? super E> c, int maxElements) {
         checkNotNull(c);

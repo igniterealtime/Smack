@@ -54,7 +54,7 @@ public abstract class FileTransfer {
     private Exception exception;
 
     /**
-     * Buffer size between input and output
+     * Buffer size between input and output.
      */
     private static final int BUFFER_SIZE = 8192;
 

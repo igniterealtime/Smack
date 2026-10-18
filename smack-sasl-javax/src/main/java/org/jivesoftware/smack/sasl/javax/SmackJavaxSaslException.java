@@ -22,9 +22,6 @@ import org.jivesoftware.smack.SmackException.SmackSaslException;
 
 public class SmackJavaxSaslException extends SmackSaslException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private final SaslException saslException;

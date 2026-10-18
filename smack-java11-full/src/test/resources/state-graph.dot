@@ -30,7 +30,8 @@ digraph {
 "AuthenticatedButUnbound" [ style=bold ]
   "Sasl2Auth (XEP-0388)" -> "AuthenticatedAndResourceBound" [xlabel="2"];
   "Bind2 (XEP-0386)" -> "Sasl2Auth (XEP-0388)" [xlabel="2"];
-  "Sasl2Init (XEP-0388)" -> "Sasl2Auth (XEP-0388)" [xlabel="2"];
+  "Sasl2Init (XEP-0388)" -> "Fast (XEP-0484)" [xlabel="2"];
+  "Sasl2Init (XEP-0388)" -> "Sasl2Auth (XEP-0388)" [xlabel="3"];
   "ConnectedButUnauthenticated" -> "SaslAuthentication (RFC 6120 § 6)" [xlabel="3"];
   "SaslAuthentication (RFC 6120 § 6)" -> "AuthenticatedButUnbound";
   "ConnectedButUnauthenticated" -> "Shutdown" [xlabel="4"];

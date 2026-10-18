@@ -17,13 +17,7 @@
 package org.jivesoftware.smack.sasl.sasl2;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.function.Consumer;
 
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
@@ -42,59 +36,10 @@ import org.jivesoftware.smack.packet.XmlElement;
 import org.jivesoftware.smack.sasl.packet.Sasl2Feature;
 import org.jivesoftware.smack.sasl.packet.Sasl2Nonza;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2Authentication.Sasl2AuthenticationResult;
+import org.jivesoftware.smack.sasl.sasl2.internal.Sasl2AuthenticationContext;
 
 public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2ModuleDescriptor> {
 
-    public static final class Sasl2AuthenticationContext {
-        private final List<XmlElement> extensions = new ArrayList<>();
-        private final List<Sasl2AuthenticationHook> hooks = new ArrayList<>();
-        private final List<Consumer<Sasl2AuthenticationResult>> successCallbacks = new ArrayList<>();
-
-        public void addExtension(XmlElement extension) {
-            if (extension != null) {
-                extensions.add(extension);
-            }
-        }
-
-        public void addExtensions(Collection<? extends XmlElement> extensions) {
-            if (extensions != null) {
-                this.extensions.addAll(extensions);
-            }
-        }
-
-        public List<XmlElement> getExtensions() {
-            return Collections.unmodifiableList(extensions);
-        }
-
-        public void addHook(Sasl2AuthenticationHook hook) {
-            if (hook != null) {
-                hooks.add(hook);
-            }
-        }
-
-        public List<Sasl2AuthenticationHook> getHooks() {
-            return Collections.unmodifiableList(hooks);
-        }
-
-        public void addSuccessCallback(Consumer<Sasl2AuthenticationResult> callback) {
-            if (callback != null) {
-                successCallbacks.add(callback);
-            }
-        }
-
-        public List<Consumer<Sasl2AuthenticationResult>> getSuccessCallbacks() {
-            return Collections.unmodifiableList(successCallbacks);
-        }
-
-        public void reset() {
-            extensions.clear();
-            hooks.clear();
-            successCallbacks.clear();
-        }
-    }
-
-    private final Sasl2AuthenticationContext authenticationContext = new Sasl2AuthenticationContext();
-    private final Set<Sasl2AuthenticationHook> customHooks = new CopyOnWriteArraySet<>();
     private Sasl2AuthenticationResult sasl2AuthenticationResult;
 
     protected Sasl2Module(Sasl2ModuleDescriptor moduleDescriptor,
@@ -102,44 +47,12 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
         super(moduleDescriptor, connectionInternal);
     }
 
-    public Sasl2AuthenticationContext getAuthenticationContext() {
-        return authenticationContext;
-    }
-
-    public void resetContext() {
-        authenticationContext.reset();
+    public Sasl2Nonza.UserAgent getUserAgent() {
+        return moduleDescriptor.getUserAgent();
     }
 
     public Sasl2AuthenticationResult getSasl2AuthenticationResult() {
         return sasl2AuthenticationResult;
-    }
-
-    public void addSasl2AuthenticationHook(Sasl2AuthenticationHook hook) {
-        customHooks.add(hook);
-    }
-
-    public boolean removeSasl2AuthenticationHook(Sasl2AuthenticationHook hook) {
-        return customHooks.remove(hook);
-    }
-
-    public Set<Sasl2AuthenticationHook> getCustomHooks() {
-        return Collections.unmodifiableSet(customHooks);
-    }
-
-    public List<Sasl2AuthenticationHook> getHooks() {
-        List<Sasl2AuthenticationHook> allHooks = new ArrayList<>();
-        if (connectionInternal.connection != null) {
-            allHooks.addAll(connectionInternal.connection
-                            .getConnectionModulesImplementing(Sasl2AuthenticationHook.class));
-            for (var supplier : connectionInternal.connection.getConnectionModulesImplementing(Sasl2AuthenticationHookSupplier.class)) {
-                Sasl2AuthenticationHook hook = supplier.getSasl2AuthenticationHook();
-                if (hook != null) {
-                    allHooks.add(hook);
-                }
-            }
-        }
-        allHooks.addAll(customHooks);
-        return Collections.unmodifiableList(allHooks);
     }
 
     public static final class Sasl2InitStateDescriptor extends StateDescriptor {
@@ -158,9 +71,7 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
         }
     }
 
-    private static final class Sasl2InitState extends State {
-
-        private Sasl2Feature sasl2Feature;
+    private final class Sasl2InitState extends State {
 
         private Sasl2InitState(Sasl2InitStateDescriptor sasl2InitStateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
@@ -169,9 +80,9 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
 
         @Override
         public StateTransitionResult.TransitionImpossible isTransitionToPossible(WalkStateGraphContext walkStateGraphContext) {
-            sasl2Feature = connectionInternal.connection.getFeature(Sasl2Feature.class);
+            Sasl2Feature sasl2Feature = connectionInternal.connection.getFeature(Sasl2Feature.class);
             if (sasl2Feature == null) {
-                return new StateTransitionResult.TransitionImpossibleReason("SASL 2 Feature not announced");
+                return new StateTransitionResult.TransitionImpossibleReason("SASL 2 Feature not supported/announced by service");
             }
 
             return null;
@@ -179,23 +90,15 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext) {
-            Sasl2Module sasl2Module = connectionInternal.connection.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
-            sasl2Module.resetContext();
+            Sasl2AuthenticationContext authContext = new Sasl2AuthenticationContext();
+            walkStateGraphContext.set(Sasl2AuthenticationContext.class, authContext);
 
-            Sasl2Nonza.UserAgent userAgent = sasl2Module.getModuleDescriptor().getUserAgent();
-            sasl2Module.getAuthenticationContext().addExtension(userAgent);
-
-            for (Sasl2AuthenticationHook hook : sasl2Module.getCustomHooks()) {
-                sasl2Module.getAuthenticationContext().addHook(hook);
-            }
+            Sasl2Nonza.UserAgent userAgent = getUserAgent();
+            authContext.addExtension(userAgent);
 
             return StateTransitionResult.Success.EMPTY_INSTANCE;
         }
 
-        @Override
-        public void resetState() {
-            sasl2Feature = null;
-        }
     }
 
     public static final class Sasl2AuthStateDescriptor extends StateDescriptor {
@@ -213,7 +116,7 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
         }
     }
 
-    private static final class Sasl2AuthState extends State {
+    private final class Sasl2AuthState extends State {
 
         private Sasl2Feature sasl2Feature;
 
@@ -235,12 +138,13 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext)
                         throws SmackException, XMPPException, IOException, InterruptedException {
-            Sasl2Module sasl2Module = connectionInternal.connection.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
-            Sasl2AuthenticationContext authContext = sasl2Module.getAuthenticationContext();
             LoginContext loginContext = walkStateGraphContext.getLoginContext();
 
-            List<XmlElement> sasl2Extensions = new ArrayList<>(authContext.getExtensions());
-            List<Sasl2AuthenticationHook> hooks = new ArrayList<>(authContext.getHooks());
+            Sasl2AuthenticationContext authContext = walkStateGraphContext.get(Sasl2AuthenticationContext.class);
+            assert authContext != null;
+
+            List<XmlElement> sasl2Extensions = authContext.getExtensions();
+            List<Sasl2AuthenticationHook> hooks = authContext.getHooks();
 
             for (Sasl2AuthenticationHook hook : hooks) {
                 hook.addAuthenticateExtensions(sasl2Feature, loginContext, sasl2Extensions);
@@ -255,12 +159,11 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
                 sasl2Extensions
             );
 
-            sasl2Module.sasl2AuthenticationResult = result;
+            sasl2AuthenticationResult = result;
 
-            for (Consumer<Sasl2AuthenticationResult> callback : authContext.getSuccessCallbacks()) {
-                callback.accept(result);
-            }
+            authContext.forEachSuccessCallback(result);
 
+            // XXX: is this possible? is this required?
             if (!result.isResourceBound() && !result.isStreamResumed()) {
                 connectionInternal.waitForFeaturesReceived("server stream features after SASL2 authentication");
             }
@@ -271,11 +174,7 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
         @Override
         public void resetState() {
             sasl2Feature = null;
-            Sasl2Module sasl2Module = connectionInternal.connection.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
-            if (sasl2Module != null) {
-                sasl2Module.sasl2AuthenticationResult = null;
-                sasl2Module.resetContext();
-            }
+            sasl2AuthenticationResult = null;
         }
     }
 
@@ -292,12 +191,12 @@ public class Sasl2Module extends ModularXmppClientToServerConnectionModule<Sasl2
         }
     }
 
-    public Sasl2InitState constructSasl2InitState(Sasl2InitStateDescriptor sasl2InitStateDescriptor,
+    private Sasl2InitState constructSasl2InitState(Sasl2InitStateDescriptor sasl2InitStateDescriptor,
                     ModularXmppClientToServerConnectionInternal connectionInternal) {
         return new Sasl2InitState(sasl2InitStateDescriptor, connectionInternal);
     }
 
-    public Sasl2AuthState constructSasl2AuthState(Sasl2AuthStateDescriptor sasl2AuthStateDescriptor,
+    private Sasl2AuthState constructSasl2AuthState(Sasl2AuthStateDescriptor sasl2AuthStateDescriptor,
                     ModularXmppClientToServerConnectionInternal connectionInternal) {
         return new Sasl2AuthState(sasl2AuthStateDescriptor, connectionInternal);
     }

@@ -342,7 +342,7 @@ public final class ServiceDiscoveryManager extends Manager {
 
     /**
      * Returns the NodeInformationProvider responsible for providing information
-     * (ie items) related to a given node or <code>null</null> if none.<p>
+     * (ie items) related to a given node or <code>null</code> if none.<p>
      *
      * In MUC, a node could be 'http://jabber.org/protocol/muc#rooms' which means that the
      * NodeInformationProvider will provide information about the rooms where the user has joined.

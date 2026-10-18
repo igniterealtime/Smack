@@ -48,7 +48,7 @@ final class InitiationListener extends AbstractIqRequestHandler {
     private final ExecutorService initiationListenerExecutor;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param manager the SOCKS5 Bytestream manager
      */

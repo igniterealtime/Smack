@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import org.jivesoftware.smack.util.PacketParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParser;
@@ -143,7 +144,7 @@ public class DataLayoutTest {
     public void testLayoutFromFile() throws Exception {
         DataFormProvider pr = new DataFormProvider();
 
-        InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getResourceAsStream(TEST_INPUT_1), "UTF-8");
+        InputStreamReader inputStreamReader = new InputStreamReader(this.getClass().getResourceAsStream(TEST_INPUT_1), StandardCharsets.UTF_8);
         XmlPullParser parser = PacketParserUtils.getParserFor(inputStreamReader);
 
         DataForm form = pr.parse(parser);

@@ -37,6 +37,7 @@ public class RevokedOffer {
     private final Date timestamp;
 
     /**
+     * Creates a new revoked offer.
      *
      * @param userJID the JID of the user for which this revocation was issued.
      * @param userID the user ID of the user for which this revocation was issued.

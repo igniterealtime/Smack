@@ -415,7 +415,7 @@ public class STUNResolver extends TransportResolver {
         private int port; // The port number
 
         /**
-         * Basic constructor, with the hostname and port
+         * Basic constructor, with the hostname and port.
          *
          * @param hostname The hostname
          * @param port     The port
@@ -453,7 +453,7 @@ public class STUNResolver extends TransportResolver {
         }
 
         /**
-         * Get the port of the STUN service
+         * Get the port of the STUN service.
          *
          * @return The port number where the STUN server is waiting.
          */

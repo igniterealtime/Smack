@@ -98,12 +98,12 @@ public class RoomInfo {
     private final int maxhistoryfetch;
 
     /**
-     * Contact Address
+     * Contact Address.
      */
     private final List<EntityBareJid> contactJid;
 
     /**
-     * Natural Language for Room Discussions
+     * Natural Language for Room Discussions.
      */
     private final String lang;
 
@@ -114,22 +114,22 @@ public class RoomInfo {
     private final String ldapgroup;
 
     /**
-     * True if the room subject can be modified by participants
+     * True if the room subject can be modified by participants.
      */
     private final Boolean subjectmod;
 
     /**
-     * URL for archived discussion logs
+     * URL for archived discussion logs.
      */
     private final URL logs;
 
     /**
-     * An associated pubsub node
+     * An associated pubsub node.
      */
     private final String pubsub;
 
     /**
-     * The rooms extended configuration form;
+     * The rooms extended configuration form.
      */
     private final DataForm form;
 

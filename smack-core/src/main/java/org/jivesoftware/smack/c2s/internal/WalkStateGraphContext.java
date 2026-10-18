@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2018-2020 Florian Schmaus
+ * Copyright 2018-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,23 @@ public final class WalkStateGraphContext {
      * A linked Map of failed States with their reason as value.
      */
     final Map<State, StateTransitionResult> failedStates = new LinkedHashMap<>();
+
+    private final Map<Class<?>, Object> walkContexts = new HashMap<>();
+
+    public <C> void set(Class<C> clz, C c) {
+        Objects.requireNonNull(clz, "Class must not be null");
+        Objects.requireNonNull(c, "Class instance must not be null");
+        walkContexts.put(clz, clz.cast(c));
+    }
+
+    public <C> C get(Class<C> clz) {
+        Objects.requireNonNull(clz, "Class must not be null");
+        Object obj = walkContexts.get(clz);
+        if (obj == null) {
+            return null;
+        }
+        return clz.cast(obj);
+    }
 
     boolean mandatoryIntermediateStateHandled;
 

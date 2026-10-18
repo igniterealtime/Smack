@@ -66,7 +66,7 @@ public class SpeexMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Setup API supported Payloads
+     * Setup API supported Payloads.
      */
     private void setupPayloads() {
         payloads.add(new PayloadType.Audio(15, "speex"));

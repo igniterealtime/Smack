@@ -78,7 +78,7 @@ public final class ChatStateManager extends Manager {
     private static final StanzaFilter INCOMING_CHAT_STATE_FILTER = new AndFilter(INCOMING_MESSAGE_FILTER, new StanzaExtensionFilter(NAMESPACE));
 
     /**
-     * Registered ChatStateListeners
+     * Registered ChatStateListeners.
      */
     private final Set<ChatStateListener> chatStateListeners = new HashSet<>();
 

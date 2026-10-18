@@ -106,10 +106,7 @@
 			<!-- TODO stricten those checks -->
 			<property name="accessModifiers" value="public,protected"/>
 		</module>
-		<module name="JavadocStyle">
-			<property name="scope" value="public"/>
-			<property name="checkEmptyJavadoc" value="true"/>
-			<property name="checkHtml" value="false"/>
+		<module name="SummaryJavadoc">
 		</module>
 		<module name="ParenPad">
 		</module>

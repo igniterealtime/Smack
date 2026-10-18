@@ -63,6 +63,7 @@ public class Objects {
         return collection;
     }
 
+    @SuppressWarnings("ReferenceEquality")
     public static boolean equals(Object a, Object b) {
         return a == b || (a != null && a.equals(b));
     }

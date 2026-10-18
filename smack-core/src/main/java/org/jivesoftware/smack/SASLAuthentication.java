@@ -364,34 +364,16 @@ public final class SASLAuthentication {
                 continue;
             }
 
-            synchronized (BLACKLISTED_MECHANISMS) {
-                if (BLACKLISTED_MECHANISMS.contains(mechanismName)) {
-                    skipReasons.add("Skipping " + mechanismName + " because it is blacklisted by Smack");
-                    continue;
-                }
+            String skipReason = getSkipReason(mechanism, authzid, configuration);
+            if (skipReason == null && mechanism.requiresPassword() && !passwordAvailable) {
+                skipReason = "a password is required for it, but none was provided to the connection configuration";
             }
-
-            if (!configuration.isEnabledSaslMechanism(mechanismName)) {
-                skipReasons.add("Skipping " + mechanismName + " because it is disabled in the connection configuration");
+            if (skipReason == null && skipReasonProvider != null) {
+                skipReason = skipReasonProvider.apply(mechanism);
+            }
+            if (skipReason != null) {
+                skipReasons.add("Skipping " + mechanismName + " because " + skipReason);
                 continue;
-            }
-
-            if (authzid != null && !mechanism.authzidSupported()) {
-                skipReasons.add("Skipping " + mechanismName + " because authzid is required by connection configuration, but not supported by this SASL mechanism");
-                continue;
-            }
-
-            if (mechanism.requiresPassword() && !passwordAvailable) {
-                skipReasons.add("Skipping " + mechanismName + " because a password is required for it, but none was provided to the connection configuration");
-                continue;
-            }
-
-            if (skipReasonProvider != null) {
-                String skipReason = skipReasonProvider.apply(mechanism);
-                if (skipReason != null) {
-                    skipReasons.add("Skipping " + mechanismName + " because " + skipReason);
-                    continue;
-                }
             }
 
             // Create a new instance of the SASLMechanism for every authentication attempt.
@@ -410,6 +392,37 @@ public final class SASLAuthentication {
                             );
             // @formatter:on
         }
+    }
+
+    /**
+     * Get the reason why the given SASL mechanism must not be selected, considering Smack's blacklist and the
+     * connection configuration. Note that this does not consider whether the mechanism is offered by the server or
+     * whether credentials required by the mechanism are available.
+     *
+     * @param mechanism the SASL mechanism.
+     * @param authzid the authorization identity, or <code>null</code>.
+     * @param configuration the connection configuration.
+     * @return the reason why the mechanism must not be selected, or <code>null</code> if it may be selected.
+     */
+    public static String getSkipReason(SASLMechanism mechanism, EntityBareJid authzid,
+                    ConnectionConfiguration configuration) {
+        String mechanismName = mechanism.getName();
+
+        synchronized (BLACKLISTED_MECHANISMS) {
+            if (BLACKLISTED_MECHANISMS.contains(mechanismName)) {
+                return "it is blacklisted by Smack";
+            }
+        }
+
+        if (!configuration.isEnabledSaslMechanism(mechanismName)) {
+            return "it is disabled in the connection configuration";
+        }
+
+        if (authzid != null && !mechanism.authzidSupported()) {
+            return "authzid is required by connection configuration, but not supported by this SASL mechanism";
+        }
+
+        return null;
     }
 
     private List<String> getServerMechanisms() {

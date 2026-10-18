@@ -20,16 +20,16 @@ import org.jivesoftware.smack.bind2.element.Bind2Elements;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionModule;
 import org.jivesoftware.smack.c2s.internal.ModularXmppClientToServerConnectionInternal;
 import org.jivesoftware.smack.c2s.internal.WalkStateGraphContext;
+import org.jivesoftware.smack.fast.FastModule.FastStateDescriptor;
 import org.jivesoftware.smack.fsm.LoginContext;
 import org.jivesoftware.smack.fsm.State;
 import org.jivesoftware.smack.fsm.StateDescriptor;
 import org.jivesoftware.smack.fsm.StateTransitionResult;
 import org.jivesoftware.smack.sasl.packet.Sasl2Feature;
 import org.jivesoftware.smack.sasl.packet.Sasl2Nonza;
-import org.jivesoftware.smack.sasl.sasl2.Sasl2Module;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2Module.Sasl2AuthStateDescriptor;
 import org.jivesoftware.smack.sasl.sasl2.Sasl2Module.Sasl2InitStateDescriptor;
-import org.jivesoftware.smack.sasl.sasl2.Sasl2ModuleDescriptor;
+import org.jivesoftware.smack.sasl.sasl2.internal.Sasl2AuthenticationContext;
 
 import org.jxmpp.jid.parts.Resourcepart;
 
@@ -53,6 +53,9 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
             addPredeccessor(Sasl2InitStateDescriptor.class);
             addSuccessor(Sasl2AuthStateDescriptor.class);
             declarePrecedenceOver(Sasl2AuthStateDescriptor.class);
+            // FAST can be reached from Sasl2Init and from Bind2. As the walk does not backtrack and FAST's only
+            // successor is Sasl2Auth, Bind2 would be skipped if FAST was entered first.
+            declarePrecedenceOver(FastStateDescriptor.class);
         }
 
         @Override
@@ -62,7 +65,7 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
         }
     }
 
-    private static final class Bind2State extends State {
+    private final class Bind2State extends State {
 
         private Bind2State(Bind2StateDescriptor bind2StateDescriptor,
                         ModularXmppClientToServerConnectionInternal connectionInternal) {
@@ -81,9 +84,9 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
 
         @Override
         public StateTransitionResult.AttemptResult transitionInto(WalkStateGraphContext walkStateGraphContext) {
-            Sasl2Module sasl2Module = connectionInternal.connection.getConnectionModuleFor(Sasl2ModuleDescriptor.class);
-            if (sasl2Module == null) {
-                return new StateTransitionResult.Failure("SASL 2 module not found on connection");
+            Sasl2AuthenticationContext sasl2AuthContext = walkStateGraphContext.get(Sasl2AuthenticationContext.class);
+            if (sasl2AuthContext == null) {
+                return new StateTransitionResult.Failure("SASL 2 authentication context not found in walk state graph context");
             }
 
             LoginContext loginContext = walkStateGraphContext.getLoginContext();
@@ -91,10 +94,10 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
             if (loginContext.resource != null) {
                 tag = loginContext.resource.toString();
             }
-            sasl2Module.getAuthenticationContext().addExtension(new Bind2Elements.Bind(tag, null));
+            Bind2Elements.Bind bind2 = new Bind2Elements.Bind(tag, null);
+            sasl2AuthContext.addExtension(bind2);
 
-            Bind2Module bind2Module = connectionInternal.connection.getConnectionModuleFor(Bind2ModuleDescriptor.class);
-            sasl2Module.getAuthenticationContext().addSuccessCallback(result -> {
+            sasl2AuthContext.addSuccessCallback(result -> {
                 if (result.isResourceBound()) {
                     Bind2SuccessResult successResult = new Bind2SuccessResult(
                         result.getBoundResource(),
@@ -102,9 +105,7 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
                         result.getSuccessExtension(Bind2Elements.Bound.class),
                         result.getSuccessNonza()
                     );
-                    if (bind2Module != null) {
-                        bind2Module.bind2SuccessResult = successResult;
-                    }
+                    bind2SuccessResult = successResult;
                 }
             });
 
@@ -113,10 +114,7 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
 
         @Override
         public void resetState() {
-            Bind2Module bind2Module = connectionInternal.connection.getConnectionModuleFor(Bind2ModuleDescriptor.class);
-            if (bind2Module != null) {
-                bind2Module.bind2SuccessResult = null;
-            }
+            bind2SuccessResult = null;
         }
     }
 
@@ -133,11 +131,6 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
             this.requestedResource = requestedResource;
             this.bound = bound;
             this.successNonza = successNonza;
-        }
-
-        public Bind2SuccessResult(Resourcepart boundResource, Resourcepart requestedResource,
-                        Bind2Elements.Bound bound) {
-            this(boundResource, requestedResource, bound, null);
         }
 
         public Resourcepart getBoundResource() {
@@ -157,7 +150,7 @@ public class Bind2Module extends ModularXmppClientToServerConnectionModule<Bind2
         }
     }
 
-    public Bind2State constructBind2State(Bind2StateDescriptor bind2StateDescriptor,
+    private Bind2State constructBind2State(Bind2StateDescriptor bind2StateDescriptor,
                     ModularXmppClientToServerConnectionInternal connectionInternal) {
         return new Bind2State(bind2StateDescriptor, connectionInternal);
     }

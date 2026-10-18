@@ -733,7 +733,7 @@ public class EnhancedDebugger extends SmackDebugger {
     }
 
     /**
-     * Updates the statistics table
+     * Updates the statistics table.
      */
     private void updateStatistics() {
         statisticsTable.setValueAt(Integer.valueOf(receivedIQPackets), 0, 1);

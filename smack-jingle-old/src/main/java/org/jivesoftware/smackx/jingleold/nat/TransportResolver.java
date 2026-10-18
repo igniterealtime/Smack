@@ -266,7 +266,7 @@ public abstract class TransportResolver {
     // Candidates management
 
     /**
-     * Clear the list of candidate
+     * Clear the list of candidate.
      */
     protected void clearCandidates() {
         synchronized (candidates) {
@@ -275,7 +275,7 @@ public abstract class TransportResolver {
     }
 
     /**
-     * Add a new transport candidate
+     * Add a new transport candidate.
      *
      * @param cand The candidate to add
      * @throws NotConnectedException if the XMPP connection is not connected.

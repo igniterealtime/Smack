@@ -456,6 +456,7 @@ public class XMPPBOSHConnection extends AbstractXMPPConnection {
             private Thread thread = this;
             private int bufferLength = 1024;
 
+            @SuppressWarnings("ReferenceEquality")
             @Override
             public void run() {
                 try {

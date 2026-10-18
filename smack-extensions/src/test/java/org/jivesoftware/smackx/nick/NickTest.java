@@ -36,7 +36,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 public class NickTest {
     /**
-     * see <a href="https://xmpp.org/extensions/xep-0172.html#example-3">XEP-0172: User Nickname - Example 3</a>
+     * see <a href="https://xmpp.org/extensions/xep-0172.html#example-3">XEP-0172: User Nickname - Example 3</a>.
      */
     private static final String XML = "<nick xmlns='http://jabber.org/protocol/nick'>Ishmael</nick>";
 

@@ -75,9 +75,6 @@ public class ResultSyncPointTest {
 
     private static final class TestException extends Exception {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
     }

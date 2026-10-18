@@ -199,7 +199,7 @@ public class MamElements {
     public static class NeverJidListElement implements Element {
 
         /**
-         * list of JIDs
+         * list of JIDs.
          */
         private List<Jid> neverJids;
 

@@ -117,7 +117,7 @@ public final class FileTransferManager extends Manager {
      *            The fully qualified jabber ID (i.e. full JID) with resource of the user to
      *            send the file to.
      * @return The send file object on which the negotiated transfer can be run.
-     * @exception IllegalArgumentException if userID is null or not a full JID
+     * @throws IllegalArgumentException if userID is null or not a full JID
      */
     public OutgoingFileTransfer createOutgoingFileTransfer(EntityFullJid userID) {
         // We need to create outgoing file transfers with a full JID since this method will later

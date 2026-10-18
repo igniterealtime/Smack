@@ -40,7 +40,7 @@ public class DelayInformationManager {
 
 
     /**
-     * Get Delayed Delivery information as defined in XEP-203
+     * Get Delayed Delivery information as defined in XEP-203.
      * <p>
      * Prefer {@link #getDelayInformation(Stanza)} over this method for backwards compatibility.
      * </p>
@@ -52,7 +52,7 @@ public class DelayInformationManager {
     }
 
     /**
-     * Get Delayed Delivery information as defined in XEP-91
+     * Get Delayed Delivery information as defined in XEP-91.
      * <p>
      * Prefer {@link #getDelayInformation(Stanza)} over this method for backwards compatibility.
      * </p>

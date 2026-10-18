@@ -34,7 +34,7 @@ public final class OmemoConstants {
     public static final String PEP_NODE_BUNDLES = OMEMO_NAMESPACE_V_AXOLOTL + ".bundles";
 
     /**
-     * How many preKeys do we want to publish?
+     * The number of preKeys we want to publish.
      */
     public static final int PRE_KEY_COUNT_PER_BUNDLE = 100;
 

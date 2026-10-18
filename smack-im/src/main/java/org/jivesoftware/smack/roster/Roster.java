@@ -317,9 +317,6 @@ public final class Roster extends Manager {
 
     private final PresencePacketListener presencePacketListener = new PresencePacketListener();
 
-    /**
-     *
-     */
     private boolean rosterLoadedAtLogin = rosterLoadedAtLoginDefault;
 
     private SubscriptionMode subscriptionMode = getDefaultSubscriptionMode();

@@ -255,7 +255,7 @@ public class MUCUser implements ExtensionElement {
         private final String reason;
 
         /**
-         * From XEP-0045 § 7.8.2: "… whose value is the bare JID, full JID, or occupant JID of the inviting user …"
+         * The JID of the inviting user. From XEP-0045 § 7.8.2: "… whose value is the bare JID, full JID, or occupant JID of the inviting user …"
          */
         private final EntityJid from;
 

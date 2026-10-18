@@ -14,10 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jivesoftware.smack.sasl.sasl2;
 
-public interface Sasl2AuthenticationHookSupplier {
-
-    Sasl2AuthenticationHook getSasl2AuthenticationHook();
-
-}
+/**
+ * Internal helper classes for SASL2 state machine coordination.
+ */
+package org.jivesoftware.smack.sasl.sasl2.internal;

@@ -47,6 +47,10 @@ public class Bind2Elements {
             this(inlineFeatures, null, null);
         }
 
+        public Bind(String tag) {
+            this(null, tag, null);
+        }
+
         public Bind(String tag, List<? extends XmlElement> extensionElements) {
             this(null, tag, extensionElements);
         }

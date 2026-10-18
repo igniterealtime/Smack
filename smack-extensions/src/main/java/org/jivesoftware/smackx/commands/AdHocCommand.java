@@ -48,19 +48,19 @@ import org.jxmpp.jid.Jid;
 public class AdHocCommand extends AbstractAdHocCommand {
 
     /**
-     * The connection that is used to execute this command
+     * The connection that is used to execute this command.
      */
     private final XMPPConnection connection;
 
     /**
-     * The full JID of the command host
+     * The full JID of the command host.
      */
     private final Jid jid;
 
     /**
      * Creates a new RemoteCommand that uses an specific connection to execute a
      * command identified by <code>node</code> in the host identified by
-     * <code>jid</code>
+     * <code>jid</code>.
      *
      * @param connection the connection to use for the execution.
      * @param node the identifier of the command.

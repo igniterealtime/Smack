@@ -226,7 +226,7 @@ public class Sasl2AuthenticationTest extends SmackTestSuite {
         }
 
         @Override
-        public void setUser(EntityFullJid user) {
+        public void setBoundUser(EntityFullJid boundUser) {
         }
     }
 

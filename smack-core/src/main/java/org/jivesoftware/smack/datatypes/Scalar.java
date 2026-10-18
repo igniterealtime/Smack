@@ -20,9 +20,6 @@ import org.jivesoftware.smack.util.DefaultCharSequence;
 
 public abstract class Scalar extends java.lang.Number implements DefaultCharSequence {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private final java.lang.Number number;

@@ -36,13 +36,13 @@ import org.jivesoftware.smackx.privacy.packet.PrivacyItem;
  */
 public class PrivacyList {
 
-    /** Holds if it is an active list or not **/
+    /** Holds if it is an active list or not. **/
     private final boolean isActiveList;
-    /** Holds if it is an default list or not **/
+    /** Holds if it is an default list or not. **/
     private final boolean isDefaultList;
-    /** Holds the list name used to print **/
+    /** Holds the list name used to print. **/
     private final String listName;
-    /** Holds the list of {@link PrivacyItem} */
+    /** Holds the list of {@link PrivacyItem}. */
     private final List<PrivacyItem> items;
 
     protected PrivacyList(boolean isActiveList, boolean isDefaultList,

@@ -26,9 +26,6 @@ import org.jivesoftware.smackx.xdatavalidation.packet.ValidateElement;
  */
 public class ValidationConsistencyException extends IllegalArgumentException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     /**

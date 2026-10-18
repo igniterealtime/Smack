@@ -160,6 +160,8 @@ public final class FileMetadataElement implements ExtensionElement {
      *
      * @return escaped name
      */
+    // URLEncoder.encode(String, Charset) requires Android API level 33.
+    @SuppressWarnings("JdkObsolete")
     public String getName() {
         if (name == null) {
             return null;

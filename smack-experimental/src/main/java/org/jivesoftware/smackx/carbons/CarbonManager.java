@@ -112,8 +112,7 @@ public final class CarbonManager extends Manager {
     private final AsyncButOrdered<BareJid> carbonsListenerAsyncButOrdered = new AsyncButOrdered<>();
 
     /**
-     * Should Carbons be automatically be enabled once the connection is authenticated?
-     * Default: false
+     * Set whether Carbons should be automatically enabled once the connection is authenticated. Default: false.
      *
      * @param enabledByDefault new default value
      */

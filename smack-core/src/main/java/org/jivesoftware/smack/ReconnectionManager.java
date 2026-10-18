@@ -193,12 +193,12 @@ public final class ReconnectionManager {
 
         reconnectionRunnable = new Runnable() {
 
-            /**
+            /*
              * Holds the current number of reconnection attempts
              */
             private int attempts = 0;
 
-            /**
+            /*
              * Returns the number of seconds until the next reconnection attempt.
              *
              * @return the number of seconds until the next reconnection attempt.
@@ -230,7 +230,7 @@ public final class ReconnectionManager {
                 return delay;
             }
 
-            /**
+            /*
              * The process will try the reconnection until the connection succeed or the user cancel it
              */
             @Override

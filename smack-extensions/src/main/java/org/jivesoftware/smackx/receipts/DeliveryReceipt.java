@@ -39,7 +39,7 @@ public class DeliveryReceipt implements ExtensionElement {
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     /**
-     * original ID of the delivered message
+     * original ID of the delivered message.
      */
     private final String id;
 

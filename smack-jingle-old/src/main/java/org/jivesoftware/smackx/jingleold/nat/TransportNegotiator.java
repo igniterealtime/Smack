@@ -536,7 +536,7 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Send an offer for a transport candidate
+     * Send an offer for a transport candidate.
      *
      * @param cand TODO javadoc me please
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -696,7 +696,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     }
 
     /**
-     *  @param jingle TODO javadoc me please
+     * Receive and process the {@code <session-initiate>} action.
+     *
+     * @param jingle TODO javadoc me please
      *  @return the iq
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -721,7 +723,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     }
 
     /**
-     *  @param jingle TODO javadoc me please
+     * Receive and process the {@code <transport-info>} action.
+     *
+     * @param jingle TODO javadoc me please
      *  @return the iq
      */
     private IQ receiveTransportInfoAction(Jingle jingle) {
@@ -782,7 +786,9 @@ public abstract class TransportNegotiator extends JingleNegotiator {
     }
 
     /**
-     *  @param jingle TODO javadoc me please
+     * Receive and process the {@code <session-accept>} action.
+     *
+     * @param jingle TODO javadoc me please
      *  @return the iq
      */
     private static IQ receiveSessionAcceptAction(Jingle jingle) {

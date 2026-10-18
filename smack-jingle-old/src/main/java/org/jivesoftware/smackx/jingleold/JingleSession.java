@@ -225,7 +225,7 @@ public final class JingleSession extends JingleNegotiator implements MediaReceiv
     }
 
     /**
-     * Set the session ID
+     * Set the session ID.
      *
      * @param sessionId TODO javadoc me please
      *            the sid to set

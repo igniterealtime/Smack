@@ -185,7 +185,7 @@ public abstract class JingleNegotiator {
     }
 
     /**
-     * Get a copy of the listeners
+     * Get a copy of the listeners.
      *
      * @return a copy of the listeners
      */

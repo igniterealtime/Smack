@@ -254,7 +254,7 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected boolean connected = false;
 
     /**
-     * The stream ID, see RFC 6120 § 4.7.3
+     * The stream ID, see RFC 6120 § 4.7.3.
      */
     protected String streamId;
 
@@ -351,12 +351,12 @@ public abstract class AbstractXMPPConnection implements XMPPConnection {
     protected static final AsyncButOrdered<AbstractXMPPConnection> ASYNC_BUT_ORDERED = new AsyncButOrdered<>();
 
     /**
-     * The used host to establish the connection to
+     * The used host to establish the connection to.
      */
     protected String host;
 
     /**
-     * The used port to establish the connection to
+     * The used port to establish the connection to.
      */
     protected UInt16 port;
 

@@ -563,8 +563,10 @@ public class StringUtils {
     }
 
     /**
-     * Defined by XML 1.0 § 2.3 as:
+     * Whitespace as defined by XML 1.0 § 2.3.
+     * <pre>
      *  S      ::=      (#x20 | #x9 | #xD | #xA)+
+     * </pre>
      *
      * @see <a href="https://www.w3.org/TR/xml/#sec-white-space">XML 1.0 § 2.3</a>
      */

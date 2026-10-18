@@ -311,7 +311,7 @@ public class AudioChannel {
     }
 
     /**
-     * Get the best stanza size for a given codec and a codec rate
+     * Get the best stanza size for a given codec and a codec rate.
      *
      * @param codecFormat TODO javadoc me please
      * @param milliseconds TODO javadoc me please
@@ -478,7 +478,7 @@ public class AudioChannel {
         return !failed;
     }
 
-    /**
+    /*
      * *************************************************************
      * Inner Classes
      * **************************************************************
