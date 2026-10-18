@@ -33,7 +33,7 @@ ext {
 	miniDnsVersion = '[1.1.0-alpha3, 1.1.999]'
 	junitVersion = '5.14.4'
 	commonsIoVersion = '2.22.0'
-	bouncyCastleVersion = '1.85.2'
+	bouncyCastleVersion = '1.86'
 	guavaVersion = '33.6.0-jre'
 	mockitoVersion = '5.23.0'
 	orgReflectionsVersion = '0.10.2'
