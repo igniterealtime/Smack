@@ -1754,7 +1754,7 @@ public class MultiUserChat {
     }
 
     /**
-     * Tries to change the affiliation with an 'muc#admin' namespace
+     * Tries to change the affiliation with an 'muc#admin' namespace.
      *
      * @param jid TODO javadoc me please
      * @param affiliation TODO javadoc me please
@@ -1770,7 +1770,7 @@ public class MultiUserChat {
     }
 
     /**
-     * Tries to change the affiliation with an 'muc#admin' namespace
+     * Tries to change the affiliation with an 'muc#admin' namespace.
      *
      * @param jid TODO javadoc me please
      * @param affiliation TODO javadoc me please

@@ -51,7 +51,7 @@ public interface Sasl2Nonza extends Nonza {
         public static final String DEFAULT_SOFTWARE = "Smack";
 
         /**
-         * A stable identifier for this connection's "client installation", per XEP-0388 § 2.3: "The contents of the
+         * A stable identifier for this connection's "client installation". Per XEP-0388 § 2.3: "The contents of the
          * 'id' attribute MUST be a UUID v4."
          */
         private final UUID id;

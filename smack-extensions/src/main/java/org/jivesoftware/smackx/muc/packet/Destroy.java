@@ -31,9 +31,6 @@ import org.jxmpp.jid.EntityBareJid;
  * @author Gaston Dombiak
  */
 public class Destroy implements NamedElement, Serializable {
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     public static final String ELEMENT = "destroy";

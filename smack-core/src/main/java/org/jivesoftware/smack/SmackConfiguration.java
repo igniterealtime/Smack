@@ -345,7 +345,7 @@ public final class SmackConfiguration {
     }
 
     /**
-     * Get the default HostnameVerifier
+     * Get the default HostnameVerifier.
      *
      * @return the default HostnameVerifier or <code>null</code> if none was set
      */

@@ -235,7 +235,7 @@ public class PingTest extends SmackTestSuite {
     }
 
     /**
-     * The returned connection won't send replies to IQs
+     * The returned connection won't send replies to IQs.
      *
      * @return a dummy connection.
      * @throws XMPPException if an XMPP protocol error was received.

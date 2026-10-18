@@ -53,7 +53,7 @@ public final class ConnectionAttemptState {
     long deadline;
 
     final Iterator<Rfc6120TcpRemoteConnectionEndpoint> connectionEndpointIterator;
-    /** The current connection endpoint we are trying */
+    /** The current connection endpoint we are trying. */
     Rfc6120TcpRemoteConnectionEndpoint connectionEndpoint;
     Iterator<? extends InetAddress> inetAddressIterator;
 

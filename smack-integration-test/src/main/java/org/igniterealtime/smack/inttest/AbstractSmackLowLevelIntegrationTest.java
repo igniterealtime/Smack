@@ -33,7 +33,7 @@ public abstract class AbstractSmackLowLevelIntegrationTest extends AbstractSmack
     private final SmackIntegrationTestEnvironment environment;
 
     /**
-     * The configuration
+     * The configuration.
      */
     protected final Configuration configuration;
 

@@ -90,12 +90,12 @@ public abstract class SASLMechanism implements Comparable<SASLMechanism> {
     protected EntityBareJid authorizationId;
 
     /**
-     * The name of the XMPP service
+     * The name of the XMPP service.
      */
     protected DomainBareJid serviceName;
 
     /**
-     * The users password
+     * The users password.
      */
     protected String password;
     protected String host;

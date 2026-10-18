@@ -84,7 +84,7 @@ public class JmfMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Setup API supported Payloads
+     * Setup API supported Payloads.
      */
     private void setupPayloads() {
         payloads.add(new PayloadType.Audio(3, "gsm"));

@@ -205,7 +205,7 @@ public class ContentNegotiator extends JingleNegotiator {
     }
 
     /**
-     * Set TransportNegotiator
+     * Set TransportNegotiator.
      *
      * @param transNeg TODO javadoc me please
      *            the transNeg to set

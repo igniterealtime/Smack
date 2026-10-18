@@ -140,31 +140,22 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      */
     private Socket socket;
 
-    /**
-     *
-     */
     private boolean disconnectedButResumeable = false;
 
     private SSLSocket secureSocket;
 
     /**
-     * Protected access level because of unit test purposes
+     * Protected access level because of unit test purposes.
      */
     protected final PacketWriter packetWriter = new PacketWriter();
 
     /**
-     * Protected access level because of unit test purposes
+     * Protected access level because of unit test purposes.
      */
     protected final PacketReader packetReader = new PacketReader();
 
-    /**
-     *
-     */
     private boolean streamFeaturesAfterAuthenticationReceived;
 
-    /**
-     *
-     */
     private boolean compressSyncPoint;
 
     /**
@@ -877,7 +868,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     }
 
     /**
-     * For unit testing purposes
+     * For unit testing purposes.
      *
      * @param writer TODO javadoc me please
      */
@@ -1198,7 +1189,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         QUEUE_SIZE, true);
 
         /**
-         * If set, the stanza writer is shut down
+         * If set, the stanza writer is shut down.
          */
         protected volatile Long shutdownTimestamp = null;
 

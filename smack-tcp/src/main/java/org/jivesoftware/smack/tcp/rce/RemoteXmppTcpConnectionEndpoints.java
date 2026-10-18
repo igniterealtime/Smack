@@ -182,6 +182,7 @@ public class RemoteXmppTcpConnectionEndpoints {
     }
 
     /**
+     * Resolves the remote connection endpoints of the given domain.
      *
      * @param domain the domain.
      * @param domainType the XMPP domain type, server or client.

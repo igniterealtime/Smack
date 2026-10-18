@@ -397,7 +397,7 @@ public class MultiUserChatRolesAffiliationsPrivilegesIntegrationTest extends Abs
     }
 
     /**
-     * Asserts that a user who is present when another user undergoes an affiliation change receives that change as a presence update
+     * Asserts that a user who is present when another user undergoes an affiliation change receives that change as a presence update.
      *
      * <p>From XEP-0045 § 5.2.2:</p>
      * <blockquote>

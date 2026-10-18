@@ -145,6 +145,8 @@ public abstract class AbstractMultiUserChatIntegrationTest extends AbstractSmack
     }
 
     /**
+     * Creates the given MUC using the given nickname.
+     *
      * @deprecated use {@link #createMuc(MultiUserChat, Resourcepart)} instead.
      */
     @Deprecated

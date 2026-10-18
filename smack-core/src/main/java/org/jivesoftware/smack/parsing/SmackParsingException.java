@@ -21,9 +21,6 @@ import java.text.ParseException;
 
 public class SmackParsingException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     protected SmackParsingException(Exception exception) {
@@ -45,9 +42,6 @@ public class SmackParsingException extends Exception {
     @Deprecated
     // TODO: Remove in Smack 4.6.
     public static class SmackTextParseException extends SmackParsingException {
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         /**
@@ -62,9 +56,6 @@ public class SmackParsingException extends Exception {
     }
 
     public static class SmackUriSyntaxParsingException extends SmackParsingException {
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         public SmackUriSyntaxParsingException(URISyntaxException uriSyntaxException) {
@@ -73,9 +64,6 @@ public class SmackParsingException extends Exception {
     }
 
     public static class RequiredValueMissingException extends SmackParsingException {
-        /**
-        *
-        */
        private static final long serialVersionUID = 1L;
 
        public RequiredValueMissingException(String message) {
@@ -85,9 +73,6 @@ public class SmackParsingException extends Exception {
     }
 
     public static class RequiredAttributeMissingException extends RequiredValueMissingException {
-        /**
-        *
-        */
        private static final long serialVersionUID = 1L;
 
        public RequiredAttributeMissingException(String attributeName) {

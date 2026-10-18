@@ -74,9 +74,6 @@ public abstract class XMPPException extends Exception {
      * {@link StanzaError} by calling {@link #getStanzaError()}.
      */
     public static class XMPPErrorException extends XMPPException {
-        /**
-         *
-         */
         private static final long serialVersionUID = 212790389529249604L;
         private final StanzaError error;
         private final Stanza stanza;
@@ -175,9 +172,6 @@ public abstract class XMPPException extends Exception {
 
     public static class FailedNonzaException extends XMPPException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final StanzaError.Condition condition;
@@ -203,9 +197,6 @@ public abstract class XMPPException extends Exception {
     }
 
     public static class StreamErrorException extends XMPPException {
-        /**
-         *
-         */
         private static final long serialVersionUID = 3400556867134848886L;
         private final StreamError streamError;
 

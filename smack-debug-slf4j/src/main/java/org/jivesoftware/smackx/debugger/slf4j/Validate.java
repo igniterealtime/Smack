@@ -18,7 +18,7 @@
 package org.jivesoftware.smackx.debugger.slf4j;
 
 /**
- * This is package-level helper class to validate dependencies while initialization is in progress
+ * This is package-level helper class to validate dependencies while initialization is in progress.
  */
 final class Validate {
     private Validate() { /* do not create instances */ }

@@ -70,7 +70,7 @@ public abstract class ScramMechanism extends SASLMechanism {
     private State state = State.INITIAL;
 
     /**
-     * The client's random ASCII which is used as nonce
+     * The client's random ASCII which is used as nonce.
      */
     private String clientRandomAscii;
 

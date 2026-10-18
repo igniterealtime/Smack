@@ -106,6 +106,8 @@
 			<!-- TODO stricten those checks -->
 			<property name="accessModifiers" value="public,protected"/>
 		</module>
+		<module name="SummaryJavadoc">
+		</module>
 		<module name="ParenPad">
 		</module>
 		<module name="NoWhitespaceAfter">

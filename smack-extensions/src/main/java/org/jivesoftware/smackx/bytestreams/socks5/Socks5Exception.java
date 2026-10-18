@@ -26,9 +26,6 @@ import org.jivesoftware.smackx.bytestreams.socks5.packet.Bytestream.StreamHost;
 
 public abstract class Socks5Exception extends SmackException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     protected Socks5Exception(String message) {
@@ -36,9 +33,6 @@ public abstract class Socks5Exception extends SmackException {
     }
 
     public static final class NoSocks5StreamHostsProvided extends Socks5Exception {
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         NoSocks5StreamHostsProvided() {
@@ -48,9 +42,6 @@ public abstract class Socks5Exception extends SmackException {
 
     public static final class CouldNotConnectToAnyProvidedSocks5Host extends Socks5Exception {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final Map<StreamHost, Exception> streamHostsExceptions;

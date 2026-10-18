@@ -94,7 +94,7 @@ public final class FasteningElement implements ExtensionElement {
     }
 
     /**
-     * Does this element remove a previously sent {@link FasteningElement}?
+     * Check if this element removes a previously sent {@link FasteningElement}.
      *
      * @see <a href="https://xmpp.org/extensions/xep-0422.html#remove">
      *     XEP-0422: Message Fastening §3.4 Removing fastenings</a>

@@ -125,7 +125,7 @@ public class SimpleDirectoryPersistentCache implements EntityCapsPersistentCache
     }
 
     /**
-     * Writes the DiscoverInfo stanza to an file
+     * Writes the DiscoverInfo stanza to an file.
      *
      * @param file TODO javadoc me please
      * @param info TODO javadoc me please

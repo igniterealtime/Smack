@@ -141,7 +141,7 @@ public final class EntityCapsManager extends Manager {
                     ELEMENT, NAMESPACE));
 
     /**
-     * Map of "node + '#' + hash" to DiscoverInfo data
+     * Map of "node + '#' + hash" to DiscoverInfo data.
      */
     static final LruCache<String, DiscoverInfo> CAPS_CACHE = new LruCache<>(1000);
 
@@ -638,7 +638,7 @@ public final class EntityCapsManager extends Manager {
     }
 
     /**
-     * Generates a XEP-115 Verification String
+     * Generates a XEP-115 Verification String.
      *
      * @see <a href="http://xmpp.org/extensions/xep-0115.html#ver">XEP-115
      *      Verification String</a>

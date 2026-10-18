@@ -21,9 +21,6 @@ import org.jivesoftware.smackx.iot.discovery.element.IoTClaimed;
 
 public class IoTClaimedException extends IoTException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     private final IoTClaimed iotClaimed;

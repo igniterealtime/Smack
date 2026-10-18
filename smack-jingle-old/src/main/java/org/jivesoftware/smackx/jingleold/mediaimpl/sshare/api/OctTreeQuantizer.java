@@ -33,7 +33,7 @@ public class OctTreeQuantizer implements Quantizer {
     private static final Logger LOGGER = Logger.getLogger(OctTreeQuantizer.class.getName());
 
     /**
-     * The greatest depth the tree is allowed to reach
+     * The greatest depth the tree is allowed to reach.
      */
     static final int MAX_LEVEL = 5;
 

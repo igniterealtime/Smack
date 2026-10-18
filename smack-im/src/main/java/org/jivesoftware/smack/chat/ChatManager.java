@@ -130,12 +130,12 @@ public final class ChatManager extends Manager{
     private final Map<String, Chat> threadChats = new ConcurrentHashMap<>();
 
     /**
-     * Maps jids to chats
+     * Maps jids to chats.
      */
     private final Map<Jid, Chat> jidChats = new ConcurrentHashMap<>();
 
     /**
-     * Maps base jids to chats
+     * Maps base jids to chats.
      */
     private final Map<EntityBareJid, Chat> baseJidChats = new ConcurrentHashMap<>();
 

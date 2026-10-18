@@ -1062,23 +1062,23 @@ public class SmackIntegrationTestFramework {
 
     enum TestMethodParameterType {
         /**
-         * testMethod(Connection connection)
+         * testMethod(Connection connection).
          */
         singleConnectedConnection,
 
         /**
-         * testMethod(Collection&lt;Connection&gt;)
+         * testMethod(Collection&lt;Connection&gt;).
          * <p> It can also be a subclass of collection like List. In fact, the type of the parameter being List is expected to be the common case.
          */
         collectionOfConnections,
 
         /**
-         * testMethod(Connection a, Connection b, Connection c)
+         * testMethod(Connection a, Connection b, Connection c).
          */
         parameterListOfConnections,
 
         /**
-         * testMethod(UnconnectedConnectionSource unconnectedConnectionSource)
+         * testMethod(UnconnectedConnectionSource unconnectedConnectionSource).
          */
         unconnectedConnectionSource,
 

@@ -34,25 +34,16 @@ public abstract class StreamManagementException extends SmackException {
         super(message);
     }
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 3767590115788821101L;
 
     public static class StreamManagementNotEnabledException extends StreamManagementException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 2624821584352571307L;
 
     }
 
     public static class StreamIdDoesNotMatchException extends StreamManagementException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1191073341336559621L;
 
         public StreamIdDoesNotMatchException(String expected, String got) {
@@ -62,9 +53,6 @@ public abstract class StreamManagementException extends SmackException {
 
     public static class StreamManagementCounterError extends StreamManagementException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final long handledCount;
@@ -116,9 +104,6 @@ public abstract class StreamManagementException extends SmackException {
 
     public static final class UnacknowledgedQueueFullException extends StreamManagementException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final int overflowElementNum;

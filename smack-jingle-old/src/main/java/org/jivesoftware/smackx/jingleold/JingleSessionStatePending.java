@@ -101,7 +101,7 @@ public class JingleSessionStatePending extends JingleSessionState {
     }
 
     /**
-     * Receive and process the <session-accept> action.
+     * Receive and process the {@code <session-accept>} action.
      */
     private static IQ receiveContentAcceptAction(Jingle inJingle) {
 
@@ -114,7 +114,7 @@ public class JingleSessionStatePending extends JingleSessionState {
     }
 
     /**
-     * Receive and process the <session-accept> action.
+     * Receive and process the {@code <session-accept>} action.
      */
     private static IQ receiveSessionAcceptAction(JingleSession session, Jingle inJingle) {
 
@@ -124,7 +124,7 @@ public class JingleSessionStatePending extends JingleSessionState {
     }
 
     /**
-     * Receive and process the <session-terminate> action.
+     * Receive and process the {@code <session-terminate>} action.
      */
     private static IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
 

@@ -106,7 +106,7 @@ public class STUN extends SimpleIQ {
     }
 
     /**
-     * Set Public Ip returned from the XMPP server
+     * Set Public Ip returned from the XMPP server.
      *
      * @param publicIp TODO javadoc me please
      */

@@ -66,9 +66,6 @@ public class AbstractProvider<E extends Element> {
     }
 
     public static final class TextParseException extends SmackParsingException {
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private final ParseException parseException;
@@ -84,9 +81,6 @@ public class AbstractProvider<E extends Element> {
     }
 
     public static final class NumberFormatParseException extends SmackParsingException {
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         private NumberFormatParseException(NumberFormatException numberFormatException) {

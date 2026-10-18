@@ -92,6 +92,8 @@ public final class VCard extends IQ {
     private static final String DEFAULT_MIME_TYPE = "image/jpeg";
 
     /**
+     * The home phones.
+     * <p>
      * Phone types:
      * VOICE?, FAX?, PAGER?, MSG?, CELL?, VIDEO?, BBS?, MODEM?, ISDN?, PCS?, PREF?
      */
@@ -99,6 +101,8 @@ public final class VCard extends IQ {
     private final Map<String, String> workPhones = new HashMap<>();
 
     /**
+     * The home address.
+     * <p>
      * Address types:
      * POSTAL?, PARCEL?, (DOM | INTL)?, PREF?, POBOX?, EXTADR?, STREET?, LOCALITY?,
      * REGION?, PCODE?, CTRY?

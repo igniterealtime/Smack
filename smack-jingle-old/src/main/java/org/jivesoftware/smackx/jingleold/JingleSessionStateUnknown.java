@@ -96,7 +96,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
     }
 
     /**
-     * In the UNKNOWN state we received a <session-initiate> action.
+     * In the UNKNOWN state we received a {@code <session-initiate>} action.
      * This method processes that action.
      * @throws SmackException if Smack detected an exceptional situation.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -206,7 +206,7 @@ public class JingleSessionStateUnknown extends JingleSessionState {
     }
 
     /**
-     * Receive and process the <session-terminate> action.
+     * Receive and process the {@code <session-terminate>} action.
      */
     private static IQ receiveSessionTerminateAction(JingleSession session, Jingle jingle) {
 

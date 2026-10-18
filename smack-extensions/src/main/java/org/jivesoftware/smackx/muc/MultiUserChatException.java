@@ -29,18 +29,12 @@ public abstract class MultiUserChatException extends SmackException {
         super(message);
     }
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     // This could eventually become an unchecked exception. But be aware that it's required in the
     // control flow of MultiUserChat.createOrJoinIfNecessary
     public static class MucAlreadyJoinedException extends MultiUserChatException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
     }
@@ -52,9 +46,6 @@ public abstract class MultiUserChatException extends SmackException {
      */
     public static class MucNotJoinedException extends MultiUserChatException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         public MucNotJoinedException(MultiUserChat multiUserChat) {
@@ -64,9 +55,6 @@ public abstract class MultiUserChatException extends SmackException {
 
     public static class MissingMucCreationAcknowledgeException extends MultiUserChatException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
     }
@@ -76,9 +64,6 @@ public abstract class MultiUserChatException extends SmackException {
      */
     public static class MucConfigurationNotSupportedException extends MultiUserChatException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         public MucConfigurationNotSupportedException(String configString) {
@@ -93,9 +78,6 @@ public abstract class MultiUserChatException extends SmackException {
      */
     public static class NotAMucServiceException extends MultiUserChatException {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
 
         NotAMucServiceException(DomainBareJid service) {

@@ -33,7 +33,7 @@ public class SASLDigestMD5Mechanism extends SASLMechanism {
     private static final String INITIAL_NONCE = "00000001";
 
     /**
-     * The only 'qop' value supported by this implementation
+     * The only 'qop' value supported by this implementation.
      */
     private static final String QOP_VALUE = "auth";
 

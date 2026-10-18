@@ -795,7 +795,7 @@ public final class Socks5BytestreamManager extends Manager implements Bytestream
     }
 
     /**
-     * Returns the list of session IDs that should be ignored by the InitiationListener
+     * Returns the list of session IDs that should be ignored by the InitiationListener.
      *
      * @return list of session IDs
      */

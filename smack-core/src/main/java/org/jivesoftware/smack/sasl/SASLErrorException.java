@@ -26,9 +26,6 @@ import org.jivesoftware.smack.util.StringUtils;
 
 public class SASLErrorException extends XMPPException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 6247573875760717257L;
 
     private final SASLFailure saslFailure;

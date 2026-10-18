@@ -50,7 +50,7 @@ public class ScreenShareMediaManager extends JingleMediaManager {
     }
 
     /**
-     * Setup API supported Payloads
+     * Setup API supported Payloads.
      */
     private void setupPayloads() {
         payloads.add(new PayloadType.Audio(30, "sshare"));
