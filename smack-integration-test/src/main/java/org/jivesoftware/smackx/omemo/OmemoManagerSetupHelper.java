@@ -48,7 +48,7 @@ public class OmemoManagerSetupHelper {
             XMPPException.XMPPErrorException, PubSubException.NotALeafNodeException, IOException {
         Roster roster = Roster.getInstanceFor(alice.getConnection());
 
-        if (alice.getOwnJid() != bob.getOwnJid() &&
+        if (!alice.getOwnJid().equals(bob.getOwnJid()) &&
                 (!roster.iAmSubscribedTo(bob.getOwnJid()) || !roster.isSubscribedToMyPresence(bob.getOwnJid()))) {
             throw new IllegalStateException("Before trusting identities of a user, we must be subscribed to one another.");
         }
