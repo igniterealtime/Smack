@@ -47,6 +47,7 @@ import org.jxmpp.stringprep.XmppStringprepException;
 
 /**
  * A test for for following features:
+ * <ul>
  *    <li>Adds support for Direct MUC invitations (see <a href="https://xmpp.org/extensions/xep-0249.html">XEP-0249</a>), which allows offline users to be invited to group chats.</li>
  * </ul>
  */
