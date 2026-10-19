@@ -256,14 +256,23 @@ public class MultiUserChatIntegrationTest extends AbstractMultiUserChatIntegrati
         createMuc(mucAsSeenByOne, nicknameOne);
         try {
             String initialRoomName = "Initial Room Name";
-            mucAsSeenByOne.getConfigFormManager().setRoomName(initialRoomName).submitConfigurationForm();
+            String initialRoomDescription = "Initial Room Description";
+            mucAsSeenByOne.getConfigFormManager()
+                    .setRoomName(initialRoomName)
+                    .setRoomDescription(initialRoomDescription)
+                    .submitConfigurationForm();
             RoomInfo roomInfo = mucManagerOne.getRoomInfo(mucAddress);
             assertEquals(initialRoomName, roomInfo.getName());
 
             String newRoomName = "New Room Name";
-            mucAsSeenByOne.getConfigFormManager().setRoomName(newRoomName).submitConfigurationForm();
+            String newRoomDescription = "New Room Description";
+            mucAsSeenByOne.getConfigFormManager()
+                    .setRoomName(newRoomName)
+                    .setRoomDescription(newRoomDescription)
+                    .submitConfigurationForm();
             roomInfo = mucManagerOne.getRoomInfo(mucAddress);
             assertEquals(newRoomName, roomInfo.getName());
+            assertEquals(newRoomDescription, roomInfo.getDescription());
         } catch (MucConfigurationNotSupportedException e) {
             throw new TestNotPossibleException(e);
         } finally {
