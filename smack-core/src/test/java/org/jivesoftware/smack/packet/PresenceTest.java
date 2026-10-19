@@ -172,9 +172,11 @@ public class PresenceTest {
         PresenceBuilder presence = getNewPresence();
         presence.setMode(Presence.Mode.away);
         assertTrue(presence.build().isAway());
+        assertFalse(presence.build().isActive());
 
         presence.setMode(Presence.Mode.chat);
         assertFalse(presence.build().isAway());
+        assertTrue(presence.build().isActive());
     }
 
     @Test
