@@ -16,10 +16,11 @@
  */
 package org.jivesoftware.smackx.vcardtemp;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.Arrays;
+import java.time.LocalDate;
 
 import org.jivesoftware.smack.test.util.ElementParserUtils;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
@@ -48,7 +49,7 @@ public class VCardTest extends SmackTestSuite {
                 + "</N>"
                 + "<NICKNAME>User dude</NICKNAME>"
                 + "<URL>http://www.igniterealtime.org</URL>"
-                + "<BDAY>1970-17-03</BDAY>"
+                + "<BDAY>1970-03-17</BDAY>"
                 + "<ORG>"
                     + "<ORGNAME>Ignite Realtime</ORGNAME>"
                     + "<ORGUNIT>Smack</ORGUNIT>"
@@ -60,7 +61,7 @@ public class VCardTest extends SmackTestSuite {
                 + "<TEL><WORK/><MSG/><NUMBER/></TEL>"
                 + "<ADR>"
                     + "<WORK/>"
-                    + "<EXTADD></EXTADD>"
+                    + "<EXTADD>Work Ext. address</EXTADD>"
                     + "<STREET>Work Street</STREET>"
                     + "<LOCALITY>Work Locality</LOCALITY>"
                     + "<REGION>Work Region</REGION>"
@@ -92,6 +93,7 @@ public class VCardTest extends SmackTestSuite {
 
         VCard vCard = ElementParserUtils.parseStanza(request);
 
+        assertEquals("User Name", vCard.getFullName());
         assertEquals("User", vCard.getFirstName());
         assertEquals("Name", vCard.getLastName());
         assertEquals("PJ", vCard.getMiddleName());
@@ -99,10 +101,11 @@ public class VCardTest extends SmackTestSuite {
         assertEquals("Mr.", vCard.getPrefix());
         assertEquals("III", vCard.getSuffix());
 
-        assertEquals("Programmer & tester", vCard.getField("TITLE"));
-        assertEquals("Bug fixer", vCard.getField("ROLE"));
-        assertEquals("<Check out our website: http://www.igniterealtime.org>", vCard.getField("DESC"));
-        assertEquals("http://www.igniterealtime.org", vCard.getField("URL"));
+        assertEquals("Programmer & tester", vCard.getTitle());
+        assertEquals("Bug fixer", vCard.getRole());
+        assertEquals("<Check out our website: http://www.igniterealtime.org>", vCard.getNote());
+        assertEquals(LocalDate.of(1970, 3, 17), vCard.getBirthday());
+        assertEquals("http://www.igniterealtime.org", vCard.getUrl());
 
         assertEquals("user@igniterealtime.org", vCard.getEmailHome());
         assertEquals("work@igniterealtime.org", vCard.getEmailWork());
@@ -114,6 +117,8 @@ public class VCardTest extends SmackTestSuite {
         assertEquals("123-098-7654", vCard.getPhoneHome("VOICE"));
         assertEquals("123-456-7890", vCard.getPhoneWork("VOICE"));
 
+        assertEquals("Work Street", vCard.getAddressFieldWork("STREET"));
+        assertEquals("Work Ext. address", vCard.getAddressFieldWork("EXTADD"));
         assertEquals("Work Locality", vCard.getAddressFieldWork("LOCALITY"));
         assertEquals("Work Region", vCard.getAddressFieldWork("REGION"));
         assertEquals("Work Post Code", vCard.getAddressFieldWork("PCODE"));
@@ -125,8 +130,24 @@ public class VCardTest extends SmackTestSuite {
         assertEquals("Home Country", vCard.getAddressFieldHome("CTRY"));
 
         byte[] expectedAvatar = getAvatarBinary();
-        assertTrue(Arrays.equals(vCard.getAvatar(), expectedAvatar));
+        assertArrayEquals(expectedAvatar, vCard.getAvatar());
         assertEquals(MIME_TYPE, vCard.getAvatarMimeType());
+    }
+
+    @Test
+    public void testBirthday() throws Throwable {
+        // @formatter:off
+        final String request =
+                "<iq id='v1' to='user@igniterealtime.org/mobile' type='result'>"
+                        + "<vCard xmlns='vcard-temp'><BDAY></BDAY></vCard>"
+                        + "</iq>";
+        // @formatter:on
+
+        VCard vCard = ElementParserUtils.parseStanza(request);
+        assertNull(vCard.getBirthday(), "Empty BDAY field should be parsed to Birthday=null");
+
+        vCard.setBirthday(LocalDate.of(1970, 3, 17));
+        assertEquals(LocalDate.of(1970, 3, 17), vCard.getBirthday());
     }
 
     @Test
@@ -246,7 +267,7 @@ public class VCardTest extends SmackTestSuite {
 
         VCard vCard = ElementParserUtils.parseStanza(request);
 
-        assertEquals("kir max", vCard.getField("FN"));
+        assertEquals("kir max", vCard.getFullName());
     }
 
     private static final String MIME_TYPE = "testtype";
@@ -267,10 +288,10 @@ public class VCardTest extends SmackTestSuite {
 
         byte[] avatar = vCard.getAvatar();
         String mimeType = vCard.getAvatarMimeType();
-        assertEquals(mimeType, MIME_TYPE);
+        assertEquals(MIME_TYPE, mimeType);
 
         byte[] expectedAvatar = getAvatarBinary();
-        assertTrue(Arrays.equals(avatar, expectedAvatar));
+        assertArrayEquals(expectedAvatar, avatar);
     }
 
     public static byte[] getAvatarBinary() {
