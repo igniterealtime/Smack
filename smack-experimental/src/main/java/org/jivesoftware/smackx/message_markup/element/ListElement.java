@@ -30,6 +30,7 @@ public class ListElement extends MarkupElement.NonEmptyChildElement {
     public static final QName QNAME = new QName(NAMESPACE, ELEMENT);
 
     private final List<ListEntryElement> entries;
+    private final boolean ordered;
 
     /**
      * Create a new List element.
@@ -39,8 +40,21 @@ public class ListElement extends MarkupElement.NonEmptyChildElement {
      * @param entries list entries
      */
     public ListElement(int start, int end, List<ListEntryElement> entries) {
+        this(start, end, entries, null);
+    }
+
+    /**
+     * Create a new List element.
+     *
+     * @param start start index of the list
+     * @param end end index of the list
+     * @param entries list entries
+     * @param ordered the list is ordered and displaying it with numerical or alphabetical ordering instead of bullets
+     */
+    public ListElement(int start, int end, List<ListEntryElement> entries, Boolean ordered) {
         super(start, end);
         this.entries = Collections.unmodifiableList(entries);
+        this.ordered = ordered != null && ordered;
     }
 
     /**
@@ -52,9 +66,19 @@ public class ListElement extends MarkupElement.NonEmptyChildElement {
         return entries;
     }
 
+    public boolean isOrdered() {
+        return ordered;
+    }
+
     @Override
     public String getElementName() {
         return QNAME.getLocalPart();
+    }
+
+    @Override
+    protected void afterXmlPrelude(XmlStringBuilder xml) {
+        xml.optBooleanAttribute("ordered", isOrdered());
+        super.afterXmlPrelude(xml);
     }
 
     @Override
