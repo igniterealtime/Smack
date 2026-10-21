@@ -46,7 +46,7 @@ import org.jxmpp.jid.Jid;
 
 /**
  * A MultipleRecipientManager allows to send packets to multiple recipients by making use of
- * <a href="http://www.xmpp.org/extensions/jep-0033.html">XEP-33: Extended Stanza Addressing</a>.
+ * <a href="https://xmpp.org/extensions/xep-0033.html">XEP-33: Extended Stanza Addressing</a>.
  * It also allows to send replies to packets that were sent to multiple recipients.
  *
  * @author Gaston Dombiak

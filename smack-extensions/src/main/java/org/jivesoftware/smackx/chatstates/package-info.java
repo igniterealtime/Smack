@@ -16,6 +16,6 @@
  */
 
 /**
- * Classes for Chat States (<a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>).
+ * Classes for Chat States (<a href="https://xmpp.org/extensions/xep-0085.html">XEP-0085</a>).
  */
 package org.jivesoftware.smackx.chatstates;

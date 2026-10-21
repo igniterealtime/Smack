@@ -30,7 +30,7 @@ import org.jivesoftware.smack.util.Objects;
  * times. Clients that wish to fully support the entity time protocol should register
  * a PacketListener for incoming time requests that then respond with the local time.
  *
- * @see <a href="http://www.xmpp.org/extensions/xep-0202.html">XEP-202</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0202.html">XEP-202</a>
  * @author Florian Schmaus
  */
 public class Time extends IQ implements TimeView {

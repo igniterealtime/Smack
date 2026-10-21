@@ -54,7 +54,7 @@ import org.jxmpp.jid.EntityFullJid;
 /**
  * Handles chat state for all chats on a particular XMPPConnection. This class manages both the
  * stanza extensions and the disco response necessary for compliance with
- * <a href="http://www.xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
+ * <a href="https://xmpp.org/extensions/xep-0085.html">XEP-0085</a>.
  *
  * NOTE: {@link org.jivesoftware.smackx.chatstates.ChatStateManager#getInstance(org.jivesoftware.smack.XMPPConnection)}
  * needs to be called in order for the listeners to be registered appropriately with the connection.

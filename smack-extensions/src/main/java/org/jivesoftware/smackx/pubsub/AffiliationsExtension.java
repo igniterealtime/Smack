@@ -25,8 +25,8 @@ import org.jivesoftware.smackx.pubsub.Affiliation.AffiliationNamespace;
 
 /**
  * Represents the <b>affiliations</b> element of the reply to a request for affiliations.
- * It is defined in the specification in section <a href="http://xmpp.org/extensions/xep-0060.html#entity-affiliations">5.7 Retrieve Affiliations</a> and
- * <a href="http://www.xmpp.org/extensions/xep-0060.html#owner-affiliations">8.9 Manage Affiliations</a>.
+ * It is defined in the specification in section <a href="https://xmpp.org/extensions/xep-0060.html#entity-affiliations">5.7 Retrieve Affiliations</a> and
+ * <a href="https://xmpp.org/extensions/xep-0060.html#owner-affiliations">8.9 Manage Affiliations</a>.
  *
  * @author Robin Collier
  */

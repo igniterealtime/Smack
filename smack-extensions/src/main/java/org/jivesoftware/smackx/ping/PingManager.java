@@ -58,7 +58,7 @@ import org.jxmpp.jid.Jid;
  * </p>
  *
  * @author Florian Schmaus
- * @see <a href="http://www.xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP Ping</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0199.html">XEP-0199:XMPP Ping</a>
  */
 public final class PingManager extends Manager {
     private static final Logger LOGGER = Logger.getLogger(PingManager.class.getName());

@@ -34,7 +34,7 @@ import org.jivesoftware.smackx.xdata.FormFieldChildElement;
 /**
  * A GeoLocation Extension packet, which is used by the XMPP clients to exchange their respective geographic locations.
  *
- * @see <a href="http://www.xmpp.org/extensions/xep-0080.html">XEP-0080</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0080.html">XEP-0080</a>
  * @author Ishan Khanna
  */
 public final class GeoLocation implements Serializable, ExtensionElement, FormFieldChildElement {
