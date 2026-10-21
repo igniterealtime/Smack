@@ -763,6 +763,11 @@ public class EnhancedDebugger extends SmackDebugger {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                // Ensure the table is not null before attempting to access it
+                var messagesTable = EnhancedDebugger.this.messagesTable;
+                if (messagesTable == null) {
+                    return;
+                }
                 String messageType;
                 Jid from;
                 String stanzaId;
