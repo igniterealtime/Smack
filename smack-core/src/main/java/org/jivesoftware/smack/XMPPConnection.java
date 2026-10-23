@@ -712,7 +712,9 @@ public interface XMPPConnection {
      * Returns the timestamp in milliseconds when the last stanza was received.
      *
      * @return the timestamp in milliseconds
+     * @deprecated since 4.5.0, use {@link #getLastDataReceived()} instead.
      */
+    @Deprecated(since = "4.5.0")
     long getLastStanzaReceived();
 
     /**
