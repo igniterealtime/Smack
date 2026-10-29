@@ -437,10 +437,10 @@ public class AudioChannel {
      * **************************************************************
      */
 
-    private Integer stateLock = 0;
+    private final Object stateLock = new Object();
     private boolean failed = false;
 
-    Integer getStateLock() {
+    Object getStateLock() {
         return stateLock;
     }
 
