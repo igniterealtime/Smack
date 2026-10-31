@@ -232,7 +232,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * therefore have no concurrency problem because the read/write operations on one half are guaranteed to be atomic.
      * </p>
      */
-    private long clientHandledStanzasCount = 0;
+    private volatile long clientHandledStanzasCount = 0;
 
     private BlockingQueue<Stanza> unacknowledgedStanzas;
 
@@ -1183,6 +1183,16 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         public static final int UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE = 1024;
         public static final int UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK = (int) (0.3 * UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE);
 
+        /**
+         * How often the writer requests a new ack while it waits for room in the full unacknowledged stanzas queue.
+         */
+        private static final long UNACKNOWLEDGED_STANZAS_QUEUE_FULL_ACK_REQUEST_INTERVAL_MILLIS = 5000;
+
+        /**
+         * How long the writer waits for room in the full unacknowledged stanzas queue before it fails the connection.
+         */
+        private static final long UNACKNOWLEDGED_STANZAS_QUEUE_FULL_TIMEOUT_MILLIS = 60000;
+
         private final String threadName = "Smack Writer (" + getConnectionCounter() + ')';
 
         private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<>(
@@ -1194,6 +1204,12 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         protected volatile Long shutdownTimestamp = null;
 
         private volatile boolean instantShutdown;
+
+        /**
+         * Set when a SM ack answer could not be put into the full writer queue. The writer then writes the ack answer
+         * itself, so that the reader never blocks on the writer queue.
+         */
+        private final AtomicBoolean smAckPending = new AtomicBoolean();
 
         /**
          * True if some preconditions are given to start the bundle and defer mechanism.
@@ -1213,6 +1229,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         */
         void init() {
             shutdownTimestamp = null;
+            smAckPending.set(false);
 
             if (unacknowledgedStanzas != null) {
                 // It's possible that there are new stanzas in the writer queue that
@@ -1335,6 +1352,8 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                     if (element == null) {
                         continue;
                     }
+
+                    writePendingSmAck();
 
                     // Get a local version of the bundle and defer callback, in case it's unset
                     // between the null check and the method invocation
@@ -1481,11 +1500,44 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 try {
                     // It is important the we put the stanza in the unacknowledged stanza
                     // queue before we put it on the wire
-                    unacknowledgedStanzas.put(stanza);
+                    putToUnacknowledgedStanzas(stanza);
                 }
                 catch (InterruptedException e) {
                     throw new IllegalStateException(e);
                 }
+            }
+        }
+
+        /**
+         * Put the stanza into the unacknowledged stanzas queue, waiting a limited time if it is full. Only the reader
+         * frees room in the queue, when it processes an ack from the server. So while waiting, make sure the server
+         * has everything written so far and an ack request, and fail the connection if the server does not ack.
+         */
+        private void putToUnacknowledgedStanzas(Stanza stanza) throws IOException, InterruptedException {
+            if (unacknowledgedStanzas.offer(stanza)) {
+                return;
+            }
+
+            final long waitStart = System.currentTimeMillis();
+            do {
+                if (done() || queue.isShutdown()) {
+                    throw new IOException("Connection shut down while waiting for the unacknowledged stanzas queue");
+                }
+                if (System.currentTimeMillis() - waitStart >= UNACKNOWLEDGED_STANZAS_QUEUE_FULL_TIMEOUT_MILLIS) {
+                    throw new IOException("Unacknowledged stanzas queue still full after "
+                                    + UNACKNOWLEDGED_STANZAS_QUEUE_FULL_TIMEOUT_MILLIS
+                                    + "ms, the server does not acknowledge stanzas");
+                }
+                writePendingSmAck();
+                writer.write(AckRequest.INSTANCE.toXML().toString());
+                writer.flush();
+            } while (!unacknowledgedStanzas.offer(stanza, UNACKNOWLEDGED_STANZAS_QUEUE_FULL_ACK_REQUEST_INTERVAL_MILLIS,
+                            TimeUnit.MILLISECONDS));
+        }
+
+        private void writePendingSmAck() throws IOException {
+            if (smAckPending.compareAndSet(true, false)) {
+                writer.write(new AckAnswer(clientHandledStanzasCount).toXML().toString());
             }
         }
     }
@@ -1639,7 +1691,15 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         // an ack even after we have sent a stream close (and hence the queue was shutdown). If we would not check here,
         // then the ack would dangle around in the queue, and be sent on the next re-connection attempt even before the
         // stream open.
-        packetWriter.queue.putIfNotShutdown(ackAnswer);
+        if (packetWriter.queue.isShutdown()) {
+            return;
+        }
+        // Never block here. This is called from the reader thread, and the writer may be waiting for the reader to
+        // process an ack from the server to free room in the unacknowledged stanzas queue. If the writer queue is
+        // full, the writer writes the ack answer itself.
+        if (!packetWriter.queue.offer(ackAnswer)) {
+            packetWriter.smAckPending.set(true);
+        }
     }
 
     /**
