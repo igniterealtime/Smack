@@ -16,7 +16,9 @@
  */
 package org.jivesoftware.smack.tcp;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
@@ -24,14 +26,19 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.packet.Stanza;
 import org.jivesoftware.smack.packet.StanzaBuilder;
+import org.jivesoftware.smack.packet.XmlEnvironment;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection.PacketWriter;
 import org.jivesoftware.smack.util.ExceptionUtil;
 
@@ -151,6 +158,124 @@ public class PacketWriterTest {
         }
         finally {
             blockingStringWriter.unblock();
+        }
+    }
+
+    /**
+     * Make sure that sending a SM ack does not block when the writer queue is full while the writer waits for room in
+     * the full unacknowledged stanzas queue. Only the reader frees that room, when it processes an ack from the server,
+     * so blocking the reader there deadlocks the connection.
+     *
+     * @throws Exception in case of an exception.
+     */
+    @Test
+    public void shouldNotDeadlockOnFullQueuesTest() throws Exception {
+        XMPPTCPConnection connection = new XMPPTCPConnection("user", "pass", "example.org");
+        setField(AbstractXMPPConnection.class, connection, "reader", DUMMY_READER);
+        // Normally set when the stream is opened, needed to write stanzas.
+        setField(AbstractXMPPConnection.class, connection, "outgoingStreamXmlEnvironment", XmlEnvironment.EMPTY);
+
+        RecordingStringWriter recordingWriter = new RecordingStringWriter();
+        connection.setWriter(recordingWriter);
+        final PacketWriter pw = connection.packetWriter;
+        pw.init();
+
+        // Simulate enabled SM with a full unacknowledged stanzas queue.
+        BlockingQueue<Stanza> unacknowledgedStanzas = new ArrayBlockingQueue<>(2);
+        unacknowledgedStanzas.add(StanzaBuilder.buildMessage().build());
+        unacknowledgedStanzas.add(StanzaBuilder.buildMessage().build());
+        setField(XMPPTCPConnection.class, connection, "unacknowledgedStanzas", unacknowledgedStanzas);
+        setField(XMPPTCPConnection.class, connection, "smEnabledSyncPoint", true);
+
+        // The writer takes one stanza and waits for room in the unacknowledged stanzas queue, then the writer queue
+        // fills up and the sender blocks.
+        Thread sender = new Thread(() -> {
+            try {
+                for (int i = 0; i < PacketWriter.QUEUE_SIZE + 2; i++) {
+                    pw.sendStreamElement(StanzaBuilder.buildMessage().build());
+                }
+            }
+            catch (InterruptedException | NotConnectedException e) {
+                // Expected once the writer is shut down.
+            }
+        });
+        sender.start();
+
+        try {
+            BlockingQueue<?> writerQueue = (BlockingQueue<?>) getField(PacketWriter.class, pw, "queue");
+            waitFor(() -> writerQueue.remainingCapacity() == 0, "the writer queue to fill up");
+
+            // The reader acks a stanza received from the server.
+            final AtomicReference<Exception> readerException = new AtomicReference<>();
+            Thread reader = new Thread(() -> {
+                try {
+                    connection.sendSmAcknowledgement();
+                }
+                catch (Exception e) {
+                    readerException.set(e);
+                }
+            });
+            reader.start();
+            reader.join(5000);
+            assertFalse(reader.isAlive(), "Sending a SM ack blocked on the full writer queue");
+            assertNull(readerException.get());
+
+            // While waiting, the writer requests an ack, so that the server acks the stanzas it already got.
+            waitFor(() -> recordingWriter.contains("<r "), "the writer to request an ack while waiting");
+
+            // The reader processes the ack from the server, which frees room in the unacknowledged stanzas queue.
+            // The writer continues and writes the pending SM ack.
+            unacknowledgedStanzas.clear();
+            waitFor(() -> recordingWriter.contains("<a "), "the writer to write the pending ack");
+        }
+        finally {
+            pw.shutdown(true);
+            sender.join(10000);
+        }
+    }
+
+    private static void setField(Class<?> clazz, Object object, String name, Object value)
+                    throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(name);
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
+    private static Object getField(Class<?> clazz, Object object, String name)
+                    throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(name);
+        field.setAccessible(true);
+        return field.get(object);
+    }
+
+    private static void waitFor(BooleanSupplier condition, String what) throws InterruptedException {
+        final long deadline = System.currentTimeMillis() + 10000;
+        while (!condition.getAsBoolean()) {
+            if (System.currentTimeMillis() > deadline) {
+                fail("Timed out waiting for " + what);
+            }
+            Thread.sleep(10);
+        }
+    }
+
+    private static final class RecordingStringWriter extends Writer {
+        private final StringBuilder buffer = new StringBuilder();
+
+        @Override
+        public synchronized void write(char[] cbuf, int off, int len) {
+            buffer.append(cbuf, off, len);
+        }
+
+        synchronized boolean contains(String s) {
+            return buffer.indexOf(s) >= 0;
+        }
+
+        @Override
+        public void flush() {
+        }
+
+        @Override
+        public void close() {
         }
     }
 
