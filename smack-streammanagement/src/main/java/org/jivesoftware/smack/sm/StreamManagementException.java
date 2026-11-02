@@ -114,6 +114,13 @@ public abstract class StreamManagementException extends SmackException {
         }
     }
 
+    /**
+     * Signals that stanzas were dropped because the unacknowledged stanzas queue was full.
+     *
+     * @deprecated no longer used, as Smack no longer drops stanzas when there are many unacknowledged stanzas.
+     */
+    @Deprecated
+    // TODO: Remove in Smack 4.6.
     public static final class UnacknowledgedQueueFullException extends StreamManagementException {
 
         /**
