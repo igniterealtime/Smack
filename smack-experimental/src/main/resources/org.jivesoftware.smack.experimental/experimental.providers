@@ -1,6 +1,17 @@
 <?xml version="1.0"?> 
 <!-- Providers for workgroup extensions -->
 <smackProviders>
+    <!-- XEP-0070: Verifying HTTP Requests via XMPP -->
+    <extensionProvider>
+      <elementName>confirm</elementName>
+      <namespace>http://jabber.org/protocol/http-auth</namespace>
+      <className>org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmExtProvider</className>
+    </extensionProvider>
+    <iqProvider>
+      <elementName>confirm</elementName>
+      <namespace>http://jabber.org/protocol/http-auth</namespace>
+      <className>org.jivesoftware.smackx.httpauthorizationrequest.provider.ConfirmIQProvider</className>
+    </iqProvider>
 
     <!-- XEP-0264: Jingle Content Thumbnails -->
     <extensionProvider>
