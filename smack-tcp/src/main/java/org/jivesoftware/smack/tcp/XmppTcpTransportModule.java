@@ -100,7 +100,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
     private static final Logger LOGGER = Logger.getLogger(XmppTcpTransportModule.class.getName());
 
     private static final int CALLBACK_MAX_BYTES_READ = 10 * 1024 * 1024;
-    private static final int CALLBACK_MAX_BYTES_WRITEN = CALLBACK_MAX_BYTES_READ;
+    static final int CALLBACK_MAX_BYTES_WRITEN = CALLBACK_MAX_BYTES_READ;
 
     private static final int MAX_ELEMENT_SIZE = 64 * 1024;
 
@@ -115,7 +115,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
     private TlsState tlsState;
 
+    // The state of the currently outgoing element is kept in fields, as writing an element may span multiple channel
+    // selected callbacks.
     private Iterator<CharSequence> outgoingCharSequenceIterator;
+    private TopLevelStreamElement currentlyOutgonigTopLevelStreamElement;
+    private StringBuilder outgoingStreamForDebugger;
 
     private final List<TopLevelStreamElement> currentlyOutgoingElements = new ArrayList<>();
     private final IdentityHashMap<ByteBuffer, List<TopLevelStreamElement>> bufferToElementMap = new IdentityHashMap<>();
@@ -289,8 +293,6 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         try {
             boolean destinationAddressChanged = false;
             boolean isLastPartOfElement = false;
-            TopLevelStreamElement currentlyOutgonigTopLevelStreamElement = null;
-            StringBuilder outgoingStreamForDebugger = null;
 
             writeLoop: while (true) {
                 final boolean moreDataAvailable = outgoingCharSequenceIterator != null

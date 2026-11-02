@@ -25,11 +25,18 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnection;
 import org.jivesoftware.smack.c2s.ModularXmppClientToServerConnectionConfiguration;
+import org.jivesoftware.smack.filter.StanzaTypeFilter;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Stanza;
+import org.jivesoftware.smack.packet.StanzaBuilder;
 import org.jivesoftware.smack.test.util.SmackTestSuite;
 
 import org.junit.jupiter.api.Test;
@@ -54,6 +61,36 @@ public class XmppTcpTransportModuleTest extends SmackTestSuite {
                                 XmppTcpTransportModuleDescriptor.class);
                 // The stream open is the only top-level element sent so far.
                 assertEquals(1, tcpTransportModule.getStats().networkWriteCalls);
+            } finally {
+                connection.instantShutdown();
+                socket.close();
+            }
+        }
+    }
+
+    @Test
+    public void sendingListenerIsInvokedForElementWrittenInMultipleCallbacks() throws Exception {
+        // A message exceeding the maximum number of bytes written per channel selected callback is written in multiple
+        // callbacks.
+        char[] body = new char[XmppTcpTransportModule.CALLBACK_MAX_BYTES_WRITEN + 1024 * 1024];
+        Arrays.fill(body, 'a');
+        Message message = StanzaBuilder.buildMessage("large-message")
+                        .setBody(new String(body))
+                        .build();
+
+        try (ServerSocket serverSocket = new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            FutureTask<Socket> server = acceptAndOpenStream(serverSocket);
+            ModularXmppClientToServerConnection connection = createConnection(serverSocket);
+            connection.connect();
+            Socket socket = server.get();
+            try {
+                startDraining(socket);
+
+                CompletableFuture<Stanza> sentStanza = new CompletableFuture<>();
+                connection.addStanzaSendingListener(sentStanza::complete, StanzaTypeFilter.MESSAGE);
+                connection.sendStanza(message);
+
+                assertEquals(message.getStanzaId(), sentStanza.get(30, TimeUnit.SECONDS).getStanzaId());
             } finally {
                 connection.instantShutdown();
                 socket.close();
@@ -92,5 +129,21 @@ public class XmppTcpTransportModuleTest extends SmackTestSuite {
         });
         new Thread(server, "XmppTcpTransportModuleTest Server").start();
         return server;
+    }
+
+    private static void startDraining(Socket socket) {
+        Thread drainThread = new Thread(() -> {
+            byte[] buffer = new byte[64 * 1024];
+            try {
+                InputStream inputStream = socket.getInputStream();
+                while (inputStream.read(buffer) >= 0) {
+                    // Discard the data.
+                }
+            } catch (IOException e) {
+                // The socket was closed at the end of the test.
+            }
+        }, "XmppTcpTransportModuleTest Drain");
+        drainThread.setDaemon(true);
+        drainThread.start();
     }
 }
