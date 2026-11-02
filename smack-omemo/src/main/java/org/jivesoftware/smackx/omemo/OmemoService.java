@@ -468,6 +468,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         // Reset the message counter.
         omemoStore.storeOmemoMessageCounter(manager.getOwnDevice(), senderDevice, 0);
 
+        // Update the last received message date.
+        omemoStore.setDateOfLastReceivedMessage(manager.getOwnDevice(), senderDevice, new Date());
+
         if (omemoElement.isMessageElement()) {
             // Use symmetric message key to decrypt message payload.
             String plaintext = OmemoRatchet.decryptMessageElement(omemoElement, cipherAndAuthTag);
@@ -940,6 +943,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * In this case, a stale device is one of our devices, from which we haven't received an OMEMO message from
      * for more than {@link OmemoConfiguration#getDeleteStaleDevicesAfterHours()} hours.
+     * Both the device-id publication date and the last-received-message date must be older than the threshold;
+     * a fresh value in either one keeps the device. The last-received date is refreshed on every successfully
+     * decrypted incoming message, so actively communicating devices are never dropped.
      *
      * @param userDevice our OmemoDevice
      * @return our altered deviceList with stale devices marked as inactive.
@@ -959,6 +965,9 @@ public abstract class OmemoService<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
      *
      * A stale device is a device, from which we haven't received an OMEMO message from for more than
      * "maxAgeMillis" milliseconds.
+     * Staleness requires BOTH the publication date and the last-received date to be older than maxAge;
+     * incoming traffic refreshes the last-received date (see decryptMessage) but intentionally never the
+     * publication date, keeping the two signals independent.
      *
      * @param userDevice our OmemoDevice.
      * @param contact subjects BareJid.
