@@ -30,6 +30,12 @@ public interface XmppInputOutputFilter {
      *
      * This method must return a {@link OutputResult}. Use {@link OutputResult#NO_OUTPUT} if there is no output.
      *
+     * The returned {@link OutputResult#filteredOutputData} is handed to the next filter or, if this is the last
+     * filter, written to the network. A subsequent filter may retain the data beyond the next invocation of this
+     * method, for example to gather it. Hence only a filter which is guaranteed to be the last one, like TLS, may
+     * reuse the buffer of the returned data on the next invocation of this method. The data returned by the last
+     * filter is written completely, before the filters are invoked again.
+     *
      * @param outputData the data this method needs to process.
      * @param isFinalDataOfElement if this is the final data of the element.
      * @param destinationAddressChanged if the destination address has changed.
