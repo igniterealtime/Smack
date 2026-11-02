@@ -52,11 +52,13 @@ public class SpanElement extends MarkupElement.NonEmptyChildElement {
     }
 
     public static final String emphasis = "emphasis";
+    public static final String strong = "strong";
     public static final String code = "code";
     public static final String deleted = "deleted";
 
     public enum SpanStyle {
         emphasis,
+        strong,
         code,
         deleted
     }

@@ -49,6 +49,7 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
 
         int listStart = -1, listEnd = -1;
         List<ListElement.ListEntryElement> lis = new ArrayList<>();
+        Boolean listOrdered = null;
 
         while (true) {
             XmlPullParser.Event tag = parser.next();
@@ -71,7 +72,8 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                                     "Message Markup CodeBlockElement MUST contain a 'start' attribute.");
                             end = ParserUtils.getIntegerAttributeOrThrow(parser, MarkupChildElement.ATTR_END,
                                     "Message Markup CodeBlockElement MUST contain a 'end' attribute.");
-                            markup.setCodeBlock(start, end);
+                            String codeLanguage = parser.getAttributeValue("", "language");
+                            markup.setCodeBlock(start, end, codeLanguage);
                             break;
 
                         case SpanElement.ELEMENT:
@@ -90,6 +92,10 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                             spanStyles.add(SpanElement.SpanStyle.emphasis);
                             break;
 
+                        case SpanElement.strong:
+                            spanStyles.add(SpanElement.SpanStyle.strong);
+                            break;
+
                         case SpanElement.deleted:
                             spanStyles.add(SpanElement.SpanStyle.deleted);
                             break;
@@ -100,6 +106,7 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
                                     "Message Markup ListElement MUST contain a 'start' attribute.");
                             listEnd = ParserUtils.getIntegerAttributeOrThrow(parser, MarkupChildElement.ATTR_END,
                                     "Message Markup ListElement MUST contain a 'end' attribute.");
+                            listOrdered = ParserUtils.getBooleanAttribute(parser, "ordered");
                             break;
 
                         case ListElement.ListEntryElement.ELEMENT:
@@ -124,6 +131,9 @@ public class MarkupElementProvider extends ExtensionElementProvider<MarkupElemen
 
                         case ListElement.ELEMENT:
                             MarkupElement.Builder.ListBuilder listBuilder = markup.beginList();
+                            if (listOrdered != null) {
+                                listBuilder.setOrdered(listOrdered);
+                            }
                             if (lis.size() > 0 && lis.get(0).getStart() != listStart) {
                                 // TODO: Should be SmackParseException.
                                 throw new IOException("Error while parsing incoming MessageMarkup ListElement: " +
