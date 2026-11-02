@@ -16,8 +16,8 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 
@@ -55,9 +55,9 @@ public class OmemoDeviceTest {
         OmemoDevice j = new OmemoDevice(juliet, 3);
         OmemoDevice j2 = new OmemoDevice(juliet, 1);
 
-        assertTrue(r.equals(g));
-        assertFalse(r.equals(r2));
-        assertFalse(j.equals(j2));
-        assertFalse(j2.equals(r2));
+        assertEquals(r, g);
+        assertNotEquals(r, r2);
+        assertNotEquals(j, j2);
+        assertNotEquals(j2, r2);
     }
 }

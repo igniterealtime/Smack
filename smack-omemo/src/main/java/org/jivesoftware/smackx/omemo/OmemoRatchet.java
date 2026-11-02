@@ -99,7 +99,7 @@ public abstract class OmemoRatchet<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, 
         int keyId = omemoManager.getDeviceId();
         byte[] unpackedKey = null;
         List<CryptoFailedException> decryptExceptions = new ArrayList<>();
-        List<OmemoKeyElement> keys = element.getHeader().getKeys();
+        List<? extends OmemoKeyElement> keys = element.getHeader().getKeys();
 
         boolean preKey = false;
 

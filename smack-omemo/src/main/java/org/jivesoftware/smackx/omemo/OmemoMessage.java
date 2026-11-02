@@ -16,10 +16,6 @@
  */
 package org.jivesoftware.smackx.omemo;
 
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.BODY_OMEMO_HINT;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO;
-import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,11 +29,11 @@ import org.jivesoftware.smackx.hints.element.StoreHint;
 import org.jivesoftware.smackx.omemo.element.OmemoElement;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
 import org.jivesoftware.smackx.omemo.trust.OmemoFingerprint;
+import org.jivesoftware.smackx.omemo.util.OmemoConstants;
 
 import org.jxmpp.jid.Jid;
 
 public class OmemoMessage {
-
     private final OmemoElement element;
     private final byte[] messageKey, iv;
 
@@ -89,7 +85,7 @@ public class OmemoMessage {
          * @param iv initialization vector belonging to key
          * @param intendedDevices devices the client intended to encrypt the message for
          * @param skippedDevices devices which were skipped during encryption process because encryption
-         *                       failed for some reason
+         * failed for some reason
          */
         Sent(OmemoElement element, byte[] key, byte[] iv, Set<OmemoDevice> intendedDevices, Map<OmemoDevice, Throwable> skippedDevices) {
             super(element, key, iv);
@@ -124,6 +120,10 @@ public class OmemoMessage {
             return !getSkippedDevices().isEmpty();
         }
 
+        public Message buildMessage(MessageBuilder messageBuilder, Jid recipient) {
+            return buildMessage(messageBuilder, recipient, false);
+        }
+
         /**
          * Return the OmemoElement wrapped in a Message ready to be sent.
          * The message is addressed to recipient, contains the OmemoElement
@@ -132,19 +132,21 @@ public class OmemoMessage {
          *
          * @param messageBuilder a message builder which will be used to build the message.
          * @param recipient recipient for the to-field of the message.
+         * @param vOmemo2 omemo:2 option state.
+         *
          * @return the build message.
          */
-        public Message buildMessage(MessageBuilder messageBuilder, Jid recipient) {
+        public Message buildMessage(MessageBuilder messageBuilder, Jid recipient, boolean vOmemo2) {
             messageBuilder.ofType(Message.Type.chat).to(recipient);
 
             messageBuilder.addExtension(getElement());
 
             if (OmemoConfiguration.getAddOmemoHintBody()) {
-                messageBuilder.setBody(BODY_OMEMO_HINT);
+                messageBuilder.setBody(OmemoConstants.getOmemoHint(vOmemo2));
             }
 
             StoreHint.set(messageBuilder);
-            messageBuilder.addExtension(new ExplicitMessageEncryptionElement(OMEMO_NAMESPACE_V_AXOLOTL, OMEMO));
+            messageBuilder.addExtension(new ExplicitMessageEncryptionElement(OmemoConstants.getOmemoNS(vOmemo2)));
 
             return messageBuilder.build();
         }

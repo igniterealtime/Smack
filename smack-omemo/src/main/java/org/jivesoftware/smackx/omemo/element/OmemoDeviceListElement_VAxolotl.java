@@ -20,16 +20,21 @@ import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_
 
 import java.util.Set;
 
+import org.jivesoftware.smack.packet.XmlEnvironment;
+import org.jivesoftware.smack.util.XmlStringBuilder;
+
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 
 /**
  * The OMEMO device list element with the legacy Axolotl namespace.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class OmemoDeviceListElement_VAxolotl extends OmemoDeviceListElement {
+    public static final String LIST = "list";
 
-    public OmemoDeviceListElement_VAxolotl(Set<Integer> deviceIds) {
+    public OmemoDeviceListElement_VAxolotl(Set<OmemoDeviceElement> deviceIds) {
         super(deviceIds);
     }
 
@@ -38,8 +43,26 @@ public class OmemoDeviceListElement_VAxolotl extends OmemoDeviceListElement {
     }
 
     @Override
+    public String getElementName() {
+        return LIST;
+    }
+
+    @Override
     public String getNamespace() {
         return OMEMO_NAMESPACE_V_AXOLOTL;
     }
 
+    @Override
+    public final XmlStringBuilder toXML(XmlEnvironment enclosingNamespace) {
+        XmlStringBuilder sb = new XmlStringBuilder(this).rightAngleBracket();
+
+        for (OmemoDeviceElement id : deviceElements) {
+            sb.halfOpenElement(OmemoDeviceElement.DEVICE);
+            sb.attribute(OmemoDeviceElement.ATTR_ID, id.getId());
+            sb.closeEmptyElement();
+        }
+
+        sb.closeElement(this);
+        return sb;
+    }
 }

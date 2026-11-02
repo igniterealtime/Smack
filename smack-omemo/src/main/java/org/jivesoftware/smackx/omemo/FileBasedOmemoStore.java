@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.util.stringencoder.BareJidEncoder;
 
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 import org.jivesoftware.smackx.omemo.internal.OmemoDevice;
@@ -116,7 +117,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             if (d.isDirectory()) {
                 try {
                     deviceIds.add(Integer.parseInt(d.getName()));
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e) {
                     // ignore
                 }
             }
@@ -177,7 +179,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         if (bytes != null) {
             try {
                 return keyUtil().preKeyFromBytes(bytes);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Could not deserialize preKey from bytes.", e);
             }
         }
@@ -217,7 +220,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 try {
                     T_PreKey p = keyUtil().preKeyFromBytes(bytes);
                     preKeys.put(Integer.parseInt(f.getName()), p);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Could not deserialize preKey from bytes.", e);
                 }
             }
@@ -233,7 +237,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         if (bytes != null) {
             try {
                 return keyUtil().signedPreKeyFromBytes(bytes);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Could not deserialize signed preKey from bytes.", e);
             }
         }
@@ -258,7 +263,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 try {
                     T_SigPreKey p = keyUtil().signedPreKeyFromBytes(bytes);
                     signedPreKeys.put(Integer.parseInt(f.getName()), p);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Could not deserialize signed preKey.", e);
                 }
             }
@@ -269,8 +275,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     @Override
     public void storeOmemoSignedPreKey(OmemoDevice userDevice,
-                                       int signedPreKeyId,
-                                       T_SigPreKey signedPreKey) throws IOException {
+            int signedPreKeyId,
+            T_SigPreKey signedPreKey) throws IOException {
         File signedPreKeyPath = new File(hierarchy.getSignedPreKeysDirectory(userDevice), Integer.toString(signedPreKeyId));
         writeBytes(signedPreKeyPath, keyUtil().signedPreKeyToBytes(signedPreKey));
     }
@@ -290,7 +296,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         if (bytes != null) {
             try {
                 return keyUtil().rawSessionFromBytes(bytes);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOGGER.log(Level.WARNING, "Could not deserialize raw session.", e);
             }
         }
@@ -308,7 +315,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             int id;
             try {
                 id = Integer.parseInt(deviceId);
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e) {
                 continue;
             }
             OmemoDevice device = new OmemoDevice(contact, id);
@@ -320,7 +328,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                 try {
                     T_Sess s = keyUtil().rawSessionFromBytes(bytes);
                     sessions.put(id, s);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOGGER.log(Level.WARNING, "Could not deserialize raw session.", e);
                 }
             }
@@ -367,7 +376,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
     @Override
     public void storeOmemoMessageCounter(OmemoDevice userDevice, OmemoDevice contactsDevice, int counter) throws IOException {
         File messageCounterFile = hierarchy.getDevicesMessageCounterPath(userDevice, contactsDevice);
-        writeIntegers(messageCounterFile, Collections.singleton(counter));
+        writeIntegers(messageCounterFile, Collections.singleton(new OmemoDeviceElement(counter)));
     }
 
     @Override
@@ -394,23 +403,26 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         File activeDevicesPath = hierarchy.getContactsActiveDevicesPath(userDevice, contact);
         Set<Integer> active = readIntegers(activeDevicesPath);
         if (active != null) {
-            cachedDeviceList.getActiveDevices().addAll(active);
+            for (int deviceId : active) {
+                cachedDeviceList.getActiveDevices().add(new OmemoDeviceElement(deviceId));
+            }
         }
 
         // inactive
         File inactiveDevicesPath = hierarchy.getContactsInactiveDevicesPath(userDevice, contact);
         Set<Integer> inactive = readIntegers(inactiveDevicesPath);
         if (inactive != null) {
-            cachedDeviceList.getInactiveDevices().addAll(inactive);
+            for (int deviceId : inactive) {
+                cachedDeviceList.getInactiveDevices().add(new OmemoDeviceElement(deviceId));
+            }
         }
-
         return cachedDeviceList;
     }
 
     @Override
     public void storeCachedDeviceList(OmemoDevice userDevice,
-                                      BareJid contact,
-                                      OmemoCachedDeviceList contactsDeviceList) throws IOException {
+            BareJid contact,
+            OmemoCachedDeviceList contactsDeviceList) throws IOException {
         if (contact == null) {
             return;
         }
@@ -484,7 +496,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         return b;
     }
 
-    private static void writeIntegers(File target, Set<Integer> integers) throws IOException {
+    private static void writeIntegers(File target, Set<OmemoDeviceElement> devices) throws IOException {
         if (target == null) {
             throw new IOException("Could not write integers to null-path.");
         }
@@ -492,8 +504,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
         FileHierarchy.createFile(target);
 
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(target))) {
-            for (int i : integers) {
-                out.writeInt(i);
+            for (OmemoDeviceElement device : devices) {
+                out.writeInt(device.getId());
             }
         }
     }
@@ -513,7 +525,8 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
             while (true) {
                 try {
                     integers.add(in.readInt());
-                } catch (EOFException e) {
+                }
+                catch (EOFException e) {
                     break;
                 }
             }
@@ -524,6 +537,7 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
 
     /**
      * Delete a directory with all subdirectories.
+     *
      * @param root directory to be deleted
      */
     @SuppressWarnings("JdkObsolete")
@@ -538,10 +552,12 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
                     for (File curr : currList) {
                         stack.push(curr);
                     }
-                } else {
+                }
+                else {
                     stack.pop().delete();
                 }
-            } else {
+            }
+            else {
                 stack.pop().delete();
             }
         }
@@ -551,32 +567,31 @@ public abstract class FileBasedOmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigP
      * This class represents the directory structure of the FileBasedOmemoStore.
      * The directory looks as follows:
      *
-     *  OMEMO_Store/
-     *      'romeo@montague.lit'/                           //Our bareJid
-     *          ...
-     *      'juliet@capulet.lit'/                           //Our other bareJid
-     *          '13371234'/                                 //deviceId
-     *              identityKeyPair                         //Our identityKeyPair
-     *              lastSignedPreKeyRenewal                 //Date of when the signedPreKey was last renewed.
-     *              preKeys/                                //Our preKeys
-     *                  '1'
-     *                  '2'
-     *                  ...
-     *              signedPreKeys/                          //Our signedPreKeys
-     *                  '1'
-     *                  '2'
-     *                  ...
-     *              contacts/
-     *                  'romeo@capulet.lit'/                //Juliets contact Romeo
-     *                      activeDevice                    //List of Romeos active devices
-     *                      inactiveDevices                 //List of his inactive devices
-     *                      'deviceId'/                     //Romeos deviceId
-     *                          identityKey                 //Romeos identityKey
-     *                          session                     //Our session with romeo
-     *                          trust                       //Records about the trust in romeos device
-     *                          (lastReceivedMessageDate)   //Only, for our own other devices:
-     *                                                          //date of the last received message
-     *
+     * OMEMO_Store/
+     * 'romeo@montague.lit'/                           //Our bareJid
+     * ...
+     * 'juliet@capulet.lit'/                           //Our other bareJid
+     * '13371234'/                                 //deviceId
+     * identityKeyPair                         //Our identityKeyPair
+     * lastSignedPreKeyRenewal                 //Date of when the signedPreKey was last renewed.
+     * preKeys/                                //Our preKeys
+     * '1'
+     * '2'
+     * ...
+     * signedPreKeys/                          //Our signedPreKeys
+     * '1'
+     * '2'
+     * ...
+     * contacts/
+     * 'romeo@capulet.lit'/                //Juliets contact Romeo
+     * activeDevice                    //List of Romeos active devices
+     * inactiveDevices                 //List of his inactive devices
+     * 'deviceId'/                     //Romeos deviceId
+     * identityKey                 //Romeos identityKey
+     * session                     //Our session with romeo
+     * trust                       //Records about the trust in romeos device
+     * (lastReceivedMessageDate)   //Only, for our own other devices:
+     * //date of the last received message
      */
     public static class FileHierarchy {
 

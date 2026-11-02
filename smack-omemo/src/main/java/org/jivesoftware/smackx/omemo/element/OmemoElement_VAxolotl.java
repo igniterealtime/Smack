@@ -19,9 +19,10 @@ package org.jivesoftware.smackx.omemo.element;
 import static org.jivesoftware.smackx.omemo.util.OmemoConstants.OMEMO_NAMESPACE_V_AXOLOTL;
 
 /**
- * An OMEMO (PreKey)WhisperMessage element.
+ * An OMEMO (PreKey) WhisperMessage element for Axolotl namespace.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class OmemoElement_VAxolotl extends OmemoElement {
 

@@ -93,11 +93,12 @@ public final class PubSubManager extends Manager {
      * Get a PubSub manager for the default PubSub service of the connection.
      *
      * @param connection TODO javadoc me please
+     *
      * @return the default PubSub manager.
      */
     // CHECKSTYLE:OFF:RegexpSingleline
     public static PubSubManager getInstanceFor(XMPPConnection connection) {
-    // CHECKSTYLE:ON:RegexpSingleline
+        // CHECKSTYLE:ON:RegexpSingleline
         DomainBareJid pubSubService = null;
         if (connection.isAuthenticated()) {
             try {
@@ -128,11 +129,12 @@ public final class PubSubManager extends Manager {
      *
      * @param connection the XMPP connection.
      * @param pubSubService the PubSub service, may be <code>null</code>.
+     *
      * @return a PubSub manager for the connection and service.
      */
     // CHECKSTYLE:OFF:RegexpSingleline
     public static PubSubManager getInstanceFor(XMPPConnection connection, BareJid pubSubService) {
-    // CHECKSTYLE:ON:RegexpSingleline
+        // CHECKSTYLE:ON:RegexpSingleline
         if (pubSubService != null && connection.isAuthenticated() && connection.getUser().asBareJid().equals(pubSubService)) {
             // PEP service.
             pubSubService = null;
@@ -171,7 +173,7 @@ public final class PubSubManager extends Manager {
     }
 
     private void checkIfXmppErrorBecauseOfNotLeafNode(String nodeId, XMPPErrorException xmppErrorException)
-                    throws XMPPErrorException, NotALeafNodeException {
+            throws XMPPErrorException, NotALeafNodeException {
         Condition condition = xmppErrorException.getStanzaError().getCondition();
         if (condition == Condition.feature_not_implemented) {
             // XEP-0060 § 6.5.9.5: Item retrieval not supported, e.g. because node is a collection node
@@ -185,6 +187,7 @@ public final class PubSubManager extends Manager {
      * Creates an instant node, if supported.
      *
      * @return The node that was created
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -206,7 +209,9 @@ public final class PubSubManager extends Manager {
      *
      * @param nodeId The id of the node, which must be unique within the
      * pubsub service
+     *
      * @return The node that was created
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -224,7 +229,9 @@ public final class PubSubManager extends Manager {
      * @param nodeId The name of the node, which must be unique within the
      * pubsub service
      * @param config The configuration for the node
+     *
      * @return The node that was created
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -260,6 +267,7 @@ public final class PubSubManager extends Manager {
      * @param id - The unique id of the node
      *
      * @return the node
+     *
      * @throws XMPPErrorException The node does not exist
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -297,7 +305,9 @@ public final class PubSubManager extends Manager {
      * Try to get a leaf node and create one if it does not already exist.
      *
      * @param id The unique ID of the node.
+     *
      * @return the leaf node.
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -306,7 +316,7 @@ public final class PubSubManager extends Manager {
      * @since 4.2.1
      */
     public LeafNode getOrCreateLeafNode(final String id)
-                    throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException, NotALeafNodeException {
+            throws NoResponseException, NotConnectedException, InterruptedException, XMPPErrorException, NotALeafNodeException {
         try {
             return getLeafNode(id);
         }
@@ -348,7 +358,9 @@ public final class PubSubManager extends Manager {
      * Try to get a leaf node with the given node ID.
      *
      * @param id the node ID.
+     *
      * @return the requested leaf node.
+     *
      * @throws NotALeafNodeException in case the node exists but is a collection node.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -358,7 +370,7 @@ public final class PubSubManager extends Manager {
      * @since 4.2.1
      */
     public LeafNode getLeafNode(String id) throws NotALeafNodeException, NoResponseException, NotConnectedException,
-                    InterruptedException, XMPPErrorException, NotAPubSubNodeException {
+            InterruptedException, XMPPErrorException, NotAPubSubNodeException {
         Node node;
         try {
             node = getNode(id);
@@ -381,12 +393,13 @@ public final class PubSubManager extends Manager {
     }
 
     private LeafNode getLeafNodeProsodyWorkaround(final String id) throws NoResponseException, NotConnectedException,
-                    InterruptedException, NotALeafNodeException, XMPPErrorException {
+            InterruptedException, NotALeafNodeException, XMPPErrorException {
         LeafNode leafNode = new LeafNode(this, id);
         try {
             // Try to ensure that this is not a collection node by asking for one item form the node.
             leafNode.getItems(1);
-        } catch (XMPPErrorException e) {
+        }
+        catch (XMPPErrorException e) {
             checkIfXmppErrorBecauseOfNotLeafNode(id, e);
         }
 
@@ -396,7 +409,7 @@ public final class PubSubManager extends Manager {
     }
 
     private LeafNode getOrCreateLeafNodeProsodyWorkaround(final String id)
-                    throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException {
+            throws XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException, NotALeafNodeException {
         try {
             return createNode(id);
         }
@@ -418,8 +431,10 @@ public final class PubSubManager extends Manager {
      * @param id The unique id of the node.
      * @param item The item to publish.
      * @param <I> type of the item.
+     * @param nodeExtension NodeExtension to be included.
      *
      * @return the LeafNode on which the item was published.
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -427,14 +442,15 @@ public final class PubSubManager extends Manager {
      * @throws NotALeafNodeException if a PubSub leaf node operation was attempted on a non-leaf node.
      * @since 4.2.1
      */
-    public <I extends Item> LeafNode tryToPublishAndPossibleAutoCreate(String id, I item)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
-                    NotALeafNodeException {
+    public <I extends Item> LeafNode tryToPublishAndPossibleAutoCreate(String id, I item, NodeExtension nodeExtension)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
+            NotALeafNodeException {
         LeafNode leafNode = new LeafNode(this, id);
 
         try {
-            leafNode.publish(item);
-        } catch (XMPPErrorException e) {
+            leafNode.publish(item, nodeExtension);
+        }
+        catch (XMPPErrorException e) {
             checkIfXmppErrorBecauseOfNotLeafNode(id, e);
         }
 
@@ -443,6 +459,12 @@ public final class PubSubManager extends Manager {
         nodeMap.put(id, leafNode);
 
         return leafNode;
+    }
+
+    public <I extends Item> LeafNode tryToPublishAndPossibleAutoCreate(String id, I item)
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException,
+            NotALeafNodeException {
+        return tryToPublishAndPossibleAutoCreate(id, item, null);
     }
 
     /**
@@ -455,7 +477,9 @@ public final class PubSubManager extends Manager {
      *
      * @param nodeId - The id of the collection node for which the child
      * nodes will be returned.
+     *
      * @return {@link DiscoverItems} representing the existing nodes
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the server.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -475,6 +499,7 @@ public final class PubSubManager extends Manager {
      * Gets the subscriptions on the root node.
      *
      * @return List of exceptions
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -490,11 +515,11 @@ public final class PubSubManager extends Manager {
      * Gets the affiliations on the root node.
      *
      * @return List of affiliations
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     *
      */
     public List<Affiliation> getAffiliations() throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         PubSub reply = sendPubsubPacket(IQ.Type.get, new NodeExtension(PubSubElementType.AFFILIATIONS), null);
@@ -505,21 +530,25 @@ public final class PubSubManager extends Manager {
     /**
      * Delete the specified node.
      *
-     * @param nodeId TODO javadoc me please
+     * @param nodeId The delete element node attribute
+     *
+     * @return <code>true</code> if this node existed and was deleted and <code>false</code> if this node did not exist.
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @return <code>true</code> if this node existed and was deleted and <code>false</code> if this node did not exist.
      */
     public boolean deleteNode(String nodeId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         boolean res = true;
         try {
             sendPubsubPacket(IQ.Type.set, new NodeExtension(PubSubElementType.DELETE, nodeId), PubSubElementType.DELETE.getNamespace());
-        } catch (XMPPErrorException e) {
+        }
+        catch (XMPPErrorException e) {
             if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
                 res = false;
-            } else {
+            }
+            else {
                 throw e;
             }
         }
@@ -528,9 +557,40 @@ public final class PubSubManager extends Manager {
     }
 
     /**
+     * Delete the specified Node/Item.
+     *
+     * @param nodeId The retract element node attribute
+     * @param itemId The item element id attribute
+     *
+     * @return <code>true</code> if this node existed and was deleted and <code>false</code> if this node-item did not exist.
+     *
+     * @throws XMPPErrorException if there was an XMPP error returned.
+     * @throws NoResponseException if there was no response from the remote entity.
+     * @throws NotConnectedException if the XMPP connection is not connected.
+     * @throws InterruptedException if the calling thread was interrupted.
+     */
+    public boolean retractNodeItem(String nodeId, String itemId) throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+        boolean res = true;
+        try {
+            PubSub pubSub = PubSub.createPubsubPacket(pubSubService, IQ.Type.set, new RetractItem(nodeId, itemId));
+            sendPubsubPacket(pubSub);
+        }
+        catch (XMPPErrorException e) {
+            if (e.getStanzaError().getCondition() == StanzaError.Condition.item_not_found) {
+                res = false;
+            }
+            else {
+                throw e;
+            }
+        }
+        return res;
+    }
+
+    /**
      * Returns the default settings for Node configuration.
      *
      * @return configuration form containing the default settings.
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -557,6 +617,7 @@ public final class PubSubManager extends Manager {
      * as a standard {@link DiscoverInfo} instance.
      *
      * @return The supported features
+     *
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
@@ -571,15 +632,16 @@ public final class PubSubManager extends Manager {
      * Check if the PubSub service supports automatic node creation.
      *
      * @return true if the PubSub service supports automatic node creation.
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
-     * @since 4.2.1
      * @see <a href="https://xmpp.org/extensions/xep-0060.html#publisher-publish-autocreate">XEP-0060 § 7.1.4 Automatic Node Creation</a>
+     * @since 4.2.1
      */
     public boolean supportsAutomaticNodeCreation()
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         ServiceDiscoveryManager sdm = ServiceDiscoveryManager.getInstanceFor(connection());
         return sdm.supportsFeature(pubSubService, AUTO_CREATE_FEATURE);
     }
@@ -595,6 +657,7 @@ public final class PubSubManager extends Manager {
      * </p>
      *
      * @return <code>true</code> if it is possible to create nodes, <code>false</code> otherwise.
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
@@ -610,7 +673,8 @@ public final class PubSubManager extends Manager {
                 return false;
             }
             throw e;
-        } finally {
+        }
+        finally {
             if (leafNode != null) {
                 deleteNode(leafNode.getId());
             }
@@ -619,7 +683,7 @@ public final class PubSubManager extends Manager {
     }
 
     private PubSub sendPubsubPacket(IQ.Type type, XmlElement ext, PubSubNamespace ns)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
         return sendPubsubPacket(pubSubService, type, Collections.singletonList(ext), ns);
     }
 
@@ -628,8 +692,8 @@ public final class PubSubManager extends Manager {
     }
 
     PubSub sendPubsubPacket(Jid to, IQ.Type type, List<XmlElement> extList, PubSubNamespace ns)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException,
-                    InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException,
+            InterruptedException {
 // CHECKSTYLE:OFF
         PubSub pubSub = new PubSub(to, type, ns);
         for (XmlElement pe : extList) {
@@ -640,7 +704,7 @@ public final class PubSubManager extends Manager {
     }
 
     PubSub sendPubsubPacket(PubSub packet) throws NoResponseException, XMPPErrorException,
-                    NotConnectedException, InterruptedException {
+            NotConnectedException, InterruptedException {
         IQ resultIQ = connection().sendIqRequestAndWaitForResponse(packet);
         if (resultIQ instanceof EmptyResultIQ) {
             return null;
@@ -649,8 +713,8 @@ public final class PubSubManager extends Manager {
     }
 
     private static final Set<String> PUBLIC_AND_SUBSCRIBE_FEATURES = CollectionUtil.setOf(
-                    PubSubFeature.subscribe.toString(),
-                    PubSubFeature.publish.toString()
+            PubSubFeature.subscribe.toString(),
+            PubSubFeature.publish.toString()
     );
 
     /**
@@ -659,18 +723,20 @@ public final class PubSubManager extends Manager {
      * and type "service".
      *
      * @param connection TODO javadoc me please
+     *
      * @return the default PubSub service or <code>null</code>.
+     *
      * @throws NoResponseException if there was no response from the remote entity.
      * @throws XMPPErrorException if there was an XMPP error returned.
      * @throws NotConnectedException if the XMPP connection is not connected.
      * @throws InterruptedException if the calling thread was interrupted.
      * @see <a href="http://xmpp.org/extensions/xep-0060.html#entity-features">XEP-60 § 5.1 Discover
-     *      Features</a>
+     * Features</a>
      */
     public static DomainBareJid getPubSubService(XMPPConnection connection)
-                    throws NoResponseException, XMPPErrorException, NotConnectedException,
-                    InterruptedException {
+            throws NoResponseException, XMPPErrorException, NotConnectedException,
+            InterruptedException {
         return ServiceDiscoveryManager.getInstanceFor(connection).findService(PUBLIC_AND_SUBSCRIBE_FEATURES,
-                        true, "pubsub", "service");
+                true, "pubsub", "service");
     }
 }

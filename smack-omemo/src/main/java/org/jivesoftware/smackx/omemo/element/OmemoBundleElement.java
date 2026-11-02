@@ -21,33 +21,26 @@ import java.util.Map;
 
 import org.jivesoftware.smack.packet.ExtensionElement;
 import org.jivesoftware.smack.util.StringUtils;
-import org.jivesoftware.smack.util.XmlStringBuilder;
 import org.jivesoftware.smack.util.stringencoder.Base64;
 
 /**
  * Class that represents an OMEMO Bundle element.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public abstract class OmemoBundleElement implements ExtensionElement {
 
     public static final String BUNDLE = "bundle";
-    public static final String SIGNED_PRE_KEY_PUB = "signedPreKeyPublic";
-    public static final String SIGNED_PRE_KEY_ID = "signedPreKeyId";
-    public static final String SIGNED_PRE_KEY_SIG = "signedPreKeySignature";
-    public static final String IDENTITY_KEY = "identityKey";
-    public static final String PRE_KEYS = "prekeys";
-    public static final String PRE_KEY_PUB = "preKeyPublic";
-    public static final String PRE_KEY_ID = "preKeyId";
 
-    private final int signedPreKeyId;
-    private final String signedPreKeyB64;
+    protected final int signedPreKeyId;
+    protected final String signedPreKeyB64;
+    protected final String signedPreKeySignatureB64;
+    protected final String identityKeyB64;
     private byte[] signedPreKey;
-    private final String signedPreKeySignatureB64;
     private byte[] signedPreKeySignature;
-    private final String identityKeyB64;
     private byte[] identityKey;
-    private final Map<Integer, String> preKeysB64;
+    protected final Map<Integer, String> preKeysB64;
     private Map<Integer, byte[]> preKeys;
 
     /**
@@ -183,43 +176,6 @@ public abstract class OmemoBundleElement implements ExtensionElement {
     @Override
     public String getElementName() {
         return BUNDLE;
-    }
-
-    @Override
-    public XmlStringBuilder toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        XmlStringBuilder sb = new XmlStringBuilder(this, enclosingNamespace).rightAngleBracket();
-
-        sb.halfOpenElement(SIGNED_PRE_KEY_PUB).attribute(SIGNED_PRE_KEY_ID, signedPreKeyId).rightAngleBracket()
-                .append(signedPreKeyB64).closeElement(SIGNED_PRE_KEY_PUB);
-
-        sb.openElement(SIGNED_PRE_KEY_SIG).append(signedPreKeySignatureB64).closeElement(SIGNED_PRE_KEY_SIG);
-
-        sb.openElement(IDENTITY_KEY).append(identityKeyB64).closeElement(IDENTITY_KEY);
-
-        sb.openElement(PRE_KEYS);
-        for (Map.Entry<Integer, String> p : this.preKeysB64.entrySet()) {
-            sb.halfOpenElement(PRE_KEY_PUB).attribute(PRE_KEY_ID, p.getKey()).rightAngleBracket()
-                    .append(p.getValue()).closeElement(PRE_KEY_PUB);
-        }
-        sb.closeElement(PRE_KEYS);
-
-        sb.closeElement(this);
-        return sb;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("OmemoBundleElement[\n");
-        sb.append(SIGNED_PRE_KEY_PUB).append(' ').append(SIGNED_PRE_KEY_ID).append('=').append(signedPreKeyId)
-                .append(':').append(signedPreKeyB64).append('\n')
-                .append(SIGNED_PRE_KEY_SIG).append(": ").append(signedPreKeySignatureB64).append('\n')
-                .append(IDENTITY_KEY).append(": ").append(identityKeyB64).append('\n')
-                .append(PRE_KEYS).append(" (").append(preKeysB64.size()).append(")\n");
-        for (Map.Entry<Integer, String> e : preKeysB64.entrySet()) {
-            sb.append(PRE_KEY_PUB).append(' ').append(PRE_KEY_ID).append('=').append(e.getKey()).append(": ").append(e.getValue()).append('\n');
-        }
-        sb.append(']');
-        return sb.toString();
     }
 
     @Override

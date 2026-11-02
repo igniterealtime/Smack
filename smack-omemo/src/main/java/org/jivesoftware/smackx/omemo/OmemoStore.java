@@ -28,7 +28,10 @@ import java.util.logging.Logger;
 
 import org.jivesoftware.smack.SmackException;
 
+import org.jivesoftware.smackx.omemo.element.OmemoBundleElement;
 import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VAxolotl;
+import org.jivesoftware.smackx.omemo.element.OmemoBundleElement_VOmemo;
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.element.OmemoDeviceListElement;
 import org.jivesoftware.smackx.omemo.exceptions.CannotEstablishOmemoSessionException;
 import org.jivesoftware.smackx.omemo.exceptions.CorruptedOmemoKeyException;
@@ -54,6 +57,7 @@ import org.jxmpp.jid.BareJid;
  * @param <T_Ciph>      Cipher class
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_Sess, T_Addr, T_ECPub, T_Bundle, T_Ciph> {
     private static final Logger LOGGER = Logger.getLogger(OmemoStore.class.getName());
@@ -62,7 +66,6 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      * Create a new OmemoStore.
      */
     public OmemoStore() {
-
     }
 
     /**
@@ -96,7 +99,7 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
             cachedDeviceList = new OmemoCachedDeviceList();
         }
         // Does the list already contain that id?
-        return !cachedDeviceList.contains(id);
+        return !cachedDeviceList.contains(new OmemoDeviceElement(id));
     }
 
     /**
@@ -104,29 +107,29 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
      *
      * @param userDevice our OmemoDevice.
      * @param contact Contact we received the list from.
-     * @param list    List we received.
+     * @param devices    List we received.
      *
      * @throws IOException if an I/O error occurred.
      */
     @SuppressWarnings("JavaUtilDate")
-    OmemoCachedDeviceList mergeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoDeviceListElement list) throws IOException {
+    OmemoCachedDeviceList mergeCachedDeviceList(OmemoDevice userDevice, BareJid contact, OmemoDeviceListElement devices) throws IOException {
         OmemoCachedDeviceList cached = loadCachedDeviceList(userDevice, contact);
 
         if (cached == null) {
             cached = new OmemoCachedDeviceList();
         }
 
-        if (list == null) {
+        if (devices == null) {
             return cached;
         }
 
-        for (int devId : list.getDeviceIds()) {
-            if (!cached.contains(devId)) {
-                setDateOfLastDeviceIdPublication(userDevice, new OmemoDevice(contact, devId), new Date());
+        for (OmemoDeviceElement deviceElement : devices.getDevices()) {
+            if (!cached.contains(deviceElement)) {
+                setDateOfLastDeviceIdPublication(userDevice, new OmemoDevice(contact, deviceElement.getId()), new Date());
             }
         }
 
-        cached.merge(list.getDeviceIds());
+        cached.merge(devices.getDevices());
         storeCachedDeviceList(userDevice, contact, cached);
 
         return cached;
@@ -187,28 +190,44 @@ public abstract class OmemoStore<T_IdKeyPair, T_IdKey, T_PreKey, T_SigPreKey, T_
         }
     }
 
+    OmemoBundleElement packOmemoBundle(OmemoDevice userDevice)
+            throws CorruptedOmemoKeyException, IOException {
+        return packOmemoBundle(userDevice, false);
+    }
+
     /**
      * Pack a OmemoBundleElement containing our key material.
      *
      * @param userDevice our OmemoDevice.
+     * @param vOmemo Omemo2 support.
      * @return OMEMO bundle element
      *
      * @throws CorruptedOmemoKeyException when a key could not be loaded
      * @throws IOException if an I/O error occurred.
      */
-    OmemoBundleElement_VAxolotl packOmemoBundle(OmemoDevice userDevice)
+    OmemoBundleElement packOmemoBundle(OmemoDevice userDevice, boolean vOmemo)
             throws CorruptedOmemoKeyException, IOException {
 
         int currentSignedPreKeyId = loadCurrentOmemoSignedPreKeyId(userDevice);
         T_SigPreKey currentSignedPreKey = loadOmemoSignedPreKeys(userDevice).get(currentSignedPreKeyId);
 
-        return new OmemoBundleElement_VAxolotl(
-                currentSignedPreKeyId,
-                keyUtil().signedPreKeyPublicForBundle(currentSignedPreKey),
-                keyUtil().signedPreKeySignatureFromKey(currentSignedPreKey),
-                keyUtil().identityKeyForBundle(keyUtil().identityKeyFromPair(loadOmemoIdentityKeyPair(userDevice))),
-                keyUtil().preKeyPublicKeysForBundle(loadOmemoPreKeys(userDevice))
-        );
+        if (vOmemo) {
+            return new OmemoBundleElement_VOmemo(
+                    currentSignedPreKeyId,
+                    keyUtil().signedPreKeyPublicForBundle(currentSignedPreKey),
+                    keyUtil().signedPreKeySignatureFromKey(currentSignedPreKey),
+                    keyUtil().identityKeyForBundle(keyUtil().identityKeyFromPair(loadOmemoIdentityKeyPair(userDevice))),
+                    keyUtil().preKeyPublicKeysForBundle(loadOmemoPreKeys(userDevice))
+            );
+        } else {
+            return new OmemoBundleElement_VAxolotl(
+                    currentSignedPreKeyId,
+                    keyUtil().signedPreKeyPublicForBundle(currentSignedPreKey),
+                    keyUtil().signedPreKeySignatureFromKey(currentSignedPreKey),
+                    keyUtil().identityKeyForBundle(keyUtil().identityKeyFromPair(loadOmemoIdentityKeyPair(userDevice))),
+                    keyUtil().preKeyPublicKeysForBundle(loadOmemoPreKeys(userDevice))
+            );
+        }
     }
 
     /**

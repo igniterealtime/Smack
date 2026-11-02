@@ -16,49 +16,35 @@
  */
 package org.jivesoftware.smackx.pubsub;
 
-import javax.xml.namespace.QName;
-
-import org.jivesoftware.smack.packet.ExtensionElement;
-
-import org.jivesoftware.smackx.pubsub.packet.PubSubNamespace;
+import org.jivesoftware.smack.util.XmlStringBuilder;
 
 /**
- * Represents and item that has been deleted from a node.
+ * Represents a request to retract a node item.
  *
  * @author Robin Collier
+ * @author Eng Chong Meng
  */
-public class RetractItem implements ExtensionElement {
-    public static final QName QNAME = new QName(PubSubNamespace.event.getXmlns(), "retract");
+public class RetractItem extends NodeExtension {
 
-    private final String id;
+    public static String ELE_ITEM = "item";
+    public static String ATTR_ID = "id";
+    protected final String mId;
 
-    /**
-     * Construct a <code>RetractItem</code> with the specified id.
-     *
-     * @param itemId The id if the item deleted
-     */
-    public RetractItem(String itemId) {
-        if (itemId == null)
-            throw new IllegalArgumentException("itemId must not be 'null'");
-        id = itemId;
+    public RetractItem(String nodeId, String id) {
+        super(PubSubElementType.RETRACT, nodeId);
+        mId = id;
     }
 
     public String getId() {
-        return id;
+        return mId;
     }
 
     @Override
-    public String getElementName() {
-        return QNAME.getLocalPart();
-    }
-
-    @Override
-    public String getNamespace() {
-        return QNAME.getNamespaceURI();
-    }
-
-    @Override
-    public String toXML(org.jivesoftware.smack.packet.XmlEnvironment enclosingNamespace) {
-        return "<retract id='" + id + "'/>";
+    protected void addXml(XmlStringBuilder xml) {
+        xml.rightAngleBracket();
+        xml.halfOpenElement(ELE_ITEM);
+        xml.attribute(ATTR_ID, getId());
+        xml.closeEmptyElement();
+        xml.closeElement(getElementName());
     }
 }

@@ -30,7 +30,7 @@ import org.jivesoftware.smack.test.util.TestUtils;
 import org.jivesoftware.smack.util.ParserUtils;
 import org.jivesoftware.smack.xml.XmlPullParserException;
 
-import org.jivesoftware.smackx.stanza_content_encryption.element.ContentElement;
+import org.jivesoftware.smackx.stanza_content_encryption.element.EnvelopeElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.FromAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.RandomPaddingAffixElement;
 import org.jivesoftware.smackx.stanza_content_encryption.element.TimestampAffixElement;
@@ -39,46 +39,46 @@ import org.jivesoftware.smackx.stanza_content_encryption.element.ToAffixElement;
 import org.junit.jupiter.api.Test;
 import org.jxmpp.jid.impl.JidCreate;
 
-public class ContentElementProviderTest {
+public class EnvelopeElementProviderTest {
 
     @Test
     public void testParsing() throws XmlPullParserException, IOException, SmackParsingException, ParseException {
         String xml = "" +
-                "<content xmlns='urn:xmpp:sce:0'>\n" +
-                "  <payload>\n" +
+                "<envelope xmlns='urn:xmpp:sce:1'>\n" +
+                "  <content>\n" +
                 "    <body xmlns='jabber:client'>Have you seen that new movie?</body>\n" +
                 "    <x xmlns='jabber:x:oob'>\n" +
                 "      <url>https://en.wikipedia.org/wiki/Fight_Club#Plot</url>\n" +
                 "    </x>\n" +
-                "  </payload>\n" +
+                "  </content>\n" +
                 "  <from jid='ladymacbeth@shakespear.lit/castle'/>\n" +
                 "  <to jid='doctor@shakespeare.lit/pda'/>\n" +
                 "  <time stamp='1993-10-12T03:13:10.000+00:00'/>\n" +
                 "  <rpad>A98D7KJF1ASDVG232sdff341</rpad>\n" +
-                "</content>";
+                "</envelope>";
 
-        ContentElementProvider provider = new ContentElementProvider();
-        ContentElement contentElement = provider.parse(TestUtils.getParser(xml));
+        EnvelopeElementProvider provider = new EnvelopeElementProvider();
+        EnvelopeElement envelopeElement = provider.parse(TestUtils.getParser(xml));
 
-        assertNotNull(contentElement);
+        assertNotNull(envelopeElement);
 
-        assertEquals(4, contentElement.getAffixElements().size());
-        assertTrue(contentElement.getAffixElements().contains(
+        assertEquals(4, envelopeElement.getAffixElements().size());
+        assertTrue(envelopeElement.getAffixElements().contains(
                 new FromAffixElement(JidCreate.from("ladymacbeth@shakespear.lit/castle"))));
-        assertTrue(contentElement.getAffixElements().contains(
+        assertTrue(envelopeElement.getAffixElements().contains(
                 new ToAffixElement(JidCreate.from("doctor@shakespeare.lit/pda"))));
-        assertTrue(contentElement.getAffixElements().contains(
+        assertTrue(envelopeElement.getAffixElements().contains(
                 new TimestampAffixElement(ParserUtils.getDateFromXep82String("1993-10-12T03:13:10.000+00:00"))));
-        assertTrue(contentElement.getAffixElements().contains(
+        assertTrue(envelopeElement.getAffixElements().contains(
                 new RandomPaddingAffixElement("A98D7KJF1ASDVG232sdff341")));
 
-        assertEquals(2, contentElement.getPayload().getItems().size());
+        assertEquals(2, envelopeElement.getContentElement().getItems().size());
 
-        assertTrue(contentElement.getPayload().getItems().get(0) instanceof Message.Body);
-        Message.Body body = (Message.Body) contentElement.getPayload().getItems().get(0);
+        assertTrue(envelopeElement.getContentElement().getItems().get(0) instanceof Message.Body);
+        Message.Body body = (Message.Body) envelopeElement.getContentElement().getItems().get(0);
         assertEquals("Have you seen that new movie?", body.getMessage());
 
-        StandardExtensionElement oob = (StandardExtensionElement) contentElement.getPayload().getItems().get(1);
+        StandardExtensionElement oob = (StandardExtensionElement) envelopeElement.getContentElement().getItems().get(1);
         assertEquals("x", oob.getElementName());
         assertEquals("jabber:x:oob", oob.getNamespace());
         assertEquals("https://en.wikipedia.org/wiki/Fight_Club#Plot", oob.getFirstElement("url").getText());

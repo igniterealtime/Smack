@@ -23,19 +23,18 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jivesoftware.smackx.omemo.element.OmemoDeviceElement;
 import org.jivesoftware.smackx.omemo.internal.OmemoCachedDeviceList;
 
 import org.junit.Test;
-
 
 /**
  * Test behavior of device lists.
  *
  * @author Paul Schaub
+ * @author Eng Chong Meng
  */
 public class DeviceListTest {
-
-
     /**
      * Test, whether deviceList updates are correctly merged into the cached device list.
      * IDs in the update become active devices, active IDs that were not in the update become inactive.
@@ -47,31 +46,31 @@ public class DeviceListTest {
         assertNotNull(cached.getActiveDevices());
         assertNotNull(cached.getInactiveDevices());
 
-        cached.getInactiveDevices().add(1);
-        cached.getInactiveDevices().add(2);
-        cached.getActiveDevices().add(3);
+        cached.getInactiveDevices().add(new OmemoDeviceElement(1));
+        cached.getInactiveDevices().add(new OmemoDeviceElement(2));
+        cached.getActiveDevices().add(new OmemoDeviceElement(3));
 
-        Set<Integer> update = new HashSet<>();
-        update.add(4);
-        update.add(1);
+        Set<OmemoDeviceElement> update = new HashSet<>();
+        update.add(new OmemoDeviceElement(1));
+        update.add(new OmemoDeviceElement(4));
 
         cached.merge(update);
 
-        assertTrue(cached.getActiveDevices().contains(1) &&
-                !cached.getActiveDevices().contains(2) &&
-                !cached.getActiveDevices().contains(3) &&
-                cached.getActiveDevices().contains(4));
+        assertTrue(cached.getActiveDevices().contains(new OmemoDeviceElement(1)) &&
+                !cached.getActiveDevices().contains(new OmemoDeviceElement(2)) &&
+                !cached.getActiveDevices().contains(new OmemoDeviceElement(3)) &&
+                cached.getActiveDevices().contains(new OmemoDeviceElement(4)));
 
-        assertTrue(!cached.getInactiveDevices().contains(1) &&
-                cached.getInactiveDevices().contains(2) &&
-                cached.getInactiveDevices().contains(3) &&
-                !cached.getInactiveDevices().contains(4));
+        assertTrue(!cached.getInactiveDevices().contains(new OmemoDeviceElement(1)) &&
+                cached.getInactiveDevices().contains(new OmemoDeviceElement(2)) &&
+                cached.getInactiveDevices().contains(new OmemoDeviceElement(3)) &&
+                !cached.getInactiveDevices().contains(new OmemoDeviceElement(4)));
 
         assertTrue(cached.getAllDevices().size() == 4);
 
-        assertFalse(cached.contains(17));
-        cached.addDevice(17);
-        assertTrue(cached.getActiveDevices().contains(17));
+        assertFalse(cached.contains(new OmemoDeviceElement(17)));
+        cached.addDevice(new OmemoDeviceElement(17));
+        assertTrue(cached.getActiveDevices().contains(new OmemoDeviceElement(17)));
 
         assertNotNull(cached.toString());
     }
