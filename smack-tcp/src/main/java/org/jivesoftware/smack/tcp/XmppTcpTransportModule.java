@@ -100,9 +100,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
     private static final Logger LOGGER = Logger.getLogger(XmppTcpTransportModule.class.getName());
 
     private static final int CALLBACK_MAX_BYTES_READ = 10 * 1024 * 1024;
-    private static final int CALLBACK_MAX_BYTES_WRITEN = CALLBACK_MAX_BYTES_READ;
+    static final int CALLBACK_MAX_BYTES_WRITEN = CALLBACK_MAX_BYTES_READ;
 
     private static final int MAX_ELEMENT_SIZE = 64 * 1024;
+
+    private static final int MAX_PENDING_NETWORK_OUTGOING_BYTES = 8096;
 
     private final XmppTcpNioTransport tcpNioTransport;
 
@@ -113,7 +115,11 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
 
     private TlsState tlsState;
 
+    // The state of the currently outgoing element is kept in fields, as writing an element may span multiple channel
+    // selected callbacks.
     private Iterator<CharSequence> outgoingCharSequenceIterator;
+    private TopLevelStreamElement currentlyOutgonigTopLevelStreamElement;
+    private StringBuilder outgoingStreamForDebugger;
 
     private final List<TopLevelStreamElement> currentlyOutgoingElements = new ArrayList<>();
     private final IdentityHashMap<ByteBuffer, List<TopLevelStreamElement>> bufferToElementMap = new IdentityHashMap<>();
@@ -132,6 +138,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
     private long totalBytesWritten;
     private long totalBytesReadAfterFilter;
     private long totalBytesWrittenBeforeFilter;
+    private long networkWriteCalls;
     private long handledChannelSelectedCallbacks;
     private long callbackPreemtBecauseBytesWritten;
     private long callbackPreemtBecauseBytesRead;
@@ -286,27 +293,37 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         try {
             boolean destinationAddressChanged = false;
             boolean isLastPartOfElement = false;
-            TopLevelStreamElement currentlyOutgonigTopLevelStreamElement = null;
-            StringBuilder outgoingStreamForDebugger = null;
 
             writeLoop: while (true) {
-                final boolean moreDataAvailable = !isLastPartOfElement || !connectionInternal.outgoingElementsQueue.isEmpty();
+                final boolean moreDataAvailable = outgoingCharSequenceIterator != null
+                                || !connectionInternal.outgoingElementsQueue.isEmpty();
 
-                if (filteredOutgoingBuffer != null || !networkOutgoingBuffers.isEmpty()) {
-                    if (filteredOutgoingBuffer != null) {
-                        networkOutgoingBuffers.add(filteredOutgoingBuffer);
-                        networkOutgoingBuffersBytes += filteredOutgoingBuffer.remaining();
+                if (filteredOutgoingBuffer != null) {
+                    networkOutgoingBuffers.add(filteredOutgoingBuffer);
+                    networkOutgoingBuffersBytes += filteredOutgoingBuffer.remaining();
 
-                        filteredOutgoingBuffer = null;
-                        if (moreDataAvailable && networkOutgoingBuffersBytes < 8096) {
-                            continue;
-                        }
-                    }
+                    filteredOutgoingBuffer = null;
+                }
 
+                // Gather the outgoing data, so that it is written with as few write() syscalls as possible. Write the
+                // gathered data if no more data is available, if it reached MAX_PENDING_NETWORK_OUTGOING_BYTES, or if a
+                // filter is installed. Hence the gathering here only takes effect while no filter is installed, e.g.,
+                // before STARTTLS or if TLS is disabled. Once a filter is installed, it gathers its input itself until
+                // moreDataAvailable is false, e.g., TLS wraps it into a single record, and its output is written right
+                // away. This is also required, as a filter may reuse its output buffer on its next invocation (see
+                // XmppInputOutputFilter.output()). The price is that, if more than TlsState.MAX_PENDING_OUTPUT_BYTES
+                // are sent at once, multiple TLS records are not combined into one write() call.
+                final boolean writeNetworkOutgoingBuffers = !networkOutgoingBuffers.isEmpty() && outgoingBuffer == null
+                                && (!moreDataAvailable
+                                    || networkOutgoingBuffersBytes >= MAX_PENDING_NETWORK_OUTGOING_BYTES
+                                    || connectionInternal.getXmppInputOutputFilterBeginIterator().hasNext());
+
+                if (writeNetworkOutgoingBuffers) {
                     ByteBuffer[] output = networkOutgoingBuffers.toArray(new ByteBuffer[networkOutgoingBuffers.size()]);
                     long bytesWritten;
                     try {
                         bytesWritten = selectedSocketChannel.write(output);
+                        networkWriteCalls++;
                     } catch (IOException e) {
                         // We have seen here so far
                         // - IOException "Broken pipe"
@@ -442,6 +459,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
                     assert outgoingCharSequenceIterator != null;
                 } else {
                     // There is nothing more to write.
+                    assert networkOutgoingBuffers.isEmpty();
                     break;
                 }
             }
@@ -1345,6 +1363,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
         public final long totalBytesWritten;
         public final long totalBytesWrittenBeforeFilter;
         public final double writeRatio;
+        public final long networkWriteCalls;
 
         public final long totalBytesRead;
         public final long totalBytesReadAfterFilter;
@@ -1365,6 +1384,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             totalBytesWritten = connection.totalBytesWritten;
             totalBytesWrittenBeforeFilter = connection.totalBytesWrittenBeforeFilter;
             writeRatio = (double) totalBytesWritten / totalBytesWrittenBeforeFilter;
+            networkWriteCalls = connection.networkWriteCalls;
 
             totalBytesReadAfterFilter = connection.totalBytesReadAfterFilter;
             totalBytesRead = connection.totalBytesRead;
@@ -1403,6 +1423,7 @@ public class XmppTcpTransportModule extends ModularXmppClientToServerConnectionM
             + "read-ratio: " + readRatio + '\n'
             + "write-ratio: " + writeRatio + '\n'
             + "Events\n"
+            + "network-write-calls: " + networkWriteCalls + '\n'
             + "total-callback-requests: " + totalCallbackRequests + '\n'
             + "handled-channel-selected-callbacks: " + handledChannelSelectedCallbacks + '\n'
             + "rejected-channel-selected-callbacks: " + rejectedChannelSelectedCallbacks + '\n'

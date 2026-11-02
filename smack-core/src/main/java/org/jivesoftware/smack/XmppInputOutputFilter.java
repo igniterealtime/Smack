@@ -30,6 +30,10 @@ public interface XmppInputOutputFilter {
      *
      * This method must return a {@link OutputResult}. Use {@link OutputResult#NO_OUTPUT} if there is no output.
      *
+     * The filter may reuse the buffer of the returned {@link OutputResult#filteredOutputData} on the next invocation
+     * of this method. Hence the caller must have consumed the returned data completely, before invoking this method
+     * again.
+     *
      * @param outputData the data this method needs to process.
      * @param isFinalDataOfElement if this is the final data of the element.
      * @param destinationAddressChanged if the destination address has changed.
