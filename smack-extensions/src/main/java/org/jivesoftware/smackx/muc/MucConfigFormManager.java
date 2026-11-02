@@ -88,6 +88,12 @@ public class MucConfigFormManager {
     public static final String MUC_ROOMCONFIG_PASSWORDPROTECTEDROOM = "muc#roomconfig_passwordprotectedroom";
 
     /**
+     * Whether to Make Room Persistent on a server.
+     * Type: boolean
+     */
+    public static final String MUC_ROOMCONFIG_PERSISTENTROOM = "muc#roomconfig_persistentroom";
+
+    /**
      * The constant String {@value}.
      */
     public static final String MUC_ROOMCONFIG_ROOMSECRET = "muc#roomconfig_roomsecret";
@@ -101,6 +107,12 @@ public class MucConfigFormManager {
      * The constant String {@value}.
      */
     public static final String MUC_ROOMCONFIG_PUBLICLYSEARCHABLEROOM = "muc#roomconfig_publicroom";
+
+    /**
+     * Short Description of Room.
+     * Type: text-single
+     */
+    public static final String MUC_ROOMCONFIG_ROOMDESC = "muc#roomconfig_roomdesc";
 
     /**
      * The constant String {@value}.
@@ -338,6 +350,26 @@ public class MucConfigFormManager {
         return this;
     }
 
+    public boolean supportsPersistent() {
+        return answerForm.hasField(MUC_ROOMCONFIG_PERSISTENTROOM);
+    }
+
+    /**
+     * Set if the room is persistent.
+     * Such a room is not destroyed if the last occupant exits, unlike Temporary Room.
+     *
+     * @param isPersistent if the room should be persistent.
+     * @return a reference to this object.
+     * @throws MucConfigurationNotSupportedException if the requested MUC configuration is not supported by the MUC service.
+     */
+    public MucConfigFormManager setPersistent(boolean isPersistent) throws MucConfigurationNotSupportedException {
+        if (!supportsPersistent()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_PERSISTENTROOM);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_PERSISTENTROOM, isPersistent);
+        return this;
+    }
+
     public boolean supportsRoomname() {
         return answerForm.hasField(MUC_ROOMCONFIG_ROOMNAME);
     }
@@ -347,6 +379,18 @@ public class MucConfigFormManager {
             throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMNAME);
         }
         answerForm.setAnswer(MUC_ROOMCONFIG_ROOMNAME, roomName);
+        return this;
+    }
+
+    public boolean supportsRoomDescription() {
+        return answerForm.hasField(MUC_ROOMCONFIG_ROOMDESC);
+    }
+
+    public MucConfigFormManager setRoomDescription(String roomDescription) throws MucConfigurationNotSupportedException {
+        if (!supportsRoomDescription()) {
+            throw new MucConfigurationNotSupportedException(MUC_ROOMCONFIG_ROOMDESC);
+        }
+        answerForm.setAnswer(MUC_ROOMCONFIG_ROOMDESC, roomDescription);
         return this;
     }
 
