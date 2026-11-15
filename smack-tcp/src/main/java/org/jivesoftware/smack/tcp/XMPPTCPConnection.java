@@ -33,11 +33,12 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -234,14 +235,20 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     /**
      * The counter for stanzas handled ("received") by the client.
      * <p>
-     * Note that we don't need to synchronize this counter. Although JLS 17.7 states that reads and writes to longs are
-     * not atomic, it guarantees that there are at most 2 separate writes, one to each 32-bit half. And since
-     * {@link SMUtils#incrementHeight(long)} masks the lower 32 bit, we only operate on one half of the long and
-     * therefore have no concurrency problem because the read/write operations on one half are guaranteed to be atomic.
+     * This counter is only written by the reader thread, but it is read by the writer thread when it sends an ack
+     * answer, hence it is volatile.
      * </p>
      */
-    private long clientHandledStanzasCount = 0;
+    private volatile long clientHandledStanzasCount = 0;
 
+    /**
+     * The stanzas sent but not yet acknowledged by the server.
+     * <p>
+     * The queue is unbounded, but the writer thread does not let it grow beyond
+     * {@link PacketWriter#UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE} when sending new stanzas. Only when the connection breaks
+     * or the stream gets resumed it may contain more stanzas, so that none get lost.
+     * </p>
+     */
     private BlockingQueue<Stanza> unacknowledgedStanzas;
 
     /**
@@ -464,9 +471,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 }
             }
         } else {
-            for (Stanza stanza : previouslyUnackedStanzas) {
-                sendInternal(stanza);
-            }
+            // Hand the stanzas over to the writer, instead of putting them into the writer queue. The latter could
+            // block while we hold the monitor of this connection, which instantShutdown() needs in case of a
+            // connection error. The writer also requests a SM ack for the resent stanzas, if SM is enabled.
+            packetWriter.resend(previouslyUnackedStanzas);
         }
 
         afterSuccessfulLogin(false);
@@ -484,13 +492,9 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
     @Override
     protected void shutdown() {
         if (isSmEnabled()) {
-            try {
-                // Try to send a last SM Acknowledgement. Most servers won't find this information helpful, as the SM
-                // state is dropped after a clean disconnect anyways. OTOH it doesn't hurt much either.
-                sendSmAcknowledgementInternal();
-            } catch (InterruptedException | NotConnectedException e) {
-                LOGGER.log(Level.FINE, "Can not send final SM ack as connection is not connected", e);
-            }
+            // Try to send a last SM Acknowledgement. Most servers won't find this information helpful, as the SM
+            // state is dropped after a clean disconnect anyways. OTOH it doesn't hurt much either.
+            sendSmAcknowledgementInternal();
         }
         shutdown(false);
     }
@@ -1055,6 +1059,7 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             clientHandledStanzasCount = 0;
                             smWasEnabledAtLeastOnce = true;
                             smEnabledSyncPoint = true;
+                            packetWriter.smEnabledOnCurrentStream = true;
                             notifyWaitingThreads();
                             break;
                         case Failed.ELEMENT:
@@ -1078,18 +1083,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                             smEnabledSyncPoint = true;
                             // First, drop the stanzas already handled by the server
                             processHandledCount(resumed.getHandledCount());
-                            // Then re-send what is left in the unacknowledged queue
+                            // Then re-send what is left in the unacknowledged queue. This is done by the writer
+                            // thread, as the reader thread must never block on the writer queue. The writer also
+                            // requests a SM ack for the resent stanzas.
                             List<Stanza> stanzasToResend = new ArrayList<>(unacknowledgedStanzas.size());
                             unacknowledgedStanzas.drainTo(stanzasToResend);
-                            for (Stanza stanza : stanzasToResend) {
-                                XMPPTCPConnection.this.sendInternal(stanza);
-                            }
-                            // If there where stanzas resent, then request a SM ack for them.
-                            // Writer's sendStreamElement() won't do it automatically based on
-                            // predicates.
-                            if (!stanzasToResend.isEmpty()) {
-                                requestSmAcknowledgementInternal();
-                            }
+                            // Set this before the stanzas are handed over, as the writer only requests the ack if set.
+                            packetWriter.smEnabledOnCurrentStream = true;
+                            packetWriter.resend(stanzasToResend);
                             // Mark SM resumption as successful
                             smResumedSyncPoint = SyncPointState.successful;
                             notifyWaitingThreads();
@@ -1191,6 +1192,13 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         public static final int UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE = 1024;
         public static final int UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK = (int) (0.3 * UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE);
 
+        /**
+         * How long the writer waits for the server to acknowledge stanzas, in addition to the
+         * {@link #getReplyTimeout() reply timeout}, once there are {@link #UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE}
+         * unacknowledged stanzas, before it considers the connection broken.
+         */
+        private static final long UNACKNOWLEDGED_STANZAS_WAIT_TIMEOUT_MILLIS = 60 * 1000;
+
         private final String threadName = "Smack Writer (" + getConnectionCounter() + ')';
 
         private final ArrayBlockingQueueWithShutdown<Element> queue = new ArrayBlockingQueueWithShutdown<>(
@@ -1202,6 +1210,44 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         protected volatile Long shutdownTimestamp = null;
 
         private volatile boolean instantShutdown;
+
+        /*
+         * The reader thread must never block on the writer thread. Otherwise, the reader and writer threads may deadlock,
+         * as the writer waits for the reader to process acks from the server, once there are too many unacknowledged
+         * stanzas. See SMACK-881. Hence the reader does not put the SM elements it wants to send into the queue, which
+         * may be full. Instead, it hands them over using the following fields and wakes up the writer, which writes them
+         * before the next element and while it waits for acks.
+         */
+
+        /**
+         * Set if the reader thread received a SM ack request.
+         */
+        private final AtomicBoolean smAckAnswerPending = new AtomicBoolean();
+
+        /**
+         * The stanzas to resend after the stream got resumed, or after the resumption failed.
+         */
+        private final Queue<Stanza> stanzasToResend = new ConcurrentLinkedQueue<>();
+
+        /**
+         * The writer thread waits on this monitor for acks from the server, and the reader thread notifies it once it
+         * processed an ack or has something to send.
+         */
+        private final Object waitForAcksMonitor = new Object();
+
+        /**
+         * The stanza the writer holds while it waits for acks, i.e. that is neither in {@link #unacknowledgedStanzas}
+         * nor written yet. Kept, so that it can be resent if the connection breaks.
+         */
+        private volatile Stanza stanzaWaitingForAcks;
+
+        /**
+         * Set by the reader thread once stream management got enabled or resumed on the current stream. Only then the
+         * server acknowledges stanzas, so only then the writer requests and waits for acks. Unlike
+         * {@link #smEnabledSyncPoint}, which stays set while the connection is disconnected but resumable, this is reset
+         * for every new stream.
+         */
+        private volatile boolean smEnabledOnCurrentStream;
 
         /**
          * True if some preconditions are given to start the bundle and defer mechanism.
@@ -1221,12 +1267,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         */
         void init() {
             shutdownTimestamp = null;
+            smEnabledOnCurrentStream = false;
+            // An ack answer for the previous stream is not needed, as a stream resumption carries the count.
+            smAckAnswerPending.set(false);
 
             if (unacknowledgedStanzas != null) {
                 // It's possible that there are new stanzas in the writer queue that
                 // came in while we were disconnected but resumable, drain those into
                 // the unacknowledged queue so that they get resent now
                 drainWriterQueueToUnacknowledgedStanzas();
+            } else {
+                stanzasToResend.clear();
+                stanzaWaitingForAcks = null;
             }
 
             queue.start();
@@ -1308,12 +1360,58 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             instantShutdown = instant;
             shutdownTimestamp = System.currentTimeMillis();
             queue.shutdown();
+            notifyWaitForAcksMonitor();
         }
 
         /**
-         * Maybe return the next available element from the queue for writing. If the queue is shut down <b>or</b> a
-         * spurious interrupt occurs, <code>null</code> is returned. So it is important to check the 'done' condition in
-         * that case.
+         * Send a SM ack answer. Called by the reader thread, never blocks.
+         */
+        void sendSmAckAnswer() {
+            if (smAckAnswerPending.getAndSet(true)) {
+                // The writer has not yet written the previous ack answer. It will use the current count, so this one
+                // gets answered as well.
+                return;
+            }
+            wakeUp();
+        }
+
+        /**
+         * Resend the stanzas after the stream got resumed, or after the resumption failed. Called by the reader thread
+         * or by the thread performing the login, never blocks.
+         *
+         * @param stanzas the stanzas to resend.
+         */
+        void resend(List<Stanza> stanzas) {
+            if (stanzas.isEmpty()) {
+                return;
+            }
+            stanzasToResend.addAll(stanzas);
+            wakeUp();
+        }
+
+        /**
+         * Called by the reader thread after the server acknowledged stanzas.
+         */
+        void stanzasAcknowledged() {
+            notifyWaitForAcksMonitor();
+        }
+
+        private void wakeUp() {
+            // The writer either waits for acks or for the next element.
+            notifyWaitForAcksMonitor();
+            queue.wakeUp();
+        }
+
+        private void notifyWaitForAcksMonitor() {
+            synchronized (waitForAcksMonitor) {
+                waitForAcksMonitor.notifyAll();
+            }
+        }
+
+        /**
+         * Maybe return the next available element from the queue for writing. If the queue is shut down, the writer was
+         * woken up <b>or</b> a spurious interrupt occurs, <code>null</code> is returned. So it is important to check the
+         * 'done' condition and the handed over elements in that case.
          *
          * @return the next element for writing or null.
          */
@@ -1341,6 +1439,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 while (!done()) {
                     Element element = nextStreamElement();
                     if (element == null) {
+                        // Maybe the reader thread handed something over and woke us up.
+                        if (!done() && writeHandedOverElements() && queue.isEmpty()) {
+                            writer.flush();
+                        }
                         continue;
                     }
 
@@ -1378,22 +1480,14 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                         // The client needs to add messages to the unacknowledged stanzas queue
                         // right after it sent 'enabled'. Stanza will be added once
                         // unacknowledgedStanzas is not null.
-                        unacknowledgedStanzas = new ArrayBlockingQueue<>(UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE);
+                        unacknowledgedStanzas = new LinkedBlockingQueue<>();
                     }
-                    maybeAddToUnacknowledgedStanzas(packet);
+                    if (packet != null && !maybeAddToUnacknowledgedStanzas(packet)) {
+                        // The writer got shut down while waiting for acks, the stanza is kept in stanzaWaitingForAcks.
+                        break;
+                    }
 
-                    CharSequence elementXml = element.toXML(outgoingStreamXmlEnvironment);
-                    if (elementXml instanceof XmlStringBuilder) {
-                        try {
-                            ((XmlStringBuilder) elementXml).write(writer, outgoingStreamXmlEnvironment);
-                        } catch (NullPointerException npe) {
-                            LOGGER.log(Level.FINE, "NPE in XmlStringBuilder of " + element.getClass() + ": " + element, npe);
-                            throw npe;
-                        }
-                    }
-                    else {
-                        writer.write(elementXml.toString());
-                    }
+                    writeElement(element);
 
                     if (queue.isEmpty()) {
                         writer.flush();
@@ -1405,11 +1499,18 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
                 if (!instantShutdown) {
                     // Flush out the rest of the queue.
                     try {
+                        writeHandedOverElements();
+                        Stanza stanza = stanzaWaitingForAcks;
+                        if (stanza != null) {
+                            stanzaWaitingForAcks = null;
+                            writer.write(stanza.toXML().toString());
+                        }
                         while (!queue.isEmpty()) {
                             Element packet = queue.remove();
                             if (packet instanceof Stanza) {
-                                Stanza stanza = (Stanza) packet;
-                                maybeAddToUnacknowledgedStanzas(stanza);
+                                // Do not wait for acks, the stream management state gets dropped after the stream is
+                                // closed anyway.
+                                addToUnacknowledgedStanzas((Stanza) packet);
                             }
                             writer.write(packet.toXML().toString());
                         }
@@ -1455,44 +1556,180 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
             }
         }
 
+        private void writeElement(Element element) throws IOException {
+            CharSequence elementXml = element.toXML(outgoingStreamXmlEnvironment);
+            if (elementXml instanceof XmlStringBuilder) {
+                try {
+                    ((XmlStringBuilder) elementXml).write(writer, outgoingStreamXmlEnvironment);
+                } catch (NullPointerException npe) {
+                    LOGGER.log(Level.FINE, "NPE in XmlStringBuilder of " + element.getClass() + ": " + element, npe);
+                    throw npe;
+                }
+            }
+            else {
+                writer.write(elementXml.toString());
+            }
+        }
+
+        /**
+         * Write the elements handed over by the reader thread, i.e. the stanzas to resend and a SM ack answer.
+         *
+         * @return true if something was written.
+         * @throws IOException if an I/O error occurred.
+         */
+        private boolean writeHandedOverElements() throws IOException {
+            if (!hasHandedOverElements()) {
+                return false;
+            }
+
+            boolean stanzasResent = false;
+            Stanza stanza;
+            while ((stanza = stanzasToResend.poll()) != null) {
+                // Resent stanzas do not wait for acks, they were already accounted for when they were sent first.
+                addToUnacknowledgedStanzas(stanza);
+                writeElement(stanza);
+                firePacketSendingListeners(stanza);
+                stanzasResent = true;
+            }
+            // The stanzas are also resent after a failed resumption, where stream management may not be enabled again.
+            if (stanzasResent && smEnabledOnCurrentStream) {
+                writer.write(AckRequest.INSTANCE.toXML().toString());
+            }
+
+            if (smAckAnswerPending.getAndSet(false)) {
+                // Always answer with the current count. It is never lower than the count at the time the ack was
+                // requested, and the ack answers we write never go backwards.
+                writer.write(new AckAnswer(clientHandledStanzasCount).toXML().toString());
+            }
+            return true;
+        }
+
+        private boolean hasHandedOverElements() {
+            return smAckAnswerPending.get() || !stanzasToResend.isEmpty();
+        }
+
+        private void addToUnacknowledgedStanzas(Stanza stanza) {
+            final BlockingQueue<Stanza> unackedStanzas = unacknowledgedStanzas;
+            if (unackedStanzas != null) {
+                unackedStanzas.add(stanza);
+            }
+        }
+
         private void drainWriterQueueToUnacknowledgedStanzas() {
+            // Keep the order in which the stanzas would have been written. The unacknowledged stanzas queue is unbounded
+            // so that no stanza gets lost here, see SMACK-844.
+            Stanza stanza;
+            while ((stanza = stanzasToResend.poll()) != null) {
+                unacknowledgedStanzas.add(stanza);
+            }
+            stanza = stanzaWaitingForAcks;
+            if (stanza != null) {
+                stanzaWaitingForAcks = null;
+                unacknowledgedStanzas.add(stanza);
+            }
+
             List<Element> elements = new ArrayList<>(queue.size());
             queue.drainTo(elements);
-            for (int i = 0; i < elements.size(); i++) {
-                Element element = elements.get(i);
-                // If the unacknowledgedStanza queue is full, then bail out with a warning message. See SMACK-844.
-                if (unacknowledgedStanzas.remainingCapacity() == 0) {
-                    StreamManagementException.UnacknowledgedQueueFullException exception = StreamManagementException.UnacknowledgedQueueFullException
-                            .newWith(i, elements, unacknowledgedStanzas);
-                    LOGGER.log(Level.WARNING,
-                            "Some stanzas may be lost as not all could be drained to the unacknowledged stanzas queue", exception);
-                    return;
-                }
+            for (Element element : elements) {
                 if (element instanceof Stanza) {
                     unacknowledgedStanzas.add((Stanza) element);
                 }
             }
         }
 
-        private void maybeAddToUnacknowledgedStanzas(Stanza stanza) throws IOException {
+        /**
+         * Add the stanza to the unacknowledged stanzas queue, if stream management is enabled. If there are already
+         * {@link #UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE} unacknowledged stanzas, wait until the server acknowledged some.
+         *
+         * @param stanza the stanza about to be written.
+         * @return false if the writer was shut down while waiting, in which case the stanza was kept in
+         *         {@link #stanzaWaitingForAcks}.
+         * @throws IOException if an I/O error occurred or the server did not acknowledge stanzas in time.
+         * @throws InterruptedException if the writer thread was interrupted.
+         */
+        private boolean maybeAddToUnacknowledgedStanzas(Stanza stanza) throws IOException, InterruptedException {
             // Check if the stream element should be put to the unacknowledgedStanza
             // queue. Note that we can not do the put() in sendStanzaInternal() and the
             // packet order is not stable at this point (sendStanzaInternal() can be
             // called concurrently).
-            if (unacknowledgedStanzas != null && stanza != null) {
+            final BlockingQueue<Stanza> unackedStanzas = unacknowledgedStanzas;
+            if (unackedStanzas == null) {
+                return true;
+            }
+
+            boolean requestAck = false;
+            if (smEnabledOnCurrentStream) {
+                final int unackedStanzasCount = unackedStanzas.size();
                 // If the unacknowledgedStanza queue reaching its high water mark, request an new ack
                 // from the server in order to drain it
-                if (unacknowledgedStanzas.size() == UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK) {
-                    writer.write(AckRequest.INSTANCE.toXML().toString());
-                }
+                requestAck = unackedStanzasCount == UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE_HIGH_WATER_MARK;
 
-                try {
-                    // It is important the we put the stanza in the unacknowledged stanza
-                    // queue before we put it on the wire
-                    unacknowledgedStanzas.put(stanza);
+                if (unackedStanzasCount >= UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE) {
+                    // If the connection breaks while waiting, the stanza is resent from here.
+                    stanzaWaitingForAcks = stanza;
+                    if (!waitForAcks(unackedStanzas)) {
+                        return false;
+                    }
+                    stanzaWaitingForAcks = null;
                 }
-                catch (InterruptedException e) {
-                    throw new IllegalStateException(e);
+            }
+
+            // It is important the we put the stanza in the unacknowledged stanza
+            // queue before we put it on the wire. This includes the ack request, as
+            // the stanza would be lost if writing the request fails.
+            unackedStanzas.add(stanza);
+            if (requestAck) {
+                writer.write(AckRequest.INSTANCE.toXML().toString());
+            }
+            return true;
+        }
+
+        /**
+         * Wait until the server acknowledged enough stanzas so that there are less than
+         * {@link #UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE} unacknowledged stanzas. While waiting, keep writing what the reader
+         * thread hands over, as the reader thread is the one processing the acks from the server. The connection is
+         * considered broken, if the server does not acknowledge enough stanzas within
+         * {@link #UNACKNOWLEDGED_STANZAS_WAIT_TIMEOUT_MILLIS} plus the {@link #getReplyTimeout() reply timeout}.
+         *
+         * @param unackedStanzas the unacknowledged stanzas.
+         * @return false if the writer was shut down while waiting.
+         * @throws IOException if an I/O error occurred or the server did not acknowledge stanzas in time.
+         * @throws InterruptedException if the writer thread was interrupted.
+         */
+        private boolean waitForAcks(BlockingQueue<Stanza> unackedStanzas) throws IOException, InterruptedException {
+            if (done()) {
+                return false;
+            }
+
+            // Make sure that the server got everything we wrote so far, and that it is asked to acknowledge it.
+            writer.write(AckRequest.INSTANCE.toXML().toString());
+            writer.flush();
+
+            final long timeoutMillis = UNACKNOWLEDGED_STANZAS_WAIT_TIMEOUT_MILLIS + getReplyTimeout();
+            final long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeoutMillis);
+            while (true) {
+                if (writeHandedOverElements()) {
+                    writer.flush();
+                }
+                if (unackedStanzas.size() < UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE) {
+                    return true;
+                }
+                if (done()) {
+                    return false;
+                }
+                final long remainingNanos = deadline - System.nanoTime();
+                if (remainingNanos <= 0) {
+                    // Not a StreamManagementException, as that would drop the stream management state, and hence
+                    // prevent that the stream is resumed with the next connection.
+                    throw new IOException("The server did not acknowledge enough stanzas within " + timeoutMillis
+                                    + "ms, there are still " + unackedStanzas.size() + " unacknowledged stanzas");
+                }
+                synchronized (waitForAcksMonitor) {
+                    // Check again while holding the monitor, so that we do not miss a notification.
+                    if (unackedStanzas.size() >= UNACKKNOWLEDGED_STANZAS_QUEUE_SIZE && !hasHandedOverElements()
+                                    && !done()) {
+                        TimeUnit.NANOSECONDS.timedWait(waitForAcksMonitor, remainingNanos);
+                    }
                 }
             }
         }
@@ -1631,23 +1868,22 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
      * </p>
      *
      * @throws StreamManagementNotEnabledException if Stream Management is not enabled.
-     * @throws NotConnectedException if the connection is not connected.
-     * @throws InterruptedException if the calling thread was interrupted.
      */
-    public void sendSmAcknowledgement() throws StreamManagementNotEnabledException, NotConnectedException, InterruptedException {
+    public void sendSmAcknowledgement() throws StreamManagementNotEnabledException {
         if (!isSmEnabled()) {
             throw new StreamManagementException.StreamManagementNotEnabledException();
         }
         sendSmAcknowledgementInternal();
     }
 
-    private void sendSmAcknowledgementInternal() throws NotConnectedException, InterruptedException {
-        AckAnswer ackAnswer = new AckAnswer(clientHandledStanzasCount);
-        // Do net put an ack to the queue if it has already been shutdown. Some servers, like ejabberd, like to request
-        // an ack even after we have sent a stream close (and hence the queue was shutdown). If we would not check here,
-        // then the ack would dangle around in the queue, and be sent on the next re-connection attempt even before the
-        // stream open.
-        packetWriter.queue.putIfNotShutdown(ackAnswer);
+    private void sendSmAcknowledgementInternal() {
+        // Do not send an ack if the queue has already been shutdown. Some servers, like ejabberd, like to request an ack
+        // even after we have sent a stream close (and hence the queue was shutdown).
+        if (packetWriter.queue.isShutdown()) {
+            return;
+        }
+        // This is usually called by the reader thread, which must never block on the writer queue. See SMACK-881.
+        packetWriter.sendSmAckAnswer();
     }
 
     /**
@@ -1913,6 +2149,10 @@ public class XMPPTCPConnection extends AbstractXMPPConnection {
         }
 
         serverHandledStanzasCount = handledCount;
+
+        if (ackedStanzasCount > 0) {
+            packetWriter.stanzasAcknowledged();
+        }
     }
 
     /**
