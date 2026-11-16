@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2014-2019 Florian Schmaus
+ * Copyright 2014-2026 Florian Schmaus
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * throw {@link InterruptedException} if Queue has been shutdown on {@link #take()} and
  * {@link #poll(long, TimeUnit)}.
  * <p>
+ * Additionally, a consumer waiting in {@link #take()} can be woken up with {@link #wakeUp()}, for example to handle
+ * something that another thread handed over. Hence, unlike {@link BlockingQueue#take()}, {@link #take()} may return
+ * <code>null</code>.
+ * </p>
+ * <p>
  * Based on ArrayBlockingQueue of OpenJDK by Doug Lea (who released ArrayBlockingQueue as public
  * domain).
  *
@@ -52,6 +57,11 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
     private final Condition notFull;
 
     private volatile boolean isShutdown = false;
+
+    /**
+     * Set by {@link #wakeUp()} and cleared by {@link #take()}. Guarded by {@link #lock}.
+     */
+    private boolean wakeUpPending;
 
     private int inc(int i) {
         return (++i == items.length) ? 0 : i;
@@ -405,13 +415,22 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
 
     }
 
+    /**
+     * Retrieves and removes the head of this queue, waiting if necessary until an element becomes available. Unlike
+     * {@link BlockingQueue#take()}, this returns <code>null</code> if {@link #wakeUp()} was invoked. A wake up takes
+     * precedence over available elements, so that the consumer handles what it was woken up for before it takes the
+     * next element. A wake up is consumed by a single invocation of this method.
+     *
+     * @return the head of this queue, or <code>null</code> if woken up.
+     * @throws InterruptedException if interrupted while waiting or if the queue was shut down.
+     */
     @Override
     public E take() throws InterruptedException {
         lock.lockInterruptibly();
         try {
             checkNotShutdown();
             try {
-                while (hasNoElements()) {
+                while (!wakeUpPending && hasNoElements()) {
                     notEmpty.await();
                     checkNotShutdown();
                 }
@@ -420,8 +439,35 @@ public class ArrayBlockingQueueWithShutdown<E> extends AbstractQueue<E> implemen
                 notEmpty.signal();
                 throw ie;
             }
+            if (wakeUpPending) {
+                wakeUpPending = false;
+                return null;
+            }
             E e = extract();
             return e;
+        }
+        finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * Wake up a consumer waiting in {@link #take()}, which then returns <code>null</code>. If no consumer is waiting,
+     * then the next invocation of {@link #take()} returns <code>null</code> immediately. Wake ups before that
+     * invocation are coalesced into one.
+     * <p>
+     * This method does not wait for elements or space, it only acquires the lock of this queue, which is only held
+     * briefly. The other methods to take elements, like {@link #poll(long, TimeUnit)}, are not affected by a wake up.
+     * </p>
+     *
+     * @since 4.5.1
+     */
+    public void wakeUp() {
+        lock.lock();
+        try {
+            wakeUpPending = true;
+            // Signal all, as the consumers in take() may not be the only ones waiting for this condition.
+            notEmpty.signalAll();
         }
         finally {
             lock.unlock();
