@@ -67,11 +67,11 @@ public abstract class ValidateElement implements FormFieldChildElement {
      * following conditions:
      * <ul>
      * <li>Start with "xs:", and be one of the "built-in" datatypes defined in XML Schema Part 2 <a
-     * href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1476016">[2]</a></li>
+     * href="https://xmpp.org/extensions/xep-0122.html#nt-idp1476016">[2]</a></li>
      * <li>Start with a prefix registered with the XMPP Registrar <a
-     * href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1478544">[3]</a></li>
+     * href="https://xmpp.org/extensions/xep-0122.html#nt-idp1478544">[3]</a></li>
      * <li>Start with "x:", and specify a user-defined datatype <a
-     * href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1477360">[4]</a></li>
+     * href="https://xmpp.org/extensions/xep-0122.html#nt-idp1477360">[4]</a></li>
      * </ul>
      *
      * @return the datatype
@@ -327,9 +327,9 @@ public abstract class ValidateElement implements FormFieldChildElement {
 
     /**
      * Indicates that the value should be restricted to a regular expression. The regular expression must be that
-     * defined for <a href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1501344"> POSIX extended regular
+     * defined for <a href="https://xmpp.org/extensions/xep-0122.html#nt-idp1501344"> POSIX extended regular
      * expressions </a> including support for <a
-     * href="http://www.xmpp.org/extensions/xep-0122.html#nt-idp1502496">Unicode</a>.
+     * href="https://xmpp.org/extensions/xep-0122.html#nt-idp1502496">Unicode</a>.
      *
      * @see ValidateElement
      */

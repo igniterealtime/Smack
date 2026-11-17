@@ -24,7 +24,7 @@ import org.jivesoftware.smackx.pubsub.packet.PubSub;
  * The features a PubSub service may provides. Some are optional or recommended, while others are required.
  *
  * @author Florian Schmaus
- * @see <a href="http://www.xmpp.org/extensions/xep-0060.html#features">XEP-60 § 10</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0060.html#features">XEP-60 § 10</a>
  *
  */
 public enum PubSubFeature implements CharSequence {

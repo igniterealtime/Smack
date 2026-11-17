@@ -32,7 +32,7 @@ import org.jivesoftware.smack.util.XmlStringBuilder;
  * extension is only a subset of XHTML 1.0.
  * <p>
  * The following link summarizes the requirements of XHTML IM:
- * <a href="http://www.xmpp.org/extensions/xep-0071.html">XEP-0071: XHTML-IM</a>.
+ * <a href="https://xmpp.org/extensions/xep-0071.html">XEP-0071: XHTML-IM</a>.
  * </p>
  *
  * @author Gaston Dombiak

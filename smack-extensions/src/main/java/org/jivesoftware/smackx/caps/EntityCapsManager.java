@@ -115,7 +115,7 @@ import org.jxmpp.util.cache.LruCache;
  * }</pre>
  *
  * @author Florian Schmaus
- * @see <a href="http://www.xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>
+ * @see <a href="https://xmpp.org/extensions/xep-0115.html">XEP-0115: Entity Capabilities</a>
  */
 public final class EntityCapsManager extends Manager {
 
